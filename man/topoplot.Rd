@@ -4,20 +4,27 @@
 \alias{topoplot}
 \title{Topographical Plotting Function for EEG}
 \usage{
-topoplot(df, electrodeLocs = NULL, method = "Biharmonic", rmax = 0.75,
-  gridRes = 67)
+topoplot(df, timepoint = NULL, electrodeLocs = NULL,
+  method = "Biharmonic", rmax = 0.75, gridRes = 67, colourmap = NULL,
+  clims = NULL)
 }
 \arguments{
 \item{df}{An EEG dataset. Must have columns x, y, and amplitude at present. x and y are (Cartesian) electrode co-ordinates), amplitude is amplitude.}
 
-\item{electrodeLocs}{A set of electrode locations.Can be in polar or spherical format. Will attempt to use 10-20 if not supplied.}
+\item{timepoint}{Timepoint(s) to plot. Can be one timepoint or a range to average over. If none is supplied, the function will average across all timepoints in the supplied data.}
 
-\item{method}{Interpolation method. Defaults to Biharmonic spline interpolation, which is the only one currently available.}
+\item{electrodeLocs}{Not yet implemented.}
+
+\item{method}{Interpolation method. Defaults to biharmonic spline interpolation, which is the only one currently available.}
 
 \item{rmax}{Maximum head radius if x is too small.}
 
 \item{gridRes}{Resolution of the interpolated grid. Higher = smoother but slower.}
+
+\item{colourmap}{Defaults to RdBu if none supplied. Can be any from RColorBrewer. If an unsupported palette is specified, switches to Greens.}
+
+\item{clims}{Limits of the fill scale - should be given as a character vector with two values specifying the start and endpoints e.g. clims = c(-2,-2). Will ignore anything else. Defaults to the range of the data.}
 }
 \description{
-Allows simple plotting of functional data
+Allows simple plotting of functional data. Output is a ggplot2 object.
 }
