@@ -1,0 +1,15 @@
+Package: eegUtils
+Type: Package
+Title: A Collection of Functions for EEG Analysis (Title Case)
+Version: 0.1.0
+Author: Matt Craddock
+Maintainer: Matt Craddock <m.p.craddock@leeds.ac.uk>
+Description: Just a bunch of helper functions to stop me having to paste them in all the time.
+License: MIT
+Encoding: UTF-8
+LazyData: true
+Imports: 
+  ggplot2,
+  dplyr,
+  scales
+RoxygenNote: 6.0.1
