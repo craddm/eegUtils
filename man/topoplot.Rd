@@ -4,18 +4,18 @@
 \alias{topoplot}
 \title{Topographical Plotting Function for EEG}
 \usage{
-topoplot(df, timepoint = NULL, electrodeLocs = NULL,
-  method = "Biharmonic", rmax = 0.75, gridRes = 67, colourmap = NULL,
-  clims = NULL)
+topoplot(df, timepoint = NULL, clim = NULL, chanLocs = NULL,
+  method = "Biharmonic", rmax = 0.75, gridRes = 67, colourmap = "RdBu",
+  chanNames = FALSE)
 }
 \arguments{
 \item{df}{An EEG dataset. Must have columns x, y, and amplitude at present. x and y are (Cartesian) electrode co-ordinates), amplitude is amplitude.}
 
 \item{timepoint}{Timepoint(s) to plot. Can be one timepoint or a range to average over. If none is supplied, the function will average across all timepoints in the supplied data.}
 
-\item{electrodeLocs}{Not yet implemented.}
+\item{chanLocs}{Not yet implemented.}
 
-\item{method}{Interpolation method. Defaults to biharmonic spline interpolation, which is the only one currently available.}
+\item{method}{Interpolation method. "Biharmonic" or "gam". "Biharmonic" implements the same method used in Matlab's EEGLAB. "gam" fits a Generalized Additive Model Defaults to biharmonic spline interpolation.}
 
 \item{rmax}{Maximum head radius if x is too small.}
 
@@ -23,8 +23,15 @@ topoplot(df, timepoint = NULL, electrodeLocs = NULL,
 
 \item{colourmap}{Defaults to RdBu if none supplied. Can be any from RColorBrewer. If an unsupported palette is specified, switches to Greens.}
 
-\item{clims}{Limits of the fill scale - should be given as a character vector with two values specifying the start and endpoints e.g. clims = c(-2,-2). Will ignore anything else. Defaults to the range of the data.}
+\item{chanNames}{Switch from points to electrode names if available. Not yet implemented.}
+
+\item{clims}{Limits of the fill scale - should be given as a character vector with two values specifying the start and endpoints e.g. clim = c(-2,-2). Will ignore anything else. Defaults to the range of the data.}
 }
 \description{
 Allows simple plotting of functional data. Output is a ggplot2 object.
 }
+\section{Notes on usage of Generalized Additive Models for interpolation}{
+
+The function fits a GAM using the gam function from mgcv. Specifically, it fits a spline using the model function gam(z, s(x, y, bs = "sos"). Using GAMs for smooths is very much experimental. The surface is produced from the predictions of the GAM model fitted to the supplied data. Values at each electrode do not necessarily match actual values in the data: high-frequency variation will tend to be smoothed out. Thus, the method should be used with caution.
+}
+

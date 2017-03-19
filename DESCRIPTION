@@ -11,5 +11,7 @@ LazyData: true
 Imports: 
   ggplot2,
   dplyr,
-  scales
+  scales,
+  mgcv,
+  purrr
 RoxygenNote: 6.0.1
