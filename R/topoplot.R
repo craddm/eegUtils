@@ -4,9 +4,9 @@
 #'
 #' @param df An EEG dataset. Must have columns x, y, and amplitude at present. x and y are (Cartesian) electrode co-ordinates), amplitude is amplitude.
 #' @param timepoint Timepoint(s) to plot. Can be one timepoint or a range to average over. If none is supplied, the function will average across all timepoints in the supplied data.
-#' @param clims Limits of the fill scale - should be given as a character vector with two values specifying the start and endpoints e.g. clim = c(-2,-2). Will ignore anything else. Defaults to the range of the data.
+#' @param clim Limits of the fill scale - should be given as a character vector with two values specifying the start and endpoints e.g. clim = c(-2,-2). Will ignore anything else. Defaults to the range of the data.
 #' @param chanLocs Not yet implemented.
-#' @param method Interpolation method. "Biharmonic" or "gam". "Biharmonic" implements the same method used in Matlab's EEGLAB. "gam" fits a Generalized Additive Model Defaults to biharmonic spline interpolation.
+#' @param method Interpolation method. "Biharmonic" or "gam". "Biharmonic" implements the same method used in Matlab's EEGLAB. "gam" fits a Generalized Additive Model with k = 40 knots. Defaults to biharmonic spline interpolation.
 #' @param rmax Maximum head radius if x is too small.
 #' @param gridRes Resolution of the interpolated grid. Higher = smoother but slower.
 #' @param colourmap Defaults to RdBu if none supplied. Can be any from RColorBrewer. If an unsupported palette is specified, switches to Greens.
@@ -14,9 +14,10 @@
 #'
 #' @import ggplot2
 #' @import dplyr
+#' @export
 #'
 #' @section Notes on usage of Generalized Additive Models for interpolation:
-#' The function fits a GAM using the gam function from mgcv. Specifically, it fits a spline using the model function gam(z, s(x, y, bs = "sos"). Using GAMs for smooths is very much experimental. The surface is produced from the predictions of the GAM model fitted to the supplied data. Values at each electrode do not necessarily match actual values in the data: high-frequency variation will tend to be smoothed out. Thus, the method should be used with caution.
+#' The function fits a GAM using the gam function from mgcv. Specifically, it fits a spline using the model function gam(z ~ s(x, y, bs = "ts", k = 40). Using GAMs for smooths is very much experimental. The surface is produced from the predictions of the GAM model fitted to the supplied data. Values at each electrode do not necessarily match actual values in the data: high-frequency variation will tend to be smoothed out. Thus, the method should be used with caution.
 
 topoplot <- function(df,
                      timepoint = NULL,
@@ -99,7 +100,7 @@ topoplot <- function(df,
                       rapply(function (x) ifelse(is.nan(x),0,x), how = "replace") %>%
                       purrr::map_dbl(function (x) x %*% weights)
 
-                    dim(outmat) <- c(67,67)
+                    dim(outmat) <- c(gridRes,gridRes)
 
                     outDf <- data.frame(x = xo[, 1], outmat)
                     names(outDf)[1:length(yo[1, ]) + 1] <- yo[1, ]
@@ -110,7 +111,7 @@ topoplot <- function(df,
                                     convert = TRUE)
                   },
          gam = {
-           splineSmooth <- mgcv::gam(z ~ s(x, y, bs = 'sos'), data = df)
+           splineSmooth <- mgcv::gam(z ~ s(x, y, bs = 'ts', k = 40), data = df)
            outDf <- data.frame(expand.grid(x = seq(min(df$x) * 2,
                                                      max(df$x) * 2,
                                                      length = gridRes),
