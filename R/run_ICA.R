@@ -46,7 +46,7 @@ run_ICA <- function (df, method = "sobi") {
       else {
         Rxp = Rxp + amp_matrix[, k:N, tlag] %*% t(amp_matrix[ , 1:(N - k + 1), tlag]) / (N - k + 1) / n_epochs
       }
-      M[ , u:(u + n_channels - 1)] <- norm(Rxp, 'F') * Rxp #  % Frobenius norm =
+      M[ , u:(u + n_channels - 1)] <- norm(Rxp, 'F') * Rxp #  % Frobenius norm
     }
   }
 
@@ -57,7 +57,7 @@ run_ICA <- function (df, method = "sobi") {
 
   ## create mixing matrix for output
   mixing_matrix <- data.frame(MASS::ginv(Q) %*% M_rjd$V)
-  names(mixing_matrix) <- 1:64
+  names(mixing_matrix) <- 1:n_channels
   mixing_matrix$electrode <- names(df[ , (ncol(df) - n_channels + 1):ncol(df)])
   dim(amp_matrix) <- c(n_channels, n_times*n_epochs)
   S <- t(M_rjd$V) %*% amp_matrix

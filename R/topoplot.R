@@ -10,7 +10,8 @@
 #' @param rmax Maximum head radius if x is too small.
 #' @param gridRes Resolution of the interpolated grid. Higher = smoother but slower.
 #' @param colourmap Defaults to RdBu if none supplied. Can be any from RColorBrewer. If an unsupported palette is specified, switches to Greens.
-#' @param chanNames Switch from points to electrode names if available. Not yet implemented.
+#' @param chan_marker Set marker for electrode locations. "point" = point, "name" = electrode name, "none" = no marker. Defaults to "point".
+#' @param quantity Allows plotting of arbitrary quantitative column. Defaults to amplitude. Can be any column name. E.g. "p.value", "t-statistic".
 #'
 #' @import ggplot2
 #' @import dplyr
@@ -27,7 +28,8 @@ topoplot <- function(df,
                      rmax = .75,
                      gridRes = 67,
                      colourmap = "RdBu",
-                     chanNames = FALSE) {
+                     chan_marker = "point",
+                     quantity = "amplitude") {
 
   # Filter out unwanted timepoints, and find nearest time values in the data --------------
 
@@ -46,17 +48,23 @@ topoplot <- function(df,
 
   if (length(grep("^x$|^y$", colnames(df))) > 1) {
     message("Electrode locations found.")
-  } else if ("electrode" %in% colnames(df)) {
-    df <- left_join(df, electrodeLocs, by = "electrode")
-    message("Adding standard electrode locations...")
-  } else {
+  } else if (!is.null(chanLocs)) {
+    if (length(grep("^x$|^y$", colnames(chanLocs))) > 1) {
+      df <- left_join(df, chanLocs, by = "electrode")
+      } else {
+        warnings("No channel locations found in chanLocs.")
+      }
+    } else if ("electrode" %in% colnames(df)) {
+      df <- left_join(df, electrodeLocs, by = "electrode")
+      message("Adding standard electrode locations...")
+    } else {
     warning("Neither electrode locations nor labels found.")
     stop()
   }
 
   # Average over all timepoints ----------------------------
 
-  df <- summarise(group_by(df, x, y, electrode), amplitude = mean(amplitude))
+  df <- summarise_(group_by(df, x, y, electrode), amplitude = lazyeval::interp(~mean(q), q = as.name(quantity)))
 
   # Cut the data frame down to only the necessary columns, and make sure it has the right names --------
   # Will be able to work with different parameters (e.g. power) eventually, so this will be necessary
@@ -161,20 +169,25 @@ topoplot <- function(df,
                                   title.theme = element_text(angle = 270)))
 
   # Add electrode points or names -------------------
-  if (chanNames == TRUE) {
-    topo <- topo + annotate("text",
-                            x = df$x,
-                            y = df$y,
-                            label = c(levels(df$electrode)[c(df$electrode)]),
-                            colour = "black",
-                            size = 4.5)
-  }
-  else {
-    topo <- topo + annotate("point",
-           x = df$x,
-           y = df$y,
-           colour = "black",
-           size = 2)
+  if (chan_marker != "none"){
+    if (chan_marker == "point") {
+      topo <- topo + annotate("point",
+                              x = df$x, y = df$y,
+                              colour = "black",
+                              size = 2)
+      }
+    else if (chan_marker == "name") {
+      topo <- topo + annotate("text",
+                              x = df$x, y = df$y,
+                              label = c(levels(df$electrode)[c(df$electrode)]),
+                              colour = "black",
+                              size = 4)
+      } else {
+        topo <- topo + annotate("point",
+                                x = df$x, y = df$y,
+                                colour = "black",
+                                size = 2)
+      }
   }
 
   # Set the colourmap and scale limits ------------------------
