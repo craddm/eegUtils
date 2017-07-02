@@ -59,6 +59,8 @@ topoplot <- function(df,
         warnings("No channel locations found in chanLocs.")
       }
     } else if ("electrode" %in% colnames(df)) {
+      df$electrode <- toupper(df$electrode)
+      electrodeLocs$electrode <- toupper(electrodeLocs$electrode)
       df <- left_join(df, electrodeLocs, by = "electrode")
       message("Adding standard electrode locations...")
     } else {
