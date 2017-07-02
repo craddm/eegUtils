@@ -5,8 +5,8 @@
 \title{Topographical Plotting Function for EEG}
 \usage{
 topoplot(df, timepoint = NULL, clim = NULL, chanLocs = NULL,
-  method = "Biharmonic", rmax = 0.75, gridRes = 67, colourmap = "RdBu",
-  chanNames = FALSE)
+  method = "Biharmonic", r = NULL, gridRes = 67, colourmap = "RdBu",
+  chanNames = FALSE, skirt = TRUE, contours = TRUE)
 }
 \arguments{
 \item{df}{An EEG dataset. Must have columns x, y, and amplitude at present. x and y are (Cartesian) electrode co-ordinates), amplitude is amplitude.}
@@ -19,13 +19,15 @@ topoplot(df, timepoint = NULL, clim = NULL, chanLocs = NULL,
 
 \item{method}{Interpolation method. "Biharmonic" or "gam". "Biharmonic" implements the same method used in Matlab's EEGLAB. "gam" fits a Generalized Additive Model with k = 40 knots. Defaults to biharmonic spline interpolation.}
 
-\item{rmax}{Maximum head radius if x is too small.}
+\item{r}{Radius of cartoon headshape; if not given, defaults to 1.1 * the maximum y electrode location.}
 
 \item{gridRes}{Resolution of the interpolated grid. Higher = smoother but slower.}
 
 \item{colourmap}{Defaults to RdBu if none supplied. Can be any from RColorBrewer. If an unsupported palette is specified, switches to Greens.}
 
-\item{chanNames}{Switch from points to electrode names if available. Not yet implemented.}
+\item{chanNames}{Switch from points to electrode names if available.}
+
+\item{skirt}{Plot interpolation/extrapolation outside the scalp/convex hull of the electrode locations. Defaults to TRUE.}
 }
 \description{
 Allows simple plotting of functional data. Output is a ggplot2 object.

@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_timecourse.R
 \name{plot_butterfly}
 \alias{plot_butterfly}
-\title{Create a butterfly plot from timecourse data.}
+\title{Create a butterfly plot from timecourse data}
 \usage{
 plot_butterfly(df, time_lim = NULL, group = NULL, facet = NULL,
   baseline = NULL, colourmap = NULL)

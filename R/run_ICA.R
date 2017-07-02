@@ -6,6 +6,7 @@
 #' @param method Only SOBI is currently implemented, so this is ignored.
 #'
 #' @import dplyr
+#' @import tidyr
 #' @import JADE
 #' @export
 
