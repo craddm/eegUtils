@@ -31,7 +31,7 @@ topoplot <- function(df,
                      gridRes = 67,
                      colourmap = "RdBu",
                      interp_limit = "skirt",
-                     contours = TRUE,
+                     contour = TRUE,
                      chan_marker = "point",
                      quantity = "amplitude") {
 
@@ -104,8 +104,21 @@ topoplot <- function(df,
                           y = r * sin(circ_rads))
 
   #define nose position relative to headShape
-  nose <- data.frame(x = c(headShape$x[[23]], headShape$x[[26]], headShape$x[[29]]),
-                     y = c(headShape$y[[23]], headShape$y[[26]] *1.1 , headShape$y[[29]]))
+  nose <- data.frame(x = c(headShape$x[[23]],
+                           headShape$x[[26]],
+                           headShape$x[[29]]),
+                     y = c(headShape$y[[23]],
+                           headShape$y[[26]] * 1.1,
+                           headShape$y[[29]]))
+
+  ears <- data.frame(x = c(headShape$x[[4]],
+                           headShape$x[[97]],
+                           headShape$x[[48]],
+                           headShape$x[[55]]),
+                     y = c(headShape$y[[4]],
+                           headShape$y[[97]],
+                           headShape$y[[48]],
+                           headShape$y[[55]]))
 
   # Do the interpolation! ------------------------
 
@@ -170,12 +183,19 @@ topoplot <- function(df,
   # Create the actual plot -------------------------------
 
   topo <- ggplot(outDf[outDf$incircle, ], aes(x, y, fill = amplitude)) +
-    geom_raster(interpolate = TRUE)+
-    stat_contour(aes(z = amplitude, linetype = ..level..<0),
-                 bins = 6,
-                 colour = "black",
-                 size = 1.2,
-                 show.legend = FALSE) +
+    geom_raster(interpolate = TRUE)
+
+  if (contour) {
+    topo <- topo + stat_contour(
+      aes(z = amplitude, linetype = ..level.. < 0),
+      bins = 6,
+      colour = "black",
+      size = 1.1,
+      show.legend = FALSE
+    )
+  }
+
+  topo <- topo +
     annotate("path",
              x = maskRing$x,
              y = maskRing$y,
@@ -189,13 +209,29 @@ topoplot <- function(df,
              x = nose$x,
              y = nose$y,
               size = 1.5) +
+    annotate("curve",
+             x = ears$x[[1]],
+             y = ears$y[[1]],
+             xend = ears$x[[2]],
+             yend = ears$y[[2]],
+             curvature = -.5,
+             angle = 60,
+             size = 1.5) +
+    annotate("curve",
+             x = ears$x[[3]],
+             y = ears$y[[3]],
+             xend = ears$x[[4]],
+             yend = ears$y[[4]],
+             curvature = .5,
+             angle = 120,
+             size = 1.5) +
     coord_equal() +
     theme_bw() +
     theme(rect = element_blank(),
       line = element_blank(),
       axis.text = element_blank(),
       axis.title = element_blank()) +
-    guides(fill = guide_colorbar(title = "Amplitude (microV)",
+    guides(fill = guide_colorbar(title = expression(paste("Amplitude (", mu,"V)")),
                                   title.position = "right",
                                   barwidth = 1,
                                   barheight = 6,
