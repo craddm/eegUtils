@@ -4,10 +4,16 @@
 \alias{erp_image}
 \title{Plot ERP images}
 \usage{
-erp_image(df, electrode = "Cz")
+erp_image(df, electrode = "Cz", smoothing = 10, clim = NULL)
 }
 \arguments{
-\item{df}{data frame to be plotted.}
+\item{df}{Data frame to be plotted. Requires an amplitude column.}
+
+\item{electrode}{electrode at which to generate an ERP image.}
+
+\item{smoothing}{Number of trials to smooth over when generating image}
+
+\item{clim}{Character vector of min and max values of plotting colour range. e.g. c(-5,5). Defaults to min and max.}
 }
 \description{
 Plot ERP images

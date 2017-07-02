@@ -6,7 +6,8 @@
 \usage{
 topoplot(df, timepoint = NULL, clim = NULL, chanLocs = NULL,
   method = "Biharmonic", r = NULL, gridRes = 67, colourmap = "RdBu",
-  chanNames = FALSE, skirt = TRUE, contours = TRUE)
+  interp_limit = "skirt", contours = TRUE, chan_marker = "point",
+  quantity = "amplitude")
 }
 \arguments{
 \item{df}{An EEG dataset. Must have columns x, y, and amplitude at present. x and y are (Cartesian) electrode co-ordinates), amplitude is amplitude.}
@@ -25,9 +26,11 @@ topoplot(df, timepoint = NULL, clim = NULL, chanLocs = NULL,
 
 \item{colourmap}{Defaults to RdBu if none supplied. Can be any from RColorBrewer. If an unsupported palette is specified, switches to Greens.}
 
-\item{chanNames}{Switch from points to electrode names if available.}
+\item{interp_limit}{"head" or "skirt". Defaults to "skirt". "skirt" interpolates just past the farthest electrode and does not respect the boundary of the headshape. "head" interpolates up to the radius of the plotted head.}
 
-\item{skirt}{Plot interpolation/extrapolation outside the scalp/convex hull of the electrode locations. Defaults to TRUE.}
+\item{chan_marker}{Set marker for electrode locations. "point" = point, "name" = electrode name, "none" = no marker. Defaults to "point".}
+
+\item{quantity}{Allows plotting of arbitrary quantitative column. Defaults to amplitude. Can be any column name. E.g. "p.value", "t-statistic".}
 }
 \description{
 Allows simple plotting of functional data. Output is a ggplot2 object.
