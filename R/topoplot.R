@@ -10,7 +10,7 @@
 #' @param r Radius of cartoon headshape; if not given, defaults to 1.1 * the maximum y electrode location.
 #' @param gridRes Resolution of the interpolated grid. Higher = smoother but slower.
 #' @param colourmap Defaults to RdBu if none supplied. Can be any from RColorBrewer. If an unsupported palette is specified, switches to Greens.
-#' @param skirt Plot interpolation/extrapolation outside the scalp/convex hull of the electrode locations. Defaults to TRUE.
+#' @param interp_limit "head" or "skirt". Defaults to "skirt". "skirt" interpolates just past the farthest electrode and does not respect the boundary of the headshape. "head" interpolates up to the radius of the plotted head.
 #' @param chan_marker Set marker for electrode locations. "point" = point, "name" = electrode name, "none" = no marker. Defaults to "point".
 #' @param quantity Allows plotting of arbitrary quantitative column. Defaults to amplitude. Can be any column name. E.g. "p.value", "t-statistic".
 #'
@@ -30,7 +30,7 @@ topoplot <- function(df,
                      r = NULL,
                      gridRes = 67,
                      colourmap = "RdBu",
-                     skirt = TRUE,
+                     interp_limit = "skirt",
                      contours = TRUE,
                      chan_marker = "point",
                      quantity = "amplitude") {
@@ -98,13 +98,13 @@ topoplot <- function(df,
     r <- max(scaled_y) * 1.1
   }
 
-  circ_rads <- seq(0, 2 * pi, length.out = 100)
+  circ_rads <- seq(0, 2 * pi, length.out = 101)
 
   headShape <- data.frame(x = r * cos(circ_rads),
                           y = r * sin(circ_rads))
 
   #define nose position relative to headShape
-  nose <- data.frame(x = c(headShape$x[[23]], 0, headShape$x[[29]]),
+  nose <- data.frame(x = c(headShape$x[[23]], headShape$x[[26]], headShape$x[[29]]),
                      y = c(headShape$y[[23]], headShape$y[[26]] *1.1 , headShape$y[[29]]))
 
   # Do the interpolation! ------------------------
@@ -113,7 +113,6 @@ topoplot <- function(df,
                   Biharmonic = {
                     xo <- matrix(rep(xo, gridRes), nrow = gridRes, ncol = gridRes)
                     yo <- t(matrix(rep(yo, gridRes), nrow = gridRes, ncol = gridRes))
-                    #xy <- df$x + df$y * sqrt(as.complex(-1))
                     xy <- scaled_x + scaled_y * sqrt(as.complex(-1))
                     d <- matrix(rep(xy, length(xy)), nrow = length(xy), ncol = length(xy))
                     d <- abs(d - t(d))
@@ -156,13 +155,13 @@ topoplot <- function(df,
          })
 
   # Check if should interp/extrap beyond headshape, and set up ring to mask edges for smoothness
-  if (skirt) {
+  if (interp_limit == "skirt") {
     outDf$incircle <- sqrt(outDf$x ^ 2 + outDf$y ^ 2) < 1.125
     maskRing <- data.frame(x = 1.125 * cos(circ_rads),
                            y = 1.125 * sin(circ_rads)
     )
   } else {
-    outDf$incircle <- sqrt(outDf$x ^ 2 + outDf$y ^ 2) < (r*1.05)
+    outDf$incircle <- sqrt(outDf$x ^ 2 + outDf$y ^ 2) < (r*1.03)
     maskRing <- data.frame(x = r * 1.05 * cos(circ_rads),
                            y = r * 1.05 * sin(circ_rads)
     )
@@ -181,7 +180,7 @@ topoplot <- function(df,
              x = maskRing$x,
              y = maskRing$y,
              colour = "white",
-             size = 6) +
+             size = 10) +
     annotate("path",
              x = headShape$x,
              y = headShape$y,
