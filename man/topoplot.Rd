@@ -6,7 +6,7 @@
 \usage{
 topoplot(df, timepoint = NULL, clim = NULL, chanLocs = NULL,
   method = "Biharmonic", r = NULL, gridRes = 67, colourmap = "RdBu",
-  interp_limit = "skirt", contours = TRUE, chan_marker = "point",
+  interp_limit = "skirt", contour = TRUE, chan_marker = "point",
   quantity = "amplitude")
 }
 \arguments{
