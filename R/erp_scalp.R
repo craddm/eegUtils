@@ -20,6 +20,7 @@
 #' @import dplyr
 #' @import ggplot2
 #' @import tidyr
+#' @import scales
 #' @export
 
 erp_scalp <- function(d,
@@ -81,24 +82,24 @@ erp_scalp <- function(d,
   guide <- ggplot(data, aes(x=time, y=amplitude)) +
     coord_cartesian(ylim = c(minAmp, maxAmp),
                     xlim = c(minTime, maxTime)) +
-    scale_x_continuous(breaks = scales::pretty_breaks(n = 5)) +
-    scale_y_continuous(breaks = scales::pretty_breaks(n = 4)) +
+    scale_x_continuous(breaks = scales::pretty_breaks(n = 3)) +
+    scale_y_continuous(breaks = scales::pretty_breaks(n = 3)) +
     geom_vline(xintercept = 0, size = .4) +
     geom_hline(yintercept = 0, size = .4) +
     labs(y = expression(paste("Amplitude (", mu,"V)")),
          x = "Time (ms)") +
     theme_minimal(base_size = 8) +
     theme(panel.grid = element_blank(),
-          axis.ticks = element_line(size=.5))
+          axis.ticks = element_line(size=.3))
   if (show_guide) {
     p <- p + annotation_custom(grob = ggplotGrob(guide),
-                               xmin = min(d$x)-.05, xmax = min(d$x)+.125,
-                               ymin = min(d$y)-.05, ymax = min(d$y)+.125)
+                               xmin = min(d$x)-.07, xmax = min(d$x)+.09,
+                               ymin = min(d$y)-.07, ymax = min(d$y)+.07)
   }
   for (i in 1:nrow(d)) {
     p <- p + annotation_custom(grob = ggplotGrob(d$plot[[i]]),
-                               xmin = d$x[i]-.05, xmax = d$x[i]+.05,
-                               ymin = d$y[i]-.05, ymax = d$y[i]+.05)
+                               xmin = d$x[i]-.055, xmax = d$x[i]+.055,
+                               ymin = d$y[i]-.055, ymax = d$y[i]+.055)
   }
 
   return(p)
