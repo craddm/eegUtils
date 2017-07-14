@@ -1,23 +1,38 @@
 #' Get standard electrode locations
 #'
-#' Joins standard electrode location information from eegUtils internal data.
+#' Joins standard electrode locations to EEG data from eegUtils internal data.
 #'
 #' @param data An EEG dataset.
 #' @param electrode The column name containing electrode names in data.
+#' (Defaults to "electrode").
+#' @param drop Should electrodes in \code{data} for which default locations
+#' are not available be dropped? (Defaults to FALSE).
+#' @param plot Plot obtained electrode locations.
 #'
 #' @import dplyr
+#' @return A tibble (or data.frame), or ggplot2 object if \code{plot = TRUE}.
 #' @export
 
-join_locs <- function(data, ele = "electrode", .drop = FALSE) {
-  data[, ele] <- toupper(unlist(data[, ele]))
-  electrodeLocs[, ele] <- toupper(unlist(electrodeLocs[, ele]))
+electrode_locations <- function(data,
+                                electrode = "electrode",
+                                drop = FALSE,
+                                plot = FALSE) {
+  data[, electrode] <- toupper(data[[electrode]])
+  electrodeLocs[, electrode] <- toupper(electrodeLocs[[electrode]])
 
-  if (.drop) {
-    data <- dplyr::left_join(data, electrodeLocs, by = ele)
-    data <- filter(data, !(electrode %in% c("NAZ", "LM", "RM", "VEOG", "HEOG")))
+  if (drop) {
+    data <- inner_join(data, electrodeLocs, by = electrode)
   } else {
-    data <- dplyr::right_join(data, electrodeLocs, by = ele)
+    data <- left_join(data, electrodeLocs, by = electrode)
   }
 
-  return(data)
+  if (plot) {
+    plotdata <- distinct(data, x, y, electrode)
+    p <- ggplot(plotdata, aes(x, y)) +
+      geom_label(aes(label = electrode))
+    return(p)
+  } else {
+    return(data)
+  }
+
 }

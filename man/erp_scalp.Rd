@@ -4,11 +4,11 @@
 \alias{erp_scalp}
 \title{Plot ERPs on the scalp}
 \usage{
-erp_scalp(d, electrode = "electrode", amplitude = "amplitude",
+erp_scalp(data, electrode = "electrode", amplitude = "amplitude",
   time = "time", color = NA, size = 0.65, show_guide = TRUE)
 }
 \arguments{
-\item{d}{An EEG dataset.}
+\item{data}{An EEG dataset.}
 
 \item{electrode}{Column name containing electrode names in data.
 Defaults to "electrode".}

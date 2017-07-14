@@ -2,7 +2,7 @@
 #'
 #' Creates an ERP figure for each electrode and layouts them on the scalp.
 #'
-#' @param d An EEG dataset.
+#' @param data An EEG dataset.
 #' @param electrode Column name containing electrode names in data.
 #' Defaults to "electrode".
 #' @param amplitude Column name containing amplitudes in data.
@@ -24,7 +24,7 @@
 #' @return Returns a ggplot2 plot object.
 #' @export
 
-erp_scalp <- function(d,
+erp_scalp <- function(data,
                       electrode = "electrode",
                       amplitude = "amplitude",
                       time = "time",
@@ -32,13 +32,13 @@ erp_scalp <- function(d,
                       size = .65,
                       show_guide = TRUE) {
 
-  d <- as.data.frame(d)
+  data <- as.data.frame(data)
 
   # Data maxima for plot limits
-  maxAmp <- max(d[, amplitude])
-  minAmp <- min(d[, amplitude])
-  maxTime <- max(d[, time])
-  minTime <- min(d[, time])
+  maxAmp <- max(data[, amplitude])
+  minAmp <- min(data[, amplitude])
+  maxTime <- max(data[, time])
+  minTime <- min(data[, time])
 
   plotfun <- function(x) {
     plot <- ggplot(data = x, aes_(as.name(time), as.name(amplitude)))
@@ -59,23 +59,23 @@ erp_scalp <- function(d,
     return(plot)
   }
 
-  d$electrodefacet <- d[, electrode]
-  d <- nest(d, -electrode)
-  d <- mutate(d, plot = map(data, plotfun))
-  d <- select(d, -data)
+  data$electrodefacet <- data[, electrode]
+  data <- nest(data, -electrode)
+  data <- mutate(data, plot = map(data, plotfun))
+  data <- select(data, -data)
 
   # Get default electrode locations from pkg internal data
-  d <- join_locs(d, .drop = T)
+  data <- electrode_locations(data, drop = T)
 
-  minx <- min(d$x)
-  maxx <- max(d$x)
-  miny <- min(d$y)
-  maxy <- max(d$y)
+  minx <- min(data$x)
+  maxx <- max(data$x)
+  miny <- min(data$y)
+  maxy <- max(data$y)
 
-  d$x <- d$x + abs(minx)
-  d$y <- d$y + abs(miny)
+  data$x <- data$x + abs(minx)
+  data$y <- data$y + abs(miny)
 
-  p <- ggplot(d, aes(x, y)) +
+  p <- ggplot(data, aes(x, y)) +
     geom_blank() +
     theme_void() +
     theme(plot.margin = unit(c(8,8,8,8), "pt"))
@@ -94,13 +94,13 @@ erp_scalp <- function(d,
           axis.ticks = element_line(size=.3))
   if (show_guide) {
     p <- p + annotation_custom(grob = ggplotGrob(guide),
-                               xmin = min(d$x)-.07, xmax = min(d$x)+.09,
-                               ymin = min(d$y)-.07, ymax = min(d$y)+.07)
+                               xmin = min(data$x)-.07, xmax = min(data$x)+.09,
+                               ymin = min(data$y)-.07, ymax = min(data$y)+.07)
   }
-  for (i in 1:nrow(d)) {
-    p <- p + annotation_custom(grob = ggplotGrob(d$plot[[i]]),
-                               xmin = d$x[i]-.055, xmax = d$x[i]+.055,
-                               ymin = d$y[i]-.055, ymax = d$y[i]+.055)
+  for (i in 1:nrow(data)) {
+    p <- p + annotation_custom(grob = ggplotGrob(data$plot[[i]]),
+                               xmin = data$x[i]-.055, xmax = data$x[i]+.055,
+                               ymin = data$y[i]-.055, ymax = data$y[i]+.055)
   }
 
   return(p)
