@@ -25,6 +25,9 @@ one line is drawn for each electrode.}
 
 \item{show_guide}{Should a guide be shown.}
 }
+\value{
+Returns a ggplot2 plot object.
+}
 \description{
 Creates an ERP figure for each electrode and layouts them on the scalp.
 }

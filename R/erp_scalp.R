@@ -21,6 +21,7 @@
 #' @import ggplot2
 #' @import tidyr
 #' @import scales
+#' @return Returns a ggplot2 plot object.
 #' @export
 
 erp_scalp <- function(d,
