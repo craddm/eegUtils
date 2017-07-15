@@ -2,13 +2,16 @@
 % Please edit documentation in R/glm_fitting.R
 \name{fit_glm_indiv}
 \alias{fit_glm_indiv}
-\title{Fit a glm model to each timepoint for an individual subject}
+\title{Fit a glm model to each timepoint for an individual subject.}
 \usage{
-fit_glm_indiv(df, dv, iv_1)
+fit_glm_indiv(data, dv, iv_1)
 }
 \arguments{
-\item{df}{}
+\item{data}{An EEG dataset.}
 }
 \description{
-Fit a glm model to each timepoint for an individual subject
+Fit a glm model to each timepoint for an individual subject.
+}
+\author{
+Matt Craddock, \email{m.p.craddock@leeds.ac.uk}
 }

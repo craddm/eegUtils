@@ -17,7 +17,7 @@ interactive_scalp <- function(data, colour = NULL) {
   ui <- miniPage(
     gadgetTitleBar("Scalp ERPs"),
     miniTabstripPanel(
-      miniTabPanel("Whole scalp", icon = icon("sliders"),
+      miniTabPanel("Whole scalp", icon = icon("circle"),
         miniContentPanel(
           fillCol(
             flex = c(5,1),

@@ -5,6 +5,7 @@
 #' @param smoothing Number of trials to smooth over when generating image
 #' @param clim Character vector of min and max values of plotting colour range. e.g. c(-5,5). Defaults to min and max.
 #'
+#' @author Matt Craddock, \email{m.p.craddock@leeds.ac.uk}
 #' @import ggplot2
 #' @import dplyr
 #' @import viridis
@@ -16,11 +17,11 @@ erp_image <- function(data, electrode = "Cz", smoothing = 10, clim = NULL) {
 
   n_times <- length(unique(data$time))
 
-  data <- data %>%
-    filter(electrode == get("electrode")) %>%
-    mutate(smooth_time = rep((seq(time[1], time[n_times], length.out = n_times)), times = length(unique(epoch))),
-           smooth_amp = as.numeric(stats::filter(amplitude, rep(1/smoothing,smoothing),sides = 2)),
-           epoch = as.numeric(factor(epoch)))
+  data <- filter(data, electrode == get("electrode"))
+  data <- mutate(data,
+                 smooth_time = rep((seq(time[1], time[n_times], length.out = n_times)), times = length(unique(epoch))),
+                 smooth_amp = as.numeric(stats::filter(amplitude, rep(1/smoothing,smoothing), sides = 2)),
+                 epoch = as.numeric(factor(epoch)))
 
   if (is.null(clim)) {
     clim <- max(abs(max(data$smooth_amp, na.rm = T)), abs(min(data$smooth_amp, na.rm = T))) %>% c(-., .)
