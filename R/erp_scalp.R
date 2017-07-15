@@ -29,7 +29,7 @@ erp_scalp <- function(data,
                       electrode = "electrode",
                       amplitude = "amplitude",
                       time = "time",
-                      color = NA,
+                      color = NULL,
                       size = .65,
                       show_guide = TRUE) {
 
@@ -50,7 +50,7 @@ erp_scalp <- function(data,
     plot <- plot + geom_hline(yintercept = 0, size=.3)
     plot <- plot + theme_void()
     plot <- plot + theme(strip.text = element_text(size=8))
-    if (!is.na(color)) {
+    if (!is.null(color)) {
       plot <- plot + scale_color_brewer(palette = "Set1")
       plot <- plot + geom_line(aes_(color = as.name(color)),
                                show.legend = FALSE, size = size)
