@@ -17,6 +17,7 @@
 #' in the package.
 #'
 #' @author Matti Vuorre, \email{mv2521@columbia.edu}
+#' @importFrom purrr map
 #' @import dplyr
 #' @import ggplot2
 #' @import tidyr
@@ -72,8 +73,13 @@ erp_scalp <- function(data,
   miny <- min(data$y)
   maxy <- max(data$y)
 
-  data$x <- data$x + abs(minx)
-  data$y <- data$y + abs(miny)
+
+  # Are these lines necessary? Commented out to help with interactive plotting -
+  # clicks in Shiny will use native co-ordinate space, easier to then match with electrode names
+  #----
+
+  #data$x <- data$x + abs(minx)
+  #data$y <- data$y + abs(miny)
 
   p <- ggplot(data, aes(x, y)) +
     geom_blank() +
