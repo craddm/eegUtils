@@ -2,10 +2,13 @@
 #'
 #' Typically event-related potentials/fields, but could also be timecourses from frequency analyses for single frequencies. Averages over all submitted electrodes. Output is a ggplot2 object.
 #'
-#'@param df EEG dataset. Should have multiple timepoints.
+#'@author Matt Craddock, \email{m.p.craddock@leeds.ac.uk}
+#'
+#'@param data EEG dataset. Should have multiple timepoints.
 #'@param add_CI Add confidence intervals to the graph. Defaults to 95 percent between-subject CIs.
 #'@param time_lim Character vector. Numbers in whatever time unit is used specifying beginning and end of time-range to plot. e.g. c(-100,300)
-#'@param baseline  Character vector. Times to use as a baseline. Takes the mean over the specified period and subtracts. e.g. c(-100,0)
+#'@param baseline Character vector. Times to use as a baseline. Takes the mean over the specified period and subtracts. e.g. c(-100,0)
+#'@param colour
 #'@param facet Create multiple plots for a specified grouping variable.
 #'
 #'@import dplyr
@@ -13,52 +16,50 @@
 #'@return Returns a ggplot2 plot object
 #'@export
 
-plot_timecourse <- function(df, time_lim = NULL, group = NULL, facet = NULL, add_CI = FALSE, baseline = NULL) {
+plot_timecourse <- function(data, time_lim = NULL, group = NULL, facet = NULL, add_CI = FALSE, baseline = NULL, colour = NULL, color = NULL) {
 
   # Filter out unwanted timepoints, and find nearest time values in the data --------------
 
-  if ("time" %in% colnames(df)) {
+  if ("time" %in% colnames(data)) {
     if (length(time_lim) == 1) {
       warning("Must enter two timepoints when specifying a time range to plot; plotting whole range.")
     } else if (length(time_lim) == 2) {
-      time_lim[1] <- df$time[which.min(abs(df$time - time_lim[1]))]
-      time_lim[2] <- df$time[which.min(abs(df$time - time_lim[2]))]
-      df <- filter(df, time >= time_lim[1] & time <= time_lim[2])
+      time_lim[1] <- data$time[which.min(abs(data$time - time_lim[1]))]
+      time_lim[2] <- data$time[which.min(abs(data$time - time_lim[2]))]
+      data <- filter(data, time >= time_lim[1] & time <= time_lim[2])
     } else {
     }
   }
 
-  if ("epoch" %in% colnames(df)){
-    df <- summarise(group_by(df, time, electrode, condition), amplitude = mean(amplitude))
+  if ("epoch" %in% colnames(data)){
+    data <- summarise(group_by(data, time, electrode, condition), amplitude = mean(amplitude))
   }
 
   if (!is.null(group)) {
-    if (group %in% colnames(df)){
+    if (group %in% colnames(data)){
 
     }
   }
 
-
-  #Set up basic plot -----------
-  tc_plot <- ggplot(df, aes(x = time, y = amplitude))+
+  ## Set up basic plot -----------
+  tc_plot <- ggplot(data, aes(x = time, y = amplitude))+
     scale_color_brewer(palette = "Set1")
-
-  ## Draw confidence intervals on plot.
-
 
 
   tc_plot <- tc_plot +
     stat_summary(fun.y = mean, geom = "line", size = 1)
 
   if (!is.null(facet)) {
-    if (facet %in% colnames(df)){
-      df <- df %>%
+    if (facet %in% colnames(data)){
+      data <- data %>%
         mutate_(f1 = facet)
-      tc_plot <- tc_plot %+% df + facet_wrap(~f1)
+      tc_plot <- tc_plot %+% data + facet_wrap(~f1)
     } else {
       warning("Unrecognised column name.")
     }
   }
+
+  ## Draw confidence intervals on plot.
 
   if (add_CI) {
     tc_plot <- tc_plot +
@@ -70,8 +71,8 @@ plot_timecourse <- function(df, time_lim = NULL, group = NULL, facet = NULL, add
     geom_vline(xintercept = 0, linetype = "dashed", size = 1) +
     geom_hline(yintercept = 0, linetype = "dashed", size = 1) +
     scale_x_continuous(expand = c(0, 0)) +
-    theme_classic()
-
+    theme_void() +
+    theme(strip.text = element_text(size=8))
 
 }
 
@@ -79,30 +80,30 @@ plot_timecourse <- function(df, time_lim = NULL, group = NULL, facet = NULL, add
 #'
 #' Typically event-related potentials/fields, but could also be timecourses from frequency analyses for single frequencies. Output is a ggplot2 object. CIs not possible.
 #'
-#' @param df EEG dataset. Should have multiple timepoints
+#' @param data EEG dataset. Should have multiple timepoints
 #' @param time_lim Character vector. Numbers in whatever time unit is used specifying beginning and end of time-range to plot. e.g. c(-100,300)
 #'@param baseline  Character vector. Times to use as a baseline. Takes the mean over the specified period and subtracts. e.g. c(-100,0)
 #'@param facet Create multiple plots for a specified grouping variable.
 #'
 #' @export
 
-plot_butterfly <- function(df, time_lim = NULL, group = NULL, facet = NULL, baseline = NULL, colourmap = NULL) {
+plot_butterfly <- function(data, time_lim = NULL, group = NULL, facet = NULL, baseline = NULL, colourmap = NULL) {
 
   ## select time-range of interest -------------
 
-  if ("time" %in% colnames(df)) {
+  if ("time" %in% colnames(data)) {
     if (length(time_lim) == 1) {
       warning("Must enter two timepoints when specifying a time range to plot; plotting whole range.")
     } else if (length(time_lim) == 2) {
-      time_lim[1] <- df$time[which.min(abs(df$time - time_lim[1]))]
-      time_lim[2] <- df$time[which.min(abs(df$time - time_lim[2]))]
-      df <- filter(df, time >= time_lim[1] & time <= time_lim[2])
+      time_lim[1] <- data$time[which.min(abs(data$time - time_lim[1]))]
+      time_lim[2] <- data$time[which.min(abs(data$time - time_lim[2]))]
+      data <- filter(data, time >= time_lim[1] & time <= time_lim[2])
     } else {
     }
   }
 
   #Set up basic plot -----------
-  butterfly_plot <- ggplot(df, aes(x = time, y = amplitude))+
+  butterfly_plot <- ggplot(data, aes(x = time, y = amplitude))+
     geom_line(aes(group = electrode, colour = electrode))
 
   butterfly_plot +

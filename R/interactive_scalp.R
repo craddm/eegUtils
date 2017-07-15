@@ -1,6 +1,11 @@
 #' Interactive scalp maps
 #'
+#' Launchs a Shiny Gadget for an interactive version of erp_scalp, allowing clicking of individual electrodes to plot them separately.
+#'
+#' @param data An EEG dataset.
+#'
 #' @author Matt Craddock, \email{m.p.craddock@leeds.ac.uk}
+#'
 #' @import shiny
 #' @import miniUI
 #' @export
@@ -13,7 +18,7 @@ interactive_scalp <- function(data) {
       miniTabPanel("Whole scalp", icon = icon("sliders"),
         miniContentPanel(
           fillCol(
-            flex = c(3,1),
+            flex = c(4,1),
             plotOutput("Scalp", height = "100%",
                        click = "click_plot"),
             verbatimTextOutput("click_info")
