@@ -4,7 +4,7 @@
 #'
 #' @author Matt Craddock, \email{m.p.craddock@leeds.ac.uk}
 #' @param data An EEG dataset. Must have columns x, y, and amplitude at present. x and y are (Cartesian) electrode co-ordinates), amplitude is amplitude.
-#' @param timepoint Timepoint(s) to plot. Can be one timepoint or a range to average over. If none is supplied, the function will average across all timepoints in the supplied data.
+#' @param time_lim Timepoint(s) to plot. Can be one time or a range to average over. If none is supplied, the function will average across all timepoints in the supplied data.
 #' @param clim Limits of the fill scale - should be given as a character vector with two values specifying the start and endpoints e.g. clim = c(-2,-2). Will ignore anything else. Defaults to the range of the data.
 #' @param chanLocs Not yet implemented.
 #' @param method Interpolation method. "Biharmonic" or "gam". "Biharmonic" implements the same method used in Matlab's EEGLAB. "gam" fits a Generalized Additive Model with k = 40 knots. Defaults to biharmonic spline interpolation.
@@ -24,7 +24,7 @@
 #' The function fits a GAM using the gam function from mgcv. Specifically, it fits a spline using the model function gam(z ~ s(x, y, bs = "ts", k = 40). Using GAMs for smooths is very much experimental. The surface is produced from the predictions of the GAM model fitted to the supplied data. Values at each electrode do not necessarily match actual values in the data: high-frequency variation will tend to be smoothed out. Thus, the method should be used with caution.
 
 topoplot <- function(data,
-                     timepoint = NULL,
+                     time_lim = NULL,
                      clim = NULL,
                      chanLocs = NULL,
                      method = "Biharmonic",
@@ -39,13 +39,15 @@ topoplot <- function(data,
   # Filter out unwanted timepoints, and find nearest time values in the data --------------
 
   if ("time" %in% colnames(data)) {
-    if (length(timepoint) == 1) {
-      timepoint <- data$time[which.min(abs(data$time - timepoint))]
-      data <- filter(data, time == timepoint)
-      } else if (length(timepoint) == 2) {
-        timepoint[1] <- data$time[which.min(abs(data$time - timepoint[1]))]
-        timepoint[2] <- data$time[which.min(abs(data$time - timepoint[2]))]
-        data <- filter(data, time >= timepoint[1] & time <= timepoint[2])
+    if (length(time_lim) == 1) {
+      time_lim <- data$time[which.min(abs(data$time - time_lim))]
+      data <- filter(data, time == time_lim)
+      } else if (length(time_lim) == 2) {
+        data <- select_times(data, time_lim)
+
+        #time_lim[1] <- data$time[which.min(abs(data$time - time_lim[1]))]
+        #time_lim[2] <- data$time[which.min(abs(data$time - time_lim[2]))]
+        #data <- filter(data, time >= time_lim[1] & time <= time_lim[2])
       }
     }
 

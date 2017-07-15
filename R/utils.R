@@ -43,6 +43,7 @@ electrode_locations <- function(data,
 #'
 #' @param data An EEG dataset.
 #' @param time_lim A character vector of two numbers indicating the time range to be selected e.g. c(min, max)
+#' @import dplyr
 #' @return Data frame with only data from within the specified range.
 #'
 #' @export
