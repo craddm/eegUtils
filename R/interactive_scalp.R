@@ -3,6 +3,8 @@
 #' Launchs a Shiny Gadget for an interactive version of erp_scalp, allowing clicking of individual electrodes to plot them separately.
 #'
 #' @param data An EEG dataset.
+#' @param colour Variable to color lines by. If no variable is passed, only
+#' one line is drawn for each electrode.
 #'
 #' @author Matt Craddock, \email{m.p.craddock@leeds.ac.uk}
 #'

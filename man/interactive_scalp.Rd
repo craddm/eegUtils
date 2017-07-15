@@ -8,6 +8,9 @@ interactive_scalp(data, colour = NULL)
 }
 \arguments{
 \item{data}{An EEG dataset.}
+
+\item{colour}{Variable to color lines by. If no variable is passed, only
+one line is drawn for each electrode.}
 }
 \description{
 Launchs a Shiny Gadget for an interactive version of erp_scalp, allowing clicking of individual electrodes to plot them separately.
