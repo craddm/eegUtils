@@ -5,7 +5,7 @@
 \title{Plot ERPs on the scalp}
 \usage{
 erp_scalp(data, electrode = "electrode", amplitude = "amplitude",
-  time = "time", color = NA, size = 0.65, show_guide = TRUE)
+  time = "time", color = NULL, size = 0.65, show_guide = TRUE)
 }
 \arguments{
 \item{data}{An EEG dataset.}
