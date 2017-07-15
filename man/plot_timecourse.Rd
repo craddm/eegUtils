@@ -4,11 +4,12 @@
 \alias{plot_timecourse}
 \title{Plot 1d timecourse data.}
 \usage{
-plot_timecourse(df, time_lim = NULL, group = NULL, facet = NULL,
-  add_CI = FALSE, baseline = NULL)
+plot_timecourse(data, time_lim = NULL, group = NULL, facet = NULL,
+  add_CI = FALSE, baseline = NULL, colour = NULL, color = NULL,
+  electrode = NULL)
 }
 \arguments{
-\item{df}{EEG dataset. Should have multiple timepoints.}
+\item{data}{EEG dataset. Should have multiple timepoints.}
 
 \item{time_lim}{Character vector. Numbers in whatever time unit is used specifying beginning and end of time-range to plot. e.g. c(-100,300)}
 
@@ -17,10 +18,18 @@ plot_timecourse(df, time_lim = NULL, group = NULL, facet = NULL,
 \item{add_CI}{Add confidence intervals to the graph. Defaults to 95 percent between-subject CIs.}
 
 \item{baseline}{Character vector. Times to use as a baseline. Takes the mean over the specified period and subtracts. e.g. c(-100,0)}
+
+\item{colour}{Variable to colour lines by. If no variable is passed, only
+one line is drawn for each electrode.}
+
+\item{electrode}{Electrode(s) to plot.}
 }
 \value{
 Returns a ggplot2 plot object
 }
 \description{
 Typically event-related potentials/fields, but could also be timecourses from frequency analyses for single frequencies. Averages over all submitted electrodes. Output is a ggplot2 object.
+}
+\author{
+Matt Craddock, \email{m.p.craddock@leeds.ac.uk}
 }

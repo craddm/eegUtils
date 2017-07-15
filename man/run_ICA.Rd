@@ -4,10 +4,10 @@
 \alias{run_ICA}
 \title{ICA for EEG data}
 \usage{
-run_ICA(df, method = "sobi")
+run_ICA(data, method = "sobi")
 }
 \arguments{
-\item{df}{Data frame to be ICAed.}
+\item{data}{Data frame to be ICAed.}
 
 \item{method}{Only SOBI is currently implemented, so this is ignored.}
 }

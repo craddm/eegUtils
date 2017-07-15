@@ -4,11 +4,11 @@
 \alias{plot_butterfly}
 \title{Create a butterfly plot from timecourse data}
 \usage{
-plot_butterfly(df, time_lim = NULL, group = NULL, facet = NULL,
+plot_butterfly(data, time_lim = NULL, group = NULL, facet = NULL,
   baseline = NULL, colourmap = NULL)
 }
 \arguments{
-\item{df}{EEG dataset. Should have multiple timepoints}
+\item{data}{EEG dataset. Should have multiple timepoints}
 
 \item{time_lim}{Character vector. Numbers in whatever time unit is used specifying beginning and end of time-range to plot. e.g. c(-100,300)}
 
@@ -18,4 +18,7 @@ plot_butterfly(df, time_lim = NULL, group = NULL, facet = NULL,
 }
 \description{
 Typically event-related potentials/fields, but could also be timecourses from frequency analyses for single frequencies. Output is a ggplot2 object. CIs not possible.
+}
+\author{
+Matt Craddock, \email{m.p.craddock@leeds.ac.uk}
 }

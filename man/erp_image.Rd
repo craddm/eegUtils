@@ -4,10 +4,10 @@
 \alias{erp_image}
 \title{Plot ERP images}
 \usage{
-erp_image(df, electrode = "Cz", smoothing = 10, clim = NULL)
+erp_image(data, electrode = "Cz", smoothing = 10, clim = NULL)
 }
 \arguments{
-\item{df}{Data frame to be plotted. Requires an amplitude column.}
+\item{data}{Data frame to be plotted. Requires an amplitude column.}
 
 \item{electrode}{electrode at which to generate an ERP image.}
 
