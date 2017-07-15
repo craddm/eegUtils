@@ -10,7 +10,7 @@
 #' @import miniUI
 #' @export
 
-interactive_scalp <- function(data) {
+interactive_scalp <- function(data, colour = NULL) {
 
   ui <- miniPage(
     gadgetTitleBar("Scalp ERPs"),
@@ -18,11 +18,14 @@ interactive_scalp <- function(data) {
       miniTabPanel("Whole scalp", icon = icon("sliders"),
         miniContentPanel(
           fillCol(
-            flex = c(4,1),
+            flex = c(5,1),
             plotOutput("Scalp", height = "100%",
                        click = "click_plot"),
             verbatimTextOutput("click_info")
           )
+        ),
+        miniButtonBlock(
+          actionButton("reset", "Reset selection")
         )
       ),
       miniTabPanel("Selected electrodes", icon = icon("line-chart"),
@@ -36,32 +39,52 @@ interactive_scalp <- function(data) {
   server <- function(input, output, session) {
 
     data <- electrode_locations(data)
-    elec_list <- reactiveValues(sel_elecs = NULL)
+
+    elec_list <- reactiveValues(sel_elecs = list())
 
     output$Scalp <- renderPlot({
-      erp_scalp(data)
+      if (is.null(colour)) {
+        erp_scalp(data)
+      } else {
+        erp_scalp(data, color = as.name(colour))
+        }
       })
 
     observeEvent(input$click_plot, {
+
       tmp <- nearPoints(data, input$click_plot, "x", "y", threshold = 45, maxpoints = 1)
 
-      if (tmp$electrode %in% elec_list) {
-        elec_list <- elec_list[-which(elec_list == tmp$electrode)]
-      } else{
-        elec_list <- c(elec_list,tmp$electrode)
+      if (nrow(tmp) > 0) {
+        if (tmp$electrode %in% elec_list$sel_elecs) {
+         elec_list$sel_elecs <- elec_list$sel_elecs[-which(elec_list$sel_elecs == tmp$electrode)]
+       } else {
+         elec_list$sel_elecs <- c(elec_list$sel_elecs, tmp$electrode)
+       }
       }
 
       output$click_info <- renderPrint({
-        paste("Selected:", elec_list)
+         cat("Selected:", unlist(elec_list$sel_elecs))
         })
 
+      # plot selected electrodes when on appropriate tab
       output$Selected <- renderPlot({
-        plot_timecourse(data[data$electrode == tmp$electrode, ])
+        if (is.null(colour)) {
+          plot_timecourse(data[data$electrode %in% elec_list$sel_elecs, ])
+        } else{
+          plot_timecourse(data[data$electrode %in% elec_list$sel_elecs, ], colour = as.name(colour))
+          }
       })
     })
 
+    #Close app gracefully if done button clicked
+
     observeEvent(input$done, {
       stopApp()
+    })
+
+    # Check if reset button clicked on Whole scalp page
+    observeEvent(input$reset,{
+      elec_list$sel_elecs <- NULL
     })
 
   }

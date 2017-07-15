@@ -4,10 +4,13 @@
 \alias{interactive_scalp}
 \title{Interactive scalp maps}
 \usage{
-interactive_scalp(data)
+interactive_scalp(data, colour = NULL)
+}
+\arguments{
+\item{data}{An EEG dataset.}
 }
 \description{
-Interactive scalp maps
+Launchs a Shiny Gadget for an interactive version of erp_scalp, allowing clicking of individual electrodes to plot them separately.
 }
 \author{
 Matt Craddock, \email{m.p.craddock@leeds.ac.uk}
