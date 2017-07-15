@@ -2,7 +2,8 @@
 #'
 #' Allows simple plotting of functional data. Output is a ggplot2 object.
 #'
-#' @param df An EEG dataset. Must have columns x, y, and amplitude at present. x and y are (Cartesian) electrode co-ordinates), amplitude is amplitude.
+#' @author Matt Craddock, \email{m.p.craddock@leeds.ac.uk}
+#' @param data An EEG dataset. Must have columns x, y, and amplitude at present. x and y are (Cartesian) electrode co-ordinates), amplitude is amplitude.
 #' @param timepoint Timepoint(s) to plot. Can be one timepoint or a range to average over. If none is supplied, the function will average across all timepoints in the supplied data.
 #' @param clim Limits of the fill scale - should be given as a character vector with two values specifying the start and endpoints e.g. clim = c(-2,-2). Will ignore anything else. Defaults to the range of the data.
 #' @param chanLocs Not yet implemented.
@@ -10,7 +11,7 @@
 #' @param r Radius of cartoon headshape; if not given, defaults to 1.1 * the maximum y electrode location.
 #' @param gridRes Resolution of the interpolated grid. Higher = smoother but slower.
 #' @param colourmap Defaults to RdBu if none supplied. Can be any from RColorBrewer. If an unsupported palette is specified, switches to Greens.
-#' @param interp_limit "head" or "skirt". Defaults to "skirt". "skirt" interpolates just past the farthest electrode and does not respect the boundary of the headshape. "head" interpolates up to the radius of the plotted head.
+#' @param interp_limit "skirt" or "head". Defaults to "skirt". "skirt" interpolates just past the farthest electrode and does not respect the boundary of the headshape. "head" interpolates up to the radius of the plotted head.
 #' @param chan_marker Set marker for electrode locations. "point" = point, "name" = electrode name, "none" = no marker. Defaults to "point".
 #' @param quantity Allows plotting of arbitrary quantitative column. Defaults to amplitude. Can be any column name. E.g. "p.value", "t-statistic".
 #'
@@ -22,7 +23,7 @@
 #' @section Notes on usage of Generalized Additive Models for interpolation:
 #' The function fits a GAM using the gam function from mgcv. Specifically, it fits a spline using the model function gam(z ~ s(x, y, bs = "ts", k = 40). Using GAMs for smooths is very much experimental. The surface is produced from the predictions of the GAM model fitted to the supplied data. Values at each electrode do not necessarily match actual values in the data: high-frequency variation will tend to be smoothed out. Thus, the method should be used with caution.
 
-topoplot <- function(df,
+topoplot <- function(data,
                      timepoint = NULL,
                      clim = NULL,
                      chanLocs = NULL,
@@ -37,31 +38,29 @@ topoplot <- function(df,
 
   # Filter out unwanted timepoints, and find nearest time values in the data --------------
 
-  if ("time" %in% colnames(df)) {
+  if ("time" %in% colnames(data)) {
     if (length(timepoint) == 1) {
-      timepoint <- df$time[which.min(abs(df$time - timepoint))]
-      df <- filter(df, time == timepoint)
+      timepoint <- data$time[which.min(abs(data$time - timepoint))]
+      data <- filter(data, time == timepoint)
       } else if (length(timepoint) == 2) {
-        timepoint[1] <- df$time[which.min(abs(df$time - timepoint[1]))]
-        timepoint[2] <- df$time[which.min(abs(df$time - timepoint[2]))]
-        df <- filter(df, time >= timepoint[1] & time <= timepoint[2])
+        timepoint[1] <- data$time[which.min(abs(data$time - timepoint[1]))]
+        timepoint[2] <- data$time[which.min(abs(data$time - timepoint[2]))]
+        data <- filter(data, time >= timepoint[1] & time <= timepoint[2])
       }
     }
 
   # Check for x and y co-ordinates, try to add if not found --------------
 
-  if (length(grep("^x$|^y$", colnames(df))) > 1) {
+  if (length(grep("^x$|^y$", colnames(data))) > 1) {
     message("Electrode locations found.")
   } else if (!is.null(chanLocs)) {
     if (length(grep("^x$|^y$", colnames(chanLocs))) > 1) {
-      df <- left_join(df, chanLocs, by = "electrode")
+      data <- left_join(data, chanLocs, by = "electrode")
       } else {
         warnings("No channel locations found in chanLocs.")
       }
-    } else if ("electrode" %in% colnames(df)) {
-      df$electrode <- toupper(df$electrode)
-      electrodeLocs$electrode <- toupper(electrodeLocs$electrode)
-      df <- left_join(df, electrodeLocs, by = "electrode")
+    } else if ("electrode" %in% colnames(data)) {
+      data <- electrode_locations(data)
       message("Adding standard electrode locations...")
     } else {
     warning("Neither electrode locations nor labels found.")
@@ -70,22 +69,21 @@ topoplot <- function(df,
 
   # Average over all timepoints ----------------------------
 
-  df <- summarise_(group_by(df, x, y, electrode),
-                   amplitude = lazyeval::interp(~mean(q), q = as.name(quantity)))
-
+  data <- summarise_(group_by(data, x, y, electrode),
+                   z = lazyeval::interp(~mean(q), q = as.name(quantity)))
 
   # Cut the data frame down to only the necessary columns, and make sure it has the right names --------
   # Will be able to work with different parameters (e.g. power) eventually, so this will be necessary
-  df <- data.frame(x = df$x,
-                   y = df$y,
-                   z = df$amplitude,
-                   electrode = df$electrode)
+  data <- data.frame(x = data$x,
+                   y = data$y,
+                   z = data$z,
+                   electrode = data$electrode)
 
   # Rescale electrode co-ordinates to be from -1 to 1 for plotting
   # Selects largest absolute value from x or y
-  max_dim <- max(abs(df$x), abs(df$y))
-  scaled_x <- df$x/max_dim
-  scaled_y <- df$y/max_dim
+  max_dim <- max(abs(data$x), abs(data$y))
+  scaled_x <- data$x/max_dim
+  scaled_y <- data$y/max_dim
 
   # Create the interpolation grid --------------------------
 
@@ -134,7 +132,7 @@ topoplot <- function(df,
                     diag(d) <- 1
                     g <- (d ^ 2) * (log(d) - 1) #Green's function
                     diag(g) <- 0
-                    weights <- qr.solve(g, df$z)
+                    weights <- qr.solve(g, data$z)
                     xy <- t(xy)
 
                     outmat <- purrr::map(xo + sqrt(as.complex(-1)) * yo,
@@ -153,7 +151,7 @@ topoplot <- function(df,
                                     convert = TRUE)
                   },
          gam = {
-           tmp_df <- df
+           tmp_df <- data
            tmp_df$x <- scaled_x
            tmp_df$y <- scaled_y
            splineSmooth <- mgcv::gam(z ~ s(x, y, bs = 'ts', k = 40), data = tmp_df)
@@ -250,7 +248,7 @@ topoplot <- function(df,
     else if (chan_marker == "name") {
       topo <- topo + annotate("text",
                               x = scaled_x, y = scaled_y,
-                              label = c(levels(df$electrode)[c(df$electrode)]),
+                              label = c(levels(data$electrode)[c(data$electrode)]),
                               colour = "black",
                               size = 4)
       } else {
