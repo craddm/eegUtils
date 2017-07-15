@@ -2,7 +2,7 @@
 #'
 #' Implements SOBI ICA. Although SOBI exists in R already, thanks to the JADE package, it doesn't respect epoch boundaries when computing correlations across different time lags. This is a port of SOBI from EEGLAB. Currently only works on epoched data.
 #'
-#' @param df Data frame to be ICAed.
+#' @param data Data frame to be ICAed.
 #' @param method Only SOBI is currently implemented, so this is ignored.
 #'
 #' @import dplyr
@@ -10,21 +10,21 @@
 #' @import JADE
 #' @export
 
-run_ICA <- function (df, method = "sobi") {
+run_ICA <- function (data, method = "sobi") {
 
-  n_epochs <- length(unique(df$epoch))
-  n_channels <- length(unique(df$electrode))
-  n_times <- length(unique(df$time))
+  n_epochs <- length(unique(data$epoch))
+  n_channels <- length(unique(data$electrode))
+  n_times <- length(unique(data$time))
 
   ##number of lags at which to assess autocovariance matrices
   n_lags <- min(100,ceiling(n_times/3))
 
   ## reshape amplitude X electrode to a square matrix before doing SVD
-  df <- df %>% spread(electrode, amplitude)
+  data <- data %>% spread(electrode, amplitude)
 
   ## Pre-whiten the data using the SVD.
   ## zero-mean columns and get SVD. NB: should probably edit this to zero mean *epochs*
-  amp_matrix <- scale(data.matrix(df[ , (ncol(df) - n_channels + 1):ncol(df)]), scale = FALSE)
+  amp_matrix <- scale(data.matrix(data[ , (ncol(data) - n_channels + 1):ncol(data)]), scale = FALSE)
   SVD_amp <- svd(amp_matrix)
 
   ## get the psuedo-inverse of the diagonal matrix, multiply by right singular vectors
@@ -59,7 +59,7 @@ run_ICA <- function (df, method = "sobi") {
   ## create mixing matrix for output
   mixing_matrix <- data.frame(MASS::ginv(Q) %*% M_rjd$V)
   names(mixing_matrix) <- 1:n_channels
-  mixing_matrix$electrode <- names(df[ , (ncol(df) - n_channels + 1):ncol(df)])
+  mixing_matrix$electrode <- names(data[ , (ncol(data) - n_channels + 1):ncol(data)])
   dim(amp_matrix) <- c(n_channels, n_times*n_epochs)
   S <- t(M_rjd$V) %*% amp_matrix
   return(list("mixing_matrix" = mixing_matrix, "comp_activations" = t(S)))
