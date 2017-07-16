@@ -53,12 +53,12 @@ plot_timecourse <- function(data, time_lim = NULL, group = NULL, facet = NULL, a
       stat_summary(fun.y = mean,
                    geom = "line",
                    aes_(colour = as.name(colour)),
-                   size = 1)
+                   size = 1.2)
   } else {
     tc_plot <- tc_plot +
       stat_summary(fun.y = mean,
                    geom = "line",
-                   size = 1)
+                   size = 1.2)
   }
 
   if (!is.null(facet)) {
@@ -98,7 +98,7 @@ plot_timecourse <- function(data, time_lim = NULL, group = NULL, facet = NULL, a
     geom_vline(xintercept = 0, linetype = "solid", size = 0.5) +
     geom_hline(yintercept = 0, linetype = "solid", size = 0.5) +
     scale_x_continuous(breaks = scales::pretty_breaks(n = 4), expand = c(0,0)) +
-    scale_y_continuous(breaks = scales::pretty_breaks(n = 3), expand = c(0,0)) +
+    scale_y_continuous(breaks = scales::pretty_breaks(n = 4), expand = c(0,0)) +
     theme_minimal(base_size = 12) +
     theme(panel.grid = element_blank(),
           axis.ticks = element_line(size=.5))
