@@ -30,11 +30,15 @@ erp_scalp <- function(data,
                       amplitude = "amplitude",
                       time = "time",
                       color = NULL,
-                      size = .65,
+                      size = .8,
                       show_guide = TRUE) {
 
-  data <- as.data.frame(data)
+  if (is.null(color)) {
+    data <- group_by(data, electrode, time)
+    data <- summarise(data, amplitude = mean(amplitude))
+  }
 
+  data <- as.data.frame(data)
   # Data maxima for plot limits
   maxAmp <- max(data[, amplitude])
   minAmp <- min(data[, amplitude])
