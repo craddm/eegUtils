@@ -63,3 +63,37 @@ select_times <- function(data, time_lim) {
   }
   return(data)
 }
+
+
+#' Select electrodes from a given dataset.
+#'
+#' Checks for presence of electrode column, and if found, presence of selected electrodes.
+#'
+#' @author Matt Craddock, \email{m.p.craddock@leeds.ac.uk}
+#'
+#' @param data An EEG dataset.
+#' @param electrode A character vector of electrode labels for selection or removal.
+#' @param keep Defaults to TRUE. Set to false to *remove* the selected electrodes.
+#'
+#' @return Data frame with only data from the chosen electrodes
+#'
+#' @export
+#'
+
+select_elecs <- function(data, electrode, keep = TRUE) {
+  if ("electrode" %in% colnames(data)) {
+    if (all(electrode %in% data$electrode)) {
+      if (keep) {
+        data <- data[data$electrode %in% electrode, ]
+      } else {
+        data <- data[!data$electrode %in% electrode, ]
+      }
+      } else {
+        cat("Electrode(s) not found:", electrode[!electrode %in% data$electrode], ". Returning all data.")
+        warning()
+      }
+    } else {
+    warning("No electrode column found.")
+    }
+  return(data)
+}
