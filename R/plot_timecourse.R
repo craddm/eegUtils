@@ -10,7 +10,7 @@
 #'@param time_lim Character vector. Numbers in whatever time unit is used specifying beginning and end of time-range to plot. e.g. c(-100,300)
 #'@param baseline Character vector. Times to use as a baseline. Takes the mean over the specified period and subtracts. e.g. c(-100,0)
 #'@param colour Variable to colour lines by. If no variable is passed, only
-#' one line is drawn for each electrode.
+#' one line is drawn.
 #'@param facet Create multiple plots for a specified grouping variable.
 #'
 #'@import dplyr
@@ -20,13 +20,19 @@
 
 plot_timecourse <- function(data, time_lim = NULL, group = NULL, facet = NULL, add_CI = FALSE, baseline = NULL, colour = NULL, color = NULL, electrode = NULL) {
 
-  # Filter out unwanted timepoints, and find nearest time values in the data --------------
+  ## Select specified electrodes -----
+
+  if (!is.null(electrode)){
+    data <- select_elecs(data, electrode)
+  }
+
+  ## Filter out unwanted timepoints, and find nearest time values in the data -----
 
   if (!is.null(time_lim)) {
     data <- select_times(data, time_lim)
   }
 
-  # Average over all epochs in data (respecting "conditions"). --
+  ## Average over all epochs in data (respecting "conditions"). --
   if ("epoch" %in% colnames(data)){
     data <- summarise(group_by(data, time, electrode, condition),
                       amplitude = mean(amplitude))
@@ -109,6 +115,7 @@ plot_timecourse <- function(data, time_lim = NULL, group = NULL, facet = NULL, a
 #' @param time_lim Character vector. Numbers in whatever time unit is used specifying beginning and end of time-range to plot. e.g. c(-100,300)
 #' @param baseline  Character vector. Times to use as a baseline. Takes the mean over the specified period and subtracts. e.g. c(-100,0)
 #' @param facet Create multiple plots for a specified grouping variable.
+#' @return ggplot2 object showing ERPs for all electrodes overlaid on a single plot.
 #'
 #' @export
 
