@@ -20,7 +20,7 @@ plot_timecourse(data, time_lim = NULL, group = NULL, facet = NULL,
 \item{baseline}{Character vector. Times to use as a baseline. Takes the mean over the specified period and subtracts. e.g. c(-100,0)}
 
 \item{colour}{Variable to colour lines by. If no variable is passed, only
-one line is drawn for each electrode.}
+one line is drawn.}
 
 \item{electrode}{Electrode(s) to plot.}
 }

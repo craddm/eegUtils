@@ -1,9 +1,9 @@
 #' Interactive scalp maps
 #'
-#' Launchs a Shiny Gadget for an interactive version of erp_scalp, allowing clicking of individual electrodes to plot them separately.
+#' Launches a Shiny Gadget for an interactive version of erp_scalp, allowing clicking of individual electrodes to plot them in a separate panel. In that panel, they can be averaged over or plotted as individual electrodes.
 #'
 #' @param data An EEG dataset.
-#' @param colour Variable to color lines by. If no variable is passed, only
+#' @param colour Variable to colour lines by. If no variable is passed, only
 #' one line is drawn for each electrode.
 #'
 #' @author Matt Craddock, \email{m.p.craddock@leeds.ac.uk}
@@ -20,7 +20,7 @@ interactive_scalp <- function(data, colour = NULL) {
       miniTabPanel("Whole scalp", icon = icon("circle"),
         miniContentPanel(
           fillCol(
-            flex = c(5,1),
+            flex = c(7,1),
             plotOutput("Scalp", height = "100%",
                        click = "click_plot"),
             verbatimTextOutput("click_info")
@@ -33,6 +33,10 @@ interactive_scalp <- function(data, colour = NULL) {
       miniTabPanel("Selected electrodes", icon = icon("line-chart"),
         miniContentPanel(
           plotOutput("Selected", height = "100%")
+          ),
+          miniButtonBlock(
+            actionButton("avg", "Mean"),
+            actionButton("single", "Plot individual electrodes")
           )
         )
       )
@@ -42,7 +46,7 @@ interactive_scalp <- function(data, colour = NULL) {
 
     data <- electrode_locations(data)
 
-    elec_list <- reactiveValues(sel_elecs = list())
+    button_reacts <- reactiveValues(sel_elecs = list(), avg = TRUE)
 
     output$Scalp <- renderPlot({
       if (is.null(colour)) {
@@ -57,24 +61,33 @@ interactive_scalp <- function(data, colour = NULL) {
       tmp <- nearPoints(data, input$click_plot, "x", "y", threshold = 45, maxpoints = 1)
 
       if (nrow(tmp) > 0) {
-        if (tmp$electrode %in% elec_list$sel_elecs) {
-         elec_list$sel_elecs <- elec_list$sel_elecs[-which(elec_list$sel_elecs == tmp$electrode)]
+        if (tmp$electrode %in% button_reacts$sel_elecs) {
+          button_reacts$sel_elecs <- button_reacts$sel_elecs[-which(button_reacts$sel_elecs == tmp$electrode)]
        } else {
-         elec_list$sel_elecs <- c(elec_list$sel_elecs, tmp$electrode)
+         button_reacts$sel_elecs <- c(button_reacts$sel_elecs, tmp$electrode)
        }
       }
 
       output$click_info <- renderPrint({
-         cat("Selected:", unlist(elec_list$sel_elecs))
+         cat("Selected:", unlist(button_reacts$sel_elecs))
         })
 
       # plot selected electrodes when on appropriate tab
       output$Selected <- renderPlot({
-        if (is.null(colour)) {
-          plot_timecourse(data[data$electrode %in% elec_list$sel_elecs, ])
-        } else{
-          plot_timecourse(data[data$electrode %in% elec_list$sel_elecs, ], colour = as.name(colour))
+        if (button_reacts$avg){
+          if (is.null(colour)) {
+            plot_timecourse(data[data$electrode %in% button_reacts$sel_elecs, ])
+            } else {
+              plot_timecourse(data[data$electrode %in% button_reacts$sel_elecs, ], colour = as.name(colour))
+            }
+        } else {
+          if (is.null(colour)) {
+            plot_timecourse(data[data$electrode %in% button_reacts$sel_elecs, ], colour = "electrode")
+          } else{
+            plot_timecourse(data[data$electrode %in% button_reacts$sel_elecs, ], colour = as.name(colour)) +
+              facet_wrap(~electrode)
           }
+        }
       })
     })
 
@@ -85,8 +98,16 @@ interactive_scalp <- function(data, colour = NULL) {
     })
 
     # Check if reset button clicked on Whole scalp page
-    observeEvent(input$reset,{
-      elec_list$sel_elecs <- NULL
+    observeEvent(input$reset, {
+      button_reacts$sel_elecs <- NULL
+    })
+
+    observeEvent(input$avg, {
+      button_reacts$avg <- TRUE
+    })
+
+    observeEvent(input$single, {
+      button_reacts$avg <- FALSE
     })
 
   }

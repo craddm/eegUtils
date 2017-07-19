@@ -16,6 +16,9 @@ plot_butterfly(data, time_lim = NULL, group = NULL, facet = NULL,
 
 \item{baseline}{Character vector. Times to use as a baseline. Takes the mean over the specified period and subtracts. e.g. c(-100,0)}
 }
+\value{
+ggplot2 object showing ERPs for all electrodes overlaid on a single plot.
+}
 \description{
 Typically event-related potentials/fields, but could also be timecourses from frequency analyses for single frequencies. Output is a ggplot2 object. CIs not possible.
 }
