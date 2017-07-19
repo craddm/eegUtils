@@ -36,6 +36,9 @@ erp_scalp <- function(data,
   if (is.null(color)) {
     data <- group_by(data, electrode, time)
     data <- summarise(data, amplitude = mean(amplitude))
+  } else {
+    data <- group_by(data, electrode, time, color)
+    data <- summarise(data, amplitude = mean(amplitude))
   }
 
   data <- as.data.frame(data)
