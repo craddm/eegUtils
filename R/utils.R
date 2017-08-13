@@ -97,3 +97,27 @@ select_elecs <- function(data, electrode, keep = TRUE) {
     }
   return(data)
 }
+
+#' Function to create an S3 object of class "eeg_data".
+#'
+#' @author Matt Craddock \email{m.p.craddock@leeds.ac.uk}
+#' @param data Raw data.
+#' @param srate Sampling rate.
+#'
+
+eeg_data <- function(data, srate) {
+  if (srate < 1) {
+    stop("Sampling rate must be above 0")
+  }
+  value <- list(signals = data, srate = srate)
+  attr(value, "class") <- "eeg_data"
+  value
+}
+
+#' Check if object is of class "eeg_data".
+#'
+#' @author Matt Craddock \email{m.p.craddock@leeds.ac.uk}
+#' @param x Object to check.
+#'
+
+is.eeg_data <- function(x) inherits(x, "eeg_data")
