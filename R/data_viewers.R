@@ -16,6 +16,8 @@ browse_data <- function(data, sig_length = 5) {
 
   ui <- miniPage(
     gadgetTitleBar("Data browser"),
+    tags$style(type = "text/css", "
+               .irs-slider {width: 8px; height: 8px; top: 25px;}"),
     miniContentPanel(
       fillCol(
         flex = c(2, NA),
@@ -35,7 +37,7 @@ browse_data <- function(data, sig_length = 5) {
   server <- function(input, output, session) {
     output$time_plot <- renderPlot({
       #time_ <- c(0, sig_length)
-      tmp_data <- filter(data, time >= input$time_range[[1]], time <= input$time_range[[2]])
+      tmp_data <- dplyr::filter(data, time >= input$time_range[[1]], time <= input$time_range[[2]])
       init_plot <- ggplot(tmp_data, aes(x = time, y = amplitude)) +
         geom_line() +
         facet_grid_paginate(electrode~.,
@@ -61,5 +63,5 @@ browse_data <- function(data, sig_length = 5) {
 
 
   }
-  runGadget(ui, server)
+  runGadget(ui, server, viewer = paneViewer(minHeight = 600))
 }
