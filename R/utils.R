@@ -103,14 +103,15 @@ select_elecs <- function(data, electrode, keep = TRUE) {
 #' @author Matt Craddock \email{m.p.craddock@leeds.ac.uk}
 #' @param data Raw data.
 #' @param srate Sampling rate.
+#' @param chan_labels
 #'
 
-eeg_data <- function(data, srate) {
+eeg_data <- function(data, srate, events = NULL, chan_labels = NULL) {
   if (srate < 1) {
     stop("Sampling rate must be above 0")
   }
-  value <- list(signals = data, srate = srate)
-  attr(value, "class") <- "eeg_data"
+  value <- list(signals = data, srate = srate, events = events)
+  class(value) <- "eeg_data"
   value
 }
 
@@ -121,3 +122,26 @@ eeg_data <- function(data, srate) {
 #'
 
 is.eeg_data <- function(x) inherits(x, "eeg_data")
+
+
+#' Switch from wide to long format.
+#'
+#' @author Matt Craddock \email{m.p.craddock@leeds.ac.uk}
+#' @param data Data to convert
+#' @import tidyr
+
+switch_format <- function(x) {
+  x <- gather(x, chan_label, amplitude, -time)
+}
+
+#' Referencing.
+#'
+#' @author Matt Craddock \email{m.p.craddock@leeds.ac.uk}
+#' @param data Data to re-reference.
+#' @param ref_chans Channels to reference data to. Defaults to "all" i.e. average of all electrodes in data.
+#' @import tidyr
+
+
+reref_ <- function(data, ref_chans = "all") {
+
+}

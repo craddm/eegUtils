@@ -4,10 +4,14 @@
 \alias{import_raw}
 \title{Function for reading raw data.}
 \usage{
-import_raw(file_name, file_path = NULL)
+import_raw(file_name, file_path = NULL, chan_nos = NULL)
 }
 \arguments{
 \item{file_name}{File to import.}
+
+\item{file_path}{Path to file name, if not included in filename.}
+
+\item{chan_nos}{Channels to import. All channels are included by default.}
 }
 \description{
 Currently only BDF or EDF files are supported, and this only provides a wrapper around the \code{edfReader} package.

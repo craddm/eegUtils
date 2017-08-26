@@ -4,12 +4,14 @@
 \alias{eeg_data}
 \title{Function to create an S3 object of class "eeg_data".}
 \usage{
-eeg_data(data, srate)
+eeg_data(data, srate, events = NULL, chan_labels = NULL)
 }
 \arguments{
 \item{data}{Raw data.}
 
 \item{srate}{Sampling rate.}
+
+\item{chan_labels}{}
 }
 \description{
 Function to create an S3 object of class "eeg_data".
