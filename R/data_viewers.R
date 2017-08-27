@@ -16,20 +16,18 @@ browse_data <- function(data, sig_length = 5) {
 
   ui <- miniPage(
     gadgetTitleBar("Data browser"),
-    tags$style(type = "text/css", "
-               .irs-slider {width: 8px; height: 8px; top: 25px;}"),
     miniContentPanel(
       fillCol(
-        flex = c(2, NA),
-        plotOutput("time_plot"),
+        flex = c(2, NA, NA),
+        plotOutput("time_plot", height = "100%"),
         sliderInput("time_range",
-                    label = NULL,
+                    label = "Display start time",
+                    step = 1,
                     min = 0,
                     max = max(unique(data$time)),
-                    value = c(min(unique(data$time)),
-                              sig_length),
-                    dragRange = TRUE,
-                    width = '100%')
+                    value = min(unique(data$time)),
+                    width = '100%'),
+        numericInput("sig_time", "Display length", sig_length, min = 1, max = 60)
       )
     )
   )
@@ -37,7 +35,7 @@ browse_data <- function(data, sig_length = 5) {
   server <- function(input, output, session) {
     output$time_plot <- renderPlot({
       #time_ <- c(0, sig_length)
-      tmp_data <- dplyr::filter(data, time >= input$time_range[[1]], time <= input$time_range[[2]])
+      tmp_data <- dplyr::filter(data, time >= input$time_range, time <= (input$time_range + input$sig_time))
       init_plot <- ggplot(tmp_data, aes(x = time, y = amplitude)) +
         geom_line() +
         facet_grid_paginate(electrode~.,
@@ -53,7 +51,8 @@ browse_data <- function(data, sig_length = 5) {
           axis.ticks.y = element_blank(),
           axis.title.y = element_blank(),
           strip.text.y = element_text(angle = 180)
-        )
+        ) +
+        scale_x_continuous(expand = c(0,0))
       init_plot
     }, height = 'auto')
 
