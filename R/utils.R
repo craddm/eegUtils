@@ -132,6 +132,8 @@ is.eeg_data <- function(x) inherits(x, "eeg_data")
 
 switch_format <- function(x) {
   x <- gather(x, chan_label, amplitude, -time)
+  if (is.eeg_data(x)) {
+  }
 }
 
 #' Referencing.
@@ -142,6 +144,6 @@ switch_format <- function(x) {
 #' @import tidyr
 
 
-reref_ <- function(data, ref_chans = "all") {
-
+reref_eeg <- function(data, ref_chans = "all") {
+  is.eeg_data(data)
 }

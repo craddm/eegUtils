@@ -8,10 +8,9 @@
 #' @author Matt Craddock, \email{m.p.craddock@leeds.ac.uk}
 #' @import ggplot2
 #' @import dplyr
-#' @import viridis
 #' @export
 #'
-#'
+
 
 erp_image <- function(data, electrode = "Cz", smoothing = 10, clim = NULL) {
 

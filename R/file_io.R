@@ -24,8 +24,11 @@ import_raw <- function(file_name, file_path = NULL, chan_nos = NULL) {
     if (is.null(chan_nos)) {
       chan_nos <- 1:(dim(sigs)[[2]] - 1)
     }
-    sigs <- select(sigs, chan_nos)
-    data <- eeg_data(sigs, srate, events)
+    sigs <- select(sigs, chan_nos, sample, time)
+    events_diff <- diff(events)
+    event_table <- data.frame(event_onset = which(events_diff > 0)+1,
+                              event_type = events[which(events_diff > 0)+1])
+    data <- eeg_data(sigs, srate, event_table)
   } else {
     warning("Unsupported filetype")
     return()

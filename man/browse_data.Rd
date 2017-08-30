@@ -4,10 +4,12 @@
 \alias{browse_data}
 \title{Browse continuous data.}
 \usage{
-browse_data(data, sig_length = 5)
+browse_data(data, sig_length = 5, n_elecs = 20)
 }
 \arguments{
 \item{sig_length}{Length of signal to be plotted initially (seconds if continuous, epochs if epoched).}
+
+\item{n_elecs}{Number of electrodes to be plotted on a single screen.}
 
 \item{df}{Data to be plotted.}
 }
