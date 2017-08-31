@@ -7,7 +7,8 @@
 #'
 #' @import dplyr
 #' @import tidyr
-#' @import JADE
+#' @importFrom JADE rjd
+#' @importFrom MASS ginv
 #' @export
 
 run_ICA <- function (data, method = "sobi") {
@@ -20,7 +21,7 @@ run_ICA <- function (data, method = "sobi") {
   n_lags <- min(100,ceiling(n_times/3))
 
   ## reshape amplitude X electrode to a square matrix before doing SVD
-  data <- data %>% spread(electrode, amplitude)
+  data <- spread(data, electrode, amplitude)
 
   ## Pre-whiten the data using the SVD.
   ## zero-mean columns and get SVD. NB: should probably edit this to zero mean *epochs*

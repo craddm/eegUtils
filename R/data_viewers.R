@@ -1,7 +1,7 @@
 #' Browse continuous data.
 #'
 #' @author Matt Craddock \email{m.p.craddock@leeds.ac.uk}
-#' @param df Data to be plotted.
+#' @param df Data to be plotted. Must have columns headed time, amplitude, and electrode.
 #' @param sig_length Length of signal to be plotted initially (seconds if continuous, epochs if epoched).
 #' @param n_elecs Number of electrodes to be plotted on a single screen.
 #'
@@ -41,15 +41,18 @@ browse_data <- function(data, sig_length = 5, n_elecs = 20) {
   server <- function(input, output, session) {
     output$time_plot <- renderPlot({
       tmp_data <- dplyr::filter(data, time >= input$time_range, time <= (input$time_range + input$sig_time))
-      init_plot <- ggplot(tmp_data, aes(x = time, y = amplitude), environment = environment()) +
+      init_plot <- ggplot2::ggplot(tmp_data, aes(x = time, y = amplitude), environment = environment()) +
         geom_line() +
         facet_grid_paginate(electrode~.,
-                            scales = "free_y",
-                            switch = "y",
-                            ncol = 1,
-                            nrow = input$elecs_per_page,
-                            page = input$elec_page,
-                            byrow = TRUE) +
+                            ncol = 1, nrow = 2)+
+
+        # ggforce::facet_grid_paginate(electrode~.,
+        #                      scales = "free_y",
+        #                      switch = "y",
+        #                      ncol = 1,
+        #                      nrow = input$elecs_per_page,
+        #                      page = input$elec_page,
+        #                      byrow = TRUE) +
         theme_bw() +
         theme(
           axis.text.y = element_blank(),
@@ -59,7 +62,7 @@ browse_data <- function(data, sig_length = 5, n_elecs = 20) {
         ) +
         scale_x_continuous(expand = c(0,0))
       print(init_plot)
-    }, height = 'auto')
+    })
 
     observeEvent(input$done, {
       stopApp()

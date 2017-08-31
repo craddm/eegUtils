@@ -136,14 +136,4 @@ switch_format <- function(x) {
   }
 }
 
-#' Referencing.
-#'
-#' @author Matt Craddock \email{m.p.craddock@leeds.ac.uk}
-#' @param data Data to re-reference.
-#' @param ref_chans Channels to reference data to. Defaults to "all" i.e. average of all electrodes in data.
-#' @import tidyr
 
-
-reref_eeg <- function(data, ref_chans = "all") {
-  is.eeg_data(data)
-}

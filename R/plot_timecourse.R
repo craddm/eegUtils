@@ -116,6 +116,7 @@ plot_timecourse <- function(data, time_lim = NULL, group = NULL, facet = NULL, a
 #' @param baseline  Character vector. Times to use as a baseline. Takes the mean over the specified period and subtracts. e.g. c(-100,0)
 #' @param facet Create multiple plots for a specified grouping variable.
 #' @return ggplot2 object showing ERPs for all electrodes overlaid on a single plot.
+#' @import ggplot2
 #'
 #' @export
 

@@ -11,7 +11,7 @@ browse_data(data, sig_length = 5, n_elecs = 20)
 
 \item{n_elecs}{Number of electrodes to be plotted on a single screen.}
 
-\item{df}{Data to be plotted.}
+\item{df}{Data to be plotted. Must have columns headed time, amplitude, and electrode.}
 }
 \description{
 Browse continuous data.

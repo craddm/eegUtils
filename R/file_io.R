@@ -10,6 +10,7 @@
 #' @import tools
 #' @importFrom dplyr select
 #' @importFrom purrr map_df
+#' @export
 
 
 import_raw <- function(file_name, file_path = NULL, chan_nos = NULL) {

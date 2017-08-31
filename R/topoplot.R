@@ -18,6 +18,8 @@
 #' @import ggplot2
 #' @import dplyr
 #' @import tidyr
+#' @importFrom scales oob
+#' @importFrom mgcv gam
 #' @export
 #'
 #' @section Notes on usage of Generalized Additive Models for interpolation:
