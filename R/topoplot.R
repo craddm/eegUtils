@@ -18,7 +18,7 @@
 #' @import ggplot2
 #' @import dplyr
 #' @import tidyr
-#' @importFrom scales oob squish
+#' @import scales
 #' @importFrom mgcv gam
 #' @export
 #'
