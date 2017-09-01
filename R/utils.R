@@ -123,12 +123,11 @@ eeg_data <- function(data, srate, events = NULL, chan_labels = NULL, timings = N
 
 is.eeg_data <- function(x) inherits(x, "eeg_data")
 
-
 #' Switch from wide to long format.
 #'
 #' @author Matt Craddock \email{m.p.craddock@leeds.ac.uk}
 #' @param data Data to convert
-#' @import tidyr
+#' @importFrom tidyr gather
 
 switch_format <- function(x) {
   x <- gather(x, chan_label, amplitude, -time)
