@@ -106,11 +106,11 @@ select_elecs <- function(data, electrode, keep = TRUE) {
 #' @param chan_labels
 #'
 
-eeg_data <- function(data, srate, events = NULL, chan_labels = NULL) {
+eeg_data <- function(data, srate, events = NULL, chan_labels = NULL, timings = NULL) {
   if (srate < 1) {
     stop("Sampling rate must be above 0")
   }
-  value <- list(signals = data, srate = srate, events = events)
+  value <- list(signals = data, srate = srate, events = events, timings = timings)
   class(value) <- "eeg_data"
   value
 }
