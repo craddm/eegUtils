@@ -18,12 +18,18 @@
 #'@return Returns a ggplot2 plot object
 #'@export
 
-plot_timecourse <- function(data, time_lim = NULL, group = NULL, facet = NULL, add_CI = FALSE, baseline = NULL, colour = NULL, color = NULL, electrode = NULL) {
+plot_timecourse <- function(data, time_lim = NULL, group = NULL, facet = NULL, add_CI = FALSE, baseline = NULL, colour = NULL, electrode = NULL, color = NULL) {
 
   ## Select specified electrodes -----
-
-  if (!is.null(electrode)){
+  if (!is.null(electrode)) {
     data <- select_elecs(data, electrode)
+  }
+
+  ## check for US spelling of colour...
+  if (is.null(colour)) {
+    if (!is.null(color)) {
+      colour <- color
+    }
   }
 
   ## Filter out unwanted timepoints, and find nearest time values in the data -----
@@ -33,12 +39,17 @@ plot_timecourse <- function(data, time_lim = NULL, group = NULL, facet = NULL, a
   }
 
   ## Average over all epochs in data (respecting "conditions"). --
-  if (is.null(colour) & is.null(color)) {
+  if (is.null(colour)) {
     data <- summarise(group_by(data, time, electrode), amplitude = mean(amplitude))
   } else {
-    data <- summarise_(group_by(data, time, electrode, as.name(colour)),
+    if ("electrode" %in% c(colour, color)) {
+      data <- summarise(group_by(data, time, electrode),
                         amplitude = mean(amplitude))
-    }
+      } else {
+        data <- summarise(group_by(data, time, electrode, !!colour),
+                        amplitude = mean(amplitude))
+      }
+  }
 
   if (!is.null(group)) {
     if (group %in% colnames(data)) {
