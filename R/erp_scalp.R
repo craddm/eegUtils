@@ -104,16 +104,17 @@ erp_scalp <- function(data,
          x = "Time (ms)") +
     theme_minimal(base_size = 8) +
     theme(panel.grid = element_blank(),
-          axis.ticks = element_line(size=.3))
+          axis.ticks = element_line(size=.3),
+          plot.margin = unit(c(8,8,8,8), "pt"))
   if (show_guide) {
     p <- p + annotation_custom(grob = ggplotGrob(guide),
                                xmin = min(data$x)-.07, xmax = min(data$x)+.09,
-                               ymin = min(data$y)-.07, ymax = min(data$y)+.07)
+                               ymin = min(data$y)-.09, ymax = min(data$y)+.09)
   }
   for (i in 1:nrow(data)) {
     p <- p + annotation_custom(grob = ggplotGrob(data$plot[[i]]),
-                               xmin = data$x[i]-.055, xmax = data$x[i]+.055,
-                               ymin = data$y[i]-.055, ymax = data$y[i]+.055)
+                               xmin = data$x[i]-.05, xmax = data$x[i]+.05,
+                               ymin = data$y[i]-.07, ymax = data$y[i]+.07)
   }
 
   return(p)
