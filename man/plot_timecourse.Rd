@@ -5,8 +5,8 @@
 \title{Plot 1d timecourse data.}
 \usage{
 plot_timecourse(data, time_lim = NULL, group = NULL, facet = NULL,
-  add_CI = FALSE, baseline = NULL, colour = NULL, color = NULL,
-  electrode = NULL)
+  add_CI = FALSE, baseline = NULL, colour = NULL, electrode = NULL,
+  color = NULL)
 }
 \arguments{
 \item{data}{EEG dataset. Should have multiple timepoints.}
