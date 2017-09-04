@@ -174,13 +174,13 @@ topoplot <- function(data,
   # Check if should interp/extrap beyond headshape, and set up ring to mask edges for smoothness
   if (interp_limit == "skirt") {
     outDf$incircle <- sqrt(outDf$x ^ 2 + outDf$y ^ 2) < 1.125
-    maskRing <- data.frame(x = 1.125 * cos(circ_rads),
-                           y = 1.125 * sin(circ_rads)
+    maskRing <- data.frame(x = 1.127 * cos(circ_rads),
+                           y = 1.127 * sin(circ_rads)
     )
   } else {
     outDf$incircle <- sqrt(outDf$x ^ 2 + outDf$y ^ 2) < (r*1.03)
-    maskRing <- data.frame(x = r * 1.05 * cos(circ_rads),
-                           y = r * 1.05 * sin(circ_rads)
+    maskRing <- data.frame(x = r * 1.03 * cos(circ_rads),
+                           y = r * 1.03 * sin(circ_rads)
     )
   }
 
@@ -201,18 +201,18 @@ topoplot <- function(data,
 
   topo <- topo +
     annotate("path",
-             x = maskRing$x,
+            x = maskRing$x,
              y = maskRing$y,
-             colour = "white",
-             size = 10) +
+            colour = "white",
+             size = rel(4.2)) +
     annotate("path",
              x = headShape$x,
              y = headShape$y,
-              size = 1.5) +
+              size = rel(1.5)) +
     annotate("path",
              x = nose$x,
              y = nose$y,
-              size = 1.5) +
+              size = rel(1.5)) +
     annotate("curve",
              x = ears$x[[1]],
              y = ears$y[[1]],
@@ -220,7 +220,7 @@ topoplot <- function(data,
              yend = ears$y[[2]],
              curvature = -.5,
              angle = 60,
-             size = 1.5) +
+             size = rel(1.5)) +
     annotate("curve",
              x = ears$x[[3]],
              y = ears$y[[3]],
@@ -228,7 +228,7 @@ topoplot <- function(data,
              yend = ears$y[[4]],
              curvature = .5,
              angle = 120,
-             size = 1.5) +
+             size = rel(1.5)) +
     coord_equal() +
     theme_bw() +
     theme(rect = element_blank(),
@@ -247,7 +247,7 @@ topoplot <- function(data,
       topo <- topo + annotate("point",
                               x = scaled_x, y = scaled_y,
                               colour = "black",
-                              size = 2)
+                              size = rel(2))
       }
     else if (chan_marker == "name") {
       topo <- topo + annotate("text",
