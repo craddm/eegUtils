@@ -15,6 +15,7 @@
 #'
 #'@import dplyr
 #'@import ggplot2
+#'@importFrom rlang parse_quosure
 #'@return Returns a ggplot2 plot object
 #'@export
 
@@ -32,6 +33,8 @@ plot_timecourse <- function(data, time_lim = NULL, group = NULL, facet = NULL, a
     }
   }
 
+  tmp_col <- parse_quosure(colour)
+
   ## Filter out unwanted timepoints, and find nearest time values in the data -----
 
   if (!is.null(time_lim)) {
@@ -46,7 +49,7 @@ plot_timecourse <- function(data, time_lim = NULL, group = NULL, facet = NULL, a
       data <- summarise(group_by(data, time, electrode),
                         amplitude = mean(amplitude))
       } else {
-        data <- summarise(group_by(data, time, electrode, !!colour),
+        data <- summarise(group_by(data, time, electrode, !!tmp_col),
                         amplitude = mean(amplitude))
       }
   }
