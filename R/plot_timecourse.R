@@ -33,13 +33,15 @@ plot_timecourse <- function(data, time_lim = NULL, group = NULL, facet = NULL, a
   }
 
   ## Average over all epochs in data (respecting "conditions"). --
-  if ("epoch" %in% colnames(data)){
-    data <- summarise(group_by(data, time, electrode, condition),
-                      amplitude = mean(amplitude))
-  }
+  if (is.null(colour) & is.null(color)) {
+    data <- summarise(group_by(data, time, electrode), amplitude = mean(amplitude))
+  } else {
+    data <- summarise_(group_by(data, time, electrode, as.name(colour)),
+                        amplitude = mean(amplitude))
+    }
 
   if (!is.null(group)) {
-    if (group %in% colnames(data)){
+    if (group %in% colnames(data)) {
 
     }
   }
