@@ -11,6 +11,7 @@
 #'@param baseline Character vector. Times to use as a baseline. Takes the mean over the specified period and subtracts. e.g. c(-100,0)
 #'@param colour Variable to colour lines by. If no variable is passed, only
 #' one line is drawn.
+#'@param group (not yet implemented)
 #'@param facet Create multiple plots for a specified grouping variable.
 #'
 #'@import dplyr
@@ -35,9 +36,6 @@ plot_timecourse <- function(data, time_lim = NULL, group = NULL, facet = NULL, a
   } else {
     tmp_col <- parse_quosure(colour)
   }
-
-
-
 
   ## Filter out unwanted timepoints, and find nearest time values in the data -----
 
@@ -95,25 +93,26 @@ plot_timecourse <- function(data, time_lim = NULL, group = NULL, facet = NULL, a
   ## Draw confidence intervals on plot.
 
   if (add_CI) {
-    if (!(is.null(colour) & is.null(color))){
-    tc_plot <- tc_plot +
-      stat_summary(fun.data = mean_cl_normal,
-                   geom = "ribbon",
-                   linetype = "dashed",
-                   aes_(colour = as.name(colour)),
-                   fill = NA,
-                   size = 1,
-                   alpha = 0.5)
-    } else {
+    if (is.null(colour)) {
       tc_plot <- tc_plot +
         stat_summary(fun.data = mean_cl_normal,
-                   geom = "ribbon",
-                   linetype = "dashed",
-                   fill = NA,
-                   size = 1,
-                   alpha = 0.5)
-    }
+                     geom = "ribbon",
+                     linetype = "dashed",
+                     fill = NA,
+                     size = 1,
+                     alpha = 0.5)
+      } else {
+        tc_plot <- tc_plot +
+          stat_summary(fun.data = mean_cl_normal,
+                       geom = "ribbon",
+                       linetype = "dashed",
+                       aes_(colour = as.name(colour)),
+                       fill = NA,
+                       size = 1,
+                       alpha = 0.5)
+      }
   }
+
 
   tc_plot <- tc_plot +
     labs(x = "Time (ms)", y = expression(paste("Amplitude (", mu, "V)")), colour = "", fill = "") +
