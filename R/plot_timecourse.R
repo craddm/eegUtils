@@ -30,10 +30,14 @@ plot_timecourse <- function(data, time_lim = NULL, group = NULL, facet = NULL, a
   if (is.null(colour)) {
     if (!is.null(color)) {
       colour <- color
+      tmp_col <- parse_quosure(colour)
     }
+  } else {
+    tmp_col <- parse_quosure(colour)
   }
 
-  tmp_col <- parse_quosure(colour)
+
+
 
   ## Filter out unwanted timepoints, and find nearest time values in the data -----
 
@@ -43,7 +47,8 @@ plot_timecourse <- function(data, time_lim = NULL, group = NULL, facet = NULL, a
 
   ## Average over all epochs in data (respecting "conditions"). --
   if (is.null(colour)) {
-    data <- summarise(group_by(data, time, electrode), amplitude = mean(amplitude))
+    data <- summarise(group_by(data, time, electrode),
+                      amplitude = mean(amplitude))
   } else {
     if ("electrode" %in% c(colour, color)) {
       data <- summarise(group_by(data, time, electrode),
@@ -64,6 +69,7 @@ plot_timecourse <- function(data, time_lim = NULL, group = NULL, facet = NULL, a
   tc_plot <- ggplot(data, aes(x = time, y = amplitude))
 
   if (!(is.null(colour) & is.null(color))) {
+
     tc_plot <- tc_plot + scale_color_brewer(palette = "Set1")
     tc_plot <- tc_plot +
       stat_summary(fun.y = mean,
