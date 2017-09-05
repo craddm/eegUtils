@@ -130,7 +130,7 @@ is.eeg_data <- function(x) inherits(x, "eeg_data")
 #' @importFrom tidyr gather
 
 switch_format <- function(x) {
-  x <- gather(x, chan_label, amplitude, -time)
+  x <- gather(x, electrode, amplitude, -time)
   if (is.eeg_data(x)) {
   }
 }
