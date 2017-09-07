@@ -81,11 +81,12 @@ as.data.frame.eeg_data <- function (x, long = FALSE) {
   df <- data.frame(x$signals, x$timings)
   if (long) {
     if (x$continuous) {
-      tidyr::gather(df, electrode, amplitude, -time, -sample)
+      df <- tidyr::gather(df, electrode, amplitude, -time, -sample)
     } else {
-      tidyr::gather(df, electrode, amplitude, -time, -sample, -epoch)
+      df <- tidyr::gather(df, electrode, amplitude, -time, -sample, -epoch)
     }
   }
+  return(df)
 }
 
 #' Switch from wide to long format.
@@ -99,5 +100,3 @@ switch_format <- function(x) {
   if (is.eeg_data(x)) {
   }
 }
-
-

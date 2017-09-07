@@ -8,7 +8,7 @@ plot_butterfly(data, time_lim = NULL, group = NULL, facet = NULL,
   baseline = NULL, colourmap = NULL)
 }
 \arguments{
-\item{data}{EEG dataset. Should have multiple timepoints}
+\item{data}{EEG dataset. Should have multiple timepoints.}
 
 \item{time_lim}{Character vector. Numbers in whatever time unit is used specifying beginning and end of time-range to plot. e.g. c(-100,300)}
 

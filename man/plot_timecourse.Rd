@@ -13,6 +13,8 @@ plot_timecourse(data, time_lim = NULL, group = NULL, facet = NULL,
 
 \item{time_lim}{Character vector. Numbers in whatever time unit is used specifying beginning and end of time-range to plot. e.g. c(-100,300)}
 
+\item{group}{(not yet implemented)}
+
 \item{facet}{Create multiple plots for a specified grouping variable.}
 
 \item{add_CI}{Add confidence intervals to the graph. Defaults to 95 percent between-subject CIs.}
