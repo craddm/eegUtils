@@ -18,6 +18,7 @@
 #' @import ggplot2
 #' @import dplyr
 #' @import tidyr
+#' @importFrom rlang parse_quosure
 #' @import scales
 #' @importFrom mgcv gam
 #' @export
@@ -38,18 +39,19 @@ topoplot <- function(data,
                      chan_marker = "point",
                      quantity = "amplitude") {
 
+  # Check if data is of class eeg_data.
+  if (is.eeg_data(data)) {
+    data <- as.data.frame(data, long = TRUE)
+  }
+
   # Filter out unwanted timepoints, and find nearest time values in the data --------------
 
   if ("time" %in% colnames(data)) {
     if (length(time_lim) == 1) {
       time_lim <- data$time[which.min(abs(data$time - time_lim))]
-      data <- filter(data, time == time_lim)
+      data <- dplyr::filter(data, time == time_lim)
       } else if (length(time_lim) == 2) {
         data <- select_times(data, time_lim)
-
-        #time_lim[1] <- data$time[which.min(abs(data$time - time_lim[1]))]
-        #time_lim[2] <- data$time[which.min(abs(data$time - time_lim[2]))]
-        #data <- filter(data, time >= time_lim[1] & time <= time_lim[2])
       }
     }
 
@@ -59,7 +61,7 @@ topoplot <- function(data,
     message("Electrode locations found.")
   } else if (!is.null(chanLocs)) {
     if (length(grep("^x$|^y$", colnames(chanLocs))) > 1) {
-      data <- left_join(data, chanLocs, by = "electrode")
+      data <- dplyr::left_join(data, chanLocs, by = "electrode")
       } else {
         warnings("No channel locations found in chanLocs.")
       }
@@ -73,8 +75,8 @@ topoplot <- function(data,
 
   # Average over all timepoints ----------------------------
 
-  data <- summarise_(group_by(data, x, y, electrode),
-                   z = lazyeval::interp(~mean(q), q = as.name(quantity)))
+  data <- dplyr::summarise(dplyr::group_by(data, x, y, electrode),
+                   z = mean(!!rlang::parse_quosure(quantity)))
 
   # Cut the data frame down to only the necessary columns, and make sure it has the right names --------
   # Will be able to work with different parameters (e.g. power) eventually, so this will be necessary
@@ -174,8 +176,8 @@ topoplot <- function(data,
   # Check if should interp/extrap beyond headshape, and set up ring to mask edges for smoothness
   if (interp_limit == "skirt") {
     outDf$incircle <- sqrt(outDf$x ^ 2 + outDf$y ^ 2) < 1.125
-    maskRing <- data.frame(x = 1.127 * cos(circ_rads),
-                           y = 1.127 * sin(circ_rads)
+    maskRing <- data.frame(x = 1.126 * cos(circ_rads),
+                           y = 1.126 * sin(circ_rads)
     )
   } else {
     outDf$incircle <- sqrt(outDf$x ^ 2 + outDf$y ^ 2) < (r*1.03)
@@ -201,10 +203,10 @@ topoplot <- function(data,
 
   topo <- topo +
     annotate("path",
-            x = maskRing$x,
+             x = maskRing$x,
              y = maskRing$y,
-            colour = "white",
-             size = rel(4.2)) +
+             colour = "white",
+             size = rel(4.4)) +
     annotate("path",
              x = headShape$x,
              y = headShape$y,
@@ -236,32 +238,26 @@ topoplot <- function(data,
       axis.text = element_blank(),
       axis.title = element_blank()) +
     guides(fill = guide_colorbar(title = expression(paste("Amplitude (", mu,"V)")),
-                                  title.position = "right",
-                                  barwidth = 1,
-                                  barheight = 6,
-                                  title.theme = element_text(angle = 270)))
+                                 title.position = "right",
+                                 barwidth = 1,
+                                 barheight = 6,
+                                 title.theme = element_text(angle = 270)))
 
   # Add electrode points or names -------------------
-  if (chan_marker != "none"){
-    if (chan_marker == "point") {
-      topo <- topo + annotate("point",
-                              x = scaled_x, y = scaled_y,
-                              colour = "black",
-                              size = rel(2))
-      }
-    else if (chan_marker == "name") {
-      topo <- topo + annotate("text",
-                              x = scaled_x, y = scaled_y,
-                              label = c(levels(data$electrode)[c(data$electrode)]),
-                              colour = "black",
-                              size = 4)
-      } else {
-        topo <- topo + annotate("point",
-                                x = scaled_x, y = scaled_y,
-                                colour = "black",
-                                size = 2)
-      }
-  }
+  if (chan_marker == "point") {
+    topo <- topo +
+      annotate("point",
+               x = scaled_x, y = scaled_y,
+               colour = "black",
+               size = rel(2))
+    }  else if (chan_marker == "name") {
+      topo <- topo +
+        annotate("text",
+                 x = scaled_x, y = scaled_y,
+                 label = c(levels(data$electrode)[c(data$electrode)]),
+                 colour = "black",
+                 size = rel(4))
+    }
 
   # Set the colourmap and scale limits ------------------------
 
