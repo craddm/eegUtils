@@ -17,10 +17,20 @@
 #'@import dplyr
 #'@import ggplot2
 #'@importFrom rlang parse_quosure
+#'
 #'@return Returns a ggplot2 plot object
+#'
 #'@export
 
-plot_timecourse <- function(data, time_lim = NULL, group = NULL, facet = NULL, add_CI = FALSE, baseline = NULL, colour = NULL, electrode = NULL, color = NULL) {
+plot_timecourse <- function(data, time_lim = NULL,
+                            group = NULL, facet = NULL,
+                            add_CI = FALSE, baseline = NULL,
+                            colour = NULL, electrode = NULL,
+                            color = NULL) {
+
+  if (is.eeg_data(data)) {
+    data <- as.data.frame(data, long = TRUE)
+  }
 
   ## Select specified electrodes -----
   if (!is.null(electrode)) {
@@ -31,10 +41,10 @@ plot_timecourse <- function(data, time_lim = NULL, group = NULL, facet = NULL, a
   if (is.null(colour)) {
     if (!is.null(color)) {
       colour <- color
-      tmp_col <- parse_quosure(colour)
+      tmp_col <- rlang::parse_quosure(colour)
     }
   } else {
-    tmp_col <- parse_quosure(colour)
+    tmp_col <- rlang::parse_quosure(colour)
   }
 
   ## Filter out unwanted timepoints, and find nearest time values in the data -----
@@ -45,14 +55,14 @@ plot_timecourse <- function(data, time_lim = NULL, group = NULL, facet = NULL, a
 
   ## Average over all epochs in data (respecting "conditions"). --
   if (is.null(colour)) {
-    data <- summarise(group_by(data, time, electrode),
+    data <- dplyr::summarise(dplyr::group_by(data, time, electrode),
                       amplitude = mean(amplitude))
   } else {
     if ("electrode" %in% c(colour, color)) {
-      data <- summarise(group_by(data, time, electrode),
+      data <- dplyr::summarise(dplyr::group_by(data, time, electrode),
                         amplitude = mean(amplitude))
       } else {
-        data <- summarise(group_by(data, time, electrode, !!tmp_col),
+        data <- dplyr::summarise(dplyr::group_by(data, time, electrode, !!tmp_col),
                         amplitude = mean(amplitude))
       }
   }
@@ -64,7 +74,7 @@ plot_timecourse <- function(data, time_lim = NULL, group = NULL, facet = NULL, a
   }
 
   ## Set up basic plot -----------
-  tc_plot <- ggplot(data, aes(x = time, y = amplitude))
+  tc_plot <- ggplot2::ggplot(data, aes(x = time, y = amplitude))
 
   if (!(is.null(colour) & is.null(color))) {
 
@@ -83,7 +93,7 @@ plot_timecourse <- function(data, time_lim = NULL, group = NULL, facet = NULL, a
 
   if (!is.null(facet)) {
     if (facet %in% colnames(data)){
-      data <- mutate_(data, f1 = facet)
+      data <- dplyr::mutate_(data, f1 = facet)
       tc_plot <- tc_plot %+% data + facet_wrap(~f1)
     } else {
       warning("Unrecognised column name.")
@@ -132,7 +142,7 @@ plot_timecourse <- function(data, time_lim = NULL, group = NULL, facet = NULL, a
 #' Typically event-related potentials/fields, but could also be timecourses from frequency analyses for single frequencies. Output is a ggplot2 object. CIs not possible.
 #'
 #' @author Matt Craddock, \email{m.p.craddock@leeds.ac.uk}
-#' @param data EEG dataset. Should have multiple timepoints
+#' @param data EEG dataset. Should have multiple timepoints.
 #' @param time_lim Character vector. Numbers in whatever time unit is used specifying beginning and end of time-range to plot. e.g. c(-100,300)
 #' @param baseline  Character vector. Times to use as a baseline. Takes the mean over the specified period and subtracts. e.g. c(-100,0)
 #' @param facet Create multiple plots for a specified grouping variable.

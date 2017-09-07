@@ -1,7 +1,9 @@
 #' Referencing
 #'
+#' Used to reference the EEG data to specified electrode or electrodes. Defaults to average reference.
+#'
 #' @author Matt Craddock \email{m.p.craddock@leeds.ac.uk}
-#' @param data Data to re-reference. Long format is expected.
+#' @param data Data to re-reference. Primarily meant for use with data of class \code{eeg_data}.
 #' @param ref_chans Channels to reference data to. Defaults to "all" i.e. average of all electrodes in data.
 #' @importFrom tidyr spread
 #' @importFrom dplyr select
@@ -17,6 +19,7 @@ reref_eeg <- function(data, ref_chans = "all") {
     tmp_data <- dplyr::select(tmp_data, -sample, -time, -Status)
     n_chans <- length(unique(data$electrode))
   }
+
   if (ref_chans == "all") {
     tmp_data <- tmp_data - rowMeans(tmp_data)
   } else {
@@ -26,6 +29,7 @@ reref_eeg <- function(data, ref_chans = "all") {
       stop("Electrode(s) not found.")
     }
   }
+
   if (is.eeg_data(data)) {
     data$signals <- tmp_data
     data
@@ -35,6 +39,8 @@ reref_eeg <- function(data, ref_chans = "all") {
 }
 
 #' Baseline correction.
+#'
+#' Used to remove the mean of a specified time period from the data. Currently performs subtractive baseline
 #'
 #' @author Matt Craddock \email{m.p.craddock@leeds.ac.uk}
 #' @param data Data to be baseline corrected.
@@ -50,7 +56,11 @@ rm_baseline <- function(data, time_lim = NULL) {
   if (obj_class) {
     orig_data <- data
     data <- cbind(data$signals, data$timings)
-    data <- tidyr::gather(data, electrode, amplitude, -time, -epoch, -samp_no)
+    if (orig_data$continuous){
+      data <- tidyr::gather(data, electrode, amplitude, -time, -sample)
+    } else {
+      data <- tidyr::gather(data, electrode, amplitude, -time, -epoch, -sample)
+    }
   }
 
   if (!("time" %in% colnames(data))) {
@@ -85,8 +95,13 @@ rm_baseline <- function(data, time_lim = NULL) {
 
   if (obj_class) {
     data <- spread(data, electrode, amplitude)
-    orig_data$signals <- select(data, -time, -epoch, -samp_no)
-    orig_data$timings <- select(data, time, epoch, samp_no)
+    if (orig_data$continuous) {
+      orig_data$signals <- select(data, -time, -sample)
+      orig_data$timings <- select(data, time, sample)
+    } else {
+      orig_data$signals <- select(data, -time, -epoch, -sample)
+      orig_data$timings <- select(data, time, epoch, sample)
+    }
     orig_data
   } else {
     data
@@ -95,10 +110,10 @@ rm_baseline <- function(data, time_lim = NULL) {
 
 #' Create epochs.
 #'
-#' Requires data of class \code{eeg_data}.
+#' Creates epochs around specified event triggers. Requires data of class \code{eeg_data}.
 #'
 #' @author Matt Craddock \email{m.p.craddock@leeds.ac.uk}
-#' @param data Continous data to be epoched.
+#' @param data Continuous data to be epoched.
 #' @param events Character vector of events to epoch around.
 #' @param time_lim Time in seconds to form epoch around the events. Defaults to one second either side.
 #' @importFrom dplyr left_join

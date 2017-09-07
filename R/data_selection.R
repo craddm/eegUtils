@@ -11,6 +11,10 @@
 
 select_times <- function(data, time_lim) {
 
+  if (is.eeg_data(data)) {
+    data <- as.data.frame(data)
+  }
+
   if ("time" %in% colnames(data)) {
     if (length(time_lim) == 1) {
       warning("Must enter two timepoints when selecting a time range; using whole range.")
@@ -41,6 +45,7 @@ select_times <- function(data, time_lim) {
 #'
 
 select_elecs <- function(data, electrode, keep = TRUE) {
+
   if ("electrode" %in% colnames(data)) {
     if (all(electrode %in% data$electrode)) {
       if (keep) {
@@ -53,6 +58,9 @@ select_elecs <- function(data, electrode, keep = TRUE) {
       warning()
     }
   } else {
+    if (is.eeg_data(data)){
+      data$signals <- data$signals[colnames(data$signals) %in% electrode]
+    }
     warning("No electrode column found.")
   }
   return(data)
