@@ -28,7 +28,9 @@ import_raw <- function(file_name, file_path = NULL, chan_nos = NULL) {
     events_diff <- diff(events)
     event_table <- data.frame(event_onset = which(events_diff > 0) + 1,
                               event_type = events[which(events_diff > 0) + 1])
-    data <- eeg_data(data = sigs, srate = srate, events = event_table, timings = timings)
+    data <- eeg_data(data = sigs, srate = srate,
+                     events = event_table, timings = timings,
+                     continuous = TRUE)
   } else {
     warning("Unsupported filetype")
     return()
