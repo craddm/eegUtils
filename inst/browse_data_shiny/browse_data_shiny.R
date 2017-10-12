@@ -1,19 +1,14 @@
-#' Browse continuous data.
-#'
-#' @author Matt Craddock \email{m.p.craddock@leeds.ac.uk}
-#' @param df Data to be plotted. Must have columns headed time, amplitude, and electrode.
-#' @param sig_length Length of signal to be plotted initially (seconds if continuous, epochs if epoched).
-#' @param n_elecs Number of electrodes to be plotted on a single screen.
-#'
-#' @import tidyr
-#' @import dplyr
-#' @import ggforce
-#' @import ggplot2
-#' @import shiny
-#' @import miniUI
-#'
+#Shiny app for data browsing.
+library(dplyr)
+library(tidyr)
+library(ggforce)
+library(ggplot2)
+library(shiny)
+# @import miniUI
+#
 
-browse_data <- function(data, sig_length = 5, n_elecs = 20) {
+
+browse_data_shiny <- function(data, sig_length = 5, n_elecs = 20) {
 
   if (is.eeg_data(data)) {
     data <- cbind(data$signals, data$timings)
@@ -37,13 +32,13 @@ browse_data <- function(data, sig_length = 5, n_elecs = 20) {
           numericInput("sig_time", "Display length", sig_length, min = 1, max = 60),
           numericInput("elec_page", "Page", 1, min = 1, max = ceiling(length(unique(data$electrode))/n_elecs)),
           numericInput("elecs_per_page", "Electrodes per page", n_elecs, min = 1, max = 30)
-          ),
+        ),
         fillRow(
           checkboxInput("dc_offset", "Remove DC offset", value = FALSE)
-          )
         )
       )
     )
+  )
 
 
   server <- function(input, output, session) {
@@ -54,13 +49,16 @@ browse_data <- function(data, sig_length = 5, n_elecs = 20) {
       }
       init_plot <- ggplot(tmp_data, aes(x = time, y = amplitude), environment = environment()) +
         geom_line() +
-         ggforce::facet_grid_paginate(electrode~.,
-                               scales = "free_y",
-                               switch = "y",
-                               ncol = 1,
-                               nrow = input$elecs_per_page,
-                               page = input$elec_page,
-                               byrow = TRUE) +
+        facet_grid(electrode~.,
+                   scales = "free_y",
+                   switch = "y") +
+        # ggforce::facet_grid_paginate(electrode~.,
+        #                       scales = "free_y",
+        #                       switch = "y",
+        #                       ncol = 1,
+        #                       nrow = input$elecs_per_page,
+        #                       page = input$elec_page,
+        #                       byrow = TRUE) +
         theme_minimal() +
         theme(
           axis.text.y = element_blank(),
@@ -78,12 +76,5 @@ browse_data <- function(data, sig_length = 5, n_elecs = 20) {
     })
 
   }
-  runGadget(ui, server, viewer = paneViewer(minHeight = 600))
-}
-
-#'
-#'
-
-browse_data_shiny <- function(data) {
-  shiny::runApp(system.file("browse_data_shiny", package = "eegUtils"))
+  runApp(ui, server, viewer = paneViewer(minHeight = 600))
 }
