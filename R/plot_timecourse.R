@@ -145,13 +145,23 @@ plot_timecourse <- function(data, time_lim = NULL,
 #' @param data EEG dataset. Should have multiple timepoints.
 #' @param time_lim Character vector. Numbers in whatever time unit is used specifying beginning and end of time-range to plot. e.g. c(-100,300)
 #' @param baseline  Character vector. Times to use as a baseline. Takes the mean over the specified period and subtracts. e.g. c(-100,0)
-#' @param facet Create multiple plots for a specified grouping variable.
+#' @param facet Create multiple plots for a specified grouping variable. (Not yet implemented)
+#' @param colourmap Attempt to plot using a different colourmap (from RColorBrewer). (Not yet implemented)
+#' @param legend Plot legend or not.
+#' @param continuous Is the data continuous or not (I.e. epoched)
 #' @return ggplot2 object showing ERPs for all electrodes overlaid on a single plot.
 #' @import ggplot2
 #'
 #' @export
 
-plot_butterfly <- function(data, time_lim = NULL, group = NULL, facet = NULL, baseline = NULL, colourmap = NULL) {
+plot_butterfly <- function(data,
+                           time_lim = NULL,
+                           group = NULL,
+                           facet = NULL,
+                           baseline = NULL,
+                           colourmap = NULL,
+                           legend = TRUE,
+                           continuous = FALSE) {
 
   ## select time-range of interest -------------
 
@@ -159,16 +169,30 @@ plot_butterfly <- function(data, time_lim = NULL, group = NULL, facet = NULL, ba
     data <- select_times(data, time_lim)
   }
 
+  if (!is.null(baseline)) {
+    data <- rm_baseline(data, baseline)
+  }
+
   #Set up basic plot -----------
   butterfly_plot <- ggplot(data, aes(x = time, y = amplitude))+
-    geom_line(aes(group = electrode, colour = electrode))
+    geom_line(aes(group = electrode, colour = electrode), alpha = 0.5)
 
-  butterfly_plot +
+  butterfly_plot <- butterfly_plot +
     labs(x = "Time (ms)", y = expression(paste("Amplitude (", mu, "V)")), colour = "") +
-    geom_vline(xintercept = 0, size = 0.5) +
     geom_hline(yintercept = 0, size = 0.5) +
     scale_x_continuous(expand = c(0, 0)) +
     theme_minimal(base_size = 12) +
     theme(panel.grid = element_blank(),
           axis.ticks = element_line(size=.5))
+
+  if (!continuous) {
+    butterfly_plot <- butterfly_plot + geom_vline(xintercept = 0, size = 0.5)
+  }
+
+  if (legend) {
+    butterfly_plot
+  } else {
+    butterfly_plot +
+      theme(legend.position = "none")
+  }
 }
