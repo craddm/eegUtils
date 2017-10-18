@@ -2,7 +2,7 @@
 #'
 #' Typically event-related potentials/fields, but could also be timecourses from frequency analyses for single frequencies. Averages over all submitted electrodes. Output is a ggplot2 object.
 #'
-#'@author Matt Craddock, \email{m.p.craddock@leeds.ac.uk}
+#'@author Matt Craddock, \email{matt@mattcraddock.com}
 #'
 #'@param data EEG dataset. Should have multiple timepoints.
 #'@param electrode Electrode(s) to plot.
