@@ -33,5 +33,5 @@ Returns a ggplot2 plot object
 Typically event-related potentials/fields, but could also be timecourses from frequency analyses for single frequencies. Averages over all submitted electrodes. Output is a ggplot2 object.
 }
 \author{
-Matt Craddock, \email{m.p.craddock@leeds.ac.uk}
+Matt Craddock, \email{matt@mattcraddock.com}
 }

@@ -11,7 +11,6 @@
 #' @import ggplot2
 #' @import shiny
 #' @import miniUI
-#' @import plotly
 #'
 
 browse_data <- function(data, sig_length = 5, n_elecs = 20) {
