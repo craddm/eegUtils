@@ -1,15 +1,26 @@
 #' Referencing
 #'
-#' Used to reference the EEG data to specified electrode or electrodes. Defaults to average reference.
+#' Used to reference the EEG data to specified electrode or electrodes. Defaults
+#' to average reference. Note that this stores the reference channel in the
+#' \code{eeg_data} structure; if one already exists, it is added back to the
+#' data before further referencing takes place.
 #'
-#' @author Matt Craddock \email{m.p.craddock@leeds.ac.uk}
-#' @param data Data to re-reference. Primarily meant for use with data of class \code{eeg_data}.
-#' @param ref_chans Channels to reference data to. Defaults to "all" i.e. average of all electrodes in data.
+#' @author Matt Craddock \email{matt@mattcraddock.com}
+#' @param data Data to re-reference. Primarily meant for use with data of class
+#'   \code{eeg_data}. Long format is expected if a data-frame is submitted.
+#' @param ref_chans Channels to reference data to. Defaults to "average" i.e.
+#'   average of all electrodes in data. Character vector of channel names or numbers.
+#' @param exclude Electrodes to exclude from average reference calculation. Only
+#' @param robust Use median instead of mean; only applicable for average reference.
 #' @importFrom tidyr spread
 #' @importFrom dplyr select
+#' @importFrom tibble as_tibble
+#' @importFrom matrixStats rowMedians
+#' @return object of class \code{eeg_data}, re-referenced as requested.
+#' @export
 #'
 
-reref_eeg <- function(data, ref_chans = "all") {
+reref_eeg <- function(data, ref_chans = "average", exclude = NULL, robust = FALSE) {
 
   if (is.eeg_data(data)) {
     tmp_data <- data$signals
@@ -20,11 +31,45 @@ reref_eeg <- function(data, ref_chans = "all") {
     n_chans <- length(unique(data$electrode))
   }
 
-  if (ref_chans == "all") {
-    tmp_data <- tmp_data - rowMeans(tmp_data)
-  } else {
-    if (ref_chans %in% colnames(tmp_data)) {
+  # check for existing reference.
+  if ("reference" %in% names(data)) {
+    tmp_data <- tmp_data + data$reference$ref_data
+  }
 
+  # Convert ref_chan channel numbers into channel names
+  if (is.numeric(ref_chans)) {
+    ref_chans <- names(tmp_data)[ref_chans]
+  }
+
+  # Get excluded channel names and/or convert to numbers if necessary
+  if (!is.null(exclude)){
+    if (is.numeric(exclude)) {
+      excluded <- names(tmp_data)[exclude]
+    } else {
+        excluded <- exclude
+        exclude <- which(names(tmp_data) == exclude)
+    }
+  }
+
+  if (length(ref_chans) == 1 && ref_chans == "average") {
+    if (is.null(exclude)) {
+      if (robust) {
+        ref_data <- matrixStats::rowMedians(as.matrix(tmp_data))
+      } else {
+        ref_data <- rowMeans(tmp_data)
+      }
+    } else {
+      if (robust) {
+        ref_data <- matrixStats::rowMedians(as.matrix(tmp_data[-exclude]))
+      } else {
+        ref_data <- rowMeans(tmp_data[-exclude])
+      }
+    }
+    tmp_data <- tmp_data - ref_data
+  } else {
+    if (any(all(ref_chans %in% colnames(tmp_data)) | is.numeric(ref_chans))) {
+      ref_data <- rowMeans(tmp_data[ , ref_chans])
+      tmp_data <- tmp_data - ref_data
     } else {
       stop("Electrode(s) not found.")
     }
@@ -32,17 +77,22 @@ reref_eeg <- function(data, ref_chans = "all") {
 
   if (is.eeg_data(data)) {
     data$signals <- tmp_data
-    data
+    if (any(ref_chans == "average")) {
+      data$reference <- list(ref_chans = ref_chans, ref_data = ref_data, excluded = excluded)
+    } else {
+      data$reference <- list(ref_chans = ref_chans, ref_data = ref_data, excluded = NULL)
+    }
+    return(data)
   } else {
-    tmp_data
+    return(as_tibble(tmp_data))
   }
 }
 
 #' Baseline correction.
 #'
-#' Used to remove the mean of a specified time period from the data. Currently performs subtractive baseline
+#' Used to remove the mean of a specified time period from the data. Currently only performs subtractive baseline.
 #'
-#' @author Matt Craddock \email{m.p.craddock@leeds.ac.uk}
+#' @author Matt Craddock \email{matt@mattcraddock.com}
 #' @param data Data to be baseline corrected.
 #' @param time_lim Numeric character vector (e.g. time_lim <- c(-.1, 0)). If none given, defaults to mean of whole epoch if the data is epoched, or the channel mean if the data is continuous.
 #' @import dplyr
@@ -112,7 +162,7 @@ rm_baseline <- function(data, time_lim = NULL) {
 #'
 #' Creates epochs around specified event triggers. Requires data of class \code{eeg_data}.
 #'
-#' @author Matt Craddock \email{m.p.craddock@leeds.ac.uk}
+#' @author Matt Craddock \email{matt@mattcraddock.com}
 #' @param data Continuous data to be epoched.
 #' @param events Character vector of events to epoch around.
 #' @param time_lim Time in seconds to form epoch around the events. Defaults to one second either side.
