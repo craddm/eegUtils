@@ -2,21 +2,23 @@
 % Please edit documentation in R/data_selection.R
 \name{select_times}
 \alias{select_times}
-\title{Select timepoints from a given dataset}
+\title{Select timerange}
 \usage{
-select_times(data, time_lim)
+select_times(data, ...)
 }
 \arguments{
-\item{data}{An EEG dataset.}
+\item{data}{Data from which to select}
 
-\item{time_lim}{A character vector of two numbers indicating the time range to be selected e.g. c(min, max)}
-}
-\value{
-Data frame with only data from within the specified range.
+\item{...}{Further arguments passed to or from other methods.}
 }
 \description{
-Select timepoints from a given dataset
+Generic function for selecting specific time ranges from a given dataset.
+Input can be a dataframe or an object of class \code{eeg_data}.
+}
+\seealso{
+\code{\link{select_times.default}},
+  \code{\link{select_times.eeg_data}}, \code{\link{select_elecs}}
 }
 \author{
-Matt Craddock, \email{m.p.craddock@leeds.ac.uk}
+Matt Craddock, \email{matt@mattcraddock.com}
 }

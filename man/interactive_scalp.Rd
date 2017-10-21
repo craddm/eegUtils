@@ -17,5 +17,5 @@ Launches a Shiny Gadget for an interactive version of erp_scalp, allowing clicki
 Currently buggy with datasets with existing electrode co-ordinates.
 }
 \author{
-Matt Craddock, \email{m.p.craddock@leeds.ac.uk}
+Matt Craddock, \email{matt@mattcraddock.com}
 }

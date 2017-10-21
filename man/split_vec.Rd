@@ -13,5 +13,5 @@ split_vec(vec, seg_length, overlap)
 Split data into segments for Welch PSD .
 }
 \author{
-Matt Craddock \mail{matt@mattcraddock.com}
+Matt Craddock \email{matt@mattcraddock.com}
 }
