@@ -2,7 +2,7 @@
 #'
 #' Currently only BDF or EDF files are supported. The \code{edfReader} package reads the data in, and then the function creates an eeg_data structure for subsequent use.
 #'
-#' @author Matt Craddock, \email{m.p.craddock@leeds.ac.uk}
+#' @author Matt Craddock, \email{matt@mattcraddock.com}
 #' @param file_name File to import.
 #' @param file_path Path to file name, if not included in filename.
 #' @param chan_nos Channels to import. All channels are included by default.

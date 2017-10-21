@@ -17,7 +17,7 @@ select_elecs(data, ...)
 Data frame with only data from the chosen electrodes
 }
 \description{
-This is a generic function
+This is a generic function for selection of electrodes from an EEG dataset.
 }
 \author{
 Matt Craddock, \email{matt@mattcraddock.com}

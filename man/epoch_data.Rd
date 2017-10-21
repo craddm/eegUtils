@@ -20,5 +20,5 @@ Returns an epoched object of class \code{eeg_data}
 Creates epochs around specified event triggers. Requires data of class \code{eeg_data}.
 }
 \author{
-Matt Craddock \email{m.p.craddock@leeds.ac.uk}
+Matt Craddock \email{matt@mattcraddock.com}
 }

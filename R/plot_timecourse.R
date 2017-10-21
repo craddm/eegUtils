@@ -163,6 +163,9 @@ plot_butterfly <- function(data,
                            legend = TRUE,
                            continuous = FALSE) {
 
+  if (is.eeg_data(data)) {
+    data <- as.data.frame(data, long = TRUE)
+  }
   ## select time-range of interest -------------
 
   if (!is.null(time_lim)) {

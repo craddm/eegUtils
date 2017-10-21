@@ -16,8 +16,8 @@ erp_image <- function(data, electrode = "Cz", smoothing = 10, clim = NULL) {
 
   n_times <- length(unique(data$time))
 
-  data <- filter(data, electrode == get("electrode"))
-  data <- mutate(data,
+  data <- dplyr::filter(data, electrode == get("electrode"))
+  data <- dplyr::mutate(data,
                  smooth_time = rep((seq(time[1], time[n_times], length.out = n_times)), times = length(unique(epoch))),
                  smooth_amp = as.numeric(stats::filter(amplitude, rep(1/smoothing,smoothing), sides = 2)),
                  epoch = as.numeric(factor(epoch)))
@@ -28,7 +28,7 @@ erp_image <- function(data, electrode = "Cz", smoothing = 10, clim = NULL) {
     clim <- max(abs(max(data$smooth_amp, na.rm = T)), abs(min(data$smooth_amp, na.rm = T))) %>% c(-., .)
   }
 
-  ggplot(data,aes(x = smooth_time, y = epoch, fill = smooth_amp)) +
+  ggplot2::ggplot(data,aes(x = smooth_time, y = epoch, fill = smooth_amp)) +
     geom_raster(interpolate = TRUE) +
     geom_vline(xintercept = 0, linetype = "dashed", size = 1) +
     scale_fill_distiller(palette = "RdBu", limits = c(clim[1],clim[2]), oob = scales::squish) +

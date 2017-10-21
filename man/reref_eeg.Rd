@@ -4,16 +4,28 @@
 \alias{reref_eeg}
 \title{Referencing}
 \usage{
-reref_eeg(data, ref_chans = "all")
+reref_eeg(data, ref_chans = "average", exclude = NULL, robust = FALSE)
 }
 \arguments{
-\item{data}{Data to re-reference. Primarily meant for use with data of class \code{eeg_data}.}
+\item{data}{Data to re-reference. Primarily meant for use with data of class
+\code{eeg_data}. Long format is expected if a data-frame is submitted.}
 
-\item{ref_chans}{Channels to reference data to. Defaults to "all" i.e. average of all electrodes in data.}
+\item{ref_chans}{Channels to reference data to. Defaults to "average" i.e.
+average of all electrodes in data. Character vector of channel names or numbers.}
+
+\item{exclude}{Electrodes to exclude from average reference calculation. Only}
+
+\item{robust}{Use median instead of mean; only applicable for average reference.}
+}
+\value{
+object of class \code{eeg_data}, re-referenced as requested.
 }
 \description{
-Used to reference the EEG data to specified electrode or electrodes. Defaults to average reference.
+Used to reference the EEG data to specified electrode or electrodes. Defaults
+to average reference. Note that this stores the reference channel in the
+\code{eeg_data} structure; if one already exists, it is added back to the
+data before further referencing takes place.
 }
 \author{
-Matt Craddock \email{m.p.craddock@leeds.ac.uk}
+Matt Craddock \email{matt@mattcraddock.com}
 }

@@ -2,15 +2,19 @@
 % Please edit documentation in R/psd.R
 \name{split_vec}
 \alias{split_vec}
-\title{Split data into segments for Welch PSD .}
+\title{Segment data.}
 \usage{
 split_vec(vec, seg_length, overlap)
 }
 \arguments{
-\item{vec}{Data vector to be split up}
+\item{vec}{Data vector to be split up into segments.}
+
+\item{seg_length}{Length of segments to be FFT'd (in samples).}
+
+\item{overlap}{Overlap between segments (in samples).}
 }
 \description{
-Split data into segments for Welch PSD .
+Split data into segments for Welch PSD.
 }
 \author{
 Matt Craddock \email{matt@mattcraddock.com}

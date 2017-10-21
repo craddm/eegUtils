@@ -35,6 +35,7 @@ compute_psd_welch <- function(data,
       data_segs <- data
       }
 
+  # Hamming window.
   win <- .54 - (1 - .54) * cos(2 * pi * seq(0, 1, by = 1 / (n_fft - 1)))
 
   if (seg_length > n_fft) {
@@ -47,7 +48,9 @@ compute_psd_welch <- function(data,
       data_fft <- purrr::map(data_segs, ~ fft(. * win))
     }
 
+  # Normalise the window
   U <- c(t(win) %*% win)
+
   final_out <- purrr::map(data_fft, ~abs(. * Conj(.)) / U)
 
   if (is.null(srate)) {
@@ -64,12 +67,14 @@ compute_psd_welch <- function(data,
 }
 
 
-#' Split data into segments for Welch PSD .
+#' Segment data.
 #'
-#' @author Matt Craddock \mail{matt@mattcraddock.com}
-#' @param vec Data vector to be split up
-#' @param seg_length
-#' @param overlap
+#' Split data into segments for Welch PSD.
+#'
+#' @author Matt Craddock \email{matt@mattcraddock.com}
+#' @param vec Data vector to be split up into segments.
+#' @param seg_length Length of segments to be FFT'd (in samples).
+#' @param overlap Overlap between segments (in samples).
 
 split_vec <- function(vec, seg_length, overlap) {
   k <- floor((length(vec) - overlap) / (seg.length - overlap))

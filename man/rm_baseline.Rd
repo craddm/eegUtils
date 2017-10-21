@@ -12,8 +12,8 @@ rm_baseline(data, time_lim = NULL)
 \item{time_lim}{Numeric character vector (e.g. time_lim <- c(-.1, 0)). If none given, defaults to mean of whole epoch if the data is epoched, or the channel mean if the data is continuous.}
 }
 \description{
-Used to remove the mean of a specified time period from the data. Currently performs subtractive baseline
+Used to remove the mean of a specified time period from the data. Currently only performs subtractive baseline.
 }
 \author{
-Matt Craddock \email{m.p.craddock@leeds.ac.uk}
+Matt Craddock \email{matt@mattcraddock.com}
 }

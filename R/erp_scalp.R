@@ -129,7 +129,7 @@ erp_scalp <- function(data,
 #' @param colour Variable to colour lines by. If no variable is passed, only
 #' one line is drawn for each electrode.
 #'
-#' @author Matt Craddock, \email{m.p.craddock@leeds.ac.uk}
+#' @author Matt Craddock, \email{matt@mattcraddock.com}
 #'
 #' @import shiny
 #' @import miniUI

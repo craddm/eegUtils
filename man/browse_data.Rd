@@ -4,18 +4,25 @@
 \alias{browse_data}
 \title{Browse continuous data.}
 \usage{
-browse_data(data, sig_length = 5, n_elecs = 20)
+browse_data(data, sig_length = 5, n_elecs = 20, downsample = FALSE)
 }
 \arguments{
-\item{sig_length}{Length of signal to be plotted initially (seconds if continuous, epochs if epoched).}
+\item{sig_length}{Length of signal to be plotted initially (seconds if
+continuous, epochs if epoched).}
 
 \item{n_elecs}{Number of electrodes to be plotted on a single screen.}
 
-\item{df}{Data to be plotted. Must have columns headed time, amplitude, and electrode.}
+\item{downsample}{Only works on \code{eeg_data} objects. Reduces size of data
+by only plotting every 4th point, speeding up plotting considerably.}
+
+\item{df}{Data to be plotted. Must have columns headed time, amplitude, and
+electrode.}
 }
 \description{
-Browse continuous data.
+A Shiny gadget for browsing continuous data interactively. Data can be viewed
+as a butterfly plot (all electrodes overlaid) or as individual traces
+(electrodes "stacked").
 }
 \author{
-Matt Craddock \email{m.p.craddock@leeds.ac.uk}
+Matt Craddock \email{matt@mattcraddock.com}
 }

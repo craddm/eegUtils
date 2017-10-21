@@ -17,5 +17,5 @@ import_raw(file_name, file_path = NULL, chan_nos = NULL)
 Currently only BDF or EDF files are supported. The \code{edfReader} package reads the data in, and then the function creates an eeg_data structure for subsequent use.
 }
 \author{
-Matt Craddock, \email{m.p.craddock@leeds.ac.uk}
+Matt Craddock, \email{matt@mattcraddock.com}
 }

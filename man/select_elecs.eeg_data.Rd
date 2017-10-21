@@ -17,7 +17,7 @@
 \item{df_out}{}
 }
 \value{
-\code{eeg_data} object with
+\code{eeg_data} object with selected electrodes removed/kept.
 }
 \description{
 Checks for presence of electrode column, and if found, presence of selected electrodes.
