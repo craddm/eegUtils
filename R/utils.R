@@ -51,7 +51,8 @@ eeg_data <- function(data,
                      events = NULL,
                      chan_labels = NULL,
                      timings = NULL,
-                     continuous = NULL) {
+                     continuous = NULL,
+                     reference = NULL) {
   if (srate < 1) {
     stop("Sampling rate must be above 0")
   }
@@ -59,7 +60,8 @@ eeg_data <- function(data,
                 srate = srate,
                 events = events,
                 timings = timings,
-                continuous = continuous
+                continuous = continuous,
+                reference = reference
                 )
   class(value) <- "eeg_data"
   value
