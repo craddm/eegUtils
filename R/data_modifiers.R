@@ -32,7 +32,7 @@ reref_eeg <- function(data, ref_chans = "average", exclude = NULL, robust = FALS
   }
 
   # check for existing reference.
-  if ("reference" %in% names(data)) {
+  if (!is.null(data$reference)) {
     tmp_data <- tmp_data + data$reference$ref_data
   }
 
@@ -49,6 +49,8 @@ reref_eeg <- function(data, ref_chans = "average", exclude = NULL, robust = FALS
         excluded <- exclude
         exclude <- which(names(tmp_data) == exclude)
     }
+  } else {
+    excluded <- NULL
   }
 
   if (length(ref_chans) == 1 && ref_chans == "average") {
@@ -68,7 +70,11 @@ reref_eeg <- function(data, ref_chans = "average", exclude = NULL, robust = FALS
     tmp_data <- tmp_data - ref_data
   } else {
     if (any(all(ref_chans %in% colnames(tmp_data)) | is.numeric(ref_chans))) {
-      ref_data <- rowMeans(tmp_data[ , ref_chans])
+      if (length(ref_chans) > 1) {
+        ref_data <- rowMeans(tmp_data[ , ref_chans])
+      } else {
+        ref_data <- tmp_data[ , ref_chans]
+      }
       tmp_data <- tmp_data - ref_data
     } else {
       stop("Electrode(s) not found.")
@@ -173,19 +179,38 @@ rm_baseline <- function(data, time_lim = NULL) {
 #'
 #' @export
 
-epoch_data <- function(data, events, time_lim = (c(-1,1))) {
 
+epoch_data <- function(data, events, time_lim = (c(-1, 1))) {
   if (is.eeg_data(data)) {
     samps <- seq(round(time_lim[[1]] * data$srate), round(time_lim[[2]] * (data$srate - 1)))
     event_table <- data$events
-    epoch_zero <- sort(unlist(map(events, ~event_table[which(event_table$event_type == .), ]$event_onset)))
-    epoched_data <- purrr::map(epoch_zero, ~. + samps)
-    epoched_data <- purrr::map_df(epoched_data,~data.frame(sample = ., time = samps/data$srate), .id = "epoch")
-    epoched_data <- dplyr::left_join(epoched_data, cbind(data$signals, data$timings), by = c("sample" = "sample"))
+    epoch_zero <- sort(unlist(purrr::map(events,
+                                         ~event_table[which(event_table$event_type == .),]$event_onset)))
+    epoched_data <- purrr::map(epoch_zero,
+                               ~ . + samps)
+    epoched_data <-
+      purrr::map_df(epoched_data,
+                    ~ tibble::tibble(sample = ., time = samps / data$srate),
+                    .id = "epoch")
+    epoched_data$epoch <- as.numeric(epoched_data$epoch)
+    epoched_data <-
+      dplyr::left_join(epoched_data,
+                       cbind(data$signals, data$timings),
+                       by = c("sample" = "sample"))
+    if (!is.null(data$reference)) {
+      ref_data <-
+        dplyr::left_join(epoched_data, as.data.frame(
+          cbind(
+            sample = data$timings$sample,
+            ref_data = data$reference$ref_data
+          )
+        ), by = c("sample" = "sample"))
+      data$reference$ref_data <- ref_data[["ref_data"]]
+    }
     epoched_data$time.y <- NULL
     names(epoched_data)[[3]] <- "time"
-    data$signals <- epoched_data[,-1:-3]
-    data$timings <- epoched_data[,1:3]
+    data$signals <- epoched_data[, -1:-3]
+    data$timings <- epoched_data[, 1:3]
     data$continuous <- FALSE
     return(data)
   } else {
