@@ -29,6 +29,11 @@ plot_timecourse <- function(data, time_lim = NULL,
                             color = NULL) {
 
   if (is.eeg_data(data)) {
+
+    if (data$continuous) {
+      stop("Not currently supported for continuous data.")
+    }
+
     data <- as.data.frame(data, long = TRUE)
   }
 
@@ -145,10 +150,11 @@ plot_timecourse <- function(data, time_lim = NULL,
 #' @param data EEG dataset. Should have multiple timepoints.
 #' @param time_lim Character vector. Numbers in whatever time unit is used specifying beginning and end of time-range to plot. e.g. c(-100,300)
 #' @param baseline  Character vector. Times to use as a baseline. Takes the mean over the specified period and subtracts. e.g. c(-100,0)
-#' @param facet Create multiple plots for a specified grouping variable. (Not yet implemented)
+#' @param facet Create multiple plots for a specified grouping variable.
 #' @param colourmap Attempt to plot using a different colourmap (from RColorBrewer). (Not yet implemented)
 #' @param legend Plot legend or not.
 #' @param continuous Is the data continuous or not (I.e. epoched)
+#' @param browse_mode Custom theme for use with browse_data.
 #' @return ggplot2 object showing ERPs for all electrodes overlaid on a single plot.
 #' @import ggplot2
 #'
@@ -161,7 +167,8 @@ plot_butterfly <- function(data,
                            baseline = NULL,
                            colourmap = NULL,
                            legend = TRUE,
-                           continuous = FALSE) {
+                           continuous = FALSE,
+                           browse_mode = FALSE) {
 
   if (is.eeg_data(data)) {
     data <- as.data.frame(data, long = TRUE)
@@ -177,19 +184,34 @@ plot_butterfly <- function(data,
   }
 
   #Set up basic plot -----------
-  butterfly_plot <- ggplot(data, aes(x = time, y = amplitude))+
-    geom_line(aes(group = electrode, colour = electrode), alpha = 0.5)
+  butterfly_plot <- ggplot(data, aes(x = time, y = amplitude))
 
-  butterfly_plot <- butterfly_plot +
-    labs(x = "Time (ms)", y = expression(paste("Amplitude (", mu, "V)")), colour = "") +
-    geom_hline(yintercept = 0, size = 0.5) +
-    scale_x_continuous(expand = c(0, 0)) +
-    theme_minimal(base_size = 12) +
-    theme(panel.grid = element_blank(),
-          axis.ticks = element_line(size=.5))
+  if (browse_mode) {
+    butterfly_plot <- butterfly_plot +
+      geom_line(aes(group = electrode), colour = "black", alpha = 0.2) +
+      labs(x = "Time (ms)", y = expression(paste("Amplitude (", mu, "V)")), colour = "") +
+      geom_hline(yintercept = 0, size = 0.5, linetype = "dashed", alpha = 0.5) +
+      scale_x_continuous(expand = c(0, 0)) +
+      theme_minimal(base_size = 12) +
+      theme(panel.grid = element_blank(),
+            axis.ticks = element_line(size=.5))
+  } else {
+    butterfly_plot <- butterfly_plot +
+      geom_line(aes(group = electrode, colour = electrode), alpha = 0.5) +
+      labs(x = "Time (ms)", y = expression(paste("Amplitude (", mu, "V)")), colour = "") +
+      geom_hline(yintercept = 0, size = 0.5) +
+      scale_x_continuous(expand = c(0, 0)) +
+      theme_minimal(base_size = 12) +
+      theme(panel.grid = element_blank(),
+            axis.ticks = element_line(size=.5))
 
-  if (!continuous) {
-    butterfly_plot <- butterfly_plot + geom_vline(xintercept = 0, size = 0.5)
+    if (!continuous) {
+      butterfly_plot <- butterfly_plot + geom_vline(xintercept = 0, size = 0.5)
+    }
+
+    if (!is.null(facet)) {
+      butterfly_plot + facet_wrap(facet)
+    }
   }
 
   if (legend) {

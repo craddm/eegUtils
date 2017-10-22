@@ -2,11 +2,13 @@
 % Please edit documentation in R/data_viewers.R
 \name{browse_data}
 \alias{browse_data}
-\title{Browse continuous data.}
+\title{Browse EEG data.}
 \usage{
 browse_data(data, sig_length = 5, n_elecs = 20, downsample = FALSE)
 }
 \arguments{
+\item{data}{\code{eeg_data} object to be plotted.}
+
 \item{sig_length}{Length of signal to be plotted initially (seconds if
 continuous, epochs if epoched).}
 
@@ -14,9 +16,6 @@ continuous, epochs if epoched).}
 
 \item{downsample}{Only works on \code{eeg_data} objects. Reduces size of data
 by only plotting every 4th point, speeding up plotting considerably.}
-
-\item{df}{Data to be plotted. Must have columns headed time, amplitude, and
-electrode.}
 }
 \description{
 A Shiny gadget for browsing continuous data interactively. Data can be viewed

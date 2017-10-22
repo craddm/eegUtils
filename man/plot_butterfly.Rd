@@ -5,14 +5,15 @@
 \title{Create a butterfly plot from timecourse data}
 \usage{
 plot_butterfly(data, time_lim = NULL, group = NULL, facet = NULL,
-  baseline = NULL, colourmap = NULL, legend = TRUE, continuous = FALSE)
+  baseline = NULL, colourmap = NULL, legend = TRUE, continuous = FALSE,
+  browse_mode = FALSE)
 }
 \arguments{
 \item{data}{EEG dataset. Should have multiple timepoints.}
 
 \item{time_lim}{Character vector. Numbers in whatever time unit is used specifying beginning and end of time-range to plot. e.g. c(-100,300)}
 
-\item{facet}{Create multiple plots for a specified grouping variable. (Not yet implemented)}
+\item{facet}{Create multiple plots for a specified grouping variable.}
 
 \item{baseline}{Character vector. Times to use as a baseline. Takes the mean over the specified period and subtracts. e.g. c(-100,0)}
 
@@ -21,6 +22,8 @@ plot_butterfly(data, time_lim = NULL, group = NULL, facet = NULL,
 \item{legend}{Plot legend or not.}
 
 \item{continuous}{Is the data continuous or not (I.e. epoched)}
+
+\item{browse_mode}{Custom theme for use with browse_data.}
 }
 \value{
 ggplot2 object showing ERPs for all electrodes overlaid on a single plot.
