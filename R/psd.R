@@ -10,7 +10,6 @@
 #' @param srate Sampling rate
 #' @import tidyr
 #' @import dplyr
-#' @importFrom bspec welchPSD
 #' @importFrom purrr map
 #'
 
