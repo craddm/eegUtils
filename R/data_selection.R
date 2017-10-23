@@ -25,7 +25,7 @@ select_times <- function(data, ...) {
 #' @param time_lim A character vector of two numbers indicating the time range to be selected e.g. c(min, max)
 #' @importFrom dplyr filter
 #' @return Data frame with only data from within the specified range.
-#' @seealso \code{\link{select_times}}, \code{\link{select_times.eeg_data}}
+#' @seealso \code{\link{select_times}}, \code{\link{select_times.eeg_data}}, \code{\link{select_elecs}}
 #' @export
 
 select_times.default <- function(data, time_lim) {
@@ -141,7 +141,7 @@ select_elecs.default <- function(data, electrode, keep = TRUE) {
 #' @param data An \code{eeg_data} object.
 #' @param electrode A character vector of electrode labels for selection or removal.
 #' @param keep Defaults to TRUE. Set to false to *remove* the selected electrodes.
-#' @param df_out
+#' @param df_out Defaults to FALSE. Set to TRUE to return a dataframe rather than an \code{eeg_data} object.
 #'
 #' @return \code{eeg_data} object with selected electrodes removed/kept.
 #'

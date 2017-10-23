@@ -18,7 +18,7 @@ Data frame with only data from within the specified range.
 Select timerange from a dataframe.
 }
 \seealso{
-\code{\link{select_times}}, \code{\link{select_times.eeg_data}}
+\code{\link{select_times}}, \code{\link{select_times.eeg_data}}, \code{\link{select_elecs}}
 }
 \author{
 Matt Craddock, \email{matt@mattcraddock.com}

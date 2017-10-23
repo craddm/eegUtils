@@ -42,8 +42,10 @@ electrode_locations <- function(data,
 #' @author Matt Craddock \email{matt@mattcraddock.com}
 #' @param data Raw data - signals from electrodes/channels.
 #' @param srate Sampling rate in Hz.
-#' @param chan_labels String of character names for electrodes.
-#' @param timings
+#' @param chan_info String of character names for electrodes.
+#' @param timings Timing information - samples and sample /samplirng rate.
+#' @param continuous Whether the data is continuous or epoched.
+#' @param reference Reference channel information, including names of reference channels, excluded channels etc.
 #' @export
 
 eeg_data <- function(data,
