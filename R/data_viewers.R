@@ -28,8 +28,18 @@ browse_data <- function(data, sig_length = 5, n_elecs = NULL, downsample = FALSE
     stop("Function only implemented for eeg_data objects.")
   } else {
     continuous <- data$continuous
+    srate <- data$srate
     data <- as.data.frame(data, long = TRUE)
     if (downsample) {
+      if (continuous) {
+        data <- group_by(data, electrode)
+        data <- mutate(data, amplitude = iir_filt(amplitude, high_freq = (srate / 4 / 2), srate = (srate/4)))
+        data <- ungroup(data)
+      } else {
+        data <- group_by(data, electrode, epoch)
+        data <- mutate(data, amplitude = iir_filt(amplitude, high_freq = (srate / 4 / 2), srate = (srate/4)))
+        data <- ungroup(data)
+      }
       data <- data[seq(1, nrow(data), 4), ]
     }
   }
@@ -77,7 +87,7 @@ browse_data <- function(data, sig_length = 5, n_elecs = NULL, downsample = FALSE
                            fillRow(
                              numericInput("sig_time_ind", "Display length", sig_length, min = 1, max = 60),
                              #numericInput("elecs_per_page_ind", "Electrodes per page", n_elecs, min = 1, max = 30),
-                             checkboxInput("dc_offset", "Remove DC offset", value = TRUE)
+                             checkboxInput("dc_offset_ind", "Remove DC offset", value = TRUE)
                            )
                          )
                        )
@@ -105,7 +115,7 @@ browse_data <- function(data, sig_length = 5, n_elecs = NULL, downsample = FALSE
         tmp_data <- dplyr::filter(data,
                                   time >= input$time_range_ind,
                                   time <= (input$time_range_ind + input$sig_time_ind))
-        if (input$dc_offset) {
+        if (input$dc_offset_ind) {
           tmp_data <- rm_baseline(tmp_data)
         }
 
@@ -125,7 +135,7 @@ browse_data <- function(data, sig_length = 5, n_elecs = NULL, downsample = FALSE
           scale_x_continuous(expand = c(0,0))
 
         init_plot
-      }, height = 2000, inline = FALSE)
+      }, height = 2000)
 
       observeEvent(input$done, {
         stopApp()

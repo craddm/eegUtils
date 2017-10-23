@@ -73,7 +73,7 @@ reref_eeg <- function(data, ref_chans = "average", exclude = NULL, robust = FALS
       if (length(ref_chans) > 1) {
         ref_data <- rowMeans(tmp_data[ , ref_chans])
       } else {
-        ref_data <- tmp_data[ , ref_chans]
+        ref_data <- unlist(tmp_data[ , ref_chans])
       }
       tmp_data <- tmp_data - ref_data
     } else {
@@ -150,13 +150,13 @@ rm_baseline <- function(data, time_lim = NULL) {
   data <- ungroup(data)
 
   if (obj_class) {
-    data <- spread(data, electrode, amplitude)
+    data <- tidyr::spread(data, electrode, amplitude)
     if (orig_data$continuous) {
-      orig_data$signals <- select(data, -time, -sample)
-      orig_data$timings <- select(data, time, sample)
+      orig_data$signals <- dplyr::select(data, -time, -sample)
+      orig_data$timings <- dplyr::select(data, time, sample)
     } else {
-      orig_data$signals <- select(data, -time, -epoch, -sample)
-      orig_data$timings <- select(data, time, epoch, sample)
+      orig_data$signals <- dplyr::select(data, -time, -epoch, -sample)
+      orig_data$timings <- dplyr::select(data, time, epoch, sample)
     }
     orig_data
   } else {
