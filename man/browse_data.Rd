@@ -4,7 +4,7 @@
 \alias{browse_data}
 \title{Browse EEG data.}
 \usage{
-browse_data(data, sig_length = 5, n_elecs = 20, downsample = FALSE)
+browse_data(data, sig_length = 5, n_elecs = NULL, downsample = FALSE)
 }
 \arguments{
 \item{data}{\code{eeg_data} object to be plotted.}
@@ -12,15 +12,17 @@ browse_data(data, sig_length = 5, n_elecs = 20, downsample = FALSE)
 \item{sig_length}{Length of signal to be plotted initially (seconds if
 continuous, epochs if epoched).}
 
-\item{n_elecs}{Number of electrodes to be plotted on a single screen.}
+\item{n_elecs}{Number of electrodes to be plotted on a single screen. (not yet implemented)}
 
 \item{downsample}{Only works on \code{eeg_data} objects. Reduces size of data
-by only plotting every 4th point, speeding up plotting considerably.}
+by only plotting every 4th point, speeding up plotting considerably. Nb. may
+cause aliasing as does not filter. Use with caution.}
 }
 \description{
 A Shiny gadget for browsing continuous data interactively. Data can be viewed
 as a butterfly plot (all electrodes overlaid) or as individual traces
-(electrodes "stacked").
+(electrodes "stacked"). Currently, the scale cannot be manually set and is
+determined by the range of the viewable data.
 }
 \author{
 Matt Craddock \email{matt@mattcraddock.com}

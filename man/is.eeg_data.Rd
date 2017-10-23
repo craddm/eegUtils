@@ -13,5 +13,5 @@ is.eeg_data(x)
 Check if object is of class "eeg_data".
 }
 \author{
-Matt Craddock \email{m.p.craddock@leeds.ac.uk}
+Matt Craddock \email{matt@mattcraddock.com}
 }

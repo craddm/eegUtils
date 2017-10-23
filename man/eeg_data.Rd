@@ -4,7 +4,7 @@
 \alias{eeg_data}
 \title{Function to create an S3 object of class "eeg_data".}
 \usage{
-eeg_data(data, srate, events = NULL, chan_labels = NULL, timings = NULL,
+eeg_data(data, srate, events = NULL, chan_info = NULL, timings = NULL,
   continuous = NULL, reference = NULL)
 }
 \arguments{
@@ -12,13 +12,17 @@ eeg_data(data, srate, events = NULL, chan_labels = NULL, timings = NULL,
 
 \item{srate}{Sampling rate in Hz.}
 
-\item{chan_labels}{String of character names for electrodes.}
+\item{chan_info}{String of character names for electrodes.}
 
-\item{timings}{}
+\item{timings}{Timing information - samples and sample /samplirng rate.}
+
+\item{continuous}{Whether the data is continuous or epoched.}
+
+\item{reference}{Reference channel information, including names of reference channels, excluded channels etc.}
 }
 \description{
 Function to create an S3 object of class "eeg_data".
 }
 \author{
-Matt Craddock \email{m.p.craddock@leeds.ac.uk}
+Matt Craddock \email{matt@mattcraddock.com}
 }

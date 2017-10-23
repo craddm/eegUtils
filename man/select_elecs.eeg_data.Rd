@@ -14,7 +14,7 @@
 
 \item{keep}{Defaults to TRUE. Set to false to *remove* the selected electrodes.}
 
-\item{df_out}{}
+\item{df_out}{Defaults to FALSE. Set to TRUE to return a dataframe rather than an \code{eeg_data} object.}
 }
 \value{
 \code{eeg_data} object with selected electrodes removed/kept.
