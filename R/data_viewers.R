@@ -260,7 +260,7 @@ browse_data <- function(data, sig_length = 5, n_elecs = NULL, downsample = FALSE
           geom_vline(xintercept = 0, linetype = "longdash")
 
         init_plot
-      }, height = 2500, inline = FALSE)
+      }, height = 2500)
 
       observeEvent(input$done, {
         stopApp()

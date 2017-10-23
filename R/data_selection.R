@@ -115,7 +115,7 @@ select_elecs <- function(data, ...) {
 #' @export
 #'
 
-select_elecs.default <- function(data, electrode, keep = TRUE) {
+select_elecs.default <- function(data, ..., electrode, keep = TRUE) {
 
   if ("electrode" %in% colnames(data)) {
     if (all(electrode %in% data$electrode)) {
@@ -149,7 +149,7 @@ select_elecs.default <- function(data, electrode, keep = TRUE) {
 #'
 
 select_elecs.eeg_data <-
-  function(data,
+  function(data, ...,
            electrode,
            keep = TRUE,
            df_out = FALSE) {

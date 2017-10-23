@@ -4,7 +4,7 @@
 \alias{switch_format}
 \title{Switch from wide to long format.}
 \usage{
-switch_format(x)
+switch_format(data)
 }
 \arguments{
 \item{data}{Data to convert}

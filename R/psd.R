@@ -1,7 +1,7 @@
 #' Compute power spectral density using Welch's method
 #'
 #' @author Matt Craddock \email{matt@mattcraddock.com}
-#' @param df Data to be plotted. Accepts objects of class \code{eeg_data} or
+#' @param data Data to be plotted. Accepts objects of class \code{eeg_data} or
 #'   simple vectors. If a vector is supplied, \code{srate} must also be
 #'   provided.
 #' @param n_fft Length of FFT to be calculated.

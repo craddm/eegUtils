@@ -4,7 +4,7 @@
 \alias{select_elecs.eeg_data}
 \title{Select electrodes from a given dataset.}
 \usage{
-\method{select_elecs}{eeg_data}(data, electrode, keep = TRUE,
+\method{select_elecs}{eeg_data}(data, ..., electrode, keep = TRUE,
   df_out = FALSE)
 }
 \arguments{

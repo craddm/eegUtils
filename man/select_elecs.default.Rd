@@ -4,7 +4,7 @@
 \alias{select_elecs.default}
 \title{Select electrodes from a given dataset.}
 \usage{
-\method{select_elecs}{default}(data, electrode, keep = TRUE)
+\method{select_elecs}{default}(data, ..., electrode, keep = TRUE)
 }
 \arguments{
 \item{data}{An EEG dataset.}

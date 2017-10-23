@@ -8,6 +8,10 @@ compute_psd_welch(data, seg_length = NULL, noverlap = 0, n_fft = 256,
   srate = NULL)
 }
 \arguments{
+\item{data}{Data to be plotted. Accepts objects of class \code{eeg_data} or
+simple vectors. If a vector is supplied, \code{srate} must also be
+provided.}
+
 \item{seg_length}{Length of rolling data segments.}
 
 \item{noverlap}{Number of (sampling) points of overlap between segments.}
@@ -15,10 +19,6 @@ compute_psd_welch(data, seg_length = NULL, noverlap = 0, n_fft = 256,
 \item{n_fft}{Length of FFT to be calculated.}
 
 \item{srate}{Sampling rate}
-
-\item{df}{Data to be plotted. Accepts objects of class \code{eeg_data} or
-simple vectors. If a vector is supplied, \code{srate} must also be
-provided.}
 }
 \description{
 Compute power spectral density using Welch's method

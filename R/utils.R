@@ -46,6 +46,7 @@ electrode_locations <- function(data,
 #' @param timings Timing information - samples and sample /samplirng rate.
 #' @param continuous Whether the data is continuous or epoched.
 #' @param reference Reference channel information, including names of reference channels, excluded channels etc.
+#' @param events Event table
 #' @export
 
 eeg_data <- function(data,
@@ -78,11 +79,16 @@ eeg_data <- function(data,
 
 is.eeg_data <- function(x) inherits(x, "eeg_data")
 
-#' Generic as.data.frame method for objects of class \code{eeg_data}
+#' Convert eeg_data to data.frame
+#'
+#' Convert an object of class \code{eeg_data} into a standard data.frame / tibble
+#'
+#' @param data Object of class \code{eeg_data}.
+#' @param long Convert to long format. Defaults to FALSE.
 #' @importFrom tidyr gather
 #' @export
 
-as.data.frame.eeg_data <- function (x, long = FALSE) {
+as.data.frame.eeg_data <- function (data, long = FALSE) {
   df <- data.frame(x$signals, x$timings)
   if (long) {
     if (x$continuous) {
@@ -100,8 +106,8 @@ as.data.frame.eeg_data <- function (x, long = FALSE) {
 #' @param data Data to convert
 #' @importFrom tidyr gather
 
-switch_format <- function(x) {
-  x <- tidyr::gather(x, electrode, amplitude, -time)
-  if (is.eeg_data(x)) {
+switch_format <- function(data) {
+  x <- tidyr::gather(data, electrode, amplitude, -time)
+  if (is.eeg_data(data)) {
   }
 }

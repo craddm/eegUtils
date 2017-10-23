@@ -25,6 +25,8 @@ plot_timecourse(data, time_lim = NULL, group = NULL, facet = NULL,
 one line is drawn.}
 
 \item{electrode}{Electrode(s) to plot.}
+
+\item{color}{Alias for colour.}
 }
 \value{
 Returns a ggplot2 plot object

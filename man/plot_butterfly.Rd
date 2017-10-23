@@ -11,13 +11,18 @@ plot_butterfly(data, time_lim = NULL, group = NULL, facet = NULL,
 \arguments{
 \item{data}{EEG dataset. Should have multiple timepoints.}
 
-\item{time_lim}{Character vector. Numbers in whatever time unit is used specifying beginning and end of time-range to plot. e.g. c(-100,300)}
+\item{time_lim}{Character vector. Numbers in whatever time unit is used
+specifying beginning and end of time-range to plot. e.g. c(-100,300)}
+
+\item{group}{Group lines by a specificed grouping variable.}
 
 \item{facet}{Create multiple plots for a specified grouping variable.}
 
-\item{baseline}{Character vector. Times to use as a baseline. Takes the mean over the specified period and subtracts. e.g. c(-100,0)}
+\item{baseline}{Character vector. Times to use as a baseline. Takes the mean
+over the specified period and subtracts. e.g. c(-100,0)}
 
-\item{colourmap}{Attempt to plot using a different colourmap (from RColorBrewer). (Not yet implemented)}
+\item{colourmap}{Attempt to plot using a different colourmap (from
+RColorBrewer). (Not yet implemented)}
 
 \item{legend}{Plot legend or not.}
 
@@ -26,11 +31,14 @@ plot_butterfly(data, time_lim = NULL, group = NULL, facet = NULL,
 \item{browse_mode}{Custom theme for use with browse_data.}
 }
 \value{
-ggplot2 object showing ERPs for all electrodes overlaid on a single plot.
+ggplot2 object showing ERPs for all electrodes overlaid on a single
+  plot.
 }
 \description{
-Typically event-related potentials/fields, but could also be timecourses from frequency analyses for single frequencies. Output is a ggplot2 object. CIs not possible.
+Typically event-related potentials/fields, but could also be timecourses from
+frequency analyses for single frequencies. Output is a ggplot2 object. CIs
+not possible.
 }
 \author{
-Matt Craddock, \email{m.p.craddock@leeds.ac.uk}
+Matt Craddock, \email{matt@mattcraddock.com}
 }

@@ -2,10 +2,15 @@
 % Please edit documentation in R/utils.R
 \name{as.data.frame.eeg_data}
 \alias{as.data.frame.eeg_data}
-\title{Generic as.data.frame method for objects of class \code{eeg_data}}
+\title{Convert eeg_data to data.frame}
 \usage{
-\method{as.data.frame}{eeg_data}(x, long = FALSE)
+\method{as.data.frame}{eeg_data}(data, long = FALSE)
+}
+\arguments{
+\item{data}{Object of class \code{eeg_data}.}
+
+\item{long}{Convert to long format. Defaults to FALSE.}
 }
 \description{
-Generic as.data.frame method for objects of class \code{eeg_data}
+Convert an object of class \code{eeg_data} into a standard data.frame / tibble
 }
