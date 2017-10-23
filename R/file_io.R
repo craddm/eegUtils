@@ -8,16 +8,15 @@
 #' @param chan_nos Channels to import. All channels are included by default.
 #' @import edfReader
 #' @import tools
-#' @importFrom dplyr select
 #' @importFrom purrr map_df
 #' @importFrom tibble tibble as_tibble
 #' @export
 
 import_raw <- function(file_name, file_path = NULL, chan_nos = NULL) {
-  file_type <- file_ext(file_name)
+  file_type <- tools::file_ext(file_name)
   if (file_type == "bdf" | file_type == "edf") {
-    data <- readEdfSignals(readEdfHeader(file_name))
-    sigs <- map_df(data, "signal")
+    data <- edfReader::readEdfSignals(edfReader::readEdfHeader(file_name))
+    sigs <- purrr::map_df(data, "signal")
     srate <- data[[1]]$sRate
     events <- sigs$Status %% (256 * 256)
     timings <- tibble::tibble(sample = 1:dim(sigs)[[1]])

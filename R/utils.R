@@ -28,7 +28,7 @@ electrode_locations <- function(data,
   }
 
   if (plot) {
-    plotdata <- distinct(data, x, y, electrode)
+    plotdata <- dplyr::distinct(data, x, y, electrode)
     p <- ggplot2::ggplot(plotdata, aes(x, y)) +
       geom_label(aes(label = electrode))
     return(p)
@@ -39,17 +39,17 @@ electrode_locations <- function(data,
 
 #' Function to create an S3 object of class "eeg_data".
 #'
-#' @author Matt Craddock \email{m.p.craddock@leeds.ac.uk}
+#' @author Matt Craddock \email{matt@mattcraddock.com}
 #' @param data Raw data - signals from electrodes/channels.
 #' @param srate Sampling rate in Hz.
 #' @param chan_labels String of character names for electrodes.
 #' @param timings
-#'
+#' @export
 
 eeg_data <- function(data,
                      srate,
                      events = NULL,
-                     chan_labels = NULL,
+                     chan_info = NULL,
                      timings = NULL,
                      continuous = NULL,
                      reference = NULL) {
@@ -59,6 +59,7 @@ eeg_data <- function(data,
   value <- list(signals = data,
                 srate = srate,
                 events = events,
+                chan_info = chan_info,
                 timings = timings,
                 continuous = continuous,
                 reference = reference
@@ -69,14 +70,14 @@ eeg_data <- function(data,
 
 #' Check if object is of class "eeg_data".
 #'
-#' @author Matt Craddock \email{m.p.craddock@leeds.ac.uk}
+#' @author Matt Craddock \email{matt@mattcraddock.com}
 #' @param x Object to check.
 #'
 
 is.eeg_data <- function(x) inherits(x, "eeg_data")
 
 #' Generic as.data.frame method for objects of class \code{eeg_data}
-#' @importFrom tidyr spread gather
+#' @importFrom tidyr gather
 #' @export
 
 as.data.frame.eeg_data <- function (x, long = FALSE) {
@@ -93,7 +94,7 @@ as.data.frame.eeg_data <- function (x, long = FALSE) {
 
 #' Switch from wide to long format.
 #'
-#' @author Matt Craddock \email{m.p.craddock@leeds.ac.uk}
+#' @author Matt Craddock \email{matt@mattcraddock.com}
 #' @param data Data to convert
 #' @importFrom tidyr gather
 
