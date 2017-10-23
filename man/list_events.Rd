@@ -7,10 +7,13 @@
 list_events(data)
 }
 \arguments{
-\item{data}{}
+\item{data}{An object of class \code{eeg_data}}
 }
 \description{
 List trigger types and any labels found in an \code{eeg_data} object.
+}
+\seealso{
+\code{\link{tag_events}}
 }
 \author{
 Matt Craddock \email{matt@mattcraddock.com}

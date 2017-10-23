@@ -4,13 +4,24 @@
 \alias{tag_events}
 \title{Tag events}
 \usage{
-tag_events(data)
+tag_events(data, trigs, event_label)
 }
 \arguments{
-\item{data}{}
+\item{data}{An object of class \code{eeg_data}}
+
+\item{trigs}{Character vector of trigger numbers}
+
+\item{event_label}{Labels for the events.}
 }
 \description{
-Give trigger events meaningful labels.
+Give trigger events meaningful labels. Existing labels will be overwritten.
+Use hierarchical labelling to tag an event with multiple labels: separate
+labels with a "/" symbol. (e.g. "cond1" for a trigger that belongs to one
+condition, "cond1/cond2" for a trigger that could belong to more than one
+condition).
+}
+\seealso{
+\code{\link{list_events}}
 }
 \author{
 Matt Craddock \email{matt@mattcraddock.com}

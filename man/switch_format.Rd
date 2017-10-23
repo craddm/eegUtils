@@ -13,5 +13,5 @@ switch_format(x)
 Switch from wide to long format.
 }
 \author{
-Matt Craddock \email{m.p.craddock@leeds.ac.uk}
+Matt Craddock \email{matt@mattcraddock.com}
 }

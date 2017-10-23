@@ -19,5 +19,5 @@ erp_image(data, electrode = "Cz", smoothing = 10, clim = NULL)
 Plot ERP images
 }
 \author{
-Matt Craddock, \email{m.p.craddock@leeds.ac.uk}
+Matt Craddock, \email{matt@mattcraddock.com}
 }
