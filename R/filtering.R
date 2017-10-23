@@ -23,30 +23,28 @@ iir_filt <- function(data, low_freq = NULL, high_freq = NULL, filter_order = 4, 
       error('At least one frequency must be specified.')
     } else {
       filt_type <- "low"
-      message(sprintf('Low-pass IIR filter at %.4g Hz', low_freq))
-      low_freq <- low_freq / (srate/2)
+      message(sprintf('Low-pass IIR filter at %.4g Hz', high_freq))
+      W <- high_freq / (srate/2)
     }
   } else if (is.null(high_freq)) {
     filt_type <- "high"
     message(sprintf('High-pass IIR filter at %.4g Hz', high_freq))
-    high_freq <- high_freq / (srate/2)
+    W <- low_freq / (srate/2)
     data <- data - mean(data)
   } else if (low_freq > high_freq) {
     filt_type <- "stop"
     message(sprintf('Band-stop IIR filter from %.4g-%.4g Hz', low_freq, high_freq))
-    low_freq <- low_freq / (srate/2)
-    high_freq <- high_freq / (srate/2)
+    W <- c(low_freq / (srate/2), high_freq / (srate/2))
     data <- data - mean(data)
   } else if (low_freq < high_freq) {
     filt_type <- "pass"
     message(sprintf('Band-pass IIR filter from %.4g-%.4g Hz', low_freq, high_freq))
-    low_freq <- low_freq / (srate/2)
-    high_freq <- high_freq / (srate/2)
+    W <- c(low_freq / (srate/2), high_freq / (srate/2))
     data <- data - mean(data)
   }
 
   filter_order <- filter_order/2 #filtfilt filters twice, so effectively doubles filter_order
-  filt_coef <- signal::butter(filter_order, c(low_freq, high_freq), type = filt_type)
+  filt_coef <- signal::butter(filter_order, W, type = filt_type)
   signal::filtfilt(filt_coef, data)
 }
 
