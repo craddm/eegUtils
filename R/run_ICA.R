@@ -47,9 +47,9 @@ run_ICA <- function (data, method = "sobi") {
     k <- k + 1
     for (tlag in 1:n_epochs) {
       if (tlag == 1) {
-        Rxp = amp_matrix[ , k:N, tlag] %*% t(amp_matrix[ , 1:(N - k + 1), tlag]) / (N - k + 1) / n_epochs }
+        Rxp <- amp_matrix[ , k:N, tlag] %*% t(amp_matrix[ , 1:(N - k + 1), tlag]) / (N - k + 1) / n_epochs }
       else {
-        Rxp = Rxp + amp_matrix[, k:N, tlag] %*% t(amp_matrix[ , 1:(N - k + 1), tlag]) / (N - k + 1) / n_epochs
+        Rxp <- Rxp + amp_matrix[, k:N, tlag] %*% t(amp_matrix[ , 1:(N - k + 1), tlag]) / (N - k + 1) / n_epochs
       }
       M[ , u:(u + n_channels - 1)] <- norm(Rxp, 'F') * Rxp #  % Frobenius norm
     }

@@ -1,13 +1,21 @@
-# eegUtils
+# eegUtils 0.10.0
+
 <a href="http://www.repostatus.org/#wip"><img src="http://www.repostatus.org/badges/latest/wip.svg" alt="Project Status: WIP – Initial development is in progress, but there has not yet been a stable, usable release suitable for the public." /></a>
 
-Some helper utilities for plotting EEG data in R. The package is in the early stages of development, and may be subject to a lot of changes.
+Some helper utilities for plotting and processing EEG data in R. The package is in the early stages of development, and may be subject to a lot of changes.
 
-devtools::install_github('craddm/eegUtils') should install it.
+Use devtools::install_github('craddm/eegUtils') to install it.
 
-There are currently a few working commands - 
+## Pre-processing functions
+* import_raw() - for import BDF/EDF (BioSemi/European Data Format) EEG files 
+* iir_filter() - for performing IIR Butterworth filtering on data  (FIR filtering in development)
+* reref_eeg() - for re-referencing data
+* epoch_data() - for creating epochs around trigger events
+* tag_events() - for labelling events 
 
-* topoplot()
-* plot_timecourse()/plot_butterfly() 
-* erp_scalp() - thanks to Matti Vuorre!
+## Plotting functions 
+* topoplot() - plotting of topographies 
+* plot_timecourse()/plot_butterfly()- plotting individual timecourses from electrodes or plotting all electrodes at once
+* erp_scalp() - plotting ERP plots for individual electrodes in a topographical layout - thanks to Matti Vuorre!
 * interactive_scalp() - a Shiny version of erp_scalp() that allows you to zoom in on specific electrodes.
+* browse_data() - a Shiny gadget for interactively scrolling through EEG data (continous or epoched)

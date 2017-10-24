@@ -33,11 +33,11 @@ browse_data <- function(data, sig_length = 5, n_elecs = NULL, downsample = FALSE
     if (downsample) {
       if (continuous) {
         data <- group_by(data, electrode)
-        data <- mutate(data, amplitude = iir_filt(amplitude, high_freq = (srate / 4 / 2), srate = srate))
+        data <- mutate(data, amplitude = iir_filt(amplitude, high_freq = 0.8 * (srate / 4 / 2), srate = srate))
         data <- ungroup(data)
       } else {
         data <- group_by(data, electrode, epoch)
-        data <- mutate(data, amplitude = iir_filt(amplitude, high_freq = (srate / 4 / 2), srate = srate))
+        data <- mutate(data, amplitude = iir_filt(amplitude, high_freq = 0.8 * (srate / 4 / 2), srate = srate))
         data <- ungroup(data)
       }
       data <- data[seq(1, nrow(data), 4), ]
