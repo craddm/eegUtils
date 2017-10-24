@@ -1,7 +1,9 @@
 #' Fit a glm model to each timepoint for an individual subject.
 #'
-#' @author Matt Craddock, \email{m.p.craddock@leeds.ac.uk}
+#' @author Matt Craddock, \email{matt@mattcraddock.com}
 #' @param data An EEG dataset.
+#' @param dv Column containing dependent variable. (e.g. amplitude)
+#' @param iv_1 Column containing predictor.
 #' @importFrom purrr map
 #' @import tidyr
 #' @import dplyr
@@ -15,9 +17,9 @@ fit_glm_indiv <- function(data, dv, iv_1) {
     stop("Single trial data required for fitting.")
   }
   if (is_grouped_df(data)) {
-    data <- ungroup(data)
+    data <- dplyr::ungroup(data)
   }
-  data <- nest(data, condition, amplitude)
-  data <- mutate(data, fit = map(data, ~tidy(lm(as.name(dv) ~ as.name(iv_1), data = .))))
+  data <- tidyr::nest(data, condition, amplitude)
+  data <- dplyr::mutate(data, fit = purrr::map(data, ~broom::tidy(lm(as.name(dv) ~ as.name(iv_1), data = .))))
 
 }

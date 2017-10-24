@@ -22,13 +22,14 @@ select_times <- function(data, ...) {
 #' @author Matt Craddock, \email{matt@mattcraddock.com}
 #'
 #' @param data An EEG dataset in a data frame. Must have a column named "time".
+#' @param ... Arguments used with related methods
 #' @param time_lim A character vector of two numbers indicating the time range to be selected e.g. c(min, max)
 #' @importFrom dplyr filter
 #' @return Data frame with only data from within the specified range.
 #' @seealso \code{\link{select_times}}, \code{\link{select_times.eeg_data}}, \code{\link{select_elecs}}
 #' @export
 
-select_times.default <- function(data, time_lim) {
+select_times.default <- function(data, ..., time_lim) {
 
   if ("time" %in% colnames(data)) {
     if (length(time_lim) == 1) {
@@ -51,6 +52,7 @@ select_times.default <- function(data, time_lim) {
 #' @author Matt Craddock, \email{matt@mattcraddock.com}
 #'
 #' @param data Must be an object of class \code{eeg_data}.
+#' @param ... Arguments used with related methods
 #' @param time_lim A character vector of two numbers indicating the time range
 #'   to be selected e.g. c(min, max)
 #' @param df_out Return a data frame rather than an \code{eeg_data} object.
@@ -58,7 +60,7 @@ select_times.default <- function(data, time_lim) {
 #' @importFrom dplyr filter select
 #' @export
 
-select_times.eeg_data <- function(data, time_lim, df_out = FALSE) {
+select_times.eeg_data <- function(data, ..., time_lim, df_out = FALSE) {
   proc_data <- as.data.frame(data)
 
   if ("time" %in% colnames(proc_data)) {
@@ -88,6 +90,7 @@ select_times.eeg_data <- function(data, time_lim, df_out = FALSE) {
 #' @author Matt Craddock, \email{matt@mattcraddock.com}
 #'
 #' @param data An EEG dataset.
+#' @param ... Arguments used with related methods
 #' @param electrode A character vector of electrode labels for selection or removal.
 #' @param keep Defaults to TRUE. Set to false to *remove* the selected electrodes.
 #'
@@ -107,6 +110,7 @@ select_elecs <- function(data, ...) {
 #' @author Matt Craddock, \email{matt@mattcraddock.com}
 #'
 #' @param data An EEG dataset.
+#' @param ... Arguments used with related methods
 #' @param electrode A character vector of electrode labels for selection or removal.
 #' @param keep Defaults to TRUE. Set to false to *remove* the selected electrodes.
 #'
@@ -139,6 +143,7 @@ select_elecs.default <- function(data, ..., electrode, keep = TRUE) {
 #' @author Matt Craddock, \email{matt@mattcraddock.com}
 #'
 #' @param data An \code{eeg_data} object.
+#' @param ... Arguments used with related methods
 #' @param electrode A character vector of electrode labels for selection or removal.
 #' @param keep Defaults to TRUE. Set to false to *remove* the selected electrodes.
 #' @param df_out Defaults to FALSE. Set to TRUE to return a dataframe rather than an \code{eeg_data} object.

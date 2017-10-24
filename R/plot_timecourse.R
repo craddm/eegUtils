@@ -11,7 +11,7 @@
 #'@param baseline Character vector. Times to use as a baseline. Takes the mean over the specified period and subtracts. e.g. c(-100,0)
 #'@param colour Variable to colour lines by. If no variable is passed, only
 #' one line is drawn.
-#' @param color Alias for colour.
+#'@param color Alias for colour.
 #'@param group (not yet implemented)
 #'@param facet Create multiple plots for a specified grouping variable.
 #'

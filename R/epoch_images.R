@@ -8,6 +8,7 @@
 #' @author Matt Craddock, \email{matt@mattcraddock.com}
 #' @import ggplot2
 #' @import dplyr
+#' @importFrom stats filter
 #' @importFrom scales squish
 #' @export
 #'

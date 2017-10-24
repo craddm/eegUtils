@@ -1,6 +1,9 @@
 #' ICA for EEG data
 #'
-#' Implements SOBI ICA. Although SOBI exists in R already, thanks to the JADE package, it doesn't respect epoch boundaries when computing correlations across different time lags. This is a port of SOBI from EEGLAB. Currently only works on epoched data.
+#' Implements SOBI ICA. Although SOBI exists in R already, thanks to the JADE
+#' package, it doesn't respect epoch boundaries when computing correlations
+#' across different time lags. This is a port of SOBI from EEGLAB. Currently
+#' only works on epoched data.
 #'
 #' @param data Data frame to be ICAed.
 #' @param method Only SOBI is currently implemented, so this is ignored.

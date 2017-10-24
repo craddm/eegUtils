@@ -26,6 +26,7 @@
 #'   interpolates just past the farthest electrode and does not respect the
 #'   boundary of the headshape. "head" interpolates up to the radius of the
 #'   plotted head.
+#' @param contour Plot contour lines on topography (defaults to TRUE)
 #' @param chan_marker Set marker for electrode locations. "point" = point,
 #'   "name" = electrode name, "none" = no marker. Defaults to "point".
 #' @param quantity Allows plotting of arbitrary quantitative column. Defaults to
@@ -190,7 +191,7 @@ topoplot <- function(data,
                                                      max(tmp_df$y) * 2,
                                                      length = gridRes)))
 
-           outDf$amplitude <-  predict(splineSmooth,
+           outDf$amplitude <-  stats::predict(splineSmooth,
                                          outDf,
                                          type = "response")
          })
@@ -210,7 +211,7 @@ topoplot <- function(data,
 
   # Create the actual plot -------------------------------
 
-  topo <- ggplot(outDf[outDf$incircle, ], aes(x, y, fill = amplitude)) +
+  topo <- ggplot2::ggplot(outDf[outDf$incircle, ], aes(x, y, fill = amplitude)) +
     geom_raster(interpolate = TRUE)
 
   if (contour) {
