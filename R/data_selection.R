@@ -131,6 +131,14 @@ select_elecs.default <- function(data, ..., electrode, keep = TRUE) {
     } else {
       warning(cat("Electrode(s) not found:", electrode[!electrode %in% data$electrode], ". Returning all data."))
     }
+  } else {
+    if (all(electrode %in% colnames(data))) {
+      if (keep) {
+        data <- data[, colnames(data) %in% electrode, drop = FALSE]
+      } else {
+        data <- data[, !colnames(data) %in% electrode, drop = FALSE]
+      }
+    }
   }
   return(data)
 }
