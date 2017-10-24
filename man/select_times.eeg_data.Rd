@@ -4,18 +4,18 @@
 \alias{select_times.eeg_data}
 \title{Select time range}
 \usage{
-\method{select_times}{eeg_data}(data, ..., time_lim = NULL, df_out = FALSE)
+\method{select_times}{eeg_data}(data, time_lim = NULL, df_out = FALSE, ...)
 }
 \arguments{
 \item{data}{Must be an object of class \code{eeg_data}.}
-
-\item{...}{Arguments used with related methods}
 
 \item{time_lim}{A character vector of two numbers indicating the time range
 to be selected e.g. c(min, max)}
 
 \item{df_out}{Return a data frame rather than an \code{eeg_data} object.
 Defaults to FALSE (i.e. returns an \code{eeg_data} object)}
+
+\item{...}{Arguments used with related methods}
 }
 \description{
 select a specifed time range from objects of class \code{eeg_data}.

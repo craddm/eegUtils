@@ -91,8 +91,6 @@ select_times.eeg_data <- function(data, time_lim = NULL, df_out = FALSE, ...) {
 #'
 #' @param data An EEG dataset.
 #' @param ... Arguments used with related methods
-#' @param electrode A character vector of electrode labels for selection or removal.
-#' @param keep Defaults to TRUE. Set to false to *remove* the selected electrodes.
 #'
 #' @return Data frame with only data from the chosen electrodes
 #'

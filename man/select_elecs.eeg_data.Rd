@@ -4,19 +4,19 @@
 \alias{select_elecs.eeg_data}
 \title{Select electrodes from a given dataset.}
 \usage{
-\method{select_elecs}{eeg_data}(data, ..., electrode, keep = TRUE,
-  df_out = FALSE)
+\method{select_elecs}{eeg_data}(data, electrode, keep = TRUE,
+  df_out = FALSE, ...)
 }
 \arguments{
 \item{data}{An \code{eeg_data} object.}
-
-\item{...}{Arguments used with related methods}
 
 \item{electrode}{A character vector of electrode labels for selection or removal.}
 
 \item{keep}{Defaults to TRUE. Set to false to *remove* the selected electrodes.}
 
 \item{df_out}{Defaults to FALSE. Set to TRUE to return a dataframe rather than an \code{eeg_data} object.}
+
+\item{...}{Arguments used with related methods}
 }
 \value{
 \code{eeg_data} object with selected electrodes removed/kept.

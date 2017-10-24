@@ -10,10 +10,6 @@ select_elecs(data, ...)
 \item{data}{An EEG dataset.}
 
 \item{...}{Arguments used with related methods}
-
-\item{electrode}{A character vector of electrode labels for selection or removal.}
-
-\item{keep}{Defaults to TRUE. Set to false to *remove* the selected electrodes.}
 }
 \value{
 Data frame with only data from the chosen electrodes

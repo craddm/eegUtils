@@ -4,16 +4,16 @@
 \alias{select_elecs.default}
 \title{Select electrodes from a given dataset.}
 \usage{
-\method{select_elecs}{default}(data, ..., electrode, keep = TRUE)
+\method{select_elecs}{default}(data, electrode = NULL, keep = TRUE, ...)
 }
 \arguments{
 \item{data}{An EEG dataset.}
 
-\item{...}{Arguments used with related methods}
-
 \item{electrode}{A character vector of electrode labels for selection or removal.}
 
 \item{keep}{Defaults to TRUE. Set to false to *remove* the selected electrodes.}
+
+\item{...}{Arguments used with related methods}
 }
 \value{
 Data frame with only data from the chosen electrodes
