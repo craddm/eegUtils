@@ -29,7 +29,7 @@ select_times <- function(data, ...) {
 #' @seealso \code{\link{select_times}}, \code{\link{select_times.eeg_data}}, \code{\link{select_elecs}}
 #' @export
 
-select_times.default <- function(data, ..., time_lim) {
+select_times.default <- function(data, ..., time_lim = NULL) {
 
   if ("time" %in% colnames(data)) {
     if (length(time_lim) == 1) {
@@ -60,7 +60,7 @@ select_times.default <- function(data, ..., time_lim) {
 #' @importFrom dplyr filter select
 #' @export
 
-select_times.eeg_data <- function(data, ..., time_lim, df_out = FALSE) {
+select_times.eeg_data <- function(data, ..., time_lim = NULL, df_out = FALSE) {
   proc_data <- as.data.frame(data)
 
   if ("time" %in% colnames(proc_data)) {

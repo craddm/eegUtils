@@ -4,7 +4,7 @@
 \alias{select_times.eeg_data}
 \title{Select time range}
 \usage{
-\method{select_times}{eeg_data}(data, ..., time_lim, df_out = FALSE)
+\method{select_times}{eeg_data}(data, ..., time_lim = NULL, df_out = FALSE)
 }
 \arguments{
 \item{data}{Must be an object of class \code{eeg_data}.}
