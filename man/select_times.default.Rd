@@ -4,10 +4,12 @@
 \alias{select_times.default}
 \title{Select timerange}
 \usage{
-\method{select_times}{default}(data, time_lim)
+\method{select_times}{default}(data, ..., time_lim)
 }
 \arguments{
 \item{data}{An EEG dataset in a data frame. Must have a column named "time".}
+
+\item{...}{Arguments used with related methods}
 
 \item{time_lim}{A character vector of two numbers indicating the time range to be selected e.g. c(min, max)}
 }

@@ -10,6 +10,8 @@
 \arguments{
 \item{data}{An \code{eeg_data} object.}
 
+\item{...}{Arguments used with related methods}
+
 \item{electrode}{A character vector of electrode labels for selection or removal.}
 
 \item{keep}{Defaults to TRUE. Set to false to *remove* the selected electrodes.}

@@ -4,12 +4,14 @@
 \alias{as.data.frame.eeg_data}
 \title{Convert eeg_data to data.frame}
 \usage{
-\method{as.data.frame}{eeg_data}(data, long = FALSE)
+\method{as.data.frame}{eeg_data}(data, ..., long = FALSE)
 }
 \arguments{
-\item{data}{Object of class \code{eeg_data}.}
+\item{data}{Object of class \code{eeg_data}}
 
-\item{long}{Convert to long format. Defaults to FALSE.}
+\item{...}{arguments for other as.data.frame commands}
+
+\item{long}{Convert to long format. Defaults to FALSE}
 }
 \description{
 Convert an object of class \code{eeg_data} into a standard data.frame / tibble

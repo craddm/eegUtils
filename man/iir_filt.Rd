@@ -2,10 +2,10 @@
 % Please edit documentation in R/filtering.R
 \name{iir_filt}
 \alias{iir_filt}
-\title{Construct a Butterworth IIR filter.}
+\title{Butterworth IIR filter}
 \usage{
 iir_filt(data, low_freq = NULL, high_freq = NULL, filter_order = 4,
-  srate = NULL)
+  srate = NULL, plot_filt = FALSE, silent = FALSE)
 }
 \arguments{
 \item{data}{Data to be filtered.}
@@ -17,7 +17,14 @@ iir_filt(data, low_freq = NULL, high_freq = NULL, filter_order = 4,
 \item{filter_order}{Order of the Butterworth filter.}
 
 \item{srate}{Sampling rate of the signal.}
+
+\item{plot_filt}{Plot filter characteristics}
+
+\item{silent}{Turns off filtering messages.}
 }
 \description{
-Construct a Butterworth IIR filter.
+Construct a Butterworth IIR filter and filter input data. This uses \code{signal::filt_filt}, which filters the signal twice to - once forwards, then again backwards)
+}
+\author{
+Matt Craddock \email{matt@mattcraddock.com}
 }

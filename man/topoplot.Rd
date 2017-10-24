@@ -10,34 +10,58 @@ topoplot(data, time_lim = NULL, clim = NULL, chanLocs = NULL,
   quantity = "amplitude")
 }
 \arguments{
-\item{data}{An EEG dataset. Must have columns x, y, and amplitude at present. x and y are (Cartesian) electrode co-ordinates), amplitude is amplitude.}
+\item{data}{An EEG dataset. Must have columns x, y, and amplitude at present.
+x and y are (Cartesian) electrode co-ordinates), amplitude is amplitude.}
 
-\item{time_lim}{Timepoint(s) to plot. Can be one time or a range to average over. If none is supplied, the function will average across all timepoints in the supplied data.}
+\item{time_lim}{Timepoint(s) to plot. Can be one time or a range to average
+over. If none is supplied, the function will average across all timepoints
+in the supplied data.}
 
-\item{clim}{Limits of the fill scale - should be given as a character vector with two values specifying the start and endpoints e.g. clim = c(-2,-2). Will ignore anything else. Defaults to the range of the data.}
+\item{clim}{Limits of the fill scale - should be given as a character vector
+with two values specifying the start and endpoints e.g. clim = c(-2,-2).
+Will ignore anything else. Defaults to the range of the data.}
 
 \item{chanLocs}{Not yet implemented.}
 
-\item{method}{Interpolation method. "Biharmonic" or "gam". "Biharmonic" implements the same method used in Matlab's EEGLAB. "gam" fits a Generalized Additive Model with k = 40 knots. Defaults to biharmonic spline interpolation.}
+\item{method}{Interpolation method. "Biharmonic" or "gam". "Biharmonic"
+implements the same method used in Matlab's EEGLAB. "gam" fits a
+Generalized Additive Model with k = 40 knots. Defaults to biharmonic spline
+interpolation.}
 
-\item{r}{Radius of cartoon headshape; if not given, defaults to 1.1 * the maximum y electrode location.}
+\item{r}{Radius of cartoon headshape; if not given, defaults to 1.1 * the
+maximum y electrode location.}
 
-\item{gridRes}{Resolution of the interpolated grid. Higher = smoother but slower.}
+\item{gridRes}{Resolution of the interpolated grid. Higher = smoother but
+slower.}
 
-\item{colourmap}{Defaults to RdBu if none supplied. Can be any from RColorBrewer. If an unsupported palette is specified, switches to Greens.}
+\item{colourmap}{Defaults to RdBu if none supplied. Can be any from
+RColorBrewer. If an unsupported palette is specified, switches to Greens.}
 
-\item{interp_limit}{"skirt" or "head". Defaults to "skirt". "skirt" interpolates just past the farthest electrode and does not respect the boundary of the headshape. "head" interpolates up to the radius of the plotted head.}
+\item{interp_limit}{"skirt" or "head". Defaults to "skirt". "skirt"
+interpolates just past the farthest electrode and does not respect the
+boundary of the headshape. "head" interpolates up to the radius of the
+plotted head.}
 
-\item{chan_marker}{Set marker for electrode locations. "point" = point, "name" = electrode name, "none" = no marker. Defaults to "point".}
+\item{contour}{Plot contour lines on topography (defaults to TRUE)}
 
-\item{quantity}{Allows plotting of arbitrary quantitative column. Defaults to amplitude. Can be any column name. E.g. "p.value", "t-statistic".}
+\item{chan_marker}{Set marker for electrode locations. "point" = point,
+"name" = electrode name, "none" = no marker. Defaults to "point".}
+
+\item{quantity}{Allows plotting of arbitrary quantitative column. Defaults to
+amplitude. Can be any column name. E.g. "p.value", "t-statistic".}
 }
 \description{
 Allows simple plotting of functional data. Output is a ggplot2 object.
 }
 \section{Notes on usage of Generalized Additive Models for interpolation}{
-
-The function fits a GAM using the gam function from mgcv. Specifically, it fits a spline using the model function gam(z ~ s(x, y, bs = "ts", k = 40). Using GAMs for smooths is very much experimental. The surface is produced from the predictions of the GAM model fitted to the supplied data. Values at each electrode do not necessarily match actual values in the data: high-frequency variation will tend to be smoothed out. Thus, the method should be used with caution.
+ The
+  function fits a GAM using the gam function from mgcv. Specifically, it fits
+  a spline using the model function gam(z ~ s(x, y, bs = "ts", k = 40). Using
+  GAMs for smooths is very much experimental. The surface is produced from
+  the predictions of the GAM model fitted to the supplied data. Values at
+  each electrode do not necessarily match actual values in the data:
+  high-frequency variation will tend to be smoothed out. Thus, the method
+  should be used with caution.
 }
 
 \author{

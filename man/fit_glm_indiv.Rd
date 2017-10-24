@@ -8,10 +8,14 @@ fit_glm_indiv(data, dv, iv_1)
 }
 \arguments{
 \item{data}{An EEG dataset.}
+
+\item{dv}{Column containing dependent variable. (e.g. amplitude)}
+
+\item{iv_1}{Column containing predictor.}
 }
 \description{
 Fit a glm model to each timepoint for an individual subject.
 }
 \author{
-Matt Craddock, \email{m.p.craddock@leeds.ac.uk}
+Matt Craddock, \email{matt@mattcraddock.com}
 }
