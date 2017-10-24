@@ -40,7 +40,7 @@ plot_timecourse <- function(data, time_lim = NULL,
 
   ## Select specified electrodes -----
   if (!is.null(electrode)) {
-    data <- select_elecs(data, electrode)
+    data <- select_elecs(data, electrode = electrode)
   }
 
   ## check for US spelling of colour...

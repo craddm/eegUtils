@@ -29,7 +29,7 @@ select_times <- function(data, ...) {
 #' @seealso \code{\link{select_times}}, \code{\link{select_times.eeg_data}}, \code{\link{select_elecs}}
 #' @export
 
-select_times.default <- function(data, ..., time_lim = NULL) {
+select_times.default <- function(data, time_lim = NULL, ...) {
 
   if ("time" %in% colnames(data)) {
     if (length(time_lim) == 1) {
@@ -38,9 +38,9 @@ select_times.default <- function(data, ..., time_lim = NULL) {
       time_lim[1] <- data$time[which.min(abs(data$time - time_lim[1]))]
       time_lim[2] <- data$time[which.min(abs(data$time - time_lim[2]))]
       data <- dplyr::filter(data, time >= time_lim[1] & time <= time_lim[2])
-    } else {
-      warning("No time column found.")
     }
+  } else {
+    warning("No time column found.")
   }
   return(data)
 }
@@ -60,7 +60,7 @@ select_times.default <- function(data, ..., time_lim = NULL) {
 #' @importFrom dplyr filter select
 #' @export
 
-select_times.eeg_data <- function(data, ..., time_lim = NULL, df_out = FALSE) {
+select_times.eeg_data <- function(data, time_lim = NULL, df_out = FALSE, ...) {
   proc_data <- as.data.frame(data)
 
   if ("time" %in% colnames(proc_data)) {
@@ -119,7 +119,7 @@ select_elecs <- function(data, ...) {
 #' @export
 #'
 
-select_elecs.default <- function(data, ..., electrode, keep = TRUE) {
+select_elecs.default <- function(data,  electrode = NULL, keep = TRUE, ...) {
 
   if ("electrode" %in% colnames(data)) {
     if (all(electrode %in% data$electrode)) {
@@ -162,10 +162,10 @@ select_elecs.default <- function(data, ..., electrode, keep = TRUE) {
 #'
 
 select_elecs.eeg_data <-
-  function(data, ...,
+  function(data,
            electrode,
            keep = TRUE,
-           df_out = FALSE) {
+           df_out = FALSE, ...) {
     if (all(electrode %in% colnames(data$signals))) {
       if (keep) {
         data$signals <- data$signals[colnames(data$signals) %in% electrode]
