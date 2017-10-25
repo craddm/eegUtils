@@ -165,6 +165,8 @@ plot_timecourse <- function(data, time_lim = NULL,
 #' @return ggplot2 object showing ERPs for all electrodes overlaid on a single
 #'   plot.
 #' @import ggplot2
+#' @import dplyr
+#' @import tidyr
 #'
 #' @export
 
@@ -179,7 +181,15 @@ plot_butterfly <- function(data,
                            browse_mode = FALSE) {
 
   if (is.eeg_data(data)) {
-    data <- as.data.frame(data, long = TRUE)
+    if (continuous) {
+      data <- as.data.frame(data, long = TRUE)
+    } else {
+      data <- as.data.frame(data)
+      data <- dplyr::group_by(data, time)
+      data <- dplyr::summarise_all(data, mean)
+      data <- dplyr::select(data, -epoch, -sample)
+      data <- tidyr::gather(data, electrode, amplitude, -time)
+      }
   }
   ## select time-range of interest -------------
 
@@ -192,7 +202,7 @@ plot_butterfly <- function(data,
   }
 
   #Set up basic plot -----------
-  butterfly_plot <- ggplot(data, aes(x = time, y = amplitude))
+  butterfly_plot <- ggplot2::ggplot(data, aes(x = time, y = amplitude))
 
   if (browse_mode) {
     butterfly_plot <- butterfly_plot +
