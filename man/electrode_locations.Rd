@@ -5,7 +5,7 @@
 \title{Get standard electrode locations}
 \usage{
 electrode_locations(data, electrode = "electrode", drop = FALSE,
-  plot = FALSE)
+  plot = FALSE, montage = NULL)
 }
 \arguments{
 \item{data}{An EEG dataset.}
@@ -13,10 +13,13 @@ electrode_locations(data, electrode = "electrode", drop = FALSE,
 \item{electrode}{The column name containing electrode names in data.
 (Defaults to "electrode").}
 
-\item{drop}{Should electrodes in \code{data} for which default locations
-are not available be dropped? (Defaults to FALSE).}
+\item{drop}{Should electrodes in \code{data} for which default locations are
+not available be dropped? (Defaults to FALSE).}
 
 \item{plot}{Plot obtained electrode locations.}
+
+\item{montage}{Name of an existing montage set. Defaults to NULL; (currently
+only 'biosemi64alpha' available other than default 10/20 system)}
 }
 \value{
 A tibble (or data.frame), or ggplot2 object if \code{plot = TRUE}.

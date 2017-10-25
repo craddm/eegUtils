@@ -7,7 +7,7 @@
 topoplot(data, time_lim = NULL, clim = NULL, chanLocs = NULL,
   method = "Biharmonic", r = NULL, gridRes = 67, colourmap = "RdBu",
   interp_limit = "skirt", contour = TRUE, chan_marker = "point",
-  quantity = "amplitude")
+  quantity = "amplitude", montage = NULL)
 }
 \arguments{
 \item{data}{An EEG dataset. Must have columns x, y, and amplitude at present.
@@ -49,6 +49,9 @@ plotted head.}
 
 \item{quantity}{Allows plotting of arbitrary quantitative column. Defaults to
 amplitude. Can be any column name. E.g. "p.value", "t-statistic".}
+
+\item{montage}{Name of an existing montage set. Defaults to NULL; (currently
+only 'biosemi64alpha' available other than default 10/20 system)}
 }
 \description{
 Allows simple plotting of functional data. Output is a ggplot2 object.

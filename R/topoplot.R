@@ -31,6 +31,8 @@
 #'   "name" = electrode name, "none" = no marker. Defaults to "point".
 #' @param quantity Allows plotting of arbitrary quantitative column. Defaults to
 #'   amplitude. Can be any column name. E.g. "p.value", "t-statistic".
+#' @param montage Name of an existing montage set. Defaults to NULL; (currently
+#'   only 'biosemi64alpha' available other than default 10/20 system)
 #'
 #' @import ggplot2
 #' @import dplyr
@@ -60,7 +62,8 @@ topoplot <- function(data,
                      interp_limit = "skirt",
                      contour = TRUE,
                      chan_marker = "point",
-                     quantity = "amplitude") {
+                     quantity = "amplitude",
+                     montage = NULL) {
 
   # Check if data is of class eeg_data.
   if (is.eeg_data(data)) {
@@ -89,8 +92,8 @@ topoplot <- function(data,
         warnings("No channel locations found in chanLocs.")
       }
     } else if ("electrode" %in% colnames(data)) {
-      data <- electrode_locations(data)
-      message("Adding standard electrode locations...")
+      data <- electrode_locations(data, drop = TRUE, montage = montage)
+      message("Attempting to add standard electrode locations...")
     } else {
     warning("Neither electrode locations nor labels found.")
     stop()

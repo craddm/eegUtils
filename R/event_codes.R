@@ -47,10 +47,13 @@ tag_events <- function(data, trigs, event_label) {
 #' @seealso \code{\link{tag_events}}
 
 list_events <- function(data) {
-  evs <- unique(data$events$event_type)
-  if (event_label %in% names(data$events)) {
-    data.frame(event_no = evs)
+  if (!is.eeg_data(data)) {
+    stop("For eeg_data objects only.")
+  }
+
+  if ("event_label" %in% names(data$events)) {
+    data.frame(event_type = unique(data$events$event_type), event_label = unique(data$events$event_label))
   } else {
-    data.frame(event_no = evs, event_label = unique(data$events$event_label))
+    data.frame(event_type = unique(data$events$event_type))
   }
 }

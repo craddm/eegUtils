@@ -4,22 +4,50 @@
 #'
 #' @param data An EEG dataset.
 #' @param electrode The column name containing electrode names in data.
-#' (Defaults to "electrode").
-#' @param drop Should electrodes in \code{data} for which default locations
-#' are not available be dropped? (Defaults to FALSE).
+#'   (Defaults to "electrode").
+#' @param drop Should electrodes in \code{data} for which default locations are
+#'   not available be dropped? (Defaults to FALSE).
 #' @param plot Plot obtained electrode locations.
-#'
+#' @param montage Name of an existing montage set. Defaults to NULL; (currently
+#'   only 'biosemi64alpha' available other than default 10/20 system)
 #' @import dplyr
 #' @import ggplot2
+#' @importFrom tibble is.tibble
 #' @return A tibble (or data.frame), or ggplot2 object if \code{plot = TRUE}.
 #' @export
 
 electrode_locations <- function(data,
                                 electrode = "electrode",
                                 drop = FALSE,
-                                plot = FALSE) {
+                                plot = FALSE,
+                                montage = NULL) {
+
+  if (montage == "biosemi64alpha") {
+    electrodeLocs[1:64, electrode] <-
+      c(paste0("A", 1:32), paste0("B", 1:32))
+  }
+
   data[, electrode] <- toupper(data[[electrode]])
   electrodeLocs[, electrode] <- toupper(electrodeLocs[[electrode]])
+
+  if (tibble::is.tibble(data)) {
+    elecs <- dplyr::pull(unique(data[,electrode])) %in% dplyr::pull(electrodeLocs[,electrode])
+    if (any(elecs)) {
+      message("Matching electrodes found:")
+      cat(dplyr::pull(unique(data[,electrode]))[elecs], sep = ",")
+      } else {
+        stop("No matching electrodes found.")
+      }
+  } else {
+    elecs <- unique(data[,electrode]) %in% dplyr::pull(electrodeLocs[,electrode])
+    if (any(elecs)) {
+      message("Matching electrodes found:")
+      cat(unique(data[,electrode])[elecs], sep = ",")
+    } else {
+      stop("No matching electrodes found.")
+    }
+
+  }
 
   if (drop) {
     data <- dplyr::inner_join(data, electrodeLocs, by = electrode)

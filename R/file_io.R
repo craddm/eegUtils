@@ -18,7 +18,7 @@ import_raw <- function(file_name, file_path = NULL, chan_nos = NULL) {
     data <- edfReader::readEdfSignals(edfReader::readEdfHeader(file_name))
     sigs <- purrr::map_df(data, "signal")
     srate <- data[[1]]$sRate
-    events <- sigs$Status %% (256 * 256)
+    events <- sigs$Status %% (256)
     timings <- tibble::tibble(sample = 1:dim(sigs)[[1]])
     timings$time <- (timings$sample - 1) / srate
     if (is.null(chan_nos)) {

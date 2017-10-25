@@ -182,6 +182,9 @@ rm_baseline <- function(data, time_lim = NULL) {
 
 epoch_data <- function(data, events, time_lim = (c(-1, 1))) {
   if (is.eeg_data(data)) {
+    if (!all(events %in% unique(data$events$event_type))) {
+      stop("Events not found - check event codes.")
+    }
     samps <- seq(round(time_lim[[1]] * data$srate), round(time_lim[[2]] * (data$srate - 1)))
     event_table <- data$events
     epoch_zero <- sort(unlist(purrr::map(events,
