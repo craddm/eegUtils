@@ -5,7 +5,8 @@
 \title{Plot ERPs on the scalp}
 \usage{
 erp_scalp(data, electrode = "electrode", amplitude = "amplitude",
-  time = "time", color = NULL, size = 0.8, show_guide = TRUE)
+  time = "time", color = NULL, size = 0.8, baseline = NULL,
+  show_guide = TRUE, montage = NULL)
 }
 \arguments{
 \item{data}{An EEG dataset.}
@@ -23,7 +24,12 @@ one line is drawn for each electrode.}
 
 \item{size}{Size of line(s).}
 
+\item{baseline}{Character vector of times to subtract for baseline correct.}
+
 \item{show_guide}{Should a guide be shown.}
+
+\item{montage}{Name of an existing montage set. Defaults to NULL; (currently
+only 'biosemi64alpha' available other than default 10/20 system)}
 }
 \value{
 Returns a ggplot2 plot object.

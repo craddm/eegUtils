@@ -11,18 +11,21 @@ plot_timecourse(data, time_lim = NULL, group = NULL, facet = NULL,
 \arguments{
 \item{data}{EEG dataset. Should have multiple timepoints.}
 
-\item{time_lim}{Character vector. Numbers in whatever time unit is used specifying beginning and end of time-range to plot. e.g. c(-100,300)}
+\item{time_lim}{Character vector. Numbers in whatever time unit is used
+specifying beginning and end of time-range to plot. e.g. c(-100,300)}
 
 \item{group}{(not yet implemented)}
 
 \item{facet}{Create multiple plots for a specified grouping variable.}
 
-\item{add_CI}{Add confidence intervals to the graph. Defaults to 95 percent between-subject CIs.}
+\item{add_CI}{Add confidence intervals to the graph. Defaults to 95 percent
+between-subject CIs.}
 
-\item{baseline}{Character vector. Times to use as a baseline. Takes the mean over the specified period and subtracts. e.g. c(-100,0)}
+\item{baseline}{Character vector. Times to use as a baseline. Takes the mean
+over the specified period and subtracts. e.g. c(-100,0)}
 
-\item{colour}{Variable to colour lines by. If no variable is passed, only
-one line is drawn.}
+\item{colour}{Variable to colour lines by. If no variable is passed, only one
+line is drawn.}
 
 \item{electrode}{Electrode(s) to plot.}
 
@@ -32,7 +35,9 @@ one line is drawn.}
 Returns a ggplot2 plot object
 }
 \description{
-Typically event-related potentials/fields, but could also be timecourses from frequency analyses for single frequencies. Averages over all submitted electrodes. Output is a ggplot2 object.
+Typically event-related potentials/fields, but could also be timecourses from
+frequency analyses for single frequencies. Averages over all submitted
+electrodes. Output is a ggplot2 object.
 }
 \author{
 Matt Craddock, \email{matt@mattcraddock.com}

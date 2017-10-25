@@ -12,6 +12,9 @@
 #' one line is drawn for each electrode.
 #' @param size Size of line(s).
 #' @param show_guide Should a guide be shown.
+#' @param baseline Character vector of times to subtract for baseline correct.
+#' @param montage Name of an existing montage set. Defaults to NULL; (currently
+#'   only 'biosemi64alpha' available other than default 10/20 system)
 #'
 #' @details The function uses default electrode names and locations contained
 #' in the package.
@@ -31,7 +34,13 @@ erp_scalp <- function(data,
                       time = "time",
                       color = NULL,
                       size = .8,
-                      show_guide = TRUE) {
+                      baseline = NULL,
+                      show_guide = TRUE,
+                      montage = NULL) {
+
+  if (is.eeg_data(data)) {
+    data <- as.data.frame(data, long = TRUE)
+  }
 
   if (is.null(color)) {
     data <- group_by(data, electrode, time)
@@ -47,6 +56,10 @@ erp_scalp <- function(data,
   minAmp <- min(data[, amplitude])
   maxTime <- max(data[, time])
   minTime <- min(data[, time])
+
+  if (!is.null(baseline)) {
+    data <- rm_baseline(data, baseline)
+  }
 
   plotfun <- function(x) {
     plot <- ggplot(data = x, aes_(as.name(time), as.name(amplitude)))
@@ -68,12 +81,12 @@ erp_scalp <- function(data,
   }
 
   data$electrodefacet <- data[, electrode]
-  data <- nest(data, -electrode)
-  data <- mutate(data, plot = map(data, plotfun))
-  data <- select(data, -data)
+  data <- tidyr::nest(data, -electrode)
+  data <- dplyr::mutate(data, plot = map(data, plotfun))
+  data <- dplyr::select(data, -data)
 
   # Get default electrode locations from pkg internal data
-  data <- electrode_locations(data, drop = T)
+  data <- electrode_locations(data, drop = T, montage = montage)
 
   minx <- min(data$x)
   maxx <- max(data$x)
@@ -128,6 +141,9 @@ erp_scalp <- function(data,
 #' @param data An EEG dataset.
 #' @param colour Variable to colour lines by. If no variable is passed, only
 #' one line is drawn for each electrode.
+#' @param baseline Character vector of times to subtract for baseline correct.
+#' @param montage Name of an existing montage set. Defaults to NULL; (currently
+#'   only 'biosemi64alpha' available other than default 10/20 system)
 #'
 #' @author Matt Craddock, \email{matt@mattcraddock.com}
 #'
@@ -135,7 +151,15 @@ erp_scalp <- function(data,
 #' @import miniUI
 #' @export
 
-interactive_scalp <- function(data, colour = NULL) {
+interactive_scalp <- function(data, colour = NULL, baseline = NULL, montage = NULL) {
+
+  if (is.eeg_data(data)) {
+    data <- as.data.frame(data, long = TRUE)
+  }
+
+  if (!is.null(baseline)) {
+    data <- rm_baseline(data, time_lim = baseline)
+  }
 
   ui <- miniPage(
     gadgetTitleBar("Scalp ERPs"),
@@ -167,15 +191,15 @@ interactive_scalp <- function(data, colour = NULL) {
 
   server <- function(input, output, session) {
 
-    data <- electrode_locations(data, drop = TRUE)
+    data <- electrode_locations(data, drop = TRUE, montage = montage)
 
     button_reacts <- reactiveValues(sel_elecs = list(), avg = TRUE)
 
     output$Scalp <- renderPlot({
       if (is.null(colour)) {
-        erp_scalp(data)
+        erp_scalp(data, montage = montage)
       } else {
-        erp_scalp(data, color = as.name(colour))
+        erp_scalp(data, color = as.name(colour), montage = montage)
       }
     })
 

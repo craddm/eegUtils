@@ -1,16 +1,21 @@
-#' Plot 1d timecourse data.
+#'Plot 1d timecourse data.
 #'
-#' Typically event-related potentials/fields, but could also be timecourses from frequency analyses for single frequencies. Averages over all submitted electrodes. Output is a ggplot2 object.
+#'Typically event-related potentials/fields, but could also be timecourses from
+#'frequency analyses for single frequencies. Averages over all submitted
+#'electrodes. Output is a ggplot2 object.
 #'
 #'@author Matt Craddock, \email{matt@mattcraddock.com}
 #'
 #'@param data EEG dataset. Should have multiple timepoints.
 #'@param electrode Electrode(s) to plot.
-#'@param add_CI Add confidence intervals to the graph. Defaults to 95 percent between-subject CIs.
-#'@param time_lim Character vector. Numbers in whatever time unit is used specifying beginning and end of time-range to plot. e.g. c(-100,300)
-#'@param baseline Character vector. Times to use as a baseline. Takes the mean over the specified period and subtracts. e.g. c(-100,0)
-#'@param colour Variable to colour lines by. If no variable is passed, only
-#' one line is drawn.
+#'@param add_CI Add confidence intervals to the graph. Defaults to 95 percent
+#'  between-subject CIs.
+#'@param time_lim Character vector. Numbers in whatever time unit is used
+#'  specifying beginning and end of time-range to plot. e.g. c(-100,300)
+#'@param baseline Character vector. Times to use as a baseline. Takes the mean
+#'  over the specified period and subtracts. e.g. c(-100,0)
+#'@param colour Variable to colour lines by. If no variable is passed, only one
+#'  line is drawn.
 #'@param color Alias for colour.
 #'@param group (not yet implemented)
 #'@param facet Create multiple plots for a specified grouping variable.
@@ -57,6 +62,11 @@ plot_timecourse <- function(data, time_lim = NULL,
 
   if (!is.null(time_lim)) {
     data <- select_times(data, time_lim)
+  }
+
+  ## Do baseline correction
+  if (!is.null(baseline)) {
+    data <- rm_baseline(data, time_lim = baseline)
   }
 
   ## Average over all epochs in data (respecting "conditions"). --

@@ -22,9 +22,10 @@ electrode_locations <- function(data,
                                 plot = FALSE,
                                 montage = NULL) {
 
-  if (montage == "biosemi64alpha") {
-    electrodeLocs[1:64, electrode] <-
-      c(paste0("A", 1:32), paste0("B", 1:32))
+  if (!is.null(montage)) {
+    if (montage == "biosemi64alpha") {
+      electrodeLocs[1:64, electrode] <- c(paste0("A", 1:32), paste0("B", 1:32))
+    }
   }
 
   data[, electrode] <- toupper(data[[electrode]])
@@ -32,18 +33,16 @@ electrode_locations <- function(data,
 
   if (tibble::is.tibble(data)) {
     elecs <- dplyr::pull(unique(data[,electrode])) %in% dplyr::pull(electrodeLocs[,electrode])
-    if (any(elecs)) {
-      message("Matching electrodes found:")
-      cat(dplyr::pull(unique(data[,electrode]))[elecs], sep = ",")
-      } else {
+    if (!all(elecs)) {
+      message("Electrodes not found: ", paste(dplyr::pull(unique(data[,electrode]))[!elecs], sep = ","))
+      } else if (!any(elecs)) {
         stop("No matching electrodes found.")
       }
   } else {
     elecs <- unique(data[,electrode]) %in% dplyr::pull(electrodeLocs[,electrode])
-    if (any(elecs)) {
-      message("Matching electrodes found:")
-      cat(unique(data[,electrode])[elecs], sep = ",")
-    } else {
+    if (!all(elecs)) {
+      message("Electrodes not found: ", paste(unique(data[,electrode])[!elecs], sep = ","))
+    } else if (!any(elecs)) {
       stop("No matching electrodes found.")
     }
 

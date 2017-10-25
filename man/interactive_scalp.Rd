@@ -4,13 +4,18 @@
 \alias{interactive_scalp}
 \title{Interactive scalp maps}
 \usage{
-interactive_scalp(data, colour = NULL)
+interactive_scalp(data, colour = NULL, baseline = NULL, montage = NULL)
 }
 \arguments{
 \item{data}{An EEG dataset.}
 
 \item{colour}{Variable to colour lines by. If no variable is passed, only
 one line is drawn for each electrode.}
+
+\item{baseline}{Character vector of times to subtract for baseline correct.}
+
+\item{montage}{Name of an existing montage set. Defaults to NULL; (currently
+only 'biosemi64alpha' available other than default 10/20 system)}
 }
 \description{
 Launches a Shiny Gadget for an interactive version of erp_scalp, allowing clicking of individual electrodes to plot them in a separate panel. In that panel, they can be averaged over or plotted as individual electrodes.
