@@ -40,5 +40,5 @@ erp_image <- function(data, electrode = "Cz", smoothing = 10, clim = NULL) {
     scale_y_continuous(expand = c(0,0)) +
     scale_x_continuous(expand = c(0,0)) +
     theme_classic() +
-    xlab("Time (ms)")
+    xlab("Time (s)")
 }

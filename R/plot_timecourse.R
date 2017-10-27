@@ -141,7 +141,7 @@ plot_timecourse <- function(data, time_lim = NULL,
 
 
   tc_plot <- tc_plot +
-    labs(x = "Time (ms)", y = expression(paste("Amplitude (", mu, "V)")), colour = "", fill = "") +
+    labs(x = "Time (s)", y = expression(paste("Amplitude (", mu, "V)")), colour = "", fill = "") +
     geom_vline(xintercept = 0, linetype = "solid", size = 0.5) +
     geom_hline(yintercept = 0, linetype = "solid", size = 0.5) +
     scale_x_continuous(breaks = scales::pretty_breaks(n = 4), expand = c(0,0)) +
@@ -217,7 +217,7 @@ plot_butterfly <- function(data,
   if (browse_mode) {
     butterfly_plot <- butterfly_plot +
       geom_line(aes(group = electrode), colour = "black", alpha = 0.2) +
-      labs(x = "Time (ms)", y = expression(paste("Amplitude (", mu, "V)")), colour = "") +
+      labs(x = "Time (s)", y = expression(paste("Amplitude (", mu, "V)")), colour = "") +
       geom_hline(yintercept = 0, size = 0.5, linetype = "dashed", alpha = 0.5) +
       scale_x_continuous(expand = c(0, 0)) +
       theme_minimal(base_size = 12) +
