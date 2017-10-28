@@ -59,15 +59,15 @@ import_raw <- function(file_name, file_path = NULL, chan_nos = NULL) {
 
 import_cnt <- function(file_name) {
   cnt_file <- file(file_name, "rb")
-  pos <- seek(conn, 12)
-  next_file <- readBin(conn, integer(), size = 4, n = 1, endian = "little")
+  pos <- seek(cnt_file, 12)
+  next_file <- readBin(cnt_file, integer(), size = 4, n = 1, endian = "little")
   pos <- seek(cnt_file, 353)
   n_events <- readBin(cnt_file, integer(), n = 1, endian = "little")
   pos <- seek(cnt_file, 370)
   n_channels <- readBin(cnt_file, integer(), n = 1, size = 2, signed = FALSE, endian = "little")
   pos <- seek(cnt_file, 376)
   samp_rate <-  readBin(cnt_file, integer(), n = 1, size = 2, signed = FALSE, endian = "little")
-  pos <- seek(conn, 864)
+  pos <- seek(cnt_file, 864)
   n_samples <- readBin(cnt_file, integer(), size = 4, n = 1, endian = "little")
   pos <- seek(cnt_file, 886)
   event_table_pos <- readBin(cnt_file, integer(), size= 4,  n = 1, endian = "little") # event table
