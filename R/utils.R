@@ -109,7 +109,7 @@ is.eeg_data <- function(x) inherits(x, "eeg_data")
 #' Convert eeg_data to data.frame
 #'
 #' Convert an object of class \code{eeg_data} into a standard data.frame / tibble
-#'
+#' @author Matt Craddock \email{matt@mattcraddock.com}
 #' @param data Object of class \code{eeg_data}
 #' @param ... arguments for other as.data.frame commands
 #' @param long Convert to long format. Defaults to FALSE

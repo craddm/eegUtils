@@ -40,7 +40,7 @@ import_raw <- function(file_name, file_path = NULL, chan_nos = NULL) {
     timings$time <- (timings$sample - 1) / srate
     event_table <- tibble::tibble(event_onset = data$event_list$offset,
                                   event_type = data$event_list$event_type)
-    data <- eeg_data(data = sigs, srate = srate,
+    data <- eeg_data(data = sigs, srate = srate, chan_info = data$chan_info[1:4],
                      events = event_table, timings = timings,
                      continuous = TRUE)
     } else{
