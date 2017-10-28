@@ -31,7 +31,19 @@ import_raw <- function(file_name, file_path = NULL, chan_nos = NULL) {
     data <- eeg_data(data = sigs, srate = srate,
                      events = event_table, timings = timings,
                      continuous = TRUE)
-  } else {
+  } else if (file_type == "cnt") {
+    data <- import_cnt(file_name)
+    sigs <- tibble::as_tibble(t(data$chan_data))
+    names(sigs) <- data$chan_info$chan_name
+    srate <- data$head_info$samp_rate
+    timings <- tibble::tibble(sample = 1:dim(sigs)[[1]])
+    timings$time <- (timings$sample - 1) / srate
+    event_table <- tibble::tibble(event_onset = data$event_list$offset,
+                                  event_type = data$event_list$event_type)
+    data <- eeg_data(data = sigs, srate = srate,
+                     events = event_table, timings = timings,
+                     continuous = TRUE)
+    } else{
     warning("Unsupported filetype")
     return()
   }
@@ -41,44 +53,109 @@ import_raw <- function(file_name, file_path = NULL, chan_nos = NULL) {
 
 #' Import Neuroscan .CNT file
 #'
+#' Beta version of function to import Neuroscan .CNT files. Only intended for import of 32-bit files.
 #'
 #' @param file_name Name of .CNT file to be loaded.
 
 import_cnt <- function(file_name) {
   cnt_file <- file(file_name, "rb")
+  pos <- seek(conn, 12)
+  next_file <- readBin(conn, integer(), size = 4, n = 1, endian = "little")
   pos <- seek(cnt_file, 353)
   n_events <- readBin(cnt_file, integer(), n = 1, endian = "little")
   pos <- seek(cnt_file, 370)
   n_channels <- readBin(cnt_file, integer(), n = 1, size = 2, signed = FALSE, endian = "little")
   pos <- seek(cnt_file, 376)
   samp_rate <-  readBin(cnt_file, integer(), n = 1, size = 2, signed = FALSE, endian = "little")
+  pos <- seek(conn, 864)
+  n_samples <- readBin(cnt_file, integer(), size = 4, n = 1, endian = "little")
   pos <- seek(cnt_file, 886)
-  event_table_pos <- readBin(conn, integer(), size= 4,  n = 1, endian = "little") # event table
+  event_table_pos <- readBin(cnt_file, integer(), size= 4,  n = 1, endian = "little") # event table
   pos <- seek(cnt_file, 900)
-  chan_details <- vector("list", n_channels)
+
+  data_info <- tibble::tibble(n_events,
+                              n_channels,
+                              samp_rate,
+                              event_table_pos)
+
   chan_df <- tibble::tibble(chan_name = character(n_channels),
                             chan_no = numeric(n_channels),
                             x = numeric(n_channels),
                             y = numeric(n_channels)
-                            )
+  )
 
   for (i in 1:n_channels) {
     chan_start <- seek(cnt_file)
-    chan_name <- readBin(cnt_file, character(), n = 1, endian = "little")
-    pos <- seek(cnt_file, chan_start + 19)
-    xcoord <- readBin(conn, double(), size = 4,  n = 1, endian = "little") # x coord
-    ycoord <- readBin(conn, double(), size = 4,  n = 1, endian = "little") # y coord
-
-    chan_df$chan_name[i] <- chan_name
+    chan_df$chan_name[i] <- readBin(cnt_file, character(), n = 1, endian = "little")
     chan_df$chan_no[i] <- i
-    chan_df$x[i] <- xcoord
-    chan_df$y[i] <- ycoord
+    pos <- seek(cnt_file, chan_start + 19)
+    chan_df$x[i] <- readBin(cnt_file, double(), size = 4,  n = 1, endian = "little") # x coord
+    chan_df$y[i] <- readBin(cnt_file, double(), size = 4,  n = 1, endian = "little") # y coord
+
+    pos <- seek(cnt_file, chan_start + 47)
+    chan_df$baseline[i] <- readBin(cnt_file, integer(), size = 1, n = 1, endian = "little")
+    pos <- seek(cnt_file, chan_start + 59)
+    chan_df$sens[i] <- readBin(cnt_file, double(), size = 4, n = 1, endian = "little")
+    pos <- seek(cnt_file, chan_start + 71)
+    chan_df$cal[i] <- readBin(cnt_file, double(), size = 4, n = 1, endian = "little")
     pos <- seek(cnt_file, (900 + i * 75))
   }
+
   beg_data <- seek(cnt_file) # beginning of actual data
-  n_samples <- event_table_pos - (900 + 75 * n_channels) / (2 * n_channels)
+  real_n_samples <- event_table_pos - (900 + 75 * n_channels) / (2 * n_channels)
+  frames <- floor((event_table_pos - beg_data) / n_channels / 4)
+
+  chan_data <- matrix(readBin(cnt_file,
+                              integer(),
+                              size = 4,
+                              n = n_channels * frames,
+                              endian = "little"),
+                      nrow = n_channels, ncol = frames)
+
+  # rescale chan_data to microvolts
+  mf <- chan_df$sens * (chan_df$cal / 204.8)
+  chan_data <- (chan_data - chan_df$baseline) * mf
+
+  # Read event table
+
+  pos <- seek(cnt_file, event_table_pos)
+  teeg <- readBin(cnt_file, integer(), size = 1, n = 1, endian = "little")
+  tsize <- readBin(cnt_file, integer(), n = 1, endian = "little")
+  toffset <- readBin(cnt_file, integer(), n = 1, endian = "little")
+  ev_table_start <- seek(cnt_file)
+
+  ev_list <- tibble::tibble(event_type = integer(n_events),
+                            keyboard = character(n_events),
+                            keypad_accept = integer(n_events),
+                            accept_evl = integer(n_events),
+                            offset = integer(n_events),
+                            type = integer(n_events),
+                            code = integer(n_events),
+                            latency = numeric(n_events),
+                            epochevent = integer(n_events),
+                            accept = integer(n_events),
+                            accuracy = integer(n_events)
+                            )
+
+  for (i in 1:n_events) {
+    ev_list$event_type[i] <- readBin(cnt_file, integer(), size = 2, n= 1, endian = "little")
+    ev_list$keyboard[i] <- readBin(cnt_file, integer(), size = 1, n= 1, endian = "little")
+    temp <- readBin(cnt_file, integer(), size = 1, n= 1, signed = FALSE, endian = "little")
+    ev_list$keypad_accept[i] <- bitwAnd(15, temp)
+    ev_list$accept_evl[i] <- bitwShiftR(temp, 4)
+    ev_list$offset[i] <- readBin(cnt_file, integer(), size = 4, n= 1, endian = "little")
+    ev_list$type[i] <- readBin(cnt_file, integer(), size = 2, n= 1, endian = "little")
+    ev_list$code[i] <- readBin(cnt_file, integer(), size = 2, n= 1, endian = "little")
+    ev_list$latency[i] <- readBin(cnt_file, double(), size = 4, n= 1, endian = "little")
+    ev_list$epochevent[i] <- readBin(cnt_file, integer(), size = 1,  n= 1, endian = "little")
+    ev_list$accept[i] <- readBin(cnt_file, integer(), size = 1, n= 1, endian = "little")
+    ev_list$accuracy[i] <- readBin(cnt_file, integer(),size = 1,  n= 1, endian = "little")
+  }
+
+  ev_list$offset <- (ev_list$offset - beg_data) / (4 * n_channels)
 
   close(cnt_file)
 
-  chan_df
+  #list(chan_df, data_info, chan_data)
+  out <- list(chan_info = chan_df, head_info = data_info, chan_data = chan_data, event_list = ev_list)
 }
