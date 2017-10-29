@@ -114,7 +114,7 @@ erp_scalp <- function(data,
     geom_vline(xintercept = 0, size = .4) +
     geom_hline(yintercept = 0, size = .4) +
     labs(y = expression(paste("Amplitude (", mu,"V)")),
-         x = "Time (ms)") +
+         x = "Time (s)") +
     theme_minimal(base_size = 8) +
     theme(panel.grid = element_blank(),
           axis.ticks = element_line(size=.3),

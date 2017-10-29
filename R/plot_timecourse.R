@@ -226,7 +226,7 @@ plot_butterfly <- function(data,
   } else {
     butterfly_plot <- butterfly_plot +
       geom_line(aes(group = electrode, colour = electrode), alpha = 0.5) +
-      labs(x = "Time (ms)", y = expression(paste("Amplitude (", mu, "V)")), colour = "") +
+      labs(x = "Time (s)", y = expression(paste("Amplitude (", mu, "V)")), colour = "") +
       geom_hline(yintercept = 0, size = 0.5) +
       scale_x_continuous(expand = c(0, 0)) +
       theme_minimal(base_size = 12) +

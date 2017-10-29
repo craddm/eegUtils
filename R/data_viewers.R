@@ -27,9 +27,11 @@ browse_data <- function(data, sig_length = 5, n_elecs = NULL, downsample = FALSE
   if (!is.eeg_data(data)) {
     stop("Function only implemented for eeg_data objects.")
   } else {
+
     continuous <- data$continuous
     srate <- data$srate
     data <- as.data.frame(data, long = TRUE)
+
     if (downsample) {
       if (continuous) {
         data <- group_by(data, electrode)
@@ -62,7 +64,7 @@ browse_data <- function(data, sig_length = 5, n_elecs = NULL, downsample = FALSE
                                        width = '100%'),
                          fillRow(
                            numericInput("sig_time", "Display length", value = sig_length, min = 1, max = 60),
-                           #numericInput("uV_scale", "Scale (microvolts)", value = max(data$amplitude) - min(data$amplitude), min = 10),
+                           #numericInput("uV_scale", "Scale (microvolts)", value = 50, min = 1),
                            checkboxInput("dc_offset", "Remove DC offset", value = TRUE)
                          )
                        )

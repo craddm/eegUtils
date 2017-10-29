@@ -56,9 +56,14 @@ import_raw <- function(file_name, file_path = NULL, chan_nos = NULL) {
 #' Beta version of function to import Neuroscan .CNT files. Only intended for import of 32-bit files.
 #'
 #' @param file_name Name of .CNT file to be loaded.
+#' @importFrom tibble tibble
 
 import_cnt <- function(file_name) {
+
   cnt_file <- file(file_name, "rb")
+
+  # Read in meta-info - number of channels, location of event table, sampling rate...
+
   pos <- seek(cnt_file, 12)
   next_file <- readBin(cnt_file, integer(), size = 4, n = 1, endian = "little")
   pos <- seek(cnt_file, 353)
@@ -83,6 +88,8 @@ import_cnt <- function(file_name) {
                             x = numeric(n_channels),
                             y = numeric(n_channels)
   )
+
+  # Read channel names and locations
 
   for (i in 1:n_channels) {
     chan_start <- seek(cnt_file)
