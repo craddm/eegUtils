@@ -20,7 +20,7 @@ tag_events <- function(data, trigs, event_label) {
 
   if (is.eeg_data(data)) {
     if (length(trigs) != length(event_label)) {
-      error("Trigs and event_label parameters must be the same length.")
+      stop("Trigs and event_label parameters must be the same length.")
     }
 
     if ("event_label" %in% names(data$events)) {
@@ -30,7 +30,7 @@ tag_events <- function(data, trigs, event_label) {
     data$events <- dplyr::left_join(data$events, tibble::tibble(event_type = trigs, event_label = event_label), by = "event_type")
     data
   } else {
-      error("Object is not of class eeg_data.")
+      stop("Object is not of class eeg_data.")
     }
 }
 
@@ -56,4 +56,5 @@ list_events <- function(data) {
   } else {
     data.frame(event_type = unique(data$events$event_type))
   }
+
 }

@@ -116,7 +116,7 @@ is.eeg_data <- function(x) inherits(x, "eeg_data")
 #' @importFrom tidyr gather
 #' @export
 
-as.data.frame.eeg_data <- function (data, ..., long = FALSE) {
+as.data.frame.eeg_data <- function (data, row.names = NULL, optional = FALSE, ..., long = FALSE) {
   df <- data.frame(data$signals, data$timings)
   if (long) {
     if (data$continuous) {

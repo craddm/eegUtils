@@ -25,6 +25,7 @@ Imports:
   signal,
   tibble,
   stats,
-  matrixStats
+  matrixStats,
+  plotly
 RoxygenNote: 6.0.1
 Suggests: testthat
