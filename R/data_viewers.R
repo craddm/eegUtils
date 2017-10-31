@@ -272,3 +272,16 @@ browse_data <- function(data, sig_length = 5, n_elecs = NULL, downsample = FALSE
   }
   runGadget(ui, server, viewer = paneViewer(minHeight = 600))
 }
+
+
+
+#' Interactive 3d plot of electrode locations
+#'
+#' @import plotly
+#'
+
+plot_electrodes <- function (data) {
+  data <- electrodeLocs(data)
+  xyz <- pol_to_sph(data$theta, data$radius)
+  plotly::plot_ly(x, y, z, unique(data$electrode))
+}

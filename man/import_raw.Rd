@@ -14,7 +14,9 @@ import_raw(file_name, file_path = NULL, chan_nos = NULL)
 \item{chan_nos}{Channels to import. All channels are included by default.}
 }
 \description{
-Currently only BDF or EDF files are supported. The \code{edfReader} package reads the data in, and then the function creates an eeg_data structure for subsequent use.
+Currently BDF/EDF and 32-bit .CNT files are supported. Filetype is determined
+by the file extension.The \code{edfReader} package is used to load BDF files.
+The function creates an eeg_data structure for subsequent use.
 }
 \author{
 Matt Craddock, \email{matt@mattcraddock.com}

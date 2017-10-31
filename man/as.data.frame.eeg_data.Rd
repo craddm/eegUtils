@@ -16,3 +16,6 @@
 \description{
 Convert an object of class \code{eeg_data} into a standard data.frame / tibble
 }
+\author{
+Matt Craddock \email{matt@mattcraddock.com}
+}

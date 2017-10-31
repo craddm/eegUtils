@@ -96,11 +96,15 @@ reref_eeg <- function(data, ref_chans = "average", exclude = NULL, robust = FALS
 
 #' Baseline correction.
 #'
-#' Used to remove the mean of a specified time period from the data. Currently only performs subtractive baseline.
+#' Used to remove the mean of a specified time period from the data. Currently
+#' only performs subtractive baseline. With a data frame, searches for
+#' "electrode" and "epoch" columns, and groups on these when found. An electrode column is always required; an epoch column is not.
 #'
 #' @author Matt Craddock \email{matt@mattcraddock.com}
 #' @param data Data to be baseline corrected.
-#' @param time_lim Numeric character vector (e.g. time_lim <- c(-.1, 0)). If none given, defaults to mean of whole epoch if the data is epoched, or the channel mean if the data is continuous.
+#' @param time_lim Numeric character vector (e.g. time_lim <- c(-.1, 0)). If
+#'   none given, defaults to mean of whole epoch if the data is epoched, or the
+#'   channel mean if the data is continuous.
 #' @import dplyr
 #' @import tidyr
 #' @export

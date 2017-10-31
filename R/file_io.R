@@ -1,6 +1,8 @@
 #' Function for reading raw data.
 #'
-#' Currently only BDF or EDF files are supported. The \code{edfReader} package reads the data in, and then the function creates an eeg_data structure for subsequent use.
+#' Currently BDF/EDF and 32-bit .CNT files are supported. Filetype is determined
+#' by the file extension.The \code{edfReader} package is used to load BDF files.
+#' The function creates an eeg_data structure for subsequent use.
 #'
 #' @author Matt Craddock, \email{matt@mattcraddock.com}
 #' @param file_name File to import.
@@ -165,4 +167,72 @@ import_cnt <- function(file_name) {
 
   #list(chan_df, data_info, chan_data)
   out <- list(chan_info = chan_df, head_info = data_info, chan_data = chan_data, event_list = ev_list)
+}
+
+
+#' Load EEGLAB .set files
+#'
+#' EEGLAB .set files are standard Matlab .mat files, but EEGLAB can be set to
+#' export either v6.5 or v7.3 format files. Only v6.5 files can be read with
+#' this function. v7.3 files (which use HDF5 format) are not currently
+#' supported, as they cannot be read well with existing tools.
+#'
+#' @param file_name Filename (and path if not in present working directory)
+#' @param df_out Defaults to FALSE - outputs an object of class eeg_data. Set to TRUE for a normal data frame.
+#' @author Matt Craddock \email{matt@mattcraddock.com}
+#' @import R.matlab
+#' @importFrom dplyr group_by mutate
+
+
+load_set <- function (file_name, df_out = FALSE) {
+  file_type <- tools::file_ext(file_name)
+  temp_dat <- R.matlab::readMat(file_name)
+  n_chans <- temp_dat$EEG[[9]]
+  n_trials <- temp_dat$EEG[[10]]
+  times <- temp_dat$EEG[[15]]
+  chan_info <- as.data.frame(temp_dat$EEG[[22]])
+  if (is.character(temp_dat$EEG[[16]])) {
+    message("loading from .fdt")
+    fdt_file <- paste0(tools::file_path_sans_ext(file_name), '.fdt')
+    fdt_file <- file(fdt_file, "rb")
+    signals <-
+      readBin(
+        fdt_file,
+        double(),
+        n = n_chans * n_trials * length(times),
+        size = 4,
+        endian = "little"
+      )
+    close(fdt_file)
+    dim(signals) <- c(n_chans, length(times) * max(n_trials, 1))
+    times <- rep(times, max(n_trials, 1))
+    if (n_trials == 1) {
+      continuous <- TRUE
+    } else {
+      continuous <- FALSE
+    }
+  } else {
+    signals <- temp_dat$EEG[[16]]
+    dim_signals <- dim(signals)
+    if (length(dim_signals) == 3) {
+      dim(signals) <- c(dim_signals[1], dim_signals[2] * dim_signals[3])
+      times <- rep(times, n_trials)
+      continuous <- FALSE
+    } else {
+      continuous <- TRUE
+    }
+  }
+
+  final_dat <- data.frame(cbind(t(signals), times))
+  srate <- temp_dat$EEG[[12]]
+  names(final_dat) <- c(unlist(chan_info[1,]), "time")
+  final_dat <- dplyr::group_by(final_dat, time)
+  final_dat <- dplyr::mutate(final_dat, epoch = 1:n())
+  if (df_out) {
+    return(final_dat)
+  } else {
+    final_dat$time <- final_dat$time / 1000 # convert to seconds
+    timings <- data.frame(time = final_dat$time, epoch = final_dat$epoch)
+    eeg_data(final_dat[, 1:n_chans], srate = srate, timings = timings, continuous = continuous)
+  }
 }

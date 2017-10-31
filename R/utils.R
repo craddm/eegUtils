@@ -139,3 +139,26 @@ switch_format <- function(data) {
   if (is.eeg_data(data)) {
   }
 }
+
+#' Convert polar to spherical coordinates
+#'
+#' Hard-coded to a radius of 85 mm (as in BESA).
+#'
+#' @author Matt Craddock \email{matt@mattcraddock.com}
+#' @param theta Azimuth from polar co-ordinates (theta in supplied electrode locations)
+#' @param phi Elevation from polar co-ordinates (radius in supplied electrode locations)
+
+pol_to_sph <- function(theta, phi) {
+
+  theta <- -theta
+  phi <- (0.5 - phi) * 180
+  sph_theta <- theta / 180 * pi
+  sph_phi <- phi / 180 * pi
+  radius <- 85
+
+  z <- radius * sin(sph_phi)
+  z_cos <- radius * cos(sph_phi)
+  x <- z_cos * cos(sph_theta)
+  y <- z_cos * sin(sph_theta)
+  data.frame(x, y, z)
+}
