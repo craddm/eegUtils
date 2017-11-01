@@ -32,16 +32,17 @@ electrode_locations <- function(data,
   electrodeLocs[, electrode] <- toupper(electrodeLocs[[electrode]])
 
   if (tibble::is.tibble(data)) {
-    elecs <- dplyr::pull(unique(data[,electrode])) %in% dplyr::pull(electrodeLocs[,electrode])
+    elecs <- dplyr::pull(unique(data[, electrode])) %in% dplyr::pull(electrodeLocs[, electrode])
+
     if (!all(elecs)) {
-      message("Electrodes not found: ", paste(dplyr::pull(unique(data[,electrode]))[!elecs], sep = ","))
+      message("Electrodes not found: ", paste(dplyr::pull(unique(data[, electrode]))[!elecs], sep = ","))
       } else if (!any(elecs)) {
         stop("No matching electrodes found.")
       }
   } else {
-    elecs <- unique(data[,electrode]) %in% dplyr::pull(electrodeLocs[,electrode])
+    elecs <- unique(data[, electrode]) %in% dplyr::pull(electrodeLocs[, electrode])
     if (!all(elecs)) {
-      message("Electrodes not found: ", paste(unique(data[,electrode])[!elecs], sep = ","))
+      message("Electrodes not found: ", paste(unique(data[, electrode])[!elecs], sep = ","))
     } else if (!any(elecs)) {
       stop("No matching electrodes found.")
     }
@@ -116,7 +117,8 @@ is.eeg_data <- function(x) inherits(x, "eeg_data")
 #' @importFrom tidyr gather
 #' @export
 
-as.data.frame.eeg_data <- function (data, row.names = NULL, optional = FALSE, ..., long = FALSE) {
+as.data.frame.eeg_data <- function (data, row.names = NULL,
+                                    optional = FALSE, ..., long = FALSE) {
   df <- data.frame(data$signals, data$timings)
   if (long) {
     if (data$continuous) {

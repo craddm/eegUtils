@@ -27,7 +27,10 @@ tag_events <- function(data, trigs, event_label) {
       data$events <- data$events[-3]
     }
 
-    data$events <- dplyr::left_join(data$events, tibble::tibble(event_type = trigs, event_label = event_label), by = "event_type")
+    data$events <- dplyr::left_join(data$events,
+                                    tibble::tibble(event_type = trigs,
+                                                   event_label = event_label),
+                                    by = "event_type")
     data
   } else {
       stop("Object is not of class eeg_data.")
@@ -52,7 +55,8 @@ list_events <- function(data) {
   }
 
   if ("event_label" %in% names(data$events)) {
-    data.frame(event_type = unique(data$events$event_type), event_label = unique(data$events$event_label))
+    data.frame(event_type = unique(data$events$event_type),
+               event_label = unique(data$events$event_label))
   } else {
     data.frame(event_type = unique(data$events$event_type))
   }

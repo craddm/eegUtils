@@ -53,15 +53,15 @@ compute_psd_welch <- function(data,
   final_out <- purrr::map(data_fft, ~abs(. * Conj(.)) / U)
 
   if (is.null(srate)) {
-    final_out <- rowMeans(as.data.frame(final_out)) / (2*pi)
-    freqs <- seq(0, seg_length/2) / (seg_length)
+    final_out <- rowMeans(as.data.frame(final_out)) / (2 * pi)
+    freqs <- seq(0, seg_length / 2) / (seg_length)
     } else {
       final_out <- rowMeans(as.data.frame(final_out)) / srate
-      freqs <- seq(0, n_fft/2) / (n_fft) * srate
+      freqs <- seq(0, n_fft / 2) / (n_fft) * srate
       }
 
-  final_out <- final_out[1:(n_fft/2 +1)]
-  final_out[2:(n_fft/2 + 1)] <- final_out[2:(n_fft/2 +1)] * 2
+  final_out <- final_out[1:(n_fft / 2 + 1)]
+  final_out[2:(n_fft / 2 + 1)] <- final_out[2:(n_fft / 2 + 1)] * 2
   data.frame(power = final_out, frequency = freqs)
 }
 
@@ -76,9 +76,9 @@ compute_psd_welch <- function(data,
 #' @param overlap Overlap between segments (in samples).
 
 split_vec <- function(vec, seg_length, overlap) {
-  k <- floor((length(vec) - overlap) / (seg.length - overlap))
-  starts <- seq(1, k * (seg.length-overlap), by = seg.length-overlap)
-  ends <- starts + seg.length - 1
+  k <- floor((length(vec) - overlap) / (seg_length - overlap))
+  starts <- seq(1, k * (seg_length - overlap), by = seg_length - overlap)
+  ends <- starts + seg_length - 1
   #ends[ends > length(vec)] <- length(vec)
   lapply(1:length(starts), function(i) vec[starts[i]:ends[i]])
 }

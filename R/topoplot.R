@@ -124,7 +124,8 @@ topoplot <- function(data,
 
   # Create the headshape -----------------
 
-  #set radius as max of y (i.e. furthest forward electrode's y position). Add a little to push the circle out a bit more.
+  #set radius as max of y (i.e. furthest forward electrode's y position). Add a
+  #little to push the circle out a bit more.
 
   if (is.null(r)) {
     r <- max(scaled_y) * 1.1

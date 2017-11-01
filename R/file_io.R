@@ -147,18 +147,18 @@ import_cnt <- function(file_name) {
                             )
 
   for (i in 1:n_events) {
-    ev_list$event_type[i] <- readBin(cnt_file, integer(), size = 2, n= 1, endian = "little")
-    ev_list$keyboard[i] <- readBin(cnt_file, integer(), size = 1, n= 1, endian = "little")
-    temp <- readBin(cnt_file, integer(), size = 1, n= 1, signed = FALSE, endian = "little")
+    ev_list$event_type[i] <- readBin(cnt_file, integer(), size = 2, n = 1, endian = "little")
+    ev_list$keyboard[i] <- readBin(cnt_file, integer(), size = 1, n = 1, endian = "little")
+    temp <- readBin(cnt_file, integer(), size = 1, n = 1, signed = FALSE, endian = "little")
     ev_list$keypad_accept[i] <- bitwAnd(15, temp)
     ev_list$accept_evl[i] <- bitwShiftR(temp, 4)
-    ev_list$offset[i] <- readBin(cnt_file, integer(), size = 4, n= 1, endian = "little")
-    ev_list$type[i] <- readBin(cnt_file, integer(), size = 2, n= 1, endian = "little")
-    ev_list$code[i] <- readBin(cnt_file, integer(), size = 2, n= 1, endian = "little")
-    ev_list$latency[i] <- readBin(cnt_file, double(), size = 4, n= 1, endian = "little")
-    ev_list$epochevent[i] <- readBin(cnt_file, integer(), size = 1,  n= 1, endian = "little")
-    ev_list$accept[i] <- readBin(cnt_file, integer(), size = 1, n= 1, endian = "little")
-    ev_list$accuracy[i] <- readBin(cnt_file, integer(),size = 1,  n= 1, endian = "little")
+    ev_list$offset[i] <- readBin(cnt_file, integer(), size = 4, n = 1, endian = "little")
+    ev_list$type[i] <- readBin(cnt_file, integer(), size = 2, n = 1, endian = "little")
+    ev_list$code[i] <- readBin(cnt_file, integer(), size = 2, n = 1, endian = "little")
+    ev_list$latency[i] <- readBin(cnt_file, double(), size = 4, n = 1, endian = "little")
+    ev_list$epochevent[i] <- readBin(cnt_file, integer(), size = 1,  n = 1, endian = "little")
+    ev_list$accept[i] <- readBin(cnt_file, integer(), size = 1, n = 1, endian = "little")
+    ev_list$accuracy[i] <- readBin(cnt_file, integer(),size = 1,  n = 1, endian = "little")
   }
 
   ev_list$offset <- (ev_list$offset - beg_data) / (4 * n_channels)

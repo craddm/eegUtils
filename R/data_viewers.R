@@ -153,7 +153,7 @@ browse_data <- function(data, sig_length = 5, n_elecs = NULL, downsample = FALSE
                      miniContentPanel(
                        fillCol(
                          flex = c(4, NA, 1),
-                         plotOutput("butterfly", height = '100%'),
+                         plotOutput("butterfly", height = "100%"),
                          sliderInput("time_range",
                                        label = "Display starting epoch",
                                        step = 1,

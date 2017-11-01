@@ -118,16 +118,18 @@ erp_scalp <- function(data,
     theme_minimal(base_size = 8) +
     theme(panel.grid = element_blank(),
           axis.ticks = element_line(size=.3),
-          plot.margin = unit(c(8,8,8,8), "pt"))
+          plot.margin = unit(c(8, 8, 8, 8), "pt"))
   if (show_guide) {
-    p <- p + annotation_custom(grob = ggplotGrob(guide),
-                               xmin = min(data$x)-.07, xmax = min(data$x)+.09,
-                               ymin = min(data$y)-.09, ymax = min(data$y)+.09)
+    p <- p +
+      annotation_custom(grob = ggplotGrob(guide),
+                        xmin = min(data$x) - .07, xmax = min(data$x) + .09,
+                        ymin = min(data$y) - .09, ymax = min(data$y) + .09)
   }
   for (i in 1:nrow(data)) {
-    p <- p + annotation_custom(grob = ggplotGrob(data$plot[[i]]),
-                               xmin = data$x[i]-.05, xmax = data$x[i]+.05,
-                               ymin = data$y[i]-.07, ymax = data$y[i]+.07)
+    p <- p +
+      annotation_custom(grob = ggplotGrob(data$plot[[i]]),
+                        xmin = data$x[i] - .05, xmax = data$x[i] + .05,
+                        ymin = data$y[i] - .07, ymax = data$y[i] + .07)
   }
 
   return(p)
@@ -135,12 +137,14 @@ erp_scalp <- function(data,
 
 #' Interactive scalp maps
 #'
-#' Launches a Shiny Gadget for an interactive version of erp_scalp, allowing clicking of individual electrodes to plot them in a separate panel. In that panel, they can be averaged over or plotted as individual electrodes.
+#' Launches a Shiny Gadget for an interactive version of erp_scalp, allowing
+#' clicking of individual electrodes to plot them in a separate panel. In that
+#' panel, they can be averaged over or plotted as individual electrodes.
 #' Currently buggy with datasets with existing electrode co-ordinates.
 #'
 #' @param data An EEG dataset.
-#' @param colour Variable to colour lines by. If no variable is passed, only
-#' one line is drawn for each electrode.
+#' @param colour Variable to colour lines by. If no variable is passed, only one
+#'   line is drawn for each electrode.
 #' @param baseline Character vector of times to subtract for baseline correct.
 #' @param montage Name of an existing montage set. Defaults to NULL; (currently
 #'   only 'biosemi64alpha' available other than default 10/20 system)
@@ -167,7 +171,7 @@ interactive_scalp <- function(data, colour = NULL, baseline = NULL, montage = NU
       miniTabPanel("Whole scalp", icon = icon("circle"),
                    miniContentPanel(
                      fillCol(
-                       flex = c(7,1),
+                       flex = c(7, 1),
                        plotOutput("Scalp", height = "100%",
                                   click = "click_plot"),
                        verbatimTextOutput("click_info")
@@ -205,11 +209,13 @@ interactive_scalp <- function(data, colour = NULL, baseline = NULL, montage = NU
 
     observeEvent(input$click_plot, {
 
-      tmp <- nearPoints(data, input$click_plot, "x", "y", threshold = 45, maxpoints = 1)
+      tmp <- nearPoints(data, input$click_plot, "x", "y", threshold = 45,
+                        maxpoints = 1)
 
       if (nrow(tmp) > 0) {
         if (tmp$electrode %in% button_reacts$sel_elecs) {
-          button_reacts$sel_elecs <- button_reacts$sel_elecs[-which(button_reacts$sel_elecs == tmp$electrode)]
+          button_reacts$sel_elecs <-
+            button_reacts$sel_elecs[-which(button_reacts$sel_elecs == tmp$electrode)]
         } else {
           button_reacts$sel_elecs <- c(button_reacts$sel_elecs, tmp$electrode)
         }
