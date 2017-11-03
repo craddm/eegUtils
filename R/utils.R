@@ -24,7 +24,8 @@ electrode_locations <- function(data,
 
   if (!is.null(montage)) {
     if (montage == "biosemi64alpha") {
-      electrodeLocs[1:64, electrode] <- c(paste0("A", 1:32), paste0("B", 1:32))
+      electrodeLocs[1:64, electrode] <- c(paste0("A", 1:32),
+                                          paste0("B", 1:32))
     }
   }
 
@@ -32,17 +33,21 @@ electrode_locations <- function(data,
   electrodeLocs[, electrode] <- toupper(electrodeLocs[[electrode]])
 
   if (tibble::is.tibble(data)) {
-    elecs <- dplyr::pull(unique(data[, electrode])) %in% dplyr::pull(electrodeLocs[, electrode])
+    elecs <-
+      dplyr::pull(unique(data[, electrode])) %in% dplyr::pull(electrodeLocs[, electrode])
 
     if (!all(elecs)) {
-      message("Electrodes not found: ", paste(dplyr::pull(unique(data[, electrode]))[!elecs], sep = ","))
+      message("Electrodes not found: ",
+              paste(dplyr::pull(unique(data[, electrode]))[!elecs], sep = ","))
       } else if (!any(elecs)) {
         stop("No matching electrodes found.")
       }
   } else {
-    elecs <- unique(data[, electrode]) %in% dplyr::pull(electrodeLocs[, electrode])
+    elecs <-
+      unique(data[, electrode]) %in% dplyr::pull(electrodeLocs[, electrode])
     if (!all(elecs)) {
-      message("Electrodes not found: ", paste(unique(data[, electrode])[!elecs], sep = ","))
+      message("Electrodes not found: ",
+              paste(unique(data[, electrode])[!elecs], sep = ","))
     } else if (!any(elecs)) {
       stop("No matching electrodes found.")
     }
@@ -73,7 +78,8 @@ electrode_locations <- function(data,
 #' @param chan_info String of character names for electrodes.
 #' @param timings Timing information - samples and sample /samplirng rate.
 #' @param continuous Whether the data is continuous or epoched.
-#' @param reference Reference channel information, including names of reference channels, excluded channels etc.
+#' @param reference Reference channel information, including names of reference
+#'   channels, excluded channels etc.
 #' @param events Event table
 #' @export
 
@@ -147,8 +153,10 @@ switch_format <- function(data) {
 #' Hard-coded to a radius of 85 mm (as in BESA).
 #'
 #' @author Matt Craddock \email{matt@mattcraddock.com}
-#' @param theta Azimuth from polar co-ordinates (theta in supplied electrode locations)
-#' @param phi Elevation from polar co-ordinates (radius in supplied electrode locations)
+#' @param theta Azimuth from polar co-ordinates (theta in supplied electrode
+#'   locations)
+#' @param phi Elevation from polar co-ordinates (radius in supplied electrode
+#'   locations)
 
 pol_to_sph <- function(theta, phi) {
 

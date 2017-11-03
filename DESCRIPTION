@@ -1,7 +1,7 @@
 Package: eegUtils
 Type: Package
 Title: A Collection of Functions for EEG Analysis 
-Version: 0.1.10
+Version: 0.1.11
 Author: Matt Craddock
 Maintainer: Matt Craddock <matt@mattcraddock.com>
 Description: A collection of functions for basic EEG processing. Includes import functions for Biosemi BDF, topographical plotting, referencing, and epoching.
@@ -26,6 +26,7 @@ Imports:
   tibble,
   stats,
   matrixStats,
-  plotly
+  plotly,
+  R.matlab
 RoxygenNote: 6.0.1
 Suggests: testthat

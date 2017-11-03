@@ -26,7 +26,7 @@ import_raw <- function(file_name, file_path = NULL, chan_nos = NULL) {
     if (is.null(chan_nos)) {
       chan_nos <- 1:(dim(sigs)[[2]] - 1)
     }
-    sigs <- tibble::as_tibble(sigs[,chan_nos])
+    sigs <- tibble::as_tibble(sigs[, chan_nos])
     events_diff <- diff(events)
     event_table <- tibble::tibble(event_onset = which(events_diff > 0) + 1,
                               event_type = events[which(events_diff > 0) + 1])
@@ -42,7 +42,8 @@ import_raw <- function(file_name, file_path = NULL, chan_nos = NULL) {
     timings$time <- (timings$sample - 1) / srate
     event_table <- tibble::tibble(event_onset = data$event_list$offset,
                                   event_type = data$event_list$event_type)
-    data <- eeg_data(data = sigs, srate = srate, chan_info = data$chan_info[1:4],
+    data <- eeg_data(data = sigs, srate = srate,
+                     chan_info = data$chan_info[1:4],
                      events = event_table, timings = timings,
                      continuous = TRUE)
     } else{
@@ -64,20 +65,24 @@ import_cnt <- function(file_name) {
 
   cnt_file <- file(file_name, "rb")
 
-  # Read in meta-info - number of channels, location of event table, sampling rate...
+  # Read in meta-info - number of channels, location of event table, sampling
+  # rate...
 
   pos <- seek(cnt_file, 12)
   next_file <- readBin(cnt_file, integer(), size = 4, n = 1, endian = "little")
   pos <- seek(cnt_file, 353)
   n_events <- readBin(cnt_file, integer(), n = 1, endian = "little")
   pos <- seek(cnt_file, 370)
-  n_channels <- readBin(cnt_file, integer(), n = 1, size = 2, signed = FALSE, endian = "little")
+  n_channels <- readBin(cnt_file, integer(), n = 1, size = 2,
+                        signed = FALSE, endian = "little")
   pos <- seek(cnt_file, 376)
-  samp_rate <-  readBin(cnt_file, integer(), n = 1, size = 2, signed = FALSE, endian = "little")
+  samp_rate <-  readBin(cnt_file, integer(), n = 1, size = 2,
+                        signed = FALSE, endian = "little")
   pos <- seek(cnt_file, 864)
   n_samples <- readBin(cnt_file, integer(), size = 4, n = 1, endian = "little")
   pos <- seek(cnt_file, 886)
-  event_table_pos <- readBin(cnt_file, integer(), size= 4,  n = 1, endian = "little") # event table
+  event_table_pos <- readBin(cnt_file, integer(), size = 4,
+                             n = 1, endian = "little") # event table
   pos <- seek(cnt_file, 900)
 
   data_info <- tibble::tibble(n_events,
@@ -95,23 +100,31 @@ import_cnt <- function(file_name) {
 
   for (i in 1:n_channels) {
     chan_start <- seek(cnt_file)
-    chan_df$chan_name[i] <- readBin(cnt_file, character(), n = 1, endian = "little")
+    chan_df$chan_name[i] <- readBin(cnt_file, character(),
+                                    n = 1, endian = "little")
     chan_df$chan_no[i] <- i
     pos <- seek(cnt_file, chan_start + 19)
-    chan_df$x[i] <- readBin(cnt_file, double(), size = 4,  n = 1, endian = "little") # x coord
-    chan_df$y[i] <- readBin(cnt_file, double(), size = 4,  n = 1, endian = "little") # y coord
+    chan_df$x[i] <- readBin(cnt_file, double(), size = 4,
+                            n = 1, endian = "little") # x coord
+    chan_df$y[i] <- readBin(cnt_file, double(), size = 4,
+                            n = 1, endian = "little") # y coord
 
     pos <- seek(cnt_file, chan_start + 47)
-    chan_df$baseline[i] <- readBin(cnt_file, integer(), size = 1, n = 1, endian = "little")
+    chan_df$baseline[i] <- readBin(cnt_file, integer(), size = 1,
+                                   n = 1, endian = "little")
     pos <- seek(cnt_file, chan_start + 59)
-    chan_df$sens[i] <- readBin(cnt_file, double(), size = 4, n = 1, endian = "little")
+    chan_df$sens[i] <- readBin(cnt_file, double(), size = 4, n = 1,
+                               endian = "little")
     pos <- seek(cnt_file, chan_start + 71)
-    chan_df$cal[i] <- readBin(cnt_file, double(), size = 4, n = 1, endian = "little")
+    chan_df$cal[i] <- readBin(cnt_file, double(), size = 4, n = 1,
+                              endian = "little")
     pos <- seek(cnt_file, (900 + i * 75))
   }
 
   beg_data <- seek(cnt_file) # beginning of actual data
-  real_n_samples <- event_table_pos - (900 + 75 * n_channels) / (2 * n_channels)
+  real_n_samples <-
+    event_table_pos - (900 + 75 * n_channels) / (2 * n_channels)
+
   frames <- floor((event_table_pos - beg_data) / n_channels / 4)
 
   chan_data <- matrix(readBin(cnt_file,
@@ -147,18 +160,28 @@ import_cnt <- function(file_name) {
                             )
 
   for (i in 1:n_events) {
-    ev_list$event_type[i] <- readBin(cnt_file, integer(), size = 2, n = 1, endian = "little")
-    ev_list$keyboard[i] <- readBin(cnt_file, integer(), size = 1, n = 1, endian = "little")
-    temp <- readBin(cnt_file, integer(), size = 1, n = 1, signed = FALSE, endian = "little")
+    ev_list$event_type[i] <- readBin(cnt_file, integer(), size = 2,
+                                     n = 1, endian = "little")
+    ev_list$keyboard[i] <- readBin(cnt_file, integer(), size = 1,
+                                   n = 1, endian = "little")
+    temp <- readBin(cnt_file, integer(), size = 1, n = 1, signed = FALSE,
+                    endian = "little")
     ev_list$keypad_accept[i] <- bitwAnd(15, temp)
     ev_list$accept_evl[i] <- bitwShiftR(temp, 4)
-    ev_list$offset[i] <- readBin(cnt_file, integer(), size = 4, n = 1, endian = "little")
-    ev_list$type[i] <- readBin(cnt_file, integer(), size = 2, n = 1, endian = "little")
-    ev_list$code[i] <- readBin(cnt_file, integer(), size = 2, n = 1, endian = "little")
-    ev_list$latency[i] <- readBin(cnt_file, double(), size = 4, n = 1, endian = "little")
-    ev_list$epochevent[i] <- readBin(cnt_file, integer(), size = 1,  n = 1, endian = "little")
-    ev_list$accept[i] <- readBin(cnt_file, integer(), size = 1, n = 1, endian = "little")
-    ev_list$accuracy[i] <- readBin(cnt_file, integer(),size = 1,  n = 1, endian = "little")
+    ev_list$offset[i] <- readBin(cnt_file, integer(), size = 4,
+                                 n = 1, endian = "little")
+    ev_list$type[i] <- readBin(cnt_file, integer(), size = 2,
+                               n = 1, endian = "little")
+    ev_list$code[i] <- readBin(cnt_file, integer(), size = 2,
+                               n = 1, endian = "little")
+    ev_list$latency[i] <- readBin(cnt_file, double(), size = 4,
+                                  n = 1, endian = "little")
+    ev_list$epochevent[i] <- readBin(cnt_file, integer(), size = 1,
+                                     n = 1, endian = "little")
+    ev_list$accept[i] <- readBin(cnt_file, integer(), size = 1,
+                                 n = 1, endian = "little")
+    ev_list$accuracy[i] <- readBin(cnt_file, integer(),size = 1,
+                                   n = 1, endian = "little")
   }
 
   ev_list$offset <- (ev_list$offset - beg_data) / (4 * n_channels)
@@ -166,7 +189,8 @@ import_cnt <- function(file_name) {
   close(cnt_file)
 
   #list(chan_df, data_info, chan_data)
-  out <- list(chan_info = chan_df, head_info = data_info, chan_data = chan_data, event_list = ev_list)
+  out <- list(chan_info = chan_df, head_info = data_info,
+              chan_data = chan_data, event_list = ev_list)
 }
 
 
@@ -178,13 +202,14 @@ import_cnt <- function(file_name) {
 #' supported, as they cannot be read well with existing tools.
 #'
 #' @param file_name Filename (and path if not in present working directory)
-#' @param df_out Defaults to FALSE - outputs an object of class eeg_data. Set to TRUE for a normal data frame.
+#' @param df_out Defaults to FALSE - outputs an object of class eeg_data. Set to
+#'   TRUE for a normal data frame.
 #' @author Matt Craddock \email{matt@mattcraddock.com}
 #' @import R.matlab
 #' @importFrom dplyr group_by mutate
 
 
-load_set <- function (file_name, df_out = FALSE) {
+load_set <- function(file_name, df_out = FALSE) {
   file_type <- tools::file_ext(file_name)
   temp_dat <- R.matlab::readMat(file_name)
   n_chans <- temp_dat$EEG[[9]]
@@ -233,6 +258,7 @@ load_set <- function (file_name, df_out = FALSE) {
   } else {
     final_dat$time <- final_dat$time / 1000 # convert to seconds
     timings <- data.frame(time = final_dat$time, epoch = final_dat$epoch)
-    eeg_data(final_dat[, 1:n_chans], srate = srate, timings = timings, continuous = continuous)
+    eeg_data(final_dat[, 1:n_chans], srate = srate,
+             timings = timings, continuous = continuous)
   }
 }

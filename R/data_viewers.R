@@ -22,7 +22,8 @@
 #'@export
 #'
 
-browse_data <- function(data, sig_length = 5, n_elecs = NULL, downsample = FALSE) {
+browse_data <- function(data, sig_length = 5, n_elecs = NULL,
+                        downsample = FALSE) {
 
   if (!is.eeg_data(data)) {
     stop("Function only implemented for eeg_data objects.")
@@ -35,11 +36,17 @@ browse_data <- function(data, sig_length = 5, n_elecs = NULL, downsample = FALSE
     if (downsample) {
       if (continuous) {
         data <- group_by(data, electrode)
-        data <- mutate(data, amplitude = iir_filt(amplitude, high_freq = 0.8 * (srate / 4 / 2), srate = srate))
+        data <- mutate(data,
+                       amplitude = iir_filt(amplitude,
+                                            high_freq = 0.8 * (srate / 4 / 2),
+                                            srate = srate))
         data <- ungroup(data)
       } else {
         data <- group_by(data, electrode, epoch)
-        data <- mutate(data, amplitude = iir_filt(amplitude, high_freq = 0.8 * (srate / 4 / 2), srate = srate))
+        data <- mutate(data,
+                       amplitude = iir_filt(amplitude,
+                                            high_freq = 0.8 * (srate / 4 / 2),
+                                            srate = srate))
         data <- ungroup(data)
       }
       data <- data[seq(1, nrow(data), 4), ]
@@ -54,18 +61,20 @@ browse_data <- function(data, sig_length = 5, n_elecs = NULL, downsample = FALSE
                      miniContentPanel(
                        fillCol(
                          flex = c(4, NA, 1),
-                         plotOutput("butterfly", height = '100%'),
+                         plotOutput("butterfly", height = "100%"),
                          sliderInput("time_range",
                                      label = "Display start time",
                                      step = 1,
                                        min = 0,
                                        max = max(unique(data$time)),
                                        value = min(unique(data$time)),
-                                       width = '100%'),
+                                       width = "100%"),
                          fillRow(
-                           numericInput("sig_time", "Display length", value = sig_length, min = 1, max = 60),
+                           numericInput("sig_time", "Display length",
+                                        value = sig_length, min = 1, max = 60),
                            #numericInput("uV_scale", "Scale (microvolts)", value = 50, min = 1),
-                           checkboxInput("dc_offset", "Remove DC offset", value = TRUE)
+                           checkboxInput("dc_offset", "Remove DC offset",
+                                         value = TRUE)
                          )
                        )
                      )
@@ -87,9 +96,11 @@ browse_data <- function(data, sig_length = 5, n_elecs = NULL, downsample = FALSE
                                        value = min(unique(data$time)),
                                        width = '100%'),
                            fillRow(
-                             numericInput("sig_time_ind", "Display length", sig_length, min = 1, max = 60),
+                             numericInput("sig_time_ind", "Display length",
+                                          sig_length, min = 1, max = 60),
                              #numericInput("elecs_per_page_ind", "Electrodes per page", n_elecs, min = 1, max = 30),
-                             checkboxInput("dc_offset_ind", "Remove DC offset", value = TRUE)
+                             checkboxInput("dc_offset_ind", "Remove DC offset",
+                                           value = TRUE)
                            )
                          )
                        )
@@ -116,7 +127,8 @@ browse_data <- function(data, sig_length = 5, n_elecs = NULL, downsample = FALSE
       output$time_plot <- renderPlot({
         tmp_data <- dplyr::filter(data,
                                   time >= input$time_range_ind,
-                                  time <= (input$time_range_ind + input$sig_time_ind))
+                                  time <= (input$time_range_ind +
+                                             input$sig_time_ind))
         if (input$dc_offset_ind) {
           tmp_data <- rm_baseline(tmp_data)
         }
@@ -209,16 +221,15 @@ browse_data <- function(data, sig_length = 5, n_elecs = NULL, downsample = FALSE
       tmp_data <- debounce(tmp_dat, 1000)
 
       output$butterfly <- renderPlot({
-        #tmp_data <- dplyr::filter(data,
-         #                         epoch >= input$time_range,
-          #                        epoch <= (input$time_range + (input$sig_time - 1)))
+
         if (input$dc_offset) {
           real_data <- rm_baseline(tmp_data())
         } else {
           real_data <- tmp_data()
         }
 
-        butter_out <- plot_butterfly(real_data, legend = FALSE, browse_mode = TRUE) +
+        butter_out <- plot_butterfly(real_data, legend = FALSE,
+                                     browse_mode = TRUE) +
           facet_wrap("epoch", nrow = 1) +
           theme(
             panel.spacing = unit(0, "lines")
@@ -231,7 +242,8 @@ browse_data <- function(data, sig_length = 5, n_elecs = NULL, downsample = FALSE
       tmp_dat_ind <- reactive({
         dplyr::filter(data,
                       epoch >= input$time_range_ind,
-                      epoch <= (input$time_range_ind + (input$sig_time_ind - 1)))
+                      epoch <= (input$time_range_ind +
+                                  (input$sig_time_ind - 1)))
       })
 
       tmp_data_ind <- debounce(tmp_dat_ind, 1000)
@@ -257,12 +269,13 @@ browse_data <- function(data, sig_length = 5, n_elecs = NULL, downsample = FALSE
             panel.grid.minor = element_blank(),
             panel.grid.major = element_blank()
           ) +
-          scale_x_continuous(expand = c(0,0)) +
+          scale_x_continuous(expand = c(0, 0)) +
           geom_vline(xintercept = max(unique(real_data$time))) +
           geom_vline(xintercept = 0, linetype = "longdash")
 
         init_plot
-      }, height = 2500)
+      },
+      height = 2500)
 
       observeEvent(input$done, {
         stopApp()

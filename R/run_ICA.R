@@ -21,17 +21,20 @@ run_ICA <- function (data, method = "sobi") {
   n_times <- length(unique(data$time))
 
   ##number of lags at which to assess autocovariance matrices
-  n_lags <- min(100,ceiling(n_times/3))
+  n_lags <- min(100, ceiling(n_times / 3))
 
   ## reshape amplitude X electrode to a square matrix before doing SVD
   data <- spread(data, electrode, amplitude)
 
-  ## Pre-whiten the data using the SVD.
-  ## zero-mean columns and get SVD. NB: should probably edit this to zero mean *epochs*
-  amp_matrix <- scale(data.matrix(data[ , (ncol(data) - n_channels + 1):ncol(data)]), scale = FALSE)
+  ## Pre-whiten the data using the SVD. zero-mean columns and get SVD. NB:
+  ## should probably edit this to zero mean *epochs*
+  amp_matrix <-
+    scale(data.matrix(data[, (ncol(data) - n_channels + 1):ncol(data)]),
+          scale = FALSE)
   SVD_amp <- svd(amp_matrix)
 
-  ## get the psuedo-inverse of the diagonal matrix, multiply by right singular vectors
+  ## get the psuedo-inverse of the diagonal matrix, multiply by right singular
+  ## vectors
   Q <- MASS::ginv(diag(SVD_amp$d)) %*% t(SVD_amp$v)
   amp_matrix <- Q %*% t(amp_matrix)
 
@@ -44,18 +47,23 @@ run_ICA <- function (data, method = "sobi") {
   N <- n_times
   M <- matrix(NA,nrow = n_channels, ncol = pm)
   for (u in seq(1, pm, n_channels)) {
+
     k <- k + 1
+
     for (tlag in 1:n_epochs) {
+
       if (tlag == 1) {
-        Rxp <- amp_matrix[ , k:N, tlag] %*% t(amp_matrix[ , 1:(N - k + 1), tlag]) / (N - k + 1) / n_epochs }
-      else {
-        Rxp <- Rxp + amp_matrix[, k:N, tlag] %*% t(amp_matrix[ , 1:(N - k + 1), tlag]) / (N - k + 1) / n_epochs
+        Rxp <- amp_matrix[ , k:N, tlag] %*%
+          t(amp_matrix[ , 1:(N - k + 1), tlag]) / (N - k + 1) / n_epochs
+        } else {
+        Rxp <- Rxp + amp_matrix[, k:N, tlag] %*%
+          t(amp_matrix[ , 1:(N - k + 1), tlag]) / (N - k + 1) / n_epochs
       }
       M[ , u:(u + n_channels - 1)] <- norm(Rxp, 'F') * Rxp #  % Frobenius norm
     }
   }
 
-  dim(M) <- c(n_channels, n_channels, pm/n_channels)
+  dim(M) <- c(n_channels, n_channels, pm / n_channels)
 
   ## do joint diagonalization of matrices using rjd from JADE
   M_rjd <- JADE::rjd(M, maxiter = 300, eps = 1 / sqrt(N) / 100)
@@ -63,8 +71,9 @@ run_ICA <- function (data, method = "sobi") {
   ## create mixing matrix for output
   mixing_matrix <- data.frame(MASS::ginv(Q) %*% M_rjd$V)
   names(mixing_matrix) <- 1:n_channels
-  mixing_matrix$electrode <- names(data[ , (ncol(data) - n_channels + 1):ncol(data)])
-  dim(amp_matrix) <- c(n_channels, n_times*n_epochs)
+  mixing_matrix$electrode <-
+    names(data[ , (ncol(data) - n_channels + 1):ncol(data)])
+  dim(amp_matrix) <- c(n_channels, n_times * n_epochs)
   S <- t(M_rjd$V) %*% amp_matrix
   return(list("mixing_matrix" = mixing_matrix, "comp_activations" = t(S)))
 }

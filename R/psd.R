@@ -38,7 +38,7 @@ compute_psd_welch <- function(data,
   win <- .54 - (1 - .54) * cos(2 * pi * seq(0, 1, by = 1 / (n_fft - 1)))
 
   if (seg_length > n_fft) {
-    error('Seg_length must be >= n_fft')
+    stop("Seg_length must be >= n_fft")
     } else if (n_fft > seg_length) {
       zero_pad <- rep(0, n_fft)
       data_segs <- purrr::map(data_segs, ~ zero_pad + (. * win))

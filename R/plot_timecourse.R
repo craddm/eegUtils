@@ -58,7 +58,8 @@ plot_timecourse <- function(data, time_lim = NULL,
     tmp_col <- rlang::parse_quosure(colour)
   }
 
-  ## Filter out unwanted timepoints, and find nearest time values in the data -----
+  ## Filter out unwanted timepoints, and find nearest time values in the data
+  ## -----
 
   if (!is.null(time_lim)) {
     data <- select_times(data, time_lim)
@@ -78,7 +79,8 @@ plot_timecourse <- function(data, time_lim = NULL,
       data <- dplyr::summarise(dplyr::group_by(data, time, electrode),
                         amplitude = mean(amplitude))
       } else {
-        data <- dplyr::summarise(dplyr::group_by(data, time, electrode, !!tmp_col),
+        data <- dplyr::summarise(dplyr::group_by(data, time, electrode,
+                                                 !!tmp_col),
                         amplitude = mean(amplitude))
       }
   }
@@ -141,14 +143,17 @@ plot_timecourse <- function(data, time_lim = NULL,
 
 
   tc_plot <- tc_plot +
-    labs(x = "Time (s)", y = expression(paste("Amplitude (", mu, "V)")), colour = "", fill = "") +
+    labs(x = "Time (s)", y = expression(paste("Amplitude (", mu, "V)")),
+         colour = "", fill = "") +
     geom_vline(xintercept = 0, linetype = "solid", size = 0.5) +
     geom_hline(yintercept = 0, linetype = "solid", size = 0.5) +
-    scale_x_continuous(breaks = scales::pretty_breaks(n = 4), expand = c(0,0)) +
-    scale_y_continuous(breaks = scales::pretty_breaks(n = 4), expand = c(0,0)) +
+    scale_x_continuous(breaks = scales::pretty_breaks(n = 4),
+                       expand = c(0, 0)) +
+    scale_y_continuous(breaks = scales::pretty_breaks(n = 4),
+                       expand = c(0, 0)) +
     theme_minimal(base_size = 12) +
     theme(panel.grid = element_blank(),
-          axis.ticks = element_line(size=.5))
+          axis.ticks = element_line(size = .5))
 
   return(tc_plot)
 }
@@ -217,12 +222,13 @@ plot_butterfly <- function(data,
   if (browse_mode) {
     butterfly_plot <- butterfly_plot +
       geom_line(aes(group = electrode), colour = "black", alpha = 0.2) +
-      labs(x = "Time (s)", y = expression(paste("Amplitude (", mu, "V)")), colour = "") +
+      labs(x = "Time (s)", y = expression(paste("Amplitude (",
+                                                mu, "V)")), colour = "") +
       geom_hline(yintercept = 0, size = 0.5, linetype = "dashed", alpha = 0.5) +
       scale_x_continuous(expand = c(0, 0)) +
       theme_minimal(base_size = 12) +
       theme(panel.grid = element_blank(),
-            axis.ticks = element_line(size=.5))
+            axis.ticks = element_line(size = .5))
   } else {
     butterfly_plot <- butterfly_plot +
       geom_line(aes(group = electrode, colour = electrode), alpha = 0.5) +
@@ -231,7 +237,7 @@ plot_butterfly <- function(data,
       scale_x_continuous(expand = c(0, 0)) +
       theme_minimal(base_size = 12) +
       theme(panel.grid = element_blank(),
-            axis.ticks = element_line(size=.5))
+            axis.ticks = element_line(size = .5))
 
     if (!continuous) {
       butterfly_plot <- butterfly_plot + geom_vline(xintercept = 0, size = 0.5)

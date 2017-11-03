@@ -23,17 +23,20 @@ select_times <- function(data, ...) {
 #'
 #' @param data An EEG dataset in a data frame. Must have a column named "time".
 #' @param ... Arguments used with related methods
-#' @param time_lim A character vector of two numbers indicating the time range to be selected e.g. c(min, max)
+#' @param time_lim A character vector of two numbers indicating the time range
+#'   to be selected e.g. c(min, max)
 #' @importFrom dplyr filter
 #' @return Data frame with only data from within the specified range.
-#' @seealso \code{\link{select_times}}, \code{\link{select_times.eeg_data}}, \code{\link{select_elecs}}
+#' @seealso \code{\link{select_times}}, \code{\link{select_times.eeg_data}},
+#'   \code{\link{select_elecs}}
 #' @export
 
 select_times.default <- function(data, time_lim = NULL, ...) {
 
   if ("time" %in% colnames(data)) {
     if (length(time_lim) == 1) {
-      warning("Must enter two timepoints when selecting a time range; using whole range.")
+      warning("Must enter two timepoints when selecting a time range;
+              using whole range.")
     } else if (length(time_lim) == 2) {
       time_lim[1] <- data$time[which.min(abs(data$time - time_lim[1]))]
       time_lim[2] <- data$time[which.min(abs(data$time - time_lim[2]))]
@@ -65,11 +68,15 @@ select_times.eeg_data <- function(data, time_lim = NULL, df_out = FALSE, ...) {
 
   if ("time" %in% colnames(proc_data)) {
     if (length(time_lim) == 1) {
-      warning("Must enter two timepoints when selecting a time range; using whole range.")
+      warning("Must enter two timepoints when selecting a time range;
+              using whole range.")
     } else if (length(time_lim) == 2) {
-      time_lim[1] <- proc_data$time[which.min(abs(proc_data$time - time_lim[1]))]
-      time_lim[2] <- proc_data$time[which.min(abs(proc_data$time - time_lim[2]))]
-      proc_data <- dplyr::filter(proc_data, time >= time_lim[1] & time <= time_lim[2])
+      time_lim[1] <- proc_data$time[which.min(abs(proc_data$time -
+                                                    time_lim[1]))]
+      time_lim[2] <- proc_data$time[which.min(abs(proc_data$time -
+                                                    time_lim[2]))]
+      proc_data <- dplyr::filter(proc_data, time >= time_lim[1] &
+                                   time <= time_lim[2])
     } else {
       warning("No time column found.")
     }
@@ -103,14 +110,17 @@ select_elecs <- function(data, ...) {
 
 #' Select electrodes from a given dataset.
 #'
-#' Checks for presence of electrode column, and if found, presence of selected electrodes.
+#' Checks for presence of electrode column, and if found, presence of selected
+#' electrodes.
 #'
 #' @author Matt Craddock, \email{matt@mattcraddock.com}
 #'
 #' @param data An EEG dataset.
 #' @param ... Arguments used with related methods
-#' @param electrode A character vector of electrode labels for selection or removal.
-#' @param keep Defaults to TRUE. Set to false to *remove* the selected electrodes.
+#' @param electrode A character vector of electrode labels for selection or
+#'   removal.
+#' @param keep Defaults to TRUE. Set to false to *remove* the selected
+#'   electrodes.
 #'
 #' @return Data frame with only data from the chosen electrodes
 #'
@@ -127,7 +137,9 @@ select_elecs.default <- function(data,  electrode = NULL, keep = TRUE, ...) {
         data <- data[!data$electrode %in% electrode, ]
       }
     } else {
-      warning(cat("Electrode(s) not found:", electrode[!electrode %in% data$electrode], ". Returning all data."))
+      warning(paste("Electrode(s) not found:",
+                    electrode[!electrode %in% data$electrode],
+                    ". Returning all data."))
     }
   } else {
     if (all(electrode %in% colnames(data))) {

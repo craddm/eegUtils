@@ -20,7 +20,8 @@
 #' @export
 #'
 
-reref_eeg <- function(data, ref_chans = "average", exclude = NULL, robust = FALSE) {
+reref_eeg <- function(data, ref_chans = "average", exclude = NULL,
+                      robust = FALSE) {
 
   if (is.eeg_data(data)) {
     tmp_data <- data$signals
@@ -68,12 +69,13 @@ reref_eeg <- function(data, ref_chans = "average", exclude = NULL, robust = FALS
       }
     }
     tmp_data <- tmp_data - ref_data
+
   } else {
     if (any(all(ref_chans %in% colnames(tmp_data)) | is.numeric(ref_chans))) {
       if (length(ref_chans) > 1) {
-        ref_data <- rowMeans(tmp_data[ , ref_chans])
+        ref_data <- rowMeans(tmp_data[, ref_chans])
       } else {
-        ref_data <- unlist(tmp_data[ , ref_chans])
+        ref_data <- unlist(tmp_data[, ref_chans])
       }
       tmp_data <- tmp_data - ref_data
     } else {
@@ -84,9 +86,11 @@ reref_eeg <- function(data, ref_chans = "average", exclude = NULL, robust = FALS
   if (is.eeg_data(data)) {
     data$signals <- tmp_data
     if (any(ref_chans == "average")) {
-      data$reference <- list(ref_chans = ref_chans, ref_data = ref_data, excluded = excluded)
+      data$reference <- list(ref_chans = ref_chans, ref_data = ref_data,
+                             excluded = excluded)
     } else {
-      data$reference <- list(ref_chans = ref_chans, ref_data = ref_data, excluded = NULL)
+      data$reference <- list(ref_chans = ref_chans, ref_data = ref_data,
+                             excluded = NULL)
     }
     return(data)
   } else {
@@ -98,7 +102,8 @@ reref_eeg <- function(data, ref_chans = "average", exclude = NULL, robust = FALS
 #'
 #' Used to remove the mean of a specified time period from the data. Currently
 #' only performs subtractive baseline. With a data frame, searches for
-#' "electrode" and "epoch" columns, and groups on these when found. An electrode column is always required; an epoch column is not.
+#' "electrode" and "epoch" columns, and groups on these when found. An electrode
+#' column is always required; an epoch column is not.
 #'
 #' @author Matt Craddock \email{matt@mattcraddock.com}
 #' @param data Data to be baseline corrected.
@@ -131,23 +136,25 @@ rm_baseline <- function(data, time_lim = NULL) {
     stop("time_lim should specify the full time range.")
   }
 
-  # if the data is epoched, group by electrode and epoch; otherwise, just by electrode.
-  if("epoch" %in% colnames(data)) {
+  # if the data is epoched, group by electrode and epoch; otherwise, just by
+  # electrode.
+  if ("epoch" %in% colnames(data)) {
     data <- dplyr::group_by(data, electrode, epoch)
   } else{
     data <- dplyr::group_by(data, electrode)
   }
 
-  if (is.null(time_lim)){ # if no time_lim provided, just delete mean of all time points
+  if (is.null(time_lim)) {
+    # if no time_lim provided, just delete mean of all time points
     data <- dplyr::mutate(data, amplitude = amplitude - mean(amplitude))
   } else {
-    #
+
     data_sel <- dplyr::filter(data, time >= time_lim[1], time <= time_lim[2])
     baseline <- dplyr::summarise(data_sel, bl = mean(amplitude))
-    # This is relatively memory intensive - not so bad now but would prefer another way.
-    # Could get extremely painful with time-frequency data.
+    # This is relatively memory intensive - not so bad now but would prefer
+    # another way. Could get extremely painful with time-frequency data.
     data <- dplyr::left_join(data, baseline)
-    data <- dplyr::mutate(data, amplitude = amplitude-bl)
+    data <- dplyr::mutate(data, amplitude = amplitude - bl)
     data <- dplyr::select(data, -bl)
   }
 
@@ -189,10 +196,13 @@ epoch_data <- function(data, events, time_lim = (c(-1, 1))) {
     if (!all(events %in% unique(data$events$event_type))) {
       stop("Events not found - check event codes.")
     }
-    samps <- seq(round(time_lim[[1]] * data$srate), round(time_lim[[2]] * (data$srate - 1)))
+
+    samps <- seq(round(time_lim[[1]] * data$srate),
+                 round(time_lim[[2]] * (data$srate - 1)))
     event_table <- data$events
-    epoch_zero <- sort(unlist(purrr::map(events,
-                                         ~event_table[which(event_table$event_type == .),]$event_onset)))
+    epoch_zero <-
+      sort(unlist(purrr::map(events,
+                             ~ event_table[which(event_table$event_type == .),]$event_onset)))
     epoched_data <- purrr::map(epoch_zero,
                                ~ . + samps)
     epoched_data <-

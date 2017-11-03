@@ -66,10 +66,10 @@ erp_scalp <- function(data,
     plot <- plot + facet_wrap("electrodefacet")
     plot <- plot + coord_cartesian(ylim = c(minAmp, maxAmp),
                                    xlim = c(minTime, maxTime))
-    plot <- plot + geom_vline(xintercept = 0, size=.3)
-    plot <- plot + geom_hline(yintercept = 0, size=.3)
+    plot <- plot + geom_vline(xintercept = 0, size = .3)
+    plot <- plot + geom_hline(yintercept = 0, size = .3)
     plot <- plot + theme_void()
-    plot <- plot + theme(strip.text = element_text(size=8))
+    plot <- plot + theme(strip.text = element_text(size = 8))
     if (!is.null(color)) {
       plot <- plot + scale_color_brewer(palette = "Set1")
       plot <- plot + geom_line(aes_(color = as.name(color)),
@@ -88,36 +88,23 @@ erp_scalp <- function(data,
   # Get default electrode locations from pkg internal data
   data <- electrode_locations(data, drop = T, montage = montage)
 
-  minx <- min(data$x)
-  maxx <- max(data$x)
-  miny <- min(data$y)
-  maxy <- max(data$y)
-
-
-  # Are these lines necessary? Commented out to help with interactive plotting -
-  # clicks in Shiny will use native co-ordinate space, easier to then match with electrode names
-  #----
-
-  #data$x <- data$x + abs(minx)
-  #data$y <- data$y + abs(miny)
-
   p <- ggplot(data, aes(x, y)) +
     geom_blank() +
     theme_void() +
-    theme(plot.margin = unit(c(8,8,8,8), "pt"))
+    theme(plot.margin = unit(c(8, 8, 8, 8), "pt"))
 
-  guide <- ggplot(data, aes(x=time, y=amplitude)) +
+  guide <- ggplot(data, aes(x = time, y = amplitude)) +
     coord_cartesian(ylim = c(minAmp, maxAmp),
                     xlim = c(minTime, maxTime)) +
     scale_x_continuous(breaks = scales::pretty_breaks(n = 3)) +
     scale_y_continuous(breaks = scales::pretty_breaks(n = 3)) +
     geom_vline(xintercept = 0, size = .4) +
     geom_hline(yintercept = 0, size = .4) +
-    labs(y = expression(paste("Amplitude (", mu,"V)")),
+    labs(y = expression(paste("Amplitude (", mu, "V)")),
          x = "Time (s)") +
     theme_minimal(base_size = 8) +
     theme(panel.grid = element_blank(),
-          axis.ticks = element_line(size=.3),
+          axis.ticks = element_line(size = .3),
           plot.margin = unit(c(8, 8, 8, 8), "pt"))
   if (show_guide) {
     p <- p +
@@ -155,7 +142,8 @@ erp_scalp <- function(data,
 #' @import miniUI
 #' @export
 
-interactive_scalp <- function(data, colour = NULL, baseline = NULL, montage = NULL) {
+interactive_scalp <- function(data, colour = NULL,
+                              baseline = NULL, montage = NULL) {
 
   if (is.eeg_data(data)) {
     data <- as.data.frame(data, long = TRUE)
@@ -227,7 +215,7 @@ interactive_scalp <- function(data, colour = NULL, baseline = NULL, montage = NU
 
       # plot selected electrodes when on appropriate tab
       output$Selected <- renderPlot({
-        if (button_reacts$avg){
+        if (button_reacts$avg) {
           if (is.null(colour)) {
             plot_timecourse(data[data$electrode %in% button_reacts$sel_elecs, ])
           } else {

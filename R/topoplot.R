@@ -70,7 +70,8 @@ topoplot <- function(data,
     data <- as.data.frame(data, long = TRUE)
   }
 
-  # Filter out unwanted timepoints, and find nearest time values in the data --------------
+  # Filter out unwanted timepoints, and find nearest time values in the data
+  # --------------
 
   if ("time" %in% colnames(data)) {
     if (length(time_lim) == 1) {
@@ -104,8 +105,9 @@ topoplot <- function(data,
   data <- dplyr::summarise(dplyr::group_by(data, x, y, electrode),
                    z = mean(!!rlang::parse_quosure(quantity)))
 
-  # Cut the data frame down to only the necessary columns, and make sure it has the right names --------
-  # Will be able to work with different parameters (e.g. power) eventually, so this will be necessary
+  # Cut the data frame down to only the necessary columns, and make sure it has
+  # the right names -------- Will be able to work with different parameters
+  # (e.g. power) eventually, so this will be necessary
   data <- data.frame(x = data$x,
                    y = data$y,
                    z = data$z,
@@ -114,8 +116,8 @@ topoplot <- function(data,
   # Rescale electrode co-ordinates to be from -1 to 1 for plotting
   # Selects largest absolute value from x or y
   max_dim <- max(abs(data$x), abs(data$y))
-  scaled_x <- data$x/max_dim
-  scaled_y <- data$y/max_dim
+  scaled_x <- data$x / max_dim
+  scaled_y <- data$y / max_dim
 
   # Create the interpolation grid --------------------------
 
@@ -156,58 +158,60 @@ topoplot <- function(data,
   # Do the interpolation! ------------------------
 
   switch(method,
-                  Biharmonic = {
-                    xo <- matrix(rep(xo, gridRes), nrow = gridRes, ncol = gridRes)
-                    yo <- t(matrix(rep(yo, gridRes), nrow = gridRes, ncol = gridRes))
-                    xy <- scaled_x + scaled_y * sqrt(as.complex(-1))
-                    d <- matrix(rep(xy, length(xy)), nrow = length(xy), ncol = length(xy))
-                    d <- abs(d - t(d))
-                    diag(d) <- 1
-                    g <- (d ^ 2) * (log(d) - 1) #Green's function
-                    diag(g) <- 0
-                    weights <- qr.solve(g, data$z)
-                    xy <- t(xy)
+         Biharmonic = {
+           xo <- matrix(rep(xo, gridRes), nrow = gridRes, ncol = gridRes)
+           yo <- t(matrix(rep(yo, gridRes), nrow = gridRes, ncol = gridRes))
+           xy <- scaled_x + scaled_y * sqrt(as.complex(-1))
+           d <- matrix(rep(xy, length(xy)), nrow = length(xy), ncol = length(xy))
+           d <- abs(d - t(d))
+           diag(d) <- 1
+           g <- (d ^ 2) * (log(d) - 1) #Green's function
+           diag(g) <- 0
+           weights <- qr.solve(g, data$z)
+           xy <- t(xy)
 
-                    outmat <- purrr::map(xo + sqrt(as.complex(-1)) * yo,
-                                      function (x) (abs(x - xy) ^ 2) * (log(abs(x - xy))-1) ) %>%
-                      rapply(function (x) ifelse(is.nan(x), 0, x), how = "replace") %>%
-                      purrr::map_dbl(function (x) x %*% weights)
+           outmat <-
+             purrr::map(xo + sqrt(as.complex(-1)) * yo,
+                        function (x) (abs(x - xy) ^ 2) * (log(abs(x - xy)) - 1) ) %>%
+             rapply(function (x) ifelse(is.nan(x), 0, x), how = "replace") %>%
+             purrr::map_dbl(function (x) x %*% weights)
 
-                    dim(outmat) <- c(gridRes, gridRes)
+           dim(outmat) <- c(gridRes, gridRes)
 
-                    outDf <- data.frame(x = xo[, 1], outmat)
-                    names(outDf)[1:length(yo[1, ]) + 1] <- yo[1, ]
-                    outDf <- tidyr::gather(outDf,
-                                    key = y,
-                                    value = amplitude,
-                                    -x,
-                                    convert = TRUE)
-                  },
+           outDf <- data.frame(x = xo[, 1], outmat)
+           names(outDf)[1:length(yo[1, ]) + 1] <- yo[1, ]
+           outDf <- tidyr::gather(outDf,
+                                  key = y,
+                                  value = amplitude,
+                                  -x,
+                                  convert = TRUE)
+         },
          gam = {
            tmp_df <- data
            tmp_df$x <- scaled_x
            tmp_df$y <- scaled_y
            splineSmooth <- mgcv::gam(z ~ s(x, y, bs = 'ts', k = 40), data = tmp_df)
            outDf <- data.frame(expand.grid(x = seq(min(tmp_df$x) * 2,
-                                                     max(tmp_df$x) * 2,
-                                                     length = gridRes),
-                                             y = seq(min(tmp_df$y) * 2,
-                                                     max(tmp_df$y) * 2,
-                                                     length = gridRes)))
+                                                   max(tmp_df$x) * 2,
+                                                   length = gridRes),
+                                           y = seq(min(tmp_df$y) * 2,
+                                                   max(tmp_df$y) * 2,
+                                                   length = gridRes)))
 
            outDf$amplitude <-  stats::predict(splineSmooth,
-                                         outDf,
-                                         type = "response")
+                                              outDf,
+                                              type = "response")
          })
 
-  # Check if should interp/extrap beyond headshape, and set up ring to mask edges for smoothness
+  # Check if should interp/extrap beyond headshape, and set up ring to mask
+  # edges for smoothness
   if (interp_limit == "skirt") {
     outDf$incircle <- sqrt(outDf$x ^ 2 + outDf$y ^ 2) < 1.125
     maskRing <- data.frame(x = 1.126 * cos(circ_rads),
                            y = 1.126 * sin(circ_rads)
     )
   } else {
-    outDf$incircle <- sqrt(outDf$x ^ 2 + outDf$y ^ 2) < (r*1.03)
+    outDf$incircle <- sqrt(outDf$x ^ 2 + outDf$y ^ 2) < (r * 1.03)
     maskRing <- data.frame(x = r * 1.03 * cos(circ_rads),
                            y = r * 1.03 * sin(circ_rads)
     )
@@ -215,7 +219,8 @@ topoplot <- function(data,
 
   # Create the actual plot -------------------------------
 
-  topo <- ggplot2::ggplot(outDf[outDf$incircle, ], aes(x, y, fill = amplitude)) +
+  topo <- ggplot2::ggplot(outDf[outDf$incircle, ],
+                          aes(x, y, fill = amplitude)) +
     geom_raster(interpolate = TRUE)
 
   if (contour) {
@@ -264,7 +269,8 @@ topoplot <- function(data,
       line = element_blank(),
       axis.text = element_blank(),
       axis.title = element_blank()) +
-    guides(fill = guide_colorbar(title = expression(paste("Amplitude (", mu,"V)")),
+    guides(fill = guide_colorbar(title = expression(paste("Amplitude (",
+                                                          mu,"V)")),
                                  title.position = "right",
                                  barwidth = 1,
                                  barheight = 6,
