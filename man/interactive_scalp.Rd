@@ -9,8 +9,8 @@ interactive_scalp(data, colour = NULL, baseline = NULL, montage = NULL)
 \arguments{
 \item{data}{An EEG dataset.}
 
-\item{colour}{Variable to colour lines by. If no variable is passed, only
-one line is drawn for each electrode.}
+\item{colour}{Variable to colour lines by. If no variable is passed, only one
+line is drawn for each electrode.}
 
 \item{baseline}{Character vector of times to subtract for baseline correct.}
 
@@ -18,7 +18,9 @@ one line is drawn for each electrode.}
 only 'biosemi64alpha' available other than default 10/20 system)}
 }
 \description{
-Launches a Shiny Gadget for an interactive version of erp_scalp, allowing clicking of individual electrodes to plot them in a separate panel. In that panel, they can be averaged over or plotted as individual electrodes.
+Launches a Shiny Gadget for an interactive version of erp_scalp, allowing
+clicking of individual electrodes to plot them in a separate panel. In that
+panel, they can be averaged over or plotted as individual electrodes.
 Currently buggy with datasets with existing electrode co-ordinates.
 }
 \author{

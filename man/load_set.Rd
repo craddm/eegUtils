@@ -9,7 +9,8 @@ load_set(file_name, df_out = FALSE)
 \arguments{
 \item{file_name}{Filename (and path if not in present working directory)}
 
-\item{df_out}{Defaults to FALSE - outputs an object of class eeg_data. Set to TRUE for a normal data frame.}
+\item{df_out}{Defaults to FALSE - outputs an object of class eeg_data. Set to
+TRUE for a normal data frame.}
 }
 \description{
 EEGLAB .set files are standard Matlab .mat files, but EEGLAB can be set to

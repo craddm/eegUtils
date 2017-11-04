@@ -45,21 +45,19 @@ run_ICA <- function (data, method = "sobi") {
   k <- 1
   pm <- n_channels * n_lags
   N <- n_times
-  M <- matrix(NA,nrow = n_channels, ncol = pm)
+  M <- matrix(NA, nrow = n_channels, ncol = pm)
+
   for (u in seq(1, pm, n_channels)) {
-
     k <- k + 1
-
     for (tlag in 1:n_epochs) {
-
       if (tlag == 1) {
-        Rxp <- amp_matrix[ , k:N, tlag] %*%
-          t(amp_matrix[ , 1:(N - k + 1), tlag]) / (N - k + 1) / n_epochs
+        Rxp <- amp_matrix[, k:N, tlag] %*%
+          t(amp_matrix[, 1:(N - k + 1), tlag]) / (N - k + 1) / n_epochs
         } else {
         Rxp <- Rxp + amp_matrix[, k:N, tlag] %*%
-          t(amp_matrix[ , 1:(N - k + 1), tlag]) / (N - k + 1) / n_epochs
+          t(amp_matrix[, 1:(N - k + 1), tlag]) / (N - k + 1) / n_epochs
       }
-      M[ , u:(u + n_channels - 1)] <- norm(Rxp, 'F') * Rxp #  % Frobenius norm
+      M[, u:(u + n_channels - 1)] <- norm(Rxp, "F") * Rxp #  % Frobenius norm
     }
   }
 
@@ -72,7 +70,7 @@ run_ICA <- function (data, method = "sobi") {
   mixing_matrix <- data.frame(MASS::ginv(Q) %*% M_rjd$V)
   names(mixing_matrix) <- 1:n_channels
   mixing_matrix$electrode <-
-    names(data[ , (ncol(data) - n_channels + 1):ncol(data)])
+    names(data[, (ncol(data) - n_channels + 1):ncol(data)])
   dim(amp_matrix) <- c(n_channels, n_times * n_epochs)
   S <- t(M_rjd$V) %*% amp_matrix
   return(list("mixing_matrix" = mixing_matrix, "comp_activations" = t(S)))

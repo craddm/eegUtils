@@ -10,7 +10,8 @@
 #'@param data \code{eeg_data} object to be plotted.
 #'@param sig_length Length of signal to be plotted initially (seconds if
 #'  continuous, epochs if epoched).
-#'@param n_elecs Number of electrodes to be plotted on a single screen. (not yet implemented)
+#'@param n_elecs Number of electrodes to be plotted on a single screen. (not yet
+#'  implemented)
 #'@param downsample Only works on \code{eeg_data} objects. Reduces size of data
 #'  by only plotting every 4th point, speeding up plotting considerably. Nb. may
 #'  cause aliasing as does not filter. Use with caution.
@@ -70,16 +71,20 @@ browse_data <- function(data, sig_length = 5, n_elecs = NULL,
                                        value = min(unique(data$time)),
                                        width = "100%"),
                          fillRow(
-                           numericInput("sig_time", "Display length",
-                                        value = sig_length, min = 1, max = 60),
-                           #numericInput("uV_scale", "Scale (microvolts)", value = 50, min = 1),
-                           checkboxInput("dc_offset", "Remove DC offset",
+                           numericInput("sig_time",
+                                        "Display length",
+                                        value = sig_length,
+                                        min = 1, max = 60),
+                           #numericInput("uV_scale", "Scale (microvolts)", value
+                           #= 50, min = 1),
+                           checkboxInput("dc_offset",
+                                         "Remove DC offset",
                                          value = TRUE)
                          )
                        )
                      )
         ),
-        miniTabPanel(title = "Individual" ,
+        miniTabPanel(title = "Individual",
                      miniContentPanel(
                        wellPanel(
                          plotOutput("time_plot"),
@@ -94,12 +99,16 @@ browse_data <- function(data, sig_length = 5, n_elecs = NULL,
                                        min = 0,
                                        max = max(unique(data$time)),
                                        value = min(unique(data$time)),
-                                       width = '100%'),
+                                       width = "100%"),
                            fillRow(
-                             numericInput("sig_time_ind", "Display length",
-                                          sig_length, min = 1, max = 60),
-                             #numericInput("elecs_per_page_ind", "Electrodes per page", n_elecs, min = 1, max = 30),
-                             checkboxInput("dc_offset_ind", "Remove DC offset",
+                             numericInput("sig_time_ind",
+                                          "Display length",
+                                          sig_length,
+                                          min = 1, max = 60),
+                             #numericInput("elecs_per_page_ind", "Electrodes per
+                             #page", n_elecs, min = 1, max = 30),
+                             checkboxInput("dc_offset_ind",
+                                           "Remove DC offset",
                                            value = TRUE)
                            )
                          )
@@ -146,7 +155,7 @@ browse_data <- function(data, sig_length = 5, n_elecs = NULL,
             panel.grid.minor = element_blank(),
             panel.grid.major.y = element_blank()
           ) +
-          scale_x_continuous(expand = c(0,0))
+          scale_x_continuous(expand = c(0, 0))
 
         init_plot
       }, height = 2000)
@@ -172,16 +181,22 @@ browse_data <- function(data, sig_length = 5, n_elecs = NULL,
                                        min = 1,
                                        max = max(unique(data$epoch)),
                                        value = min(unique(data$epoch)),
-                                       width = '100%'),
+                                       width = "100%"),
                          fillRow(
-                           numericInput("sig_time", "No. epochs", sig_length, min = 1, max = 60),
-                           #numericInput("uV_scale", "Scale (microvolts)", max(data$amplitude), min = 10, value = 100),
-                           checkboxInput("dc_offset", "Remove DC offset", value = TRUE)
+                           numericInput("sig_time",
+                                        "No. epochs",
+                                        sig_length,
+                                        min = 1, max = 60),
+                           #numericInput("uV_scale", "Scale (microvolts)",
+                           #max(data$amplitude), min = 10, value = 100),
+                           checkboxInput("dc_offset",
+                                         "Remove DC offset",
+                                         value = TRUE)
                          )
                        )
                      )
         ),
-        miniTabPanel(title = "Individual" ,
+        miniTabPanel(title = "Individual",
                      miniContentPanel(
                        wellPanel(
                          plotOutput("time_plot"),
@@ -197,11 +212,17 @@ browse_data <- function(data, sig_length = 5, n_elecs = NULL,
                                        min = 1,
                                        max = max(unique(data$epoch)),
                                        value = min(unique(data$epoch)),
-                                       width = '100%'),
+                                       width = "100%"),
                            fillRow(
-                             numericInput("sig_time_ind", "Display length", sig_length, min = 1, max = 60),
-                             #numericInput("elecs_per_page_ind", "Electrodes per page", n_elecs, min = 1, max = 30),
-                             checkboxInput("dc_offset_ind", "Remove DC offset", value = TRUE)
+                             numericInput("sig_time_ind",
+                                          "Display length",
+                                          sig_length,
+                                          min = 1, max = 60),
+                             #numericInput("elecs_per_page_ind", "Electrodes per
+                             #page", n_elecs, min = 1, max = 30),
+                             checkboxInput("dc_offset_ind",
+                                           "Remove DC offset",
+                                           value = TRUE)
                            )
                          )
                        )
@@ -290,10 +311,10 @@ browse_data <- function(data, sig_length = 5, n_elecs = NULL,
 
 #' Interactive 3d plot of electrode locations
 #'
-#' @import plotly
-#'
+#' @importFrom plotly plot_ly
+#' @param data electrode locations to be plotted in 3d
 
-plot_electrodes <- function (data) {
+plot_electrodes <- function(data) {
   data <- electrodeLocs(data)
   xyz <- pol_to_sph(data$theta, data$radius)
   plotly::plot_ly(x, y, z, unique(data$electrode))

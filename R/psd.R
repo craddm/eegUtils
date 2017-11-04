@@ -79,6 +79,5 @@ split_vec <- function(vec, seg_length, overlap) {
   k <- floor((length(vec) - overlap) / (seg_length - overlap))
   starts <- seq(1, k * (seg_length - overlap), by = seg_length - overlap)
   ends <- starts + seg_length - 1
-  #ends[ends > length(vec)] <- length(vec)
   lapply(1:length(starts), function(i) vec[starts[i]:ends[i]])
 }

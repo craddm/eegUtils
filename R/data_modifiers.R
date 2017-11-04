@@ -202,7 +202,7 @@ epoch_data <- function(data, events, time_lim = (c(-1, 1))) {
     event_table <- data$events
     epoch_zero <-
       sort(unlist(purrr::map(events,
-                             ~ event_table[which(event_table$event_type == .),]$event_onset)))
+                             ~ event_table[which(event_table$event_type == .), ]$event_onset)))
     epoched_data <- purrr::map(epoch_zero,
                                ~ . + samps)
     epoched_data <-

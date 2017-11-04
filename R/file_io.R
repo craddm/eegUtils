@@ -180,7 +180,7 @@ import_cnt <- function(file_name) {
                                      n = 1, endian = "little")
     ev_list$accept[i] <- readBin(cnt_file, integer(), size = 1,
                                  n = 1, endian = "little")
-    ev_list$accuracy[i] <- readBin(cnt_file, integer(),size = 1,
+    ev_list$accuracy[i] <- readBin(cnt_file, integer(), size = 1,
                                    n = 1, endian = "little")
   }
 
@@ -205,21 +205,31 @@ import_cnt <- function(file_name) {
 #' @param df_out Defaults to FALSE - outputs an object of class eeg_data. Set to
 #'   TRUE for a normal data frame.
 #' @author Matt Craddock \email{matt@mattcraddock.com}
-#' @import R.matlab
-#' @importFrom dplyr group_by mutate
+#' @importFrom R.matlab readMat
+#' @importFrom dplyr group_by mutate select rename
+#' @importFrom tibble tibble as_tibble
+#' @export
 
 
 load_set <- function(file_name, df_out = FALSE) {
-  file_type <- tools::file_ext(file_name)
+
   temp_dat <- R.matlab::readMat(file_name)
-  n_chans <- temp_dat$EEG[[9]]
-  n_trials <- temp_dat$EEG[[10]]
-  times <- temp_dat$EEG[[15]]
-  chan_info <- as.data.frame(temp_dat$EEG[[22]])
-  if (is.character(temp_dat$EEG[[16]])) {
+  n_chans <-
+    temp_dat$EEG[[which(dimnames(temp_dat$EEG)[[1]] == "nbchan")]]
+  n_trials <-
+    temp_dat$EEG[[which(dimnames(temp_dat$EEG)[[1]] == "trials")]]
+  times <-
+    temp_dat$EEG[[which(dimnames(temp_dat$EEG)[[1]] == "times")]]
+  chan_info <-
+    tibble::as_tibble(temp_dat$EEG[[which(dimnames(temp_dat$EEG)[[1]] == "chanlocs")]])
+
+  # check if the data is stored in the set or in a separate .fdt
+  if (is.character(temp_dat$EEG[[which(dimnames(temp_dat$EEG)[[1]] == "data")]])) {
     message("loading from .fdt")
-    fdt_file <- paste0(tools::file_path_sans_ext(file_name), '.fdt')
+    fdt_file <- paste0(tools::file_path_sans_ext(file_name), ".fdt")
     fdt_file <- file(fdt_file, "rb")
+
+    # read in data from .fdt
     signals <-
       readBin(
         fdt_file,
@@ -231,13 +241,16 @@ load_set <- function(file_name, df_out = FALSE) {
     close(fdt_file)
     dim(signals) <- c(n_chans, length(times) * max(n_trials, 1))
     times <- rep(times, max(n_trials, 1))
+
     if (n_trials == 1) {
       continuous <- TRUE
     } else {
       continuous <- FALSE
     }
+
   } else {
-    signals <- temp_dat$EEG[[16]]
+    # if the data is in the .set file, load it here instead of above
+    signals <- temp_dat$EEG[[which(dimnames(temp_dat$EEG)[[1]] == "data")]]
     dim_signals <- dim(signals)
     if (length(dim_signals) == 3) {
       dim(signals) <- c(dim_signals[1], dim_signals[2] * dim_signals[3])
@@ -249,16 +262,30 @@ load_set <- function(file_name, df_out = FALSE) {
   }
 
   final_dat <- data.frame(cbind(t(signals), times))
-  srate <- temp_dat$EEG[[12]]
-  names(final_dat) <- c(unlist(chan_info[1,]), "time")
+  srate <- temp_dat$EEG[[which(dimnames(temp_dat$EEG)[[1]] == "srate")]]
+  names(final_dat) <- c(unlist(chan_info[1, ]), "time")
   final_dat <- dplyr::group_by(final_dat, time)
   final_dat <- dplyr::mutate(final_dat, epoch = 1:n())
+
+  event_info <- temp_dat$EEG[[which(dimnames(temp_dat$EEG)[[1]] == "event")]]
+
+  event_table <- tibble::as_tibble(t(matrix(as.integer(event_info),
+                               nrow = dim(event_info)[1],
+                               ncol = dim(event_info)[3])))
+
+  names(event_table) <- unlist(dimnames(event_info)[1])
+  event_table <- dplyr::select(event_table, type, latency, epoch)
+  event_table <- dplyr::rename(event_table, event_type = "type",
+                               event_onset = "latency")
+
   if (df_out) {
     return(final_dat)
   } else {
     final_dat$time <- final_dat$time / 1000 # convert to seconds
-    timings <- data.frame(time = final_dat$time, epoch = final_dat$epoch)
+    timings <- tibble::tibble(time = final_dat$time, epoch = final_dat$epoch)
     eeg_data(final_dat[, 1:n_chans], srate = srate,
-             timings = timings, continuous = continuous)
+             timings = timings, continuous = continuous,
+             chan_info = as_tibble(t(chan_info)),
+             events = event_table)
   }
 }

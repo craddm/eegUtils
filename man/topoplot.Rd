@@ -5,7 +5,7 @@
 \title{Topographical Plotting Function for EEG}
 \usage{
 topoplot(data, time_lim = NULL, clim = NULL, chanLocs = NULL,
-  method = "Biharmonic", r = NULL, gridRes = 67, colourmap = "RdBu",
+  method = "Biharmonic", r = NULL, grid_res = 67, colourmap = "RdBu",
   interp_limit = "skirt", contour = TRUE, chan_marker = "point",
   quantity = "amplitude", montage = NULL)
 }
@@ -28,10 +28,10 @@ implements the same method used in Matlab's EEGLAB. "gam" fits a
 Generalized Additive Model with k = 40 knots. Defaults to biharmonic spline
 interpolation.}
 
-\item{r}{Radius of cartoon headshape; if not given, defaults to 1.1 * the
+\item{r}{Radius of cartoon head_shape; if not given, defaults to 1.1 * the
 maximum y electrode location.}
 
-\item{gridRes}{Resolution of the interpolated grid. Higher = smoother but
+\item{grid_res}{Resolution of the interpolated grid. Higher = smoother but
 slower.}
 
 \item{colourmap}{Defaults to RdBu if none supplied. Can be any from
@@ -39,7 +39,7 @@ RColorBrewer. If an unsupported palette is specified, switches to Greens.}
 
 \item{interp_limit}{"skirt" or "head". Defaults to "skirt". "skirt"
 interpolates just past the farthest electrode and does not respect the
-boundary of the headshape. "head" interpolates up to the radius of the
+boundary of the head_shape. "head" interpolates up to the radius of the
 plotted head.}
 
 \item{contour}{Plot contour lines on topography (defaults to TRUE)}
@@ -68,5 +68,5 @@ Allows simple plotting of functional data. Output is a ggplot2 object.
 }
 
 \author{
-Matt Craddock, \email{m.p.craddock@leeds.ac.uk}
+Matt Craddock, \email{matt@mattcraddock.com}
 }

@@ -6,6 +6,9 @@
 \usage{
 plot_electrodes(data)
 }
+\arguments{
+\item{data}{electrode locations to be plotted in 3d}
+}
 \description{
 Interactive 3d plot of electrode locations
 }

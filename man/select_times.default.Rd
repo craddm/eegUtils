@@ -9,7 +9,8 @@
 \arguments{
 \item{data}{An EEG dataset in a data frame. Must have a column named "time".}
 
-\item{time_lim}{A character vector of two numbers indicating the time range to be selected e.g. c(min, max)}
+\item{time_lim}{A character vector of two numbers indicating the time range
+to be selected e.g. c(min, max)}
 
 \item{...}{Arguments used with related methods}
 }
@@ -20,7 +21,8 @@ Data frame with only data from within the specified range.
 Select timerange from a dataframe.
 }
 \seealso{
-\code{\link{select_times}}, \code{\link{select_times.eeg_data}}, \code{\link{select_elecs}}
+\code{\link{select_times}}, \code{\link{select_times.eeg_data}},
+  \code{\link{select_elecs}}
 }
 \author{
 Matt Craddock, \email{matt@mattcraddock.com}

@@ -156,15 +156,19 @@ select_elecs.default <- function(data,  electrode = NULL, keep = TRUE, ...) {
 
 #' Select electrodes from a given dataset.
 #'
-#' Checks for presence of electrode column, and if found, presence of selected electrodes.
+#' Checks for presence of electrode column, and if found, presence of selected
+#' electrodes.
 #'
 #' @author Matt Craddock, \email{matt@mattcraddock.com}
 #'
 #' @param data An \code{eeg_data} object.
 #' @param ... Arguments used with related methods
-#' @param electrode A character vector of electrode labels for selection or removal.
-#' @param keep Defaults to TRUE. Set to false to *remove* the selected electrodes.
-#' @param df_out Defaults to FALSE. Set to TRUE to return a dataframe rather than an \code{eeg_data} object.
+#' @param electrode A character vector of electrode labels for selection or
+#'   removal.
+#' @param keep Defaults to TRUE. Set to false to *remove* the selected
+#'   electrodes.
+#' @param df_out Defaults to FALSE. Set to TRUE to return a dataframe rather
+#'   than an \code{eeg_data} object.
 #'
 #' @return \code{eeg_data} object with selected electrodes removed/kept.
 #'

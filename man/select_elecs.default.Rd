@@ -9,9 +9,11 @@
 \arguments{
 \item{data}{An EEG dataset.}
 
-\item{electrode}{A character vector of electrode labels for selection or removal.}
+\item{electrode}{A character vector of electrode labels for selection or
+removal.}
 
-\item{keep}{Defaults to TRUE. Set to false to *remove* the selected electrodes.}
+\item{keep}{Defaults to TRUE. Set to false to *remove* the selected
+electrodes.}
 
 \item{...}{Arguments used with related methods}
 }
@@ -19,7 +21,8 @@
 Data frame with only data from the chosen electrodes
 }
 \description{
-Checks for presence of electrode column, and if found, presence of selected electrodes.
+Checks for presence of electrode column, and if found, presence of selected
+electrodes.
 }
 \author{
 Matt Craddock, \email{matt@mattcraddock.com}

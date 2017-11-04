@@ -5,14 +5,18 @@
 \title{Convert eeg_data to data.frame}
 \usage{
 \method{as.data.frame}{eeg_data}(data, row.names = NULL, optional = FALSE,
-  ..., long = FALSE)
+  long = FALSE, ...)
 }
 \arguments{
 \item{data}{Object of class \code{eeg_data}}
 
-\item{...}{arguments for other as.data.frame commands}
+\item{row.names}{Kept for compatability with S3 method, ignored.}
+
+\item{optional}{Kept for compatability with S3 method, ignored.}
 
 \item{long}{Convert to long format. Defaults to FALSE}
+
+\item{...}{arguments for other as.data.frame commands}
 }
 \description{
 Convert an object of class \code{eeg_data} into a standard data.frame / tibble

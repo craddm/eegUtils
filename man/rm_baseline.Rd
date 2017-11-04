@@ -16,7 +16,8 @@ channel mean if the data is continuous.}
 \description{
 Used to remove the mean of a specified time period from the data. Currently
 only performs subtractive baseline. With a data frame, searches for
-"electrode" and "epoch" columns, and groups on these when found. An electrode column is always required; an epoch column is not.
+"electrode" and "epoch" columns, and groups on these when found. An electrode
+column is always required; an epoch column is not.
 }
 \author{
 Matt Craddock \email{matt@mattcraddock.com}

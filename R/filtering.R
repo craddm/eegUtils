@@ -38,7 +38,7 @@ iir_filt <- function(data, low_freq = NULL, high_freq = NULL, filter_order = 4,
       stop("At least one frequency must be specified.")
     } else {
       filt_type <- "low"
-      message(sprintf('Low-pass IIR filter at %.4g Hz', high_freq))
+      message(sprintf("Low-pass IIR filter at %.4g Hz", high_freq))
       W <- high_freq / (srate / 2)
     }
   } else if (is.null(high_freq)) {

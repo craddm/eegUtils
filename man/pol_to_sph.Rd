@@ -7,9 +7,11 @@
 pol_to_sph(theta, phi)
 }
 \arguments{
-\item{theta}{Azimuth from polar co-ordinates (theta in supplied electrode locations)}
+\item{theta}{Azimuth from polar co-ordinates (theta in supplied electrode
+locations)}
 
-\item{phi}{Elevation from polar co-ordinates (radius in supplied electrode locations)}
+\item{phi}{Elevation from polar co-ordinates (radius in supplied electrode
+locations)}
 }
 \description{
 Hard-coded to a radius of 85 mm (as in BESA).

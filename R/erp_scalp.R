@@ -219,13 +219,16 @@ interactive_scalp <- function(data, colour = NULL,
           if (is.null(colour)) {
             plot_timecourse(data[data$electrode %in% button_reacts$sel_elecs, ])
           } else {
-            plot_timecourse(data[data$electrode %in% button_reacts$sel_elecs, ], colour = as.name(colour))
+            plot_timecourse(data[data$electrode %in% button_reacts$sel_elecs, ],
+                            colour = as.name(colour))
           }
         } else {
           if (is.null(colour)) {
-            plot_timecourse(data[data$electrode %in% button_reacts$sel_elecs, ], colour = "electrode")
+            plot_timecourse(data[data$electrode %in% button_reacts$sel_elecs, ],
+                            colour = "electrode")
           } else{
-            plot_timecourse(data[data$electrode %in% button_reacts$sel_elecs, ], colour = as.name(colour)) +
+            plot_timecourse(data[data$electrode %in% button_reacts$sel_elecs, ],
+                            colour = as.name(colour)) +
               facet_wrap(~electrode)
           }
         }

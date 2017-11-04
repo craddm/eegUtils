@@ -2,7 +2,7 @@
 #'
 #' Allows simple plotting of functional data. Output is a ggplot2 object.
 #'
-#' @author Matt Craddock, \email{m.p.craddock@leeds.ac.uk}
+#' @author Matt Craddock, \email{matt@mattcraddock.com}
 #' @param data An EEG dataset. Must have columns x, y, and amplitude at present.
 #'   x and y are (Cartesian) electrode co-ordinates), amplitude is amplitude.
 #' @param time_lim Timepoint(s) to plot. Can be one time or a range to average
@@ -16,15 +16,15 @@
 #'   implements the same method used in Matlab's EEGLAB. "gam" fits a
 #'   Generalized Additive Model with k = 40 knots. Defaults to biharmonic spline
 #'   interpolation.
-#' @param r Radius of cartoon headshape; if not given, defaults to 1.1 * the
+#' @param r Radius of cartoon head_shape; if not given, defaults to 1.1 * the
 #'   maximum y electrode location.
-#' @param gridRes Resolution of the interpolated grid. Higher = smoother but
+#' @param grid_res Resolution of the interpolated grid. Higher = smoother but
 #'   slower.
 #' @param colourmap Defaults to RdBu if none supplied. Can be any from
 #'   RColorBrewer. If an unsupported palette is specified, switches to Greens.
 #' @param interp_limit "skirt" or "head". Defaults to "skirt". "skirt"
 #'   interpolates just past the farthest electrode and does not respect the
-#'   boundary of the headshape. "head" interpolates up to the radius of the
+#'   boundary of the head_shape. "head" interpolates up to the radius of the
 #'   plotted head.
 #' @param contour Plot contour lines on topography (defaults to TRUE)
 #' @param chan_marker Set marker for electrode locations. "point" = point,
@@ -57,7 +57,7 @@ topoplot <- function(data,
                      chanLocs = NULL,
                      method = "Biharmonic",
                      r = NULL,
-                     gridRes = 67,
+                     grid_res = 67,
                      colourmap = "RdBu",
                      interp_limit = "skirt",
                      contour = TRUE,
@@ -121,10 +121,10 @@ topoplot <- function(data,
 
   # Create the interpolation grid --------------------------
 
-  xo <- seq(-1.4, 1.4, length = gridRes)
-  yo <- seq(-1.4, 1.4, length = gridRes)
+  xo <- seq(-1.4, 1.4, length = grid_res)
+  yo <- seq(-1.4, 1.4, length = grid_res)
 
-  # Create the headshape -----------------
+  # Create the head_shape -----------------
 
   #set radius as max of y (i.e. furthest forward electrode's y position). Add a
   #little to push the circle out a bit more.
@@ -135,34 +135,40 @@ topoplot <- function(data,
 
   circ_rads <- seq(0, 2 * pi, length.out = 101)
 
-  headShape <- data.frame(x = r * cos(circ_rads),
+  head_shape <- data.frame(x = r * cos(circ_rads),
                           y = r * sin(circ_rads))
 
-  #define nose position relative to headShape
-  nose <- data.frame(x = c(headShape$x[[23]],
-                           headShape$x[[26]],
-                           headShape$x[[29]]),
-                     y = c(headShape$y[[23]],
-                           headShape$y[[26]] * 1.1,
-                           headShape$y[[29]]))
+  #define nose position relative to head_shape
+  nose <- data.frame(x = c(head_shape$x[[23]],
+                           head_shape$x[[26]],
+                           head_shape$x[[29]]),
+                     y = c(head_shape$y[[23]],
+                           head_shape$y[[26]] * 1.1,
+                           head_shape$y[[29]]))
 
-  ears <- data.frame(x = c(headShape$x[[4]],
-                           headShape$x[[97]],
-                           headShape$x[[48]],
-                           headShape$x[[55]]),
-                     y = c(headShape$y[[4]],
-                           headShape$y[[97]],
-                           headShape$y[[48]],
-                           headShape$y[[55]]))
+  ears <- data.frame(x = c(head_shape$x[[4]],
+                           head_shape$x[[97]],
+                           head_shape$x[[48]],
+                           head_shape$x[[55]]),
+                     y = c(head_shape$y[[4]],
+                           head_shape$y[[97]],
+                           head_shape$y[[48]],
+                           head_shape$y[[55]]))
 
   # Do the interpolation! ------------------------
 
   switch(method,
          Biharmonic = {
-           xo <- matrix(rep(xo, gridRes), nrow = gridRes, ncol = gridRes)
-           yo <- t(matrix(rep(yo, gridRes), nrow = gridRes, ncol = gridRes))
+           xo <- matrix(rep(xo, grid_res),
+                        nrow = grid_res,
+                        ncol = grid_res)
+           yo <- t(matrix(rep(yo, grid_res),
+                          nrow = grid_res,
+                          ncol = grid_res))
            xy <- scaled_x + scaled_y * sqrt(as.complex(-1))
-           d <- matrix(rep(xy, length(xy)), nrow = length(xy), ncol = length(xy))
+           d <- matrix(rep(xy, length(xy)),
+                       nrow = length(xy),
+                       ncol = length(xy))
            d <- abs(d - t(d))
            diag(d) <- 1
            g <- (d ^ 2) * (log(d) - 1) #Green's function
@@ -172,15 +178,16 @@ topoplot <- function(data,
 
            outmat <-
              purrr::map(xo + sqrt(as.complex(-1)) * yo,
-                        function (x) (abs(x - xy) ^ 2) * (log(abs(x - xy)) - 1) ) %>%
+                        function (x) (abs(x - xy) ^ 2) *
+                          (log(abs(x - xy)) - 1) ) %>%
              rapply(function (x) ifelse(is.nan(x), 0, x), how = "replace") %>%
              purrr::map_dbl(function (x) x %*% weights)
 
-           dim(outmat) <- c(gridRes, gridRes)
+           dim(outmat) <- c(grid_res, grid_res)
 
-           outDf <- data.frame(x = xo[, 1], outmat)
-           names(outDf)[1:length(yo[1, ]) + 1] <- yo[1, ]
-           outDf <- tidyr::gather(outDf,
+           out_df <- data.frame(x = xo[, 1], outmat)
+           names(out_df)[1:length(yo[1, ]) + 1] <- yo[1, ]
+           out_df <- tidyr::gather(out_df,
                                   key = y,
                                   value = amplitude,
                                   -x,
@@ -190,36 +197,37 @@ topoplot <- function(data,
            tmp_df <- data
            tmp_df$x <- scaled_x
            tmp_df$y <- scaled_y
-           splineSmooth <- mgcv::gam(z ~ s(x, y, bs = 'ts', k = 40), data = tmp_df)
-           outDf <- data.frame(expand.grid(x = seq(min(tmp_df$x) * 2,
+           spline_smooth <- mgcv::gam(z ~ s(x, y, bs = "ts", k = 40),
+                                      data = tmp_df)
+           out_df <- data.frame(expand.grid(x = seq(min(tmp_df$x) * 2,
                                                    max(tmp_df$x) * 2,
-                                                   length = gridRes),
+                                                   length = grid_res),
                                            y = seq(min(tmp_df$y) * 2,
                                                    max(tmp_df$y) * 2,
-                                                   length = gridRes)))
+                                                   length = grid_res)))
 
-           outDf$amplitude <-  stats::predict(splineSmooth,
-                                              outDf,
+           out_df$amplitude <-  stats::predict(spline_smooth,
+                                              out_df,
                                               type = "response")
          })
 
-  # Check if should interp/extrap beyond headshape, and set up ring to mask
+  # Check if should interp/extrap beyond head_shape, and set up ring to mask
   # edges for smoothness
   if (interp_limit == "skirt") {
-    outDf$incircle <- sqrt(outDf$x ^ 2 + outDf$y ^ 2) < 1.125
-    maskRing <- data.frame(x = 1.126 * cos(circ_rads),
+    out_df$incircle <- sqrt(out_df$x ^ 2 + out_df$y ^ 2) < 1.125
+    mask_ring <- data.frame(x = 1.126 * cos(circ_rads),
                            y = 1.126 * sin(circ_rads)
     )
   } else {
-    outDf$incircle <- sqrt(outDf$x ^ 2 + outDf$y ^ 2) < (r * 1.03)
-    maskRing <- data.frame(x = r * 1.03 * cos(circ_rads),
+    out_df$incircle <- sqrt(out_df$x ^ 2 + out_df$y ^ 2) < (r * 1.03)
+    mask_ring <- data.frame(x = r * 1.03 * cos(circ_rads),
                            y = r * 1.03 * sin(circ_rads)
     )
   }
 
   # Create the actual plot -------------------------------
 
-  topo <- ggplot2::ggplot(outDf[outDf$incircle, ],
+  topo <- ggplot2::ggplot(out_df[out_df$incircle, ],
                           aes(x, y, fill = amplitude)) +
     geom_raster(interpolate = TRUE)
 
@@ -235,13 +243,13 @@ topoplot <- function(data,
 
   topo <- topo +
     annotate("path",
-             x = maskRing$x,
-             y = maskRing$y,
+             x = mask_ring$x,
+             y = mask_ring$y,
              colour = "white",
              size = rel(4.4)) +
     annotate("path",
-             x = headShape$x,
-             y = headShape$y,
+             x = head_shape$x,
+             y = head_shape$y,
               size = rel(1.5)) +
     annotate("path",
              x = nose$x,
@@ -270,7 +278,7 @@ topoplot <- function(data,
       axis.text = element_blank(),
       axis.title = element_blank()) +
     guides(fill = guide_colorbar(title = expression(paste("Amplitude (",
-                                                          mu,"V)")),
+                                                          mu, "V)")),
                                  title.position = "right",
                                  barwidth = 1,
                                  barheight = 6,

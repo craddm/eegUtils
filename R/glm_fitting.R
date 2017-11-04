@@ -20,6 +20,9 @@ fit_glm_indiv <- function(data, dv, iv_1) {
     data <- dplyr::ungroup(data)
   }
   data <- tidyr::nest(data, condition, amplitude)
-  data <- dplyr::mutate(data, fit = purrr::map(data, ~broom::tidy(lm(as.name(dv) ~ as.name(iv_1), data = .))))
+  data <- dplyr::mutate(data,
+                        fit = purrr::map(data,
+                                         ~broom::tidy(lm(as.name(dv) ~ as.name(iv_1),
+                                                         data = .))))
 
 }

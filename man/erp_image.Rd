@@ -13,7 +13,8 @@ erp_image(data, electrode = "Cz", smoothing = 10, clim = NULL)
 
 \item{smoothing}{Number of trials to smooth over when generating image}
 
-\item{clim}{Character vector of min and max values of plotting colour range. e.g. c(-5,5). Defaults to min and max.}
+\item{clim}{Character vector of min and max values of plotting colour range.
+e.g. c(-5,5). Defaults to min and max.}
 }
 \description{
 Plot ERP images

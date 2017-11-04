@@ -34,7 +34,8 @@ electrode_locations <- function(data,
 
   if (tibble::is.tibble(data)) {
     elecs <-
-      dplyr::pull(unique(data[, electrode])) %in% dplyr::pull(electrodeLocs[, electrode])
+      dplyr::pull(unique(data[, electrode])) %in%
+      dplyr::pull(electrodeLocs[, electrode])
 
     if (!all(elecs)) {
       message("Electrodes not found: ",
@@ -118,13 +119,16 @@ is.eeg_data <- function(x) inherits(x, "eeg_data")
 #' Convert an object of class \code{eeg_data} into a standard data.frame / tibble
 #' @author Matt Craddock \email{matt@mattcraddock.com}
 #' @param data Object of class \code{eeg_data}
-#' @param ... arguments for other as.data.frame commands
+#' @param row.names Kept for compatability with S3 method, ignored.
+#' @param optional Kept for compatability with S3 method, ignored.
 #' @param long Convert to long format. Defaults to FALSE
+#' @param ... arguments for other as.data.frame commands
+
 #' @importFrom tidyr gather
 #' @export
 
-as.data.frame.eeg_data <- function (data, row.names = NULL,
-                                    optional = FALSE, ..., long = FALSE) {
+as.data.frame.eeg_data <- function(data, row.names = NULL,
+                                   optional = FALSE, long = FALSE, ...) {
   df <- data.frame(data$signals, data$timings)
   if (long) {
     if (data$continuous) {

@@ -12,7 +12,8 @@ browse_data(data, sig_length = 5, n_elecs = NULL, downsample = FALSE)
 \item{sig_length}{Length of signal to be plotted initially (seconds if
 continuous, epochs if epoched).}
 
-\item{n_elecs}{Number of electrodes to be plotted on a single screen. (not yet implemented)}
+\item{n_elecs}{Number of electrodes to be plotted on a single screen. (not yet
+implemented)}
 
 \item{downsample}{Only works on \code{eeg_data} objects. Reduces size of data
 by only plotting every 4th point, speeding up plotting considerably. Nb. may
