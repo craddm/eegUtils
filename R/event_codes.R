@@ -64,6 +64,30 @@ list_events <- function(data) {
 }
 
 
+#' List epochs
+#'
+#' List trigger types and any labels found in an \code{eeg_data} object.
+#'
+#' @author Matt Craddock \email{matt@mattcraddock.com}
+#'
+#' @param data An object of class \code{eeg_epochs}
+#'#'
+#' @seealso \code{\link{tag_events}}
+
+list_epochs <- function(data) {
+  if (!is.eeg_epochs(data)) {
+    stop("For eeg_epochs objects only.")
+  }
+
+  if ("event_label" %in% names(data$events)) {
+    data.frame(event_type = unique(data$events$event_type),
+               event_label = unique(data$events$event_label))
+  } else {
+    data.frame(event_type = unique(data$events$event_type))
+  }
+
+}
+
 #' Tag epochs
 #'
 #' @param data An object of class \code{eeg_data}

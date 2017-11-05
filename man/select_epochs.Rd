@@ -2,15 +2,36 @@
 % Please edit documentation in R/data_selection.R
 \name{select_epochs}
 \alias{select_epochs}
+\alias{select_epochs.eeg_epochs}
 \title{Select epochs from eeg_data}
 \usage{
 select_epochs(data, ...)
+
+\method{select_epochs}{eeg_epochs}(data, epoch_no = NULL,
+  epoch_events = NULL, keep = TRUE, df_out = FALSE, ...)
 }
 \arguments{
 \item{data}{\code{eeg_data} object from which to select epochs.}
 
 \item{...}{Parameters passed to specific functions}
+
+\item{epoch_no}{Epoch numbers to select.}
+
+\item{epoch_events}{Select epochs containing any of the specified events.}
+
+\item{keep}{Defaults to TRUE, meaning select the specified epochs. Set to FALSE to remove specified epochs.}
+
+\item{df_out}{Output a data.frame instead of an eeg_epochs object.}
+
+\item{data}{\code{eeg_epochs} object from which to select epochs.}
 }
 \description{
 Select epochs from eeg_data
+
+Select epochs from \code{eeg_epochs}
 }
+\section{Methods (by class)}{
+\itemize{
+\item \code{eeg_epochs}: Selection of epochs from eeg_epochs.
+}}
+

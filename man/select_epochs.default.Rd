@@ -2,15 +2,15 @@
 % Please edit documentation in R/data_selection.R
 \name{select_epochs.default}
 \alias{select_epochs.default}
-\title{Select epochs from eeg_data}
+\title{Select epochs from \code{eeg_epochs}}
 \usage{
-\method{select_epochs}{default}(data, ...)
+\method{select_epochs}{default}(data)
 }
 \arguments{
-\item{data}{\code{eeg_data} object from which to select epochs.}
+\item{data}{Object from which to select epochs.}
 
 \item{...}{Parameters passed to specific functions}
 }
 \description{
-Select epochs from eeg_data
+Select epochs from \code{eeg_epochs}
 }

@@ -114,22 +114,34 @@ eeg_data <- function(data,
 
 is.eeg_data <- function(x) inherits(x, "eeg_data")
 
+
+#' Check if object is of class "eeg_epochs".
+#'
+#' @author Matt Craddock \email{matt@mattcraddock.com}
+#' @param x Object to check.
+#'
+
+is.eeg_epochs <- function(x) inherits(x, "eeg_epochs")
+
 #' Convert eeg_data to data.frame
 #'
 #' Convert an object of class \code{eeg_data} into a standard data.frame / tibble
 #' @author Matt Craddock \email{matt@mattcraddock.com}
 #' @param x Object of class \code{eeg_data}
-#' @param row.names Kept for compatability with S3 method, ignored.
-#' @param optional Kept for compatability with S3 method, ignored.
+#' @param row.names Kept for compatability with S3 generic, ignored.
+#' @param optional Kept for compatability with S3 generic, ignored.
 #' @param long Convert to long format. Defaults to FALSE
+#' @param events Include events in output.
 #' @param ... arguments for other as.data.frame commands
 
 #' @importFrom tidyr gather
 #' @export
 
 as.data.frame.eeg_data <- function(x, row.names = NULL,
-                                   optional = FALSE, long = FALSE, ...) {
+                                   optional = FALSE, long = FALSE,
+                                   events = FALSE, ...) {
   df <- data.frame(x$signals, x$timings)
+
   if (long) {
     if (x$continuous) {
       df <- tidyr::gather(df, electrode, amplitude, -time, -sample)
@@ -137,8 +149,10 @@ as.data.frame.eeg_data <- function(x, row.names = NULL,
       df <- tidyr::gather(df, electrode, amplitude, -time, -sample, -epoch)
     }
   }
-  var_out <- !names(df) %in% c("sample")
-  df <- df[, var_out]
+
+  if (events) {
+    df <- dplyr::left_join(df, x$events, by = c("sample" = "event_onset"))
+  }
   return(df)
 }
 

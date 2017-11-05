@@ -7,7 +7,7 @@
 import_raw(file_name, file_path = NULL, chan_nos = NULL)
 }
 \arguments{
-\item{file_name}{File to import.}
+\item{file_name}{File to import. Should include file extension.}
 
 \item{file_path}{Path to file name, if not included in filename.}
 
