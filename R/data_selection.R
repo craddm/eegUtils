@@ -55,11 +55,12 @@ select_times.default <- function(data, time_lim = NULL, ...) {
 #' @author Matt Craddock, \email{matt@mattcraddock.com}
 #'
 #' @param data Must be an object of class \code{eeg_data}.
-#' @param ... Arguments used with related methods
 #' @param time_lim A character vector of two numbers indicating the time range
 #'   to be selected e.g. c(min, max)
 #' @param df_out Return a data frame rather than an \code{eeg_data} object.
 #'   Defaults to FALSE (i.e. returns an \code{eeg_data} object)
+#' @param ... Arguments used with related methods
+#'
 #' @importFrom dplyr filter select
 #' @export
 
@@ -198,13 +199,19 @@ select_elecs.eeg_data <- function(data, electrode, keep = TRUE,
 }
 
 
-#' Select epochs
+#' Select epochs from eeg_data
 #'
-#'
+#' @param data \code{eeg_data} object from which to select epochs.
+#' @param ... Parameters passed to specific functions
 
 select_epochs <- function(data, ...) {
   UseMethod("select_epochs", data)
 }
+
+#' Select epochs from eeg_data
+#'
+#' @param data \code{eeg_data} object from which to select epochs.
+#' @param ... Parameters passed to specific functions
 
 select_epochs.default <- function(data, ...) {
 
@@ -213,8 +220,16 @@ select_epochs.default <- function(data, ...) {
                 "and can only be used on eeg_data objects."))
 }
 
+#' Select epochs from \code{eeg_data}
+#'
+#' @param data \code{eeg_data} object from which to select epochs.
+#' @param epoch_no Epoch numbers to select
+#' @param keep Defaults to TRUE, meaning select the specified epochs. Set to FALSE to remove specified epochs.
+#' @param df_out Output a data.frame instead of an eeg_data object.
+#' @param ... Parameters passed to specific functions
+
 select_epochs.eeg_data <- function(data, epoch_no = NULL,
-                                   keep = TRUE, df_out = FALSE) {
+                                   keep = TRUE, df_out = FALSE, ...) {
   if (data$continous) {
     stop("Data is not epoched.")
   } else {
