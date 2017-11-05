@@ -1,10 +1,11 @@
 Package: eegUtils
 Type: Package
-Title: A Collection of Functions for EEG Analysis 
+Title: A collection of utilities for EEG analysis 
 Version: 0.1.11
 Author: Matt Craddock
 Maintainer: Matt Craddock <matt@mattcraddock.com>
-Description: A collection of functions for basic EEG processing. Includes import functions for Biosemi BDF, topographical plotting, referencing, and epoching.
+Description: A collection of functions for basic EEG processing. Includes import
+  functions for Biosemi (BDF), Neuroscan (CNT), topographical plotting, referencing, and epoching.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
@@ -31,4 +32,5 @@ Imports:
 Depends:
   R (>= 2.10)
 RoxygenNote: 6.0.1
-Suggests: testthat
+Suggests: testthat,
+    covr
