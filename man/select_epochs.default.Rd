@@ -9,8 +9,11 @@
 \arguments{
 \item{data}{Object from which to select epochs.}
 
-\item{...}{Parameters passed to specific functions}
+\item{...}{Parameters passed to specific methods}
 }
 \description{
 Select epochs from \code{eeg_epochs}
+}
+\author{
+Matt Craddock, \email{matt@mattcraddock.com}
 }

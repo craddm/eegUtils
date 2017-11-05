@@ -21,3 +21,6 @@
 \description{
 Select epochs from \code{eeg_data}
 }
+\author{
+Matt Craddock, \email{matt@mattcraddock.com}
+}

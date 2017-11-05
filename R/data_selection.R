@@ -229,9 +229,13 @@ select_elecs.eeg_data <- function(data, electrode, keep = TRUE,
 
 #' Select epochs from eeg_data
 #'
-#' @param data \code{eeg_data} object from which to select epochs.
-#' @param ... Parameters passed to specific functions
-
+#' This is a generic function for selecting epochs from an epoched data set.
+#'
+#' @author Matt Craddock, \email{matt@mattcraddock.com}
+#'
+#' @param data \code{eeg_epochs} object from which to select epochs.
+#' @param ... Parameters passed to specific methods
+#' @export
 
 select_epochs <- function(data, ...) {
   UseMethod("select_epochs", data)
@@ -239,24 +243,29 @@ select_epochs <- function(data, ...) {
 
 #' Select epochs from \code{eeg_epochs}
 #'
+#' @author Matt Craddock, \email{matt@mattcraddock.com}
+#'
 #' @param data Object from which to select epochs.
-#' @param ... Parameters passed to specific functions
-
+#' @param ... Parameters passed to specific methods
+#' @export
 
 select_epochs.default <- function(data, ...) {
 
   warning(paste("select_epochs does not know how to handle object of class",
                 class(data),
-                "and can only be used on eeg_data objects."))
+                "and can only be used on eeg_epochs objects."))
 }
 
 #' Select epochs from \code{eeg_data}
+#'
+#' @author Matt Craddock, \email{matt@mattcraddock.com}
 #'
 #' @param data \code{eeg_data} object from which to select epochs.
 #' @param epoch_no Epoch numbers to select
 #' @param keep Defaults to TRUE, meaning select the specified epochs. Set to FALSE to remove specified epochs.
 #' @param df_out Output a data.frame instead of an eeg_data object.
 #' @param ... Parameters passed to specific functions
+#' @export
 
 
 select_epochs.eeg_data <- function(data, epoch_no = NULL,
@@ -270,13 +279,14 @@ select_epochs.eeg_data <- function(data, epoch_no = NULL,
 
 #' Select epochs from \code{eeg_epochs}
 #'
-#' @param data \code{eeg_epochs} object from which to select epochs.
+#' @author Matt Craddock, \email{matt@mattcraddock.com}
+#'
 #' @param epoch_no Epoch numbers to select.
 #' @param epoch_events Select epochs containing any of the specified events.
 #' @param keep Defaults to TRUE, meaning select the specified epochs. Set to FALSE to remove specified epochs.
 #' @param df_out Output a data.frame instead of an eeg_epochs object.
-#' @param ... Parameters passed to specific functions
 #' @describeIn select_epochs Selection of epochs from eeg_epochs.
+#' @export
 
 select_epochs.eeg_epochs <- function(data, epoch_no = NULL, epoch_events = NULL,
                                    keep = TRUE, df_out = FALSE, ...) {
