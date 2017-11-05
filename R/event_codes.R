@@ -62,3 +62,13 @@ list_events <- function(data) {
   }
 
 }
+
+
+#' Tag epochs
+#'
+#' @param data An object of class \code{eeg_data}
+#'
+
+tag_epochs <- function(data) {
+
+}

@@ -214,31 +214,32 @@ import_cnt <- function(file_name) {
 load_set <- function(file_name, df_out = FALSE) {
 
   temp_dat <- R.matlab::readMat(file_name)
+  var_names <- dimnames(temp_dat$EEG)[[1]]
+
   n_chans <-
-    temp_dat$EEG[[which(dimnames(temp_dat$EEG)[[1]] == "nbchan")]]
+    temp_dat$EEG[[which(var_names == "nbchan")]]
   n_trials <-
-    temp_dat$EEG[[which(dimnames(temp_dat$EEG)[[1]] == "trials")]]
+    temp_dat$EEG[[which(var_names == "trials")]]
   times <-
-    temp_dat$EEG[[which(dimnames(temp_dat$EEG)[[1]] == "times")]]
+    temp_dat$EEG[[which(var_names == "times")]]
   chan_info <-
-    tibble::as_tibble(temp_dat$EEG[[which(dimnames(temp_dat$EEG)[[1]] == "chanlocs")]])
+    tibble::as_tibble(t(as.data.frame(temp_dat$EEG[[which(var_names == "chanlocs")]])))
 
   # check if the data is stored in the set or in a separate .fdt
-  if (is.character(temp_dat$EEG[[which(dimnames(temp_dat$EEG)[[1]] == "data")]])) {
+  if (is.character(temp_dat$EEG[[which(var_names == "data")]])) {
     message("loading from .fdt")
     fdt_file <- paste0(tools::file_path_sans_ext(file_name), ".fdt")
     fdt_file <- file(fdt_file, "rb")
 
     # read in data from .fdt
-    signals <-
-      readBin(
-        fdt_file,
-        double(),
-        n = n_chans * n_trials * length(times),
-        size = 4,
-        endian = "little"
-      )
+    # need to do this in chunks to avoid memory errors for large files...
+    signals <- readBin(fdt_file,
+                       "double",
+                       n = n_chans * n_trials * length(times),
+                       size = 4,
+                       endian = "little")
     close(fdt_file)
+
     dim(signals) <- c(n_chans, length(times) * max(n_trials, 1))
     times <- rep(times, max(n_trials, 1))
 
@@ -249,9 +250,11 @@ load_set <- function(file_name, df_out = FALSE) {
     }
 
   } else {
+
     # if the data is in the .set file, load it here instead of above
     signals <- temp_dat$EEG[[which(dimnames(temp_dat$EEG)[[1]] == "data")]]
     dim_signals <- dim(signals)
+
     if (length(dim_signals) == 3) {
       dim(signals) <- c(dim_signals[1], dim_signals[2] * dim_signals[3])
       times <- rep(times, n_trials)
@@ -261,13 +264,13 @@ load_set <- function(file_name, df_out = FALSE) {
     }
   }
 
-  final_dat <- data.frame(cbind(t(signals), times))
-  srate <- temp_dat$EEG[[which(dimnames(temp_dat$EEG)[[1]] == "srate")]]
-  names(final_dat) <- c(unlist(chan_info[1, ]), "time")
-  final_dat <- dplyr::group_by(final_dat, time)
-  final_dat <- dplyr::mutate(final_dat, epoch = 1:n())
+  signals <- data.frame(cbind(t(signals), times))
+  srate <- temp_dat$EEG[[which(var_names == "srate")]]
+  names(signals) <- c(unique(chan_info$labels), "time")
+  signals <- dplyr::group_by(signals, time)
+  signals <- dplyr::mutate(signals, epoch = 1:n())
 
-  event_info <- temp_dat$EEG[[which(dimnames(temp_dat$EEG)[[1]] == "event")]]
+  event_info <- temp_dat$EEG[[which(var_names == "event")]]
 
   event_table <- tibble::as_tibble(t(matrix(as.integer(event_info),
                                nrow = dim(event_info)[1],
@@ -279,11 +282,11 @@ load_set <- function(file_name, df_out = FALSE) {
                                event_onset = "latency")
 
   if (df_out) {
-    return(final_dat)
+    return(signals)
   } else {
-    final_dat$time <- final_dat$time / 1000 # convert to seconds
-    timings <- tibble::tibble(time = final_dat$time, epoch = final_dat$epoch)
-    eeg_data(final_dat[, 1:n_chans], srate = srate,
+    signals$time <- signals$time / 1000 # convert to seconds
+    timings <- tibble::tibble(time = signals$time, epoch = signals$epoch, sample = NA)
+    eeg_data(signals[, 1:n_chans], srate = srate,
              timings = timings, continuous = continuous,
              chan_info = as_tibble(t(chan_info)),
              events = event_table)

@@ -118,7 +118,7 @@ is.eeg_data <- function(x) inherits(x, "eeg_data")
 #'
 #' Convert an object of class \code{eeg_data} into a standard data.frame / tibble
 #' @author Matt Craddock \email{matt@mattcraddock.com}
-#' @param data Object of class \code{eeg_data}
+#' @param x Object of class \code{eeg_data}
 #' @param row.names Kept for compatability with S3 method, ignored.
 #' @param optional Kept for compatability with S3 method, ignored.
 #' @param long Convert to long format. Defaults to FALSE
@@ -127,16 +127,18 @@ is.eeg_data <- function(x) inherits(x, "eeg_data")
 #' @importFrom tidyr gather
 #' @export
 
-as.data.frame.eeg_data <- function(data, row.names = NULL,
+as.data.frame.eeg_data <- function(x, row.names = NULL,
                                    optional = FALSE, long = FALSE, ...) {
-  df <- data.frame(data$signals, data$timings)
+  df <- data.frame(x$signals, x$timings)
   if (long) {
-    if (data$continuous) {
+    if (x$continuous) {
       df <- tidyr::gather(df, electrode, amplitude, -time, -sample)
     } else {
       df <- tidyr::gather(df, electrode, amplitude, -time, -sample, -epoch)
     }
   }
+  var_out <- !names(df) %in% c("sample")
+  df <- df[, var_out]
   return(df)
 }
 

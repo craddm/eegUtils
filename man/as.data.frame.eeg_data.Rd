@@ -4,11 +4,11 @@
 \alias{as.data.frame.eeg_data}
 \title{Convert eeg_data to data.frame}
 \usage{
-\method{as.data.frame}{eeg_data}(data, row.names = NULL, optional = FALSE,
+\method{as.data.frame}{eeg_data}(x, row.names = NULL, optional = FALSE,
   long = FALSE, ...)
 }
 \arguments{
-\item{data}{Object of class \code{eeg_data}}
+\item{x}{Object of class \code{eeg_data}}
 
 \item{row.names}{Kept for compatability with S3 method, ignored.}
 

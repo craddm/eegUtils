@@ -175,26 +175,49 @@ select_elecs.default <- function(data,  electrode = NULL, keep = TRUE, ...) {
 #' @export
 #'
 
-select_elecs.eeg_data <-
-  function(data,
-           electrode,
-           keep = TRUE,
-           df_out = FALSE, ...) {
-    if (all(electrode %in% colnames(data$signals))) {
-      if (keep) {
-        data$signals <- data$signals[colnames(data$signals) %in% electrode]
-      } else {
-        data$signals <- data$signals[!colnames(data$signals) %in% electrode]
-      }
+select_elecs.eeg_data <- function(data, electrode, keep = TRUE,
+                                  df_out = FALSE, ...) {
+
+  if (all(electrode %in% colnames(data$signals))) {
+    if (keep) {
+      data$signals <- data$signals[colnames(data$signals) %in% electrode]
     } else {
-      cat("Electrode(s) not found:",
-          electrode[!electrode %in% colnames(data$signals)],
-          ". Returning all data.")
-      warning()
+      data$signals <- data$signals[!colnames(data$signals) %in% electrode]
     }
-    if (df_out) {
-      return(as.data.frame(data))
-    } else {
-      return(data)
-    }
+  } else {
+    cat("Electrode(s) not found:",
+        electrode[!electrode %in% colnames(data$signals)],
+        ". Returning all data.")
+    warning()
   }
+  if (df_out) {
+    return(as.data.frame(data))
+  } else {
+    return(data)
+  }
+}
+
+
+#' Select epochs
+#'
+#'
+
+select_epochs <- function(data, ...) {
+  UseMethod("select_epochs", data)
+}
+
+select_epochs.default <- function(data, ...) {
+
+  warning(paste("select_epochs does not know how to handle object of class",
+                class(data),
+                "and can only be used on eeg_data objects."))
+}
+
+select_epochs.eeg_data <- function(data, epoch_no = NULL,
+                                   keep = TRUE, df_out = FALSE) {
+  if (data$continous) {
+    stop("Data is not epoched.")
+  } else {
+
+  }
+}
