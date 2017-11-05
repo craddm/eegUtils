@@ -230,6 +230,7 @@ select_elecs.eeg_data <- function(data, electrode, keep = TRUE,
 #' Select epochs from eeg_data
 #'
 #' @param data \code{eeg_data} object from which to select epochs.
+#' @param ... Parameters passed to specific functions
 
 
 select_epochs <- function(data, ...) {

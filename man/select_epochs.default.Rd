@@ -4,7 +4,7 @@
 \alias{select_epochs.default}
 \title{Select epochs from \code{eeg_epochs}}
 \usage{
-\method{select_epochs}{default}(data)
+\method{select_epochs}{default}(data, ...)
 }
 \arguments{
 \item{data}{Object from which to select epochs.}

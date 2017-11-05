@@ -24,6 +24,8 @@ select_epochs(data, ...)
 \item{df_out}{Output a data.frame instead of an eeg_epochs object.}
 
 \item{data}{\code{eeg_epochs} object from which to select epochs.}
+
+\item{...}{Parameters passed to specific functions}
 }
 \description{
 Select epochs from eeg_data
