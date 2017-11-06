@@ -217,12 +217,9 @@ load_set <- function(file_name, df_out = FALSE) {
   temp_dat <- R.matlab::readMat(file_name)
   var_names <- dimnames(temp_dat$EEG)[[1]]
 
-  n_chans <-
-    temp_dat$EEG[[which(var_names == "nbchan")]]
-  n_trials <-
-    temp_dat$EEG[[which(var_names == "trials")]]
-  times <-
-    temp_dat$EEG[[which(var_names == "times")]]
+  n_chans <- temp_dat$EEG[[which(var_names == "nbchan")]]
+  n_trials <- temp_dat$EEG[[which(var_names == "trials")]]
+  times <- temp_dat$EEG[[which(var_names == "times")]]
   chan_info <-
     tibble::as_tibble(t(as.data.frame(temp_dat$EEG[[which(var_names == "chanlocs")]])))
 
