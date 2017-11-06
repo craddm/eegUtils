@@ -42,7 +42,8 @@ import_raw <- function(file_name, file_path = NULL, chan_nos = NULL) {
     srate <- data$head_info$samp_rate
     timings <- tibble::tibble(sample = 1:dim(sigs)[[1]])
     timings$time <- (timings$sample - 1) / srate
-    event_table <- tibble::tibble(event_onset = data$event_list$offset,
+    event_table <- tibble::tibble(event_onset = data$event_list$offset + 1,
+                                  event_time = (data$event_list$offset + 1) / srate,
                                   event_type = data$event_list$event_type)
     data <- eeg_data(data = sigs, srate = srate,
                      chan_info = data$chan_info[1:4],
@@ -58,7 +59,8 @@ import_raw <- function(file_name, file_path = NULL, chan_nos = NULL) {
 
 #' Import Neuroscan .CNT file
 #'
-#' Beta version of function to import Neuroscan .CNT files. Only intended for import of 32-bit files.
+#' Beta version of function to import Neuroscan .CNT files. Only intended for
+#' import of 32-bit files.
 #'
 #' @param file_name Name of .CNT file to be loaded.
 #' @importFrom tibble tibble
@@ -124,8 +126,7 @@ import_cnt <- function(file_name) {
   }
 
   beg_data <- seek(cnt_file) # beginning of actual data
-  real_n_samples <-
-    event_table_pos - (900 + 75 * n_channels) / (2 * n_channels)
+  real_n_samples <- event_table_pos - (900 + 75 * n_channels) / (2 * n_channels)
 
   frames <- floor((event_table_pos - beg_data) / n_channels / 4)
 
@@ -186,11 +187,9 @@ import_cnt <- function(file_name) {
                                    n = 1, endian = "little")
   }
 
-  ev_list$offset <- (ev_list$offset - beg_data) / (4 * n_channels)
+  ev_list$offset <- (ev_list$offset - beg_data) / (4 * n_channels) + 1
 
   close(cnt_file)
-
-  #list(chan_df, data_info, chan_data)
   out <- list(chan_info = chan_df, head_info = data_info,
               chan_data = chan_data, event_list = ev_list)
 }
@@ -283,11 +282,13 @@ load_set <- function(file_name, df_out = FALSE) {
   event_table <- dplyr::rename(event_table, event_type = "type",
                                event_onset = "latency")
 
+
   if (df_out) {
     return(signals)
   } else {
     signals$time <- signals$time / 1000 # convert to seconds
-    timings <- tibble::tibble(time = signals$time, epoch = signals$epoch, sample = NA)
+    timings <- tibble::tibble(time = signals$time, epoch = signals$epoch,
+                              sample = NA)
     eeg_data(signals[, 1:n_chans], srate = srate,
              timings = timings, continuous = continuous,
              chan_info = as_tibble(t(chan_info)),

@@ -19,7 +19,8 @@ select_epochs(data, ...)
 
 \item{epoch_events}{Select epochs containing any of the specified events.}
 
-\item{keep}{Defaults to TRUE, meaning select the specified epochs. Set to FALSE to remove specified epochs.}
+\item{keep}{Defaults to TRUE, meaning select the specified epochs. Set to
+FALSE to remove specified epochs.}
 
 \item{df_out}{Output a data.frame instead of an eeg_epochs object.}
 }

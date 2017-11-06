@@ -10,5 +10,6 @@ import_cnt(file_name)
 \item{file_name}{Name of .CNT file to be loaded.}
 }
 \description{
-Beta version of function to import Neuroscan .CNT files. Only intended for import of 32-bit files.
+Beta version of function to import Neuroscan .CNT files. Only intended for
+import of 32-bit files.
 }

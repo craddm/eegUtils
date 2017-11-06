@@ -100,7 +100,8 @@ select_times.eeg_data <- function(data, time_lim = NULL, df_out = FALSE, ...) {
 #' @importFrom dplyr filter select
 #' @export
 
-select_times.eeg_epochs <- function(data, time_lim = NULL, df_out = FALSE, ...) {
+select_times.eeg_epochs <- function(data, time_lim = NULL,
+                                    df_out = FALSE, ...) {
 
   proc_data <- as.data.frame(data)
   proc_data <- select_times(proc_data, time_lim = time_lim)
@@ -262,7 +263,8 @@ select_epochs.default <- function(data, ...) {
 #'
 #' @param data \code{eeg_data} object from which to select epochs.
 #' @param epoch_no Epoch numbers to select
-#' @param keep Defaults to TRUE, meaning select the specified epochs. Set to FALSE to remove specified epochs.
+#' @param keep Defaults to TRUE, meaning select the specified epochs. Set to
+#'   FALSE to remove specified epochs.
 #' @param df_out Output a data.frame instead of an eeg_data object.
 #' @param ... Parameters passed to specific functions
 #' @export
@@ -283,7 +285,8 @@ select_epochs.eeg_data <- function(data, epoch_no = NULL,
 #'
 #' @param epoch_no Epoch numbers to select.
 #' @param epoch_events Select epochs containing any of the specified events.
-#' @param keep Defaults to TRUE, meaning select the specified epochs. Set to FALSE to remove specified epochs.
+#' @param keep Defaults to TRUE, meaning select the specified epochs. Set to
+#'   FALSE to remove specified epochs.
 #' @param df_out Output a data.frame instead of an eeg_epochs object.
 #' @describeIn select_epochs Selection of epochs from eeg_epochs.
 #' @export

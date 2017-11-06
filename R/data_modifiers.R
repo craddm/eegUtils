@@ -225,7 +225,8 @@ epoch_data <- function(data, events, time_lim = (c(-1, 1))) {
 
     if (!is.null(data$reference)) {
       ref_data <- dplyr::left_join(epoched_data, as.data.frame(
-        cbind(sample = data$timings$sample, ref_data = data$reference$ref_data)),
+        cbind(sample = data$timings$sample,
+              ref_data = data$reference$ref_data)),
         by = c("sample" = "sample"))
       data$reference$ref_data <- ref_data[["ref_data"]]
     }

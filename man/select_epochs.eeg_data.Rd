@@ -12,7 +12,8 @@
 
 \item{epoch_no}{Epoch numbers to select}
 
-\item{keep}{Defaults to TRUE, meaning select the specified epochs. Set to FALSE to remove specified epochs.}
+\item{keep}{Defaults to TRUE, meaning select the specified epochs. Set to
+FALSE to remove specified epochs.}
 
 \item{df_out}{Output a data.frame instead of an eeg_data object.}
 
