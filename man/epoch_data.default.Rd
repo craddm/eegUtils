@@ -2,10 +2,15 @@
 % Please edit documentation in R/data_modifiers.R
 \name{epoch_data.default}
 \alias{epoch_data.default}
-\title{Create epochs}
+\title{Create epochs from EEG data}
 \usage{
 \method{epoch_data}{default}(data, ...)
 }
+\arguments{
+\item{data}{Continuous data to be epoched.}
+
+\item{...}{Parameters passed to functions}
+}
 \description{
-Create epochs
+Create epochs from EEG data
 }

@@ -190,8 +190,10 @@ epoch_data <- function(data, ...) {
   UseMethod("epoch_data", data)
 }
 
-#' Create epochs
+#' Create epochs from EEG data
 #'
+#' @param data Continuous data to be epoched.
+#' @param ... Parameters passed to functions
 #' @export
 #'
 
@@ -264,6 +266,8 @@ epoch_data.eeg_data <- function(data, events, time_lim = c(-1, 1), ...) {
 
 #' Create epochs
 #'
+#' @param data Continuous data to be epoched
+#' @param ... Parameters passed to methods
 #' @export
 #'
 

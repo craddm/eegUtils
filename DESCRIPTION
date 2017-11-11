@@ -28,7 +28,8 @@ Imports:
   stats,
   matrixStats,
   plotly,
-  R.matlab
+  R.matlab,
+  viridis
 Depends:
   R (>= 2.10)
 RoxygenNote: 6.0.1

@@ -46,7 +46,8 @@ maximum y electrode location.}
 slower.}
 
 \item{colourmap}{Defaults to RdBu if none supplied. Can be any from
-RColorBrewer. If an unsupported palette is specified, switches to Greens.}
+RColorBrewer or viridis. If an unsupported palette is specified, switches
+to Greens.}
 
 \item{interp_limit}{"skirt" or "head". Defaults to "skirt". "skirt"
 interpolates just past the farthest electrode and does not respect the

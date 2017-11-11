@@ -52,7 +52,8 @@ topoplot.default <- function(data, ...) {
 #' @param grid_res Resolution of the interpolated grid. Higher = smoother but
 #'   slower.
 #' @param colourmap Defaults to RdBu if none supplied. Can be any from
-#'   RColorBrewer. If an unsupported palette is specified, switches to Greens.
+#'   RColorBrewer or viridis. If an unsupported palette is specified, switches
+#'   to Greens.
 #' @param interp_limit "skirt" or "head". Defaults to "skirt". "skirt"
 #'   interpolates just past the farthest electrode and does not respect the
 #'   boundary of the head_shape. "head" interpolates up to the radius of the
@@ -119,8 +120,7 @@ topoplot.data.frame <- function(data, time_lim = NULL, clim = NULL,
                    z = mean(!!rlang::parse_quosure(quantity)))
 
   # Cut the data frame down to only the necessary columns, and make sure it has
-  # the right names -------- Will be able to work with different parameters
-  # (e.g. power) eventually, so this will be necessary
+  # the right names
   data <- data.frame(x = data$x,
                    y = data$y,
                    z = data$z,
@@ -314,17 +314,7 @@ topoplot.data.frame <- function(data, time_lim = NULL, clim = NULL,
     }
 
   # Set the colourmap and scale limits ------------------------
-
-  if (length(clim) == 2) {
-    topo <- topo + scale_fill_distiller(palette = colourmap,
-                                limits = clim,
-                                guide = "colourbar",
-                                oob = scales::squish)
-  } else {
-    topo <- topo + scale_fill_distiller(palette = colourmap,
-                                guide = "colourbar",
-                                oob = scales::squish)
-  }
+  topo <- set_cmap(topo, colourmap, clim)
   topo
 }
 
@@ -350,4 +340,31 @@ topoplot.eeg_data <- function(data, time_lim = NULL, clim = NULL,
                      interp_limit = interp_limit, contour = contour,
                      chan_marker = chan_marker, quantity = quantity,
                      montage = montage)
+}
+
+#' Set colourmap and limits for topoplot
+#'
+#' @param topo ggplot2 object produced by topoplot command
+#' @param colourmap Requested colourmap
+#' @param clim Limits of colour scale
+#' @import ggplot2
+#' @importFrom viridis scale_fill_viridis
+
+
+set_cmap <- function(topo, colourmap, clim = NULL) {
+
+  if (colourmap %in% c("magma", "inferno", "plasma",
+                  "viridis", "A", "B", "C", "D")) {
+
+    topo <- topo + viridis::scale_fill_viridis(option = colourmap,
+                                      limits = clim,
+                                      guide = "colourbar",
+                                      oob = scales::squish)
+  } else {
+    topo <- topo + scale_fill_distiller(palette = colourmap,
+                                        limits = clim,
+                                        guide = "colourbar",
+                                        oob = scales::squish)
+  }
+  topo
 }

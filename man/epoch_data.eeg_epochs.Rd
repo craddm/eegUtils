@@ -6,6 +6,11 @@
 \usage{
 \method{epoch_data}{eeg_epochs}(data, ...)
 }
+\arguments{
+\item{data}{Continuous data to be epoched}
+
+\item{...}{Parameters passed to methods}
+}
 \description{
 Create epochs
 }
