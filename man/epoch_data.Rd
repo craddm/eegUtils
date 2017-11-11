@@ -2,23 +2,35 @@
 % Please edit documentation in R/data_modifiers.R
 \name{epoch_data}
 \alias{epoch_data}
-\title{Create epochs.}
+\alias{epoch_data.eeg_data}
+\title{Create epochs from EEG data}
 \usage{
-epoch_data(data, events, time_lim = (c(-1, 1)))
+epoch_data(data, ...)
+
+\method{epoch_data}{eeg_data}(data, events, time_lim = c(-1, 1), ...)
 }
 \arguments{
 \item{data}{Continuous data to be epoched.}
 
+\item{...}{Parameters passed to functions}
+
 \item{events}{Character vector of events to epoch around.}
 
-\item{time_lim}{Time in seconds to form epoch around the events. Defaults to one second either side.}
+\item{time_lim}{Time in seconds to form epoch around the events. Defaults to
+one second either side.}
 }
 \value{
 Returns an epoched object of class \code{eeg_data}
 }
 \description{
-Creates epochs around specified event triggers. Requires data of class \code{eeg_data}.
+Creates epochs around specified event triggers. Requires data of class
+\code{eeg_data}.
 }
+\section{Methods (by class)}{
+\itemize{
+\item \code{eeg_data}: 
+}}
+
 \author{
 Matt Craddock \email{matt@mattcraddock.com}
 }

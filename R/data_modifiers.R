@@ -175,71 +175,98 @@ rm_baseline <- function(data, time_lim = NULL) {
   }
 }
 
-#' Create epochs.
+#' Create epochs from EEG data
 #'
-#' Creates epochs around specified event triggers. Requires data of class \code{eeg_data}.
+#' Creates epochs around specified event triggers. Requires data of class
+#' \code{eeg_data}.
 #'
 #' @author Matt Craddock \email{matt@mattcraddock.com}
 #' @param data Continuous data to be epoched.
+#' @param ... Parameters passed to functions
+#'
+#' @export
+
+epoch_data <- function(data, ...) {
+  UseMethod("epoch_data", data)
+}
+
+#' Create epochs
+#'
+#' @export
+#'
+
+epoch_data.default <- function(data, ...) {
+  stop("Requires object of class eeg_data.")
+}
+
 #' @param events Character vector of events to epoch around.
-#' @param time_lim Time in seconds to form epoch around the events. Defaults to one second either side.
+#' @param time_lim Time in seconds to form epoch around the events. Defaults to
+#'   one second either side.
 #' @importFrom dplyr left_join
 #' @importFrom purrr map map_df
 #'
 #' @return Returns an epoched object of class \code{eeg_data}
 #'
+#' @describeIn epoch_data
+#'
 #' @export
+#'
 
+epoch_data.eeg_data <- function(data, events, time_lim = c(-1, 1), ...) {
 
-epoch_data <- function(data, events, time_lim = (c(-1, 1))) {
-
-  if (is.eeg_data(data)) {
-    if (!all(events %in% unique(data$events$event_type))) {
-      stop("Events not found - check event codes.")
-    }
-
-    samps <- seq(round(time_lim[[1]] * data$srate),
-                 round(time_lim[[2]] * (data$srate - 1)))
-    event_table <- data$events
-
-    epoch_zero <-
-      sort(unlist(purrr::map(events,
-                             ~ event_table[which(event_table$event_type == .), ]$event_onset)))
-
-    epoched_data <- purrr::map(epoch_zero,
-                               ~ . + samps)
-
-    epoched_data <- purrr::map_df(epoched_data,
-                                  ~ tibble::tibble(sample = ., time = samps / data$srate),
-                                  .id = "epoch")
-
-    # create new event_table NOW
-    event_table <- dplyr::inner_join(event_table, epoched_data,
-                                     by = c("event_onset" = "sample"))
-
-    epoched_data$epoch <- as.numeric(epoched_data$epoch)
-    epoched_data <- dplyr::left_join(epoched_data,
-                                     cbind(data$signals, data$timings),
-                                     by = c("sample" = "sample"))
-
-
-    if (!is.null(data$reference)) {
-      ref_data <- dplyr::left_join(epoched_data, as.data.frame(
-        cbind(sample = data$timings$sample,
-              ref_data = data$reference$ref_data)),
-        by = c("sample" = "sample"))
-      data$reference$ref_data <- ref_data[["ref_data"]]
-    }
-
-    epoched_data$time.y <- NULL
-    names(epoched_data)[[3]] <- "time"
-    data$signals <- epoched_data[, -1:-3]
-    data$timings <- epoched_data[, 1:3]
-    data$continuous <- FALSE
-    data$events <- event_table
-    class(data) <- c("eeg_epochs", "eeg_data")
-    return(data)
-  } else {
-    stop("Currently only working for objects of class eeg_data.")
+  if (!all(events %in% unique(data$events$event_type))) {
+    stop("Events not found - check event codes.")
   }
+
+  samps <- seq(round(time_lim[[1]] * data$srate),
+               round(time_lim[[2]] * (data$srate - 1)))
+
+  event_table <- data$events
+
+  epoch_zero <-
+    sort(unlist(purrr::map(events,
+                           ~ event_table[which(event_table$event_type == .), ]$event_onset)))
+
+  epoched_data <- purrr::map(epoch_zero,
+                             ~ . + samps)
+
+  epoched_data <- purrr::map_df(epoched_data,
+                                ~ tibble::tibble(sample = ., time = samps / data$srate),
+                                .id = "epoch")
+
+  # create new event_table NOW
+  event_table <- dplyr::inner_join(event_table, epoched_data,
+                                   by = c("event_onset" = "sample"))
+
+  epoched_data$epoch <- as.numeric(epoched_data$epoch)
+  epoched_data <- dplyr::left_join(epoched_data,
+                                   cbind(data$signals, data$timings),
+                                   by = c("sample" = "sample"))
+
+
+  if (!is.null(data$reference)) {
+    ref_data <- dplyr::left_join(epoched_data, as.data.frame(
+      cbind(sample = data$timings$sample,
+            ref_data = data$reference$ref_data)),
+      by = c("sample" = "sample"))
+    data$reference$ref_data <- ref_data[["ref_data"]]
+  }
+
+  epoched_data$time.y <- NULL
+  names(epoched_data)[[3]] <- "time"
+  data$signals <- epoched_data[, -1:-3]
+  data$timings <- epoched_data[, 1:3]
+  data$continuous <- FALSE
+  data$events <- event_table
+  class(data) <- c("eeg_epochs", "eeg_data")
+  return(data)
+}
+
+#' Create epochs
+#'
+#' @export
+#'
+
+epoch_data.eeg_epochs <- function(data, ...) {
+  stop("Data is already epoched, cannot currently re-epoch.")
 }

@@ -70,7 +70,7 @@ Allows topographical plotting of functional data. Output is a ggplot2 object.
 The functions works for both standard data frames and objects of class
 \code{eeg_data}.
 
-Topographical Plotting Function for EEG
+Both \code{eeg_epochs} and \code{eeg_data} objects are supported.
 }
 \section{Methods (by class)}{
 \itemize{
