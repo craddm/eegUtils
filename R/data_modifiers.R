@@ -139,9 +139,9 @@ rm_baseline <- function(data, time_lim = NULL) {
   # if the data is epoched, group by electrode and epoch; otherwise, just by
   # electrode.
   if ("epoch" %in% colnames(data)) {
-    data <- dplyr::group_by(data, electrode, epoch)
+    data <- dplyr::group_by(data, electrode, epoch, add = TRUE)
   } else{
-    data <- dplyr::group_by(data, electrode)
+    data <- dplyr::group_by(data, electrode, add = TRUE)
   }
 
   if (is.null(time_lim)) {
