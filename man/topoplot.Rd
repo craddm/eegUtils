@@ -2,16 +2,27 @@
 % Please edit documentation in R/topoplot.R
 \name{topoplot}
 \alias{topoplot}
+\alias{topoplot.data.frame}
+\alias{topoplot.eeg_data}
 \title{Topographical Plotting Function for EEG}
 \usage{
-topoplot(data, time_lim = NULL, clim = NULL, chanLocs = NULL,
-  method = "Biharmonic", r = NULL, grid_res = 67, colourmap = "RdBu",
-  interp_limit = "skirt", contour = TRUE, chan_marker = "point",
-  quantity = "amplitude", montage = NULL)
+topoplot(data, ...)
+
+\method{topoplot}{data.frame}(data, time_lim = NULL, clim = NULL,
+  chanLocs = NULL, method = "Biharmonic", r = NULL, grid_res = 67,
+  colourmap = "RdBu", interp_limit = "skirt", contour = TRUE,
+  chan_marker = "point", quantity = "amplitude", montage = NULL, ...)
+
+\method{topoplot}{eeg_data}(data, time_lim = NULL, clim = NULL,
+  chanLocs = NULL, method = "Biharmonic", r = NULL, grid_res = 67,
+  colourmap = "RdBu", interp_limit = "skirt", contour = TRUE,
+  chan_marker = "point", quantity = "amplitude", montage = NULL, ...)
 }
 \arguments{
 \item{data}{An EEG dataset. Must have columns x, y, and amplitude at present.
 x and y are (Cartesian) electrode co-ordinates), amplitude is amplitude.}
+
+\item{...}{Various arguments passed to specific functions}
 
 \item{time_lim}{Timepoint(s) to plot. Can be one time or a range to average
 over. If none is supplied, the function will average across all timepoints
@@ -54,8 +65,21 @@ amplitude. Can be any column name. E.g. "p.value", "t-statistic".}
 only 'biosemi64alpha' available other than default 10/20 system)}
 }
 \description{
-Allows simple plotting of functional data. Output is a ggplot2 object.
+Allows topographical plotting of functional data. Output is a ggplot2 object.
+
+The functions works for both standard data frames and objects of class
+\code{eeg_data}.
+
+Topographical Plotting Function for EEG
 }
+\section{Methods (by class)}{
+\itemize{
+\item \code{data.frame}: Topographical plotting of data.frames and other non
+eeg_data objects.
+
+\item \code{eeg_data}: Topographical plotting of \code{eeg_data} objects.
+}}
+
 \section{Notes on usage of Generalized Additive Models for interpolation}{
  The
   function fits a GAM using the gam function from mgcv. Specifically, it fits

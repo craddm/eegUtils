@@ -1,10 +1,41 @@
 #' Topographical Plotting Function for EEG
 #'
-#' Allows simple plotting of functional data. Output is a ggplot2 object.
+#' Allows topographical plotting of functional data. Output is a ggplot2 object.
 #'
 #' @author Matt Craddock, \email{matt@mattcraddock.com}
 #' @param data An EEG dataset. Must have columns x, y, and amplitude at present.
 #'   x and y are (Cartesian) electrode co-ordinates), amplitude is amplitude.
+#' @param ... Various arguments passed to specific functions
+#' @export
+#'
+#' @section Notes on usage of Generalized Additive Models for interpolation: The
+#'   function fits a GAM using the gam function from mgcv. Specifically, it fits
+#'   a spline using the model function gam(z ~ s(x, y, bs = "ts", k = 40). Using
+#'   GAMs for smooths is very much experimental. The surface is produced from
+#'   the predictions of the GAM model fitted to the supplied data. Values at
+#'   each electrode do not necessarily match actual values in the data:
+#'   high-frequency variation will tend to be smoothed out. Thus, the method
+#'   should be used with caution.
+
+topoplot <- function(data, ...) {
+  UseMethod("topoplot", data)
+}
+
+#' Topographical Plotting Function for EEG
+#'
+#' @param data An object passed to the function
+#' @param ... Any other parameters
+#' @export
+#'
+topoplot.default <- function(data, ...) {
+  stop("This function requires a data frame or an eeg_data/eeg_epochs object")
+}
+
+#' Topographical Plotting Function for EEG
+#'
+#' The functions works for both standard data frames and objects of class
+#' \code{eeg_data}.
+#'
 #' @param time_lim Timepoint(s) to plot. Can be one time or a range to average
 #'   over. If none is supplied, the function will average across all timepoints
 #'   in the supplied data.
@@ -40,35 +71,17 @@
 #' @importFrom rlang parse_quosure
 #' @import scales
 #' @importFrom mgcv gam
+#' @describeIn topoplot Topographical plotting of data.frames and other non
+#'   eeg_data objects.
 #' @export
-#'
-#' @section Notes on usage of Generalized Additive Models for interpolation: The
-#'   function fits a GAM using the gam function from mgcv. Specifically, it fits
-#'   a spline using the model function gam(z ~ s(x, y, bs = "ts", k = 40). Using
-#'   GAMs for smooths is very much experimental. The surface is produced from
-#'   the predictions of the GAM model fitted to the supplied data. Values at
-#'   each electrode do not necessarily match actual values in the data:
-#'   high-frequency variation will tend to be smoothed out. Thus, the method
-#'   should be used with caution.
 
-topoplot <- function(data,
-                     time_lim = NULL,
-                     clim = NULL,
-                     chanLocs = NULL,
-                     method = "Biharmonic",
-                     r = NULL,
-                     grid_res = 67,
-                     colourmap = "RdBu",
-                     interp_limit = "skirt",
-                     contour = TRUE,
-                     chan_marker = "point",
-                     quantity = "amplitude",
-                     montage = NULL) {
 
-  # Check if data is of class eeg_data.
-  if (is.eeg_data(data)) {
-    data <- as.data.frame(data, long = TRUE)
-  }
+topoplot.data.frame <- function(data, time_lim = NULL, clim = NULL,
+                             chanLocs = NULL, method = "Biharmonic", r = NULL,
+                             grid_res = 67, colourmap = "RdBu",
+                             interp_limit = "skirt", contour = TRUE,
+                             chan_marker = "point", quantity = "amplitude",
+                             montage = NULL, ...) {
 
   # Filter out unwanted timepoints, and find nearest time values in the data
   # --------------
@@ -313,4 +326,28 @@ topoplot <- function(data,
                                 oob = scales::squish)
   }
   topo
+}
+
+
+#' Topographical Plotting Function for EEG
+#'
+#' Both \code{eeg_epochs} and \code{eeg_data} objects are supported.
+#'
+#' @describeIn topoplot Topographical plotting of \code{eeg_data} objects.
+#' @export
+
+topoplot.eeg_data <- function(data, time_lim = NULL, clim = NULL,
+                              chanLocs = NULL, method = "Biharmonic", r = NULL,
+                              grid_res = 67, colourmap = "RdBu",
+                              interp_limit = "skirt", contour = TRUE,
+                              chan_marker = "point", quantity = "amplitude",
+                              montage = NULL, ...) {
+
+  data <- as.data.frame(data, long = TRUE)
+  eegUtils::topoplot(data, time_lim = time_lim, clim = clim,
+                     chanLocs = chanLocs, method = method, r = r,
+                     grid_res = grid_res, colourmap = colourmap,
+                     interp_limit = interp_limit, contour = contour,
+                     chan_marker = chan_marker, quantity = quantity,
+                     montage = montage)
 }
