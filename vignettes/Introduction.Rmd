@@ -28,7 +28,7 @@ unlink(temp)
 
 ```{r, warning = FALSE, message = FALSE}
 library(eegUtils)
-library(tidyverse)
+library(dplyr)
 
 bdf_filename <- "Newtest17-256.bdf"
 bdf_data <- import_raw(bdf_filename)
