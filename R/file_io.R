@@ -209,6 +209,7 @@ import_cnt <- function(file_name) {
 #' @importFrom R.matlab readMat
 #' @importFrom dplyr group_by mutate select rename
 #' @importFrom tibble tibble as_tibble
+#' @importFrom purrr is_empty
 #' @export
 
 
@@ -220,8 +221,16 @@ load_set <- function(file_name, df_out = FALSE) {
   n_chans <- temp_dat$EEG[[which(var_names == "nbchan")]]
   n_trials <- temp_dat$EEG[[which(var_names == "trials")]]
   times <- temp_dat$EEG[[which(var_names == "times")]]
+
+  chan_info <- temp_dat$EEG[[which(var_names == "chanlocs")]]
+  col_names <- dimnames(chan_info)[1]
+  size_chans <- dim(chan_info)
+  chan_info <- lapply(chan_info, function(x) ifelse(purrr::is_empty(x), NA,x ))
+  dim(chan_info) <- size_chans
+  dimnames(chan_info) <- col_names
   chan_info <-
-    tibble::as_tibble(t(as.data.frame(temp_dat$EEG[[which(var_names == "chanlocs")]])))
+    tibble::as_tibble(t(as.data.frame(chan_info)))
+  chan_info <- tibble::as_tibble(data.frame(lapply(chan_info, unlist), stringsAsFactors = FALSE))
 
   # check if the data is stored in the set or in a separate .fdt
   if (is.character(temp_dat$EEG[[which(var_names == "data")]])) {
@@ -288,7 +297,7 @@ load_set <- function(file_name, df_out = FALSE) {
                               sample = NA)
     eeg_data(signals[, 1:n_chans], srate = srate,
              timings = timings, continuous = continuous,
-             chan_info = as_tibble(t(chan_info)),
+             chan_info = chan_info,
              events = event_table)
   }
 }
