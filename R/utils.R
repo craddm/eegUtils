@@ -3,6 +3,14 @@
 #' Joins standard electrode locations to EEG data from eegUtils internal data.
 #'
 #' @param data An EEG dataset.
+#' @param ... Parameters passed to S3 methods.
+#' @export
+
+
+electrode_locations <- function(data, ...) {
+  UseMethod("electrode_locations")
+}
+
 #' @param electrode The column name containing electrode names in data.
 #'   (Defaults to "electrode").
 #' @param drop Should electrodes in \code{data} for which default locations are
@@ -13,14 +21,15 @@
 #' @import dplyr
 #' @import ggplot2
 #' @importFrom tibble is.tibble
+#' @describeIn electrode_locations Adds standard locations to a data frame in long format
 #' @return A tibble (or data.frame), or ggplot2 object if \code{plot = TRUE}.
 #' @export
 
-electrode_locations <- function(data,
+electrode_locations.data.frame <- function(data,
                                 electrode = "electrode",
                                 drop = FALSE,
                                 plot = FALSE,
-                                montage = NULL) {
+                                montage = NULL, ...) {
 
   if (!is.null(montage)) {
     if (montage == "biosemi64alpha") {
@@ -70,6 +79,58 @@ electrode_locations <- function(data,
     return(data)
   }
 }
+
+#' @param overwrite Overwrite existing channel info. Defaults to FALSE.
+#' @import dplyr
+#' @import ggplot2
+#' @importFrom tibble is.tibble
+#' @describeIn electrode_locations Adds standard locations to the chan_info field of an eeg_data object.
+#' @export
+
+electrode_locations.eeg_data <- function(data,
+                                           drop = FALSE,
+                                           plot = FALSE,
+                                           montage = NULL,
+                                         overwrite = FALSE, ...) {
+
+  if (!is.null(data$chan_info) & !overwrite & !plot) {
+    stop("Channel info already present, set overwrite to TRUE to replace.")
+  }
+
+  if (!is.null(montage)) {
+    if (montage == "biosemi64alpha") {
+      electrodeLocs[1:64, "electrode"] <- c(paste0("A", 1:32),
+                                          paste0("B", 1:32))
+    }
+  }
+
+  elec_names <- toupper(names(data$signals))
+  electrodeLocs$electrode <- toupper(electrodeLocs$electrode)
+
+  matched_els <- electrodeLocs$electrode %in% elec_names
+  missing_els  <- elec_names %in% electrodeLocs$electrode
+
+  if (!any(matched_els)) {
+    stop("No matching electrodes found.")
+  } else if (!all(matched_els)) {
+    message(cat("Electrodes not found:", names(data$signals)[!missing_els]))
+  }
+
+  data$chan_info <- electrodeLocs[matched_els, ]
+
+  if (drop) {
+    data$signals[matched_els]
+  }
+
+  if (plot) {
+    p <- ggplot2::ggplot(data$chan_info, aes(x, y)) +
+      geom_label(aes(label = electrode))
+    return(p)
+  } else {
+    return(data)
+  }
+}
+
 
 #' Function to create an S3 object of class "eeg_data".
 #'

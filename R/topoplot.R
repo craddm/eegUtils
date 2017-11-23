@@ -39,8 +39,8 @@ topoplot.default <- function(data, ...) {
 #' @param time_lim Timepoint(s) to plot. Can be one time or a range to average
 #'   over. If none is supplied, the function will average across all timepoints
 #'   in the supplied data.
-#' @param clim Limits of the fill scale - should be given as a character vector
-#'   with two values specifying the start and endpoints e.g. clim = c(-2,-2).
+#' @param limits Limits of the fill scale - should be given as a character vector
+#'   with two values specifying the start and endpoints e.g. limits = c(-2,-2).
 #'   Will ignore anything else. Defaults to the range of the data.
 #' @param chanLocs Not yet implemented.
 #' @param method Interpolation method. "Biharmonic" or "gam". "Biharmonic"
@@ -51,7 +51,7 @@ topoplot.default <- function(data, ...) {
 #'   maximum y electrode location.
 #' @param grid_res Resolution of the interpolated grid. Higher = smoother but
 #'   slower.
-#' @param colourmap Defaults to RdBu if none supplied. Can be any from
+#' @param palette Defaults to RdBu if none supplied. Can be any from
 #'   RColorBrewer or viridis. If an unsupported palette is specified, switches
 #'   to Greens.
 #' @param interp_limit "skirt" or "head". Defaults to "skirt". "skirt"
@@ -65,6 +65,7 @@ topoplot.default <- function(data, ...) {
 #'   amplitude. Can be any column name. E.g. "p.value", "t-statistic".
 #' @param montage Name of an existing montage set. Defaults to NULL; (currently
 #'   only 'biosemi64alpha' available other than default 10/20 system)
+#' @param colourmap Deprecated, use palette instead.
 #'
 #' @import ggplot2
 #' @import dplyr
@@ -77,13 +78,17 @@ topoplot.default <- function(data, ...) {
 #' @export
 
 
-topoplot.data.frame <- function(data, time_lim = NULL, clim = NULL,
+topoplot.data.frame <- function(data, time_lim = NULL, limits = NULL,
                              chanLocs = NULL, method = "Biharmonic", r = NULL,
-                             grid_res = 67, colourmap = "RdBu",
+                             grid_res = 67, palette = "RdBu",
                              interp_limit = "skirt", contour = TRUE,
                              chan_marker = "point", quantity = "amplitude",
-                             montage = NULL, ...) {
+                             montage = NULL, colourmap, ...) {
 
+  if (!missing(colourmap)) {
+    warning("Argument colourmap is deprecated, please use palette instead.", call. = FALSE)
+    palette <- colourmap
+  }
   # Filter out unwanted timepoints, and find nearest time values in the data
   # --------------
 
@@ -226,7 +231,7 @@ topoplot.data.frame <- function(data, time_lim = NULL, clim = NULL,
 
   # Check if should interp/extrap beyond head_shape, and set up ring to mask
   # edges for smoothness
-  if (interp_limit == "skirt") {
+  if (identical(interp_limit, "skirt")) {
     out_df$incircle <- sqrt(out_df$x ^ 2 + out_df$y ^ 2) < 1.125
     mask_ring <- data.frame(x = 1.126 * cos(circ_rads),
                            y = 1.126 * sin(circ_rads)
@@ -313,8 +318,8 @@ topoplot.data.frame <- function(data, time_lim = NULL, clim = NULL,
                  size = rel(4))
     }
 
-  # Set the colourmap and scale limits ------------------------
-  topo <- set_cmap(topo, colourmap, clim)
+  # Set the palette and scale limits ------------------------
+  topo <- set_palette(topo, palette, limits)
   topo
 }
 
@@ -326,45 +331,121 @@ topoplot.data.frame <- function(data, time_lim = NULL, clim = NULL,
 #' @describeIn topoplot Topographical plotting of \code{eeg_data} objects.
 #' @export
 
-topoplot.eeg_data <- function(data, time_lim = NULL, clim = NULL,
+topoplot.eeg_data <- function(data, time_lim = NULL, limits = NULL,
                               chanLocs = NULL, method = "Biharmonic", r = NULL,
-                              grid_res = 67, colourmap = "RdBu",
+                              grid_res = 67, palette = "RdBu",
                               interp_limit = "skirt", contour = TRUE,
                               chan_marker = "point", quantity = "amplitude",
                               montage = NULL, ...) {
 
   data <- as.data.frame(data, long = TRUE)
-  eegUtils::topoplot(data, time_lim = time_lim, clim = clim,
-                     chanLocs = chanLocs, method = method, r = r,
-                     grid_res = grid_res, colourmap = colourmap,
-                     interp_limit = interp_limit, contour = contour,
-                     chan_marker = chan_marker, quantity = quantity,
-                     montage = montage)
+  topoplot(data, time_lim = time_lim, limits = limits,
+           chanLocs = chanLocs, method = method, r = r,
+           grid_res = grid_res, palette = palette,
+           interp_limit = interp_limit, contour = contour,
+           chan_marker = chan_marker, quantity = quantity,
+           montage = montage)
 }
 
-#' Set colourmap and limits for topoplot
+#' Set palette and limits for topoplot
 #'
 #' @param topo ggplot2 object produced by topoplot command
-#' @param colourmap Requested colourmap
-#' @param clim Limits of colour scale
+#' @param palette Requested palette
+#' @param limits Limits of colour scale
 #' @import ggplot2
 #' @importFrom viridis scale_fill_viridis
 
 
-set_cmap <- function(topo, colourmap, clim = NULL) {
+set_palette <- function(topo, palette, limits = NULL) {
 
-  if (colourmap %in% c("magma", "inferno", "plasma",
+  if (palette %in% c("magma", "inferno", "plasma",
                   "viridis", "A", "B", "C", "D")) {
 
-    topo <- topo + viridis::scale_fill_viridis(option = colourmap,
-                                      limits = clim,
+    topo <- topo + viridis::scale_fill_viridis(option = palette,
+                                      limits = limits,
                                       guide = "colourbar",
                                       oob = scales::squish)
   } else {
-    topo <- topo + scale_fill_distiller(palette = colourmap,
-                                        limits = clim,
+    topo <- topo + scale_fill_distiller(palette = palette,
+                                        limits = limits,
                                         guide = "colourbar",
                                         oob = scales::squish)
   }
   topo
 }
+
+#' StatBiharmonic
+#'
+#'
+#'
+
+StatBiharmonic <- ggproto("StatBiharmonic", Stat,
+                          required_aes = c("x", "y", "fill"),
+
+                          compute_group = function(data, scales) {
+                            data <- aggregate(fill ~ x + y, data = data, FUN = mean)
+
+                            x_min <- min(data$x)
+                            x_max <- max(data$x)
+                            y_min <- min(data$y)
+                            y_max <- max(data$y)
+
+                            #xo <- seq(x_min + x_min / 4, x_max + x_max / 4, length = 80)
+                            #yo <- seq(y_min + y_min / 4, y_max + y_max / 4, length = 80)
+                            xo <- seq(x_min, x_max, length = 80)
+                            yo <- seq(y_min, y_max, length = 80)
+
+                            xo <- matrix(rep(xo, 80),
+                                         nrow = 80,
+                                         ncol = 80)
+
+                            yo <- t(matrix(rep(yo, 80),
+                                           nrow = 80,
+                                           ncol = 80))
+
+                            #max_dim <- max(abs(data$x), abs(data$y))
+                            xy_coords <- unique(data[, c("x", "y")])
+
+                            xy <- xy_coords[, 1] + xy_coords[, 2] * sqrt(as.complex(-1))
+
+                            d <- matrix(rep(xy, length(xy)),
+                                        nrow = length(xy),
+                                        ncol = length(xy))
+
+                            d <- abs(d - t(d))
+                            diag(d) <- 1
+                            g <- (d ^ 2) * (log(d) - 1) #Green's function
+                            diag(g) <- 0
+                            weights <- qr.solve(g, data$fill)
+                            xy <- t(xy)
+
+                            outmat <-
+                              purrr::map(xo + sqrt(as.complex(-1)) * yo,
+                                         function (x) (abs(x - xy) ^ 2) *
+                                           (log(abs(x - xy)) - 1) ) %>%
+                              rapply(function (x) ifelse(is.nan(x), 0, x), how = "replace") %>%
+                              purrr::map_dbl(function (x) x %*% weights)
+
+                            dim(outmat) <- c(80, 80)
+                            out_df <- data.frame(x = xo[, 1], outmat)
+                            names(out_df)[1:length(yo[1, ]) + 1] <- yo[1, ]
+                            data <- tidyr::gather(out_df,
+                                                    key = y,
+                                                    value = fill,
+                                                    -x,
+                                                    convert = TRUE)
+                            data
+                            }
+                          )
+
+#' @inheritParams geom_raster
+stat_biharmonic <- function(mapping = NULL, data = NULL, geom = "raster",
+                            position = "identity", na.rm = FALSE,
+                            show.legend = NA, inherit.aes = TRUE, ...) {
+  ggplot2::layer(
+    stat = StatBiharmonic, data = data, mapping = mapping, geom = geom,
+    position = position, show.legend = show.legend, inherit.aes = inherit.aes,
+    params = list(na.rm = na.rm, ...)
+    )
+}
+

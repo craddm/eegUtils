@@ -2,13 +2,22 @@
 % Please edit documentation in R/utils.R
 \name{electrode_locations}
 \alias{electrode_locations}
+\alias{electrode_locations.data.frame}
+\alias{electrode_locations.eeg_data}
 \title{Get standard electrode locations}
 \usage{
-electrode_locations(data, electrode = "electrode", drop = FALSE,
-  plot = FALSE, montage = NULL)
+electrode_locations(data, ...)
+
+\method{electrode_locations}{data.frame}(data, electrode = "electrode",
+  drop = FALSE, plot = FALSE, montage = NULL, ...)
+
+\method{electrode_locations}{eeg_data}(data, drop = FALSE, plot = FALSE,
+  montage = NULL, overwrite = FALSE, ...)
 }
 \arguments{
 \item{data}{An EEG dataset.}
+
+\item{...}{Parameters passed to S3 methods.}
 
 \item{electrode}{The column name containing electrode names in data.
 (Defaults to "electrode").}
@@ -20,6 +29,8 @@ not available be dropped? (Defaults to FALSE).}
 
 \item{montage}{Name of an existing montage set. Defaults to NULL; (currently
 only 'biosemi64alpha' available other than default 10/20 system)}
+
+\item{overwrite}{Overwrite existing channel info. Defaults to FALSE.}
 }
 \value{
 A tibble (or data.frame), or ggplot2 object if \code{plot = TRUE}.
@@ -27,3 +38,10 @@ A tibble (or data.frame), or ggplot2 object if \code{plot = TRUE}.
 \description{
 Joins standard electrode locations to EEG data from eegUtils internal data.
 }
+\section{Methods (by class)}{
+\itemize{
+\item \code{data.frame}: Adds standard locations to a data frame in long format
+
+\item \code{eeg_data}: Adds standard locations to the chan_info field of an eeg_data object.
+}}
+
