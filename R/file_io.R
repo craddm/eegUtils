@@ -225,12 +225,13 @@ load_set <- function(file_name, df_out = FALSE) {
   chan_info <- temp_dat$EEG[[which(var_names == "chanlocs")]]
   col_names <- dimnames(chan_info)[1]
   size_chans <- dim(chan_info)
-  chan_info <- lapply(chan_info, function(x) ifelse(purrr::is_empty(x), NA,x ))
+  chan_info <- lapply(chan_info, function(x) ifelse(purrr::is_empty(x), NA, x))
   dim(chan_info) <- size_chans
   dimnames(chan_info) <- col_names
   chan_info <-
     tibble::as_tibble(t(as.data.frame(chan_info)))
-  chan_info <- tibble::as_tibble(data.frame(lapply(chan_info, unlist), stringsAsFactors = FALSE))
+  chan_info <- tibble::as_tibble(data.frame(lapply(chan_info, unlist),
+                                            stringsAsFactors = FALSE))
 
   # check if the data is stored in the set or in a separate .fdt
   if (is.character(temp_dat$EEG[[which(var_names == "data")]])) {

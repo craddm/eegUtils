@@ -2,10 +2,21 @@
 % Please edit documentation in R/filtering.R
 \name{iir_filt}
 \alias{iir_filt}
+\alias{iir_filt.data.frame}
+\alias{iir_filt.eeg_data}
+\alias{iir_filt.eeg_epochs}
 \title{Butterworth IIR filter}
 \usage{
-iir_filt(data, low_freq = NULL, high_freq = NULL, filter_order = 4,
-  srate = NULL, plot_filt = FALSE, silent = FALSE)
+iir_filt(data, ...)
+
+\method{iir_filt}{data.frame}(data, low_freq = NULL, high_freq = NULL,
+  filter_order = 4, srate, plot_filt = FALSE, silent = FALSE, ...)
+
+\method{iir_filt}{eeg_data}(data, low_freq = NULL, high_freq = NULL,
+  filter_order = 4, plot_filt = FALSE, silent = FALSE, ...)
+
+\method{iir_filt}{eeg_epochs}(data, low_freq = NULL, high_freq = NULL,
+  filter_order = 4, plot_filt = FALSE, silent = FALSE, ...)
 }
 \arguments{
 \item{data}{Data to be filtered.}
@@ -23,8 +34,19 @@ iir_filt(data, low_freq = NULL, high_freq = NULL, filter_order = 4,
 \item{silent}{Turns off filtering messages.}
 }
 \description{
-Construct a Butterworth IIR filter and filter input data. This uses \code{signal::filt_filt}, which filters the signal twice to - once forwards, then again backwards)
+Construct a Butterworth IIR filter and filter input data. This uses
+\code{signal::filt_filt}, which filters the signal twice to - once forwards,
+then again backwards).
 }
+\section{Methods (by class)}{
+\itemize{
+\item \code{data.frame}: Filter a data frame
+
+\item \code{eeg_data}: Filter eeg_data
+
+\item \code{eeg_epochs}: Filter eeg_epochs
+}}
+
 \author{
 Matt Craddock \email{matt@mattcraddock.com}
 }

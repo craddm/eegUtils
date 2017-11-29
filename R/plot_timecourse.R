@@ -153,7 +153,8 @@ plot_timecourse <- function(data, time_lim = NULL,
                        expand = c(0, 0)) +
     theme_minimal(base_size = 12) +
     theme(panel.grid = element_blank(),
-          axis.ticks = element_line(size = .5))
+          axis.ticks = element_line(size = .5)) +
+    guides(colour = guide_legend(override.aes = list(alpha = 1)))
 
   return(tc_plot)
 }
@@ -257,7 +258,8 @@ plot_butterfly <- function(data,
   }
 
   if (legend) {
-    butterfly_plot
+    butterfly_plot +
+      guides(colour = guide_legend(override.aes = list(alpha = 1)))
   } else {
     butterfly_plot +
       theme(legend.position = "none")

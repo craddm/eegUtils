@@ -274,3 +274,52 @@ epoch_data.eeg_data <- function(data, events, time_lim = c(-1, 1), ...) {
 epoch_data.eeg_epochs <- function(data, ...) {
   stop("Data is already epoched, cannot currently re-epoch.")
 }
+
+
+#' Downsampling EEG data
+#'
+#' Performs low-pass anti-aliasing filtering and downsamples EEG data by a
+#' specified factor. This is a wrapper for \code{decimate} from the \code{signal} package.
+#'
+#' @param data An \code{eeg_data} object to be downsampled
+#' @param ... Parameters passed to functions
+
+downsample <- function(data, ...) {
+  UseMethod("downsample", data)
+}
+
+
+downsample.default <- function(data, ...) {
+  stop("Only used for eeg_data objects at present.")
+}
+
+#' @param q Integer factor to downsample by
+#' @importFrom signal decimate
+#' @describeIn downsample Downsample eeg_data objects
+
+downsample.eeg_data <- function(data, q, ...) {
+
+  q <- as.integer(q)
+
+  if (q < 2) {
+    stop("q must be 2 or more.")
+  }
+
+  message(paste0("Downsampling from ", data$srate, "Hz to ", data$srate / q, "Hz."))
+
+  if (!is.null(data$reference)) {
+    data$signals["ref_data"] <- data$reference$ref_data
+  }
+
+  data$signals <- purrr::map_df(as.list(data$signals), ~signal::decimate(., q))
+
+  if (!is.null(data$reference)) {
+    data$reference$ref_data <- data$signals["ref_data"]
+    data$signals["ref_data"] <- NULL
+  }
+
+  data$srate <- data$srate / q
+  data$timings <- data$timings[seq(1, length(data_ds$timings[[1]]), by= 4), ]
+  data
+
+}
