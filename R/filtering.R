@@ -1,9 +1,22 @@
 #' Butterworth IIR filter
 #'
-#' Construct a Butterworth IIR filter and filter input data. This uses \code{signal::filt_filt}, which filters the signal twice to - once forwards, then again backwards)
+#' Construct a Butterworth IIR filter and filter input data. This uses
+#' \code{signal::filt_filt}, which filters the signal twice to - once forwards,
+#' then again backwards).
 #'
 #' @author Matt Craddock \email{matt@mattcraddock.com}
 #' @param data Data to be filtered.
+#' @export
+
+iir_filt <- function(data, ...) {
+  UseMethod("iir_filt", data)
+}
+
+#' @export
+iir_filt.default <- function(data, ...) {
+  stop("Function works on data.frames, eeg_data, and eeg_epochs.")
+}
+
 #' @param low_freq Low passband edge.
 #' @param high_freq High passband edge.
 #' @param filter_order Order of the Butterworth filter.
@@ -13,24 +26,76 @@
 #' @importFrom signal butter filtfilt freqz
 #' @importFrom purrr map_df
 #' @export
+#' @describeIn iir_filt Filter a data frame
 #'
 
-iir_filt <- function(data, low_freq = NULL, high_freq = NULL, filter_order = 4,
-                     srate = NULL, plot_filt = FALSE, silent = FALSE) {
-
-  if (is.eeg_data(data)) {
-    srate <- data$srate
-    tmp_data <- data
-    data <- data$signals
-    eeg_dat <- TRUE
-  } else if (is.null(srate)) {
+iir_filt.data.frame <- function(data, low_freq = NULL, high_freq = NULL,
+                                filter_order = 4, srate, plot_filt = FALSE,
+                                silent = FALSE, ...) {
+  if (missing(srate)) {
     stop("sampling rate must be supplied.")
-  } else {
-    eeg_dat <- FALSE
+  }
+  data <- run_iir(data, low_freq, high_freq, filter_order, srate, silent = silent)
+  data
+}
+
+#' @export
+#' @describeIn iir_filt Filter eeg_data
+
+iir_filt.eeg_data <- function(data, low_freq = NULL, high_freq = NULL,
+                              filter_order = 4,  plot_filt = FALSE,
+                              silent = FALSE, ...) {
+
+  if (!is.null(data$reference)) {
+    data$signals["ref_data"] <- data$reference$ref_data
   }
 
-  if (any(filter_order < 2 | filter_order > 12)) {
-    stop("Filter order should be between 2 and 12.")
+  data$signals <- run_iir(data$signals, low_freq, high_freq, filter_order,
+                          data$srate, silent = silent)
+
+  if (!is.null(data$reference)) {
+    data$reference$ref_data <- data$signals["ref_data"]
+    data$signals["ref_data"] <- NULL
+  }
+
+  return(data)
+}
+
+#' @export
+#' @describeIn iir_filt Filter eeg_epochs
+iir_filt.eeg_epochs <- function(data, low_freq = NULL, high_freq = NULL,
+                                filter_order = 4,  plot_filt = FALSE,
+                                silent = FALSE, ...) {
+
+  if (!is.null(data$reference)) {
+    data$signals["ref_data"] <- data$reference$ref_data
+  }
+
+  data$signals$epoch <- data$timings$epoch
+  data$signals <- run_iir(data$signals, low_freq, high_freq, filter_order,
+                          data$srate, silent = silent)
+  data$signals["epoch"] <- NULL
+
+  if (!is.null(data$reference)) {
+    data$reference$ref_data <- data$signals["ref_data"]
+    data$signals["ref_data"] <- NULL
+  }
+
+  data
+}
+
+
+#' Internal function for running IIR filtering
+#'
+#' @importFrom dplyr group_by
+#' @importFrom purrr map_df
+#' @importFrom signal filtfilt butter
+
+run_iir <- function(data, low_freq = NULL, high_freq = NULL, filter_order,
+                    srate, plot_filt = FALSE, silent = FALSE) {
+
+  if (filter_order < 2 || filter_order > 20) {
+    stop("Filter order should be between 2 and 20.")
   }
 
   if (is.null(low_freq)) {
@@ -45,6 +110,7 @@ iir_filt <- function(data, low_freq = NULL, high_freq = NULL, filter_order = 4,
     filt_type <- "high"
     message(sprintf("High-pass IIR filter at %.4g Hz", high_freq))
     W <- low_freq / (srate / 2)
+
     if (length(dim(data)) > 1) {
       data <- sweep(data, 2, colMeans(data))
     } else {
@@ -56,6 +122,7 @@ iir_filt <- function(data, low_freq = NULL, high_freq = NULL, filter_order = 4,
     message(sprintf("Band-stop IIR filter from %.4g-%.4g Hz",
                     low_freq, high_freq))
     W <- c(low_freq / (srate / 2), high_freq / (srate / 2))
+
     if (length(dim(data)) > 1) {
       data <- sweep(data, 2, colMeans(data))
     } else {
@@ -66,6 +133,7 @@ iir_filt <- function(data, low_freq = NULL, high_freq = NULL, filter_order = 4,
     message(sprintf("Band-pass IIR filter from %.4g-%.4g Hz",
                     low_freq, high_freq))
     W <- c(low_freq / (srate / 2), high_freq / (srate / 2))
+
     if (length(dim(data)) > 1) {
       data <- sweep(data, 2, colMeans(data))
     } else {
@@ -77,20 +145,18 @@ iir_filt <- function(data, low_freq = NULL, high_freq = NULL, filter_order = 4,
   filter_order <- round(filter_order / 2)
   filt_coef <- signal::butter(filter_order, W, type = filt_type)
 
-  if (plot_filt) {
-    signal::freqz(filt_coef, Fs = srate)
+  if ("epoch" %in% names(data)) {
+    data <- dplyr::group_by(data, epoch)
+  }
+
+  if ("electrode" %in% names(data)) {
+    data <- dplyr::group_by(data, electrode, add = TRUE)
   }
 
   if (length(dim(data)) > 1) {
-    if (eeg_dat) {
-      tmp_data$signals <- purrr::map_df(as.list(data),
-                                        ~signal::filtfilt(filt_coef, .))
-      data <- tmp_data
+    data <- purrr::map_df(as.list(data), ~signal::filtfilt(filt_coef, .))
     } else {
-      data <- purrr::map_df(as.list(data), ~signal::filtfilt(filt_coef, .))
-    }
-  } else {
     data <- signal::filtfilt(filt_coef, data)
   }
-  return(data)
+  data
 }

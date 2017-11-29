@@ -1,13 +1,11 @@
 #' Select timerange
 #'
 #' Generic function for selecting specific time ranges from a given dataset.
-#' Input can be a dataframe or an object of class \code{eeg_data}.
+#' Input can be a dataframe, or an object of class \code{eeg_data} or \code{eeg_epochs}
 #'
 #' @author Matt Craddock, \email{matt@mattcraddock.com}
 #' @param data Data from which to select
 #' @param ... Further arguments passed to or from other methods.
-#' @seealso \code{\link{select_times.default}},
-#'   \code{\link{select_times.eeg_data}}, \code{\link{select_elecs}}
 #'
 #' @export
 
@@ -15,22 +13,12 @@ select_times <- function(data, ...) {
   UseMethod("select_times", data)
 }
 
-#' Select timerange
-#'
-#' Select timerange from a dataframe.
-#'
-#' @author Matt Craddock, \email{matt@mattcraddock.com}
-#'
-#' @param data An EEG dataset in a data frame. Must have a column named "time".
-#' @param ... Arguments used with related methods
 #' @param time_lim A character vector of two numbers indicating the time range
 #'   to be selected e.g. c(min, max)
 #' @importFrom dplyr filter
 #' @return Data frame with only data from within the specified range.
-#' @family Data selection functions
-#' @seealso \code{\link{select_times}}, \code{\link{select_times.eeg_data}},
-#'   \code{\link{select_elecs}} for electrodes
 #' @export
+#' @describeIn select_times Default select times function
 
 select_times.default <- function(data, time_lim = NULL, ...) {
 
@@ -49,21 +37,11 @@ select_times.default <- function(data, time_lim = NULL, ...) {
   return(data)
 }
 
-#' Select time range
-#'
-#' select a specifed time range from objects of class \code{eeg_data}.
-#'
-#' @author Matt Craddock, \email{matt@mattcraddock.com}
-#'
-#' @param data Must be an object of class \code{eeg_data}.
-#' @param time_lim A character vector of two numbers indicating the time range
-#'   to be selected e.g. c(min, max)
-#' @param df_out Return a data frame rather than an \code{eeg_data} object.
-#'   Defaults to FALSE (i.e. returns an \code{eeg_data} object)
-#' @param ... Arguments used with related methods
-#'
+#' @param df_out Returns a data frame rather than an object of the same type that was passed in
 #' @importFrom dplyr filter select
 #' @export
+#'
+#' @describeIn select_times Select times from an eeg_data object
 
 select_times.eeg_data <- function(data, time_lim = NULL, df_out = FALSE, ...) {
 
@@ -84,21 +62,9 @@ select_times.eeg_data <- function(data, time_lim = NULL, df_out = FALSE, ...) {
   }
 }
 
-#' Select time range
-#'
-#' select a specifed time range from objects of class \code{eeg_epochs}.
-#'
-#' @author Matt Craddock, \email{matt@mattcraddock.com}
-#'
-#' @param data Must be an object of class \code{eeg_data}.
-#' @param time_lim A character vector of two numbers indicating the time range
-#'   to be selected e.g. c(min, max)
-#' @param df_out Return a data frame rather than an \code{eeg_data} object.
-#'   Defaults to FALSE (i.e. returns an \code{eeg_data} object)
-#' @param ... Arguments used with related methods
-#'
 #' @importFrom dplyr filter select
 #' @export
+#' @describeIn select_times Select times in \code{eeg_epoch} objects
 
 select_times.eeg_epochs <- function(data, time_lim = NULL,
                                     df_out = FALSE, ...) {

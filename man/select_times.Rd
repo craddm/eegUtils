@@ -2,23 +2,46 @@
 % Please edit documentation in R/data_selection.R
 \name{select_times}
 \alias{select_times}
+\alias{select_times.default}
+\alias{select_times.eeg_data}
+\alias{select_times.eeg_epochs}
 \title{Select timerange}
 \usage{
 select_times(data, ...)
+
+\method{select_times}{default}(data, time_lim = NULL, ...)
+
+\method{select_times}{eeg_data}(data, time_lim = NULL, df_out = FALSE, ...)
+
+\method{select_times}{eeg_epochs}(data, time_lim = NULL, df_out = FALSE,
+  ...)
 }
 \arguments{
 \item{data}{Data from which to select}
 
 \item{...}{Further arguments passed to or from other methods.}
+
+\item{time_lim}{A character vector of two numbers indicating the time range
+to be selected e.g. c(min, max)}
+
+\item{df_out}{Returns a data frame rather than an object of the same type that was passed in}
+}
+\value{
+Data frame with only data from within the specified range.
 }
 \description{
 Generic function for selecting specific time ranges from a given dataset.
-Input can be a dataframe or an object of class \code{eeg_data}.
+Input can be a dataframe, or an object of class \code{eeg_data} or \code{eeg_epochs}
 }
-\seealso{
-\code{\link{select_times.default}},
-  \code{\link{select_times.eeg_data}}, \code{\link{select_elecs}}
-}
+\section{Methods (by class)}{
+\itemize{
+\item \code{default}: Default select times function
+
+\item \code{eeg_data}: Select times from an eeg_data object
+
+\item \code{eeg_epochs}: Select times in \code{eeg_epoch} objects
+}}
+
 \author{
 Matt Craddock, \email{matt@mattcraddock.com}
 }
