@@ -6,6 +6,7 @@
 #'
 #' @author Matt Craddock \email{matt@mattcraddock.com}
 #' @param data Data to be filtered.
+#' @param ... Parameters passed to S3 methods
 #' @export
 
 iir_filt <- function(data, ...) {
@@ -87,6 +88,13 @@ iir_filt.eeg_epochs <- function(data, low_freq = NULL, high_freq = NULL,
 
 #' Internal function for running IIR filtering
 #'
+#' @param data Data to be filtered
+#' @param low_freq Low passband edge.
+#' @param high_freq High passband edge.
+#' @param filter_order Order of the Butterworth filter.
+#' @param srate Sampling rate of the signal.
+#' @param plot_filt Plot filter characteristics
+#' @param silent Turns off filtering messages.
 #' @importFrom dplyr group_by
 #' @importFrom purrr map_df
 #' @importFrom signal filtfilt butter

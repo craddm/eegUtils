@@ -21,6 +21,8 @@ iir_filt(data, ...)
 \arguments{
 \item{data}{Data to be filtered.}
 
+\item{...}{Parameters passed to S3 methods}
+
 \item{low_freq}{Low passband edge.}
 
 \item{high_freq}{High passband edge.}

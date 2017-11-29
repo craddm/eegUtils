@@ -7,6 +7,21 @@
 run_iir(data, low_freq = NULL, high_freq = NULL, filter_order, srate,
   plot_filt = FALSE, silent = FALSE)
 }
+\arguments{
+\item{data}{Data to be filtered}
+
+\item{low_freq}{Low passband edge.}
+
+\item{high_freq}{High passband edge.}
+
+\item{filter_order}{Order of the Butterworth filter.}
+
+\item{srate}{Sampling rate of the signal.}
+
+\item{plot_filt}{Plot filter characteristics}
+
+\item{silent}{Turns off filtering messages.}
+}
 \description{
 Internal function for running IIR filtering
 }
