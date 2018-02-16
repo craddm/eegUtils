@@ -21,7 +21,7 @@ eeg_FASTER.eeg_epochs <- function(data, ...) {
 
 #' Simple thresholding
 #'
-#' Reject data based on a simple absolute threshold. By default this will mark datapoints
+#' Reject data based on a simple absolute threshold. This goes marks any timepoint from any electrode
 #'
 #' @author Matt Craddock \email{matt@mattcraddock.com}
 #'
@@ -60,6 +60,20 @@ eeg_ar_thresh.eeg_data <- function(data, threshold, reject = FALSE, ...) {
 
 
 #' @describeIn eeg_ar_thresh Reject data using a simple threshold.
-eeg_ar_thresh.eeg_epochs <- function(data, threshold, reject, ...) {
+eeg_ar_thresh.eeg_epochs <- function(data, threshold, reject = FALSE, ...) {
 
+  if (length(threshold) == 1) {
+    threshold <- c(threshold, -threshold)
+  }
+
+  crossed_thresh <- data$signals > max(threshold) | data$signals < min(threshold)
+
+  if (reject) {
+    crossed_thresh <- rowSums(crossed_thresh) == 1
+    rej_epochs <- unique(data$timings$epoch[crossed_thresh])
+    data <- select_epochs(data, rej_epochs, keep = FALSE) # consider creating select_timerange vs select_timepoints
+  } else {
+    data$reject <- rej_epochs
+  }
+  data
 }

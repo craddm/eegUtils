@@ -223,18 +223,8 @@ select_epochs.default <- function(data, ...) {
                 "and can only be used on eeg_epochs objects."))
 }
 
-#' Select epochs from \code{eeg_data}
-#'
-#' @author Matt Craddock, \email{matt@mattcraddock.com}
-#'
-#' @param data \code{eeg_data} object from which to select epochs.
-#' @param epoch_no Epoch numbers to select
-#' @param keep Defaults to TRUE, meaning select the specified epochs. Set to
-#'   FALSE to remove specified epochs.
-#' @param df_out Output a data.frame instead of an eeg_data object.
-#' @param ... Parameters passed to specific functions
+#' @describeIn select_epochs Select epochs from \code{eeg_data} objects.
 #' @export
-
 
 select_epochs.eeg_data <- function(data, epoch_no = NULL,
                                    keep = TRUE, df_out = FALSE, ...) {
@@ -245,15 +235,7 @@ select_epochs.eeg_data <- function(data, epoch_no = NULL,
   }
 }
 
-#' Select epochs from \code{eeg_epochs}
-#'
-#' @author Matt Craddock, \email{matt@mattcraddock.com}
-#'
-#' @param epoch_no Epoch numbers to select.
 #' @param epoch_events Select epochs containing any of the specified events.
-#' @param keep Defaults to TRUE, meaning select the specified epochs. Set to
-#'   FALSE to remove specified epochs.
-#' @param df_out Output a data.frame instead of an eeg_epochs object.
 #' @describeIn select_epochs Selection of epochs from eeg_epochs.
 #' @export
 
@@ -263,12 +245,18 @@ select_epochs.eeg_epochs <- function(data, epoch_no = NULL, epoch_events = NULL,
     stop("Data is not epoched.")
   } else if (is.numeric(epoch_no)) {
     sel_rows <- data$timings$epoch %in% epoch_no
+
+    if (keep == FALSE) {
+      sel_rows <- !sel_rows
+    }
+
     data$signals <- data$signals[sel_rows, ]
     data$reference$ref_data <- data$reference$ref_data[sel_rows]
     data$timings <- data$timings[sel_rows, ]
     data$events[data$events$epoch %in% epoch_no, ]
-  } else {
 
+  } else {
+    stop("Selection by tag is not yet implemented.")
   }
 
   if (df_out) {

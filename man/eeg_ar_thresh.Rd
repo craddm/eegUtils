@@ -10,7 +10,7 @@ eeg_ar_thresh(data, threshold, reject = FALSE, ...)
 
 \method{eeg_ar_thresh}{eeg_data}(data, threshold, reject = FALSE, ...)
 
-\method{eeg_ar_thresh}{eeg_epochs}(data, threshold, reject, ...)
+\method{eeg_ar_thresh}{eeg_epochs}(data, threshold, reject = FALSE, ...)
 }
 \arguments{
 \item{data}{An object of class \code{eeg_data} or \code{eeg_epochs}.}
@@ -22,7 +22,7 @@ eeg_ar_thresh(data, threshold, reject = FALSE, ...)
 \item{...}{Other arguments passed to eeg_ar_thresh}
 }
 \description{
-Reject data based on a simple absolute threshold. By default this will mark datapoints
+Reject data based on a simple absolute threshold. This goes marks any timepoint from any electrode
 }
 \section{Methods (by class)}{
 \itemize{
