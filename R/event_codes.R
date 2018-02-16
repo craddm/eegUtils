@@ -8,33 +8,59 @@
 #'
 #' @author Matt Craddock \email{matt@mattcraddock.com}
 #'
-#' @param data An object of class \code{eeg_data}
+#' @param data An object of class \code{eeg_data} or \code{eeg_epochs}
+#' @param ... Parameters passed to S3 methods
+#' @export
+
+tag_events <- function(data, ...) {
+  UseMethod("tag_events", data)
+}
+
 #' @param trigs Character vector of trigger numbers
 #' @param event_label Labels for the events.
 #' @importFrom dplyr left_join
 #' @importFrom tibble tibble
 #' @export
+#' @describeIn tag_events Tag events in a
 #' @seealso \code{\link{list_events}}
 
-tag_events <- function(data, trigs, event_label) {
+tag_events.eeg_data <- function(data, trigs, event_label, ...) {
 
-  if (is.eeg_data(data)) {
-    if (length(trigs) != length(event_label)) {
-      stop("Trigs and event_label parameters must be the same length.")
-    }
+  if (length(trigs) != length(event_label)) {
+    stop("Trigs and event_label parameters must be the same length.")
+  }
 
-    if ("event_label" %in% names(data$events)) {
-      data$events <- data$events[-3]
-    }
+  if (!any(trigs %in% unlist(list_events(data)))) {
+    stop(paste0("Trigger(s) not found. Check trigger values with list_events()."))
+  }
 
-    data$events <- dplyr::left_join(data$events,
-                                    tibble::tibble(event_type = trigs,
-                                                   event_label = event_label),
-                                    by = "event_type")
-    data
-  } else {
-      stop("Object is not of class eeg_data.")
-    }
+  #if ("event_label" %in% names(data$events)) {
+   # data$events <- data$events[-3]
+  #}
+
+  data$events <- dplyr::left_join(data$events,
+                                  tibble::tibble(event_type = trigs,
+                                                 event_label = event_label),
+                                  by = "event_type")
+  data
+}
+
+tag_events.eeg_epochs <- function(data, trigs, event_label, ...) {
+
+  if (length(trigs) != length(event_label)) {
+    stop("Trigs and event_label parameters must be the same length.")
+  }
+
+  #list_events(data)
+  #if ("event_label" %in% names(data$events)) {
+  # data$events <- data$events[-3]
+  #}
+
+  data$events <- dplyr::left_join(data$events,
+                                  tibble::tibble(event_type = trigs,
+                                                 event_label = event_label),
+                                  by = "event_type")
+  data
 }
 
 #' List events

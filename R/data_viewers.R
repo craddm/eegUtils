@@ -16,7 +16,7 @@
 #'  by only plotting every 4th point, speeding up plotting considerably. Nb. may
 #'  cause aliasing as does not filter. Use with caution.
 #'
-#'@importFrom dplyr filter
+#'@import dplyr
 #'@import ggplot2
 #'@import shiny
 #'@import miniUI
@@ -32,25 +32,14 @@ browse_data <- function(data, sig_length = 5, n_elecs = NULL,
 
     continuous <- data$continuous
     srate <- data$srate
-    data <- as.data.frame(data, long = TRUE)
+    #data <- as.data.frame(data, long = TRUE)
 
     if (downsample) {
-      if (continuous) {
-        data <- group_by(data, electrode)
-        data <- mutate(data,
-                       amplitude = iir_filt(amplitude,
-                                            high_freq = 0.8 * (srate / 4 / 2),
-                                            srate = srate))
-        data <- ungroup(data)
-      } else {
-        data <- group_by(data, electrode, epoch)
-        data <- mutate(data,
-                       amplitude = iir_filt(amplitude,
-                                            high_freq = 0.8 * (srate / 4 / 2),
-                                            srate = srate))
-        data <- ungroup(data)
-      }
+      data <- iir_filt(data, high_freq = 0.8 * (data$srate / 4 / 2))
+      data <- as.data.frame(data, long = TRUE)
       data <- data[seq(1, nrow(data), 4), ]
+  } else {
+    data <- as.data.frame(data, long = TRUE)
     }
   }
 

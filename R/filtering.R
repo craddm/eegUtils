@@ -116,7 +116,7 @@ run_iir <- function(data, low_freq = NULL, high_freq = NULL, filter_order,
     }
   } else if (is.null(high_freq)) {
     filt_type <- "high"
-    message(sprintf("High-pass IIR filter at %.4g Hz", high_freq))
+    message(sprintf("High-pass IIR filter at %.4g Hz", low_freq))
     W <- low_freq / (srate / 2)
 
     if (length(dim(data)) > 1) {
