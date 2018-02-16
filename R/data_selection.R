@@ -208,12 +208,7 @@ select_epochs <- function(data, ...) {
   UseMethod("select_epochs", data)
 }
 
-#' Select epochs from \code{eeg_epochs}
-#'
-#' @author Matt Craddock, \email{matt@mattcraddock.com}
-#'
-#' @param data Object from which to select epochs.
-#' @param ... Parameters passed to specific methods
+#' @describeIn select_epochs Select from generic object
 #' @export
 
 select_epochs.default <- function(data, ...) {
@@ -223,6 +218,10 @@ select_epochs.default <- function(data, ...) {
                 "and can only be used on eeg_epochs objects."))
 }
 
+#' @param epoch_no Epoch numbers to select
+#' @param keep Defaults to TRUE, meaning select the specified epochs. Set to
+#'   FALSE to remove specified epochs.
+#' @param df_out Output a data.frame instead of an eeg_data object.
 #' @describeIn select_epochs Select epochs from \code{eeg_data} objects.
 #' @export
 
@@ -236,7 +235,7 @@ select_epochs.eeg_data <- function(data, epoch_no = NULL,
 }
 
 #' @param epoch_events Select epochs containing any of the specified events.
-#' @describeIn select_epochs Selection of epochs from eeg_epochs.
+#' @describeIn select_epochs Selection of epochs from \code{eeg_epochs} objects.
 #' @export
 
 select_epochs.eeg_epochs <- function(data, epoch_no = NULL, epoch_events = NULL,
