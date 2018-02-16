@@ -2,21 +2,21 @@
 #'
 #' Whelan et al (2011)
 #'
+#' @author Matt Craddock \email{matt@mattcraddock.com}
+#'
 #' @param data An object of class \code{eeg_epochs}
 #' @param ... Parameters passed to FASTER
-
 
 eeg_FASTER <- function(data, ...) {
   UseMethod("eeg_FASTER", data)
 }
 
 
-#'
+#' @describeIn eeg_FASTER Run FASTER on \code{eeg_epochs}
 eeg_FASTER.eeg_epochs <- function(data, ...) {
 
 
 }
-
 
 
 #' Simple thresholding
@@ -28,6 +28,7 @@ eeg_FASTER.eeg_epochs <- function(data, ...) {
 #' @param data An object of class \code{eeg_data} or \code{eeg_epochs}.
 #' @param threshold In microvolts. If one value is supplied, it will be treated as a +- value.
 #' @param reject If TRUE, remove marked data immediately, otherwise mark for inspection/rejection. Defaults to FALSE.
+#' @param ... Other arguments passed to eeg_ar_thresh
 #'
 
 eeg_ar_thresh <- function(data, threshold, reject = FALSE, ...) {
@@ -35,6 +36,7 @@ eeg_ar_thresh <- function(data, threshold, reject = FALSE, ...) {
 }
 
 
+#' @describeIn eeg_ar_thresh Reject data using a simple threshold.
 eeg_ar_thresh.eeg_data <- function(data, threshold, reject = FALSE, ...) {
 
   if (length(threshold) == 1) {
@@ -56,6 +58,8 @@ eeg_ar_thresh.eeg_data <- function(data, threshold, reject = FALSE, ...) {
   data
 }
 
+
+#' @describeIn eeg_ar_thresh Reject data using a simple threshold.
 eeg_ar_thresh.eeg_epochs <- function(data, threshold, reject, ...) {
 
 }

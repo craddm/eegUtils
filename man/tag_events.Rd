@@ -2,12 +2,20 @@
 % Please edit documentation in R/event_codes.R
 \name{tag_events}
 \alias{tag_events}
+\alias{tag_events.eeg_data}
+\alias{tag_events.eeg_epochs}
 \title{Tag events}
 \usage{
-tag_events(data, trigs, event_label)
+tag_events(data, ...)
+
+\method{tag_events}{eeg_data}(data, trigs, event_label, ...)
+
+\method{tag_events}{eeg_epochs}(data, trigs, event_label, ...)
 }
 \arguments{
-\item{data}{An object of class \code{eeg_data}}
+\item{data}{An object of class \code{eeg_data} or \code{eeg_epochs}}
+
+\item{...}{Parameters passed to S3 methods}
 
 \item{trigs}{Character vector of trigger numbers}
 
@@ -20,6 +28,13 @@ labels with a "/" symbol. (e.g. "cond1" for a trigger that belongs to one
 condition, "cond1/cond2" for a trigger that could belong to more than one
 condition).
 }
+\section{Methods (by class)}{
+\itemize{
+\item \code{eeg_data}: Tag events in an \code{eeg_data} object
+
+\item \code{eeg_epochs}: Tag events in a
+}}
+
 \seealso{
 \code{\link{list_events}}
 }

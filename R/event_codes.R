@@ -21,7 +21,7 @@ tag_events <- function(data, ...) {
 #' @importFrom dplyr left_join
 #' @importFrom tibble tibble
 #' @export
-#' @describeIn tag_events Tag events in a
+#' @describeIn tag_events Tag events in an \code{eeg_data} object
 #' @seealso \code{\link{list_events}}
 
 tag_events.eeg_data <- function(data, trigs, event_label, ...) {
@@ -45,6 +45,7 @@ tag_events.eeg_data <- function(data, trigs, event_label, ...) {
   data
 }
 
+#' @describeIn tag_events Tag events in a
 tag_events.eeg_epochs <- function(data, trigs, event_label, ...) {
 
   if (length(trigs) != length(event_label)) {
