@@ -1,3 +1,10 @@
+# eegUtils 0.1.13
+
+### Function changes
+ - `interp_elecs()` function to perform spherical spline interpolation of individual electrodes.
+ - `eeg_ar_thresh()` simple absolute value thresholding added.
+ - `plot_electrodes()` Produces a 2D or interactive 3D plot of electrode locations.
+
 # eegUtils 0.1.12
 
 ### Function changes

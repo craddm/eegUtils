@@ -298,13 +298,67 @@ browse_data <- function(data, sig_length = 5, n_elecs = NULL,
 
 
 
-#' Interactive 3d plot of electrode locations
+#' Plot electrode locations
+#'
+#' Produces either a 2D plot of the electrode locations or an interactive plot
+#' of electrode locations in 3D space.
+#'
+#' @author Matt Craddock \email{matt@mattcraddock.com}
 #'
 #' @importFrom plotly plot_ly
-#' @param data electrode locations to be plotted in 3d
+#' @param data Data with associated electrode locations to be plotted.
+#' @param interact Choose 2D cartesian layout, or, if set to TRUE, an
+#'   interactive 3D plot of electrode locations. Defaults to FALSE.
+#' @param ... other parameters
+#' @export
 
-plot_electrodes <- function(data) {
-  data <- electrodeLocs(data)
-  xyz <- pol_to_sph(data$theta, data$radius)
-  plotly::plot_ly(x, y, z, unique(data$electrode))
+plot_electrodes <- function(data, interact = FALSE, ...) {
+  UseMethod("plot_electrodes", data)
+}
+
+#' @importFrom plotly plot_ly
+#' @import ggplot2
+#' @describeIn plot_electrodes generic plot electrodes function
+
+plot_electrodes.default <- function(data, interact = FALSE, ...) {
+  if ("electrode" %in% names(data)) {
+    data <- data.frame(electrode = unique(data$electrode))
+    data <- electrode_locations(data)
+
+    if (interact) {
+      xyz <- pol_to_sph(data$theta, data$radius)
+      xyz$electrode <- unique(data$electrode)
+      plotly::plot_ly(xyz, x = ~x, y = ~y, z = ~z, text = ~electrode,
+                      type = "scatter3d", mode = "text+markers")
+    } else {
+      ggplot2::ggplot(data, aes(x = x, y = y, label = electrode)) +
+        geom_text() +
+        theme_minimal() +
+        coord_equal()
+    }
+  } else {
+    stop("No electrodes found.")
+  }
+}
+
+#' @importFrom plotly plot_ly
+#' @describeIn plot_electrodes Plot electrodes associated with an \code{eeg_data} object.
+plot_electrodes.eeg_data <- function(data, interact = FALSE, ...) {
+
+  if (is.null(data$chan_info)) {
+    warning("Adding standard locations...")
+    data <- electrode_locations(data)
+  }
+
+  if (interact) {
+    xyz <- pol_to_sph(data$chan_info$theta, data$chan_info$radius)
+    xyz$electrode <- data$chan_info$electrode
+    plotly::plot_ly(xyz, x = ~x, y = ~y, z = ~z, text = ~electrode,
+                    type = "scatter3d", mode = "text+markers")
+  } else {
+    ggplot2::ggplot(data$chan_info, aes(x = x, y = y, label = electrode)) +
+      geom_text() +
+      theme_minimal() +
+      coord_equal()
+  }
 }

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Plot electrode locations — plot_electrodes â€¢ eegUtils</title>
+<title>Calculate kurtosis — kurtosis â€¢ eegUtils</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -83,46 +83,23 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Plot electrode locations</h1>
+    <h1>Calculate kurtosis</h1>
     </div>
 
     
-    <p>Produces either a 2D plot of the electrode locations or an interactive plot
-of electrode locations in 3D space.</p>
+    <p>Calculate kurtosis</p>
     
 
-    <pre class="usage"><span class='fu'>plot_electrodes</span>(<span class='no'>data</span>, <span class='kw'>interact</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)
-
-<span class='co'># S3 method for default</span>
-<span class='fu'>plot_electrodes</span>(<span class='no'>data</span>, <span class='kw'>interact</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)
-
-<span class='co'># S3 method for eeg_data</span>
-<span class='fu'>plot_electrodes</span>(<span class='no'>data</span>, <span class='kw'>interact</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>kurtosis</span>(<span class='no'>data</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>data</th>
-      <td><p>Data with associated electrode locations to be plotted.</p></td>
-    </tr>
-    <tr>
-      <th>interact</th>
-      <td><p>Choose 2D cartesian layout, or, if set to TRUE, an
-interactive 3D plot of electrode locations. Defaults to FALSE.</p></td>
-    </tr>
-    <tr>
-      <th>...</th>
-      <td><p>other parameters</p></td>
+      <td><p>Data to calculate kurtosis for</p></td>
     </tr>
     </table>
-    
-    <h2 class="hasAnchor" id="methods-by-class-"><a class="anchor" href="#methods-by-class-"></a>Methods (by class)</h2>
-
-    <ul>
-<li><p><code>default</code>: generic plot electrodes function</p></li>
-<li><p><code>eeg_data</code>: Plot electrodes associated with an <code>eeg_data</code> object.</p></li>
-</ul>
     
 
   </div>
@@ -130,13 +107,7 @@ interactive 3D plot of electrode locations. Defaults to FALSE.</p></td>
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-      
-      <li><a href="#methods-by-class-">Methods (by class)</a></li>
-          </ul>
-
-    <h2>Author</h2>
-    
-Matt Craddock <a href='mailto:matt@mattcraddock.com'>matt@mattcraddock.com</a>
+                </ul>
 
   </div>
 </div>

@@ -28,7 +28,7 @@ eeg_FASTER.eeg_epochs <- function(data, ...) {
 #' @param threshold In microvolts. If one value is supplied, it will be treated as a +- value.
 #' @param reject If TRUE, remove marked data immediately, otherwise mark for inspection/rejection. Defaults to FALSE.
 #' @param ... Other arguments passed to eeg_ar_thresh
-#'
+#' @export
 
 eeg_ar_thresh <- function(data, threshold, reject = FALSE, ...) {
   UseMethod("eeg_ar_thresh", data)
@@ -91,6 +91,8 @@ channel_stats <- function(data, ...) {
 channel_stats.eeg_data <- function(data, ...) {
   chan_means <- colMeans(data$signals)
   chan_sds <- apply(data$signals, 2, sd)
+  chan_var <- apply(data$signals, 2, var)
+  chan_kurt <- apply(data$signals, 2, kurtosis)
 }
 
 #' Epoch statistics
@@ -111,8 +113,6 @@ epoch_stats.eeg_epochs <- function(data, ...) {
   epoch_means <- dplyr::summarise_all(epoch_means, mean)
 }
 
-
-
 #' Channel interpolation
 #'
 #' Interpolate EEG channels using a spherical spline (Perrin et al., 1989). The data must have channel locations attached.
@@ -131,7 +131,7 @@ interp_elecs <- function(data, bad_elecs, ...) {
 #' @describeIn interp_elecs Interpolate EEG channel(s)
 interp_elecs.eeg_data <- function(data, bad_elecs, ...) {
 
-  if (is.null(eeg_data$chan_info)) {
+  if (is.null(data$chan_info)) {
     stop("No channel locations found.")
   }
   xyz_coords <- pol_to_sph(data$chan_info$theta, data$chan_info$radius)
@@ -203,6 +203,7 @@ spheric_spline <- function(good_elecs, bad_elecs, data) {
 #' @importFrom pracma legendre
 
 compute_g <- function(xyz_coords, xyz_elecs) {
+
   EI <- 1 - sqrt((matrix(rep(xyz_coords[, 1], nrow(xyz_elecs)), nrow = nrow(xyz_elecs)) -
                     matrix(rep(xyz_elecs[, 1], each = nrow(xyz_coords)), ncol = nrow(xyz_coords))) ^ 2 +
                    (matrix(rep(xyz_coords[, 2], nrow(xyz_elecs)), nrow = nrow(xyz_elecs)) -
@@ -222,4 +223,16 @@ compute_g <- function(xyz_coords, xyz_elecs) {
 
   g <- g / (4 * pi)
 
+}
+
+
+#' Calculate kurtosis
+#'
+#' @param data Data to calculate kurtosis for
+#'
+
+kurtosis <- function(data) {
+  m4 <- mean((data - mean(data)) ^ 4)
+  kurt <- m4 / (sd(data) ^ 4) - 3
+  kurt
 }

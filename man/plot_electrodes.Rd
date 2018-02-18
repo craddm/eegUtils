@@ -2,13 +2,35 @@
 % Please edit documentation in R/data_viewers.R
 \name{plot_electrodes}
 \alias{plot_electrodes}
-\title{Interactive 3d plot of electrode locations}
+\alias{plot_electrodes.default}
+\alias{plot_electrodes.eeg_data}
+\title{Plot electrode locations}
 \usage{
-plot_electrodes(data)
+plot_electrodes(data, interact = FALSE, ...)
+
+\method{plot_electrodes}{default}(data, interact = FALSE, ...)
+
+\method{plot_electrodes}{eeg_data}(data, interact = FALSE, ...)
 }
 \arguments{
-\item{data}{electrode locations to be plotted in 3d}
+\item{data}{Data with associated electrode locations to be plotted.}
+
+\item{interact}{Choose 2D cartesian layout, or, if set to TRUE, an
+interactive 3D plot of electrode locations. Defaults to FALSE.}
+
+\item{...}{other parameters}
 }
 \description{
-Interactive 3d plot of electrode locations
+Produces either a 2D plot of the electrode locations or an interactive plot
+of electrode locations in 3D space.
+}
+\section{Methods (by class)}{
+\itemize{
+\item \code{default}: generic plot electrodes function
+
+\item \code{eeg_data}: Plot electrodes associated with an \code{eeg_data} object.
+}}
+
+\author{
+Matt Craddock \email{matt@mattcraddock.com}
 }
