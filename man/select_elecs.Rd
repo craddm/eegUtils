@@ -2,21 +2,46 @@
 % Please edit documentation in R/data_selection.R
 \name{select_elecs}
 \alias{select_elecs}
+\alias{select_elecs.default}
+\alias{select_elecs.eeg_data}
 \title{Select electrodes from a given dataset.}
 \usage{
 select_elecs(data, ...)
+
+\method{select_elecs}{default}(data, electrode = NULL, keep = TRUE, ...)
+
+\method{select_elecs}{eeg_data}(data, electrode, keep = TRUE,
+  df_out = FALSE, ...)
 }
 \arguments{
 \item{data}{An EEG dataset.}
 
 \item{...}{Arguments used with related methods}
+
+\item{electrode}{A character vector of electrode labels for selection or
+removal.}
+
+\item{keep}{Defaults to TRUE. Set to false to *remove* the selected
+electrodes.}
+
+\item{df_out}{Defaults to FALSE. Set to TRUE to return a dataframe rather
+than an \code{eeg_data} object.}
 }
 \value{
 Data frame with only data from the chosen electrodes
+
+\code{eeg_data} object with selected electrodes removed/kept.
 }
 \description{
 This is a generic function for selection of electrodes from an EEG dataset.
 }
+\section{Methods (by class)}{
+\itemize{
+\item \code{default}: Select electrodes from a generic data frame.
+
+\item \code{eeg_data}: Select electrodes from a \code{eeg_data} object.
+}}
+
 \author{
 Matt Craddock, \email{matt@mattcraddock.com}
 }

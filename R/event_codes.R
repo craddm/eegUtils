@@ -52,6 +52,7 @@ tag_events.eeg_epochs <- function(data, trigs, event_label, ...) {
     stop("Trigs and event_label parameters must be the same length.")
   }
 
+
   #list_events(data)
   #if ("event_label" %in% names(data$events)) {
   # data$events <- data$events[-3]

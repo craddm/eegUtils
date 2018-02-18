@@ -122,9 +122,11 @@ rm_baseline <- function(data, time_lim = NULL) {
     orig_data <- data
     data <- cbind(data$signals, data$timings)
     if (orig_data$continuous){
-      data <- tidyr::gather(data, electrode, amplitude, -time, -sample)
+      data <- tidyr::gather(data, electrode, amplitude, -time,
+                            -sample, factor_key = TRUE)
     } else {
-      data <- tidyr::gather(data, electrode, amplitude, -time, -epoch, -sample)
+      data <- tidyr::gather(data, electrode, amplitude, -time,
+                            -epoch, -sample, factor_key = TRUE)
     }
   }
 

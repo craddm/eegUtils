@@ -95,8 +95,6 @@ select_times.eeg_epochs <- function(data, time_lim = NULL,
 #' @param data An EEG dataset.
 #' @param ... Arguments used with related methods
 #'
-#' @return Data frame with only data from the chosen electrodes
-#'
 #' @export
 #'
 
@@ -104,15 +102,6 @@ select_elecs <- function(data, ...) {
   UseMethod("select_elecs", data)
 }
 
-#' Select electrodes from a given dataset.
-#'
-#' Checks for presence of electrode column, and if found, presence of selected
-#' electrodes.
-#'
-#' @author Matt Craddock, \email{matt@mattcraddock.com}
-#'
-#' @param data An EEG dataset.
-#' @param ... Arguments used with related methods
 #' @param electrode A character vector of electrode labels for selection or
 #'   removal.
 #' @param keep Defaults to TRUE. Set to false to *remove* the selected
@@ -120,8 +109,8 @@ select_elecs <- function(data, ...) {
 #'
 #' @return Data frame with only data from the chosen electrodes
 #'
+#' @describeIn select_elecs Select electrodes from a generic data frame.
 #' @export
-#'
 
 select_elecs.default <- function(data,  electrode = NULL, keep = TRUE, ...) {
 
@@ -150,26 +139,13 @@ select_elecs.default <- function(data,  electrode = NULL, keep = TRUE, ...) {
 }
 
 
-#' Select electrodes from a given dataset.
-#'
-#' Checks for presence of electrode column, and if found, presence of selected
-#' electrodes.
-#'
-#' @author Matt Craddock, \email{matt@mattcraddock.com}
-#'
-#' @param data An \code{eeg_data} object.
-#' @param ... Arguments used with related methods
-#' @param electrode A character vector of electrode labels for selection or
-#'   removal.
-#' @param keep Defaults to TRUE. Set to false to *remove* the selected
-#'   electrodes.
 #' @param df_out Defaults to FALSE. Set to TRUE to return a dataframe rather
 #'   than an \code{eeg_data} object.
 #'
 #' @return \code{eeg_data} object with selected electrodes removed/kept.
 #'
 #' @export
-#'
+#' @describeIn select_elecs Select electrodes from a \code{eeg_data} object.
 
 select_elecs.eeg_data <- function(data, electrode, keep = TRUE,
                                   df_out = FALSE, ...) {
@@ -192,7 +168,6 @@ select_elecs.eeg_data <- function(data, electrode, keep = TRUE,
     return(data)
   }
 }
-
 
 #' Select epochs from eeg_data
 #'
