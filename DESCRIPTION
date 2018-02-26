@@ -35,6 +35,9 @@ Depends:
   R (>= 2.10)
 RoxygenNote: 6.0.1
 Suggests: testthat,
-    covr
+    covr,
+    knitr,
+    rmarkdown
 URL: https://github.com/craddm/eegUtils
 BugReports: https://github.com/craddm/eegUtils/issues
+VignetteBuilder: knitr

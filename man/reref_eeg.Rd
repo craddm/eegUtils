@@ -13,9 +13,9 @@ reref_eeg(data, ref_chans = "average", exclude = NULL, robust = FALSE)
 \item{ref_chans}{Channels to reference data to. Defaults to "average" i.e.
 average of all electrodes in data. Character vector of channel names or numbers.}
 
-\item{exclude}{Electrodes to exclude from average reference calculation. Only}
+\item{exclude}{Electrodes to exclude from average reference calculation.}
 
-\item{robust}{Use median instead of mean; only applicable for average reference.}
+\item{robust}{Use median instead of mean; only applied for average reference.}
 }
 \value{
 object of class \code{eeg_data}, re-referenced as requested.

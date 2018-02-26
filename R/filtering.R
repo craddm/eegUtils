@@ -22,7 +22,6 @@ iir_filt.default <- function(data, ...) {
 #' @param high_freq High passband edge.
 #' @param filter_order Order of the Butterworth filter.
 #' @param srate Sampling rate of the signal.
-#' @param plot_filt Plot filter characteristics
 #' @param silent Turns off filtering messages.
 #' @importFrom signal butter filtfilt freqz
 #' @importFrom purrr map_df
@@ -31,7 +30,7 @@ iir_filt.default <- function(data, ...) {
 #'
 
 iir_filt.data.frame <- function(data, low_freq = NULL, high_freq = NULL,
-                                filter_order = 4, srate, plot_filt = FALSE,
+                                filter_order = 4, srate,
                                 silent = FALSE, ...) {
   if (missing(srate)) {
     stop("sampling rate must be supplied.")
@@ -44,8 +43,7 @@ iir_filt.data.frame <- function(data, low_freq = NULL, high_freq = NULL,
 #' @describeIn iir_filt Filter eeg_data
 
 iir_filt.eeg_data <- function(data, low_freq = NULL, high_freq = NULL,
-                              filter_order = 4,  plot_filt = FALSE,
-                              silent = FALSE, ...) {
+                              filter_order = 4, silent = FALSE, ...) {
 
   if (!is.null(data$reference)) {
     data$signals["ref_data"] <- data$reference$ref_data
@@ -65,7 +63,7 @@ iir_filt.eeg_data <- function(data, low_freq = NULL, high_freq = NULL,
 #' @export
 #' @describeIn iir_filt Filter eeg_epochs
 iir_filt.eeg_epochs <- function(data, low_freq = NULL, high_freq = NULL,
-                                filter_order = 4,  plot_filt = FALSE,
+                                filter_order = 4,
                                 silent = FALSE, ...) {
 
   if (!is.null(data$reference)) {
@@ -93,14 +91,13 @@ iir_filt.eeg_epochs <- function(data, low_freq = NULL, high_freq = NULL,
 #' @param high_freq High passband edge.
 #' @param filter_order Order of the Butterworth filter.
 #' @param srate Sampling rate of the signal.
-#' @param plot_filt Plot filter characteristics
 #' @param silent Turns off filtering messages.
 #' @importFrom dplyr group_by
 #' @importFrom purrr map_df
 #' @importFrom signal filtfilt butter
 
 run_iir <- function(data, low_freq = NULL, high_freq = NULL, filter_order,
-                    srate, plot_filt = FALSE, silent = FALSE) {
+                    srate, silent = FALSE) {
 
   if (filter_order < 2 || filter_order > 20) {
     stop("Filter order should be between 2 and 20.")

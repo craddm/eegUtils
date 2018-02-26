@@ -10,8 +10,8 @@
 #'   \code{eeg_data}. Long format is expected if a data-frame is submitted.
 #' @param ref_chans Channels to reference data to. Defaults to "average" i.e.
 #'   average of all electrodes in data. Character vector of channel names or numbers.
-#' @param exclude Electrodes to exclude from average reference calculation. Only
-#' @param robust Use median instead of mean; only applicable for average reference.
+#' @param exclude Electrodes to exclude from average reference calculation.
+#' @param robust Use median instead of mean; only applied for average reference.
 #' @importFrom tidyr spread
 #' @importFrom dplyr select
 #' @importFrom tibble as_tibble

@@ -5,7 +5,7 @@
 \title{Internal function for running IIR filtering}
 \usage{
 run_iir(data, low_freq = NULL, high_freq = NULL, filter_order, srate,
-  plot_filt = FALSE, silent = FALSE)
+  silent = FALSE)
 }
 \arguments{
 \item{data}{Data to be filtered}
@@ -17,8 +17,6 @@ run_iir(data, low_freq = NULL, high_freq = NULL, filter_order, srate,
 \item{filter_order}{Order of the Butterworth filter.}
 
 \item{srate}{Sampling rate of the signal.}
-
-\item{plot_filt}{Plot filter characteristics}
 
 \item{silent}{Turns off filtering messages.}
 }
