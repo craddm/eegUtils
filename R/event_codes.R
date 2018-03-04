@@ -34,10 +34,6 @@ tag_events.eeg_data <- function(data, trigs, event_label, ...) {
     stop(paste0("Trigger(s) not found. Check trigger values with list_events()."))
   }
 
-  #if ("event_label" %in% names(data$events)) {
-   # data$events <- data$events[-3]
-  #}
-
   data$events <- dplyr::left_join(data$events,
                                   tibble::tibble(event_type = trigs,
                                                  event_label = event_label),
@@ -45,18 +41,12 @@ tag_events.eeg_data <- function(data, trigs, event_label, ...) {
   data
 }
 
-#' @describeIn tag_events Tag events in a
+#' @describeIn tag_events Tag events in an epoched dataset
 tag_events.eeg_epochs <- function(data, trigs, event_label, ...) {
 
   if (length(trigs) != length(event_label)) {
     stop("Trigs and event_label parameters must be the same length.")
   }
-
-
-  #list_events(data)
-  #if ("event_label" %in% names(data$events)) {
-  # data$events <- data$events[-3]
-  #}
 
   data$events <- dplyr::left_join(data$events,
                                   tibble::tibble(event_type = trigs,
@@ -83,8 +73,7 @@ list_events <- function(data) {
   }
 
   if ("event_label" %in% names(data$events)) {
-    data.frame(event_type = unique(data$events$event_type),
-               event_label = unique(data$events$event_label))
+    data$events[!duplicated(data$events$event_type), c("event_type", "event_label")]
   } else {
     data.frame(event_type = unique(data$events$event_type))
   }
@@ -99,7 +88,7 @@ list_events <- function(data) {
 #' @author Matt Craddock \email{matt@mattcraddock.com}
 #'
 #' @param data An object of class \code{eeg_epochs}
-#'#'
+#'
 #' @seealso \code{\link{tag_events}}
 
 list_epochs <- function(data) {
@@ -107,20 +96,6 @@ list_epochs <- function(data) {
     stop("For eeg_epochs objects only.")
   }
 
-  if ("event_label" %in% names(data$events)) {
-    data.frame(event_type = unique(data$events$event_type),
-               event_label = unique(data$events$event_label))
-  } else {
-    data.frame(event_type = unique(data$events$event_type))
-  }
-
-}
-
-#' Tag epochs
-#'
-#' @param data An object of class \code{eeg_data}
-#'
-
-tag_epochs <- function(data) {
+  data$events[, c("epoch")]
 
 }

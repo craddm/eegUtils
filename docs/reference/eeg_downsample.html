@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Select epochs from eeg_data — select_epochs â€¢ eegUtils</title>
+<title>Downsampling EEG data — eeg_downsample â€¢ eegUtils</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -83,63 +83,42 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Select epochs from eeg_data</h1>
+    <h1>Downsampling EEG data</h1>
     </div>
 
     
-    <p>This is a generic function for selecting epochs from an epoched data set.</p>
+    <p>Performs low-pass anti-aliasing filtering and downsamples EEG data by a
+specified factor. This is a wrapper for <code>decimate</code> from the
+<code>signal</code> package. Note that this will also adjust the event table,
+moving events to the nearest time remaining after downsampling</p>
     
 
-    <pre class="usage"><span class='fu'>select_epochs</span>(<span class='no'>data</span>, <span class='no'>...</span>)
-
-<span class='co'># S3 method for default</span>
-<span class='fu'>select_epochs</span>(<span class='no'>data</span>, <span class='no'>...</span>)
+    <pre class="usage"><span class='fu'>eeg_downsample</span>(<span class='no'>data</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for eeg_data</span>
-<span class='fu'>select_epochs</span>(<span class='no'>data</span>, <span class='kw'>epoch_no</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>keep</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>df_out</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)
-
-<span class='co'># S3 method for eeg_epochs</span>
-<span class='fu'>select_epochs</span>(<span class='no'>data</span>, <span class='kw'>epoch_no</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>epoch_events</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>keep</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>df_out</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)</pre>
+<span class='fu'>eeg_downsample</span>(<span class='no'>data</span>, <span class='no'>q</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>data</th>
-      <td><p><code>eeg_epochs</code> object from which to select epochs.</p></td>
+      <td><p>An <code>eeg_data</code> object to be downsampled</p></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>Parameters passed to specific methods</p></td>
+      <td><p>Parameters passed to functions</p></td>
     </tr>
     <tr>
-      <th>epoch_no</th>
-      <td><p>Epoch numbers to select</p></td>
-    </tr>
-    <tr>
-      <th>keep</th>
-      <td><p>Defaults to TRUE, meaning select the specified epochs. Set to
-FALSE to remove specified epochs.</p></td>
-    </tr>
-    <tr>
-      <th>df_out</th>
-      <td><p>Output a data.frame instead of an eeg_data object.</p></td>
-    </tr>
-    <tr>
-      <th>epoch_events</th>
-      <td><p>Select epochs containing any of the specified events. Can
-be numeric or character vector. Will override any epoch_no input</p></td>
+      <th>q</th>
+      <td><p>Integer factor to downsample by</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="methods-by-class-"><a class="anchor" href="#methods-by-class-"></a>Methods (by class)</h2>
 
     <ul>
-<li><p><code>default</code>: Select from generic object</p></li>
-<li><p><code>eeg_data</code>: Select epochs from <code>eeg_data</code> objects.</p></li>
-<li><p><code>eeg_epochs</code>: Selection of epochs from <code>eeg_epochs</code> objects.</p></li>
+<li><p><code>eeg_data</code>: Downsample eeg_data objects</p></li>
 </ul>
     
 
@@ -154,7 +133,7 @@ be numeric or character vector. Will override any epoch_no input</p></td>
 
     <h2>Author</h2>
     
-Matt Craddock, <a href='mailto:matt@mattcraddock.com'>matt@mattcraddock.com</a>
+Matt Craddock <a href='mailto:matt@mattcraddock.com'>matt@mattcraddock.com</a>
 
   </div>
 </div>

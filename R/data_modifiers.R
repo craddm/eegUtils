@@ -222,8 +222,20 @@ epoch_data.eeg_data <- function(data, events, time_lim = c(-1, 1), ...) {
     stop("Events not found - check event codes.")
   }
 
-  samps <- seq(round(time_lim[[1]] * data$srate),
-               round(time_lim[[2]] * (data$srate - 1)))
+  # If the data has been downsampled, sample spacing will be greater than 1.
+  # Subsequent steps need to account for this when selecting based on sample number.
+  # Multiplying srate by spacing accomplishes this.
+
+  samp_diff <- unique(diff(data$timings$sample))
+  if (length(samp_diff) > 1) {
+    stop("Sample spacing is uneven, cannot downsample.")
+  } else {
+    srate <- data$srate * samp_diff
+  }
+
+  samps <- seq(round(time_lim[[1]] * srate),
+               round(time_lim[[2]] * (srate - 1)),
+               by = samp_diff)
 
   event_table <- data$events
 
@@ -235,7 +247,7 @@ epoch_data.eeg_data <- function(data, events, time_lim = c(-1, 1), ...) {
                              ~ . + samps)
 
   epoched_data <- purrr::map_df(epoched_data,
-                                ~ tibble::tibble(sample = ., time = samps / data$srate),
+                                ~ tibble::tibble(sample = ., time = samps / srate),
                                 .id = "epoch")
 
   # create new event_table NOW
@@ -249,10 +261,11 @@ epoch_data.eeg_data <- function(data, events, time_lim = c(-1, 1), ...) {
 
 
   if (!is.null(data$reference)) {
-    ref_data <- dplyr::left_join(epoched_data, as.data.frame(
-      cbind(sample = data$timings$sample,
-            ref_data = data$reference$ref_data)),
-      by = c("sample" = "sample"))
+    ref_data <- dplyr::left_join(epoched_data,
+                                 as.data.frame(
+                                   cbind(sample = data$timings$sample,
+                                         ref_data = data$reference$ref_data)),
+                                 by = c("sample" = "sample"))
     data$reference$ref_data <- ref_data[["ref_data"]]
   }
 
@@ -277,29 +290,34 @@ epoch_data.eeg_epochs <- function(data, ...) {
   stop("Data is already epoched, cannot currently re-epoch.")
 }
 
-
 #' Downsampling EEG data
 #'
 #' Performs low-pass anti-aliasing filtering and downsamples EEG data by a
-#' specified factor. This is a wrapper for \code{decimate} from the \code{signal} package.
+#' specified factor. This is a wrapper for \code{decimate} from the
+#' \code{signal} package. Note that this will also adjust the event table,
+#' moving events to the nearest time remaining after downsampling
+#'
+#' @author Matt Craddock \email{matt@mattcraddock.com}
 #'
 #' @param data An \code{eeg_data} object to be downsampled
 #' @param ... Parameters passed to functions
+#' @export
 
-downsample <- function(data, ...) {
-  UseMethod("downsample", data)
+eeg_downsample <- function(data, ...) {
+  UseMethod("eeg_downsample", data)
 }
 
-
-downsample.default <- function(data, ...) {
+#' @export
+eeg_downsample.default <- function(data, ...) {
   stop("Only used for eeg_data objects at present.")
 }
 
 #' @param q Integer factor to downsample by
 #' @importFrom signal decimate
-#' @describeIn downsample Downsample eeg_data objects
+#' @describeIn eeg_downsample Downsample eeg_data objects
+#' @export
 
-downsample.eeg_data <- function(data, q, ...) {
+eeg_downsample.eeg_data <- function(data, q, ...) {
 
   q <- as.integer(q)
 
@@ -307,21 +325,31 @@ downsample.eeg_data <- function(data, q, ...) {
     stop("q must be 2 or more.")
   }
 
-  message(paste0("Downsampling from ", data$srate, "Hz to ", data$srate / q, "Hz."))
+  message(paste0("Downsampling from ", data$srate, "Hz to ",
+                 data$srate / q, "Hz."))
 
+  # make sure any saved reference gets downsampled too.
   if (!is.null(data$reference)) {
     data$signals["ref_data"] <- data$reference$ref_data
   }
 
+  # step through each column and decimate each channel
   data$signals <- purrr::map_df(as.list(data$signals), ~signal::decimate(., q))
 
+  # separate reference from main data again
   if (!is.null(data$reference)) {
     data$reference$ref_data <- data$signals["ref_data"]
     data$signals["ref_data"] <- NULL
   }
 
+  # select every qth timing point, and divide srate by
   data$srate <- data$srate / q
-  data$timings <- data$timings[seq(1, length(data_ds$timings[[1]]), by= 4), ]
-  data
+  data$timings <- data$timings[seq(1, length(data$timings[[1]]), by= q), ]
 
+  # The event table also needs to be adjusted. Note that this inevitably jitters
+  # event timings by up to q/2 sampling points.
+  nearest_samps <- findInterval(data$events$event_onset, data$timings$sample)
+  data$events$event_onset <- data$timings$sample[nearest_samps]
+  data$events$event_time <- data$timings$time[nearest_samps]
+  data
 }

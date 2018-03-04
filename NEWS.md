@@ -1,3 +1,14 @@
+# eegUtils 0.1.14
+
+### Function changes
+- `eeg_downsample()` function added to downsample EEG data by an integer factor.
+- `tag_events()` function added to give labels to event codes.
+- `list_events()` added to display unique event codes and their associated labels.
+- `select_epochs()` now allows selection of epochs by event code or event label.
+
+### Internal changes
+- `eeg_epochs()` now also handles downsampled data appropriately.
+
 # eegUtils 0.1.13
 
 ### Function changes

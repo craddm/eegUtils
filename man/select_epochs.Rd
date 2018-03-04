@@ -29,7 +29,8 @@ FALSE to remove specified epochs.}
 
 \item{df_out}{Output a data.frame instead of an eeg_data object.}
 
-\item{epoch_events}{Select epochs containing any of the specified events.}
+\item{epoch_events}{Select epochs containing any of the specified events. Can
+be numeric or character vector. Will override any epoch_no input}
 }
 \description{
 This is a generic function for selecting epochs from an epoched data set.

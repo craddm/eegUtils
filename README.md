@@ -1,4 +1,4 @@
-# eegUtils 0.1.13
+# eegUtils 0.1.14
 
 <a href="http://www.repostatus.org/#wip"><img src="http://www.repostatus.org/badges/latest/wip.svg" alt="Project Status: WIP – Initial development is in progress, but there has not yet been a stable, usable release suitable for the public." /></a> [![Coverage Status](https://img.shields.io/codecov/c/github/craddm/eegUtils/master.svg)](https://codecov.io/github/craddm/eegUtils?branch=master) [![Build Status](https://travis-ci.org/craddm/eegUtils.svg?branch=master)](https://travis-ci.org/craddm/eegUtils)
 
@@ -13,6 +13,7 @@ Use devtools::install_github('craddm/eegUtils') to install it.
 * epoch_data() - for creating epochs around trigger events
 * tag_events() - for labelling events 
 * interp_elecs() - spherical spline interpolation of EEG channels
+* eeg_downsample() - filter and downsample data to a lower sampling rate.
 
 ## Plotting functions 
 * topoplot() - plotting of topographies 

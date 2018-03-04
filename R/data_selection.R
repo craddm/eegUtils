@@ -209,15 +209,43 @@ select_epochs.eeg_data <- function(data, epoch_no = NULL,
   }
 }
 
-#' @param epoch_events Select epochs containing any of the specified events.
+#' @param epoch_events Select epochs containing any of the specified events. Can
+#'   be numeric or character vector. Will override any epoch_no input
 #' @describeIn select_epochs Selection of epochs from \code{eeg_epochs} objects.
 #' @export
 
 select_epochs.eeg_epochs <- function(data, epoch_no = NULL, epoch_events = NULL,
                                    keep = TRUE, df_out = FALSE, ...) {
-  if (data$continuous) {
-    stop("Data is not epoched.")
-  } else if (is.numeric(epoch_no)) {
+
+  # First check if epoch_events has been passed; if it's numeric, select epochs
+  # based on event_type. If it's a character vector, check if those labels exist
+  # in the data.
+
+  if (is.numeric(epoch_events)) {
+    sel_rows <- data$events$event_type %in% epoch_events
+
+    if (keep == FALSE) {
+      sel_rows <- !sel_rows
+    }
+
+    epoch_no <- as.numeric(data$events$epoch[sel_rows])
+  } else if (is.character(epoch_events)) {
+    check_ev <- epoch_events %in% list_events(eeg_epochs)$event_label
+    if (!all(check_ev)) {
+      warning("Event label not found, check with list_events.")
+    } else {
+      epoch_events <- epoch_events[check_ev]
+    }
+    sel_rows <- data$events$event_label %in% epoch_events
+
+    if (keep == FALSE) {
+      sel_rows <- !sel_rows
+    }
+
+    epoch_no <- as.numeric(data$events$epoch[sel_rows])
+  }
+
+  if (is.numeric(epoch_no)) {
     sel_rows <- data$timings$epoch %in% epoch_no
 
     if (keep == FALSE) {
@@ -225,11 +253,14 @@ select_epochs.eeg_epochs <- function(data, epoch_no = NULL, epoch_events = NULL,
     }
 
     data$signals <- data$signals[sel_rows, ]
-    data$reference$ref_data <- data$reference$ref_data[sel_rows]
+    if (!is.null(data$reference)) {
+      data$reference$ref_data <- data$reference$ref_data[sel_rows]
+    }
+
     data$timings <- data$timings[sel_rows, ]
     data$events[data$events$epoch %in% epoch_no, ]
 
-  } else {
+  } else if (!is.null(epoch_no)) {
     stop("Selection by tag is not yet implemented.")
   }
 

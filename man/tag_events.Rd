@@ -32,7 +32,7 @@ condition).
 \itemize{
 \item \code{eeg_data}: Tag events in an \code{eeg_data} object
 
-\item \code{eeg_epochs}: Tag events in a
+\item \code{eeg_epochs}: Tag events in an epoched dataset
 }}
 
 \seealso{
