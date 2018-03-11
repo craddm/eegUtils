@@ -61,7 +61,7 @@ plotted head.}
 "name" = electrode name, "none" = no marker. Defaults to "point".}
 
 \item{quantity}{Allows plotting of arbitrary quantitative column. Defaults to
-amplitude. Can be any column name. E.g. "p.value", "t-statistic".}
+amplitude. Use quoted column names. E.g. "p.value", "t_statistic".}
 
 \item{montage}{Name of an existing montage set. Defaults to NULL; (currently
 only 'biosemi64alpha' available other than default 10/20 system)}

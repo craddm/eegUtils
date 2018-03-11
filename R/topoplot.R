@@ -2,7 +2,7 @@
 #'
 #' Allows topographical plotting of functional data. Output is a ggplot2 object.
 #'
-#' @author Matt Craddock, \email{matt@mattcraddock.com}
+#' @author Matt Craddock, \email{matt@@mattcraddock.com}
 #' @param data An EEG dataset. Must have columns x, y, and amplitude at present.
 #'   x and y are (Cartesian) electrode co-ordinates), amplitude is amplitude.
 #' @param ... Various arguments passed to specific functions
@@ -62,7 +62,7 @@ topoplot.default <- function(data, ...) {
 #' @param chan_marker Set marker for electrode locations. "point" = point,
 #'   "name" = electrode name, "none" = no marker. Defaults to "point".
 #' @param quantity Allows plotting of arbitrary quantitative column. Defaults to
-#'   amplitude. Can be any column name. E.g. "p.value", "t-statistic".
+#'   amplitude. Use quoted column names. E.g. "p.value", "t_statistic".
 #' @param montage Name of an existing montage set. Defaults to NULL; (currently
 #'   only 'biosemi64alpha' available other than default 10/20 system)
 #' @param colourmap Deprecated, use palette instead.
@@ -86,16 +86,18 @@ topoplot.data.frame <- function(data, time_lim = NULL, limits = NULL,
                              montage = NULL, colourmap, ...) {
 
   if (!missing(colourmap)) {
-    warning("Argument colourmap is deprecated, please use palette instead.", call. = FALSE)
+    warning("Argument colourmap is deprecated, please use palette instead.",
+            call. = FALSE)
     palette <- colourmap
   }
+
   # Filter out unwanted timepoints, and find nearest time values in the data
   # --------------
 
   if ("time" %in% colnames(data)) {
     if (length(time_lim) == 1) {
       time_lim <- data$time[which.min(abs(data$time - time_lim))]
-      data <- dplyr::filter(data, time == time_lim)
+      data <- data[data$time == time_lim, ]
       } else if (length(time_lim) == 2) {
         data <- select_times(data, time_lim)
       }
@@ -115,14 +117,13 @@ topoplot.data.frame <- function(data, time_lim = NULL, limits = NULL,
       data <- electrode_locations(data, drop = TRUE, montage = montage)
       message("Attempting to add standard electrode locations...")
     } else {
-    warning("Neither electrode locations nor labels found.")
-    stop()
+    stop("Neither electrode locations nor labels found.")
   }
 
   # Average over all timepoints ----------------------------
 
   data <- dplyr::summarise(dplyr::group_by(data, x, y, electrode),
-                   z = mean(!!rlang::parse_quosure(quantity)))
+                           z = mean(!!rlang::parse_quosure(quantity)))
 
   # Cut the data frame down to only the necessary columns, and make sure it has
   # the right names
@@ -212,21 +213,7 @@ topoplot.data.frame <- function(data, time_lim = NULL, limits = NULL,
                                   convert = TRUE)
          },
          gam = {
-           tmp_df <- data
-           tmp_df$x <- scaled_x
-           tmp_df$y <- scaled_y
-           spline_smooth <- mgcv::gam(z ~ s(x, y, bs = "ts", k = 40),
-                                      data = tmp_df)
-           out_df <- data.frame(expand.grid(x = seq(min(tmp_df$x) * 2,
-                                                   max(tmp_df$x) * 2,
-                                                   length = grid_res),
-                                           y = seq(min(tmp_df$y) * 2,
-                                                   max(tmp_df$y) * 2,
-                                                   length = grid_res)))
-
-           out_df$amplitude <-  stats::predict(spline_smooth,
-                                              out_df,
-                                              type = "response")
+           out_df <- gam_topo(data, scaled_x, scaled_y, grid_res, 40)
          })
 
   # Check if should interp/extrap beyond head_shape, and set up ring to mask
@@ -344,7 +331,7 @@ topoplot.eeg_data <- function(data, time_lim = NULL, limits = NULL,
            grid_res = grid_res, palette = palette,
            interp_limit = interp_limit, contour = contour,
            chan_marker = chan_marker, quantity = quantity,
-           montage = montage)
+           montage = montage, passed = TRUE)
 }
 
 #' Set palette and limits for topoplot
@@ -374,3 +361,30 @@ set_palette <- function(topo, palette, limits = NULL) {
   topo
 }
 
+#' Fit a GAM smooth across scalp.
+#'
+#' @param data Data frame from which to generate predictions
+#' @param scaled_x x coordinates rescaled
+#' @param scaled_y y coordinates rescaled
+#' @param grid_res resolution of output grid
+#' @param k number of knots for GAM
+
+gam_topo <- function(data, scaled_x, scaled_y, grid_res, k = 40) {
+
+  data$x <- scaled_x
+  data$y <- scaled_y
+  spline_smooth <- mgcv::gam(z ~ s(x, y, bs = "ts", k = 40),
+                             data = data)
+  out_df <- data.frame(expand.grid(x = seq(min(data$x) * 2,
+                                           max(data$x) * 2,
+                                           length = grid_res),
+                                   y = seq(min(data$y) * 2,
+                                           max(data$y) * 2,
+                                           length = grid_res)))
+
+  out_df$amplitude <-  stats::predict(spline_smooth,
+                                      out_df,
+                                      type = "response")
+  out_df
+
+}
