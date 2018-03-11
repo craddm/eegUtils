@@ -17,7 +17,8 @@ erp_image(data, electrode = "Cz", smoothing = 10, clim = NULL)
 e.g. c(-5,5). Defaults to min and max.}
 }
 \description{
-Plot ERP images
+Plot an ERP image from a single electrode. Smooths over a series of trials in
+order to make across-trial patterns more apparent.
 }
 \author{
 Matt Craddock, \email{matt@mattcraddock.com}
