@@ -1,6 +1,5 @@
-library(eegUtils)
+
 context("Plotting functions")
-Sys.setenv("R_TESTS" = "")
 load("EEG_epochs.rda")
 load("EEGdat.rda")
 
