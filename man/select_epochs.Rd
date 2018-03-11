@@ -11,26 +11,25 @@ select_epochs(data, ...)
 
 \method{select_epochs}{default}(data, ...)
 
-\method{select_epochs}{eeg_data}(data, epoch_no = NULL, keep = TRUE,
-  df_out = FALSE, ...)
+\method{select_epochs}{eeg_data}(data, ...)
 
-\method{select_epochs}{eeg_epochs}(data, epoch_no = NULL,
-  epoch_events = NULL, keep = TRUE, df_out = FALSE, ...)
+\method{select_epochs}{eeg_epochs}(data, epoch_events = NULL,
+  epoch_no = NULL, keep = TRUE, df_out = FALSE, ...)
 }
 \arguments{
 \item{data}{\code{eeg_epochs} object from which to select epochs.}
 
 \item{...}{Parameters passed to specific methods}
 
-\item{epoch_no}{Epoch numbers to select}
+\item{epoch_events}{Select epochs containing any of the specified events. Can
+be numeric or character vector. Will override any epoch_no input}
+
+\item{epoch_no}{Select epochs by epoch number.}
 
 \item{keep}{Defaults to TRUE, meaning select the specified epochs. Set to
 FALSE to remove specified epochs.}
 
 \item{df_out}{Output a data.frame instead of an eeg_data object.}
-
-\item{epoch_events}{Select epochs containing any of the specified events. Can
-be numeric or character vector. Will override any epoch_no input}
 }
 \description{
 This is a generic function for selecting epochs from an epoched data set.

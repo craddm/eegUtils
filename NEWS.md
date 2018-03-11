@@ -5,9 +5,13 @@
 - `tag_events()` function added to give labels to event codes.
 - `list_events()` added to display unique event codes and their associated labels.
 - `select_epochs()` now allows selection of epochs by event code or event label.
+- `erp_raster()` - plot ERPs across the scalp as an ERP image
+- `eeg_combine()` - combine multiple `eeg_data` or `eeg_epochs` objects into one
 
-### Internal changes
+### Internal changes/ bug fixes
 - `eeg_epochs()` now also handles downsampled data appropriately.
+- `select_times()` no longer leaves "epoch" column in `eeg_epochs` objects.
+- `topoplot()` now calls a separate function (`gam_topo()`) to create GAM smooths
 
 # eegUtils 0.1.13
 

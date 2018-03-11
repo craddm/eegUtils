@@ -41,7 +41,8 @@ eeg_ar_thresh.eeg_data <- function(data, threshold, reject = FALSE, ...) {
     threshold <- c(threshold, -threshold)
   }
 
-  crossed_thresh <- data$signals > max(threshold) | data$signals < min(threshold)
+  crossed_thresh <- data$signals > max(threshold) |
+    data$signals < min(threshold)
 
   if (reject) {
     crossed_thresh <- rowSums(crossed_thresh) == 0
@@ -49,7 +50,6 @@ eeg_ar_thresh.eeg_data <- function(data, threshold, reject = FALSE, ...) {
     data$signals <- data$signals[crossed_thresh, ]
     data$events <- data$events[data$events$event_time %in% data$timings$time, ]
     data$reference$ref_data <- data$reference$ref_data[crossed_thresh, ]
-    #data <- select_times(data, data$timings[crossed_thresh, ]$time) # consider creating select_timerange vs select_timepoints
   } else {
     data$reject <- crossed_thresh
   }
@@ -183,7 +183,9 @@ spheric_spline <- function(good_elecs, bad_elecs, data) {
 
   if (nrow(bad_elecs) > 1) {
     for (i in seq(1, nrow(bad_elecs))) {
-      mmm[i, ] <- rowSums(C * t(matrix(rep(ph[i, ], nrow(data)), nrow = ncol(C))))
+      mmm[i, ] <- rowSums(C * t(matrix(rep(ph[i, ],
+                                           nrow(data)),
+                                       nrow = ncol(C))))
     }
   } else {
     mmm <- rowSums(C * t(matrix(rep(ph, nrow(data)), nrow = ncol(C))))
@@ -204,12 +206,18 @@ spheric_spline <- function(good_elecs, bad_elecs, data) {
 
 compute_g <- function(xyz_coords, xyz_elecs) {
 
-  EI <- 1 - sqrt((matrix(rep(xyz_coords[, 1], nrow(xyz_elecs)), nrow = nrow(xyz_elecs)) -
-                    matrix(rep(xyz_elecs[, 1], each = nrow(xyz_coords)), ncol = nrow(xyz_coords))) ^ 2 +
-                   (matrix(rep(xyz_coords[, 2], nrow(xyz_elecs)), nrow = nrow(xyz_elecs)) -
-                      matrix(rep(xyz_elecs[, 2], each = nrow(xyz_coords)), ncol = nrow(xyz_coords))) ^ 2 +
-                   (matrix(rep(xyz_coords[, 3], nrow(xyz_elecs)), nrow = nrow(xyz_elecs)) -
-                      matrix(rep(xyz_elecs[, 3], each = nrow(xyz_coords)), ncol = nrow(xyz_coords))) ^ 2)
+  EI <- 1 - sqrt((matrix(rep(xyz_coords[, 1], nrow(xyz_elecs)),
+                         nrow = nrow(xyz_elecs)) -
+                    matrix(rep(xyz_elecs[, 1], each = nrow(xyz_coords)),
+                           ncol = nrow(xyz_coords))) ^ 2 +
+                   (matrix(rep(xyz_coords[, 2], nrow(xyz_elecs)),
+                           nrow = nrow(xyz_elecs)) -
+                      matrix(rep(xyz_elecs[, 2], each = nrow(xyz_coords)),
+                             ncol = nrow(xyz_coords))) ^ 2 +
+                   (matrix(rep(xyz_coords[, 3], nrow(xyz_elecs)),
+                           nrow = nrow(xyz_elecs)) -
+                      matrix(rep(xyz_elecs[, 3], each = nrow(xyz_coords)),
+                             ncol = nrow(xyz_coords))) ^ 2)
 
   dim(EI) <- c(nrow(xyz_coords), nrow(xyz_elecs))
 

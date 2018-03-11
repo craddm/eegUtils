@@ -22,7 +22,7 @@
 #'
 #'@import dplyr
 #'@import ggplot2
-#'@importFrom rlang parse_quosure
+#'@importFrom rlang parse_quo
 #'
 #'@return Returns a ggplot2 plot object
 #'
@@ -52,10 +52,10 @@ plot_timecourse <- function(data, time_lim = NULL,
   if (is.null(colour)) {
     if (!is.null(color)) {
       colour <- color
-      tmp_col <- rlang::parse_quosure(colour)
+      tmp_col <- rlang::parse_quo(colour, env = global_env())
     }
   } else {
-    tmp_col <- rlang::parse_quosure(colour)
+    tmp_col <- rlang::parse_quo(colour, global_env())
   }
 
   ## Filter out unwanted timepoints, and find nearest time values in the data
@@ -204,7 +204,11 @@ plot_butterfly <- function(data,
       data <- dplyr::group_by(data, time)
       data <- dplyr::summarise_all(data, mean)
       data <- dplyr::select(data, -epoch, -sample)
-      data <- tidyr::gather(data, electrode, amplitude, -time)
+      data <- tidyr::gather(data,
+                            electrode,
+                            amplitude,
+                            -time,
+                            factor_key = True)
       }
   }
   ## select time-range of interest -------------

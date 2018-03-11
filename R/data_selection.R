@@ -77,8 +77,11 @@ select_times.eeg_epochs <- function(data, time_lim = NULL,
   } else {
     data$events <- dplyr::filter(data$events, time >= time_lim[1],
                                  time <= time_lim[2])
-    data$signals <- dplyr::select(proc_data, -sample, -time)
-    data$timings <- list(time = proc_data$time, sample = proc_data$sample)
+    data$signals <- dplyr::select(proc_data, -sample, -time, -epoch)
+    data$timings <- list(time = proc_data$time,
+                         sample = proc_data$sample,
+                         epoch = proc_data$epoch)
+
     if (!is.null(data$reference$ref_data)) {
       data$reference$ref_data <- data$reference$ref_data[data$timings$sample]
     }
@@ -193,15 +196,10 @@ select_epochs.default <- function(data, ...) {
                 "and can only be used on eeg_epochs objects."))
 }
 
-#' @param epoch_no Epoch numbers to select
-#' @param keep Defaults to TRUE, meaning select the specified epochs. Set to
-#'   FALSE to remove specified epochs.
-#' @param df_out Output a data.frame instead of an eeg_data object.
 #' @describeIn select_epochs Select epochs from \code{eeg_data} objects.
 #' @export
 
-select_epochs.eeg_data <- function(data, epoch_no = NULL,
-                                   keep = TRUE, df_out = FALSE, ...) {
+select_epochs.eeg_data <- function(data, ...) {
   if (data$continuous) {
     stop("Data is not epoched.")
   } else {
@@ -211,10 +209,14 @@ select_epochs.eeg_data <- function(data, epoch_no = NULL,
 
 #' @param epoch_events Select epochs containing any of the specified events. Can
 #'   be numeric or character vector. Will override any epoch_no input
+#' @param epoch_no Select epochs by epoch number.
+#' @param keep Defaults to TRUE, meaning select the specified epochs. Set to
+#'   FALSE to remove specified epochs.
+#' @param df_out Output a data.frame instead of an eeg_data object.
 #' @describeIn select_epochs Selection of epochs from \code{eeg_epochs} objects.
 #' @export
 
-select_epochs.eeg_epochs <- function(data, epoch_no = NULL, epoch_events = NULL,
+select_epochs.eeg_epochs <- function(data, epoch_events = NULL, epoch_no = NULL,
                                    keep = TRUE, df_out = FALSE, ...) {
 
   # First check if epoch_events has been passed; if it's numeric, select epochs
@@ -230,12 +232,14 @@ select_epochs.eeg_epochs <- function(data, epoch_no = NULL, epoch_events = NULL,
 
     epoch_no <- as.numeric(data$events$epoch[sel_rows])
   } else if (is.character(epoch_events)) {
-    check_ev <- epoch_events %in% list_events(eeg_epochs)$event_label
+    check_ev <- epoch_events %in% list_events(data)$event_label
+
     if (!all(check_ev)) {
-      warning("Event label not found, check with list_events.")
+      stop("Event label not found, check with list_events.")
     } else {
       epoch_events <- epoch_events[check_ev]
     }
+
     sel_rows <- data$events$event_label %in% epoch_events
 
     if (keep == FALSE) {
@@ -253,6 +257,7 @@ select_epochs.eeg_epochs <- function(data, epoch_no = NULL, epoch_events = NULL,
     }
 
     data$signals <- data$signals[sel_rows, ]
+
     if (!is.null(data$reference)) {
       data$reference$ref_data <- data$reference$ref_data[sel_rows]
     }
@@ -260,8 +265,6 @@ select_epochs.eeg_epochs <- function(data, epoch_no = NULL, epoch_events = NULL,
     data$timings <- data$timings[sel_rows, ]
     data$events[data$events$epoch %in% epoch_no, ]
 
-  } else if (!is.null(epoch_no)) {
-    stop("Selection by tag is not yet implemented.")
   }
 
   if (df_out) {

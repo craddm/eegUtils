@@ -96,6 +96,6 @@ list_epochs <- function(data) {
     stop("For eeg_epochs objects only.")
   }
 
-  data$events[, c("epoch")]
+  data$events[, c("epoch", "event_type", "event_label")]
 
 }

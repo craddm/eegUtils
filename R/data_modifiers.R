@@ -151,8 +151,11 @@ rm_baseline <- function(data, time_lim = NULL) {
     data <- dplyr::mutate(data, amplitude = amplitude - mean(amplitude))
   } else {
 
-    data_sel <- dplyr::filter(data, time >= time_lim[1], time <= time_lim[2])
-    baseline <- dplyr::summarise(data_sel, bl = mean(amplitude))
+    data_sel <- dplyr::filter(data,
+                              time >= time_lim[1],
+                              time <= time_lim[2])
+    baseline <- dplyr::summarise(data_sel,
+                                 bl = mean(amplitude))
     # This is relatively memory intensive - not so bad now but would prefer
     # another way. Could get extremely painful with time-frequency data.
     data <- dplyr::left_join(data, baseline)
@@ -334,7 +337,8 @@ eeg_downsample.eeg_data <- function(data, q, ...) {
   }
 
   # step through each column and decimate each channel
-  data$signals <- purrr::map_df(as.list(data$signals), ~signal::decimate(., q))
+  data$signals <- purrr::map_df(as.list(data$signals),
+                                ~signal::decimate(., q))
 
   # separate reference from main data again
   if (!is.null(data$reference)) {
@@ -348,8 +352,82 @@ eeg_downsample.eeg_data <- function(data, q, ...) {
 
   # The event table also needs to be adjusted. Note that this inevitably jitters
   # event timings by up to q/2 sampling points.
-  nearest_samps <- findInterval(data$events$event_onset, data$timings$sample)
+  nearest_samps <- findInterval(data$events$event_onset,
+                                data$timings$sample)
   data$events$event_onset <- data$timings$sample[nearest_samps]
   data$events$event_time <- data$timings$time[nearest_samps]
+  data
+}
+
+
+#' Combine EEG objects
+#'
+#' Combine multiple \code{eeg_epochs} or \code{eeg_data} objects into a single
+#' object. Note that this does not currently perform any sort of checking for
+#' internal consistency or duplication. It simply combines the objects in the order they
+#' are passed.
+#'
+#' @param data An \code{eeg_epochs} object
+#' @param ... addtional \code{eeg_epochs} objects
+#' @author Matt Craddock, \email{matt@@mattcraddock.com}
+#' @export
+#'
+
+eeg_combine <- function(data, ...) {
+  UseMethod("eeg_combine", data)
+}
+
+#' @describeIn eeg_combine Method for combining \code{eeg_data} objects.
+#' @export
+eeg_combine.eeg_data <- function(data, ...){
+
+  args <- list(...)
+  if (length(args) == 0) {
+    stop("Nothing to combine.")
+  }
+  if (all(sapply(args, is.eeg_data))) {
+    if (any(sapply(args, is.eeg_epochs))) {
+      stop("All objects must be unepoched eeg_data objects.")
+    } else {
+      data$signals <- dplyr::bind_rows(data$signals,
+                                       purrr::map_df(args, ~.$signals))
+      data$events <- dplyr::bind_rows(data$events,
+                                      purrr::map_df(args, ~.$events))
+      data$timings <- dplyr::bind_rows(data$timings,
+                                       purrr::map_df(args, ~.$timings))
+      if (!is.null(data$reference$ref_data)) {
+        data$reference$ref_data <- c(data$reference$ref_data,
+                                     sapply(args,
+                                            function(x) x$reference$ref_data))
+      }
+    }
+  }
+  data
+}
+
+#' @describeIn eeg_combine Method for combining \code{eeg_epochs} objects
+#' @export
+eeg_combine.eeg_epochs <- function(data, ...) {
+
+  args <- list(...)
+  if (length(args) == 0) {
+    stop("Nothing to combine.")
+  }
+  if (all(sapply(args, is.eeg_epochs))) {
+    data$signals <- dplyr::bind_rows(data$signals,
+                                     purrr::map_df(args, ~.$signals))
+    data$events <- dplyr::bind_rows(data$events,
+                                    purrr::map_df(args, ~.$events))
+    data$timings <- dplyr::bind_rows(data$timings,
+                        purrr::map_df(args, ~.$timings))
+    if (!is.null(data$reference$ref_data)) {
+      data$reference$ref_data <- c(data$reference$ref_data,
+                                   sapply(args,
+                                          function(x) x$reference$ref_data))
+    }
+  } else {
+    stop("All inputs must be eeg_epochs objects.")
+  }
+
   data
 }
