@@ -14,12 +14,12 @@
 #' @import dplyr
 #' @importFrom scales squish
 #' @export
-#'
 
 
 erp_image <- function(data, electrode = "Cz", smoothing = 10, clim = NULL) {
 
   if (is.eeg_data(data)) {
+    data <- select_elecs(data, electrode = electrode)
     data <- as.data.frame(data, long = TRUE)
   }
 

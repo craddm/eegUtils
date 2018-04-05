@@ -12,18 +12,20 @@
 - `eeg_epochs()` now also handles downsampled data appropriately.
 - `select_times()` no longer leaves "epoch" column in `eeg_epochs` objects.
 - `topoplot()` now calls a separate function (`gam_topo()`) to create GAM smooths
+- `browse_data()` major speed-ups, no longer converts to long format until necessary. Converted to S3method.
+- `interactive_scalp()` fixed plotting of individual electrodes
 
 # eegUtils 0.1.13
 
 ### Function changes
- - `interp_elecs()` function to perform spherical spline interpolation of individual electrodes.
- - `eeg_ar_thresh()` simple absolute value thresholding added.
- - `plot_electrodes()` Produces a 2D or interactive 3D plot of electrode locations.
+ - `interp_elecs()` function to perform spherical spline interpolation of individual electrodes
+ - `eeg_ar_thresh()` simple absolute value thresholding added
+ - `plot_electrodes()` Produces a 2D or interactive 3D plot of electrode locations
 
 # eegUtils 0.1.12
 
 ### Function changes
- - `iir_filt()` now also filters reference channels.
+ - `iir_filt()` now also filters reference channels
  - `load_set()` command added to load EEGLAB .set files
 
 ### Internal changes

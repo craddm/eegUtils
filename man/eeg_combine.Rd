@@ -15,7 +15,7 @@ eeg_combine(data, ...)
 \arguments{
 \item{data}{An \code{eeg_epochs} object}
 
-\item{...}{addtional \code{eeg_epochs} objects}
+\item{...}{additional \code{eeg_epochs} objects}
 }
 \description{
 Combine multiple \code{eeg_epochs} or \code{eeg_data} objects into a single

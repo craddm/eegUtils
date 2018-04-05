@@ -342,7 +342,7 @@ eeg_downsample.eeg_data <- function(data, q, ...) {
 
   # separate reference from main data again
   if (!is.null(data$reference)) {
-    data$reference$ref_data <- data$signals["ref_data"]
+    data$reference$ref_data <- data$signals[["ref_data"]]
     data$signals["ref_data"] <- NULL
   }
 
@@ -368,7 +368,7 @@ eeg_downsample.eeg_data <- function(data, q, ...) {
 #' are passed.
 #'
 #' @param data An \code{eeg_epochs} object
-#' @param ... addtional \code{eeg_epochs} objects
+#' @param ... additional \code{eeg_epochs} objects
 #' @author Matt Craddock, \email{matt@@mattcraddock.com}
 #' @export
 #'

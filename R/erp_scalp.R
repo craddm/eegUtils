@@ -197,7 +197,8 @@ interactive_scalp <- function(data, colour = NULL,
 
     observeEvent(input$click_plot, {
 
-      tmp <- nearPoints(data, input$click_plot, "x", "y", threshold = 45,
+      tmp <- nearPoints(data, input$click_plot,
+                        "x", "y", threshold = 45,
                         maxpoints = 1)
 
       if (nrow(tmp) > 0) {

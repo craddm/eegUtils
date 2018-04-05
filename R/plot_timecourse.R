@@ -22,7 +22,7 @@
 #'
 #'@import dplyr
 #'@import ggplot2
-#'@importFrom rlang parse_quo
+#'@importFrom rlang parse_quo caller_env
 #'
 #'@return Returns a ggplot2 plot object
 #'
@@ -51,11 +51,12 @@ plot_timecourse <- function(data, time_lim = NULL,
   ## check for US spelling of colour...
   if (is.null(colour)) {
     if (!is.null(color)) {
-      colour <- color
-      tmp_col <- rlang::parse_quo(colour, env = global_env())
+      colour <- as.name(color)
+#      tmp_col <- rlang::parse_quo(colour, env = rlang::caller_env())
     }
   } else {
-    tmp_col <- rlang::parse_quo(colour, global_env())
+    colour <- as.name(colour)
+    #tmp_col <- rlang::parse_quo(colour, rlang::caller_env())
   }
 
   ## Filter out unwanted timepoints, and find nearest time values in the data
@@ -80,7 +81,8 @@ plot_timecourse <- function(data, time_lim = NULL,
                         amplitude = mean(amplitude))
       } else {
         data <- dplyr::summarise(dplyr::group_by(data, time, electrode,
-                                                 !!tmp_col),
+                                                 #!!tmp_col),
+                                                 !!colour),
                         amplitude = mean(amplitude))
       }
   }
@@ -197,9 +199,10 @@ plot_butterfly <- function(data,
                            browse_mode = FALSE) {
 
   if (is.eeg_data(data)) {
-    if (continuous) {
+    if (continuous | data$continuous) {
       data <- as.data.frame(data, long = TRUE)
-    } else {
+      continuous <- TRUE
+    }else {
       data <- as.data.frame(data)
       data <- dplyr::group_by(data, time)
       data <- dplyr::summarise_all(data, mean)
@@ -208,7 +211,7 @@ plot_butterfly <- function(data,
                             electrode,
                             amplitude,
                             -time,
-                            factor_key = True)
+                            factor_key = TRUE)
       }
   }
   ## select time-range of interest -------------
