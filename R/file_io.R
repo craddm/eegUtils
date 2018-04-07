@@ -200,7 +200,7 @@ import_cnt <- function(file_name) {
 #' EEGLAB .set files are standard Matlab .mat files, but EEGLAB can be set to
 #' export either v6.5 or v7.3 format files. Only v6.5 files can be read with
 #' this function. v7.3 files (which use HDF5 format) are not currently
-#' supported, as they cannot be read well with existing tools.
+#' supported, as they cannot be fully read with existing tools.
 #'
 #' @param file_name Filename (and path if not in present working directory)
 #' @param df_out Defaults to FALSE - outputs an object of class eeg_data. Set to
@@ -228,8 +228,7 @@ load_set <- function(file_name, df_out = FALSE) {
   chan_info <- lapply(chan_info, function(x) ifelse(purrr::is_empty(x), NA, x))
   dim(chan_info) <- size_chans
   dimnames(chan_info) <- col_names
-  chan_info <-
-    tibble::as_tibble(t(as.data.frame(chan_info)))
+  chan_info <- tibble::as_tibble(t(as.data.frame(chan_info)))
   chan_info <- tibble::as_tibble(data.frame(lapply(chan_info, unlist),
                                             stringsAsFactors = FALSE))
 
@@ -240,7 +239,7 @@ load_set <- function(file_name, df_out = FALSE) {
     fdt_file <- file(fdt_file, "rb")
 
     # read in data from .fdt
-    # need to do this in chunks to avoid memory errors for large files...
+    # do this in chunks to avoid memory errors for large files...?
     signals <- readBin(fdt_file,
                        "double",
                        n = n_chans * n_trials * length(times),
@@ -273,10 +272,11 @@ load_set <- function(file_name, df_out = FALSE) {
   }
 
   signals <- data.frame(cbind(t(signals), times))
-  srate <- temp_dat$EEG[[which(var_names == "srate")]]
+  srate <- c(temp_dat$EEG[[which(var_names == "srate")]])
   names(signals) <- c(unique(chan_info$labels), "time")
   signals <- dplyr::group_by(signals, time)
   signals <- dplyr::mutate(signals, epoch = 1:n())
+  signals <- dplyr::ungroup(signals)
 
   event_info <- temp_dat$EEG[[which(var_names == "event")]]
 
@@ -285,20 +285,29 @@ load_set <- function(file_name, df_out = FALSE) {
                                ncol = dim(event_info)[3])))
 
   names(event_table) <- unlist(dimnames(event_info)[1])
-  event_table <- dplyr::select(event_table, type, latency, epoch)
+  event_table$event_time <- (event_table$latency - 1) / srate
+  event_table <- dplyr::select(event_table, latency, event_time, type, epoch)
   event_table <- dplyr::rename(event_table, event_type = "type",
                                event_onset = "latency")
-
+  event_table$time <- NA
 
   if (df_out) {
     return(signals)
   } else {
-    signals$time <- signals$time / 1000 # convert to seconds
-    timings <- tibble::tibble(time = signals$time, epoch = signals$epoch,
-                              sample = NA)
-    eeg_data(signals[, 1:n_chans], srate = srate,
-             timings = timings, continuous = continuous,
-             chan_info = chan_info,
-             events = event_table)
+    signals$time <- signals$time / 1000 # convert to seconds - eeglab uses milliseconds
+    timings <- tibble::tibble(time = signals$time,
+                              epoch = signals$epoch,
+                              sample = 1:length(signals$time))
+    event_table$time <- timings[which(timings$sample %in% event_table$event_onset, arr.ind = TRUE), ]$time
+    out_data <- eeg_data(signals[, 1:n_chans],
+                         srate = srate,
+                         timings = timings,
+                         continuous = continuous,
+                         chan_info = chan_info,
+                         events = event_table)
+    if (!continuous) {
+      class(out_data) <- c("eeg_epochs", "eeg_data")
+    }
+    out_data
   }
 }

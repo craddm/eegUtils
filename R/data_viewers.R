@@ -110,12 +110,11 @@ browse_data.eeg_data <- function(data, sig_length = 5, n_elecs = NULL,
     server <- function(input, output, session) {
 
       output$butterfly <- renderPlot({
+        # select only the time range that we want to display
         tmp_data <- select_times(data,
                                  time_lim = c(input$time_range,
                                               input$time_range + input$sig_time))
-        # tmp_data <- dplyr::filter(data,
-        #                           time >= input$time_range,
-        #                           time <= (input$time_range + input$sig_time))
+
         if (input$dc_offset) {
           tmp_data <- rm_baseline(tmp_data)
         }
@@ -129,10 +128,6 @@ browse_data.eeg_data <- function(data, sig_length = 5, n_elecs = NULL,
                                  time_lim = c(input$time_range_ind,
                                               input$time_range_ind + input$sig_time_ind))
 
-        # tmp_data <- dplyr::filter(data,
-        #                           time >= input$time_range_ind,
-        #                           time <= (input$time_range_ind +
-        #                                      input$sig_time_ind))
         if (input$dc_offset_ind) {
           tmp_data <- rm_baseline(tmp_data)
         }
@@ -279,7 +274,7 @@ browse_data.eeg_epochs <- function(data, sig_length = 5,
       tmp_dat_ind <- reactive({
         select_epochs(data,
                       epoch_no = seq(input$time_range_ind,
-                                     input$time_range_ind + input$sig_time - 1))
+                                     input$time_range_ind + input$sig_time_ind - 1))
       })
 
       tmp_data_ind <- debounce(tmp_dat_ind, 1000)
