@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>StatBiharmonic — StatBiharmonic â€¢ eegUtils</title>
+<title>ERP raster plot — erp_raster â€¢ eegUtils</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -95,27 +95,56 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>StatBiharmonic</h1>
+    <h1>ERP raster plot</h1>
     </div>
 
     
-    <p>StatBiharmonic</p>
+    <p>Create a plot showing the ERP at every channel as a single ERP image. By
+default, this attempts to find channel locations and rearrange the channels
+such that spatial patterns on the scalp are more discernible. It orders the
+rows from the most posterior electrode on the right hemisphere to the most
+anterior electrode on the left hemisphere, with midline electrodes in the
+middle. If no locations are found, it simply displays the data in its
+original order.</p>
     
 
-    <pre class="usage"><span class='no'>StatBiharmonic</span></pre>
-        
-    <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
-
-    <p>An object of class <code>StatBiharmonic</code> (inherits from <code>Stat</code>, <code>ggproto</code>) of length 3.</p>
+    <pre class="usage"><span class='fu'>erp_raster</span>(<span class='no'>data</span>, <span class='kw'>anat_order</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>time_lim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>clim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+    
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>data</th>
+      <td><p>An <code>eeg_epochs</code> object</p></td>
+    </tr>
+    <tr>
+      <th>anat_order</th>
+      <td><p>Arrange the channels in a more anatomically representative
+order.</p></td>
+    </tr>
+    <tr>
+      <th>time_lim</th>
+      <td><p>Time limits of plot - should be a character vector (e.g.
+c(-.2, .5))</p></td>
+    </tr>
+    <tr>
+      <th>clim</th>
+      <td><p>Character vector of min and max values of plotting colour range.
+e.g. c(-5,5). Defaults to min and max.</p></td>
+    </tr>
+    </table>
     
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
-      
-      <li><a href="#format">Format</a></li>
-          </ul>
+      <li><a href="#arguments">Arguments</a></li>
+                </ul>
+
+    <h2>Author</h2>
+    
+Matt Craddock, <a href='mailto:matt@mattcraddock.com'>matt@mattcraddock.com</a>
 
   </div>
 </div>

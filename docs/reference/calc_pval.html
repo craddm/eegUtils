@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>StatBiharmonic — StatBiharmonic â€¢ eegUtils</title>
+<title>Calculate p-value — calc_pval â€¢ eegUtils</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -95,27 +95,39 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>StatBiharmonic</h1>
+    <h1>Calculate p-value</h1>
     </div>
 
     
-    <p>StatBiharmonic</p>
+    <p>Calculate p-value</p>
     
 
-    <pre class="usage"><span class='no'>StatBiharmonic</span></pre>
-        
-    <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
-
-    <p>An object of class <code>StatBiharmonic</code> (inherits from <code>Stat</code>, <code>ggproto</code>) of length 3.</p>
+    <pre class="usage"><span class='fu'>calc_pval</span>(<span class='no'>x</span>, <span class='no'>df</span>, <span class='kw'>tails</span> <span class='kw'>=</span> <span class='fl'>2</span>)</pre>
+    
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>x</th>
+      <td><p>t-stat</p></td>
+    </tr>
+    <tr>
+      <th>df</th>
+      <td><p>Degrees of freedom</p></td>
+    </tr>
+    <tr>
+      <th>tails</th>
+      <td><p>1 or 2 for one- or two-tailed p-value.</p></td>
+    </tr>
+    </table>
     
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
-      
-      <li><a href="#format">Format</a></li>
-          </ul>
+      <li><a href="#arguments">Arguments</a></li>
+                </ul>
 
   </div>
 </div>

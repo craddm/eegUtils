@@ -60,6 +60,18 @@
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/data_structures.html">A guide to eegUtils data structures</a>
+    </li>
+  </ul>
+</li>
 <li>
   <a href="../news/index.html">News</a>
 </li>
@@ -87,7 +99,8 @@
     </div>
 
     
-    <p>Plot ERP images</p>
+    <p>Plot an ERP image from a single electrode. Smooths over a series of trials in
+order to make across-trial patterns more apparent.</p>
     
 
     <pre class="usage"><span class='fu'>erp_image</span>(<span class='no'>data</span>, <span class='kw'>electrode</span> <span class='kw'>=</span> <span class='st'>"Cz"</span>, <span class='kw'>smoothing</span> <span class='kw'>=</span> <span class='fl'>10</span>, <span class='kw'>clim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>

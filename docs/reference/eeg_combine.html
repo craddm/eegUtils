@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>StatBiharmonic — StatBiharmonic â€¢ eegUtils</title>
+<title>Combine EEG objects — eeg_combine â€¢ eegUtils</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -95,27 +95,57 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>StatBiharmonic</h1>
+    <h1>Combine EEG objects</h1>
     </div>
 
     
-    <p>StatBiharmonic</p>
+    <p>Combine multiple <code>eeg_epochs</code> or <code>eeg_data</code> objects into a single
+object. Note that this does not currently perform any sort of checking for
+internal consistency or duplication. It simply combines the objects in the order they
+are passed.</p>
     
 
-    <pre class="usage"><span class='no'>StatBiharmonic</span></pre>
-        
-    <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
+    <pre class="usage"><span class='fu'>eeg_combine</span>(<span class='no'>data</span>, <span class='no'>...</span>)
 
-    <p>An object of class <code>StatBiharmonic</code> (inherits from <code>Stat</code>, <code>ggproto</code>) of length 3.</p>
+<span class='co'># S3 method for eeg_data</span>
+<span class='fu'>eeg_combine</span>(<span class='no'>data</span>, <span class='no'>...</span>)
+
+<span class='co'># S3 method for eeg_epochs</span>
+<span class='fu'>eeg_combine</span>(<span class='no'>data</span>, <span class='no'>...</span>)</pre>
+    
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>data</th>
+      <td><p>An <code>eeg_epochs</code> object</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>additional <code>eeg_epochs</code> objects</p></td>
+    </tr>
+    </table>
+    
+    <h2 class="hasAnchor" id="methods-by-class-"><a class="anchor" href="#methods-by-class-"></a>Methods (by class)</h2>
+
+    <ul>
+<li><p><code>eeg_data</code>: Method for combining <code>eeg_data</code> objects.</p></li>
+<li><p><code>eeg_epochs</code>: Method for combining <code>eeg_epochs</code> objects</p></li>
+</ul>
     
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
+      <li><a href="#arguments">Arguments</a></li>
       
-      <li><a href="#format">Format</a></li>
+      <li><a href="#methods-by-class-">Methods (by class)</a></li>
           </ul>
+
+    <h2>Author</h2>
+    
+Matt Craddock, <a href='mailto:matt@mattcraddock.com'>matt@mattcraddock.com</a>
 
   </div>
 </div>
