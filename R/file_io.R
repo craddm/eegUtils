@@ -207,7 +207,7 @@ import_cnt <- function(file_name) {
 #'   TRUE for a normal data frame.
 #' @author Matt Craddock \email{matt@mattcraddock.com}
 #' @importFrom R.matlab readMat
-#' @importFrom dplyr group_by mutate select rename
+#' @importFrom dplyr group_by mutate rename
 #' @importFrom tibble tibble as_tibble
 #' @importFrom purrr is_empty
 #' @export
@@ -286,7 +286,7 @@ load_set <- function(file_name, df_out = FALSE) {
 
   names(event_table) <- unlist(dimnames(event_info)[1])
   event_table$event_time <- (event_table$latency - 1) / srate
-  event_table <- dplyr::select(event_table, latency, event_time, type, epoch)
+  event_table <- event_table[c("latency", "event_time", "type", "epoch")]
   event_table <- dplyr::rename(event_table, event_type = "type",
                                event_onset = "latency")
   event_table$time <- NA

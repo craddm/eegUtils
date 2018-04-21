@@ -42,7 +42,7 @@ topoplot.default <- function(data, ...) {
 #' @param limits Limits of the fill scale - should be given as a character vector
 #'   with two values specifying the start and endpoints e.g. limits = c(-2,-2).
 #'   Will ignore anything else. Defaults to the range of the data.
-#' @param chanLocs Not yet implemented.
+#' @param chanLocs Allows passing of channel locations (see \code{electrode_locations})
 #' @param method Interpolation method. "Biharmonic" or "gam". "Biharmonic"
 #'   implements the same method used in Matlab's EEGLAB. "gam" fits a
 #'   Generalized Additive Model with k = 40 knots. Defaults to biharmonic spline
@@ -325,6 +325,9 @@ topoplot.eeg_data <- function(data, time_lim = NULL, limits = NULL,
                               chan_marker = "point", quantity = "amplitude",
                               montage = NULL, ...) {
 
+  if (!is.null(data$chan_info)) {
+    chanLocs <- data$chan_info
+  }
   data <- as.data.frame(data, long = TRUE)
   topoplot(data, time_lim = time_lim, limits = limits,
            chanLocs = chanLocs, method = method, r = r,

@@ -33,7 +33,7 @@ in the supplied data.}
 with two values specifying the start and endpoints e.g. limits = c(-2,-2).
 Will ignore anything else. Defaults to the range of the data.}
 
-\item{chanLocs}{Not yet implemented.}
+\item{chanLocs}{Allows passing of channel locations (see \code{electrode_locations})}
 
 \item{method}{Interpolation method. "Biharmonic" or "gam". "Biharmonic"
 implements the same method used in Matlab's EEGLAB. "gam" fits a
