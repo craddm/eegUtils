@@ -202,7 +202,9 @@ plot_butterfly <- function(data,
     if (continuous | data$continuous) {
       data <- as.data.frame(data, long = TRUE)
       continuous <- TRUE
-    }else {
+    } else if (is.eeg_evoked(data)) {
+      data <- as.data.frame(data, long = TRUE)
+    } else {
       data <- as.data.frame(data)
       data <- dplyr::group_by(data, time)
       data <- dplyr::summarise_all(data, mean)

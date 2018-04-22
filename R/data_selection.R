@@ -89,6 +89,22 @@ select_times.eeg_epochs <- function(data, time_lim = NULL,
   }
 }
 
+#' @export
+#' @describeIn select_times Select times in \code{eeg_evoked} objects
+select_times.eeg_evoked <- function(data, time_lim = NULL,
+                                    df_out = FALSE, ...) {
+
+  data$signals <- as.data.frame(data)
+  data$signals <- select_times(data$signals, time_lim = time_lim)
+
+  if (df_out) {
+    return(data$signals)
+  } else {
+    return(data)
+  }
+
+}
+
 #' Select electrodes from a given dataset.
 #'
 #' This is a generic function for selection of electrodes from an EEG dataset.
@@ -263,7 +279,7 @@ select_epochs.eeg_epochs <- function(data, epoch_events = NULL, epoch_no = NULL,
     }
 
     data$timings <- data$timings[sel_rows, ]
-    data$events[data$events$epoch %in% epoch_no, ]
+    data$events <- data$events[data$events$epoch %in% epoch_no, ]
 
   }
 

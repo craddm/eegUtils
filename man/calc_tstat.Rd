@@ -2,7 +2,7 @@
 % Please edit documentation in R/stat_tests.R
 \name{calc_tstat}
 \alias{calc_tstat}
-\title{Calculate t-statistic}
+\title{Calculate one-sample t-statistic}
 \usage{
 calc_tstat(x, mu = 0)
 }
@@ -12,5 +12,5 @@ calc_tstat(x, mu = 0)
 \item{mu}{mean to compare x to.}
 }
 \description{
-Calculate t-statistic
+Calculate one-sample t-statistic
 }

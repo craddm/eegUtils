@@ -99,6 +99,7 @@ topoplot.data.frame <- function(data, time_lim = NULL, limits = NULL,
       time_lim <- data$time[which.min(abs(data$time - time_lim))]
       data <- data[data$time == time_lim, ]
       } else if (length(time_lim) == 2) {
+        range(data$time)
         data <- select_times(data, time_lim)
       }
     }
@@ -109,7 +110,11 @@ topoplot.data.frame <- function(data, time_lim = NULL, limits = NULL,
     message("Electrode locations found.")
   } else if (!is.null(chanLocs)) {
     if (length(grep("^x$|^y$", colnames(chanLocs))) > 1) {
+      data$electrode <- toupper(data$electrode)
       data <- dplyr::left_join(data, chanLocs, by = "electrode")
+      if (any(is.na(data$x))) {
+        data <- data[!is.na(data$x),]
+        }
       } else {
         warnings("No channel locations found in chanLocs.")
       }

@@ -379,6 +379,7 @@ eeg_combine <- function(data, ...) {
 
 #' @describeIn eeg_combine Method for combining \code{eeg_data} objects.
 #' @export
+
 eeg_combine.eeg_data <- function(data, ...){
 
   args <- list(...)
@@ -407,6 +408,7 @@ eeg_combine.eeg_data <- function(data, ...){
 
 #' @describeIn eeg_combine Method for combining \code{eeg_epochs} objects
 #' @export
+
 eeg_combine.eeg_epochs <- function(data, ...) {
 
   args <- list(...)
@@ -414,8 +416,12 @@ eeg_combine.eeg_epochs <- function(data, ...) {
     stop("Nothing to combine.")
   }
   if (all(sapply(args, is.eeg_epochs))) {
+
     data$signals <- dplyr::bind_rows(data$signals,
                                      purrr::map_df(args, ~.$signals))
+
+     # args[[i]]$timings
+    #}
     data$events <- dplyr::bind_rows(data$events,
                                     purrr::map_df(args, ~.$events))
     data$timings <- dplyr::bind_rows(data$timings,
@@ -429,5 +435,79 @@ eeg_combine.eeg_epochs <- function(data, ...) {
     stop("All inputs must be eeg_epochs objects.")
   }
 
+  data
+}
+
+
+#' Check consistency of event and timing tables
+#'
+#' @param data \code{eeg_epochs} object
+
+check_timings <- function(data) {
+
+  while (any(diff(data$timings$epoch) < 0)) {
+
+    # check consistency of the data timings table.
+    # timings should be consistently increasing.
+    # only works correctly with 2 objects
+    n_rows <- nrow(data$timings)
+    switch_loc <- which.min(diff(data$timings$epoch))
+    switch_epo <- data$timings$epoch[switch_loc]
+    switch_sample <- data$timings$sample[switch_loc]
+    data$timings$epoch[(switch_loc+1):n_rows] <-
+      data$timings$epoch[(switch_loc+1):n_rows] + switch_epo
+    data$timings$sample[(switch_loc+1):n_rows] <-
+      data$timings$sample[(switch_loc+1):n_rows] + switch_sample
+
+  }
+
+  if (any(diff(data$events$event_time) < 0)) {
+
+    #check consistency of the data event table
+    n_rows <- nrow(data$events)
+    switch_loc <- which.min(diff(data$events$event_time))
+    switch_epo <- data$events$epoch[switch_loc]
+
+  }
+  data
+
+}
+
+#' Calculate averages (e.g. ERPs)
+#'
+#' @param data An \code{eeg_epochs} object.
+#' @param ... Other arguments passed to the averaging functions
+#' @author Matt craddock \email{matt@@mattcraddock.com}
+
+eeg_average <- function(data, ...) {
+  UseMethod("eeg_average", data)
+}
+
+#' Default method
+#' @param data An \code{eeg_epochs} object.
+#' @param ... Other arguments passed to the averaging functions
+#' @author Matt craddock \email{matt@@mattcraddock.com}
+
+eeg_average.default <- function(data, ...) {
+  stop("eeg_epochs object required as input.")
+}
+
+#' Create an eeg_evoked objects from eeg_epochs
+#'@describeIn eeg_average Create evoked data from \code{eeg_epochs}
+eeg_average.eeg_epochs <- function(data, ...) {
+  data$signals$time <- data$timings$time
+  # if (!is.null(data$reference$ref_data)) {
+  #   data$signals$reference <- data$reference$ref_data
+  # }
+  data$signals <- split(data$signals, data$signals$time)
+  data$signals <- lapply(data$signals, colMeans)
+  data$signals <- as.data.frame(do.call("rbind", data$signals))
+  data$reference$ref_data <- NULL
+  data$signals <- data$signals[, !names(data$signals) %in% "time"]
+  data$events <- NULL
+  #data$timings <- NULL
+  row.names(data$signals) <- NULL
+  data$timings <- unique(data$timings["time"])
+  class(data) <- c("eeg_evoked", "eeg_data")
   data
 }

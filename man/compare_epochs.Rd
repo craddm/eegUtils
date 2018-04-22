@@ -7,12 +7,16 @@
 \usage{
 compare_epochs(data, ...)
 
-\method{compare_epochs}{eeg_epochs}(data, ...)
+\method{compare_epochs}{eeg_epochs}(data, cond_label = NULL, type, ...)
 }
 \arguments{
 \item{data}{\code{eeg_epochs} object.}
 
 \item{...}{Other parameters passed to functions.}
+
+\item{cond_label}{Conditions to compare}
+
+\item{type}{Type of test to use. "1samp", "2samp"}
 }
 \description{
 Compare epochs using an independent t-test
