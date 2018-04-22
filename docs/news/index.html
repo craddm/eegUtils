@@ -70,6 +70,9 @@
     <li>
       <a href="../articles/data_structures.html">A guide to eegUtils data structures</a>
     </li>
+    <li>
+      <a href="../articles/Introduction.html">Introduction</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -100,12 +103,43 @@
     </div>
 
     <div class="contents">
-    <div id="eegutils-0-1-14" class="section level1">
+    <div id="eegutils-0-1-15-dev" class="section level1">
 <h1 class="hasAnchor">
-<a href="#eegutils-0-1-14" class="anchor"></a>eegUtils 0.1.14</h1>
+<a href="#eegutils-0-1-15-dev" class="anchor"></a>eegUtils 0.1.15.dev</h1>
 <div id="function-changes" class="section level3">
 <h3 class="hasAnchor">
 <a href="#function-changes" class="anchor"></a>Function changes</h3>
+<ul>
+<li>
+<code><a href="../reference/eeg_evoked.html">eeg_evoked()</a></code> class introduced to hold ERPS</li>
+<li>
+<code><a href="../reference/eeg_average.html">eeg_average()</a></code> function to calculate averages (e.g. ERPs) from <code>eeg_epochs</code> objects</li>
+<li>
+<code><a href="../reference/as.data.frame.eeg_evoked.html">as.data.frame.eeg_evoked()</a></code> introduced to handle conversion of eeg_evoked objects to data frames.</li>
+</ul>
+</div>
+<div id="internal-changes-bug-fixes" class="section level3">
+<h3 class="hasAnchor">
+<a href="#internal-changes-bug-fixes" class="anchor"></a>Internal changes / bug fixes</h3>
+<ul>
+<li>
+<code><a href="../reference/compute_psd.html">compute_psd()</a></code> function development, converted to S3method.</li>
+<li>
+<code><a href="../reference/topoplot.html">topoplot()</a></code> properly checks for existing chan_info in <code>eeg_data</code> objects</li>
+<li>
+<code><a href="../reference/plot_timecourse.html">plot_timecourse()</a></code> and <code><a href="../reference/plot_butterfly.html">plot_butterfly()</a></code> modified to deal with <code>eeg_evoked</code> objects.</li>
+<li>Initial commmits for addition of Morlet wavelet time-frequency analysis</li>
+<li>
+</li>
+</ul>
+</div>
+</div>
+    <div id="eegutils-0-1-14" class="section level1">
+<h1 class="hasAnchor">
+<a href="#eegutils-0-1-14" class="anchor"></a>eegUtils 0.1.14</h1>
+<div id="function-changes-1" class="section level3">
+<h3 class="hasAnchor">
+<a href="#function-changes-1" class="anchor"></a>Function changes</h3>
 <ul>
 <li>
 <code><a href="../reference/eeg_downsample.html">eeg_downsample()</a></code> function added to downsample EEG data by an integer factor.</li>
@@ -121,9 +155,9 @@
 <code><a href="../reference/eeg_combine.html">eeg_combine()</a></code> - combine multiple <code>eeg_data</code> or <code>eeg_epochs</code> objects into one</li>
 </ul>
 </div>
-<div id="internal-changes-bug-fixes" class="section level3">
+<div id="internal-changes-bug-fixes-1" class="section level3">
 <h3 class="hasAnchor">
-<a href="#internal-changes-bug-fixes" class="anchor"></a>Internal changes/ bug fixes</h3>
+<a href="#internal-changes-bug-fixes-1" class="anchor"></a>Internal changes/ bug fixes</h3>
 <ul>
 <li>
 <code>eeg_epochs()</code> now also handles downsampled data appropriately.</li>
@@ -141,9 +175,9 @@
     <div id="eegutils-0-1-13" class="section level1">
 <h1 class="hasAnchor">
 <a href="#eegutils-0-1-13" class="anchor"></a>eegUtils 0.1.13</h1>
-<div id="function-changes-1" class="section level3">
+<div id="function-changes-2" class="section level3">
 <h3 class="hasAnchor">
-<a href="#function-changes-1" class="anchor"></a>Function changes</h3>
+<a href="#function-changes-2" class="anchor"></a>Function changes</h3>
 <ul>
 <li>
 <code><a href="../reference/interp_elecs.html">interp_elecs()</a></code> function to perform spherical spline interpolation of individual electrodes</li>
@@ -157,9 +191,9 @@
     <div id="eegutils-0-1-12" class="section level1">
 <h1 class="hasAnchor">
 <a href="#eegutils-0-1-12" class="anchor"></a>eegUtils 0.1.12</h1>
-<div id="function-changes-2" class="section level3">
+<div id="function-changes-3" class="section level3">
 <h3 class="hasAnchor">
-<a href="#function-changes-2" class="anchor"></a>Function changes</h3>
+<a href="#function-changes-3" class="anchor"></a>Function changes</h3>
 <ul>
 <li>
 <code><a href="../reference/iir_filt.html">iir_filt()</a></code> now also filters reference channels</li>
@@ -194,6 +228,7 @@
     <div id="tocnav">
       <h2>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
+        <li><a href="#eegutils-0-1-15-dev">0.1.15</a></li>
         <li><a href="#eegutils-0-1-14">0.1.14</a></li>
         <li><a href="#eegutils-0-1-13">0.1.13</a></li>
         <li><a href="#eegutils-0-1-12">0.1.12</a></li>

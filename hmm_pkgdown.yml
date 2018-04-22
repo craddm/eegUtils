@@ -1,0 +1,60 @@
+url: http://craddm.github.io/eegUtils
+
+reference:
+  - title: Various functions
+    contents:
+      - starts_with("eeg_average")
+      - eeg_combine
+      - eeg_downsample
+      - iir_filt
+      - import_raw
+      - interp_elecs
+      - load_set
+      - reref_eeg
+      - starts_with("select")
+      - starts_with("epoch_data")
+      - rm_baseline
+      - tag_events
+  - title: Plotting functions
+    contents:
+      - browse_data
+      - erp_image
+      - erp_raster
+      - erp_scalp
+      - interactive_scalp
+      - plot_butterfly
+      - plot_electrodes
+      - plot_timecourse
+      - topoplot
+  - title: Internal functions
+    contents:
+      - starts_with("is.")
+      - arrange_chans
+      - calc_pval
+      - calc_tstat
+      - calc_tstat_2
+      - compute_g
+      - eeg_data
+      - eeg_epochs
+      - eeg_stats
+      - eeg_evoked
+      - fft_n
+      - gam_topo
+      - import_cnt
+      - morlet
+      - pol_to_sph
+      - run_iir
+      - set_palette
+      - split_vec
+      - check_timings
+      - conv_mor
+  - title: In development
+    contents:
+      - channel_stats
+      - compare_epochs
+      - compute_psd
+      - eeg_FASTER
+      - run_ICA
+      - eeg_ar_thresh
+      - fit_glm_indiv
+      - tf_morlet

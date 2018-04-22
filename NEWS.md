@@ -1,12 +1,12 @@
 # eegUtils 0.1.15.dev
 
 ### Function changes
-- `eeg_evoked` class introduced to hold ERPS
+- `eeg_evoked()` class introduced to hold ERPS
 - `eeg_average()` function to calculate averages (e.g. ERPs) from `eeg_epochs` objects
-- `as.data.frame.eeg_evoked` introduced to handle conversion of eeg_evoked objects to data frames.
+- `as.data.frame.eeg_evoked()` introduced to handle conversion of eeg_evoked objects to data frames.
 
 ### Internal changes / bug fixes
-- `compute_psd` function development, converted to S3method.
+- `compute_psd()` function development, converted to S3method.
 - `topoplot()` properly checks for existing chan_info in `eeg_data` objects
 - `plot_timecourse()` and `plot_butterfly()` modified to deal with `eeg_evoked` objects.
 - Initial commmits for addition of Morlet wavelet time-frequency analysis
