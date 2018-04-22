@@ -1,0 +1,79 @@
+---
+title: "A guide to eegUtils data structures"
+author: "Matt Craddock"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{A guide to eegUtils data structures}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## eeg_data objects
+
+`eeg_data` objects are the base class that all objects in this framework have. When raw data is imported, the output is this class. Currently, this class is a list constituting the following entries:
+
+* `signals`
+    + A data frame/tibble containing the actual EEG data in wide format. Each column is data from a single electrode, each row from a single timepoint.
+
+* `srate` 
+    + A single integer giving the sampling rate of the data in Hz
+
+* `events`
+    + A data.frame/tibble with 3 columns describing the events recorded in the data.
+        + event_onset (in samples) relative to *recording onset*
+        + event_time (in seconds) relative to *recording onset*
+        + event_type (typically integer, others possible)
+
+* `chan_info`
+    + Typically NA on import as no channel locations are usually available in raw data.
+    + A data.frame/tibble containing channel location information can be added. Currently similar to EEGLAB style, with the following columns (may change):
+        * `labels` - channel names
+        * `type` - Designator for channel type (e.g., EEG/EOG). Not currently used for anything.
+        * `theta` - 
+        * `radius`
+        * `X`
+        * `Y`
+        * `Z`
+        * `sph.theta`
+        * `sph.phi`
+        * `sph.radius`
+        * `urchan`
+        * `ref`
+
+* `timings`
+    + A data.frame containing a description of each row in time (s) and sample numbers (samples)
+
+* `continuous`
+    + A logical variable indiciating if the data is continuous or epoched. To be phased out now that multiple classes exist.
+
+* `reference`
+    + NA on loading, in the absence of a recorded reference channel.
+    * Once data is referenced, is a list consisting of three entries.
+        * `ref_chans` - Labels for channels used to calculate the reference data. Can also be "average".
+        * `ref_data` - The calculated reference "channel"
+        * `excluded` - Labels for any channels excluded from the reference data.
+
+## eeg_epochs
+
+`eeg_epochs` objects share the same overall structure with `eeg_data` objects, but some of the internals currently differ, as described below.
+
+* `events`
+    - The events table has two additional columns, `epoch` and `time`.
+        - `epoch` gives the epoch number to which a given event belongs
+        - `time` gives the time point at which the event occurs relative to the *epoch onset*
+        - `event_time` still gives the time point at which the event occurs relative to the *recording onset*
+        
+* `timings`
+    * The timings table has one additional column, `epoch`.
+        - `epoch` gives the epoch number to which a given datapoint belongs
+        - `sample` still uniquely identifies each datapoint
+        - `time` now gives the time relative to the zero-point of the epoch, i.e. the *event* on which the epoch is centred.
+    

@@ -1,8 +1,7 @@
-context("Plotting functions")
 
+context("Plotting functions")
 load("EEG_epochs.rda")
 load("EEGdat.rda")
-
 
 test_that("Plotting of single epoch timecourses works as expected", {
   expect_equal_to_reference(plot_timecourse(EEGdat), file = "avg_all_elecs.rds")
@@ -20,6 +19,10 @@ test_that("Plotting of data with multiple epochs works as expected", {
   expect_equal_to_reference(plot_timecourse(EEGdat, baseline = c(-200, 0),
                                             electrode = "Oz"),
                             file = "Pz_bl_epochs.rds")
+})
+
+test_that("Plotting of butterfly plots from epochs", {
+  expect_equal_to_reference(plot_butterfly(EEG_epochs), file = "butterfly_epochs.rds")
 })
 
 test_that("Topoplots", {

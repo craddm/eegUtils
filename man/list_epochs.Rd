@@ -7,8 +7,7 @@
 list_epochs(data)
 }
 \arguments{
-\item{data}{An object of class \code{eeg_epochs}
-#'}
+\item{data}{An object of class \code{eeg_epochs}}
 }
 \description{
 List trigger types and any labels found in an \code{eeg_data} object.

@@ -22,7 +22,7 @@
 #'
 #'@import dplyr
 #'@import ggplot2
-#'@importFrom rlang parse_quosure
+#'@importFrom rlang parse_quo caller_env
 #'
 #'@return Returns a ggplot2 plot object
 #'
@@ -51,11 +51,12 @@ plot_timecourse <- function(data, time_lim = NULL,
   ## check for US spelling of colour...
   if (is.null(colour)) {
     if (!is.null(color)) {
-      colour <- color
-      tmp_col <- rlang::parse_quosure(colour)
+      colour <- as.name(color)
+#      tmp_col <- rlang::parse_quo(colour, env = rlang::caller_env())
     }
   } else {
-    tmp_col <- rlang::parse_quosure(colour)
+    colour <- as.name(colour)
+    #tmp_col <- rlang::parse_quo(colour, rlang::caller_env())
   }
 
   ## Filter out unwanted timepoints, and find nearest time values in the data
@@ -80,7 +81,8 @@ plot_timecourse <- function(data, time_lim = NULL,
                         amplitude = mean(amplitude))
       } else {
         data <- dplyr::summarise(dplyr::group_by(data, time, electrode,
-                                                 !!tmp_col),
+                                                 #!!tmp_col),
+                                                 !!colour),
                         amplitude = mean(amplitude))
       }
   }
@@ -153,7 +155,8 @@ plot_timecourse <- function(data, time_lim = NULL,
                        expand = c(0, 0)) +
     theme_minimal(base_size = 12) +
     theme(panel.grid = element_blank(),
-          axis.ticks = element_line(size = .5))
+          axis.ticks = element_line(size = .5)) +
+    guides(colour = guide_legend(override.aes = list(alpha = 1)))
 
   return(tc_plot)
 }
@@ -196,14 +199,21 @@ plot_butterfly <- function(data,
                            browse_mode = FALSE) {
 
   if (is.eeg_data(data)) {
-    if (continuous) {
+    if (continuous | data$continuous) {
+      data <- as.data.frame(data, long = TRUE)
+      continuous <- TRUE
+    } else if (is.eeg_evoked(data)) {
       data <- as.data.frame(data, long = TRUE)
     } else {
       data <- as.data.frame(data)
       data <- dplyr::group_by(data, time)
       data <- dplyr::summarise_all(data, mean)
       data <- dplyr::select(data, -epoch, -sample)
-      data <- tidyr::gather(data, electrode, amplitude, -time)
+      data <- tidyr::gather(data,
+                            electrode,
+                            amplitude,
+                            -time,
+                            factor_key = TRUE)
       }
   }
   ## select time-range of interest -------------
@@ -257,7 +267,8 @@ plot_butterfly <- function(data,
   }
 
   if (legend) {
-    butterfly_plot
+    butterfly_plot +
+      guides(colour = guide_legend(override.aes = list(alpha = 1)))
   } else {
     butterfly_plot +
       theme(legend.position = "none")

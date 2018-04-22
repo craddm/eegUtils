@@ -2,7 +2,7 @@
 #'
 #' Allows topographical plotting of functional data. Output is a ggplot2 object.
 #'
-#' @author Matt Craddock, \email{matt@mattcraddock.com}
+#' @author Matt Craddock, \email{matt@@mattcraddock.com}
 #' @param data An EEG dataset. Must have columns x, y, and amplitude at present.
 #'   x and y are (Cartesian) electrode co-ordinates), amplitude is amplitude.
 #' @param ... Various arguments passed to specific functions
@@ -39,10 +39,10 @@ topoplot.default <- function(data, ...) {
 #' @param time_lim Timepoint(s) to plot. Can be one time or a range to average
 #'   over. If none is supplied, the function will average across all timepoints
 #'   in the supplied data.
-#' @param clim Limits of the fill scale - should be given as a character vector
-#'   with two values specifying the start and endpoints e.g. clim = c(-2,-2).
+#' @param limits Limits of the fill scale - should be given as a character vector
+#'   with two values specifying the start and endpoints e.g. limits = c(-2,-2).
 #'   Will ignore anything else. Defaults to the range of the data.
-#' @param chanLocs Not yet implemented.
+#' @param chanLocs Allows passing of channel locations (see \code{electrode_locations})
 #' @param method Interpolation method. "Biharmonic" or "gam". "Biharmonic"
 #'   implements the same method used in Matlab's EEGLAB. "gam" fits a
 #'   Generalized Additive Model with k = 40 knots. Defaults to biharmonic spline
@@ -51,7 +51,7 @@ topoplot.default <- function(data, ...) {
 #'   maximum y electrode location.
 #' @param grid_res Resolution of the interpolated grid. Higher = smoother but
 #'   slower.
-#' @param colourmap Defaults to RdBu if none supplied. Can be any from
+#' @param palette Defaults to RdBu if none supplied. Can be any from
 #'   RColorBrewer or viridis. If an unsupported palette is specified, switches
 #'   to Greens.
 #' @param interp_limit "skirt" or "head". Defaults to "skirt". "skirt"
@@ -62,9 +62,10 @@ topoplot.default <- function(data, ...) {
 #' @param chan_marker Set marker for electrode locations. "point" = point,
 #'   "name" = electrode name, "none" = no marker. Defaults to "point".
 #' @param quantity Allows plotting of arbitrary quantitative column. Defaults to
-#'   amplitude. Can be any column name. E.g. "p.value", "t-statistic".
+#'   amplitude. Use quoted column names. E.g. "p.value", "t_statistic".
 #' @param montage Name of an existing montage set. Defaults to NULL; (currently
 #'   only 'biosemi64alpha' available other than default 10/20 system)
+#' @param colourmap Deprecated, use palette instead.
 #'
 #' @import ggplot2
 #' @import dplyr
@@ -77,12 +78,18 @@ topoplot.default <- function(data, ...) {
 #' @export
 
 
-topoplot.data.frame <- function(data, time_lim = NULL, clim = NULL,
+topoplot.data.frame <- function(data, time_lim = NULL, limits = NULL,
                              chanLocs = NULL, method = "Biharmonic", r = NULL,
-                             grid_res = 67, colourmap = "RdBu",
+                             grid_res = 67, palette = "RdBu",
                              interp_limit = "skirt", contour = TRUE,
                              chan_marker = "point", quantity = "amplitude",
-                             montage = NULL, ...) {
+                             montage = NULL, colourmap, ...) {
+
+  if (!missing(colourmap)) {
+    warning("Argument colourmap is deprecated, please use palette instead.",
+            call. = FALSE)
+    palette <- colourmap
+  }
 
   # Filter out unwanted timepoints, and find nearest time values in the data
   # --------------
@@ -90,8 +97,9 @@ topoplot.data.frame <- function(data, time_lim = NULL, clim = NULL,
   if ("time" %in% colnames(data)) {
     if (length(time_lim) == 1) {
       time_lim <- data$time[which.min(abs(data$time - time_lim))]
-      data <- dplyr::filter(data, time == time_lim)
+      data <- data[data$time == time_lim, ]
       } else if (length(time_lim) == 2) {
+        range(data$time)
         data <- select_times(data, time_lim)
       }
     }
@@ -102,7 +110,11 @@ topoplot.data.frame <- function(data, time_lim = NULL, clim = NULL,
     message("Electrode locations found.")
   } else if (!is.null(chanLocs)) {
     if (length(grep("^x$|^y$", colnames(chanLocs))) > 1) {
+      data$electrode <- toupper(data$electrode)
       data <- dplyr::left_join(data, chanLocs, by = "electrode")
+      if (any(is.na(data$x))) {
+        data <- data[!is.na(data$x),]
+        }
       } else {
         warnings("No channel locations found in chanLocs.")
       }
@@ -110,14 +122,13 @@ topoplot.data.frame <- function(data, time_lim = NULL, clim = NULL,
       data <- electrode_locations(data, drop = TRUE, montage = montage)
       message("Attempting to add standard electrode locations...")
     } else {
-    warning("Neither electrode locations nor labels found.")
-    stop()
+    stop("Neither electrode locations nor labels found.")
   }
 
   # Average over all timepoints ----------------------------
 
   data <- dplyr::summarise(dplyr::group_by(data, x, y, electrode),
-                   z = mean(!!rlang::parse_quosure(quantity)))
+                           z = mean(!!rlang::parse_quosure(quantity)))
 
   # Cut the data frame down to only the necessary columns, and make sure it has
   # the right names
@@ -207,26 +218,12 @@ topoplot.data.frame <- function(data, time_lim = NULL, clim = NULL,
                                   convert = TRUE)
          },
          gam = {
-           tmp_df <- data
-           tmp_df$x <- scaled_x
-           tmp_df$y <- scaled_y
-           spline_smooth <- mgcv::gam(z ~ s(x, y, bs = "ts", k = 40),
-                                      data = tmp_df)
-           out_df <- data.frame(expand.grid(x = seq(min(tmp_df$x) * 2,
-                                                   max(tmp_df$x) * 2,
-                                                   length = grid_res),
-                                           y = seq(min(tmp_df$y) * 2,
-                                                   max(tmp_df$y) * 2,
-                                                   length = grid_res)))
-
-           out_df$amplitude <-  stats::predict(spline_smooth,
-                                              out_df,
-                                              type = "response")
+           out_df <- gam_topo(data, scaled_x, scaled_y, grid_res, 40)
          })
 
   # Check if should interp/extrap beyond head_shape, and set up ring to mask
   # edges for smoothness
-  if (interp_limit == "skirt") {
+  if (identical(interp_limit, "skirt")) {
     out_df$incircle <- sqrt(out_df$x ^ 2 + out_df$y ^ 2) < 1.125
     mask_ring <- data.frame(x = 1.126 * cos(circ_rads),
                            y = 1.126 * sin(circ_rads)
@@ -313,8 +310,8 @@ topoplot.data.frame <- function(data, time_lim = NULL, clim = NULL,
                  size = rel(4))
     }
 
-  # Set the colourmap and scale limits ------------------------
-  topo <- set_cmap(topo, colourmap, clim)
+  # Set the palette and scale limits ------------------------
+  topo <- set_palette(topo, palette, limits)
   topo
 }
 
@@ -326,45 +323,76 @@ topoplot.data.frame <- function(data, time_lim = NULL, clim = NULL,
 #' @describeIn topoplot Topographical plotting of \code{eeg_data} objects.
 #' @export
 
-topoplot.eeg_data <- function(data, time_lim = NULL, clim = NULL,
+topoplot.eeg_data <- function(data, time_lim = NULL, limits = NULL,
                               chanLocs = NULL, method = "Biharmonic", r = NULL,
-                              grid_res = 67, colourmap = "RdBu",
+                              grid_res = 67, palette = "RdBu",
                               interp_limit = "skirt", contour = TRUE,
                               chan_marker = "point", quantity = "amplitude",
                               montage = NULL, ...) {
 
+  if (!is.null(data$chan_info)) {
+    chanLocs <- data$chan_info
+  }
   data <- as.data.frame(data, long = TRUE)
-  eegUtils::topoplot(data, time_lim = time_lim, clim = clim,
-                     chanLocs = chanLocs, method = method, r = r,
-                     grid_res = grid_res, colourmap = colourmap,
-                     interp_limit = interp_limit, contour = contour,
-                     chan_marker = chan_marker, quantity = quantity,
-                     montage = montage)
+  topoplot(data, time_lim = time_lim, limits = limits,
+           chanLocs = chanLocs, method = method, r = r,
+           grid_res = grid_res, palette = palette,
+           interp_limit = interp_limit, contour = contour,
+           chan_marker = chan_marker, quantity = quantity,
+           montage = montage, passed = TRUE)
 }
 
-#' Set colourmap and limits for topoplot
+#' Set palette and limits for topoplot
 #'
 #' @param topo ggplot2 object produced by topoplot command
-#' @param colourmap Requested colourmap
-#' @param clim Limits of colour scale
+#' @param palette Requested palette
+#' @param limits Limits of colour scale
 #' @import ggplot2
 #' @importFrom viridis scale_fill_viridis
 
 
-set_cmap <- function(topo, colourmap, clim = NULL) {
+set_palette <- function(topo, palette, limits = NULL) {
 
-  if (colourmap %in% c("magma", "inferno", "plasma",
+  if (palette %in% c("magma", "inferno", "plasma",
                   "viridis", "A", "B", "C", "D")) {
 
-    topo <- topo + viridis::scale_fill_viridis(option = colourmap,
-                                      limits = clim,
+    topo <- topo + viridis::scale_fill_viridis(option = palette,
+                                      limits = limits,
                                       guide = "colourbar",
                                       oob = scales::squish)
   } else {
-    topo <- topo + scale_fill_distiller(palette = colourmap,
-                                        limits = clim,
+    topo <- topo + scale_fill_distiller(palette = palette,
+                                        limits = limits,
                                         guide = "colourbar",
                                         oob = scales::squish)
   }
   topo
+}
+
+#' Fit a GAM smooth across scalp.
+#'
+#' @param data Data frame from which to generate predictions
+#' @param scaled_x x coordinates rescaled
+#' @param scaled_y y coordinates rescaled
+#' @param grid_res resolution of output grid
+#' @param k number of knots for GAM
+
+gam_topo <- function(data, scaled_x, scaled_y, grid_res, k = 40) {
+
+  data$x <- scaled_x
+  data$y <- scaled_y
+  spline_smooth <- mgcv::gam(z ~ s(x, y, bs = "ts", k = 40),
+                             data = data)
+  out_df <- data.frame(expand.grid(x = seq(min(data$x) * 2,
+                                           max(data$x) * 2,
+                                           length = grid_res),
+                                   y = seq(min(data$y) * 2,
+                                           max(data$y) * 2,
+                                           length = grid_res)))
+
+  out_df$amplitude <-  stats::predict(spline_smooth,
+                                      out_df,
+                                      type = "response")
+  out_df
+
 }

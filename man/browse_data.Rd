@@ -2,12 +2,22 @@
 % Please edit documentation in R/data_viewers.R
 \name{browse_data}
 \alias{browse_data}
+\alias{browse_data.eeg_data}
+\alias{browse_data.eeg_epochs}
 \title{Browse EEG data.}
 \usage{
-browse_data(data, sig_length = 5, n_elecs = NULL, downsample = FALSE)
+browse_data(data, ...)
+
+\method{browse_data}{eeg_data}(data, sig_length = 5, n_elecs = NULL,
+  downsample = FALSE, ...)
+
+\method{browse_data}{eeg_epochs}(data, sig_length = 5, n_elecs = NULL,
+  downsample = FALSE, ...)
 }
 \arguments{
 \item{data}{\code{eeg_data} object to be plotted.}
+
+\item{...}{Other parameters passed to browsing functions.}
 
 \item{sig_length}{Length of signal to be plotted initially (seconds if
 continuous, epochs if epoched).}
@@ -16,8 +26,7 @@ continuous, epochs if epoched).}
 implemented)}
 
 \item{downsample}{Only works on \code{eeg_data} objects. Reduces size of data
-by only plotting every 4th point, speeding up plotting considerably. Nb. may
-cause aliasing as does not filter. Use with caution.}
+by only plotting every 4th point, speeding up plotting considerably.}
 }
 \description{
 A Shiny gadget for browsing continuous data interactively. Data can be viewed
@@ -25,6 +34,13 @@ as a butterfly plot (all electrodes overlaid) or as individual traces
 (electrodes "stacked"). Currently, the scale cannot be manually set and is
 determined by the range of the viewable data.
 }
+\section{Methods (by class)}{
+\itemize{
+\item \code{eeg_data}: Browse continuous EEG data.
+
+\item \code{eeg_epochs}: Browse epoched EEG data.
+}}
+
 \author{
 Matt Craddock \email{matt@mattcraddock.com}
 }

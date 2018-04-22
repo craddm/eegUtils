@@ -3,6 +3,14 @@
 #' Joins standard electrode locations to EEG data from eegUtils internal data.
 #'
 #' @param data An EEG dataset.
+#' @param ... Parameters passed to S3 methods.
+#' @export
+
+
+electrode_locations <- function(data, ...) {
+  UseMethod("electrode_locations")
+}
+
 #' @param electrode The column name containing electrode names in data.
 #'   (Defaults to "electrode").
 #' @param drop Should electrodes in \code{data} for which default locations are
@@ -13,14 +21,15 @@
 #' @import dplyr
 #' @import ggplot2
 #' @importFrom tibble is.tibble
+#' @describeIn electrode_locations Adds standard locations to a data frame in long format
 #' @return A tibble (or data.frame), or ggplot2 object if \code{plot = TRUE}.
 #' @export
 
-electrode_locations <- function(data,
+electrode_locations.data.frame <- function(data,
                                 electrode = "electrode",
                                 drop = FALSE,
                                 plot = FALSE,
-                                montage = NULL) {
+                                montage = NULL, ...) {
 
   if (!is.null(montage)) {
     if (montage == "biosemi64alpha") {
@@ -71,6 +80,58 @@ electrode_locations <- function(data,
   }
 }
 
+#' @param overwrite Overwrite existing channel info. Defaults to FALSE.
+#' @import dplyr
+#' @import ggplot2
+#' @importFrom tibble is.tibble
+#' @describeIn electrode_locations Adds standard locations to the chan_info field of an eeg_data object.
+#' @export
+
+electrode_locations.eeg_data <- function(data,
+                                           drop = FALSE,
+                                           plot = FALSE,
+                                           montage = NULL,
+                                         overwrite = FALSE, ...) {
+
+  if (!is.null(data$chan_info) & !overwrite & !plot) {
+    stop("Channel info already present, set overwrite to TRUE to replace.")
+  }
+
+  if (!is.null(montage)) {
+    if (montage == "biosemi64alpha") {
+      electrodeLocs[1:64, "electrode"] <- c(paste0("A", 1:32),
+                                          paste0("B", 1:32))
+    }
+  }
+
+  elec_names <- toupper(names(data$signals))
+  electrodeLocs$electrode <- toupper(electrodeLocs$electrode)
+
+  matched_els <- electrodeLocs$electrode %in% elec_names
+  missing_els <- elec_names %in% electrodeLocs$electrode
+
+  if (!any(matched_els)) {
+    stop("No matching electrodes found.")
+  } else if (!all(matched_els)) {
+    message(cat("Electrodes not found:", names(data$signals)[!missing_els]))
+  }
+
+  data$chan_info <- electrodeLocs[matched_els, ]
+
+  if (drop) {
+    data$signals[matched_els]
+  }
+
+  if (plot) {
+    p <- ggplot2::ggplot(data$chan_info, aes(x, y)) +
+      geom_label(aes(label = electrode))
+    return(p)
+  } else {
+    return(data)
+  }
+}
+
+
 #' Function to create an S3 object of class "eeg_data".
 #'
 #' @author Matt Craddock \email{matt@mattcraddock.com}
@@ -106,6 +167,38 @@ eeg_data <- function(data,
   value
 }
 
+#' Function to create an S3 object of class "eeg_evoked"
+#'
+#' @author Matt Craddock \email{matt@@mattcraddock.com}
+#' @param data evoked data
+#' @param chan_info Electrode locations etc
+#' @param timings vector of timepoints
+#' @param ... Other parameters
+
+eeg_evoked <- function(data, chan_info, timings, ...) {
+  value <- list(signals = data,
+                chan_info = chan_info,
+                timings = timings)
+  class(value) <- c("eeg_evoked", "eeg_data")
+}
+
+#' Function to create an S3 object of class "eeg_stats".
+#'
+#' @author Matt Craddock \email{matt@@mattcraddock.com}
+#' @param statistic Calculated statistic (e.g. t-statistic)
+#' @param chan_info String of character names for electrodes.
+#' @param timings Unique timepoints remaining in the data.
+#' @export
+
+eeg_stats <- function(statistic, chan_info, timings) {
+
+  value <- list(statistic = statistic,
+                chan_info = chan_info,
+                timings = timings)
+  class(value) <- "eeg_stats"
+  value
+}
+
 #' Check if object is of class "eeg_data".
 #'
 #' @author Matt Craddock \email{matt@mattcraddock.com}
@@ -122,6 +215,19 @@ is.eeg_data <- function(x) inherits(x, "eeg_data")
 #'
 
 is.eeg_epochs <- function(x) inherits(x, "eeg_epochs")
+
+#' Check if object is of class \code{eeg_evoked}
+#'
+#' @author Matt Craddock \email{matt@mattcraddock.com}
+#' @param x Object to check.
+
+is.eeg_evoked <- function(x) inherits(x, "eeg_evoked")
+
+#' Check if object is of class \code{eeg_stats}
+#'
+#' @param x Object to check.
+#
+is.eeg_stats <- function(x) inherits(x, "eeg_stats")
 
 #' Convert eeg_data to data.frame
 #'
@@ -144,9 +250,20 @@ as.data.frame.eeg_data <- function(x, row.names = NULL,
 
   if (long) {
     if (x$continuous) {
-      df <- tidyr::gather(df, electrode, amplitude, -time, -sample)
+      df <- tidyr::gather(df,
+                          electrode,
+                          amplitude,
+                          -time,
+                          -sample,
+                          factor_key = T)
     } else {
-      df <- tidyr::gather(df, electrode, amplitude, -time, -sample, -epoch)
+      df <- tidyr::gather(df,
+                          electrode,
+                          amplitude,
+                          -time,
+                          -sample,
+                          -epoch,
+                          factor_key = T)
     }
   }
 
@@ -156,17 +273,32 @@ as.data.frame.eeg_data <- function(x, row.names = NULL,
   return(df)
 }
 
-#' Switch from wide to long format.
-#'
-#' @author Matt Craddock \email{matt@mattcraddock.com}
-#' @param data Data to convert
-#' @importFrom tidyr gather
 
-switch_format <- function(data) {
-  data <- tidyr::gather(data, electrode, amplitude, -time)
-  if (is.eeg_data(data)) {
+#' Convert \code{eeg_evoked} object to data frame
+#
+#' @author Matt Craddock \email{matt@mattcraddock.com}
+#' @param x Object of class \code{eeg_evoked}
+#' @param row.names Kept for compatability with S3 generic, ignored.
+#' @param optional Kept for compatability with S3 generic, ignored.
+#' @param long Convert to long format. Defaults to FALSE
+#' @param ... arguments for other as.data.frame commands
+#'
+#' @importFrom tidyr gather
+#' @export
+
+as.data.frame.eeg_evoked <- function(x, row.names = NULL,
+                                     optional = FALSE, long = FALSE, ...) {
+  df <- data.frame(x$signals, time = x$timings$time)
+  if (long) {
+    df <- tidyr::gather(df,
+                        electrode,
+                        amplitude,
+                        -time,
+                        factor_key = T)
   }
+  return(df)
 }
+
 
 #' Convert polar to spherical coordinates
 #'

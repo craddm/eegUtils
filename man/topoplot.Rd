@@ -8,14 +8,15 @@
 \usage{
 topoplot(data, ...)
 
-\method{topoplot}{data.frame}(data, time_lim = NULL, clim = NULL,
+\method{topoplot}{data.frame}(data, time_lim = NULL, limits = NULL,
   chanLocs = NULL, method = "Biharmonic", r = NULL, grid_res = 67,
-  colourmap = "RdBu", interp_limit = "skirt", contour = TRUE,
-  chan_marker = "point", quantity = "amplitude", montage = NULL, ...)
+  palette = "RdBu", interp_limit = "skirt", contour = TRUE,
+  chan_marker = "point", quantity = "amplitude", montage = NULL,
+  colourmap, ...)
 
-\method{topoplot}{eeg_data}(data, time_lim = NULL, clim = NULL,
+\method{topoplot}{eeg_data}(data, time_lim = NULL, limits = NULL,
   chanLocs = NULL, method = "Biharmonic", r = NULL, grid_res = 67,
-  colourmap = "RdBu", interp_limit = "skirt", contour = TRUE,
+  palette = "RdBu", interp_limit = "skirt", contour = TRUE,
   chan_marker = "point", quantity = "amplitude", montage = NULL, ...)
 }
 \arguments{
@@ -28,11 +29,11 @@ x and y are (Cartesian) electrode co-ordinates), amplitude is amplitude.}
 over. If none is supplied, the function will average across all timepoints
 in the supplied data.}
 
-\item{clim}{Limits of the fill scale - should be given as a character vector
-with two values specifying the start and endpoints e.g. clim = c(-2,-2).
+\item{limits}{Limits of the fill scale - should be given as a character vector
+with two values specifying the start and endpoints e.g. limits = c(-2,-2).
 Will ignore anything else. Defaults to the range of the data.}
 
-\item{chanLocs}{Not yet implemented.}
+\item{chanLocs}{Allows passing of channel locations (see \code{electrode_locations})}
 
 \item{method}{Interpolation method. "Biharmonic" or "gam". "Biharmonic"
 implements the same method used in Matlab's EEGLAB. "gam" fits a
@@ -45,7 +46,7 @@ maximum y electrode location.}
 \item{grid_res}{Resolution of the interpolated grid. Higher = smoother but
 slower.}
 
-\item{colourmap}{Defaults to RdBu if none supplied. Can be any from
+\item{palette}{Defaults to RdBu if none supplied. Can be any from
 RColorBrewer or viridis. If an unsupported palette is specified, switches
 to Greens.}
 
@@ -60,10 +61,12 @@ plotted head.}
 "name" = electrode name, "none" = no marker. Defaults to "point".}
 
 \item{quantity}{Allows plotting of arbitrary quantitative column. Defaults to
-amplitude. Can be any column name. E.g. "p.value", "t-statistic".}
+amplitude. Use quoted column names. E.g. "p.value", "t_statistic".}
 
 \item{montage}{Name of an existing montage set. Defaults to NULL; (currently
 only 'biosemi64alpha' available other than default 10/20 system)}
+
+\item{colourmap}{Deprecated, use palette instead.}
 }
 \description{
 Allows topographical plotting of functional data. Output is a ggplot2 object.

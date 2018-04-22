@@ -8,33 +8,51 @@
 #'
 #' @author Matt Craddock \email{matt@mattcraddock.com}
 #'
-#' @param data An object of class \code{eeg_data}
+#' @param data An object of class \code{eeg_data} or \code{eeg_epochs}
+#' @param ... Parameters passed to S3 methods
+#' @export
+
+tag_events <- function(data, ...) {
+  UseMethod("tag_events", data)
+}
+
 #' @param trigs Character vector of trigger numbers
 #' @param event_label Labels for the events.
 #' @importFrom dplyr left_join
 #' @importFrom tibble tibble
 #' @export
+#' @describeIn tag_events Tag events in an \code{eeg_data} object
 #' @seealso \code{\link{list_events}}
 
-tag_events <- function(data, trigs, event_label) {
+tag_events.eeg_data <- function(data, trigs, event_label, ...) {
 
-  if (is.eeg_data(data)) {
-    if (length(trigs) != length(event_label)) {
-      stop("Trigs and event_label parameters must be the same length.")
-    }
+  if (length(trigs) != length(event_label)) {
+    stop("Trigs and event_label parameters must be the same length.")
+  }
 
-    if ("event_label" %in% names(data$events)) {
-      data$events <- data$events[-3]
-    }
+  if (!any(trigs %in% unlist(list_events(data)))) {
+    stop(paste0("Trigger(s) not found. Check trigger values with list_events()."))
+  }
 
-    data$events <- dplyr::left_join(data$events,
-                                    tibble::tibble(event_type = trigs,
-                                                   event_label = event_label),
-                                    by = "event_type")
-    data
-  } else {
-      stop("Object is not of class eeg_data.")
-    }
+  data$events <- dplyr::left_join(data$events,
+                                  tibble::tibble(event_type = trigs,
+                                                 event_label = event_label),
+                                  by = "event_type")
+  data
+}
+
+#' @describeIn tag_events Tag events in an epoched dataset
+tag_events.eeg_epochs <- function(data, trigs, event_label, ...) {
+
+  if (length(trigs) != length(event_label)) {
+    stop("Trigs and event_label parameters must be the same length.")
+  }
+
+  data$events <- dplyr::left_join(data$events,
+                                  tibble::tibble(event_type = trigs,
+                                                 event_label = event_label),
+                                  by = "event_type")
+  data
 }
 
 #' List events
@@ -55,8 +73,7 @@ list_events <- function(data) {
   }
 
   if ("event_label" %in% names(data$events)) {
-    data.frame(event_type = unique(data$events$event_type),
-               event_label = unique(data$events$event_label))
+    data$events[!duplicated(data$events$event_type), c("event_type", "event_label")]
   } else {
     data.frame(event_type = unique(data$events$event_type))
   }
@@ -71,7 +88,7 @@ list_events <- function(data) {
 #' @author Matt Craddock \email{matt@mattcraddock.com}
 #'
 #' @param data An object of class \code{eeg_epochs}
-#'#'
+#'
 #' @seealso \code{\link{tag_events}}
 
 list_epochs <- function(data) {
@@ -79,20 +96,6 @@ list_epochs <- function(data) {
     stop("For eeg_epochs objects only.")
   }
 
-  if ("event_label" %in% names(data$events)) {
-    data.frame(event_type = unique(data$events$event_type),
-               event_label = unique(data$events$event_label))
-  } else {
-    data.frame(event_type = unique(data$events$event_type))
-  }
-
-}
-
-#' Tag epochs
-#'
-#' @param data An object of class \code{eeg_data}
-#'
-
-tag_epochs <- function(data) {
+  data$events[, c("epoch", "event_type", "event_label")]
 
 }
