@@ -1,0 +1,73 @@
+---
+title: "Introduction"
+author: "Matt Cradock and Eryk Walczak"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+This package was created to allow the analysis of EEG data in R. The code in this vignette was previously published on Matt's [blog](http://www.mattcraddock.com/).
+
+## Downloading a bdf
+
+Two example Biosemi bdf files can be downloaded from the producer's [website](https://www.biosemi.com/faq/file_format.htm).
+To download and unzip example bdf files use:
+
+```{r}
+url_bdf_zip <- "https://www.biosemi.com/download/BDFtestfiles.zip"
+temp <- tempfile()
+download.file(url_bdf_zip, temp)
+unzip(temp)
+unlink(temp)
+```
+
+## Loading a bdf file
+
+```{r, warning = FALSE, message = FALSE}
+library(eegUtils)
+library(dplyr)
+
+bdf_filename <- "Newtest17-256.bdf"
+bdf_data <- import_raw(bdf_filename)
+```
+
+The file is now loaded. You can see its structure
+
+```{r}
+str(bdf_data)
+```
+
+## Pre-processing
+
+eegUtils allows loading the bdf files, selecting channels
+
+```{r}
+my_data <- bdf_data %>%
+  select_elecs(c("A1", "A2"), keep = FALSE) %>% # remove channels
+  reref_eeg(ref_chans = "average") %>% # re-reference
+  iir_filt(low_freq = 0.1, high_freq = 40) %>% # band-pass filter
+  epoch_data(255, c(-.2,.2)) # epoch: choose a trigger and time limits
+```
+
+## Figures
+
+Create a butterfly plot showing data from all the electrodes 
+
+```{r}
+plot_butterfly(my_data, baseline = c(-.2, 0), time_lim = c(-.1, .2), legend = FALSE)
+```
+
+Or the timecourse of a single electrode
+
+```{r}
+plot_timecourse(my_data, electrode = "A3", baseline = c(-.2,0), time_lim = c(-.1, .2))
+```
+
+How about an EEGLAB style ERP image?
+
+```{r}
+erp_image(my_data, electrode = "A9")
+```
