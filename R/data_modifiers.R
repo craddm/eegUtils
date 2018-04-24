@@ -84,7 +84,7 @@ reref_eeg <- function(data, ref_chans = "average", exclude = NULL,
   }
 
   if (is.eeg_data(data)) {
-    data$signals <- tmp_data
+    data$signals <- tibble::as_tibble(tmp_data)
     if (any(ref_chans == "average")) {
       data$reference <- list(ref_chans = ref_chans, ref_data = ref_data,
                              excluded = excluded)
@@ -183,9 +183,10 @@ rm_baseline <- function(data, time_lim = NULL) {
 #' Create epochs from EEG data
 #'
 #' Creates epochs around specified event triggers. Requires data of class
-#' \code{eeg_data}.
+#' \code{eeg_data}. Where multiple events are specified, epochs will be created
+#' around each event.
 #'
-#' @author Matt Craddock \email{matt@mattcraddock.com}
+#' @author Matt Craddock \email{matt@@mattcraddock.com}
 #' @param data Continuous data to be epoched.
 #' @param ... Parameters passed to functions
 #'
@@ -236,16 +237,24 @@ epoch_data.eeg_data <- function(data, events, time_lim = c(-1, 1), ...) {
     srate <- data$srate * samp_diff
   }
 
+  # create a vector that counts back and ahead of the timelock event in samples
+  # i.e. if srate is 1000, a vector from -100 to 0 to 100 would be -.1 s before
+  # to .1 s after event onset
+
   samps <- seq(round(time_lim[[1]] * srate),
                round(time_lim[[2]] * (srate - 1)),
                by = samp_diff)
 
   event_table <- data$events
 
+  # go through all events and find which match those specified as the events to
+  # epoch around
   epoch_zero <-
     sort(unlist(purrr::map(events,
                            ~ event_table[which(event_table$event_type == .), ]$event_onset)))
 
+  # for each epoching event, create a vector of samples before and after that
+  # are within the time limits
   epoched_data <- purrr::map(epoch_zero,
                              ~ . + samps)
 
@@ -253,7 +262,7 @@ epoch_data.eeg_data <- function(data, events, time_lim = c(-1, 1), ...) {
                                 ~ tibble::tibble(sample = ., time = samps / srate),
                                 .id = "epoch")
 
-  # create new event_table NOW
+  # create new event_table
   event_table <- dplyr::inner_join(event_table, epoched_data,
                                    by = c("event_onset" = "sample"))
 
