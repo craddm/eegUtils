@@ -2,6 +2,7 @@
 context("Plotting functions")
 load("EEG_epochs.rda")
 load("EEGdat.rda")
+test_data <- import_raw("Newtest17-256.bdf")
 
 test_that("Plotting of single epoch timecourses works as expected", {
   expect_equal_to_reference(plot_timecourse(EEGdat), file = "avg_all_elecs.rds")
@@ -32,4 +33,10 @@ test_that("Topoplots", {
   expect_equal_to_reference(topoplot(EEGdat, time_lim = c(150, 200),
                                             method = "gam"),
                             file = "gam_topo.rds")
+})
+
+test_that("erp_raster and erp_image function", {
+  test_epo <- epoch_data(test_data, 255)
+  expect_s3_class(erp_image(test_epo, electrode = "A15"), "gg")
+  expect_s3_class(erp_raster(test_epo), "gg")
 })
