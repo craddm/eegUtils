@@ -1,7 +1,9 @@
 #' Select timerange
 #'
 #' Generic function for selecting specific time ranges from a given dataset.
-#' Input can be a dataframe, or an object of class \code{eeg_data} or \code{eeg_epochs}
+#' Input can be a dataframe, or an object of class \code{eeg_data} or
+#' \code{eeg_epochs}. Note this finds the closest times to those specified, so
+#' times out may not correspond exactly to requested times.
 #'
 #' @author Matt Craddock, \email{matt@mattcraddock.com}
 #' @param data Data from which to select
@@ -54,7 +56,7 @@ select_times.eeg_data <- function(data, time_lim = NULL, df_out = FALSE, ...) {
     data$events <- dplyr::filter(data$events, event_time >= time_lim[1],
                                  event_time <= time_lim[2])
     data$signals <- dplyr::select(proc_data, -sample, -time)
-    data$timings <- list(time = proc_data$time, sample = proc_data$sample)
+    data$timings <- tibble::tibble(time = proc_data$time, sample = proc_data$sample)
     if (!is.null(data$reference$ref_data)) {
       data$reference$ref_data <- data$reference$ref_data[data$timings$sample]
     }
@@ -78,7 +80,7 @@ select_times.eeg_epochs <- function(data, time_lim = NULL,
     data$events <- dplyr::filter(data$events, time >= time_lim[1],
                                  time <= time_lim[2])
     data$signals <- dplyr::select(proc_data, -sample, -time, -epoch)
-    data$timings <- list(time = proc_data$time,
+    data$timings <- tibble::tibble(time = proc_data$time,
                          sample = proc_data$sample,
                          epoch = proc_data$epoch)
 
