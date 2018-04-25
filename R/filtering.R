@@ -4,7 +4,15 @@
 #' \code{signal::filt_filt}, which filters the signal twice to - once forwards,
 #' then again backwards).
 #'
-#' @author Matt Craddock \email{matt@mattcraddock.com}
+#' low_freq and high_freq are passband edges. Pass low freq or high freq alone
+#' to perform high-pass or low-pass filtering respectively. For band-pass or
+#' band-stop filters, pass both low_freq and high_freq.
+#'
+#' If low_freq < high_freq, bandpass filtering is performed.
+#'
+#' If low_freq > high_freq, bandstop filtering is performed.
+#'
+#' @author Matt Craddock \email{matt@@mattcraddock.com}
 #' @param data Data to be filtered.
 #' @param ... Parameters passed to S3 methods
 #' @export
@@ -146,7 +154,8 @@ run_iir <- function(data, low_freq = NULL, high_freq = NULL, filter_order,
     }
   }
 
-  #filtfilt filters twice, so effectively doubles filter_order
+  #filtfilt filters twice, so effectively doubles filter_order - we half it here
+  #so that it corresponds to the expectation of the user
   filter_order <- round(filter_order / 2)
   filt_coef <- signal::butter(filter_order, W, type = filt_type)
 

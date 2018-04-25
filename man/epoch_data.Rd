@@ -24,7 +24,8 @@ Returns an epoched object of class \code{eeg_data}
 }
 \description{
 Creates epochs around specified event triggers. Requires data of class
-\code{eeg_data}.
+\code{eeg_data}. Where multiple events are specified, epochs will be created
+around each event.
 }
 \section{Methods (by class)}{
 \itemize{

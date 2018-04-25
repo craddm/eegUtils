@@ -17,6 +17,9 @@ test_that("Import and epoching of bdf files works correctly", {
   test_epo <- epoch_data(test_data, 255)
   expect_s3_class(test_epo, "eeg_epochs")
   expect_true(all(c("epoch", "time") %in% names(test_epo$events)))
+  expect_equal(length(unique(test_epo$timings$epoch)),
+               length(unique(test_epo$events$epoch)))
+  #expect_equal(length(test_epo$reference$ref_data), nrow(test_epo$signals))
 
   test_evo <- eeg_average(test_epo)
   expect_s3_class(test_evo, "eeg_evoked")
@@ -50,5 +53,27 @@ test_that("Filtering works for eeg_* objects", {
   test_iir <- iir_filt(test_data, high_freq = 40)
   expect_s3_class(test_iir, "eeg_data")
   expect_is(test_iir$signals, "tbl_df")
+  test_iir <- iir_filt(test_data, low_freq = 40, high_freq = 30)
+  expect_s3_class(test_iir, "eeg_data")
+  expect_is(test_iir$signals, "tbl_df")
+  expect_false(any(is.na(test_epo)))
+
+  test_iir <- iir_filt(test_epo, 1)
+  expect_is(test_iir$signals, "tbl_df")
+  expect_false(any(is.na(test_epo$signals[, 1])))
 
 })
+
+test_that("Interpolation works for eeg_* objects", {
+
+  skip_on_cran()
+
+  expect_error(interp_elecs(test_data, "A2"))
+  test_elecs <- electrode_locations(test_data, montage = "biosemi64alpha")
+  test_elecs <- interp_elecs(test_elecs, "A2")
+  expect_false(identical(test_elecs$signals$A2, test_data$signals$A2))
+
+})
+
+
+

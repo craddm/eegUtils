@@ -38,6 +38,15 @@ Construct a Butterworth IIR filter and filter input data. This uses
 \code{signal::filt_filt}, which filters the signal twice to - once forwards,
 then again backwards).
 }
+\details{
+low_freq and high_freq are passband edges. Pass low freq or high freq alone
+to perform high-pass or low-pass filtering respectively. For band-pass or
+band-stop filters, pass both low_freq and high_freq.
+
+If low_freq < high_freq, bandpass filtering is performed.
+
+If low_freq > high_freq, bandstop filtering is performed.
+}
 \section{Methods (by class)}{
 \itemize{
 \item \code{data.frame}: Filter a data frame

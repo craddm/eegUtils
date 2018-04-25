@@ -271,6 +271,17 @@ epoch_data.eeg_data <- function(data, events, time_lim = c(-1, 1), ...) {
                                    cbind(data$signals, data$timings),
                                    by = c("sample" = "sample"))
 
+  # Check for any epochs that contain NAs
+  epoched_data <- split(epoched_data, epoched_data$epoch)
+  na_epochs <- vapply(epoched_data, function(x) any(is.na(x)), FUN.VALUE = logical(1))
+  epoched_data <- epoched_data[!na_epochs]
+  epoched_data <- do.call(rbind, epoched_data)
+
+  event_table <- event_table[event_table$epoch %in% names(na_epochs[!na_epochs]), ]
+
+  if (any(na_epochs)) {
+    cat(paste(sum(na_epochs), "epoch(s) with NAs removed. Epoch boundaries would lie outside data."))
+  }
 
   if (!is.null(data$reference)) {
     ref_data <- dplyr::left_join(epoched_data,
@@ -309,7 +320,7 @@ epoch_data.eeg_epochs <- function(data, ...) {
 #' \code{signal} package. Note that this will also adjust the event table,
 #' moving events to the nearest time remaining after downsampling
 #'
-#' @author Matt Craddock \email{matt@mattcraddock.com}
+#' @author Matt Craddock \email{matt@@mattcraddock.com}
 #'
 #' @param data An \code{eeg_data} object to be downsampled
 #' @param ... Parameters passed to functions
