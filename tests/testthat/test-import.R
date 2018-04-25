@@ -56,8 +56,8 @@ test_that("Filtering works for eeg_* objects", {
   test_iir <- iir_filt(test_data, low_freq = 40, high_freq = 30)
   expect_s3_class(test_iir, "eeg_data")
   expect_is(test_iir$signals, "tbl_df")
-  expect_false(any(is.na(test_epo)))
 
+  test_epo <- epoch_data(test_data, 255)
   test_iir <- iir_filt(test_epo, 1)
   expect_is(test_iir$signals, "tbl_df")
   expect_false(any(is.na(test_epo$signals[, 1])))
