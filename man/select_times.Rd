@@ -35,7 +35,9 @@ Data frame with only data from within the specified range.
 }
 \description{
 Generic function for selecting specific time ranges from a given dataset.
-Input can be a dataframe, or an object of class \code{eeg_data} or \code{eeg_epochs}
+Input can be a dataframe, or an object of class \code{eeg_data} or
+\code{eeg_epochs}. Note this finds the closest times to those specified, so
+times out may not correspond exactly to requested times.
 }
 \section{Methods (by class)}{
 \itemize{

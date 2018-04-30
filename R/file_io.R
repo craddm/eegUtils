@@ -4,13 +4,13 @@
 #' by the file extension.The \code{edfReader} package is used to load BDF files.
 #' The function creates an eeg_data structure for subsequent use.
 #'
-#' @author Matt Craddock, \email{matt@mattcraddock.com}
+#' @author Matt Craddock, \email{matt@@mattcraddock.com}
 #' @param file_name File to import. Should include file extension.
 #' @param file_path Path to file name, if not included in filename.
 #' @param chan_nos Channels to import. All channels are included by default.
 #' @import edfReader
 #' @import tools
-#' @importFrom purrr map_df
+#' @importFrom purrr map_df is_empty
 #' @importFrom tibble tibble as_tibble
 #' @export
 
@@ -19,14 +19,40 @@ import_raw <- function(file_name, file_path = NULL, chan_nos = NULL) {
 
   if (file_type == "bdf" | file_type == "edf") {
     data <- edfReader::readEdfSignals(edfReader::readEdfHeader(file_name))
+
+    #check for an annotations channel
+    anno_chan <- which(vapply(data, function(x) isTRUE(x$isAnnotation),
+                 FUN.VALUE = logical(1)))
+
+    #remove annotations if present - could put in separate list...
+    if (length(anno_chan) > 0) {
+      data <- data[-anno_chan]
+    }
+
     sigs <- purrr::map_df(data, "signal")
     srate <- data[[1]]$sRate
-    events <- sigs$Status %% (256)
-    timings <- tibble::tibble(sample = 1:dim(sigs)[[1]])
-    timings$time <- (timings$sample - 1) / srate
-    if (is.null(chan_nos)) {
-      chan_nos <- 1:(dim(sigs)[[2]] - 1)
+
+    if ("Status" %in% names(sigs)) {
+      events <- sigs$Status %% (256)
+    } else {
+      events <- integer(0)
     }
+
+    if (purrr::is_empty(events)) {
+      warning("No status channel. Retaining all channels.")
+      chan_nos <- 1:ncol(sigs)
+    } else {
+      #all chans except Status
+      chan_nos <- (1:ncol(sigs))[-which(names(sigs) == "Status")]
+    }
+
+    timings <- tibble::tibble(sample = 1:nrow(sigs))
+    timings$time <- (timings$sample - 1) / srate
+
+    if (is.null(chan_nos)) {
+      chan_nos <- 1:(ncol(sigs) - 1)
+    }
+
     sigs <- tibble::as_tibble(sigs[, chan_nos])
     events_diff <- diff(events)
     event_table <- tibble::tibble(event_onset = which(events_diff > 0) + 1,
