@@ -2,12 +2,17 @@
 % Please edit documentation in R/run_ICA.R
 \name{run_ICA}
 \alias{run_ICA}
+\alias{run_ICA.eeg_epochs}
 \title{ICA for EEG data}
 \usage{
-run_ICA(data, method = "sobi")
+run_ICA(data, ...)
+
+\method{run_ICA}{eeg_epochs}(data, method = "sobi", ...)
 }
 \arguments{
 \item{data}{Data frame to be ICAed.}
+
+\item{...}{Other parameters passed to function.}
 
 \item{method}{Only SOBI is currently implemented, so this is ignored.}
 }
@@ -16,4 +21,12 @@ Implements SOBI ICA. Although SOBI exists in R already, thanks to the JADE
 package, it doesn't respect epoch boundaries when computing correlations
 across different time lags. This is a port of SOBI from EEGLAB. Currently
 only works on epoched data.
+}
+\section{Methods (by class)}{
+\itemize{
+\item \code{eeg_epochs}: Run ICA on an \code{eeg_epochs} object
+}}
+
+\author{
+Matt Craddock \email{matt@mattcraddock.com}
 }

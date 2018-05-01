@@ -1,4 +1,4 @@
-#'Plot 1d timecourse data.
+#'Plot 1-d timecourse data.
 #'
 #'Typically event-related potentials/fields, but could also be timecourses from
 #'frequency analyses for single frequencies. Averages over all submitted
@@ -22,7 +22,7 @@
 #'
 #'@import dplyr
 #'@import ggplot2
-#'@importFrom rlang parse_quo caller_env
+#'@importFrom rlang parse_quo
 #'
 #'@return Returns a ggplot2 plot object
 #'
@@ -167,7 +167,7 @@ plot_timecourse <- function(data, time_lim = NULL,
 #' frequency analyses for single frequencies. Output is a ggplot2 object. CIs
 #' not possible.
 #'
-#' @author Matt Craddock, \email{matt@mattcraddock.com}
+#' @author Matt Craddock, \email{matt@@mattcraddock.com}
 #' @param data EEG dataset. Should have multiple timepoints.
 #' @param time_lim Character vector. Numbers in whatever time unit is used
 #'   specifying beginning and end of time-range to plot. e.g. c(-100,300)
@@ -215,7 +215,13 @@ plot_butterfly <- function(data,
                             -time,
                             factor_key = TRUE)
       }
+  } else {
+    if (is.null(facet)) {
+      data <- dplyr::group_by(data, time, electrode)
+      data <- dplyr::summarise(data, amplitude = mean(amplitude))
+    }
   }
+
   ## select time-range of interest -------------
 
   if (!is.null(time_lim)) {

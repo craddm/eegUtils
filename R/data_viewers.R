@@ -1,11 +1,11 @@
 #'Browse EEG data.
 #'
-#'A Shiny gadget for browsing continuous data interactively. Data can be viewed
+#'A Shiny gadget for browsing EEG data interactively. Data can be viewed
 #'as a butterfly plot (all electrodes overlaid) or as individual traces
 #'(electrodes "stacked"). Currently, the scale cannot be manually set and is
 #'determined by the range of the viewable data.
 #'
-#'@author Matt Craddock \email{matt@mattcraddock.com}
+#'@author Matt Craddock \email{matt@@mattcraddock.com}
 #'
 #'@param data \code{eeg_data} object to be plotted.
 #'@param ... Other parameters passed to browsing functions.

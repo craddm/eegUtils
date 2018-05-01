@@ -2,6 +2,7 @@
 
 ### Function changes
 - `eeg_evoked()` class introduced to hold ERPS
+- `eeg_ICA()` class introduced to hold ICA decompositions
 - `eeg_average()` function to calculate averages (e.g. ERPs) from `eeg_epochs` objects
 - `as.data.frame.eeg_evoked()` introduced to handle conversion of eeg_evoked objects to data frames.
 
@@ -9,8 +10,9 @@
 - `compute_psd()` function development, converted to S3method.
 - `topoplot()` properly checks for existing chan_info in `eeg_data` objects
 - `plot_timecourse()` and `plot_butterfly()` modified to deal with `eeg_evoked` objects.
+- `plot_butterfly()` updated to better handle data frames
+- `topoplot.eeg_ICA()` added to make topolots from ICA components
 - Initial commmits for addition of Morlet wavelet time-frequency analysis
-- 
 
 # eegUtils 0.1.14
 

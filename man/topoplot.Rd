@@ -4,6 +4,7 @@
 \alias{topoplot}
 \alias{topoplot.data.frame}
 \alias{topoplot.eeg_data}
+\alias{topoplot.eeg_ICA}
 \title{Topographical Plotting Function for EEG}
 \usage{
 topoplot(data, ...)
@@ -18,6 +19,12 @@ topoplot(data, ...)
   chanLocs = NULL, method = "Biharmonic", r = NULL, grid_res = 67,
   palette = "RdBu", interp_limit = "skirt", contour = TRUE,
   chan_marker = "point", quantity = "amplitude", montage = NULL, ...)
+
+\method{topoplot}{eeg_ICA}(data, time_lim = NULL, limits = NULL,
+  chanLocs = NULL, method = "Biharmonic", r = NULL, grid_res = 67,
+  palette = "RdBu", interp_limit = "skirt", contour = TRUE,
+  chan_marker = "point", quantity = "amplitude", montage = NULL,
+  colourmap, comp, ...)
 }
 \arguments{
 \item{data}{An EEG dataset. Must have columns x, y, and amplitude at present.
@@ -67,6 +74,8 @@ amplitude. Use quoted column names. E.g. "p.value", "t_statistic".}
 only 'biosemi64alpha' available other than default 10/20 system)}
 
 \item{colourmap}{Deprecated, use palette instead.}
+
+\item{comp}{Component to plot (numeric)}
 }
 \description{
 Allows topographical plotting of functional data. Output is a ggplot2 object.
@@ -82,6 +91,8 @@ Both \code{eeg_epochs} and \code{eeg_data} objects are supported.
 eeg_data objects.
 
 \item \code{eeg_data}: Topographical plotting of \code{eeg_data} objects.
+
+\item \code{eeg_ICA}: Topographical plot for \code{eeg_ICA} objects
 }}
 
 \section{Notes on usage of Generalized Additive Models for interpolation}{

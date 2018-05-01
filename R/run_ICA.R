@@ -6,31 +6,41 @@
 #' only works on epoched data.
 #'
 #' @param data Data frame to be ICAed.
-#' @param method Only SOBI is currently implemented, so this is ignored.
+#' @param ... Other parameters passed to function.
 #'
+#' @author Matt Craddock \email{matt@@mattcraddock.com}
 #' @import dplyr
 #' @import tidyr
 #' @importFrom JADE rjd
 #' @importFrom MASS ginv
 #' @export
 
-run_ICA <- function (data, method = "sobi") {
+run_ICA <- function(data, ...) {
+  UseMethod("run_ICA", data)
+}
 
-  n_epochs <- length(unique(data$epoch))
-  n_channels <- length(unique(data$electrode))
-  n_times <- length(unique(data$time))
+#' @param method Only SOBI is currently implemented, so this is ignored.
+#' @describeIn run_ICA Run ICA on an \code{eeg_epochs} object
+#' @export
+
+run_ICA.eeg_epochs <- function (data, method = "sobi", ...) {
+
+  n_epochs <- length(unique(data$timings$epoch))
+  n_channels <- ncol(data$signals)
+  n_times <- length(unique(data$timings$time))
 
   ##number of lags at which to assess autocovariance matrices
   n_lags <- min(100, ceiling(n_times / 3))
 
   ## reshape amplitude X electrode to a square matrix before doing SVD
-  data <- spread(data, electrode, amplitude)
+  #data <- data$signals
 
   ## Pre-whiten the data using the SVD. zero-mean columns and get SVD. NB:
   ## should probably edit this to zero mean *epochs*
   amp_matrix <-
-    scale(data.matrix(data[, (ncol(data) - n_channels + 1):ncol(data)]),
+    scale(data.matrix(data$signals[, (ncol(data$signals) - n_channels + 1):ncol(data$signals)]),
           scale = FALSE)
+
   SVD_amp <- svd(amp_matrix)
 
   ## get the psuedo-inverse of the diagonal matrix, multiply by right singular
@@ -70,8 +80,15 @@ run_ICA <- function (data, method = "sobi") {
   mixing_matrix <- data.frame(MASS::ginv(Q) %*% M_rjd$V)
   names(mixing_matrix) <- 1:n_channels
   mixing_matrix$electrode <-
-    names(data[, (ncol(data) - n_channels + 1):ncol(data)])
+    names(data$signals[, (ncol(data$signals) - n_channels + 1):ncol(data$signals)])
   dim(amp_matrix) <- c(n_channels, n_times * n_epochs)
   S <- t(M_rjd$V) %*% amp_matrix
-  return(list("mixing_matrix" = mixing_matrix, "comp_activations" = t(S)))
+  ica_obj <- list("mixing_matrix" = mixing_matrix,
+                  "comp_activations" = t(S),
+                  "timings" = data$timings,
+                  "events" = data$events,
+                  "chan_info" = data$chan_info,
+                  "continuous" = FALSE)
+  class(ica_obj) <- c("eeg_ICA", "eeg_data")
+  return(ica_obj)
 }

@@ -316,7 +316,7 @@ topoplot.data.frame <- function(data, time_lim = NULL, limits = NULL,
 }
 
 
-#' Topographical Plotting Function for EEG
+#' Topographical Plotting Function for EEG data
 #'
 #' Both \code{eeg_epochs} and \code{eeg_data} objects are supported.
 #'
@@ -340,6 +340,21 @@ topoplot.eeg_data <- function(data, time_lim = NULL, limits = NULL,
            interp_limit = interp_limit, contour = contour,
            chan_marker = chan_marker, quantity = quantity,
            montage = montage, passed = TRUE)
+}
+
+
+#' @param comp Component to plot (numeric)
+#' @describeIn topoplot Topographical plot for \code{eeg_ICA} objects
+topoplot.eeg_ICA <- function(data, time_lim = NULL, limits = NULL,
+                             chanLocs = NULL, method = "Biharmonic", r = NULL,
+                             grid_res = 67, palette = "RdBu",
+                             interp_limit = "skirt", contour = TRUE,
+                             chan_marker = "point", quantity = "amplitude",
+                             montage = NULL, colourmap, comp, ...) {
+  data <- data.frame(amplitude = scale(data$mixing_matrix[, comp]),
+                     electrode = data$mixing_matrix$electrode)
+  topoplot(data)
+
 }
 
 #' Set palette and limits for topoplot

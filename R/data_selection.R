@@ -58,7 +58,7 @@ select_times.eeg_data <- function(data, time_lim = NULL, df_out = FALSE, ...) {
     data$signals <- dplyr::select(proc_data, -sample, -time)
     data$timings <- tibble::tibble(time = proc_data$time, sample = proc_data$sample)
     if (!is.null(data$reference$ref_data)) {
-      data$reference$ref_data <- data$reference$ref_data[data$timings$sample]
+      data$reference$ref_data <- data$reference$ref_data[data$timings$sample,]
     }
     return(data)
   }

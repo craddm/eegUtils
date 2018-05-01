@@ -229,6 +229,13 @@ is.eeg_evoked <- function(x) inherits(x, "eeg_evoked")
 #
 is.eeg_stats <- function(x) inherits(x, "eeg_stats")
 
+#' Check if object is of class \code{eeg_ICA}
+#'
+#' @param x Object to check.
+#'
+
+is.eeg_ICA <- function(x) inherits(x, "eeg_ICA")
+
 #' Convert eeg_data to data.frame
 #'
 #' Convert an object of class \code{eeg_data} into a standard data.frame / tibble
@@ -299,6 +306,33 @@ as.data.frame.eeg_evoked <- function(x, row.names = NULL,
   return(df)
 }
 
+#' Convert \code{eeg_ICA} object to data frame
+#
+#' @author Matt Craddock \email{matt@mattcraddock.com}
+#' @param x Object of class \code{eeg_ICA}
+#' @param row.names Kept for compatability with S3 generic, ignored.
+#' @param optional Kept for compatability with S3 generic, ignored.
+#' @param long Convert to long format. Defaults to FALSE
+#' @param ... arguments for other as.data.frame commands
+#'
+#' @importFrom tidyr gather
+#' @export
+
+as.data.frame.eeg_ICA <- function(x, row.names = NULL,
+                                  optional = FALSE, long = FALSE, ...) {
+  names(x$comp_activations) <- 1:ncol(x$comp_activations)
+  df <- data.frame(x$comp_activations, x$timings)
+  if (long) {
+    df <- tidyr::gather(df,
+                        electrode,
+                        amplitude,
+                        -time,
+                        -epoch,
+                        -sample,
+                        factor_key = T)
+  }
+  return(df)
+}
 
 #' Convert polar to spherical coordinates
 #'
