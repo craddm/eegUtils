@@ -98,37 +98,87 @@ reref_eeg <- function(data, ref_chans = "average", exclude = NULL,
   }
 }
 
-#' Baseline correction.
+#' Baseline correction
 #'
 #' Used to remove the mean of a specified time period from the data. Currently
 #' only performs subtractive baseline. With a data frame, searches for
 #' "electrode" and "epoch" columns, and groups on these when found. An electrode
 #' column is always required; an epoch column is not.
 #'
-#' @author Matt Craddock \email{matt@mattcraddock.com}
+#' @author Matt Craddock \email{matt@@mattcraddock.com}
 #' @param data Data to be baseline corrected.
-#' @param time_lim Numeric character vector (e.g. time_lim <- c(-.1, 0)). If
-#'   none given, defaults to mean of whole epoch if the data is epoched, or the
-#'   channel mean if the data is continuous.
-#' @import dplyr
-#' @import tidyr
+#' @param ... other parameters to be passed to functions
+#' @importFrom tibble as_tibble
 #' @export
 
-rm_baseline <- function(data, time_lim = NULL) {
+rm_baseline <- function(data, ...) {
+  UseMethod("rm_baseline", data)
+}
 
-  obj_class <- is.eeg_data(data)
+#' @param time_lim Numeric character vector (e.g. time_lim <- c(-.1, 0)). If
+#'   none given, defaults to mean of the whole of each epoch if the data is epoched, or the
+#'   channel mean if the data is continuous.
+#' @describeIn rm_baseline remove baseline from continuous eeg_data
+#' @export
+rm_baseline.eeg_data <- function(data, time_lim = NULL, ...) {
 
-  if (obj_class) {
-    orig_data <- data
-    data <- cbind(data$signals, data$timings)
-    if (orig_data$continuous){
-      data <- tidyr::gather(data, electrode, amplitude, -time,
-                            -sample, factor_key = TRUE)
-    } else {
-      data <- tidyr::gather(data, electrode, amplitude, -time,
-                            -epoch, -sample, factor_key = TRUE)
+  if (is.null(time_lim)) {
+    baseline_dat <- colMeans(data$signals)
+    if (!is.null(data$reference$ref_data)) {
+      data$reference$ref_data <- data$reference$ref_data - mean(data$reference$ref_data[[1]])
+    }
+  } else {
+    base_times <- select_times(data, time_lim = time_lim)
+    baseline_dat <- colMeans(base_times$signals)
+    if (!is.null(data$reference$ref_data)) {
+      data$reference$ref_data <- data$reference$ref_data - mean(base_times$reference$ref_data[[1]])
     }
   }
+  data$signals <- tibble::as_tibble(sweep(data$signals, 2, baseline_dat, '-'))
+  return(data)
+}
+
+#' @describeIn rm_baseline Remove baseline from eeg_epochs
+#' @export
+rm_baseline.eeg_epochs <- function(data, time_lim = NULL, ...) {
+
+  n_epochs <- length(unique(data$timings$epoch))
+  n_times <- length(unique(data$timings$time))
+  n_chans <- ncol(data$signals)
+  elecs <- names(data$signals)
+
+  if (is.null(time_lim)) {
+    data$signals <- as.matrix(data$signals)
+    dim(data$signals) <- c(n_times, n_epochs, n_chans)
+    baseline_dat <- colMeans(data$signals)
+    data$signals <- vapply(1:n_times,
+                           function(x) data$signals[x, , ] - baseline_dat,
+                           array(0, dim = c(n_epochs, n_chans)))
+    data$signals <- aperm(data$signals, c(3, 1, 2))
+    data$signals <- array(data$signals, dim = c(n_epochs * n_times, n_chans))
+    data$signals <- tibble::as_tibble(data$signals)
+    names(data$signals) <- elecs
+  } else {
+    base_times <- select_times(data, time_lim = time_lim)
+    base_times$signals <- split(base_times$signals, base_times$timings$epoch)
+    base_baselines <- lapply(base_times$signals, colMeans)
+    data$signals <- split(data$signals, data$timings$epoch)
+    data$signals <- lapply(seq_along(data$signals),
+                           function(i) sweep(data$signals[[i]],
+                                             2,
+                                             base_baselines[[i]],
+                                             '-'))
+    data$signals <- do.call(rbind, data$signals)
+    #data$signals <- as.matrix(data$signals)
+    #dim(data$signals) <- c(n_times, n_epochs, n_chans)
+  }
+  return(data)
+
+}
+
+#' @describeIn rm_baseline Legacy method for data.frames
+#' @export
+rm_baseline.data.frame <- function(data, time_lim = NULL, ...) {
 
   if (!("time" %in% colnames(data))) {
     stop("Time dimension is required.")
@@ -164,20 +214,7 @@ rm_baseline <- function(data, time_lim = NULL) {
   }
 
   data <- ungroup(data)
-
-  if (obj_class) {
-    data <- tidyr::spread(data, electrode, amplitude)
-    if (orig_data$continuous) {
-      orig_data$signals <- dplyr::select(data, -time, -sample)
-      orig_data$timings <- dplyr::select(data, time, sample)
-    } else {
-      orig_data$signals <- dplyr::select(data, -time, -epoch, -sample)
-      orig_data$timings <- dplyr::select(data, time, epoch, sample)
-    }
-    orig_data
-  } else {
-    data
-  }
+  data
 }
 
 #' Create epochs from EEG data
