@@ -198,6 +198,19 @@ plot_butterfly <- function(data,
                            continuous = FALSE,
                            browse_mode = FALSE) {
 
+  if (is.eeg_evoked(data)) {
+    if (identical(class(data$signals), "list")) {
+      time_vec <- data$timings$time
+      data <- Reduce("+", data$signals) / length(data$signals)
+      data$time <- time_vec
+      data <- tidyr::gather(data,
+                            electrode,
+                            amplitude,
+                            -time,
+                            factor_key = T)
+    }
+  }
+
   if (is.eeg_data(data)) {
     if (continuous | data$continuous) {
       data <- as.data.frame(data, long = TRUE)
@@ -216,7 +229,7 @@ plot_butterfly <- function(data,
                             factor_key = TRUE)
       }
   } else {
-    if (is.null(facet)) {
+    if (browse_mode == FALSE && is.null(facet)) {
       data <- dplyr::group_by(data, time, electrode)
       data <- dplyr::summarise(data, amplitude = mean(amplitude))
     }

@@ -19,7 +19,7 @@ tag_events <- function(data, ...) {
 #' @param trigs Character vector of trigger numbers
 #' @param event_label Labels for the events.
 #' @importFrom dplyr left_join
-#' @importFrom tibble tibble
+#' @importFrom tibble as_tibble
 #' @export
 #' @describeIn tag_events Tag events in an \code{eeg_data} object
 #' @seealso \code{\link{list_events}}
@@ -59,7 +59,7 @@ tag_events.eeg_epochs <- function(data, trigs, event_label, ...) {
 #'
 #' List trigger types and any labels found in an \code{eeg_data} object.
 #'
-#' @author Matt Craddock \email{matt@mattcraddock.com}
+#' @author Matt Craddock \email{matt@@mattcraddock.com}
 #'
 #' @param data An object of class \code{eeg_data}
 #'
@@ -85,7 +85,7 @@ list_events <- function(data) {
 #'
 #' List trigger types and any labels found in an \code{eeg_data} object.
 #'
-#' @author Matt Craddock \email{matt@mattcraddock.com}
+#' @author Matt Craddock \email{matt@@mattcraddock.com}
 #'
 #' @param data An object of class \code{eeg_epochs}
 #'

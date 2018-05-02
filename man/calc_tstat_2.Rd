@@ -14,3 +14,6 @@ calc_tstat_2(x1, x2)
 \description{
 Calculate two-sample independent t-statistic using Welch's formula
 }
+\author{
+Matt Craddock, \email{matt@mattcraddock.com}
+}

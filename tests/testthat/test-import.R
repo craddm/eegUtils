@@ -19,7 +19,6 @@ test_that("Import and epoching of bdf files works correctly", {
   expect_true(all(c("epoch", "time") %in% names(test_epo$events)))
   expect_equal(length(unique(test_epo$timings$epoch)),
                length(unique(test_epo$events$epoch)))
-  #expect_equal(length(test_epo$reference$ref_data), nrow(test_epo$signals))
 
   test_evo <- eeg_average(test_epo)
   expect_s3_class(test_evo, "eeg_evoked")
@@ -77,3 +76,12 @@ test_that("Interpolation works for eeg_* objects", {
 
 
 
+test_that("Removing baseline works", {
+
+  skip_on_cran()
+
+  test_bl <- rm_baseline(test_data)
+  expect_equal(test_bl$signals$A1, test_data$signals$A1 - mean(test_data$signals$A1))
+  test_epo <- epoch_data(test_data, 255)
+
+})

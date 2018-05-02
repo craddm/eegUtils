@@ -12,6 +12,7 @@
 - `plot_timecourse()` and `plot_butterfly()` modified to deal with `eeg_evoked` objects.
 - `plot_butterfly()` updated to better handle data frames
 - `topoplot.eeg_ICA()` added to make topolots from ICA components
+- `rm_baseline()` reworked as S3 method and to be faster and much less memory intensive.
 - Initial commmits for addition of Morlet wavelet time-frequency analysis
 
 # eegUtils 0.1.14

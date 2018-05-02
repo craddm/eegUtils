@@ -14,7 +14,7 @@ compare_epochs(data, ...)
 
 \item{...}{Other parameters passed to functions.}
 
-\item{cond_label}{Conditions to compare}
+\item{cond_label}{Conditions to test. A character vector of max length 2.}
 
 \item{type}{Type of test to use. "1samp", "2samp"}
 }

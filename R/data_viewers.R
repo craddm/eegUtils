@@ -15,6 +15,16 @@ browse_data <- function(data, ...) {
   UseMethod("browse_data", data)
 }
 
+#' @export
+browse_data.eeg_ICA <- function(data, ...) {
+  warning("Not currently implemented for eeg_ICA objects.")
+}
+
+#' @export
+browse_data.eeg_stats <- function(data, ...) {
+  warning("Not currently implemented for eeg_stats objects.")
+}
+
 #'@param sig_length Length of signal to be plotted initially (seconds if
 #'  continuous, epochs if epoched).
 #'@param n_elecs Number of electrodes to be plotted on a single screen. (not yet
@@ -200,7 +210,7 @@ browse_data.eeg_epochs <- function(data, sig_length = 5,
                          #max(data$amplitude), min = 10, value = 100),
                          checkboxInput("dc_offset",
                                        "Remove DC offset",
-                                       value = TRUE)
+                                       value = FALSE)
                          )
                        )
                      )
@@ -230,7 +240,7 @@ browse_data.eeg_epochs <- function(data, sig_length = 5,
                            #page", n_elecs, min = 1, max = 30),
                            checkboxInput("dc_offset_ind",
                                          "Remove DC offset",
-                                         value = TRUE)
+                                         value = FALSE)
                            )
                          )
                        )
@@ -268,7 +278,6 @@ browse_data.eeg_epochs <- function(data, sig_length = 5,
           geom_vline(xintercept = max(unique(tmp_data$time))) +
           geom_vline(xintercept = 0, linetype = "longdash")
         butter_out
-
       })
 
       tmp_dat_ind <- reactive({

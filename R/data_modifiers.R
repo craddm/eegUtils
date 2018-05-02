@@ -94,7 +94,7 @@ reref_eeg <- function(data, ref_chans = "average", exclude = NULL,
     }
     return(data)
   } else {
-    return(as_tibble(tmp_data))
+    return(tibble::as_tibble(tmp_data))
   }
 }
 
@@ -549,21 +549,42 @@ eeg_average.default <- function(data, ...) {
   stop("eeg_epochs object required as input.")
 }
 
-#' Create an eeg_evoked objects from eeg_epochs
-#'@describeIn eeg_average Create evoked data from \code{eeg_epochs}
-eeg_average.eeg_epochs <- function(data, ...) {
-  data$signals$time <- data$timings$time
-  # if (!is.null(data$reference$ref_data)) {
-  #   data$signals$reference <- data$reference$ref_data
-  # }
-  data$signals <- split(data$signals, data$signals$time)
-  data$signals <- lapply(data$signals, colMeans)
-  data$signals <- as.data.frame(do.call("rbind", data$signals))
+#' Create an \code{eeg_evoked} object from eeg_epochs
+#'
+#' @param cond_label Only pick events that include a given label. Character vector.
+#' @describeIn eeg_average Create evoked data from \code{eeg_epochs}
+eeg_average.eeg_epochs <- function(data, cond_label = NULL, ...) {
+
+  if (is.null(cond_label)) {
+    data$signals <- split(data$signals, data$timings$time)
+    data$signals <- lapply(data$signals, colMeans)
+    data$signals <- as.data.frame(do.call("rbind", data$signals))
+
+    row.names(data$signals) <- NULL
+
+  } else {
+
+    if (all(cond_label %in% unique(list_epochs(data)$event_label))) {
+      evoked <- vector("list", length(cond_label))
+      for (i in seq_along(cond_label)) {
+        tmp_dat <- select_epochs(data, cond_label[[i]])
+        tmp_dat$signals <- split(tmp_dat$signals, tmp_dat$timings$time)
+        tmp_dat$signals <- lapply(tmp_dat$signals, colMeans)
+        evoked[[i]] <- as.data.frame(do.call("rbind", tmp_dat$signals))
+        row.names(evoked[[i]]) <- NULL
+        }
+      data$signals <- evoked
+      if (length(cond_label) > 1) {
+        names(data$signals) <- cond_label
+        } else {
+          data$signals <- data$signals[[1]]
+        }
+    } else {
+      stop("Not all epoch labels found.")
+    }
+  }
   data$reference$ref_data <- NULL
-  data$signals <- data$signals[, !names(data$signals) %in% "time"]
   data$events <- NULL
-  #data$timings <- NULL
-  row.names(data$signals) <- NULL
   data$timings <- unique(data$timings["time"])
   class(data) <- c("eeg_evoked", "eeg_data")
   data

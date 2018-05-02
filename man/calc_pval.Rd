@@ -16,3 +16,6 @@ calc_pval(x, df, tails = 2)
 \description{
 Calculate p-value
 }
+\author{
+Matt Craddock, \email{matt@mattcraddock.com}
+}

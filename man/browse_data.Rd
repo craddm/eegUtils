@@ -29,7 +29,7 @@ implemented)}
 by only plotting every 4th point, speeding up plotting considerably.}
 }
 \description{
-A Shiny gadget for browsing continuous data interactively. Data can be viewed
+A Shiny gadget for browsing EEG data interactively. Data can be viewed
 as a butterfly plot (all electrodes overlaid) or as individual traces
 (electrodes "stacked"). Currently, the scale cannot be manually set and is
 determined by the range of the viewable data.

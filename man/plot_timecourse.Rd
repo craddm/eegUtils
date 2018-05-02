@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_timecourse.R
 \name{plot_timecourse}
 \alias{plot_timecourse}
-\title{Plot 1d timecourse data.}
+\title{Plot 1-d timecourse data.}
 \usage{
 plot_timecourse(data, time_lim = NULL, group = NULL, facet = NULL,
   add_CI = FALSE, baseline = NULL, colour = NULL, electrode = NULL,

@@ -186,13 +186,15 @@ eeg_evoked <- function(data, chan_info, timings, ...) {
 #'
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #' @param statistic Calculated statistic (e.g. t-statistic)
+#' @param pvals calculated p-values for that statistic
 #' @param chan_info String of character names for electrodes.
 #' @param timings Unique timepoints remaining in the data.
 #' @export
 
-eeg_stats <- function(statistic, chan_info, timings) {
+eeg_stats <- function(statistic, chan_info, pvals, timings) {
 
   value <- list(statistic = statistic,
+                pvals = pvals,
                 chan_info = chan_info,
                 timings = timings)
   class(value) <- "eeg_stats"
