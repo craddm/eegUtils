@@ -2,15 +2,26 @@
 % Please edit documentation in R/data_modifiers.R
 \name{rm_baseline}
 \alias{rm_baseline}
-\title{Baseline correction.}
+\alias{rm_baseline.eeg_data}
+\alias{rm_baseline.eeg_epochs}
+\alias{rm_baseline.data.frame}
+\title{Baseline correction}
 \usage{
-rm_baseline(data, time_lim = NULL)
+rm_baseline(data, ...)
+
+\method{rm_baseline}{eeg_data}(data, time_lim = NULL, ...)
+
+\method{rm_baseline}{eeg_epochs}(data, time_lim = NULL, ...)
+
+\method{rm_baseline}{data.frame}(data, time_lim = NULL, ...)
 }
 \arguments{
 \item{data}{Data to be baseline corrected.}
 
+\item{...}{other parameters to be passed to functions}
+
 \item{time_lim}{Numeric character vector (e.g. time_lim <- c(-.1, 0)). If
-none given, defaults to mean of whole epoch if the data is epoched, or the
+none given, defaults to mean of the whole of each epoch if the data is epoched, or the
 channel mean if the data is continuous.}
 }
 \description{
@@ -19,6 +30,15 @@ only performs subtractive baseline. With a data frame, searches for
 "electrode" and "epoch" columns, and groups on these when found. An electrode
 column is always required; an epoch column is not.
 }
+\section{Methods (by class)}{
+\itemize{
+\item \code{eeg_data}: remove baseline from continuous eeg_data
+
+\item \code{eeg_epochs}: Remove baseline from eeg_epochs
+
+\item \code{data.frame}: Legacy method for data.frames
+}}
+
 \author{
 Matt Craddock \email{matt@mattcraddock.com}
 }
