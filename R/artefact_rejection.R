@@ -22,7 +22,7 @@ eeg_FASTER.eeg_epochs <- function(data, ...) {
 #'
 #' Reject data based on a simple absolute threshold. This goes marks any timepoint from any electrode
 #'
-#' @author Matt Craddock \email{matt@mattcraddock.com}
+#' @author Matt Craddock \email{matt@@mattcraddock.com}
 #'
 #' @param data An object of class \code{eeg_data} or \code{eeg_epochs}.
 #' @param threshold In microvolts. If one value is supplied, it will be treated as a +- value.
@@ -77,7 +77,7 @@ eeg_ar_thresh.eeg_epochs <- function(data, threshold, reject = FALSE, ...) {
 
 #' Channel statistics
 #'
-#' @author Matt Craddock \email{matt@mattcraddock.com}
+#' @author Matt Craddock \email{matt@@mattcraddock.com}
 #'
 #' @param data Data as a \code{eeg_data} or \code{eeg_epochs} object.
 #' @param ... Other parameters passed to the functions.
@@ -97,7 +97,7 @@ channel_stats.eeg_data <- function(data, ...) {
 
 #' Epoch statistics
 #'
-#' @author Matt Craddock \email{matt@mattcraddock.com}
+#' @author Matt Craddock \email{matt@@mattcraddock.com}
 #'
 #' @param data Data as a \code{eeg_data} or \code{eeg_epochs} object.
 #' @param ... Other parameters passed to the functions.
@@ -108,16 +108,20 @@ epoch_stats <- function(data, ...) {
 
 #' @describeIn epoch_stats Calculate statistics for each epoch.
 epoch_stats.eeg_epochs <- function(data, ...) {
-  epoch_means <- c(rowMeans(data$signals), data$timings$epoch)
-  epoch_means <- dplyr::group_by(epoch_means, epoch)
-  epoch_means <- dplyr::summarise_all(epoch_means, mean)
+  epoch_nos <- unique(data$timings$epoch)
+  data <- split(data$signals, data$timings$epoch)
+  epoch_means <- lapply(data, colMeans)
+  epoch_means <- as.data.frame(do.call("rbind", epoch_means))
+  epoch_means$epoch_nos <- epoch_nos
+  epoch_means
 }
 
 #' Channel interpolation
 #'
-#' Interpolate EEG channels using a spherical spline (Perrin et al., 1989). The data must have channel locations attached.
+#' Interpolate EEG channels using a spherical spline (Perrin et al., 1989). The
+#' data must have channel locations attached.
 #'
-#' @author Matt Craddock \email{matt@mattcraddock.com}
+#' @author Matt Craddock \email{matt@@mattcraddock.com}
 #'
 #' @param data Data as a \code{eeg_data} or \code{eeg_epochs} object.
 #' @param bad_elecs Name(s) of electrode(s) to interpolate.
@@ -166,6 +170,7 @@ interp_elecs.eeg_data <- function(data, bad_elecs, ...) {
 #' @param good_elecs Electrodes with positions that do not need interpolation
 #' @param bad_elecs Electrodes to be interpolated
 #' @param data Raw data
+#' @noRd
 
 spheric_spline <- function(good_elecs, bad_elecs, data) {
 
@@ -203,6 +208,7 @@ spheric_spline <- function(good_elecs, bad_elecs, data) {
 #' @param xyz_coords A set of electrodes locations on a unit sphere.
 #' @param xyz_elecs A set of electrodes locations on a unit sphere.
 #' @importFrom pracma legendre
+#' @noRd
 
 compute_g <- function(xyz_coords, xyz_elecs) {
 
@@ -237,7 +243,7 @@ compute_g <- function(xyz_coords, xyz_elecs) {
 #' Calculate kurtosis
 #'
 #' @param data Data to calculate kurtosis for
-#'
+#' @noRd
 
 kurtosis <- function(data) {
   m4 <- mean((data - mean(data)) ^ 4)

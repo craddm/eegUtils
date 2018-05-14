@@ -351,9 +351,13 @@ topoplot.eeg_ICA <- function(data, time_lim = NULL, limits = NULL,
                              interp_limit = "skirt", contour = TRUE,
                              chan_marker = "point", quantity = "amplitude",
                              montage = NULL, colourmap, comp, ...) {
+  if (missing(comp)) {
+    stop("Component number must be specified for eeg_ICA objects.")
+  }
+  chan_info <- data$chan_info
   data <- data.frame(amplitude = scale(data$mixing_matrix[, comp]),
                      electrode = data$mixing_matrix$electrode)
-  topoplot(data)
+  topoplot(data, chanLocs = chan_info)
 
 }
 

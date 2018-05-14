@@ -2,7 +2,7 @@
 #' StatBiharmonic
 #'
 #'
-#'
+#' @noRd
 
 StatBiharmonic <- ggproto("StatBiharmonic", Stat,
                           required_aes = c("x", "y", "fill"),
@@ -119,7 +119,7 @@ stat_head <- function(mapping = NULL, data = NULL, geom = "path",
 
 
 #' StatScalpmap
-#'
+#' @noRd
 
 StatScalpmap <- ggproto("StatScalpmap", Stat,
                           required_aes = c("x", "y", "fill"),

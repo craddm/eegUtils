@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Baseline correction. � rm_baseline • eegUtils</title>
+<title>Baseline correction — rm_baseline • eegUtils</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -18,13 +18,25 @@
 <!-- Font Awesome icons -->
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 
+<!-- clipboard.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
 <script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
-  
-  
+
+
+
+<meta property="og:title" content="Baseline correction — rm_baseline" />
+
+<meta property="og:description" content="Used to remove the mean of a specified time period from the data. Currently
+only performs subtractive baseline. With a data frame, searches for
+"electrode" and "epoch" columns, and groups on these when found. An electrode
+column is always required; an epoch column is not." />
+<meta name="twitter:card" content="summary" />
+
+
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
@@ -47,8 +59,12 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="../index.html">eegUtils</a>
+      <span class="navbar-brand">
+        <a class="navbar-link" href="../index.html">eegUtils</a>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.1.15</span>
+      </span>
     </div>
+
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
@@ -76,7 +92,7 @@
   </ul>
 </li>
 <li>
-  <a href="../news/index.html">News</a>
+  <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
       
@@ -88,6 +104,7 @@
   </a>
 </li>
       </ul>
+      
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
@@ -95,22 +112,35 @@
       
       </header>
 
-      <div class="row">
+<div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Baseline correction.</h1>
+    <h1>Baseline correction</h1>
+    <small class="dont-index">Source: <a href='https://github.com/craddm/eegUtils/blob/master/R/data_modifiers.R'><code>R/data_modifiers.R</code></a></small>
+    <div class="hidden name"><code>rm_baseline.Rd</code></div>
     </div>
 
+    <div class="ref-description">
     
     <p>Used to remove the mean of a specified time period from the data. Currently
 only performs subtractive baseline. With a data frame, searches for
 "electrode" and "epoch" columns, and groups on these when found. An electrode
 column is always required; an epoch column is not.</p>
     
+    </div>
 
-    <pre class="usage"><span class='fu'>rm_baseline</span>(<span class='no'>data</span>, <span class='kw'>time_lim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+    <pre class="usage"><span class='fu'>rm_baseline</span>(<span class='no'>data</span>, <span class='no'>...</span>)
+
+<span class='co'># S3 method for eeg_data</span>
+<span class='fu'>rm_baseline</span>(<span class='no'>data</span>, <span class='kw'>time_lim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)
+
+<span class='co'># S3 method for eeg_epochs</span>
+<span class='fu'>rm_baseline</span>(<span class='no'>data</span>, <span class='kw'>time_lim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)
+
+<span class='co'># S3 method for data.frame</span>
+<span class='fu'>rm_baseline</span>(<span class='no'>data</span>, <span class='kw'>time_lim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
     
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
@@ -118,12 +148,24 @@ column is always required; an epoch column is not.</p>
       <td><p>Data to be baseline corrected.</p></td>
     </tr>
     <tr>
+      <th>...</th>
+      <td><p>other parameters to be passed to functions</p></td>
+    </tr>
+    <tr>
       <th>time_lim</th>
       <td><p>Numeric character vector (e.g. time_lim &lt;- c(-.1, 0)). If
-none given, defaults to mean of whole epoch if the data is epoched, or the
+none given, defaults to mean of the whole of each epoch if the data is epoched, or the
 channel mean if the data is continuous.</p></td>
     </tr>
     </table>
+    
+    <h2 class="hasAnchor" id="methods-by-class-"><a class="anchor" href="#methods-by-class-"></a>Methods (by class)</h2>
+
+    <ul>
+<li><p><code>eeg_data</code>: remove baseline from continuous eeg_data</p></li>
+<li><p><code>eeg_epochs</code>: Remove baseline from eeg_epochs</p></li>
+<li><p><code>data.frame</code>: Legacy method for data.frames</p></li>
+</ul>
     
 
   </div>
@@ -131,7 +173,9 @@ channel mean if the data is continuous.</p></td>
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-                </ul>
+      
+      <li><a href="#methods-by-class-">Methods (by class)</a></li>
+          </ul>
 
     <h2>Author</h2>
     
@@ -152,5 +196,8 @@ Matt Craddock <a href='mailto:matt@mattcraddock.com'>matt@mattcraddock.com</a>
       </footer>
    </div>
 
+  
+
   </body>
 </html>
+

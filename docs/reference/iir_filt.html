@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Butterworth IIR filter � iir_filt • eegUtils</title>
+<title>Butterworth IIR filter — iir_filt • eegUtils</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -18,13 +18,24 @@
 <!-- Font Awesome icons -->
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 
+<!-- clipboard.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
 <script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
-  
-  
+
+
+
+<meta property="og:title" content="Butterworth IIR filter — iir_filt" />
+
+<meta property="og:description" content="Construct a Butterworth IIR filter and filter input data. This uses
+signal::filt_filt, which filters the signal twice to - once forwards,
+then again backwards)." />
+<meta name="twitter:card" content="summary" />
+
+
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
@@ -47,8 +58,12 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="../index.html">eegUtils</a>
+      <span class="navbar-brand">
+        <a class="navbar-link" href="../index.html">eegUtils</a>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.1.15</span>
+      </span>
     </div>
+
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
@@ -76,7 +91,7 @@
   </ul>
 </li>
 <li>
-  <a href="../news/index.html">News</a>
+  <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
       
@@ -88,6 +103,7 @@
   </a>
 </li>
       </ul>
+      
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
@@ -95,17 +111,21 @@
       
       </header>
 
-      <div class="row">
+<div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Butterworth IIR filter</h1>
+    <small class="dont-index">Source: <a href='https://github.com/craddm/eegUtils/blob/master/R/filtering.R'><code>R/filtering.R</code></a></small>
+    <div class="hidden name"><code>iir_filt.Rd</code></div>
     </div>
 
+    <div class="ref-description">
     
     <p>Construct a Butterworth IIR filter and filter input data. This uses
 <code>signal::filt_filt</code>, which filters the signal twice to - once forwards,
 then again backwards).</p>
     
+    </div>
 
     <pre class="usage"><span class='fu'>iir_filt</span>(<span class='no'>data</span>, <span class='no'>...</span>)
 
@@ -121,7 +141,7 @@ then again backwards).</p>
 <span class='fu'>iir_filt</span>(<span class='no'>data</span>, <span class='kw'>low_freq</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>high_freq</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>filter_order</span> <span class='kw'>=</span> <span class='fl'>4</span>, <span class='kw'>silent</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)</pre>
     
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
@@ -154,6 +174,14 @@ then again backwards).</p>
     </tr>
     </table>
     
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>low_freq and high_freq are passband edges. Pass low freq or high freq alone
+to perform high-pass or low-pass filtering respectively. For band-pass or
+band-stop filters, pass both low_freq and high_freq.</p>
+<p>If low_freq &lt; high_freq, bandpass filtering is performed.</p>
+<p>If low_freq &gt; high_freq, bandstop filtering is performed.</p>
+    
     <h2 class="hasAnchor" id="methods-by-class-"><a class="anchor" href="#methods-by-class-"></a>Methods (by class)</h2>
 
     <ul>
@@ -169,6 +197,8 @@ then again backwards).</p>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
       
+      <li><a href="#details">Details</a></li>
+
       <li><a href="#methods-by-class-">Methods (by class)</a></li>
           </ul>
 
@@ -191,5 +221,8 @@ Matt Craddock <a href='mailto:matt@mattcraddock.com'>matt@mattcraddock.com</a>
       </footer>
    </div>
 
+  
+
   </body>
 </html>
+

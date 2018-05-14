@@ -13,6 +13,9 @@ load_set(file_name, df_out = FALSE)
 TRUE for a normal data frame.}
 }
 \description{
+DEPRECATED - use \code{import_set}
+}
+\details{
 EEGLAB .set files are standard Matlab .mat files, but EEGLAB can be set to
 export either v6.5 or v7.3 format files. Only v6.5 files can be read with
 this function. v7.3 files (which use HDF5 format) are not currently

@@ -17,7 +17,8 @@ interp_elecs(data, bad_elecs, ...)
 \item{...}{Other parameters passed to the functions.}
 }
 \description{
-Interpolate EEG channels using a spherical spline (Perrin et al., 1989). The data must have channel locations attached.
+Interpolate EEG channels using a spherical spline (Perrin et al., 1989). The
+data must have channel locations attached.
 }
 \section{Methods (by class)}{
 \itemize{

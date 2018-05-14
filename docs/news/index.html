@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>All news • eegUtils</title>
+<title>Changelog • eegUtils</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -18,13 +18,19 @@
 <!-- Font Awesome icons -->
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 
+<!-- clipboard.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
 <script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
-  
-  
+
+
+
+<meta property="og:title" content="Changelog" />
+
+
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
@@ -47,8 +53,12 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="../index.html">eegUtils</a>
+      <span class="navbar-brand">
+        <a class="navbar-link" href="../index.html">eegUtils</a>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.1.15</span>
+      </span>
     </div>
+
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
@@ -76,7 +86,7 @@
   </ul>
 </li>
 <li>
-  <a href="../news/index.html">News</a>
+  <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
       
@@ -88,6 +98,7 @@
   </a>
 </li>
       </ul>
+      
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
@@ -95,16 +106,15 @@
       
       </header>
 
-      <div class="row">
-
-  <div class="col-md-9">
+<div class="row">
+  <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Change log <small>All releases</small></h1>
+      <h1>Changelog <small></small></h1>
+      <small>Source: <a href='https://github.com/craddm/eegUtils/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
-    <div class="contents">
     <div id="eegutils-0-1-15-dev" class="section level1">
-<h1 class="hasAnchor">
+<h1 class="page-header">
 <a href="#eegutils-0-1-15-dev" class="anchor"></a>eegUtils 0.1.15.dev</h1>
 <div id="function-changes" class="section level3">
 <h3 class="hasAnchor">
@@ -112,6 +122,8 @@
 <ul>
 <li>
 <code><a href="../reference/eeg_evoked.html">eeg_evoked()</a></code> class introduced to hold ERPS</li>
+<li>
+<code>eeg_ICA()</code> class introduced to hold ICA decompositions</li>
 <li>
 <code><a href="../reference/eeg_average.html">eeg_average()</a></code> function to calculate averages (e.g. ERPs) from <code>eeg_epochs</code> objects</li>
 <li>
@@ -128,14 +140,21 @@
 <code><a href="../reference/topoplot.html">topoplot()</a></code> properly checks for existing chan_info in <code>eeg_data</code> objects</li>
 <li>
 <code><a href="../reference/plot_timecourse.html">plot_timecourse()</a></code> and <code><a href="../reference/plot_butterfly.html">plot_butterfly()</a></code> modified to deal with <code>eeg_evoked</code> objects.</li>
-<li>Initial commmits for addition of Morlet wavelet time-frequency analysis</li>
 <li>
-</li>
+<code><a href="../reference/plot_butterfly.html">plot_butterfly()</a></code> updated to better handle data frames</li>
+<li>
+<code><a href="../reference/topoplot.html">topoplot.eeg_ICA()</a></code> added to make topolots from ICA components</li>
+<li>
+<code><a href="../reference/rm_baseline.html">rm_baseline()</a></code> reworked as S3 method and to be faster and much less memory intensive.</li>
+<li>
+<code><a href="../reference/plot_butterfly.html">plot_butterfly()</a></code> converted to S3 method.</li>
+<li>Initial commits for addition of Morlet wavelet time-frequency analysis</li>
+<li>Initial commits for statisical comparisons added</li>
 </ul>
 </div>
 </div>
     <div id="eegutils-0-1-14" class="section level1">
-<h1 class="hasAnchor">
+<h1 class="page-header">
 <a href="#eegutils-0-1-14" class="anchor"></a>eegUtils 0.1.14</h1>
 <div id="function-changes-1" class="section level3">
 <h3 class="hasAnchor">
@@ -173,7 +192,7 @@
 </div>
 </div>
     <div id="eegutils-0-1-13" class="section level1">
-<h1 class="hasAnchor">
+<h1 class="page-header">
 <a href="#eegutils-0-1-13" class="anchor"></a>eegUtils 0.1.13</h1>
 <div id="function-changes-2" class="section level3">
 <h3 class="hasAnchor">
@@ -189,7 +208,7 @@
 </div>
 </div>
     <div id="eegutils-0-1-12" class="section level1">
-<h1 class="hasAnchor">
+<h1 class="page-header">
 <a href="#eegutils-0-1-12" class="anchor"></a>eegUtils 0.1.12</h1>
 <div id="function-changes-3" class="section level3">
 <h3 class="hasAnchor">
@@ -215,13 +234,12 @@
 </div>
 </div>
     <div id="eegutils-0-1-11" class="section level1">
-<h1 class="hasAnchor">
+<h1 class="page-header">
 <a href="#eegutils-0-1-11" class="anchor"></a>eegUtils 0.1.11</h1>
 <ul>
 <li>Added a <code>NEWS.md</code> file to track changes to the package.</li>
 </ul>
 </div>
-    </div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -251,5 +269,8 @@
       </footer>
    </div>
 
+  
+
   </body>
 </html>
+

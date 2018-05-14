@@ -6,7 +6,6 @@
 #' @param ... Parameters passed to S3 methods.
 #' @export
 
-
 electrode_locations <- function(data, ...) {
   UseMethod("electrode_locations")
 }
@@ -134,7 +133,7 @@ electrode_locations.eeg_data <- function(data,
 
 #' Function to create an S3 object of class "eeg_data".
 #'
-#' @author Matt Craddock \email{matt@mattcraddock.com}
+#' @author Matt Craddock \email{matt@@mattcraddock.com}
 #' @param data Raw data - signals from electrodes/channels.
 #' @param srate Sampling rate in Hz.
 #' @param chan_info String of character names for electrodes.
@@ -203,9 +202,9 @@ eeg_stats <- function(statistic, chan_info, pvals, timings) {
 
 #' Check if object is of class "eeg_data".
 #'
-#' @author Matt Craddock \email{matt@mattcraddock.com}
+#' @author Matt Craddock \email{matt@@mattcraddock.com}
 #' @param x Object to check.
-#'
+#' @noRd
 
 is.eeg_data <- function(x) inherits(x, "eeg_data")
 
@@ -214,7 +213,7 @@ is.eeg_data <- function(x) inherits(x, "eeg_data")
 #'
 #' @author Matt Craddock \email{matt@mattcraddock.com}
 #' @param x Object to check.
-#'
+#' @noRd
 
 is.eeg_epochs <- function(x) inherits(x, "eeg_epochs")
 
@@ -222,19 +221,19 @@ is.eeg_epochs <- function(x) inherits(x, "eeg_epochs")
 #'
 #' @author Matt Craddock \email{matt@mattcraddock.com}
 #' @param x Object to check.
-
+#' @noRd
 is.eeg_evoked <- function(x) inherits(x, "eeg_evoked")
 
 #' Check if object is of class \code{eeg_stats}
 #'
 #' @param x Object to check.
-#
+#' @noRd
 is.eeg_stats <- function(x) inherits(x, "eeg_stats")
 
 #' Check if object is of class \code{eeg_ICA}
 #'
 #' @param x Object to check.
-#'
+#' @noRd
 
 is.eeg_ICA <- function(x) inherits(x, "eeg_ICA")
 
@@ -345,6 +344,7 @@ as.data.frame.eeg_ICA <- function(x, row.names = NULL,
 #'   locations)
 #' @param phi Elevation from polar co-ordinates (radius in supplied electrode
 #'   locations)
+#' @noRd
 
 pol_to_sph <- function(theta, phi) {
 

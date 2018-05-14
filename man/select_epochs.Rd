@@ -22,7 +22,7 @@ select_epochs(data, ...)
 \item{...}{Parameters passed to specific methods}
 
 \item{epoch_events}{Select epochs containing any of the specified events. Can
-be numeric or character vector. Will override any epoch_no input}
+be numeric or a character string. Will override any epoch_no input.}
 
 \item{epoch_no}{Select epochs by epoch number.}
 

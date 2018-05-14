@@ -2,14 +2,29 @@
 % Please edit documentation in R/plot_timecourse.R
 \name{plot_butterfly}
 \alias{plot_butterfly}
+\alias{plot_butterfly.default}
+\alias{plot_butterfly.eeg_evoked}
+\alias{plot_butterfly.eeg_stats}
 \title{Create a butterfly plot from timecourse data}
 \usage{
-plot_butterfly(data, time_lim = NULL, group = NULL, facet = NULL,
-  baseline = NULL, colourmap = NULL, legend = TRUE, continuous = FALSE,
-  browse_mode = FALSE)
+plot_butterfly(data, ...)
+
+\method{plot_butterfly}{default}(data, time_lim = NULL, group = NULL,
+  facet = NULL, baseline = NULL, colourmap = NULL, legend = TRUE,
+  continuous = FALSE, browse_mode = FALSE, ...)
+
+\method{plot_butterfly}{eeg_evoked}(data, time_lim = NULL, group = NULL,
+  facet = NULL, baseline = NULL, colourmap = NULL, legend = TRUE,
+  continuous = FALSE, browse_mode = FALSE, ...)
+
+\method{plot_butterfly}{eeg_stats}(data, time_lim = NULL, group = NULL,
+  facet = NULL, baseline = NULL, colourmap = NULL, legend = TRUE,
+  continuous = FALSE, browse_mode = FALSE, ...)
 }
 \arguments{
 \item{data}{EEG dataset. Should have multiple timepoints.}
+
+\item{...}{Other parameters passed to plot_butterfly}
 
 \item{time_lim}{Character vector. Numbers in whatever time unit is used
 specifying beginning and end of time-range to plot. e.g. c(-100,300)}
@@ -39,6 +54,15 @@ Typically event-related potentials/fields, but could also be timecourses from
 frequency analyses for single frequencies. Output is a ggplot2 object. CIs
 not possible.
 }
+\section{Methods (by class)}{
+\itemize{
+\item \code{default}: Default `plot_butterfly` method for data.frames, \code{eeg_data}
+
+\item \code{eeg_evoked}: Plot butterfly for `eeg_evoked` objects`
+
+\item \code{eeg_stats}: Butterfly plot for EEG statistics
+}}
+
 \author{
 Matt Craddock, \email{matt@mattcraddock.com}
 }

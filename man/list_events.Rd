@@ -13,7 +13,7 @@ list_events(data)
 List trigger types and any labels found in an \code{eeg_data} object.
 }
 \seealso{
-\code{\link{tag_events}}
+Other event handlers: \code{\link{tag_events}}
 }
 \author{
 Matt Craddock \email{matt@mattcraddock.com}

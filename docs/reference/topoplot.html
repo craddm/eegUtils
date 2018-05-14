@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Topographical Plotting Function for EEG � topoplot • eegUtils</title>
+<title>Topographical Plotting Function for EEG — topoplot • eegUtils</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -18,13 +18,25 @@
 <!-- Font Awesome icons -->
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 
+<!-- clipboard.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
 <script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
-  
-  
+
+
+
+<meta property="og:title" content="Topographical Plotting Function for EEG — topoplot" />
+
+<meta property="og:description" content="Allows topographical plotting of functional data. Output is a ggplot2 object.
+The functions works for both standard data frames and objects of class
+eeg_data.
+Both eeg_epochs and eeg_data objects are supported." />
+<meta name="twitter:card" content="summary" />
+
+
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
@@ -47,8 +59,12 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="../index.html">eegUtils</a>
+      <span class="navbar-brand">
+        <a class="navbar-link" href="../index.html">eegUtils</a>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.1.15</span>
+      </span>
     </div>
+
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
@@ -76,7 +92,7 @@
   </ul>
 </li>
 <li>
-  <a href="../news/index.html">News</a>
+  <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
       
@@ -88,6 +104,7 @@
   </a>
 </li>
       </ul>
+      
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
@@ -95,18 +112,22 @@
       
       </header>
 
-      <div class="row">
+<div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Topographical Plotting Function for EEG</h1>
+    <small class="dont-index">Source: <a href='https://github.com/craddm/eegUtils/blob/master/R/topoplot.R'><code>R/topoplot.R</code></a></small>
+    <div class="hidden name"><code>topoplot.Rd</code></div>
     </div>
 
+    <div class="ref-description">
     
     <p>Allows topographical plotting of functional data. Output is a ggplot2 object.</p>
 <p>The functions works for both standard data frames and objects of class
 <code>eeg_data</code>.</p>
 <p>Both <code>eeg_epochs</code> and <code>eeg_data</code> objects are supported.</p>
     
+    </div>
 
     <pre class="usage"><span class='fu'>topoplot</span>(<span class='no'>data</span>, <span class='no'>...</span>)
 
@@ -121,9 +142,16 @@
 <span class='fu'>topoplot</span>(<span class='no'>data</span>, <span class='kw'>time_lim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>limits</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>chanLocs</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"Biharmonic"</span>, <span class='kw'>r</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>grid_res</span> <span class='kw'>=</span> <span class='fl'>67</span>,
   <span class='kw'>palette</span> <span class='kw'>=</span> <span class='st'>"RdBu"</span>, <span class='kw'>interp_limit</span> <span class='kw'>=</span> <span class='st'>"skirt"</span>, <span class='kw'>contour</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>chan_marker</span> <span class='kw'>=</span> <span class='st'>"point"</span>, <span class='kw'>quantity</span> <span class='kw'>=</span> <span class='st'>"amplitude"</span>, <span class='kw'>montage</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
+  <span class='kw'>chan_marker</span> <span class='kw'>=</span> <span class='st'>"point"</span>, <span class='kw'>quantity</span> <span class='kw'>=</span> <span class='st'>"amplitude"</span>, <span class='kw'>montage</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)
+
+<span class='co'># S3 method for eeg_ICA</span>
+<span class='fu'>topoplot</span>(<span class='no'>data</span>, <span class='kw'>time_lim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>limits</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>chanLocs</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"Biharmonic"</span>, <span class='kw'>r</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>grid_res</span> <span class='kw'>=</span> <span class='fl'>67</span>,
+  <span class='kw'>palette</span> <span class='kw'>=</span> <span class='st'>"RdBu"</span>, <span class='kw'>interp_limit</span> <span class='kw'>=</span> <span class='st'>"skirt"</span>, <span class='kw'>contour</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>chan_marker</span> <span class='kw'>=</span> <span class='st'>"point"</span>, <span class='kw'>quantity</span> <span class='kw'>=</span> <span class='st'>"amplitude"</span>, <span class='kw'>montage</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='no'>colourmap</span>, <span class='no'>comp</span>, <span class='no'>...</span>)</pre>
     
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
@@ -204,6 +232,10 @@ only 'biosemi64alpha' available other than default 10/20 system)</p></td>
       <th>colourmap</th>
       <td><p>Deprecated, use palette instead.</p></td>
     </tr>
+    <tr>
+      <th>comp</th>
+      <td><p>Component to plot (numeric)</p></td>
+    </tr>
     </table>
     
     <h2 class="hasAnchor" id="methods-by-class-"><a class="anchor" href="#methods-by-class-"></a>Methods (by class)</h2>
@@ -212,6 +244,7 @@ only 'biosemi64alpha' available other than default 10/20 system)</p></td>
 <li><p><code>data.frame</code>: Topographical plotting of data.frames and other non
 eeg_data objects.</p></li>
 <li><p><code>eeg_data</code>: Topographical plotting of <code>eeg_data</code> objects.</p></li>
+<li><p><code>eeg_ICA</code>: Topographical plot for <code>eeg_ICA</code> objects</p></li>
 </ul>
     
     <h2 class="hasAnchor" id="notes-on-usage-of-generalized-additive-models-for-interpolation"><a class="anchor" href="#notes-on-usage-of-generalized-additive-models-for-interpolation"></a>Notes on usage of Generalized Additive Models for interpolation</h2>
@@ -256,5 +289,8 @@ Matt Craddock, <a href='mailto:matt@mattcraddock.com'>matt@mattcraddock.com</a>
       </footer>
    </div>
 
+  
+
   </body>
 </html>
+
