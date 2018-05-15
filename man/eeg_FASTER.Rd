@@ -15,7 +15,7 @@ eeg_FASTER(data, ...)
 \item{...}{Parameters passed to FASTER}
 }
 \description{
-Whelan et al (2011)
+Whelan et al (2011). Not yet implemented.
 }
 \section{Methods (by class)}{
 \itemize{

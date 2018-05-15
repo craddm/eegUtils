@@ -1,8 +1,8 @@
 #' FASTER EEG artefact rejection
 #'
-#' Whelan et al (2011)
+#' Whelan et al (2011). Not yet implemented.
 #'
-#' @author Matt Craddock \email{matt@mattcraddock.com}
+#' @author Matt Craddock \email{matt@@mattcraddock.com}
 #'
 #' @param data An object of class \code{eeg_epochs}
 #' @param ... Parameters passed to FASTER
@@ -11,22 +11,24 @@ eeg_FASTER <- function(data, ...) {
   UseMethod("eeg_FASTER", data)
 }
 
-
 #' @describeIn eeg_FASTER Run FASTER on \code{eeg_epochs}
 eeg_FASTER.eeg_epochs <- function(data, ...) {
 
 
 }
 
-#' Simple thresholding
+#' Simple absolute value thresholding
 #'
-#' Reject data based on a simple absolute threshold. This goes marks any timepoint from any electrode
+#' Reject data based on a simple absolute threshold. This marks any
+#' timepoint from any electrode.
 #'
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #'
 #' @param data An object of class \code{eeg_data} or \code{eeg_epochs}.
-#' @param threshold In microvolts. If one value is supplied, it will be treated as a +- value.
-#' @param reject If TRUE, remove marked data immediately, otherwise mark for inspection/rejection. Defaults to FALSE.
+#' @param threshold In microvolts. If one value is supplied, it will be treated
+#'   as a +- value.
+#' @param reject If TRUE, remove marked data immediately, otherwise mark for
+#'   inspection/rejection. Defaults to FALSE.
 #' @param ... Other arguments passed to eeg_ar_thresh
 #' @export
 
@@ -201,28 +203,35 @@ spheric_spline <- function(good_elecs, bad_elecs, data) {
 
 }
 
-#' Compute the g function for two sets of locations of channel locations on the unit sphere.
+#' Compute the g function for two sets of locations of channel locations on the
+#' unit sphere.
 #'
-#' @author Matt Craddock \email{matt@mattcraddock.com}
+#' @author Matt Craddock \email{matt@@mattcraddock.com}
 #'
-#' @param xyz_coords A set of electrodes locations on a unit sphere.
-#' @param xyz_elecs A set of electrodes locations on a unit sphere.
+#' @param xyz_coords A set of electrode locations on a unit sphere.
+#' @param xyz_elecs A set of electrode locations on a unit sphere.
 #' @importFrom pracma legendre
 #' @noRd
 
 compute_g <- function(xyz_coords, xyz_elecs) {
 
-  EI <- 1 - sqrt((matrix(rep(xyz_coords[, 1], nrow(xyz_elecs)),
+  EI <- 1 - sqrt((matrix(rep(xyz_coords[, 1],
+                             nrow(xyz_elecs)),
                          nrow = nrow(xyz_elecs)) -
-                    matrix(rep(xyz_elecs[, 1], each = nrow(xyz_coords)),
+                    matrix(rep(xyz_elecs[, 1],
+                               each = nrow(xyz_coords)),
                            ncol = nrow(xyz_coords))) ^ 2 +
-                   (matrix(rep(xyz_coords[, 2], nrow(xyz_elecs)),
+                   (matrix(rep(xyz_coords[, 2],
+                               nrow(xyz_elecs)),
                            nrow = nrow(xyz_elecs)) -
-                      matrix(rep(xyz_elecs[, 2], each = nrow(xyz_coords)),
+                      matrix(rep(xyz_elecs[, 2],
+                                 each = nrow(xyz_coords)),
                              ncol = nrow(xyz_coords))) ^ 2 +
-                   (matrix(rep(xyz_coords[, 3], nrow(xyz_elecs)),
+                   (matrix(rep(xyz_coords[, 3],
+                               nrow(xyz_elecs)),
                            nrow = nrow(xyz_elecs)) -
-                      matrix(rep(xyz_elecs[, 3], each = nrow(xyz_coords)),
+                      matrix(rep(xyz_elecs[, 3],
+                                 each = nrow(xyz_coords)),
                              ncol = nrow(xyz_coords))) ^ 2)
 
   dim(EI) <- c(nrow(xyz_coords), nrow(xyz_elecs))
