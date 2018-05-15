@@ -161,6 +161,21 @@ plot_timecourse <- function(data, time_lim = NULL,
   return(tc_plot)
 }
 
+#' Plot timecourse
+#' @noRd
+
+plot_tc <- function(data, ...) {
+  UseMethod("plot_tc", data)
+}
+
+#' @describeIn plot_tc plot_tc for eeg_stats objects.
+#' @noRd
+#'
+plot_tc.eeg_stats <- function(data, time_lim, ...) {
+
+}
+
+
 #' Create a butterfly plot from timecourse data
 #'
 #' Typically event-related potentials/fields, but could also be timecourses from
@@ -169,6 +184,14 @@ plot_timecourse <- function(data, time_lim = NULL,
 #'
 #' @author Matt Craddock, \email{matt@@mattcraddock.com}
 #' @param data EEG dataset. Should have multiple timepoints.
+#' @param ... Other parameters passed to plot_butterfly
+#' @export
+
+
+plot_butterfly <- function(data, ...) {
+  UseMethod("plot_butterfly", data)
+}
+
 #' @param time_lim Character vector. Numbers in whatever time unit is used
 #'   specifying beginning and end of time-range to plot. e.g. c(-100,300)
 #' @param group Group lines by a specificed grouping variable.
@@ -185,10 +208,10 @@ plot_timecourse <- function(data, time_lim = NULL,
 #' @import ggplot2
 #' @import dplyr
 #' @import tidyr
-#'
+#' @describeIn plot_butterfly Default `plot_butterfly` method for data.frames, \code{eeg_data}
 #' @export
 
-plot_butterfly <- function(data,
+plot_butterfly.default <- function(data,
                            time_lim = NULL,
                            group = NULL,
                            facet = NULL,
@@ -196,27 +219,15 @@ plot_butterfly <- function(data,
                            colourmap = NULL,
                            legend = TRUE,
                            continuous = FALSE,
-                           browse_mode = FALSE) {
+                           browse_mode = FALSE,
+                           ...) {
 
-  if (is.eeg_evoked(data)) {
-    if (identical(class(data$signals), "list")) {
-      time_vec <- data$timings$time
-      data <- Reduce("+", data$signals) / length(data$signals)
-      data$time <- time_vec
-      data <- tidyr::gather(data,
-                            electrode,
-                            amplitude,
-                            -time,
-                            factor_key = T)
-    }
-  }
+
 
   if (is.eeg_data(data)) {
     if (continuous | data$continuous) {
       data <- as.data.frame(data, long = TRUE)
       continuous <- TRUE
-    } else if (is.eeg_evoked(data)) {
-      data <- as.data.frame(data, long = TRUE)
     } else {
       data <- as.data.frame(data)
       data <- dplyr::group_by(data, time)
@@ -232,6 +243,7 @@ plot_butterfly <- function(data,
     if (browse_mode == FALSE && is.null(facet)) {
       data <- dplyr::group_by(data, time, electrode)
       data <- dplyr::summarise(data, amplitude = mean(amplitude))
+      data <- dplyr::ungroup(data)
     }
   }
 
@@ -292,4 +304,66 @@ plot_butterfly <- function(data,
     butterfly_plot +
       theme(legend.position = "none")
   }
+}
+
+#' @describeIn plot_butterfly Plot butterfly for `eeg_evoked` objects`
+plot_butterfly.eeg_evoked <- function(data,
+                                      time_lim = NULL,
+                                      group = NULL,
+                                      facet = NULL,
+                                      baseline = NULL,
+                                      colourmap = NULL,
+                                      legend = TRUE,
+                                      continuous = FALSE,
+                                      browse_mode = FALSE,
+                                      ...) {
+
+  if (identical(class(data$signals), "list")) {
+    time_vec <- data$timings$time
+    data <- Reduce("+", data$signals) / length(data$signals)
+    data$time <- time_vec
+    data <- tidyr::gather(data,
+                          electrode,
+                          amplitude,
+                          -time,
+                          factor_key = T)
+  } else {
+    data <- as.data.frame(data, long = TRUE)
+  }
+
+  plot_butterfly(data, time_lim,
+                 group,
+                 facet,
+                 baseline,
+                 colourmap,
+                 legend,
+                 continuous,
+                 browse_mode)
+  }
+
+#' @describeIn plot_butterfly Butterfly plot for EEG statistics
+
+plot_butterfly.eeg_stats <- function(data,time_lim = NULL,
+                                     group = NULL,
+                                     facet = NULL,
+                                     baseline = NULL,
+                                     colourmap = NULL,
+                                     legend = TRUE,
+                                     continuous = FALSE,
+                                     browse_mode = FALSE,
+                                     ...) {
+
+  data <- data.frame(data$statistic,
+                     time = data$timings)
+  data <- tidyr::gather(data, key = "electrode", value = "amplitude", -time)
+
+  plot_butterfly(data, time_lim,
+                 group,
+                 facet,
+                 baseline,
+                 colourmap,
+                 legend,
+                 continuous,
+                 browse_mode)
+
 }

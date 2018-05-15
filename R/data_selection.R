@@ -5,7 +5,7 @@
 #' \code{eeg_epochs}. Note this finds the closest times to those specified, so
 #' times out may not correspond exactly to requested times.
 #'
-#' @author Matt Craddock, \email{matt@mattcraddock.com}
+#' @author Matt Craddock, \email{matt@@mattcraddock.com}
 #' @param data Data from which to select
 #' @param ... Further arguments passed to or from other methods.
 #'
@@ -226,7 +226,7 @@ select_epochs.eeg_data <- function(data, ...) {
 }
 
 #' @param epoch_events Select epochs containing any of the specified events. Can
-#'   be numeric or character vector. Will override any epoch_no input
+#'   be numeric or a character string. Will override any epoch_no input.
 #' @param epoch_no Select epochs by epoch number.
 #' @param keep Defaults to TRUE, meaning select the specified epochs. Set to
 #'   FALSE to remove specified epochs.
@@ -250,15 +250,17 @@ select_epochs.eeg_epochs <- function(data, epoch_events = NULL, epoch_no = NULL,
 
     epoch_no <- as.numeric(data$events$epoch[sel_rows])
   } else if (is.character(epoch_events)) {
-    check_ev <- epoch_events %in% list_events(data)$event_label
 
-    if (!all(check_ev)) {
+    #check_ev <- epoch_events %in% list_events(data)$event_label
+    check_ev <- grepl(epoch_events, list_events(data)$event_label)
+
+    if (!any(check_ev)) {
       stop("Event label not found, check with list_events.")
     } else {
       epoch_events <- epoch_events[check_ev]
     }
 
-    sel_rows <- data$events$event_label %in% epoch_events
+    sel_rows <- check_ev #data$events$event_label %in% epoch_events
 
     if (keep == FALSE) {
       sel_rows <- !sel_rows

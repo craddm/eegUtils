@@ -103,6 +103,7 @@ iir_filt.eeg_epochs <- function(data, low_freq = NULL, high_freq = NULL,
 #' @importFrom dplyr group_by
 #' @importFrom purrr map_df
 #' @importFrom signal filtfilt butter
+#' @noRd
 
 run_iir <- function(data, low_freq = NULL, high_freq = NULL, filter_order,
                     srate, silent = FALSE) {

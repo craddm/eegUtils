@@ -5,7 +5,7 @@
 #' \code{eeg_data} structure; if one already exists, it is added back to the
 #' data before further referencing takes place.
 #'
-#' @author Matt Craddock \email{matt@mattcraddock.com}
+#' @author Matt Craddock \email{matt@@mattcraddock.com}
 #' @param data Data to re-reference. Primarily meant for use with data of class
 #'   \code{eeg_data}. Long format is expected if a data-frame is submitted.
 #' @param ref_chans Channels to reference data to. Defaults to "average" i.e.
@@ -474,15 +474,16 @@ eeg_combine.eeg_epochs <- function(data, ...) {
   }
   if (all(sapply(args, is.eeg_epochs))) {
 
+
     data$signals <- dplyr::bind_rows(data$signals,
                                      purrr::map_df(args, ~.$signals))
 
-     # args[[i]]$timings
-    #}
     data$events <- dplyr::bind_rows(data$events,
                                     purrr::map_df(args, ~.$events))
+
     data$timings <- dplyr::bind_rows(data$timings,
                         purrr::map_df(args, ~.$timings))
+
     if (!is.null(data$reference$ref_data)) {
       data$reference$ref_data <- c(data$reference$ref_data,
                                    sapply(args,
@@ -491,7 +492,8 @@ eeg_combine.eeg_epochs <- function(data, ...) {
   } else {
     stop("All inputs must be eeg_epochs objects.")
   }
-
+  #fix epoch numbering for combined objects
+  data <- check_timings(data)
   data
 }
 
@@ -499,35 +501,65 @@ eeg_combine.eeg_epochs <- function(data, ...) {
 #' Check consistency of event and timing tables
 #'
 #' @param data \code{eeg_epochs} object
+#' @noRd
 
 check_timings <- function(data) {
 
+  n_rows <- nrow(data$timings)
+
+  # if the epoch numbers are not ascending, fix them...
   while (any(diff(data$timings$epoch) < 0)) {
 
     # check consistency of the data timings table.
     # timings should be consistently increasing.
     # only works correctly with 2 objects
-    n_rows <- nrow(data$timings)
-    switch_loc <- which.min(diff(data$timings$epoch))
-    switch_epo <- data$timings$epoch[switch_loc]
-    switch_sample <- data$timings$sample[switch_loc]
-    data$timings$epoch[(switch_loc+1):n_rows] <-
-      data$timings$epoch[(switch_loc+1):n_rows] + switch_epo
-    data$timings$sample[(switch_loc+1):n_rows] <-
-      data$timings$sample[(switch_loc+1):n_rows] + switch_sample
 
+    #switch_loc <- which.min(diff(data$timings$epoch))
+    #check for any places where epoch numbers decrease instead of increase
+    switch_locs <- which(diff(data$timings$epoch) == min(diff(data$timings$epoch)))
+
+    #consider switch this out with an RLE method, which would be much simpler.
+
+    if (length(switch_locs) == 1) {
+      switch_epo <- data$timings$epoch[switch_locs]
+      switch_sample <- data$timings$sample[switch_locs]
+      data$timings$epoch[(switch_locs + 1):n_rows] <-
+        data$timings$epoch[(switch_locs + 1):n_rows] + switch_epo
+      data$timings$sample[(switch_locs + 1):n_rows] <-
+        data$timings$sample[(switch_locs + 1):n_rows] + switch_sample
+    } else {
+      for (i in 1:(length(switch_locs) - 1)) {
+        switch_epo <- data$timings$epoch[switch_locs[i]]
+        switch_sample <- data$timings$sample[switch_locs[i]]
+        data$timings$epoch[(switch_locs[i] + 1):switch_locs[i + 1]] <-
+          data$timings$epoch[(switch_locs[i] + 1):switch_locs[i + 1]] + switch_epo
+        data$timings$sample[(switch_locs[i] + 1):switch_locs[i + 1]] <-
+          data$timings$sample[(switch_locs[i] + 1):switch_locs[i + 1]] + switch_sample
+      }
+
+      switch_epo <- data$timings$epoch[switch_locs[length(switch_locs)]]
+      switch_sample <- data$timings$sample[switch_locs[length(switch_locs)]]
+      data$timings$epoch[(switch_locs[length(switch_locs)] + 1):n_rows] <-
+        data$timings$epoch[(switch_locs[length(switch_locs)] + 1):n_rows] + switch_epo
+      data$timings$sample[(switch_locs[length(switch_locs)] + 1):n_rows] <-
+        data$timings$sample[(switch_locs[length(switch_locs)] + 1):n_rows] + switch_sample
+    }
   }
 
   if (any(diff(data$events$event_time) < 0)) {
 
     #check consistency of the data event table
-    n_rows <- nrow(data$events)
-    switch_loc <- which.min(diff(data$events$event_time))
-    switch_epo <- data$events$epoch[switch_loc]
-
+    #to handle cases where there are multiple events per epoch,
+    #use RLE to code how many times each epoch number comes up in a row;
+    #then replace old epoch numbers with new and reconstruct the vector
+    orig_ev <- rle(data$events$epoch)
+    orig_ev$values <- unique(data$timings$epoch)
+    data$events$epoch <- inverse.rle(orig_ev)
+    data$events <- dplyr::left_join(data$events, data$timings, by = c("epoch", "time"))
+    data$events$event_onset <- data$events$sample
+    data$events$sample <- NULL
   }
   data
-
 }
 
 #' Calculate averages (e.g. ERPs)
@@ -564,24 +596,42 @@ eeg_average.eeg_epochs <- function(data, cond_label = NULL, ...) {
 
   } else {
 
-    if (all(cond_label %in% unique(list_epochs(data)$event_label))) {
-      evoked <- vector("list", length(cond_label))
-      for (i in seq_along(cond_label)) {
-        tmp_dat <- select_epochs(data, cond_label[[i]])
-        tmp_dat$signals <- split(tmp_dat$signals, tmp_dat$timings$time)
-        tmp_dat$signals <- lapply(tmp_dat$signals, colMeans)
-        evoked[[i]] <- as.data.frame(do.call("rbind", tmp_dat$signals))
-        row.names(evoked[[i]]) <- NULL
-        }
-      data$signals <- evoked
-      if (length(cond_label) > 1) {
-        names(data$signals) <- cond_label
-        } else {
-          data$signals <- data$signals[[1]]
-        }
+    if (all(grepl("/", cond_label))) {
+      lab_check <- cond_label %in% unique(list_epochs(data)$event_label)
+    } else if (any(grepl("/", cond_label))) {
+      stop("Do not mix hierarchical and non-hierarchical event labels.")
     } else {
-      stop("Not all epoch labels found.")
+      # Check if there is a hierarchical separator "/". If so,
+      # split the labels
+      if (any(grepl("/", unique(list_epochs(data)$event_label)))) {
+        split_labels <- strsplit(list_epochs(data)$event_label, "/")
+
+        lab_check <- lapply(cond_label,
+                            function(x) vapply(split_labels,
+                                               function(i) x %in% i,
+                                               logical(1)))
+        #condense to a single TRUE or FALSE for each label
+        lab_check <- vapply(lab_check, any, logical(1))
+      }
     }
+
+    if (!all(lab_check)) {
+      stop("Not all labels found. Use list_events to check labels.")
+    }
+    evoked <- vector("list", length(cond_label))
+    for (i in seq_along(cond_label)) {
+      tmp_dat <- select_epochs(data, cond_label[[i]])
+      tmp_dat$signals <- split(tmp_dat$signals, tmp_dat$timings$time)
+      tmp_dat$signals <- lapply(tmp_dat$signals, colMeans)
+      evoked[[i]] <- as.data.frame(do.call("rbind", tmp_dat$signals))
+      row.names(evoked[[i]]) <- NULL
+      }
+    data$signals <- evoked
+    if (length(cond_label) > 1) {
+      names(data$signals) <- cond_label
+      } else {
+        data$signals <- data$signals[[1]]
+        }
   }
   data$reference$ref_data <- NULL
   data$events <- NULL

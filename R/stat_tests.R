@@ -79,6 +79,7 @@ compare_epochs.eeg_epochs <- function(data, cond_label = NULL, type, ...) {
 #' @param mu mean to test against
 #' @importFrom matrixStats rowSds
 #' @author Matt Craddock, \email{matt@@mattcraddock.com}
+#' @noRd
 
 array_t <- function(x, mu = 0) {
   #calculate means for each combination of timepoint and electrode
@@ -97,6 +98,7 @@ array_t <- function(x, mu = 0) {
 #' @param x1 vector of values from one condition
 #' @param x2 vector of values from one condition
 #' @author Matt Craddock, \email{matt@@mattcraddock.com}
+#' @noRd
 
 calc_tstat_2 <- function(x1, x2) {
 
@@ -120,6 +122,7 @@ calc_tstat_2 <- function(x1, x2) {
 #' @param df Degrees of freedom
 #' @param tails 1 or 2 for one- or two-tailed p-value.
 #' @author Matt Craddock, \email{matt@@mattcraddock.com}
+#' @noRd
 
 calc_pval <- function(x, df, tails = 2) {
   pval <- tails * pt(-abs(x), df)

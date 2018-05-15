@@ -4,7 +4,7 @@
 \alias{eeg_ar_thresh}
 \alias{eeg_ar_thresh.eeg_data}
 \alias{eeg_ar_thresh.eeg_epochs}
-\title{Simple thresholding}
+\title{Simple absolute value thresholding}
 \usage{
 eeg_ar_thresh(data, threshold, reject = FALSE, ...)
 
@@ -15,14 +15,17 @@ eeg_ar_thresh(data, threshold, reject = FALSE, ...)
 \arguments{
 \item{data}{An object of class \code{eeg_data} or \code{eeg_epochs}.}
 
-\item{threshold}{In microvolts. If one value is supplied, it will be treated as a +- value.}
+\item{threshold}{In microvolts. If one value is supplied, it will be treated
+as a +- value.}
 
-\item{reject}{If TRUE, remove marked data immediately, otherwise mark for inspection/rejection. Defaults to FALSE.}
+\item{reject}{If TRUE, remove marked data immediately, otherwise mark for
+inspection/rejection. Defaults to FALSE.}
 
 \item{...}{Other arguments passed to eeg_ar_thresh}
 }
 \description{
-Reject data based on a simple absolute threshold. This goes marks any timepoint from any electrode
+Reject data based on a simple absolute threshold. This marks any
+timepoint from any electrode.
 }
 \section{Methods (by class)}{
 \itemize{

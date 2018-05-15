@@ -1,8 +1,8 @@
 #' FASTER EEG artefact rejection
 #'
-#' Whelan et al (2011)
+#' Whelan et al (2011). Not yet implemented.
 #'
-#' @author Matt Craddock \email{matt@mattcraddock.com}
+#' @author Matt Craddock \email{matt@@mattcraddock.com}
 #'
 #' @param data An object of class \code{eeg_epochs}
 #' @param ... Parameters passed to FASTER
@@ -11,22 +11,24 @@ eeg_FASTER <- function(data, ...) {
   UseMethod("eeg_FASTER", data)
 }
 
-
 #' @describeIn eeg_FASTER Run FASTER on \code{eeg_epochs}
 eeg_FASTER.eeg_epochs <- function(data, ...) {
 
 
 }
 
-#' Simple thresholding
+#' Simple absolute value thresholding
 #'
-#' Reject data based on a simple absolute threshold. This goes marks any timepoint from any electrode
+#' Reject data based on a simple absolute threshold. This marks any
+#' timepoint from any electrode.
 #'
-#' @author Matt Craddock \email{matt@mattcraddock.com}
+#' @author Matt Craddock \email{matt@@mattcraddock.com}
 #'
 #' @param data An object of class \code{eeg_data} or \code{eeg_epochs}.
-#' @param threshold In microvolts. If one value is supplied, it will be treated as a +- value.
-#' @param reject If TRUE, remove marked data immediately, otherwise mark for inspection/rejection. Defaults to FALSE.
+#' @param threshold In microvolts. If one value is supplied, it will be treated
+#'   as a +- value.
+#' @param reject If TRUE, remove marked data immediately, otherwise mark for
+#'   inspection/rejection. Defaults to FALSE.
 #' @param ... Other arguments passed to eeg_ar_thresh
 #' @export
 
@@ -77,7 +79,7 @@ eeg_ar_thresh.eeg_epochs <- function(data, threshold, reject = FALSE, ...) {
 
 #' Channel statistics
 #'
-#' @author Matt Craddock \email{matt@mattcraddock.com}
+#' @author Matt Craddock \email{matt@@mattcraddock.com}
 #'
 #' @param data Data as a \code{eeg_data} or \code{eeg_epochs} object.
 #' @param ... Other parameters passed to the functions.
@@ -97,7 +99,7 @@ channel_stats.eeg_data <- function(data, ...) {
 
 #' Epoch statistics
 #'
-#' @author Matt Craddock \email{matt@mattcraddock.com}
+#' @author Matt Craddock \email{matt@@mattcraddock.com}
 #'
 #' @param data Data as a \code{eeg_data} or \code{eeg_epochs} object.
 #' @param ... Other parameters passed to the functions.
@@ -108,16 +110,20 @@ epoch_stats <- function(data, ...) {
 
 #' @describeIn epoch_stats Calculate statistics for each epoch.
 epoch_stats.eeg_epochs <- function(data, ...) {
-  epoch_means <- c(rowMeans(data$signals), data$timings$epoch)
-  epoch_means <- dplyr::group_by(epoch_means, epoch)
-  epoch_means <- dplyr::summarise_all(epoch_means, mean)
+  epoch_nos <- unique(data$timings$epoch)
+  data <- split(data$signals, data$timings$epoch)
+  epoch_means <- lapply(data, colMeans)
+  epoch_means <- as.data.frame(do.call("rbind", epoch_means))
+  epoch_means$epoch_nos <- epoch_nos
+  epoch_means
 }
 
 #' Channel interpolation
 #'
-#' Interpolate EEG channels using a spherical spline (Perrin et al., 1989). The data must have channel locations attached.
+#' Interpolate EEG channels using a spherical spline (Perrin et al., 1989). The
+#' data must have channel locations attached.
 #'
-#' @author Matt Craddock \email{matt@mattcraddock.com}
+#' @author Matt Craddock \email{matt@@mattcraddock.com}
 #'
 #' @param data Data as a \code{eeg_data} or \code{eeg_epochs} object.
 #' @param bad_elecs Name(s) of electrode(s) to interpolate.
@@ -166,6 +172,7 @@ interp_elecs.eeg_data <- function(data, bad_elecs, ...) {
 #' @param good_elecs Electrodes with positions that do not need interpolation
 #' @param bad_elecs Electrodes to be interpolated
 #' @param data Raw data
+#' @noRd
 
 spheric_spline <- function(good_elecs, bad_elecs, data) {
 
@@ -196,27 +203,35 @@ spheric_spline <- function(good_elecs, bad_elecs, data) {
 
 }
 
-#' Compute the g function for two sets of locations of channel locations on the unit sphere.
+#' Compute the g function for two sets of locations of channel locations on the
+#' unit sphere.
 #'
-#' @author Matt Craddock \email{matt@mattcraddock.com}
+#' @author Matt Craddock \email{matt@@mattcraddock.com}
 #'
-#' @param xyz_coords A set of electrodes locations on a unit sphere.
-#' @param xyz_elecs A set of electrodes locations on a unit sphere.
+#' @param xyz_coords A set of electrode locations on a unit sphere.
+#' @param xyz_elecs A set of electrode locations on a unit sphere.
 #' @importFrom pracma legendre
+#' @noRd
 
 compute_g <- function(xyz_coords, xyz_elecs) {
 
-  EI <- 1 - sqrt((matrix(rep(xyz_coords[, 1], nrow(xyz_elecs)),
+  EI <- 1 - sqrt((matrix(rep(xyz_coords[, 1],
+                             nrow(xyz_elecs)),
                          nrow = nrow(xyz_elecs)) -
-                    matrix(rep(xyz_elecs[, 1], each = nrow(xyz_coords)),
+                    matrix(rep(xyz_elecs[, 1],
+                               each = nrow(xyz_coords)),
                            ncol = nrow(xyz_coords))) ^ 2 +
-                   (matrix(rep(xyz_coords[, 2], nrow(xyz_elecs)),
+                   (matrix(rep(xyz_coords[, 2],
+                               nrow(xyz_elecs)),
                            nrow = nrow(xyz_elecs)) -
-                      matrix(rep(xyz_elecs[, 2], each = nrow(xyz_coords)),
+                      matrix(rep(xyz_elecs[, 2],
+                                 each = nrow(xyz_coords)),
                              ncol = nrow(xyz_coords))) ^ 2 +
-                   (matrix(rep(xyz_coords[, 3], nrow(xyz_elecs)),
+                   (matrix(rep(xyz_coords[, 3],
+                               nrow(xyz_elecs)),
                            nrow = nrow(xyz_elecs)) -
-                      matrix(rep(xyz_elecs[, 3], each = nrow(xyz_coords)),
+                      matrix(rep(xyz_elecs[, 3],
+                                 each = nrow(xyz_coords)),
                              ncol = nrow(xyz_coords))) ^ 2)
 
   dim(EI) <- c(nrow(xyz_coords), nrow(xyz_elecs))
@@ -237,7 +252,7 @@ compute_g <- function(xyz_coords, xyz_elecs) {
 #' Calculate kurtosis
 #'
 #' @param data Data to calculate kurtosis for
-#'
+#' @noRd
 
 kurtosis <- function(data) {
   m4 <- mean((data - mean(data)) ^ 4)

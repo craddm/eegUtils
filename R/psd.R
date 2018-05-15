@@ -89,10 +89,11 @@ compute_psd.eeg_data <- function(data,
 #'
 #' Split data into segments for Welch PSD.
 #'
-#' @author Matt Craddock \email{matt@mattcraddock.com}
+#' @author Matt Craddock \email{matt@@mattcraddock.com}
 #' @param vec Data vector to be split up into segments.
 #' @param seg_length Length of segments to be FFT'd (in samples).
 #' @param overlap Overlap between segments (in samples).
+#' @noRd
 
 split_vec <- function(vec, seg_length, overlap) {
   k <- floor((length(vec) - overlap) / (seg_length - overlap))
@@ -110,6 +111,7 @@ split_vec <- function(vec, seg_length, overlap) {
 #' @param wavtime Times at which to place a wavelet
 #' @param n_cycles Length of wavelet in cycles
 #' @param n_freq number of frequencies to resolve
+#' @noRd
 
 morlet <- function(frex, wavtime, n_cycles = 7, n_freq = 30) {
 
@@ -144,6 +146,7 @@ morlet <- function(frex, wavtime, n_cycles = 7, n_freq = 30) {
 #'
 #' @param signal signal to be FFT'd
 #' @param n Number of FFT points
+#' @noRd
 
 fft_n <- function(signal, n) {
   if (length(signal) < n) {
@@ -159,6 +162,7 @@ fft_n <- function(signal, n) {
 #' @param morlet_fam family of morlet wavelets
 #' @param signal signal to be convolved
 #' @param n points for FFT
+#' @noRd
 
 conv_mor <- function(morlet_fam, signal, n) {
   sigX <- fft_n(signal, n)

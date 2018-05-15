@@ -6,10 +6,11 @@
 #' condition, "cond1/cond2" for a trigger that could belong to more than one
 #' condition).
 #'
-#' @author Matt Craddock \email{matt@mattcraddock.com}
+#' @author Matt Craddock \email{matt@@mattcraddock.com}
 #'
 #' @param data An object of class \code{eeg_data} or \code{eeg_epochs}
 #' @param ... Parameters passed to S3 methods
+#' @family event handlers
 #' @export
 
 tag_events <- function(data, ...) {
@@ -22,7 +23,6 @@ tag_events <- function(data, ...) {
 #' @importFrom tibble as_tibble
 #' @export
 #' @describeIn tag_events Tag events in an \code{eeg_data} object
-#' @seealso \code{\link{list_events}}
 
 tag_events.eeg_data <- function(data, trigs, event_label, ...) {
 
@@ -65,7 +65,7 @@ tag_events.eeg_epochs <- function(data, trigs, event_label, ...) {
 #'
 #' @export
 #'
-#' @seealso \code{\link{tag_events}}
+#'@family event handlers
 
 list_events <- function(data) {
   if (!is.eeg_data(data)) {
@@ -88,8 +88,7 @@ list_events <- function(data) {
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #'
 #' @param data An object of class \code{eeg_epochs}
-#'
-#' @seealso \code{\link{tag_events}}
+#' @noRd
 
 list_epochs <- function(data) {
   if (!is.eeg_epochs(data)) {
