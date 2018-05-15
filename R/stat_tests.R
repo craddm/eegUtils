@@ -108,8 +108,9 @@ calc_tstat_2 <- function(x1, x2) {
   x2_vars <- vapply(1:dim(x2)[[3]], function(i) matrixStats::rowVars(x2[, , i]), numeric(dim(x2)[[1]]))
 
   #adapt to calculate df too...
-
+  #welch formula
   hmmz <- (x1_means - x2_means) / sqrt(x1_vars / dim(x1)[[2]] + x2_vars / dim(x2)[[2]])
+  #hmmz <- (x1_means - x2_means) / (sqrt((x1_vars + x2_vars) / 2) * sqrt(2 / ncol(x2)))
   hmmz
 }
 
@@ -122,4 +123,45 @@ calc_tstat_2 <- function(x1, x2) {
 
 calc_pval <- function(x, df, tails = 2) {
   pval <- tails * pt(-abs(x), df)
+}
+
+#' Calculate tmax
+#'
+
+
+#' Calculate F-statistic for independent samples
+#'
+#' @param x1
+#' @param x2
+#' @author Matt Craddock, \email{matt@@mattcraddock.com}
+#'
+
+calc_fstat <- function(x1, x2) {
+  x1_means <- colMeans(aperm(x1, c(2, 1, 3)))
+  x2_means <- colMeans(aperm(x2, c(2, 1, 3)))
+
+  grand_means <- (x1_means + x2_means) / 2
+
+  x1_test <- vapply(1:dim(x1)[[3]], function(i) x1[, , i] - grand_means[, i],
+                    matrix(0, nrow = nrow(x1), ncol = ncol(x1)))
+  #x1_test_ss <- apply(x1_test, c(1, 3), function(x) sum(x^2)) * ncol(x1)
+
+  #x2_vars <- vapply(1:dim(x2)[[3]], function(i) matrixStats::rowVars(x2[, , i]), numeric(dim(x2)[[1]]))
+  x2_test <- vapply(1:dim(x2)[[3]], function(i) x2[, , i] - grand_means[, i],
+                    matrix(0, nrow = nrow(x2), ncol = ncol(x2)))
+
+  #x2_test_ss <- apply(x2_test, c(1, 3), function(x) sum(x^2)) * ncol(x2)
+
+  x3_test_sst <- vapply(1:dim(x1)[[3]], function(i) cbind(x1_test[, , i], x2_test[, , i]) ^ 2,
+                       matrix(1, nrow = nrow(x1_test), ncol = ncol(x1_test) + ncol(x2_test)))
+
+  x3_test_sst <- apply(x3_test_sst, c(1, 3), sum)
+  x3_ssm <- ncol(x1) * (x1_means - grand_means) ^ 2 + ncol(x2) * (x2_means - grand_means) ^ 2
+
+  x3_ssr <- x3_test_sst - x3_ssm
+
+  x4_msm <- x3_ssm / 1
+  x4_msr <- x3_ssr / (ncol(x1) + ncol(x2) - 2)
+  x4_f <- x4_msm/ x4_msr
+  x4_f
 }
