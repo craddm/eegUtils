@@ -262,3 +262,36 @@ kurtosis <- function(data) {
   kurt <- m4 / (sd(data) ^ 4) - 3
   kurt
 }
+
+#' Regress EOG
+#'
+#' @param data data to regress
+#' @param heog Horizontal EOG channels
+#' @param veog Vertical EOG channels
+#' @param bipolarize Bipolarize the EOG channels. Only works when four channels are supplied (2 HEOG and 2 VEOG).
+#' @author Matt Craddock, \email{matt@@mattcraddock.com}
+#
+
+eeg_ar_eogreg <- function(data, heog, veog, bipolarize = TRUE, ...) {
+  UseMethod("eeg_ar_eogreg", data)
+
+}
+
+eeg_ar_eogreg.eeg_data <- function(data, heog, veog, bipolarize = TRUE, ...) {
+
+  heog_only <- select_elecs(data, electrode = heog)
+  veog_only <- select_elecs(data, electrode = veog)
+
+  EOG <- data.frame(heog = NA, veog = NA)
+  if (bipolarize) {
+    EOG$heog <- heog_only$signals[, 1] - heog_only$signals[, 2]
+    EOG$veog <- veog_only$signals[, 1] - veog_only$signals[, 2]
+  } else {
+    EOG$heog <- heog_only$signals[, 1]
+    EOG$veog <- veog_only$signals[, 1]
+  }
+
+  hmz <- solve(EOG * t(EOG), EOG * t(data$signals))
+  hmz
+
+}
