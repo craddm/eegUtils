@@ -4,7 +4,7 @@ author: "Matt Craddock"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{EEG Utils}
+  %\VignetteIndexEntry{EEG_Utils}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

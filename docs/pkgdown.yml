@@ -3,5 +3,6 @@ pkgdown: 1.0.0
 pkgdown_sha: ~
 articles:
   data_structures: data_structures.html
+  eegUtils: eegUtils.html
   Introduction: Introduction.html
 

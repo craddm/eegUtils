@@ -10,6 +10,7 @@ test_that("Import and epoching of bdf files works correctly", {
   expect_true(is.eeg_data(test_data))
   expect_false(is.eeg_epochs(test_data))
   expect_true(is.data.frame(as.data.frame(test_data)))
+  expect_true(is.data.frame(as.data.frame(test_data, long = T)))
   expect_identical(names(test_data$signals),
                    c("A1", "A2", "A3", "A4", "A5", "A6", "A7", "A8",
                      "A9", "A10", "A11", "A12", "A13", "A14", "A15", "A16"))
@@ -84,4 +85,15 @@ test_that("Removing baseline works", {
   expect_equal(test_bl$signals$A1, test_data$signals$A1 - mean(test_data$signals$A1))
   test_epo <- epoch_data(test_data, 255)
 
+})
+
+test_that("Event manipulation works", {
+
+  skip_on_cran()
+
+  expect_is(list_events(test_data), "data.frame")
+  test_data <- tag_events(test_data, 255, "osci2")
+  test_evs <- list_events(test_data)
+  expect_is(test_evs, "data.frame")
+  expect_equal(test_data$events$event_label[1], "osci2")
 })

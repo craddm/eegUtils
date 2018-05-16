@@ -79,22 +79,3 @@ list_events <- function(data) {
   }
 
 }
-
-
-#' List epochs
-#'
-#' List trigger types and any labels found in an \code{eeg_data} object.
-#'
-#' @author Matt Craddock \email{matt@@mattcraddock.com}
-#'
-#' @param data An object of class \code{eeg_epochs}
-#' @noRd
-
-list_epochs <- function(data) {
-  if (!is.eeg_epochs(data)) {
-    stop("For eeg_epochs objects only.")
-  }
-
-  data$events[, c("epoch", "event_type", "event_label")]
-
-}
