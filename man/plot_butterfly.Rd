@@ -27,14 +27,14 @@ plot_butterfly(data, ...)
 \item{...}{Other parameters passed to plot_butterfly}
 
 \item{time_lim}{Character vector. Numbers in whatever time unit is used
-specifying beginning and end of time-range to plot. e.g. c(-100,300)}
+specifying beginning and end of time-range to plot. e.g. c(-.1,.3)}
 
 \item{group}{Group lines by a specificed grouping variable.}
 
 \item{facet}{Create multiple plots for a specified grouping variable.}
 
 \item{baseline}{Character vector. Times to use as a baseline. Takes the mean
-over the specified period and subtracts. e.g. c(-100,0)}
+over the specified period and subtracts. e.g. c(-.1, 0)}
 
 \item{colourmap}{Attempt to plot using a different colourmap (from
 RColorBrewer). (Not yet implemented)}

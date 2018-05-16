@@ -84,7 +84,6 @@ compute_psd.eeg_data <- function(data,
   data.frame(final_out, frequency = freqs)
 }
 
-
 #' Segment data.
 #'
 #' Split data into segments for Welch PSD.
@@ -121,7 +120,7 @@ morlet <- function(frex, wavtime, n_cycles = 7, n_freq = 30) {
   if (length(n_cycles) == 1) {
     g_width <- n_cycles / (2 * pi * frex)
   } else {
-    g_width <- seq(n_cycles[1], n_cycles[2], length.out = nFrex) / (2 * pi * frex)
+    g_width <- seq(n_cycles[1], n_cycles[2], length.out = n_freq) / (2 * pi * frex)
   }
 
   t_by_f <- matrix(wavtime,
@@ -136,7 +135,7 @@ morlet <- function(frex, wavtime, n_cycles = 7, n_freq = 30) {
                   function(x) m_family[m_max_index[[x]], x])
   norm_mf <- matrix(unlist(lapply(seq_along(m_max),
                                   function(x) m_family[, x] / m_max[[x]])),
-                    ncol = nFrex)
+                    ncol = n_freq)
   norm_mf
 }
 
@@ -174,13 +173,13 @@ conv_mor <- function(morlet_fam, signal, n) {
   tf
 }
 
-
 #' Time-frequency analysis
 #'
 #' Morlet wavelet time-frequency analysis.
 #'
 #' @param data EEG data to be TF transformed
 #' @param ... Further parameters of the timefreq transformation
+#' @noRd
 
 tf_morlet <- function(data, ...) {
   UseMethod("tf_morlet", data)
@@ -192,6 +191,7 @@ tf_morlet <- function(data, ...) {
 #' @importFrom dplyr count
 #'
 #' @describeIn tf_morlet Time-frequency decomposition of \code{eeg_epochs} object.
+#' @noRd
 tf_morlet.eeg_epochs <- function(data, foi, n_freq, n_cycles, ...) {
 
   if (length(foi) > 2) {
@@ -205,10 +205,11 @@ tf_morlet.eeg_epochs <- function(data, foi, n_freq, n_cycles, ...) {
                           wavtime = unique(data$timings$time),
                           n_cycles = n_cycles
                           )
-  max_length <- max(dplyr::count(eeg_epochs$timings, epoch)$n)
+  max_length <- max(dplyr::count(data$timings, epoch)$n)
 
   # zero-pad before running ffts
   mf_zp <- apply(morlet_family, 2, function(x) c(x, rep(0, max_length - length(x))))
   morlet_fft <- mvfft(mf_zp)
-  conv_mor(morlet_fft, signal, max_length)
+  conv_mor(morlet_fft, data$signals, max_length)
+
 }

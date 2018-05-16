@@ -130,6 +130,23 @@ electrode_locations.eeg_data <- function(data,
   }
 }
 
+#' Function to create an S3 object of class \code{eeg_data}
+#'
+#' @noRd
+new_eeg_data <- function(data,
+                         srate,
+                         events = NULL,
+                         chan_info = NULL,
+                         timings = NULL,
+                         continuous = NULL,
+                         reference = NULL) {
+  stopifnot(is.double(srate))
+  stopifnot(is.data.frame(events))
+  structure(signals = data,
+            srate = srate,
+            events = events)
+
+}
 
 #' Function to create an S3 object of class "eeg_data".
 #'

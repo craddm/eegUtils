@@ -84,7 +84,6 @@ eeg_ar_thresh.eeg_epochs <- function(data, threshold, reject = FALSE, ...) {
 #' @param data Data as a \code{eeg_data} or \code{eeg_epochs} object.
 #' @param ... Other parameters passed to the functions.
 
-
 channel_stats <- function(data, ...) {
   UseMethod("channel_stats", data)
 }
@@ -135,6 +134,7 @@ interp_elecs <- function(data, bad_elecs, ...) {
 }
 
 #' @describeIn interp_elecs Interpolate EEG channel(s)
+#' @export
 interp_elecs.eeg_data <- function(data, bad_elecs, ...) {
 
   if (is.null(data$chan_info)) {
@@ -157,6 +157,9 @@ interp_elecs.eeg_data <- function(data, bad_elecs, ...) {
 
   mm <- spheric_spline(xyz_good, xyz_bad, sigs[!bad_cols])
 
+  if (ncol(mm) == 1) {
+    mm <- as.vector(mm)
+  }
   sigs[bad_cols] <- mm
 
   data$signals[, sigs_select] <- sigs
