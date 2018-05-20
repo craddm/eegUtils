@@ -588,6 +588,7 @@ eeg_average.default <- function(data, ...) {
 eeg_average.eeg_epochs <- function(data, cond_label = NULL, ...) {
 
   if (is.null(cond_label)) {
+
     data$signals <- split(data$signals, data$timings$time)
     data$signals <- lapply(data$signals, colMeans)
     data$signals <- as.data.frame(do.call("rbind", data$signals))
@@ -596,28 +597,13 @@ eeg_average.eeg_epochs <- function(data, cond_label = NULL, ...) {
 
   } else {
 
-    if (all(grepl("/", cond_label))) {
-      lab_check <- cond_label %in% unique(list_epochs(data)$event_label)
-    } else if (any(grepl("/", cond_label))) {
-      stop("Do not mix hierarchical and non-hierarchical event labels.")
-    } else {
-      # Check if there is a hierarchical separator "/". If so,
-      # split the labels
-      if (any(grepl("/", unique(list_epochs(data)$event_label)))) {
-        split_labels <- strsplit(list_epochs(data)$event_label, "/")
-
-        lab_check <- lapply(cond_label,
-                            function(x) vapply(split_labels,
-                                               function(i) x %in% i,
-                                               logical(1)))
-        #condense to a single TRUE or FALSE for each label
-        lab_check <- vapply(lab_check, any, logical(1))
-      }
-    }
+    # Check for presence of labels
+    lab_check <- label_check(cond_label, unique(list_epochs(data)$event_label))
 
     if (!all(lab_check)) {
       stop("Not all labels found. Use list_events to check labels.")
     }
+
     evoked <- vector("list", length(cond_label))
     for (i in seq_along(cond_label)) {
       tmp_dat <- select_epochs(data, cond_label[[i]])

@@ -2,6 +2,7 @@
 
 S3method(as.data.frame,eeg_ICA)
 S3method(as.data.frame,eeg_data)
+S3method(as.data.frame,eeg_epochs)
 S3method(as.data.frame,eeg_evoked)
 S3method(browse_data,eeg_ICA)
 S3method(browse_data,eeg_data)

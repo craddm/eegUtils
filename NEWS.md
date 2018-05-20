@@ -1,4 +1,14 @@
-# eegUtils 0.1.15.dev
+# eegUtils 0.1.15.9000
+
+### Function changes
+- `as.data.frame.eeg_epochs()` now has a `cond_labels` parameter to select epochs with specific events and add the event label as an additional column.
+- `as.data.frame()` methods now drop the `sample` column.
+
+### Internal changes
+- `plot_butterfly()` some `dplyr` use removed
+- `montage_check()` command parses montage info when passed to `electrode_locations()`
+
+# eegUtils 0.1.15
 
 ### Function changes
 - `eeg_evoked()` class introduced to hold ERPS

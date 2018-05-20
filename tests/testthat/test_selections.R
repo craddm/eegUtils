@@ -42,10 +42,10 @@ test_that("Selection of electrodes and times works for eeg_* objects",{
   expect_equal(names(test_Oz$signals), "A2")
   expect_s3_class(as.data.frame(test_Oz), "data.frame")
 
-  test_seltime <- select_times(test_data, time_lim = c(-.1, .2))
+  test_seltime <- select_times(test_data, time_lim = c(-.1, .4))
 
   expect_true(min(test_seltime$timings$time) >= -.1)
-  expect_true(max(test_seltime$timings$time) <= .2)
+  expect_true(max(test_seltime$timings$time) <= .4)
   expect_equal(nrow(test_seltime$timings), nrow(test_seltime$signals))
 
   test_epo <- epoch_data(test_data, 255)
@@ -56,5 +56,10 @@ test_that("Selection of electrodes and times works for eeg_* objects",{
   max_time <- test_epo$timings$time[which.min(abs(test_epo$timings$time - .2))]
   expect_true(min(test_epo_times$timings$time) >= min_time)
   expect_true(max(test_epo_times$timings$time) <= max_time)
+
+  epo_df <- as.data.frame(test_epo)
+  epo_df_A5 <- select_elecs(epo_df, electrode = "A5")
+  expect_true("A5" %in% names(epo_df_A5))
+  expect_false("A2" %in% names(epo_df_A5))
 
 })

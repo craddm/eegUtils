@@ -39,4 +39,9 @@ test_that("erp_raster and erp_image function", {
   test_epo <- epoch_data(test_data, 255)
   expect_s3_class(erp_image(test_epo, electrode = "A15"), "gg")
   expect_s3_class(erp_raster(test_epo), "gg")
+
+  expect_error(electrode_locations(test_epo, montage = "bio2"))
+  test_epo <- electrode_locations(test_epo, montage = "biosemi64alpha")
+  expect_is(test_epo$chan_info, "data.frame")
+
 })

@@ -175,7 +175,7 @@ plot_tc.eeg_epochs <- function(data, time_lim = NULL,
                                color = NULL, ...) {
 
   # Select specifed times
-  if (!is.null(time_lime)) {
+  if (!is.null(time_lim)) {
     data <- select_times(data, time_lim = time_lim)
   }
 
@@ -198,6 +198,10 @@ plot_tc.eeg_epochs <- function(data, time_lim = NULL,
     data <- rm_baseline(data, time_lim = baseline)
   }
 
+  data <- as.data.frame(data, long = T)
+
+  tc_plot <- ggplot2::ggplot(data, aes(x = time, y = amplitude))
+
 }
 
 
@@ -207,7 +211,6 @@ plot_tc.eeg_epochs <- function(data, time_lim = NULL,
 plot_tc.eeg_stats <- function(data, time_lim, ...) {
 
 }
-
 
 #' Create a butterfly plot from timecourse data
 #'

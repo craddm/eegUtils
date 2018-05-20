@@ -31,10 +31,13 @@ electrode_locations.data.frame <- function(data,
                                 montage = NULL, ...) {
 
   if (!is.null(montage)) {
-    if (montage == "biosemi64alpha") {
-      electrodeLocs[1:64, electrode] <- c(paste0("A", 1:32),
-                                          paste0("B", 1:32))
-    }
+    electrodeLocs <- montage_check(montage)
+    # if (montage == "biosemi64alpha") {
+    #   electrodeLocs[1:64, electrode] <- c(paste0("A", 1:32),
+    #                                       paste0("B", 1:32))
+    # } else {
+    #   stop("Unknown montage. Current only biosemi64alpha is available.")
+    # }
   }
 
   data[, electrode] <- toupper(data[[electrode]])
@@ -97,10 +100,13 @@ electrode_locations.eeg_data <- function(data,
   }
 
   if (!is.null(montage)) {
-    if (montage == "biosemi64alpha") {
-      electrodeLocs[1:64, "electrode"] <- c(paste0("A", 1:32),
-                                          paste0("B", 1:32))
-    }
+    #if (montage == "biosemi64alpha") {
+     # electrodeLocs[1:64, "electrode"] <- c(paste0("A", 1:32),
+      #                                    paste0("B", 1:32))
+    #} else {
+     # stop("Unknown montage. Current only biosemi64alpha is available.")
+    #}
+    electrodeLocs <- montage_check(montage)
   }
 
   elec_names <- toupper(names(data$signals))
@@ -128,6 +134,20 @@ electrode_locations.eeg_data <- function(data,
   } else {
     return(data)
   }
+}
+
+#' Montage check
+#'
+#' @noRd
+
+montage_check <- function(montage) {
+  if (identical(montage, "biosemi64alpha")) {
+    electrodeLocs[1:64, "electrode"] <- c(paste0("A", 1:32),
+                                          paste0("B", 1:32))
+  } else {
+    stop("Unknown montage. Current only biosemi64alpha is available.")
+  }
+  electrodeLocs
 }
 
 #' Function to create an S3 object of class \code{eeg_data}

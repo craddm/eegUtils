@@ -31,6 +31,7 @@ select_times.default <- function(data, time_lim = NULL, ...) {
     } else if (length(time_lim) == 2) {
       time_lim[1] <- data$time[which.min(abs(data$time - time_lim[1]))]
       time_lim[2] <- data$time[which.min(abs(data$time - time_lim[2]))]
+      #data <- data[data$time >= time_lim[1] & data$time <= time_lim[2], ]
       data <- dplyr::filter(data, time >= time_lim[1] & time <= time_lim[2])
     }
   } else {

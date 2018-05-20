@@ -1,6 +1,6 @@
 #' Fit a glm model to each timepoint for an individual subject.
 #'
-#' @author Matt Craddock, \email{matt@mattcraddock.com}
+#' @author Matt Craddock, \email{matt@@mattcraddock.com}
 #' @param data An EEG dataset.
 #' @param dv Column containing dependent variable. (e.g. amplitude)
 #' @param iv_1 Column containing predictor.
@@ -8,7 +8,7 @@
 #' @import tidyr
 #' @import dplyr
 #' @import broom
-#'
+#' @noRd
 
 
 fit_glm_indiv <- function(data, dv, iv_1) {
