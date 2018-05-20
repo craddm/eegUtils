@@ -225,7 +225,6 @@ eeg_stats <- function(statistic, chan_info, pvals, timings) {
 
 is.eeg_data <- function(x) inherits(x, "eeg_data")
 
-
 #' Check if object is of class "eeg_epochs".
 #'
 #' @author Matt Craddock \email{matt@mattcraddock.com}
@@ -298,10 +297,68 @@ as.data.frame.eeg_data <- function(x, row.names = NULL,
   return(df)
 }
 
+#' Convert \code{eeg_epochs} object to data.frame
+#'
+#' Convert an \code{eeg_epochs} object to a data.frame for use with whatever
+#' packages you desire.
+#'
+#' @author Matt Craddock \email{matt@@mattcraddock.com}
+#' @param x Object of class \code{eeg_epochs}
+#' @param row.names Kept for compatability with S3 generic, ignored.
+#' @param optional Kept for compatability with S3 generic, ignored.
+#' @param long Convert to long format. Defaults to FALSE.
+#' @param events Include events in output. Defaults to FALSE.
+#' @param cond_labels Add column tagging epochs with events that have matching
+#'   labels.
+#' @param ... arguments for other as.data.frame commands
+#'
+#' @importFrom tidyr gather
+#' @export
+
+as.data.frame.eeg_epochs <- function(x, row.names = NULL,
+                                     optional = FALSE,
+                                     long = FALSE, events = FALSE,
+                                     cond_labels = NULL, ...) {
+
+  if (!is.null(cond_labels)) {
+    lab_check <- label_check(cond_labels,
+                             unique(list_epochs(x))$event_label)
+    if (!all(lab_check)) {
+      stop("Not all labels found. Use list_events to check labels.")
+    }
+
+    df <- lapply(seq_along(cond_labels), function(ix) {
+      out_df <- as.data.frame(select_epochs(x, cond_labels[[ix]]))
+      out_df$cond_label <- cond_labels[[ix]]
+      out_df
+    })
+
+    df <- do.call("rbind", df)
+
+  } else {
+    df <- data.frame(x$signals,
+                     time = x$timings$time,
+                     epoch = x$timings$epoch)
+    }
+
+    if (long) {
+    df <- tidyr::gather(df,
+                        electrode,
+                        amplitude,
+                        -time,
+                        -epoch,
+                        factor_key = T)
+  }
+
+  if (events) {
+    df <- dplyr::left_join(df, x$events, by = c("sample" = "event_onset"))
+  }
+  return(df)
+}
 
 #' Convert \code{eeg_evoked} object to data frame
 #
-#' @author Matt Craddock \email{matt@mattcraddock.com}
+#' @author Matt Craddock \email{matt@@mattcraddock.com}
 #' @param x Object of class \code{eeg_evoked}
 #' @param row.names Kept for compatability with S3 generic, ignored.
 #' @param optional Kept for compatability with S3 generic, ignored.
@@ -377,3 +434,39 @@ pol_to_sph <- function(theta, phi) {
   y <- z_cos * sin(sph_theta)
   data.frame(x, y, z)
 }
+
+#' Check consistency of events
+#'
+#' Internal function for checking 1) whether the labels submitted are a mixture
+#' of hierarchical and non-hierarchical types 2) whether the labels submitted
+#' are present in the data
+#'
+#' @author Matt Craddock \email{matt@@mattcraddock.com}
+#' @param cond_labs labels submitted by the user
+#' @param data_labs labels from the actual data
+#' @noRd
+
+label_check <- function(cond_labs, data_labs) {
+
+  if (all(grepl("/", cond_labs))) {
+    lab_check <- cond_labs %in% data_labs
+    } else if (any(grepl("/", cond_labs))) {
+      stop("Do not mix hierarchical and non-hierarchical event labels.")
+      } else {
+        # Check if there is a hierarchical separator "/". If so,
+        # split the labels
+        if (any(grepl("/", data_labs))) {
+          split_labels <- strsplit(data_labs, "/")
+
+          lab_check <- lapply(cond_labs,
+                              function(x) vapply(split_labels,
+                                                 function(i) x %in% i,
+                                                 logical(1)))
+          #condense to a single TRUE or FALSE for each label
+          lab_check <- vapply(lab_check, any, logical(1))
+        } else {
+          lab_check <- cond_labs %in% data_labs
+        }
+      }
+}
+
