@@ -101,7 +101,6 @@ split_vec <- function(vec, seg_length, overlap) {
   lapply(1:length(starts), function(i) vec[starts[i]:ends[i]])
 }
 
-
 #' Morlet wavelet
 #'
 #' Generate Morlet wavelet family
