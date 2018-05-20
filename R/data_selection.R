@@ -74,8 +74,8 @@ select_times.eeg_epochs <- function(data, time_lim = NULL,
       warning("Must enter two timepoints when selecting a time range;
         using whole range.")
   } else if (length(time_lim) == 2) {
-    time_lim[1] <- data$time[which.min(abs(data$time - time_lim[1]))]
-    time_lim[2] <- data$time[which.min(abs(data$time - time_lim[2]))]
+    time_lim[1] <- data$timings$time[which.min(abs(data$timings$time - time_lim[1]))]
+    time_lim[2] <- data$timings$time[which.min(abs(data$timings$time - time_lim[2]))]
     sel_rows <- data$timings$time > time_lim[1] & data$timings$time < time_lim[2]
   }
 
