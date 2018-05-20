@@ -134,10 +134,10 @@ calc_pval <- function(x, df, tails = 2) {
 
 #' Calculate F-statistic for independent samples
 #'
-#' @param x1
-#' @param x2
+#' @param x1 condition one
+#' @param x2 condition two
 #' @author Matt Craddock, \email{matt@@mattcraddock.com}
-#'
+#' @noRd
 
 calc_fstat <- function(x1, x2) {
   x1_means <- colMeans(aperm(x1, c(2, 1, 3)))

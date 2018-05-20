@@ -6,12 +6,14 @@
 #'
 #' @param data An object of class \code{eeg_epochs}
 #' @param ... Parameters passed to FASTER
+#' @noRd
 
 eeg_FASTER <- function(data, ...) {
   UseMethod("eeg_FASTER", data)
 }
 
 #' @describeIn eeg_FASTER Run FASTER on \code{eeg_epochs}
+#' @noRd
 eeg_FASTER.eeg_epochs <- function(data, ...) {
 
 
@@ -83,12 +85,14 @@ eeg_ar_thresh.eeg_epochs <- function(data, threshold, reject = FALSE, ...) {
 #'
 #' @param data Data as a \code{eeg_data} or \code{eeg_epochs} object.
 #' @param ... Other parameters passed to the functions.
+#' @noRd
 
 channel_stats <- function(data, ...) {
   UseMethod("channel_stats", data)
 }
 
 #' @describeIn channel_stats Calculate channel statistics for \code{eeg_data} objects.
+#' @noRd
 channel_stats.eeg_data <- function(data, ...) {
   chan_means <- colMeans(data$signals)
   chan_sds <- apply(data$signals, 2, sd)
@@ -102,12 +106,14 @@ channel_stats.eeg_data <- function(data, ...) {
 #'
 #' @param data Data as a \code{eeg_data} or \code{eeg_epochs} object.
 #' @param ... Other parameters passed to the functions.
+#' @noRd
 
 epoch_stats <- function(data, ...) {
   UseMethod("epoch_stats", data)
 }
 
 #' @describeIn epoch_stats Calculate statistics for each epoch.
+#' @noRd
 epoch_stats.eeg_epochs <- function(data, ...) {
   epoch_nos <- unique(data$timings$epoch)
   data <- split(data$signals, data$timings$epoch)
@@ -270,7 +276,7 @@ kurtosis <- function(data) {
 #' @param veog Vertical EOG channels
 #' @param bipolarize Bipolarize the EOG channels. Only works when four channels are supplied (2 HEOG and 2 VEOG).
 #' @author Matt Craddock, \email{matt@@mattcraddock.com}
-#
+#' @noRd
 
 eeg_ar_eogreg <- function(data, heog, veog, bipolarize = TRUE, ...) {
   UseMethod("eeg_ar_eogreg", data)
