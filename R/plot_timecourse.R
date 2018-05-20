@@ -1,4 +1,4 @@
-#'Plot 1-d timecourse data.
+#'Plot 1-D timecourse data.
 #'
 #'Typically event-related potentials/fields, but could also be timecourses from
 #'frequency analyses for single frequencies. Averages over all submitted
@@ -37,7 +37,7 @@ plot_timecourse <- function(data, time_lim = NULL,
   if (is.eeg_data(data)) {
 
     if (data$continuous) {
-      stop("Not currently supported for continuous data.")
+      stop("Not currently supported for continuous eeg_data objects.")
     }
 
     data <- as.data.frame(data, long = TRUE)
@@ -168,6 +168,39 @@ plot_tc <- function(data, ...) {
   UseMethod("plot_tc", data)
 }
 
+plot_tc.eeg_epochs <- function(data, time_lim = NULL,
+                               group = NULL, facet = NULL,
+                               add_CI = FALSE, baseline = NULL,
+                               colour = NULL, electrode = NULL,
+                               color = NULL, ...) {
+
+  # Select specifed times
+  if (!is.null(time_lime)) {
+    data <- select_times(data, time_lim = time_lim)
+  }
+
+  ## Select specified electrodes -----
+  if (!is.null(electrode)) {
+    data <- select_elecs(data, electrode = electrode)
+  }
+
+  ## check for US spelling of colour...
+  if (is.null(colour)) {
+    if (!is.null(color)) {
+      colour <- as.name(color)
+    }
+  } else {
+    colour <- as.name(colour)
+  }
+
+  ## Do baseline correction
+  if (!is.null(baseline)) {
+    data <- rm_baseline(data, time_lim = baseline)
+  }
+
+}
+
+
 #' @describeIn plot_tc plot_tc for eeg_stats objects.
 #' @noRd
 #'
@@ -230,9 +263,13 @@ plot_butterfly.default <- function(data,
       continuous <- TRUE
     } else {
       data <- as.data.frame(data)
-      data <- dplyr::group_by(data, time)
-      data <- dplyr::summarise_all(data, mean)
-      data <- dplyr::select(data, -epoch, -sample)
+      data <- dplyr::select(data, -epoch)
+      data <- split(data, data$time)
+      names(data) <- NULL
+      data <- lapply(data, colMeans)
+      data <- as.data.frame(do.call("rbind", data))
+      #data <- dplyr::group_by(data, time)
+      #data <- dplyr::summarise_all(data, mean)
       data <- tidyr::gather(data,
                             electrode,
                             amplitude,
