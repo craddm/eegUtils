@@ -64,29 +64,47 @@ select_times.eeg_data <- function(data, time_lim = NULL, df_out = FALSE, ...) {
   }
 }
 
-#' @importFrom dplyr filter select
 #' @export
 #' @describeIn select_times Select times in \code{eeg_epoch} objects
 
 select_times.eeg_epochs <- function(data, time_lim = NULL,
                                     df_out = FALSE, ...) {
 
-  proc_data <- as.data.frame(data)
-  proc_data <- select_times(proc_data, time_lim = time_lim)
+  if (length(time_lim) == 1) {
+      warning("Must enter two timepoints when selecting a time range;
+        using whole range.")
+  } else if (length(time_lim) == 2) {
+    time_lim[1] <- data$time[which.min(abs(data$time - time_lim[1]))]
+    time_lim[2] <- data$time[which.min(abs(data$time - time_lim[2]))]
+    sel_rows <- data$timings$time > time_lim[1] & data$timings$time < time_lim[2]
+  }
+
+  data$signals <- data$signals[sel_rows, ]
+  data$timings <- data$timings[sel_rows, ]
+  event_rows <- data$events$event_time > time_lim[1] & data$events$event_time < time_lim[2]
+  data$events <- data$events[event_rows, ]
+
+  if (!is.null(data$reference$ref_data)) {
+    data$reference$ref_data <- data$reference$ref_data[data$timings$sample]
+  }
+
+  #proc_data <- as.data.frame(data)
+  #proc_data <- select_times(proc_data, time_lim = time_lim)
 
   if (df_out) {
-    return(proc_data)
+    #return(proc_data)
+    return(as.data.frame(data))
   } else {
-    data$events <- dplyr::filter(data$events, time >= time_lim[1],
-                                 time <= time_lim[2])
-    data$signals <- dplyr::select(proc_data, -sample, -time, -epoch)
-    data$timings <- tibble::tibble(time = proc_data$time,
-                         sample = proc_data$sample,
-                         epoch = proc_data$epoch)
-
-    if (!is.null(data$reference$ref_data)) {
-      data$reference$ref_data <- data$reference$ref_data[data$timings$sample]
-    }
+    # data$events <- dplyr::filter(data$events, time >= time_lim[1],
+    #                              time <= time_lim[2])
+    # data$signals <- dplyr::select(proc_data, -sample, -time, -epoch)
+    # data$timings <- tibble::tibble(time = proc_data$time,
+    #                      sample = proc_data$sample,
+    #                      epoch = proc_data$epoch)
+    #
+    # if (!is.null(data$reference$ref_data)) {
+    #   data$reference$ref_data <- data$reference$ref_data[data$timings$sample]
+    # }
     return(data)
   }
 }
@@ -256,11 +274,11 @@ select_epochs.eeg_epochs <- function(data, epoch_events = NULL, epoch_no = NULL,
 
     if (!any(check_ev)) {
       stop("Event label not found, check with list_events.")
-    } else {
-      epoch_events <- epoch_events[check_ev]
-    }
+    } #else {
+      #epoch_events <- epoch_events[check_ev]
+    #}
 
-    sel_rows <- check_ev #data$events$event_label %in% epoch_events
+    sel_rows <- data$events$event_label %in% epoch_events
 
     if (keep == FALSE) {
       sel_rows <- !sel_rows
