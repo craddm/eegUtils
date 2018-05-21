@@ -355,24 +355,34 @@ as.data.frame.eeg_epochs <- function(x, row.names = NULL,
 
     df <- do.call("rbind", df)
 
+    if (long) {
+      df <- tidyr::gather(df,
+                          electrode,
+                          amplitude,
+                          -time,
+                          -epoch,
+                          -cond_label,
+                          factor_key = T)
+    }
+
   } else {
     df <- data.frame(x$signals,
                      time = x$timings$time,
                      epoch = x$timings$epoch)
-    }
 
     if (long) {
-    df <- tidyr::gather(df,
-                        electrode,
-                        amplitude,
-                        -time,
-                        -epoch,
-                        factor_key = T)
+      df <- tidyr::gather(df,
+                          electrode,
+                          amplitude,
+                          -time,
+                          -epoch,
+                          factor_key = T)
+    }
   }
 
   if (events) {
     df <- dplyr::left_join(df, x$events, by = c("sample" = "event_onset"))
-  }
+    }
   return(df)
 }
 

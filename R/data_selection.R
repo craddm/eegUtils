@@ -261,25 +261,30 @@ select_epochs.eeg_epochs <- function(data, epoch_events = NULL, epoch_no = NULL,
   # in the data.
 
   if (is.numeric(epoch_events)) {
+
     sel_rows <- data$events$event_type %in% epoch_events
+
+    if (!any(sel_rows)){
+      stop("Events not found.")
+    }
 
     if (keep == FALSE) {
       sel_rows <- !sel_rows
     }
 
     epoch_no <- as.numeric(data$events$epoch[sel_rows])
+
   } else if (is.character(epoch_events)) {
 
-    #check_ev <- epoch_events %in% list_events(data)$event_label
-    check_ev <- grepl(epoch_events, list_events(data)$event_label)
+    check_ev <- label_check(epoch_events, data$events$event_label)
 
-    if (!any(check_ev)) {
+    if (check_ev) {
+      check_ev <- grepl(epoch_events, data$events$event_label)
+    } else {
       stop("Event label not found, check with list_events.")
-    } #else {
-      #epoch_events <- epoch_events[check_ev]
-    #}
+    }
 
-    sel_rows <- data$events$event_label %in% epoch_events
+    sel_rows <- check_ev
 
     if (keep == FALSE) {
       sel_rows <- !sel_rows
@@ -289,6 +294,7 @@ select_epochs.eeg_epochs <- function(data, epoch_events = NULL, epoch_no = NULL,
   }
 
   if (is.numeric(epoch_no)) {
+
     sel_rows <- data$timings$epoch %in% epoch_no
 
     if (keep == FALSE) {
