@@ -383,7 +383,7 @@ plot_butterfly.eeg_evoked <- function(data,
 
 #' @describeIn plot_butterfly Butterfly plot for EEG statistics
 
-plot_butterfly.eeg_stats <- function(data,time_lim = NULL,
+plot_butterfly.eeg_stats <- function(data, time_lim = NULL,
                                      group = NULL,
                                      facet = NULL,
                                      baseline = NULL,

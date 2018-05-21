@@ -167,10 +167,8 @@ rm_baseline.eeg_epochs <- function(data, time_lim = NULL, ...) {
                            function(i) sweep(data$signals[[i]],
                                              2,
                                              base_baselines[[i]],
-                                             '-'))
+                                             "-"))
     data$signals <- do.call(rbind, data$signals)
-    #data$signals <- as.matrix(data$signals)
-    #dim(data$signals) <- c(n_times, n_epochs, n_chans)
   }
   return(data)
 
@@ -514,7 +512,6 @@ check_timings <- function(data) {
     # timings should be consistently increasing.
     # only works correctly with 2 objects
 
-    #switch_loc <- which.min(diff(data$timings$epoch))
     #check for any places where epoch numbers decrease instead of increase
     switch_locs <- which(diff(data$timings$epoch) == min(diff(data$timings$epoch)))
 
@@ -555,7 +552,9 @@ check_timings <- function(data) {
     orig_ev <- rle(data$events$epoch)
     orig_ev$values <- unique(data$timings$epoch)
     data$events$epoch <- inverse.rle(orig_ev)
-    data$events <- dplyr::left_join(data$events, data$timings, by = c("epoch", "time"))
+    data$events <- dplyr::left_join(data$events,
+                                    data$timings,
+                                    by = c("epoch", "time"))
     data$events$event_onset <- data$events$sample
     data$events$sample <- NULL
   }

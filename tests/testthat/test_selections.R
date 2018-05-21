@@ -37,7 +37,7 @@ test_that("selection of electrodes and times works as expected", {
   expect_equal(select_times(test_dat_time, c(-.1, .3)), time_sel)
 })
 
-test_that("Selection of electrodes and times works for eeg_* objects",{
+test_that("Selection of electrodes and times works for eeg_* objects", {
 
   test_Oz <- select_elecs(test_data, electrode = "A2")
   expect_equal(names(test_Oz$signals), "A2")

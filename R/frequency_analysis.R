@@ -43,7 +43,6 @@ compute_psd.eeg_data <- function(data,
 
   # split data into segments
   if (seg_length < nrow(data$signals)) {
-    #data_segs <- split_vec(data$amplitude, seg_length, noverlap)
     data_segs <- lapply(data$signals, split_vec, seg_length, noverlap)
     } else {
       data_segs <- data
@@ -67,7 +66,8 @@ compute_psd.eeg_data <- function(data,
   # Normalise the window
   U <- c(t(win) %*% win)
 
-  final_out <- lapply(data_fft, function(x) sapply(x, function(y) abs(y * Conj(y)) / U))
+  final_out <- lapply(data_fft,
+                      function(x) sapply(x, function(y) abs(y * Conj(y)) / U))
 
   # Normalize by sampling rate
   if (is.null(srate)) {
@@ -79,8 +79,8 @@ compute_psd.eeg_data <- function(data,
       }
 
   #select first half of spectrum and double amps, output is power - uV^2 / Hz
-  final_out <- final_out[1:(n_fft / 2 + 1) , ]
-  final_out[2:(n_fft / 2 + 1), ] <- (final_out[2:(n_fft / 2 + 1), ] * 2) ^2
+  final_out <- final_out[1:(n_fft / 2 + 1), ]
+  final_out[2:(n_fft / 2 + 1), ] <- (final_out[2:(n_fft / 2 + 1), ] * 2) ^ 2
   data.frame(final_out, frequency = freqs)
 }
 
@@ -125,7 +125,7 @@ morlet <- function(frex, wavtime, n_cycles = 7, n_freq = 30) {
   t_by_f <- matrix(wavtime,
                    nrow = length(wavtime),
                    ncol = length(frex))
-  c_sine <- 2* 1i * pi * t(t(t_by_f) * frex)
+  c_sine <- 2 * 1i * pi * t(t(t_by_f) * frex)
   gaussians <- t(t(-(t_by_f ^ 2)) / (2 * g_width ^ 2))
   m_family <- exp(c_sine + gaussians)
   # normalise wavelets
@@ -184,12 +184,14 @@ tf_morlet <- function(data, ...) {
   UseMethod("tf_morlet", data)
 }
 
-#' @param foi Frequencies of interest. Scalar or character vector of the lowest and highest frequency to resolve.
+#' @param foi Frequencies of interest. Scalar or character vector of the lowest
+#'   and highest frequency to resolve.
 #' @param n_freq Number of frequencies to be resolved.
 #' @param n_cycles Number of cycles at each frequency.
 #' @importFrom dplyr count
 #'
-#' @describeIn tf_morlet Time-frequency decomposition of \code{eeg_epochs} object.
+#' @describeIn tf_morlet Time-frequency decomposition of \code{eeg_epochs}
+#'   object.
 #' @noRd
 tf_morlet.eeg_epochs <- function(data, foi, n_freq, n_cycles, ...) {
 
@@ -207,7 +209,8 @@ tf_morlet.eeg_epochs <- function(data, foi, n_freq, n_cycles, ...) {
   max_length <- max(dplyr::count(data$timings, epoch)$n)
 
   # zero-pad before running ffts
-  mf_zp <- apply(morlet_family, 2, function(x) c(x, rep(0, max_length - length(x))))
+  mf_zp <- apply(morlet_family, 2,
+                 function(x) c(x, rep(0, max_length - length(x))))
   morlet_fft <- mvfft(mf_zp)
   conv_mor(morlet_fft, data$signals, max_length)
 

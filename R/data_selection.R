@@ -89,23 +89,10 @@ select_times.eeg_epochs <- function(data, time_lim = NULL,
     data$reference$ref_data <- data$reference$ref_data[data$timings$sample]
   }
 
-  #proc_data <- as.data.frame(data)
-  #proc_data <- select_times(proc_data, time_lim = time_lim)
-
   if (df_out) {
-    #return(proc_data)
     return(as.data.frame(data))
   } else {
-    # data$events <- dplyr::filter(data$events, time >= time_lim[1],
-    #                              time <= time_lim[2])
-    # data$signals <- dplyr::select(proc_data, -sample, -time, -epoch)
-    # data$timings <- tibble::tibble(time = proc_data$time,
-    #                      sample = proc_data$sample,
-    #                      epoch = proc_data$epoch)
-    #
-    # if (!is.null(data$reference$ref_data)) {
-    #   data$reference$ref_data <- data$reference$ref_data[data$timings$sample]
-    # }
+
     return(data)
   }
 }
@@ -260,37 +247,12 @@ select_epochs.eeg_epochs <- function(data, epoch_events = NULL, epoch_no = NULL,
   # based on event_type. If it's a character vector, check if those labels exist
   # in the data.
 
-  if (is.numeric(epoch_events)) {
-
-    sel_rows <- data$events$event_type %in% epoch_events
-
-    if (!any(sel_rows)){
-      stop("Events not found.")
-    }
-
-    if (keep == FALSE) {
-      sel_rows <- !sel_rows
-    }
-
-    epoch_no <- as.numeric(data$events$epoch[sel_rows])
-
-  } else if (is.character(epoch_events)) {
-
-    check_ev <- label_check(epoch_events, data$events$event_label)
-
-    if (check_ev) {
-      check_ev <- grepl(epoch_events, data$events$event_label)
-    } else {
-      stop("Event label not found, check with list_events.")
-    }
-
-    sel_rows <- check_ev
-
-    if (keep == FALSE) {
-      sel_rows <- !sel_rows
-    }
-
-    epoch_no <- as.numeric(data$events$epoch[sel_rows])
+  if (!is.null(epoch_events)) {
+    epoch_no <- proc_events(epoch_events = epoch_events,
+                            event_type = data$events$event_type,
+                            epoch_nos = data$events$epoch,
+                            event_labels = data$events$event_label,
+                            keep = keep)
   }
 
   if (is.numeric(epoch_no)) {
@@ -317,4 +279,96 @@ select_epochs.eeg_epochs <- function(data, epoch_events = NULL, epoch_no = NULL,
   } else {
     data
   }
+}
+
+#' @describeIn select_epochs Selection of epochs from \code{eeg_ICA} objects.
+#' @export
+
+select_epochs.eeg_ICA <- function(data, epoch_events = NULL, epoch_no = NULL,
+                                     keep = TRUE, df_out = FALSE, ...) {
+
+  # First check if epoch_events has been passed; if it's numeric, select epochs
+  # based on event_type. If it's a character vector, check if those labels exist
+  # in the data.
+
+  if (!is.null(epoch_events)) {
+    epoch_no <- proc_events(epoch_events = epoch_events,
+                            event_type = data$events$event_type,
+                            epoch_nos = data$events$epoch,
+                            event_labels = data$events$event_label,
+                            keep = keep)
+  }
+
+  if (is.numeric(epoch_no)) {
+
+    sel_rows <- data$timings$epoch %in% epoch_no
+
+    if (keep == FALSE) {
+      sel_rows <- !sel_rows
+    }
+
+    data$comp_activations <- data$comp_activations[sel_rows, ]
+
+    if (!is.null(data$reference)) {
+      data$reference$ref_data <- data$reference$ref_data[sel_rows]
+    }
+
+    data$timings <- data$timings[sel_rows, ]
+    data$events <- data$events[data$events$epoch %in% epoch_no, ]
+
+  }
+
+  if (df_out) {
+    as.data.frame(data)
+  } else {
+    data
+  }
+}
+
+#' Internal function for processing epoch_events during selection
+#'
+#' Converts character strings into a vector of epoch numbers with matching labels.
+#'
+#' @noRd
+
+proc_events <- function(epoch_events,
+                        event_type,
+                        epoch_nos,
+                        event_labels,
+                        keep
+                        ) {
+
+  if (is.numeric(epoch_events)) {
+
+    sel_rows <- event_type %in% epoch_events
+
+    if (!any(sel_rows)){
+      stop("Events not found.")
+    }
+
+    if (keep == FALSE) {
+      sel_rows <- !sel_rows
+    }
+
+    epoch_no <- as.numeric(epoch_nos[sel_rows])
+
+  } else if (is.character(epoch_events)) {
+
+    check_ev <- label_check(epoch_events, event_labels)
+
+    if (check_ev) {
+      check_ev <- grepl(epoch_events, event_labels)
+    } else {
+      stop("Event label not found, check with list_events.")
+    }
+
+    sel_rows <- check_ev
+
+    if (keep == FALSE) {
+      sel_rows <- !sel_rows
+    }
+
+    epoch_no <- as.numeric(epoch_nos[sel_rows])
+  }
+
 }

@@ -14,7 +14,8 @@ test_that("Plotting of single epoch timecourses works as expected", {
 })
 
 test_that("Plotting of data with multiple epochs works as expected", {
-  expect_equal_to_reference(plot_timecourse(EEG_epochs), file = "avg_epochs_elecs.rds")
+  expect_equal_to_reference(plot_timecourse(EEG_epochs),
+                            file = "avg_epochs_elecs.rds")
   expect_equal_to_reference(plot_timecourse(EEGdat, electrode = "Pz"),
                             file = "Pz_epochs.rds")
   expect_equal_to_reference(plot_timecourse(EEGdat, baseline = c(-200, 0),
@@ -23,7 +24,8 @@ test_that("Plotting of data with multiple epochs works as expected", {
 })
 
 test_that("Plotting of butterfly plots from epochs", {
-  expect_equal_to_reference(plot_butterfly(EEG_epochs), file = "butterfly_epochs.rds")
+  expect_equal_to_reference(plot_butterfly(EEG_epochs),
+                            file = "butterfly_epochs.rds")
 })
 
 test_that("Topoplots", {

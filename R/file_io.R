@@ -1,8 +1,8 @@
 #' Function for reading raw data.
 #'
 #' Currently BDF/EDF and 32-bit .CNT files are supported. Filetype is determined
-#' by the file extension.The \code{edfReader} package is used to load BDF files.
-#' The function creates an eeg_data structure for subsequent use.
+#' by the file extension.The \code{edfReader} package is used to load BDF/EDF files.
+#' The function creates an \code{eeg_data} structure for subsequent use.
 #'
 #' @author Matt Craddock, \email{matt@@mattcraddock.com}
 #' @param file_name File to import. Should include file extension.
@@ -347,7 +347,8 @@ import_set <- function(file_name, df_out = FALSE) {
   if (df_out) {
     return(signals)
   } else {
-    signals$time <- signals$time / 1000 # convert to seconds - eeglab uses milliseconds
+    signals$time <- signals$time / 1000
+    # convert to seconds - eeglab uses milliseconds
     timings <- tibble::tibble(time = signals$time,
                               epoch = signals$epoch,
                               sample = 1:length(signals$time))

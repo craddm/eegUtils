@@ -113,7 +113,7 @@ topoplot.data.frame <- function(data, time_lim = NULL, limits = NULL,
       data$electrode <- toupper(data$electrode)
       data <- dplyr::left_join(data, chanLocs, by = "electrode")
       if (any(is.na(data$x))) {
-        data <- data[!is.na(data$x),]
+        data <- data[!is.na(data$x), ]
         }
       } else {
         warnings("No channel locations found in chanLocs.")

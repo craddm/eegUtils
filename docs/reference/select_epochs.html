@@ -58,7 +58,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">eegUtils</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.1.15</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.1.15.9000</span>
       </span>
     </div>
 
@@ -136,7 +136,11 @@
 
 <span class='co'># S3 method for eeg_epochs</span>
 <span class='fu'>select_epochs</span>(<span class='no'>data</span>, <span class='kw'>epoch_events</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>epoch_no</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>keep</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>df_out</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)</pre>
+  <span class='kw'>epoch_no</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>keep</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>df_out</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)
+
+<span class='co'># S3 method for eeg_ICA</span>
+<span class='fu'>select_epochs</span>(<span class='no'>data</span>, <span class='kw'>epoch_events</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>epoch_no</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>keep</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>df_out</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -175,6 +179,7 @@ FALSE to remove specified epochs.</p></td>
 <li><p><code>default</code>: Select from generic object</p></li>
 <li><p><code>eeg_data</code>: Select epochs from <code>eeg_data</code> objects.</p></li>
 <li><p><code>eeg_epochs</code>: Selection of epochs from <code>eeg_epochs</code> objects.</p></li>
+<li><p><code>eeg_ICA</code>: Selection of epochs from <code>eeg_ICA</code> objects.</p></li>
 </ul>
     
 

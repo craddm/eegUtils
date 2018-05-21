@@ -3,10 +3,13 @@
 ### Function changes
 - `as.data.frame.eeg_epochs()` now has a `cond_labels` parameter to select epochs with specific events and add the event label as an additional column.
 - `as.data.frame()` methods now drop the `sample` column.
+- `as.data.frame.eeg_ICA()` now has a `cond_labels` parameter to select epochs with specific events and add the event label as an additional column.
 
-### Internal changes
-- `plot_butterfly()` some `dplyr` use removed
+### Internal changes / bug fixes
+- `plot_butterfly()` some `dplyr` use removed.
 - `montage_check()` command parses montage info when passed to `electrode_locations()`
+- `label_check()` added to help parse event labels
+- `proc_events()` added to help parse event labels during `select_epochs()` calls
 
 # eegUtils 0.1.15
 

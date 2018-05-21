@@ -43,7 +43,12 @@ iir_filt.data.frame <- function(data, low_freq = NULL, high_freq = NULL,
   if (missing(srate)) {
     stop("sampling rate must be supplied.")
   }
-  data <- run_iir(data, low_freq, high_freq, filter_order, srate, silent = silent)
+  data <- run_iir(data,
+                  low_freq,
+                  high_freq,
+                  filter_order,
+                  srate,
+                  silent = silent)
   data
 }
 

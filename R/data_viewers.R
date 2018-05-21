@@ -178,11 +178,7 @@ browse_data.eeg_epochs <- function(data, sig_length = 5,
 
   if (downsample) {
     data <- eeg_downsample(data, q = 4)
-    #data <- iir_filt(data, high_freq = 0.8 * (data$srate / 4 / 2))
-    #data <- as.data.frame(data, long = TRUE)
-    #data <- data[seq(1, nrow(data), 4), ]
-  } else {
-    #data <- as.data.frame(data, long = TRUE)
+
   }
 
   ui <- miniPage(

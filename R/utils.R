@@ -31,14 +31,9 @@ electrode_locations.data.frame <- function(data,
                                 montage = NULL, ...) {
 
   if (!is.null(montage)) {
+
     electrodeLocs <- montage_check(montage)
-    # if (montage == "biosemi64alpha") {
-    #   electrodeLocs[1:64, electrode] <- c(paste0("A", 1:32),
-    #                                       paste0("B", 1:32))
-    # } else {
-    #   stop("Unknown montage. Current only biosemi64alpha is available.")
-    # }
-  }
+    }
 
   data[, electrode] <- toupper(data[[electrode]])
   electrodeLocs[, electrode] <- toupper(electrodeLocs[[electrode]])
@@ -100,12 +95,7 @@ electrode_locations.eeg_data <- function(data,
   }
 
   if (!is.null(montage)) {
-    #if (montage == "biosemi64alpha") {
-     # electrodeLocs[1:64, "electrode"] <- c(paste0("A", 1:32),
-      #                                    paste0("B", 1:32))
-    #} else {
-     # stop("Unknown montage. Current only biosemi64alpha is available.")
-    #}
+
     electrodeLocs <- montage_check(montage)
   }
 
@@ -418,25 +408,55 @@ as.data.frame.eeg_evoked <- function(x, row.names = NULL,
 #' @param row.names Kept for compatability with S3 generic, ignored.
 #' @param optional Kept for compatability with S3 generic, ignored.
 #' @param long Convert to long format. Defaults to FALSE
+#' @param cond_labels add condition labels to data frame.
 #' @param ... arguments for other as.data.frame commands
 #'
 #' @importFrom tidyr gather
 #' @export
 
 as.data.frame.eeg_ICA <- function(x, row.names = NULL,
-                                  optional = FALSE, long = FALSE, ...) {
+                                  optional = FALSE, long = FALSE,
+                                  cond_labels = NULL, ...) {
+
   names(x$comp_activations) <- 1:ncol(x$comp_activations)
-  df <- data.frame(x$comp_activations, x$timings)
-  if (long) {
-    df <- tidyr::gather(df,
-                        electrode,
-                        amplitude,
-                        -time,
-                        -epoch,
-                        -sample,
-                        factor_key = T)
-  }
-  return(df)
+
+  if (!is.null(cond_labels)) {
+    lab_check <- label_check(cond_labels,
+                             unique(list_epochs(x))$event_label)
+    if (!all(lab_check)) {
+      stop("Not all labels found. Use list_events to check labels.")
+    }
+
+    df <- lapply(seq_along(cond_labels), function(ix) {
+      out_df <- as.data.frame(select_epochs(x, cond_labels[[ix]]))
+      out_df$cond_label <- cond_labels[[ix]]
+      out_df
+    })
+
+    df <- do.call("rbind", df)
+
+    if (long) {
+      df <- tidyr::gather(df,
+                          electrode,
+                          amplitude,
+                          -time,
+                          -epoch,
+                          -cond_label,
+                          factor_key = T)
+    }
+  } else {
+    df <- data.frame(x$comp_activations, x$timings)
+    df$sample <- NULL
+    if (long) {
+      df <- tidyr::gather(df,
+                          electrode,
+                          amplitude,
+                          -time,
+                          -epoch,
+                          factor_key = T)
+    }
+    }
+  df
 }
 
 #' Convert polar to spherical coordinates
@@ -465,7 +485,10 @@ pol_to_sph <- function(theta, phi) {
   data.frame(x, y, z)
 }
 
-#' Check consistency of events
+
+
+
+#' Check consistency of labels
 #'
 #' Internal function for checking 1) whether the labels submitted are a mixture
 #' of hierarchical and non-hierarchical types 2) whether the labels submitted
@@ -499,4 +522,3 @@ label_check <- function(cond_labs, data_labs) {
         }
       }
 }
-

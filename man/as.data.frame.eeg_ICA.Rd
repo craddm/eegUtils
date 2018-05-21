@@ -5,7 +5,7 @@
 \title{Convert \code{eeg_ICA} object to data frame}
 \usage{
 \method{as.data.frame}{eeg_ICA}(x, row.names = NULL, optional = FALSE,
-  long = FALSE, ...)
+  long = FALSE, cond_labels = NULL, ...)
 }
 \arguments{
 \item{x}{Object of class \code{eeg_ICA}}
@@ -15,6 +15,8 @@
 \item{optional}{Kept for compatability with S3 generic, ignored.}
 
 \item{long}{Convert to long format. Defaults to FALSE}
+
+\item{cond_labels}{add condition labels to data frame.}
 
 \item{...}{arguments for other as.data.frame commands}
 }

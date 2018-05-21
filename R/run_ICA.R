@@ -30,6 +30,7 @@ run_ICA.eeg_epochs <- function (data, method = "sobi", ...) {
   n_times <- length(unique(data$timings$time))
 
   ##number of lags at which to assess autocovariance matrices
+  ## 100 is the default; only switches to smaller n if epochs are too short
   n_lags <- min(100, ceiling(n_times / 3))
 
   ## reshape amplitude X electrode to a square matrix before doing SVD
@@ -37,9 +38,8 @@ run_ICA.eeg_epochs <- function (data, method = "sobi", ...) {
 
   ## Pre-whiten the data using the SVD. zero-mean columns and get SVD. NB:
   ## should probably edit this to zero mean *epochs*
-  amp_matrix <-
-    scale(data.matrix(data$signals[, (ncol(data$signals) - n_channels + 1):ncol(data$signals)]),
-          scale = FALSE)
+
+  amp_matrix <- sweep(data.matrix(data$signals), 2, colMeans(data$signals))
 
   SVD_amp <- svd(amp_matrix)
 
@@ -51,11 +51,15 @@ run_ICA.eeg_epochs <- function (data, method = "sobi", ...) {
   ## reshape to reflect epoching structure
   dim(amp_matrix) <- c(n_channels, n_times, n_epochs)
 
-  ## vectorise this loop ASAP.
+  ## vectorise this loop if possible?
   k <- 1
   pm <- n_channels * n_lags
   N <- n_times
   M <- matrix(NA, nrow = n_channels, ncol = pm)
+
+  tmp_fun <- function(amps, k, N, n_epochs) {
+    amps[, k:N] %*% t(amps[, 1:(N - k + 1)]) / (N - k + 1) / n_epochs
+    }
 
   for (u in seq(1, pm, n_channels)) {
     k <- k + 1
@@ -66,10 +70,11 @@ run_ICA.eeg_epochs <- function (data, method = "sobi", ...) {
         } else {
         Rxp <- Rxp + amp_matrix[, k:N, tlag] %*%
           t(amp_matrix[, 1:(N - k + 1), tlag]) / (N - k + 1) / n_epochs
-      }
-      M[, u:(u + n_channels - 1)] <- norm(Rxp, "F") * Rxp #  % Frobenius norm
+        }
     }
+      M[, u:(u + n_channels - 1)] <- norm(Rxp, "F") * Rxp #  % Frobenius norm
   }
+
 
   dim(M) <- c(n_channels, n_channels, pm / n_channels)
 
@@ -89,6 +94,6 @@ run_ICA.eeg_epochs <- function (data, method = "sobi", ...) {
                   "events" = data$events,
                   "chan_info" = data$chan_info,
                   "continuous" = FALSE)
-  class(ica_obj) <- c("eeg_ICA", "eeg_data")
+  class(ica_obj) <- c("eeg_ICA", "eeg_epochs", "eeg_data")
   return(ica_obj)
 }

@@ -15,8 +15,8 @@ import_raw(file_name, file_path = NULL, chan_nos = NULL)
 }
 \description{
 Currently BDF/EDF and 32-bit .CNT files are supported. Filetype is determined
-by the file extension.The \code{edfReader} package is used to load BDF files.
-The function creates an eeg_data structure for subsequent use.
+by the file extension.The \code{edfReader} package is used to load BDF/EDF files.
+The function creates an \code{eeg_data} structure for subsequent use.
 }
 \author{
 Matt Craddock, \email{matt@mattcraddock.com}

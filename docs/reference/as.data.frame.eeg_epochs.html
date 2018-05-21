@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Combine EEG objects — eeg_combine • eegUtils</title>
+<title>Convert <code>eeg_epochs</code> object to data.frame — as.data.frame.eeg_epochs • eegUtils</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -28,12 +28,10 @@
 
 
 
-<meta property="og:title" content="Combine EEG objects — eeg_combine" />
+<meta property="og:title" content="Convert <code>eeg_epochs</code> object to data.frame — as.data.frame.eeg_epochs" />
 
-<meta property="og:description" content="Combine multiple eeg_epochs or eeg_data objects into a single
-object. Note that this does not currently perform any sort of checking for
-internal consistency or duplication. It simply combines the objects in the order they
-are passed." />
+<meta property="og:description" content="Convert an eeg_epochs object to a data.frame for use with whatever
+packages you desire." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -118,47 +116,55 @@ are passed." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Combine EEG objects</h1>
-    <small class="dont-index">Source: <a href='https://github.com/craddm/eegUtils/blob/master/R/data_modifiers.R'><code>R/data_modifiers.R</code></a></small>
-    <div class="hidden name"><code>eeg_combine.Rd</code></div>
+    <h1>Convert <code>eeg_epochs</code> object to data.frame</h1>
+    <small class="dont-index">Source: <a href='https://github.com/craddm/eegUtils/blob/master/R/utils.R'><code>R/utils.R</code></a></small>
+    <div class="hidden name"><code>as.data.frame.eeg_epochs.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Combine multiple <code>eeg_epochs</code> or <code>eeg_data</code> objects into a single
-object. Note that this does not currently perform any sort of checking for
-internal consistency or duplication. It simply combines the objects in the order they
-are passed.</p>
+    <p>Convert an <code>eeg_epochs</code> object to a data.frame for use with whatever
+packages you desire.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>eeg_combine</span>(<span class='no'>data</span>, <span class='no'>...</span>)
-
-<span class='co'># S3 method for eeg_data</span>
-<span class='fu'>eeg_combine</span>(<span class='no'>data</span>, <span class='no'>...</span>)
-
-<span class='co'># S3 method for eeg_epochs</span>
-<span class='fu'>eeg_combine</span>(<span class='no'>data</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='co'># S3 method for eeg_epochs</span>
+<span class='fu'>as.data.frame</span>(<span class='no'>x</span>, <span class='kw'>row.names</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>optional</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>long</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>events</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>cond_labels</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>data</th>
-      <td><p>An <code>eeg_epochs</code> object</p></td>
+      <th>x</th>
+      <td><p>Object of class <code>eeg_epochs</code></p></td>
+    </tr>
+    <tr>
+      <th>row.names</th>
+      <td><p>Kept for compatability with S3 generic, ignored.</p></td>
+    </tr>
+    <tr>
+      <th>optional</th>
+      <td><p>Kept for compatability with S3 generic, ignored.</p></td>
+    </tr>
+    <tr>
+      <th>long</th>
+      <td><p>Convert to long format. Defaults to FALSE.</p></td>
+    </tr>
+    <tr>
+      <th>events</th>
+      <td><p>Include events in output. Defaults to FALSE.</p></td>
+    </tr>
+    <tr>
+      <th>cond_labels</th>
+      <td><p>Add column tagging epochs with events that have matching
+labels.</p></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>additional <code>eeg_epochs</code> objects</p></td>
+      <td><p>arguments for other as.data.frame commands</p></td>
     </tr>
     </table>
-    
-    <h2 class="hasAnchor" id="methods-by-class-"><a class="anchor" href="#methods-by-class-"></a>Methods (by class)</h2>
-
-    <ul>
-<li><p><code>eeg_data</code>: Method for combining <code>eeg_data</code> objects.</p></li>
-<li><p><code>eeg_epochs</code>: Method for combining <code>eeg_epochs</code> objects</p></li>
-</ul>
     
 
   </div>
@@ -166,13 +172,11 @@ are passed.</p>
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-      
-      <li><a href="#methods-by-class-">Methods (by class)</a></li>
-          </ul>
+                </ul>
 
     <h2>Author</h2>
     
-Matt Craddock, <a href='mailto:matt@mattcraddock.com'>matt@mattcraddock.com</a>
+Matt Craddock <a href='mailto:matt@mattcraddock.com'>matt@mattcraddock.com</a>
 
   </div>
 </div>

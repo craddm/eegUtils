@@ -58,9 +58,6 @@ compare_epochs.eeg_epochs <- function(data, cond_label = NULL, type, ...) {
 
     cond2 <- as.matrix(cond2$signals)
     dim(cond2) <- c(n_times, n_epochs, ncol(data$signals))
-
-    #cond1 <- split(cond1$signals, cond1$timings$time)
-    #cond2 <- split(cond2$signals, cond2$timings$time)
     data$signals <- calc_tstat_2(cond1, cond2)
     colnames(data$signals) <- elecs
     data$signals <- tibble::as_tibble(data$signals)
@@ -86,9 +83,10 @@ array_t <- function(x, mu = 0) {
   tp_means <- colMeans(aperm(x, c(2, 1, 3)))
 
   #calculate standard deviation for each combination of timepoint and electrode
-  tp_sds <- vapply(1:dim(x)[[3]], function(i) matrixStats::rowSds(x[,,i]), numeric(dim(x)[[1]]))
+  tp_sds <- vapply(1:dim(x)[[3]], function(i) matrixStats::rowSds(x[, , i]),
+                   numeric(dim(x)[[1]]))
 
-  new_t <- (tp_means - mu) / (tp_sds /sqrt(dim(x)[[2]]))
+  new_t <- (tp_means - mu) / (tp_sds / sqrt(dim(x)[[2]]))
   new_t
 }
 
@@ -147,24 +145,24 @@ calc_fstat <- function(x1, x2) {
 
   x1_test <- vapply(1:dim(x1)[[3]], function(i) x1[, , i] - grand_means[, i],
                     matrix(0, nrow = nrow(x1), ncol = ncol(x1)))
-  #x1_test_ss <- apply(x1_test, c(1, 3), function(x) sum(x^2)) * ncol(x1)
 
-  #x2_vars <- vapply(1:dim(x2)[[3]], function(i) matrixStats::rowVars(x2[, , i]), numeric(dim(x2)[[1]]))
   x2_test <- vapply(1:dim(x2)[[3]], function(i) x2[, , i] - grand_means[, i],
                     matrix(0, nrow = nrow(x2), ncol = ncol(x2)))
 
-  #x2_test_ss <- apply(x2_test, c(1, 3), function(x) sum(x^2)) * ncol(x2)
-
-  x3_test_sst <- vapply(1:dim(x1)[[3]], function(i) cbind(x1_test[, , i], x2_test[, , i]) ^ 2,
-                       matrix(1, nrow = nrow(x1_test), ncol = ncol(x1_test) + ncol(x2_test)))
+  x3_test_sst <- vapply(1:dim(x1)[[3]], function(i) cbind(x1_test[, , i],
+                                                          x2_test[, , i]) ^ 2,
+                       matrix(1,
+                              nrow = nrow(x1_test),
+                              ncol = ncol(x1_test) + ncol(x2_test)))
 
   x3_test_sst <- apply(x3_test_sst, c(1, 3), sum)
-  x3_ssm <- ncol(x1) * (x1_means - grand_means) ^ 2 + ncol(x2) * (x2_means - grand_means) ^ 2
+  x3_ssm <- ncol(x1) * (x1_means - grand_means) ^ 2 +
+    ncol(x2) * (x2_means - grand_means) ^ 2
 
   x3_ssr <- x3_test_sst - x3_ssm
 
   x4_msm <- x3_ssm / 1
   x4_msr <- x3_ssr / (ncol(x1) + ncol(x2) - 2)
-  x4_f <- x4_msm/ x4_msr
+  x4_f <- x4_msm / x4_msr
   x4_f
 }

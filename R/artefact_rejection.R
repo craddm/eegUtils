@@ -67,12 +67,14 @@ eeg_ar_thresh.eeg_epochs <- function(data, threshold, reject = FALSE, ...) {
     threshold <- c(threshold, -threshold)
   }
 
-  crossed_thresh <- data$signals > max(threshold) | data$signals < min(threshold)
+  crossed_thresh <- data$signals > max(threshold) |
+    data$signals < min(threshold)
 
   if (reject) {
     crossed_thresh <- rowSums(crossed_thresh) == 1
     rej_epochs <- unique(data$timings$epoch[crossed_thresh])
-    data <- select_epochs(data, rej_epochs, keep = FALSE) # consider creating select_timerange vs select_timepoints
+    data <- select_epochs(data, rej_epochs, keep = FALSE)
+    # consider creating select_timerange vs select_timepoints
   } else {
     data$reject <- rej_epochs
   }
@@ -194,7 +196,6 @@ spheric_spline <- function(good_elecs, bad_elecs, data) {
 
   C <- as.matrix(data) %*% t(MASS::ginv(rbind(lec, 1)))
 
-  #C <- C[-ncol(C)]
   mmm <- matrix(NA, nrow = nrow(bad_elecs), ncol = nrow(data))
 
   if (nrow(bad_elecs) > 1) {

@@ -65,7 +65,7 @@ tag_events.eeg_epochs <- function(data, trigs, event_label, ...) {
 #'
 #' @export
 #'
-#'@family event handlers
+#' @family event handlers
 
 list_events <- function(data) {
   if (!is.eeg_data(data)) {
@@ -87,11 +87,22 @@ list_events <- function(data) {
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #'
 #' @param data An object of class \code{eeg_epochs}
-#' @noRd
+#' @param ... Additional arguments
+#' @export
+#' @family event handlers
 
-list_epochs <- function(data) {
-  if (!is.eeg_epochs(data)) {
-    stop("For eeg_epochs objects only.")
-  }
+list_epochs <- function(data, ...) {
+  UseMethod("list_epochs", data)
+}
+
+#' @describeIn list_epochs List epochs and associated events from \code{eeg_epochs} objects
+#' @export
+list_epochs.eeg_epochs <- function(data, ...) {
+  data$events[, c("epoch", "event_type", "event_label")]
+}
+
+#' @describeIn list_epochs List epochs and associated events from \code{eeg_ICA} objects
+#' @export
+list_epochs.eeg_ICA <- function(data, ...) {
   data$events[, c("epoch", "event_type", "event_label")]
 }
