@@ -368,6 +368,7 @@ topoplot.eeg_ICA <- function(data, time_lim = NULL, limits = NULL,
 #' @param limits Limits of colour scale
 #' @import ggplot2
 #' @importFrom viridis scale_fill_viridis
+#' @noRd
 
 
 set_palette <- function(topo, palette, limits = NULL) {
@@ -395,6 +396,7 @@ set_palette <- function(topo, palette, limits = NULL) {
 #' @param scaled_y y coordinates rescaled
 #' @param grid_res resolution of output grid
 #' @param k number of knots for GAM
+#' @noRd
 
 gam_topo <- function(data, scaled_x, scaled_y, grid_res, k = 40) {
 
