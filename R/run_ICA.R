@@ -7,11 +7,7 @@
 #'
 #' @param data Data frame to be ICAed.
 #' @param ... Other parameters passed to function.
-#'
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
-#' @import dplyr
-#' @import tidyr
-#' @importFrom JADE rjd
 #' @importFrom MASS ginv
 #' @export
 
@@ -33,19 +29,24 @@ run_ICA.eeg_epochs <- function (data, method = "sobi", ...) {
   ## 100 is the default; only switches to smaller n if epochs are too short
   n_lags <- min(100, ceiling(n_times / 3))
 
-  ## reshape amplitude X electrode to a square matrix before doing SVD
-  #data <- data$signals
+  # rank_check <- Matrix::rankMatrix(as.matrix(data$signals))[1]
+  # if (rank_check < n_channels) {
+  #   warning(paste("Data is rank deficient. Detected rank", rank_check))
+  #   pca <- prcomp(data$signals)
+  #  # data$signals <- as.data.frame(pca$x[, 1:rank_check] %*% t(pca$rotation[, 1:rank_check]))
+  # }
 
   ## Pre-whiten the data using the SVD. zero-mean columns and get SVD. NB:
   ## should probably edit this to zero mean *epochs*
+  #do by epochs
+  amp_matrix <- split(data$signals, data$timings$epoch)
+  amp_matrix <- lapply(amp_matrix, function(x) sweep(x, 2, colMeans(x)))
+  amp_matrix <- as.matrix(do.call("rbind", amp_matrix))
+  SVD_amp <- svd(t(amp_matrix))
 
-  amp_matrix <- sweep(data.matrix(data$signals), 2, colMeans(data$signals))
-
-  SVD_amp <- svd(amp_matrix)
-
-  ## get the psuedo-inverse of the diagonal matrix, multiply by right singular
+  ## get the psuedo-inverse of the diagonal matrix, multiply by singular
   ## vectors
-  Q <- MASS::ginv(diag(SVD_amp$d)) %*% t(SVD_amp$v)
+  Q <- MASS::ginv(diag(SVD_amp$d), tol = 0) %*% t(SVD_amp$u)
   amp_matrix <- Q %*% t(amp_matrix)
 
   ## reshape to reflect epoching structure
@@ -57,43 +58,99 @@ run_ICA.eeg_epochs <- function (data, method = "sobi", ...) {
   N <- n_times
   M <- matrix(NA, nrow = n_channels, ncol = pm)
 
-  tmp_fun <- function(amps, k, N, n_epochs) {
-    amps[, k:N] %*% t(amps[, 1:(N - k + 1)]) / (N - k + 1) / n_epochs
+  tmp_fun <- function(amps, k, N) {
+    amps[, k:N] %*% t(amps[, 1:(N - k + 1)]) / (N - k + 1)
     }
 
   for (u in seq(1, pm, n_channels)) {
     k <- k + 1
-    for (tlag in 1:n_epochs) {
-      if (tlag == 1) {
-        Rxp <- amp_matrix[, k:N, tlag] %*%
-          t(amp_matrix[, 1:(N - k + 1), tlag]) / (N - k + 1) / n_epochs
-        } else {
-        Rxp <- Rxp + amp_matrix[, k:N, tlag] %*%
-          t(amp_matrix[, 1:(N - k + 1), tlag]) / (N - k + 1) / n_epochs
-        }
-    }
-      M[, u:(u + n_channels - 1)] <- norm(Rxp, "F") * Rxp #  % Frobenius norm
+    Rxp <- lapply(seq(1, n_epochs), function(x) tmp_fun(amp_matrix[, , x], k, N))
+    Rxp <- Reduce("+", Rxp)
+    Rxp <- Rxp / n_epochs
+    M[, u:(u + n_channels - 1)] <- norm(Rxp, "F") * (Rxp) #  Frobenius norm
   }
 
-
-  dim(M) <- c(n_channels, n_channels, pm / n_channels)
-
-  ## do joint diagonalization of matrices using rjd from JADE
-  M_rjd <- JADE::rjd(M, maxiter = 300, eps = 1 / sqrt(N) / 100)
+  epsil <- 1 / sqrt(N) / 100
+  V <- joint_diag(M, epsil, n_channels, pm)
 
   ## create mixing matrix for output
-  mixing_matrix <- data.frame(MASS::ginv(Q) %*% M_rjd$V)
+  mixing_matrix <- data.frame(MASS::ginv(Q, tol = 0) %*% V)
   names(mixing_matrix) <- 1:n_channels
-  mixing_matrix$electrode <-
-    names(data$signals[, (ncol(data$signals) - n_channels + 1):ncol(data$signals)])
+  mixing_matrix$electrode <- names(data$signals)
+
+  unmixing_matrix <- data.frame(MASS::ginv(mixing_matrix, tol = 0))
+  names(unmixing_matrix) <- 1:n_channels
+  unmixing_matrix$electrode <- names(data$signals)
+
   dim(amp_matrix) <- c(n_channels, n_times * n_epochs)
-  S <- t(M_rjd$V) %*% amp_matrix
+  S <- V %*% amp_matrix
+
   ica_obj <- list("mixing_matrix" = mixing_matrix,
-                  "comp_activations" = t(S),
+                  "unmixing_matrix" = unmixing_matrix,
+                  "comp_activations" = scale(t(S)),
                   "timings" = data$timings,
                   "events" = data$events,
                   "chan_info" = data$chan_info,
                   "continuous" = FALSE)
   class(ica_obj) <- c("eeg_ICA", "eeg_epochs", "eeg_data")
   return(ica_obj)
+}
+
+#' Joint diagonalization for SOBI
+#'
+#' Drop-in replacement for JADE::rjd, which often fails to converge
+#'
+#' @param M Numeric matrix
+#' @param eps Convergence tolerance
+#' @param pm number of channels * number of timepoints
+#' @param n_channels number of channels
+#' @noRd
+
+joint_diag <- function(M, eps, n_channels, pm) {
+
+  epsil <- eps
+  continue <- TRUE
+  V <- diag(n_channels)
+  step_n <- 0
+
+  while (isTRUE(continue)) {
+    continue <- FALSE
+    for (p in 1:(n_channels - 1)) {
+      for (q in ((p + 1):n_channels)) {
+
+        P_seq <- seq(p, pm, n_channels)
+        Q_seq <- seq(q, pm, n_channels)
+
+        # Perform Givens rotation
+        g <- rbind(M[p, P_seq] - M[q, Q_seq],
+                   M[p, Q_seq] + M[q, P_seq],
+                   1i * (M[q, P_seq] - M[p, Q_seq]))
+        eigs <- eigen(Re(tcrossprod(g))) # %*% t(g)))
+        sort_eigs <- sort(eigs$`values`, index.return = T)
+        angles <- eigs$vectors[, sort_eigs$ix[3]]
+        angles <- sign(angles[1]) * angles
+        c_r <- sqrt(0.5 + angles[1] / 2)
+        sr <- Re(0.5 * (angles[2] - 1i * angles[3]) / c_r)
+        sc <- Conj(sr)
+        conv_check <- abs(sr) > epsil
+        continue <- (continue | conv_check)
+        if (conv_check) {# Update the M and V matrices
+          colp <- M[, P_seq]
+          colq <- M[, Q_seq]
+          M[, P_seq] <- c_r * colp + sr * colq
+          M[, Q_seq] <- c_r * colq - sc * colp
+          rowp <- M[p, ]
+          rowq <- M[q, ]
+          M[p, ] <- c_r * rowp + sc * rowq
+          M[q, ] <- c_r * rowq - sr * rowp
+          temp <- V[, p]
+          V[, p] <- c_r * V[, p] + sr * V[, q]
+          V[, q] <- c_r * V[, q] - sc * temp
+        }
+      }
+    }
+    step_n <- step_n + 1
+    cat("Iteration = ", step_n, "\n")
+  }
+  V
 }
