@@ -10,7 +10,6 @@
 #' @import broom
 #' @noRd
 
-
 fit_glm_indiv <- function(data, dv, iv_1) {
   #options(contrasts=c('contr.sum','contr.poly'))
   if (!"epoch" %in% colnames(data)) {

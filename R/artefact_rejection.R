@@ -16,7 +16,90 @@ eeg_FASTER <- function(data, ...) {
 #' @noRd
 eeg_FASTER.eeg_epochs <- function(data, ...) {
 
+  # Step 1: channel statistics
+  bad_chans <- faster_chans(data$signals)
+  bad_chan_n <- names(data$signals)[bad_chans]
+  message(paste("Globally bad channels:", bad_chan_n))
+  data <- interp_elecs(data, bad_chan_n)
 
+  # Step 2: epoch statistics
+  bad_epochs <- faster_epochs(data)
+  bad_epochs <- unique(data$timings$epoch)[bad_epochs]
+  message(paste("Globally bad epochs:", bad_epochs))
+  data <- select_epochs(data, epoch_no = bad_epochs, keep = FALSE)
+
+  data
+
+  # Step 3: ICA stats (not currently implemented)
+
+  # Step 4: Channels in Epochs
+
+
+}
+
+#' Perform global bad channel detection for FASTER
+#'
+#' @param data A matrix of EEG data signals
+#' @param ... Further parameters (tbd)
+#' @noRd
+
+faster_chans <- function(data, ...) {
+  chan_hurst <- scale(quick_hurst(data))
+  chan_vars <- scale(apply(data, 2, var))
+  chan_corrs <- scale(colMeans(cor(data)))
+  bad_chans <- matrix(c(abs(chan_hurst) > 3,
+                        abs(chan_vars) > 3,
+                        abs(chan_corrs) > 3),
+                      nrow = 3)
+  bad_chans <- apply(bad_chans, 2, any)
+  bad_chans
+}
+
+#' Perform global bad epoch detection for FASTER
+#' @param data \code{eeg_epochs} object
+#' @param ... Further parameters (tbd)
+#' @noRd
+
+faster_epochs <- function(data, ...) {
+  chan_means <- colMeans(data$signals)
+  epochs <- split(data$signals, data$timings$epoch)
+  epochs <- lapply(epochs, function(x) diff(apply(x, 2, range)))
+  epochs <- rowMeans(do.call("rbind", epochs))
+  epochs <- abs(scale(epochs)) > 3
+  epochs
+}
+
+#' FASTER detection of bad channels in single epochs
+#'
+#' @param data \code{eeg_epochs} object.
+#' @param ... further parameters (tbd)
+#' @noRd
+
+faster_cine <- function(data, ...) {
+  chan_means <- colMeans(data$signals)
+  epochs <- split(data$signals, data$timings$epoch)
+  epoch_vars <- lapply(epochs,
+                       function(x) matrixStats::colVars(as.matrix(x)))
+  epoch_medgrad <- lapply(epochs,
+                          function(x) matrixStats::colMedians(diff(as.matrix(x))))
+  epoch_range <- lapply(epochs, function(x) diff(range(x)))
+  epoch_dev <- lapply(epochs, function(x) sweep(x, 2, chan_means))
+  epoch_vars <- lapply(epoch_vars, function(x) abs(scale(x)) > 3)
+}
+
+#' Quickly calculate simple Hurst exponent for a matrix
+#'
+#' @param data matrix of EEG signals
+#' @importFrom matrixStats colMaxs colMins colSds
+#' @noRd
+
+quick_hurst <- function(data) {
+  n <- nrow(data)
+  y <- sweep(data, 2, colMeans(data))
+  s <- apply(data, 2, cumsum)
+  rs <- (matrixStats::colMaxs(s) - matrixStats::colMins(s))
+  rs <- rs / matrixStats::colSds(as.matrix(data))
+  log(rs) / log(n)
 }
 
 #' Simple absolute value thresholding
@@ -93,13 +176,21 @@ channel_stats <- function(data, ...) {
   UseMethod("channel_stats", data)
 }
 
-#' @describeIn channel_stats Calculate channel statistics for \code{eeg_data} objects.
+#' @describeIn channel_stats Calculate channel statistics for \code{eeg_data}
+#'   objects.
 #' @noRd
 channel_stats.eeg_data <- function(data, ...) {
+
   chan_means <- colMeans(data$signals)
   chan_sds <- apply(data$signals, 2, sd)
   chan_var <- apply(data$signals, 2, var)
   chan_kurt <- apply(data$signals, 2, kurtosis)
+
+  data.frame(electrode = names(data$signals),
+             means = chan_means,
+             variance = chan_var,
+             kurtosis = chan_kurt
+             )
 }
 
 #' Epoch statistics
@@ -300,5 +391,4 @@ eeg_ar_eogreg.eeg_data <- function(data, heog, veog, bipolarize = TRUE, ...) {
 
   hmz <- solve(EOG * t(EOG), EOG * t(data$signals))
   hmz
-
 }
