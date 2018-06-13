@@ -1,21 +1,22 @@
 #' FASTER EEG artefact rejection
 #'
-#' Whelan et al (2011). Not yet implemented.
+#' An implementation of the FASTER artefact rejection method for EEG by Whelan
+#' et al (2011). Not yet fully implemented.
 #'
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #'
 #' @param data An object of class \code{eeg_epochs}
 #' @param ... Parameters passed to FASTER
-#' @noRd
 
 eeg_FASTER <- function(data, ...) {
   UseMethod("eeg_FASTER", data)
 }
 
 #' @describeIn eeg_FASTER Run FASTER on \code{eeg_epochs}
-#' @noRd
 eeg_FASTER.eeg_epochs <- function(data, ...) {
 
+  # TODO - keep a record of which trials/channels etc are removed/interpolated
+  # and allow marking for inspection rather than outright rejection
   # Step 1: channel statistics
   bad_chans <- faster_chans(data$signals)
   bad_chan_n <- names(data$signals)[bad_chans]
@@ -28,34 +29,36 @@ eeg_FASTER.eeg_epochs <- function(data, ...) {
   message(paste("Globally bad epochs:", bad_epochs))
   data <- select_epochs(data, epoch_no = bad_epochs, keep = FALSE)
 
-  data
-
   # Step 3: ICA stats (not currently implemented)
 
   # Step 4: Channels in Epochs
+  data <- faster_cine(data)
 
-
+  # Step 5: Grand average? (not currently implemented)
+  data
 }
 
 #' Perform global bad channel detection for FASTER
 #'
 #' @param data A matrix of EEG data signals
+#' @param sds Standard deviation thresholds
 #' @param ... Further parameters (tbd)
 #' @noRd
 
-faster_chans <- function(data, ...) {
+faster_chans <- function(data, sds = 3, ...) {
   chan_hurst <- scale(quick_hurst(data))
   chan_vars <- scale(apply(data, 2, var))
   chan_corrs <- scale(colMeans(cor(data)))
-  bad_chans <- matrix(c(abs(chan_hurst) > 3,
-                        abs(chan_vars) > 3,
-                        abs(chan_corrs) > 3),
+  bad_chans <- matrix(c(abs(chan_hurst) > sds,
+                        abs(chan_vars) > sds,
+                        abs(chan_corrs) > sds),
                       nrow = 3)
   bad_chans <- apply(bad_chans, 2, any)
   bad_chans
 }
 
 #' Perform global bad epoch detection for FASTER
+#'
 #' @param data \code{eeg_epochs} object
 #' @param ... Further parameters (tbd)
 #' @noRd
@@ -76,16 +79,26 @@ faster_epochs <- function(data, ...) {
 #' @noRd
 
 faster_cine <- function(data, ...) {
-  chan_means <- colMeans(data$signals)
+
   epochs <- split(data$signals, data$timings$epoch)
-  epoch_vars <- lapply(epochs,
-                       function(x) matrixStats::colVars(as.matrix(x)))
-  epoch_medgrad <- lapply(epochs,
-                          function(x) matrixStats::colMedians(diff(as.matrix(x))))
-  epoch_range <- lapply(epochs, function(x) diff(range(x)))
-  epoch_dev <- lapply(epochs, function(x) sweep(x, 2, chan_means))
-  epoch_vars <- lapply(epoch_vars, function(x) abs(scale(x)) > 3)
+  bad_chans <- lapply(epochs, faster_epo_stat)
+  epoch_nos <- unique(data$timings$epoch)
+
+  epochs <- lapply(seq_along(epoch_nos), function(x) {
+    if (is.null(bad_chans[x])) {
+      select_epochs(data, epoch_no = epoch_nos[x])
+    } else {
+      interp_elecs(select_epochs(data, epoch_no = epoch_nos[x]), bad_chans[[x]])}
+    }
+  )
+
+  data <- do.call("eeg_combine", epochs)
+  data
+  #epoch_dev <- lapply(epochs, function(x) sweep(x, 2, chan_means))
+
 }
+
+
 
 #' Quickly calculate simple Hurst exponent for a matrix
 #'
@@ -100,6 +113,24 @@ quick_hurst <- function(data) {
   rs <- (matrixStats::colMaxs(s) - matrixStats::colMins(s))
   rs <- rs / matrixStats::colSds(as.matrix(data))
   log(rs) / log(n)
+}
+
+#' Calculate statistics for each channel in an epoch and identify bad channels
+#'
+#' @param data a matrix of signals from a single epoch
+#' @noRd
+
+faster_epo_stat <- function(data) {
+
+  measures <- data.frame(vars = matrixStats::colVars(as.matrix(data)),
+                         medgrad = matrixStats::colMedians(diff(as.matrix(data))),
+                         range_diff = t(diff(t(matrixStats::colRanges(as.matrix(data)))))
+                         #dev = sweep(data, 2, chan_means)
+                         )
+  # Check if any measure is above 3 standard deviations
+  bad_chans <- rowSums(scale(measures) > 3) > 0
+  bad_chans <- names(data)[bad_chans]
+  bad_chans
 }
 
 #' Simple absolute value thresholding
@@ -239,6 +270,7 @@ interp_elecs.eeg_data <- function(data, bad_elecs, ...) {
   if (is.null(data$chan_info)) {
     stop("No channel locations found.")
   }
+
   xyz_coords <- pol_to_sph(data$chan_info$theta, data$chan_info$radius)
   rads <- sqrt(xyz_coords$x ^ 2 + xyz_coords$y ^ 2 + xyz_coords$z ^ 2)
   xyz_coords <- xyz_coords / rads
@@ -246,6 +278,10 @@ interp_elecs.eeg_data <- function(data, bad_elecs, ...) {
   bad_select <- toupper(data$chan_info$electrode) %in% toupper(bad_elecs)
   xyz_bad <- xyz_coords[bad_select, ]
   xyz_good <- xyz_coords[!bad_select, ]
+
+  if (dim(xyz_bad)[1] == 0) {
+    return(data)
+  }
 
   sigs_select <- toupper(names(data$signals)) %in%
     toupper(data$chan_info$electrode)
