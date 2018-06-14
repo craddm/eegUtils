@@ -4,6 +4,7 @@
 \alias{topoplot}
 \alias{topoplot.data.frame}
 \alias{topoplot.eeg_data}
+\alias{topoplot.eeg_epochs}
 \alias{topoplot.eeg_ICA}
 \title{Topographical Plotting Function for EEG}
 \usage{
@@ -16,6 +17,11 @@ topoplot(data, ...)
   colourmap, ...)
 
 \method{topoplot}{eeg_data}(data, time_lim = NULL, limits = NULL,
+  chanLocs = NULL, method = "Biharmonic", r = NULL, grid_res = 67,
+  palette = "RdBu", interp_limit = "skirt", contour = TRUE,
+  chan_marker = "point", quantity = "amplitude", montage = NULL, ...)
+
+\method{topoplot}{eeg_epochs}(data, time_lim = NULL, limits = NULL,
   chanLocs = NULL, method = "Biharmonic", r = NULL, grid_res = 67,
   palette = "RdBu", interp_limit = "skirt", contour = TRUE,
   chan_marker = "point", quantity = "amplitude", montage = NULL, ...)
@@ -84,6 +90,8 @@ The functions works for both standard data frames and objects of class
 \code{eeg_data}.
 
 Both \code{eeg_epochs} and \code{eeg_data} objects are supported.
+
+Both \code{eeg_epochs} and \code{eeg_data} objects are supported.
 }
 \section{Methods (by class)}{
 \itemize{
@@ -91,6 +99,8 @@ Both \code{eeg_epochs} and \code{eeg_data} objects are supported.
 eeg_data objects.
 
 \item \code{eeg_data}: Topographical plotting of \code{eeg_data} objects.
+
+\item \code{eeg_epochs}: Topographical plotting of \code{eeg_epochs} objects.
 
 \item \code{eeg_ICA}: Topographical plot for \code{eeg_ICA} objects
 }}

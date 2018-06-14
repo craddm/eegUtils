@@ -333,6 +333,45 @@ topoplot.eeg_data <- function(data, time_lim = NULL, limits = NULL,
   if (!is.null(data$chan_info)) {
     chanLocs <- data$chan_info
   }
+
+  if (is.null(time_lim)) {
+    data <- as.data.frame(data)
+    data <- as.data.frame(t(colMeans(data)))
+    data <- tidyr::gather(data, electrode, amplitude, -sample, -time)
+  } else {
+    data <- select_times(data, time_lim)
+    data <- as.data.frame(data, long = TRUE)
+  }
+  topoplot(data, time_lim = time_lim, limits = limits,
+           chanLocs = chanLocs, method = method, r = r,
+           grid_res = grid_res, palette = palette,
+           interp_limit = interp_limit, contour = contour,
+           chan_marker = chan_marker, quantity = quantity,
+           montage = montage, passed = TRUE)
+}
+
+
+#' Topographical Plotting Function for EEG data
+#'
+#' Both \code{eeg_epochs} and \code{eeg_data} objects are supported.
+#'
+#' @describeIn topoplot Topographical plotting of \code{eeg_epochs} objects.
+#' @export
+
+topoplot.eeg_epochs <- function(data, time_lim = NULL, limits = NULL,
+                              chanLocs = NULL, method = "Biharmonic", r = NULL,
+                              grid_res = 67, palette = "RdBu",
+                              interp_limit = "skirt", contour = TRUE,
+                              chan_marker = "point", quantity = "amplitude",
+                              montage = NULL, ...) {
+
+  if (!is.null(data$chan_info)) {
+    chanLocs <- data$chan_info
+  }
+
+  # average over epochs first
+  data <- eeg_average(data)
+
   data <- as.data.frame(data, long = TRUE)
   topoplot(data, time_lim = time_lim, limits = limits,
            chanLocs = chanLocs, method = method, r = r,
