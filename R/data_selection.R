@@ -183,6 +183,10 @@ select_elecs.eeg_data <- function(data, electrode, keep = TRUE,
     } else {
       data$signals <- data$signals[!colnames(data$signals) %in% electrode]
     }
+    if (!is.null(data$chan_info)) {
+      data$chan_info <- data$chan_info[data$chan_info$electrode %in% names(data$signals), ]
+    }
+
   } else {
     cat("Electrode(s) not found:",
         electrode[!electrode %in% colnames(data$signals)],

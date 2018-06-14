@@ -1,12 +1,14 @@
 #' FASTER EEG artefact rejection
 #'
-#' An implementation of the FASTER artefact rejection method for EEG by Whelan
-#' et al (2011). Not yet fully implemented.
+#' An implementation of the FASTER artefact rejection method for EEG by Nolan,
+#' Whelan & Reilly (2010) FASTER: Fully Automated Statistical Thresholding for
+#' EEG artifact Rejection. J Neurosci Methods. Not yet fully implemented.
 #'
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #'
 #' @param data An object of class \code{eeg_epochs}
 #' @param ... Parameters passed to FASTER
+
 
 eeg_FASTER <- function(data, ...) {
   UseMethod("eeg_FASTER", data)
@@ -16,17 +18,45 @@ eeg_FASTER <- function(data, ...) {
 eeg_FASTER.eeg_epochs <- function(data, ...) {
 
   # TODO - keep a record of which trials/channels etc are removed/interpolated
-  # and allow marking for inspection rather than outright rejection
+  # and allow marking for inspection rather than outright rejection.
+
+  if (is.null(data$reference)) {
+    orig_ref <- NULL
+    excluded <- NULL
+    } else {
+      orig_ref <- data$reference$ref_chans
+      excluded <- data$reference$excluded
+      orig_chan <- data$chan_info
+      }
+
+  # Re-reference to single electrode, any should be fine, Fz is arbitrary default.
+  # Note - should allow user to specify in case Fz is a known bad electrode.
+
+  if ("Fz" %in% names(data$signals)) {
+    data <- reref_eeg(data, ref_chans = "Fz", exclude = excluded)
+  } else {
+    data <- reref_eeg(data, ref_chans = names(data$signals)[14], exclude = excluded)
+  }
+
+  # Exclude ref chan from subsequent computations (may be better to alter reref_eeg...)
+  data_chans <- !(names(data$signals) %in% data$reference$ref_chans)
+
   # Step 1: channel statistics
-  bad_chans <- faster_chans(data$signals)
+  bad_chans <- faster_chans(data$signals[, data_chans])
   bad_chan_n <- names(data$signals)[bad_chans]
-  message(paste("Globally bad channels:", bad_chan_n))
-  data <- interp_elecs(data, bad_chan_n)
+  message(paste("Globally bad channels:", paste(bad_chan_n, collapse = " ")))
+
+  if (!is.null(data$chan_info)) {
+    data <- interp_elecs(data, bad_chan_n)
+  } else {
+    warning("no chan_info, removing chans.")
+    data <- select_elecs(data, electrode = bad_chan_n, keep = FALSE)
+  }
 
   # Step 2: epoch statistics
   bad_epochs <- faster_epochs(data)
   bad_epochs <- unique(data$timings$epoch)[bad_epochs]
-  message(paste("Globally bad epochs:", bad_epochs))
+  message(paste("Globally bad epochs:", paste(bad_epochs, collapse = " ")))
   data <- select_epochs(data, epoch_no = bad_epochs, keep = FALSE)
 
   # Step 3: ICA stats (not currently implemented)
@@ -34,7 +64,13 @@ eeg_FASTER.eeg_epochs <- function(data, ...) {
   # Step 4: Channels in Epochs
   data <- faster_cine(data)
 
-  # Step 5: Grand average? (not currently implemented)
+  # Step 5: Grand average step (not currently implemented, probably never will be!)
+
+  # Return to original reference, if one existed.
+  if (!is.null(orig_ref)) {
+    data <- reref_eeg(data, ref_chans = orig_ref, exclude = excluded)
+  }
+  data$chan_info <- orig_chan
   data
 }
 
@@ -48,7 +84,7 @@ eeg_FASTER.eeg_epochs <- function(data, ...) {
 faster_chans <- function(data, sds = 3, ...) {
   chan_hurst <- scale(quick_hurst(data))
   chan_vars <- scale(apply(data, 2, var))
-  chan_corrs <- scale(colMeans(cor(data)))
+  chan_corrs <- scale(colMeans(abs(cor(data))))
   bad_chans <- matrix(c(abs(chan_hurst) > sds,
                         abs(chan_vars) > sds,
                         abs(chan_corrs) > sds),
@@ -65,11 +101,22 @@ faster_chans <- function(data, sds = 3, ...) {
 
 faster_epochs <- function(data, ...) {
   chan_means <- colMeans(data$signals)
-  epochs <- split(data$signals, data$timings$epoch)
-  epochs <- lapply(epochs, function(x) diff(apply(x, 2, range)))
-  epochs <- rowMeans(do.call("rbind", epochs))
-  epochs <- abs(scale(epochs)) > 3
-  epochs
+  data$signals <- split(data$signals, data$timings$epoch)
+  epoch_range <- lapply(data$signals, function(x) diff(apply(x, 2, range)))
+  epoch_range <- abs(scale(do.call("rbind", epoch_range))) > 3
+  epoch_diffs <- lapply(data$signals, function(x) {
+    apply(abs(sweep(x, 2, chan_means)), 2, mean)
+    })
+  epoch_diffs <- abs(scale(do.call("rbind", epoch_diffs))) > 3
+  epoch_vars <- lapply(data$signals, function(x) apply(x, 2, var))
+  epoch_vars <- abs(scale(do.call("rbind", epoch_vars))) > 3
+  bad_epochs <- matrix(c(rowSums(epoch_vars) > 0,
+                         rowSums(epoch_range) > 0,
+                         rowSums(epoch_diffs) > 0),
+                       ncol = 3)
+  bad_epochs <- apply(bad_epochs, 1, any)
+  bad_epochs
+
 }
 
 #' FASTER detection of bad channels in single epochs
@@ -79,7 +126,7 @@ faster_epochs <- function(data, ...) {
 #' @noRd
 
 faster_cine <- function(data, ...) {
-
+  chan_means <- colMeans(data$signals)
   epochs <- split(data$signals, data$timings$epoch)
   bad_chans <- lapply(epochs, faster_epo_stat)
   epoch_nos <- unique(data$timings$epoch)
@@ -120,7 +167,7 @@ quick_hurst <- function(data) {
 #' @param data a matrix of signals from a single epoch
 #' @noRd
 
-faster_epo_stat <- function(data) {
+faster_epo_stat <- function(data, chan_means) {
 
   measures <- data.frame(vars = matrixStats::colVars(as.matrix(data)),
                          medgrad = matrixStats::colMedians(diff(as.matrix(data))),
@@ -213,6 +260,8 @@ channel_stats <- function(data, ...) {
 channel_stats.eeg_data <- function(data, ...) {
 
   chan_means <- colMeans(data$signals)
+  #chan_means <- as.data.table(data$signals)
+  #chan_means <- chan_means[, lapply(.SD, mean)]
   chan_sds <- apply(data$signals, 2, sd)
   chan_var <- apply(data$signals, 2, var)
   chan_kurt <- apply(data$signals, 2, kurtosis)
@@ -279,7 +328,7 @@ interp_elecs.eeg_data <- function(data, bad_elecs, ...) {
   xyz_bad <- xyz_coords[bad_select, ]
   xyz_good <- xyz_coords[!bad_select, ]
 
-  if (dim(xyz_bad)[1] == 0) {
+  if (nrow(xyz_bad) == 0) {
     return(data)
   }
 

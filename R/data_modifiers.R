@@ -1,13 +1,28 @@
 #' Referencing
 #'
 #' Used to reference the EEG data to specified electrode or electrodes. Defaults
-#' to average reference. Note that this stores the reference channel in the
-#' \code{eeg_data} structure; if one already exists, it is added back to the
-#' data before further referencing takes place.
+#' to average reference. When specific electrodes are used, they are removed
+#' from the data. Note that this stores the reference channel in the
+#' \code{eeg_data} structure; if a reference already exists, it is added back to
+#' the data before further referencing takes place.
 #'
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #' @param data Data to re-reference. Primarily meant for use with data of class
-#'   \code{eeg_data}. Long format is expected if a data-frame is submitted.
+#'   \code{eeg_data}.
+#' @param ... Further parameters to be passed to reref_eeg
+#' @export
+#'
+
+reref_eeg <- function(data, ...) {
+  UseMethod("reref_eeg", data)
+}
+
+#' @export
+#' @describeIn reref_eeg Default method
+reref_eeg.default <- function(data, ...) {
+  stop(paste("reref_eeg does not know how to handle data of class", class(data)))
+}
+
 #' @param ref_chans Channels to reference data to. Defaults to "average" i.e.
 #'   average of all electrodes in data. Character vector of channel names or numbers.
 #' @param exclude Electrodes to exclude from average reference calculation.
@@ -17,85 +32,84 @@
 #' @importFrom tibble as_tibble
 #' @importFrom matrixStats rowMedians
 #' @return object of class \code{eeg_data}, re-referenced as requested.
+#' @describeIn reref_eeg Rereference objects of class \code{eeg_data}
 #' @export
-#'
 
-reref_eeg <- function(data, ref_chans = "average", exclude = NULL,
-                      robust = FALSE) {
+reref_eeg.eeg_data <- function(data, ref_chans = "average", exclude = NULL,
+                      robust = FALSE, ...) {
 
-  if (is.eeg_data(data)) {
-    tmp_data <- data$signals
-    n_chans <- dim(tmp_data)[[2]]
-  } else {
-    tmp_data <- tidyr::spread(data, electrode, amplitude)
-    tmp_data <- dplyr::select(tmp_data, -sample, -time, -Status)
-    n_chans <- length(unique(data$electrode))
-  }
+  n_chans <- ncol(data$signals)
 
-  # check for existing reference.
+  # check for existing reference. Add it back in if it exists.
   if (!is.null(data$reference)) {
-    tmp_data <- tmp_data + data$reference$ref_data
+    if (identical(data$reference$ref_chans, "average")) {
+      data$signals <- data$signals + data$reference$ref_data
+    } else {
+      data$signals[data$reference$ref_chans] <- 0
+      data$signals <- data$signals + data$reference$ref_data
+    }
   }
 
   # Convert ref_chan channel numbers into channel names
   if (is.numeric(ref_chans)) {
-    ref_chans <- names(tmp_data)[ref_chans]
+    ref_chans <- names(data$signals)[ref_chans]
   }
 
   # Get excluded channel names and/or convert to numbers if necessary
   if (!is.null(exclude)){
     if (is.numeric(exclude)) {
-      excluded <- names(tmp_data)[exclude]
+      excluded <- names(data$signals)[exclude]
     } else {
         excluded <- exclude
-        exclude <- which(names(tmp_data) == exclude)
+        exclude <- which(names(data$signals) == exclude)
     }
   } else {
     excluded <- NULL
   }
 
-  if (length(ref_chans) == 1 && ref_chans == "average") {
+  # Calculate new reference data
+
+  if (ref_chans == "average") {
     if (is.null(exclude)) {
       if (robust) {
-        ref_data <- matrixStats::rowMedians(as.matrix(tmp_data))
+        ref_data <- matrixStats::rowMedians(as.matrix(data$signals))
       } else {
-        ref_data <- rowMeans(tmp_data)
+        ref_data <- rowMeans(data$signals)
       }
     } else {
       if (robust) {
-        ref_data <- matrixStats::rowMedians(as.matrix(tmp_data[-exclude]))
+        ref_data <- matrixStats::rowMedians(as.matrix(data$signals[-exclude]))
       } else {
-        ref_data <- rowMeans(tmp_data[-exclude])
+        ref_data <- rowMeans(data$signals[-exclude])
       }
     }
-    tmp_data <- tmp_data - ref_data
+    #remove reference from data
+    data$signals <- data$signals - ref_data
 
   } else {
-    if (any(all(ref_chans %in% colnames(tmp_data)) | is.numeric(ref_chans))) {
+    if (any(all(ref_chans %in% colnames(data$signals)) | is.numeric(ref_chans))) {
       if (length(ref_chans) > 1) {
-        ref_data <- rowMeans(tmp_data[, ref_chans])
+        ref_data <- rowMeans(data$signals[, ref_chans])
       } else {
-        ref_data <- unlist(tmp_data[, ref_chans])
+        ref_data <- unlist(data$signals[, ref_chans])
       }
-      tmp_data <- tmp_data - ref_data
+      data$signals <- data$signals - ref_data
     } else {
       stop("Electrode(s) not found.")
     }
   }
 
-  if (is.eeg_data(data)) {
-    data$signals <- tibble::as_tibble(tmp_data)
-    if (any(ref_chans == "average")) {
+    data$signals <- tibble::as_tibble(data$signals)
+
+    if (ref_chans == "average") {
       data$reference <- list(ref_chans = ref_chans, ref_data = ref_data,
                              excluded = excluded)
     } else {
       data$reference <- list(ref_chans = ref_chans, ref_data = ref_data,
-                             excluded = NULL)
-    }
+                             excluded = excluded)
+      data <- select_elecs(data, ref_chans, keep = FALSE)
+      }
     return(data)
-  } else {
-    return(tibble::as_tibble(tmp_data))
-  }
 }
 
 #' Baseline correction

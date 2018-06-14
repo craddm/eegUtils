@@ -2,13 +2,22 @@
 % Please edit documentation in R/data_modifiers.R
 \name{reref_eeg}
 \alias{reref_eeg}
+\alias{reref_eeg.default}
+\alias{reref_eeg.eeg_data}
 \title{Referencing}
 \usage{
-reref_eeg(data, ref_chans = "average", exclude = NULL, robust = FALSE)
+reref_eeg(data, ...)
+
+\method{reref_eeg}{default}(data, ...)
+
+\method{reref_eeg}{eeg_data}(data, ref_chans = "average", exclude = NULL,
+  robust = FALSE, ...)
 }
 \arguments{
 \item{data}{Data to re-reference. Primarily meant for use with data of class
-\code{eeg_data}. Long format is expected if a data-frame is submitted.}
+\code{eeg_data}.}
+
+\item{...}{Further parameters to be passed to reref_eeg}
 
 \item{ref_chans}{Channels to reference data to. Defaults to "average" i.e.
 average of all electrodes in data. Character vector of channel names or numbers.}
@@ -22,10 +31,18 @@ object of class \code{eeg_data}, re-referenced as requested.
 }
 \description{
 Used to reference the EEG data to specified electrode or electrodes. Defaults
-to average reference. Note that this stores the reference channel in the
-\code{eeg_data} structure; if one already exists, it is added back to the
-data before further referencing takes place.
+to average reference. When specific electrodes are used, they are removed
+from the data. Note that this stores the reference channel in the
+\code{eeg_data} structure; if a reference already exists, it is added back to
+the data before further referencing takes place.
 }
+\section{Methods (by class)}{
+\itemize{
+\item \code{default}: Default method
+
+\item \code{eeg_data}: Rereference objects of class \code{eeg_data}
+}}
+
 \author{
 Matt Craddock \email{matt@mattcraddock.com}
 }

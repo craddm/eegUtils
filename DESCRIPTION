@@ -1,8 +1,8 @@
 Package: eegUtils
 Type: Package
 Title: A collection of utilities for EEG analysis 
-Version: 0.1.15.9001
-Date: 2018-05-25
+Version: 0.1.15.9002
+Date: 2018-06-14
 Authors@R: person("Matt", "Craddock", role = c("aut", "cre"), email = "matt@mattcraddock.com")
 Maintainer: Matt Craddock <matt@mattcraddock.com>
 Description: A collection of functions for basic EEG processing. Includes import

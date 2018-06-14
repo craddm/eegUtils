@@ -15,8 +15,9 @@ eeg_FASTER(data, ...)
 \item{...}{Parameters passed to FASTER}
 }
 \description{
-An implementation of the FASTER artefact rejection method for EEG by Whelan
-et al (2011). Not yet fully implemented.
+An implementation of the FASTER artefact rejection method for EEG by Nolan,
+Whelan & Reilly (2010) FASTER: Fully Automated Statistical Thresholding for
+EEG artifact Rejection. J Neurosci Methods. Not yet fully implemented.
 }
 \section{Methods (by class)}{
 \itemize{

@@ -146,6 +146,7 @@ interactive_scalp <- function(data, colour = NULL,
                               baseline = NULL, montage = NULL) {
 
   if (is.eeg_data(data)) {
+    data <- eeg_average(data)
     data <- as.data.frame(data, long = TRUE)
   }
 
@@ -259,3 +260,5 @@ interactive_scalp <- function(data, colour = NULL,
 
   runGadget(ui, server)
 }
+
+
