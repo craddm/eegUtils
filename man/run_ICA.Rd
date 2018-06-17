@@ -7,7 +7,7 @@
 \usage{
 run_ICA(data, ...)
 
-\method{run_ICA}{eeg_epochs}(data, method = "sobi", ...)
+\method{run_ICA}{eeg_epochs}(data, method = "sobi", scaling = TRUE, ...)
 }
 \arguments{
 \item{data}{Data frame to be ICAed.}
@@ -15,6 +15,8 @@ run_ICA(data, ...)
 \item{...}{Other parameters passed to function.}
 
 \item{method}{Only SOBI is currently implemented, so this is ignored.}
+
+\item{scaling}{Scale output to RMS.}
 }
 \description{
 Implements SOBI ICA. Although SOBI exists in R already, thanks to the JADE

@@ -14,6 +14,7 @@
 - `proc_events()` added to help parse event labels during `select_epochs()` calls
 - `topoplot()` now tries to average/select across time/epochs before converting to long data, less memory use
 - `select_elecs()` also removes electrodes from chan_info
+- `select_epochs()` fixed bug where `events` and `timings` were inconsistent when using `keep = FALSE`
 
 # eegUtils 0.1.15
 

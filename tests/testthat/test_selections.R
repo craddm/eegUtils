@@ -80,5 +80,11 @@ test_that("Selection of epochs functions for eeg_epochs objects only", {
   expect_error(select_epochs(test_epo, "no trig"))
   expect_error(select_epochs(test_data, 255))
   expect_warning(select_epochs(test_dat, 255))
+  sel_epochs <- c(1, 2, 10, 34)
+  test_epo_testing <- select_epochs(test_epo, epoch_no = sel_epochs)
+  expect_equal(unique(test_epo_testing$events$epoch), sel_epochs)
+  expect_equal(unique(test_epo_testing$events$epoch), unique(test_epo_testing$timings$epoch))
+  test_epo_testing <- select_epochs(test_epo, epoch_no = sel_epochs, keep = FALSE)
+  expect_equal(unique(test_epo_testing$events$epoch), unique(test_epo_testing$timings$epoch))
 
 })

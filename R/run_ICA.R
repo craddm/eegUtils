@@ -16,10 +16,11 @@ run_ICA <- function(data, ...) {
 }
 
 #' @param method Only SOBI is currently implemented, so this is ignored.
+#' @param scaling Scale output to RMS.
 #' @describeIn run_ICA Run ICA on an \code{eeg_epochs} object
 #' @export
 
-run_ICA.eeg_epochs <- function (data, method = "sobi", ...) {
+run_ICA.eeg_epochs <- function (data, method = "sobi", scaling = TRUE, ...) {
 
   n_epochs <- length(unique(data$timings$epoch))
   n_channels <- ncol(data$signals)
@@ -46,7 +47,7 @@ run_ICA.eeg_epochs <- function (data, method = "sobi", ...) {
 
   ## get the psuedo-inverse of the diagonal matrix, multiply by singular
   ## vectors
-  Q <- MASS::ginv(diag(SVD_amp$d), tol = 0) %*% t(SVD_amp$u)
+  Q <- MASS::ginv(diag(SVD_amp$d), tol = 0) %*% t(SVD_amp$u) # whitening matrix
   amp_matrix <- Q %*% t(amp_matrix)
 
   ## reshape to reflect epoching structure
@@ -71,11 +72,18 @@ run_ICA.eeg_epochs <- function (data, method = "sobi", ...) {
   }
 
   epsil <- 1 / sqrt(N) / 100
-  V <- joint_diag(M, epsil, n_channels, pm)
+  V <- joint_diag(M, epsil, n_channels, pm) # V = sphered unmixing matrix
 
   ## create mixing matrix for output
   mixing_matrix <- data.frame(MASS::ginv(Q, tol = 0) %*% V)
-  unmixing_matrix <- data.frame(MASS::ginv(as.matrix(mixing_matrix), tol = 0))
+  unmixing_matrix <- data.frame(MASS::ginv(V, tol = 0))
+
+  # if (scaling) {
+  #   # rms = sqrt(sum(mean(x^2)))
+  #   m_means <- unmixing_matrix(S)
+  # }
+
+
   names(mixing_matrix) <- 1:n_channels
   mixing_matrix$electrode <- names(data$signals)
   names(unmixing_matrix) <- 1:n_channels
