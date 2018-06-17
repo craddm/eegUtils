@@ -8,6 +8,7 @@
 #'
 #' @param data An object of class \code{eeg_epochs}
 #' @param ... Parameters passed to FASTER
+#' @export
 
 
 eeg_FASTER <- function(data, ...) {
@@ -32,11 +33,11 @@ eeg_FASTER.eeg_epochs <- function(data, ...) {
   # Re-reference to single electrode, any should be fine, Fz is arbitrary default.
   # Note - should allow user to specify in case Fz is a known bad electrode.
 
-  if ("Fz" %in% names(data$signals)) {
-    data <- reref_eeg(data, ref_chans = "Fz", exclude = excluded)
-  } else {
-    data <- reref_eeg(data, ref_chans = names(data$signals)[14], exclude = excluded)
-  }
+  # if ("Fz" %in% names(data$signals)) {
+  #   data <- reref_eeg(data, ref_chans = "Fz", exclude = excluded)
+  # } else {
+  #   data <- reref_eeg(data, ref_chans = names(data$signals)[14], exclude = excluded)
+  # }
 
   # Exclude ref chan from subsequent computations (may be better to alter reref_eeg...)
   data_chans <- !(names(data$signals) %in% data$reference$ref_chans)

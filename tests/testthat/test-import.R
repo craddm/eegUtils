@@ -37,7 +37,11 @@ test_that("Referencing works for eeg_* objects", {
 
   test_reref <- reref_eeg(test_data, exclude = "A15")
   expect_match(test_reref$reference$excluded, "A15")
-
+  test_reref <- reref_eeg(test_data, ref_chans = "A2")
+  expect_false("A2" %in% names(test_reref$signals))
+  test_reref <- reref_eeg(test_data, "A14")
+  expect_true("A2" %in% names(test_reref$signals))
+  expect_false("A14" %in% names(test_reref$signals))
 })
 
 test_that("Filtering works for eeg_* objects", {

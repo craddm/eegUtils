@@ -311,11 +311,12 @@ epoch_data.eeg_data <- function(data, events, time_lim = c(-1, 1), ...) {
                                 ~ tibble::tibble(sample = ., time = samps / srate),
                                 .id = "epoch")
 
+  epoched_data$epoch <- as.numeric(epoched_data$epoch)
+
   # create new event_table
   event_table <- dplyr::inner_join(event_table, epoched_data,
                                    by = c("event_onset" = "sample"))
 
-  epoched_data$epoch <- as.numeric(epoched_data$epoch)
   epoched_data <- dplyr::left_join(epoched_data,
                                    cbind(data$signals, data$timings),
                                    by = c("sample" = "sample"))
@@ -324,7 +325,7 @@ epoch_data.eeg_data <- function(data, events, time_lim = c(-1, 1), ...) {
   epoched_data <- split(epoched_data, epoched_data$epoch)
   na_epochs <- vapply(epoched_data, function(x) any(is.na(x)), FUN.VALUE = logical(1))
   epoched_data <- epoched_data[!na_epochs]
-  epoched_data <- do.call(rbind, epoched_data)
+  epoched_data <- do.call("rbind", epoched_data)
 
   event_table <- event_table[event_table$epoch %in% names(na_epochs[!na_epochs]), ]
 

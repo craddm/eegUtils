@@ -261,11 +261,16 @@ select_epochs.eeg_epochs <- function(data, epoch_events = NULL, epoch_no = NULL,
 
   if (is.numeric(epoch_no)) {
 
+    if (keep == FALSE) {
+      orig_epo_no <- unique(data$timings$epoch)
+      epoch_no <- orig_epo_no[!orig_epo_no %in% epoch_no]
+    }
+
     sel_rows <- data$timings$epoch %in% epoch_no
 
-    if (keep == FALSE) {
-      sel_rows <- !sel_rows
-    }
+    #if (keep == FALSE) {
+     # sel_rows <- !sel_rows
+    #}
 
     data$signals <- data$signals[sel_rows, ]
 
