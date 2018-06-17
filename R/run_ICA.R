@@ -75,10 +75,9 @@ run_ICA.eeg_epochs <- function (data, method = "sobi", ...) {
 
   ## create mixing matrix for output
   mixing_matrix <- data.frame(MASS::ginv(Q, tol = 0) %*% V)
+  unmixing_matrix <- data.frame(MASS::ginv(as.matrix(mixing_matrix), tol = 0))
   names(mixing_matrix) <- 1:n_channels
   mixing_matrix$electrode <- names(data$signals)
-
-  unmixing_matrix <- data.frame(MASS::ginv(mixing_matrix, tol = 0))
   names(unmixing_matrix) <- 1:n_channels
   unmixing_matrix$electrode <- names(data$signals)
 
@@ -87,7 +86,7 @@ run_ICA.eeg_epochs <- function (data, method = "sobi", ...) {
 
   ica_obj <- list("mixing_matrix" = mixing_matrix,
                   "unmixing_matrix" = unmixing_matrix,
-                  "comp_activations" = scale(t(S)),
+                  "comp_activations" = t(S),
                   "timings" = data$timings,
                   "events" = data$events,
                   "chan_info" = data$chan_info,
