@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Function for reading raw data. — import_raw • eegUtils</title>
+<title>Import channel locations from various file formats — import_chans • eegUtils</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -30,11 +30,9 @@
 
 
 
-<meta property="og:title" content="Function for reading raw data. — import_raw" />
+<meta property="og:title" content="Import channel locations from various file formats — import_chans" />
 
-<meta property="og:description" content="Currently BDF/EDF and 32-bit .CNT files are supported. Filetype is determined
-by the file extension.The edfReader package is used to load BDF/EDF files.
-The function creates an eeg_data structure for subsequent use." />
+<meta property="og:description" content="Currently only ASA .elc format with Cartesian x-y-z coordinates is supported." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -120,35 +118,25 @@ The function creates an eeg_data structure for subsequent use." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Function for reading raw data.</h1>
-    <small class="dont-index">Source: <a href='https://github.com/craddm/eegUtils/blob/master/R/file_io.R'><code>R/file_io.R</code></a></small>
-    <div class="hidden name"><code>import_raw.Rd</code></div>
+    <h1>Import channel locations from various file formats</h1>
+    <small class="dont-index">Source: <a href='https://github.com/craddm/eegUtils/blob/master/R/channel_management.R'><code>R/channel_management.R</code></a></small>
+    <div class="hidden name"><code>import_chans.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Currently BDF/EDF and 32-bit .CNT files are supported. Filetype is determined
-by the file extension.The <code>edfReader</code> package is used to load BDF/EDF files.
-The function creates an <code>eeg_data</code> structure for subsequent use.</p>
+    <p>Currently only ASA .elc format with Cartesian x-y-z coordinates is supported.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>import_raw</span>(<span class='no'>file_name</span>, <span class='kw'>file_path</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>chan_nos</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+    <pre class="usage"><span class='fu'>import_chans</span>(<span class='no'>file_name</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>file_name</th>
-      <td><p>File to import. Should include file extension.</p></td>
-    </tr>
-    <tr>
-      <th>file_path</th>
-      <td><p>Path to file name, if not included in filename.</p></td>
-    </tr>
-    <tr>
-      <th>chan_nos</th>
-      <td><p>Channels to import. All channels are included by default.</p></td>
+      <td><p>name and full path of file to be loaded</p></td>
     </tr>
     </table>
     
@@ -159,10 +147,6 @@ The function creates an <code>eeg_data</code> structure for subsequent use.</p>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
                 </ul>
-
-    <h2>Author</h2>
-    
-Matt Craddock, <a href='mailto:matt@mattcraddock.com'>matt@mattcraddock.com</a>
 
   </div>
 </div>

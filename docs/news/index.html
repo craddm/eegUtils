@@ -21,14 +21,17 @@
 <!-- clipboard.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script>
 
+<!-- sticky kit -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script>
+
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
-<script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
 
 
 
 <meta property="og:title" content="Changelog" />
+
 
 
 <!-- mathjax -->
@@ -55,7 +58,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">eegUtils</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.1.15.9000</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.1.15.9003</span>
       </span>
     </div>
 
@@ -116,9 +119,9 @@
       <small>Source: <a href='https://github.com/craddm/eegUtils/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
-    <div id="eegutils-0-1-15-9000" class="section level1">
+    <div id="eegutils-0-1-15-9002" class="section level1">
 <h1 class="page-header">
-<a href="#eegutils-0-1-15-9000" class="anchor"></a>eegUtils 0.1.15.9000</h1>
+<a href="#eegutils-0-1-15-9002" class="anchor"></a>eegUtils 0.1.15.9002</h1>
 <div id="function-changes" class="section level3">
 <h3 class="hasAnchor">
 <a href="#function-changes" class="anchor"></a>Function changes</h3>
@@ -129,6 +132,8 @@
 <code>as.data.frame()</code> methods now drop the <code>sample</code> column.</li>
 <li>
 <code><a href="../reference/as.data.frame.eeg_ICA.html">as.data.frame.eeg_ICA()</a></code> now has a <code>cond_labels</code> parameter to select epochs with specific events and add the event label as an additional column.</li>
+<li>
+<code><a href="../reference/reref_eeg.html">reref_eeg()</a></code> now removes reference channels from the data.</li>
 </ul>
 </div>
 <div id="internal-changes-bug-fixes" class="section level3">
@@ -138,12 +143,21 @@
 <li>
 <code><a href="../reference/plot_butterfly.html">plot_butterfly()</a></code> some <code>dplyr</code> use removed.</li>
 <li>
+<code>run_ica()</code> refactored SOBI method, JADE dependency removed.</li>
+<li>
 <code>montage_check()</code> command parses montage info when passed to <code><a href="../reference/electrode_locations.html">electrode_locations()</a></code>
 </li>
 <li>
 <code>label_check()</code> added to help parse event labels</li>
 <li>
 <code>proc_events()</code> added to help parse event labels during <code><a href="../reference/select_epochs.html">select_epochs()</a></code> calls</li>
+<li>
+<code><a href="../reference/topoplot.html">topoplot()</a></code> now tries to average/select across time/epochs before converting to long data, less memory use</li>
+<li>
+<code><a href="../reference/select_elecs.html">select_elecs()</a></code> also removes electrodes from chan_info</li>
+<li>
+<code><a href="../reference/select_epochs.html">select_epochs()</a></code> fixed bug where <code>events</code> and <code>timings</code> were inconsistent when using <code>keep = FALSE</code>
+</li>
 </ul>
 </div>
 </div>
@@ -217,7 +231,7 @@
 <li>
 <code><a href="../reference/select_times.html">select_times()</a></code> no longer leaves “epoch” column in <code>eeg_epochs</code> objects.</li>
 <li>
-<code><a href="../reference/topoplot.html">topoplot()</a></code> now calls a separate function (<code><a href="../reference/gam_topo.html">gam_topo()</a></code>) to create GAM smooths</li>
+<code><a href="../reference/topoplot.html">topoplot()</a></code> now calls a separate function (<code>gam_topo()</code>) to create GAM smooths</li>
 <li>
 <code><a href="../reference/browse_data.html">browse_data()</a></code> major speed-ups, no longer converts to long format until necessary. Converted to S3method.</li>
 <li>
@@ -280,7 +294,7 @@
     <div id="tocnav">
       <h2>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
-        <li><a href="#eegutils-0-1-15-9000">0.1.15.9000</a></li>
+        <li><a href="#eegutils-0-1-15-9002">0.1.15.9002</a></li>
         <li><a href="#eegutils-0-1-15">0.1.15</a></li>
         <li><a href="#eegutils-0-1-14">0.1.14</a></li>
         <li><a href="#eegutils-0-1-13">0.1.13</a></li>

@@ -8,8 +8,8 @@
 <title>A collection of utilities for EEG analysis  • eegUtils</title>
 <!-- jquery --><script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script><!-- Font Awesome icons --><link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
-<script src="jquery.sticky-kit.min.js"></script><script src="pkgdown.js"></script><meta property="og:title" content="A collection of utilities for EEG analysis ">
+<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
+<script src="pkgdown.js"></script><meta property="og:title" content="A collection of utilities for EEG analysis ">
 <meta property="og:description" content="A collection of functions for basic EEG processing. Includes import
   functions for Biosemi (BDF) and Neuroscan (CNT), topographical plotting, referencing, and epoching.">
 <meta name="twitter:card" content="summary">
@@ -30,7 +30,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">eegUtils</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.1.15.9000</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.1.15.9003</span>
       </span>
     </div>
 
@@ -85,35 +85,53 @@
       
       </header><div class="row">
   <div class="contents col-md-9">
-    <div id="eegutils-0-1-15-dev" class="section level1">
+    <div id="eegutils-0-1-15-9003" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
-<a href="#eegutils-0-1-15-dev" class="anchor"></a>eegUtils 0.1.15.dev</h1></div>
+<a href="#eegutils-0-1-15-9003" class="anchor"></a>eegUtils 0.1.15.9003</h1></div>
 
 <p>Some helper utilities for plotting and processing EEG data in R. The package is in the early stages of development, and may be subject to a lot of changes.</p>
 <p>Use devtools::install_github(‘craddm/eegUtils’) to install it.</p>
+<p>An introduction to its use can be found at the <em>eegUtils</em> website <a href="https://craddm.github.io/eegUtils/" class="uri">https://craddm.github.io/eegUtils/</a>.</p>
 <div id="pre-processing-functions" class="section level2">
 <h2 class="hasAnchor">
 <a href="#pre-processing-functions" class="anchor"></a>Pre-processing functions</h2>
 <ul>
-<li>import_raw() - for import BDF/EDF (BioSemi/European Data Format) EEG files</li>
-<li>iir_filter() - for performing IIR Butterworth filtering on data (FIR filtering in development)</li>
-<li>reref_eeg() - for re-referencing data</li>
-<li>epoch_data() - for creating epochs around trigger events</li>
-<li>tag_events() - for labelling events</li>
-<li>interp_elecs() - spherical spline interpolation of EEG channels</li>
-<li>eeg_downsample() - filter and downsample data to a lower sampling rate.</li>
+<li>
+<code><a href="reference/import_raw.html">import_raw()</a></code> - for import of BDF/EDF (BioSemi/European Data Format) and .CNT (Neuroscan) EEG files</li>
+<li>
+<code><a href="reference/import_set.html">import_set()</a></code> - for import of EEGLAB .set files.</li>
+<li>
+<code>iir_filter()</code> - for performing IIR Butterworth filtering on data (FIR filtering in development)</li>
+<li>
+<code><a href="reference/reref_eeg.html">reref_eeg()</a></code> - for re-referencing data</li>
+<li>
+<code><a href="reference/epoch_data.html">epoch_data()</a></code> - for creating epochs around trigger events</li>
+<li>
+<code><a href="reference/tag_events.html">tag_events()</a></code> - for labelling events</li>
+<li>
+<code><a href="reference/interp_elecs.html">interp_elecs()</a></code> - spherical spline interpolation of EEG channels</li>
+<li>
+<code><a href="reference/eeg_downsample.html">eeg_downsample()</a></code> - filter and downsample data to a lower sampling rate.</li>
+<li>
+<code><a href="reference/eeg_FASTER.html">eeg_FASTER()</a></code> - automatic artefact rejection algorithm for epoched data</li>
 </ul>
 </div>
 <div id="plotting-functions" class="section level2">
 <h2 class="hasAnchor">
 <a href="#plotting-functions" class="anchor"></a>Plotting functions</h2>
 <ul>
-<li>topoplot() - plotting of topographies</li>
-<li>plot_timecourse()/plot_butterfly()- plotting individual timecourses from electrodes or plotting all electrodes at once</li>
-<li>erp_scalp() - plotting ERP plots for individual electrodes in a topographical layout - thanks to Matti Vuorre!</li>
-<li>interactive_scalp() - a Shiny version of erp_scalp() that allows you to zoom in on specific electrodes.</li>
-<li>browse_data() - a Shiny gadget for interactively scrolling through EEG data (continous or epoched)</li>
+<li>
+<code><a href="reference/topoplot.html">topoplot()</a></code> - plotting of topographies</li>
+<li>
+<code><a href="reference/plot_timecourse.html">plot_timecourse()</a></code>/<code><a href="reference/plot_butterfly.html">plot_butterfly()</a></code> - plotting individual timecourses from electrodes or plotting all electrodes at once</li>
+<li>
+<code><a href="reference/erp_scalp.html">erp_scalp()</a></code> - plotting ERP plots for individual electrodes in a topographical layout - thanks to Matti Vuorre!</li>
+<li>
+<code><a href="reference/interactive_scalp.html">interactive_scalp()</a></code> - a Shiny version of erp_scalp() that allows you to zoom in on specific electrodes.</li>
+<li>
+<code><a href="reference/browse_data.html">browse_data()</a></code> - a Shiny gadget for interactively scrolling through EEG data (continous or epoched)</li>
 </ul>
+<p><code>as.data.frame()</code> methods exist for <code>eeg_data</code> and <code>eeg_epochs</code> objects, so you can convert your data to a data frame for use with whatever</p>
 </div>
 </div>
   </div>

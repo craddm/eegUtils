@@ -21,9 +21,11 @@
 <!-- clipboard.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script>
 
+<!-- sticky kit -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script>
+
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
-<script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
 
 
@@ -35,6 +37,7 @@ package, it doesn't respect epoch boundaries when computing correlations
 across different time lags. This is a port of SOBI from EEGLAB. Currently
 only works on epoched data." />
 <meta name="twitter:card" content="summary" />
+
 
 
 <!-- mathjax -->
@@ -61,7 +64,7 @@ only works on epoched data." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">eegUtils</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.1.15.9000</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.1.15.9003</span>
       </span>
     </div>
 
@@ -135,7 +138,7 @@ only works on epoched data.</p>
     <pre class="usage"><span class='fu'>run_ICA</span>(<span class='no'>data</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for eeg_epochs</span>
-<span class='fu'>run_ICA</span>(<span class='no'>data</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"sobi"</span>, <span class='no'>...</span>)</pre>
+<span class='fu'>run_ICA</span>(<span class='no'>data</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"sobi"</span>, <span class='kw'>scaling</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -151,6 +154,10 @@ only works on epoched data.</p>
     <tr>
       <th>method</th>
       <td><p>Only SOBI is currently implemented, so this is ignored.</p></td>
+    </tr>
+    <tr>
+      <th>scaling</th>
+      <td><p>Scale output to RMS.</p></td>
     </tr>
     </table>
     

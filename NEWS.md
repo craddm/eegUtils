@@ -1,10 +1,12 @@
-# eegUtils 0.1.15.9002
+# eegUtils 0.1.15.9003
 
 ### Function changes
 - `as.data.frame.eeg_epochs()` now has a `cond_labels` parameter to select epochs with specific events and add the event label as an additional column.
 - `as.data.frame()` methods now drop the `sample` column.
 - `as.data.frame.eeg_ICA()` now has a `cond_labels` parameter to select epochs with specific events and add the event label as an additional column.
 - `reref_eeg()` now removes reference channels from the data.
+- `eeg_FASTER()` - FASTER artefact rejection method now (mostly) implemented (*experimental*).
+- 
 
 ### Internal changes / bug fixes
 - `plot_butterfly()` some `dplyr` use removed.
@@ -15,6 +17,8 @@
 - `topoplot()` now tries to average/select across time/epochs before converting to long data, less memory use
 - `select_elecs()` also removes electrodes from chan_info
 - `select_epochs()` fixed bug where `events` and `timings` were inconsistent when using `keep = FALSE`
+- Electrode/channel related functions (other than selection) now moved to `channel_management.r`
+- New default electrode locations (347 locations in the 10-05 layout) provided
 
 # eegUtils 0.1.15
 
