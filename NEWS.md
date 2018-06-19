@@ -1,4 +1,4 @@
-# eegUtils 0.1.15.9003
+# eegUtils 0.2.0
 
 ### Function changes
 - `as.data.frame.eeg_epochs()` now has a `cond_labels` parameter to select epochs with specific events and add the event label as an additional column.
@@ -6,7 +6,6 @@
 - `as.data.frame.eeg_ICA()` now has a `cond_labels` parameter to select epochs with specific events and add the event label as an additional column.
 - `reref_eeg()` now removes reference channels from the data.
 - `eeg_FASTER()` - FASTER artefact rejection method now (mostly) implemented (*experimental*).
-- 
 
 ### Internal changes / bug fixes
 - `plot_butterfly()` some `dplyr` use removed.
