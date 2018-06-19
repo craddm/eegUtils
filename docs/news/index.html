@@ -11,8 +11,8 @@
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
+<link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/flatly/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 
-<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
 <!-- Font Awesome icons -->
@@ -119,9 +119,9 @@
       <small>Source: <a href='https://github.com/craddm/eegUtils/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
-    <div id="eegutils-0-1-15-9002" class="section level1">
+    <div id="eegutils-0-1-15-9003" class="section level1">
 <h1 class="page-header">
-<a href="#eegutils-0-1-15-9002" class="anchor"></a>eegUtils 0.1.15.9002</h1>
+<a href="#eegutils-0-1-15-9003" class="anchor"></a>eegUtils 0.1.15.9003</h1>
 <div id="function-changes" class="section level3">
 <h3 class="hasAnchor">
 <a href="#function-changes" class="anchor"></a>Function changes</h3>
@@ -134,6 +134,10 @@
 <code><a href="../reference/as.data.frame.eeg_ICA.html">as.data.frame.eeg_ICA()</a></code> now has a <code>cond_labels</code> parameter to select epochs with specific events and add the event label as an additional column.</li>
 <li>
 <code><a href="../reference/reref_eeg.html">reref_eeg()</a></code> now removes reference channels from the data.</li>
+<li>
+<code><a href="../reference/eeg_FASTER.html">eeg_FASTER()</a></code> - FASTER artefact rejection method now (mostly) implemented (<em>experimental</em>).</li>
+<li>
+</li>
 </ul>
 </div>
 <div id="internal-changes-bug-fixes" class="section level3">
@@ -158,6 +162,9 @@
 <li>
 <code><a href="../reference/select_epochs.html">select_epochs()</a></code> fixed bug where <code>events</code> and <code>timings</code> were inconsistent when using <code>keep = FALSE</code>
 </li>
+<li>Electrode/channel related functions (other than selection) now moved to <code>channel_management.r</code>
+</li>
+<li>New default electrode locations (347 locations in the 10-05 layout) provided</li>
 </ul>
 </div>
 </div>
@@ -294,7 +301,7 @@
     <div id="tocnav">
       <h2>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
-        <li><a href="#eegutils-0-1-15-9002">0.1.15.9002</a></li>
+        <li><a href="#eegutils-0-1-15-9003">0.1.15.9003</a></li>
         <li><a href="#eegutils-0-1-15">0.1.15</a></li>
         <li><a href="#eegutils-0-1-14">0.1.14</a></li>
         <li><a href="#eegutils-0-1-13">0.1.13</a></li>

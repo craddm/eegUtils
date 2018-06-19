@@ -5,4 +5,7 @@ articles:
   data_structures: data_structures.html
   eegUtils: eegUtils.html
   Introduction: Introduction.html
+urls:
+  reference: http://craddm.github.io/eegUtils/reference
+  article: http://craddm.github.io/eegUtils/articles
 
