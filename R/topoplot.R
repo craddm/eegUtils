@@ -384,6 +384,7 @@ topoplot.eeg_epochs <- function(data, time_lim = NULL, limits = NULL,
 
 #' @param comp Component to plot (numeric)
 #' @describeIn topoplot Topographical plot for \code{eeg_ICA} objects
+#' @export
 topoplot.eeg_ICA <- function(data, time_lim = NULL, limits = NULL,
                              chanLocs = NULL, method = "Biharmonic", r = NULL,
                              grid_res = 67, palette = "RdBu",
