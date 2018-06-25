@@ -13,7 +13,7 @@
 #'@param time_lim Character vector. Numbers in whatever time unit is used
 #'  specifying beginning and end of time-range to plot. e.g. c(-100,300)
 #'@param baseline Character vector. Times to use as a baseline. Takes the mean
-#'  over the specified period and subtracts. e.g. c(-100,0)
+#'  over the specified period and subtracts. e.g. c(-.1,0)
 #'@param colour Variable to colour lines by. If no variable is passed, only one
 #'  line is drawn.
 #'@param color Alias for colour.
@@ -52,11 +52,9 @@ plot_timecourse <- function(data, time_lim = NULL,
   if (is.null(colour)) {
     if (!is.null(color)) {
       colour <- as.name(color)
-#      tmp_col <- rlang::parse_quo(colour, env = rlang::caller_env())
     }
   } else {
     colour <- as.name(colour)
-    #tmp_col <- rlang::parse_quo(colour, rlang::caller_env())
   }
 
   ## Filter out unwanted timepoints, and find nearest time values in the data
@@ -198,9 +196,51 @@ plot_tc.eeg_epochs <- function(data, time_lim = NULL,
     data <- rm_baseline(data, time_lim = baseline)
   }
 
+  if (!add_CI) {
+    data <- eeg_average(data)
+  }
+
   data <- as.data.frame(data, long = T)
 
   tc_plot <- ggplot2::ggplot(data, aes(x = time, y = amplitude))
+
+  if (add_CI) {
+    if (is.null(colour)) {
+      tc_plot <- tc_plot +
+        stat_summary(fun.data = mean_cl_normal,
+                     geom = "ribbon",
+                     linetype = "dashed",
+                     fill = NA,
+                     colour = "black",
+                     size = 1,
+                     alpha = 0.5)
+      } else {
+        tc_plot <- tc_plot +
+          stat_summary(fun.data = mean_cl_normal,
+                       geom = "ribbon",
+                       linetype = "dashed",
+                       aes_(colour = as.name(colour)),
+                       fill = NA,
+                       size = 1,
+                       alpha = 0.5)
+      }
+    }
+  tc_plot +
+    stat_summary(fun.y = "mean",
+                 geom = "line",
+                 size = 1.2) +
+    labs(x = "Time (s)", y = expression(paste("Amplitude (", mu, "V)")),
+         colour = "", fill = "") +
+    geom_vline(xintercept = 0, linetype = "solid", size = 0.5) +
+    geom_hline(yintercept = 0, linetype = "solid", size = 0.5) +
+    scale_x_continuous(breaks = scales::pretty_breaks(n = 4),
+                       expand = c(0, 0)) +
+    scale_y_continuous(breaks = scales::pretty_breaks(n = 4),
+                       expand = c(0, 0)) +
+    theme_minimal(base_size = 12) +
+    theme(panel.grid = element_blank(),
+          axis.ticks = element_line(size = .5)) +
+    guides(colour = guide_legend(override.aes = list(alpha = 1)))
 
 }
 

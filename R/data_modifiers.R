@@ -581,6 +581,7 @@ check_timings <- function(data) {
 #' @param data An \code{eeg_epochs} object.
 #' @param ... Other arguments passed to the averaging functions
 #' @author Matt craddock \email{matt@@mattcraddock.com}
+#' @export
 
 eeg_average <- function(data, ...) {
   UseMethod("eeg_average", data)
@@ -590,6 +591,7 @@ eeg_average <- function(data, ...) {
 #' @param data An \code{eeg_epochs} object.
 #' @param ... Other arguments passed to the averaging functions
 #' @author Matt craddock \email{matt@@mattcraddock.com}
+#' @export
 
 eeg_average.default <- function(data, ...) {
   stop("eeg_epochs object required as input.")
@@ -598,14 +600,25 @@ eeg_average.default <- function(data, ...) {
 #' Create an \code{eeg_evoked} object from eeg_epochs
 #'
 #' @param cond_label Only pick events that include a given label. Character vector.
+#' @param calc_var Can be used to calculate measures of variability around the average.
 #' @describeIn eeg_average Create evoked data from \code{eeg_epochs}
-eeg_average.eeg_epochs <- function(data, cond_label = NULL, ...) {
+#' @export
+eeg_average.eeg_epochs <- function(data, cond_label = NULL, calc_var = NULL, ...) {
 
   if (is.null(cond_label)) {
 
     data$signals <- split(data$signals, data$timings$time)
-    data$signals <- lapply(data$signals, colMeans)
-    data$signals <- as.data.frame(do.call("rbind", data$signals))
+    data_means <- lapply(data$signals, colMeans)
+    data_means <- as.data.frame(do.call("rbind", data_means))
+
+    if (!is.null(calc_var) && calc_var == "SE") {
+      data_sd <- lapply(data$signals, function(x) matrixStats::colSds(as.matrix(x)) / sqrt(nrow(x)))
+      data_sd <- as.data.frame(do.call("rbind", data_sd))
+      names(data_sd) <- names(data_means)
+      data$var <- data_sd
+    }
+
+    data$signals <- data_means
 
     row.names(data$signals) <- NULL
 
