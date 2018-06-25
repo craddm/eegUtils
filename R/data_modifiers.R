@@ -56,12 +56,12 @@ reref_eeg.eeg_data <- function(data, ref_chans = "average", exclude = NULL,
   }
 
   # Get excluded channel names and/or convert to numbers if necessary
-  if (!is.null(exclude)){
+  if (!is.null(exclude)) {
     if (is.numeric(exclude)) {
       excluded <- names(data$signals)[exclude]
     } else {
         excluded <- exclude
-        exclude <- which(names(data$signals) == exclude)
+        exclude <- which(names(data$signals) %in% exclude)
     }
   } else {
     excluded <- NULL
