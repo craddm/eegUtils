@@ -16,6 +16,7 @@ eeg_FASTER <- function(data, ...) {
 }
 
 #' @describeIn eeg_FASTER Run FASTER on \code{eeg_epochs}
+#' @export
 eeg_FASTER.eeg_epochs <- function(data, ...) {
 
   # TODO - keep a record of which trials/channels etc are removed/interpolated
