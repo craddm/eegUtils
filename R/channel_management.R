@@ -8,6 +8,8 @@ import_chans <- function(file_name) {
   file_type <- tools::file_ext(file_name)
   if (file_type == "elc") {
     chan_locs <- import_elc(file_name)
+  } else {
+    stop("File type ", file_type, " is unknown.")
   }
 }
 
