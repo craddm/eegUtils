@@ -399,6 +399,8 @@ eeg_downsample.eeg_data <- function(data, q, ...) {
 
   if (q < 2) {
     stop("q must be 2 or more.")
+  } else if ((data$srate / q) %% 1 > 0){
+    stop("srate / q must give a round number.")
   }
 
   message(paste0("Downsampling from ", data$srate, "Hz to ",
@@ -419,9 +421,69 @@ eeg_downsample.eeg_data <- function(data, q, ...) {
     data$signals["ref_data"] <- NULL
   }
 
-  # select every qth timing point, and divide srate by
+  # select every qth timing point, and divide srate by q
   data$srate <- data$srate / q
-  data$timings <- data$timings[seq(1, length(data$timings[[1]]), by= q), ]
+  data$timings <- data$timings[seq(1, length(data$timings[[1]]), by = q), ]
+
+  # The event table also needs to be adjusted. Note that this inevitably jitters
+  # event timings by up to q/2 sampling points.
+  nearest_samps <- findInterval(data$events$event_onset,
+                                data$timings$sample)
+  data$events$event_onset <- data$timings$sample[nearest_samps]
+  data$events$event_time <- data$timings$time[nearest_samps]
+  data
+}
+
+#' @describeIn eeg_downsample Downsample eeg_epochs objects
+#' @export
+
+eeg_downsample.eeg_epochs <- function(data, q, ...) {
+
+  q <- as.integer(q)
+
+  if (q < 2) {
+    stop("q must be 2 or more.")
+  } else if ((data$srate / q) %% 1 > 0){
+    stop("srate / q must give a round number.")
+  }
+
+  message(paste0("Downsampling from ", data$srate, "Hz to ",
+                 data$srate / q, "Hz."))
+
+  # make sure any saved reference gets downsampled too.
+  if (!is.null(data$reference)) {
+    data$signals["ref_data"] <- data$reference$ref_data
+  }
+
+  epo_length <- length(unique(data$timings$time)) %% q
+
+  if (epo_length > 0) {
+    message("Dropping ", epo_length, " time points to make n of samples a multiple of q.")
+    new_times <- head(unique(data$timings$time), -epo_length)
+    data <- select_times(data, time_lim = c(min(new_times), max(new_times)))
+  }
+
+  data$signals <- split(data$signals, data$timings$epoch)
+
+  new_times <- data$timings$time
+  new_length <- nrow(data$signals[[1]]) - epo_length
+  data$signals <- lapply(data$signals, `[`, 1:new_length, )
+  data$signals <- purrr::map_df(data$signals,
+                             ~purrr::map_df(as.list(.),
+                                            ~signal::decimate(., q)))
+  # step through each column and decimate each channel
+  # data$signals <- purrr::map_df(as.list(data$signals),
+  #                               ~signal::decimate(., q))
+
+  # separate reference from main data again
+  if (!is.null(data$reference)) {
+    data$reference$ref_data <- data$signals[["ref_data"]]
+    data$signals["ref_data"] <- NULL
+  }
+
+  # select every qth timing point, and divide srate by q
+  data$srate <- data$srate / q
+  data$timings <- data$timings[seq(1, length(data$timings[[1]]), by = q), ]
 
   # The event table also needs to be adjusted. Note that this inevitably jitters
   # event timings by up to q/2 sampling points.

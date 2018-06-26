@@ -7,6 +7,7 @@
 - `tf_morlet` recoded to be called internally
 - `compute_psd` recoded to call `welch_fft()` in order to support possibility of different FFT methods.
 - `welch_fft()` internal function added
+- `eeg_downsample()` now makes sure epoch length is a multiple of the downsampling factor to avoid problems with timing jitter
 
 # eegUtils 0.2.0
 

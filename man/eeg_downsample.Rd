@@ -3,11 +3,14 @@
 \name{eeg_downsample}
 \alias{eeg_downsample}
 \alias{eeg_downsample.eeg_data}
+\alias{eeg_downsample.eeg_epochs}
 \title{Downsampling EEG data}
 \usage{
 eeg_downsample(data, ...)
 
 \method{eeg_downsample}{eeg_data}(data, q, ...)
+
+\method{eeg_downsample}{eeg_epochs}(data, q, ...)
 }
 \arguments{
 \item{data}{An \code{eeg_data} object to be downsampled}
@@ -25,6 +28,8 @@ moving events to the nearest time remaining after downsampling
 \section{Methods (by class)}{
 \itemize{
 \item \code{eeg_data}: Downsample eeg_data objects
+
+\item \code{eeg_epochs}: Downsample eeg_data objects
 }}
 
 \author{
