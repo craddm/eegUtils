@@ -10,7 +10,6 @@
 #' @param ... Parameters passed to FASTER
 #' @export
 
-
 eeg_FASTER <- function(data, ...) {
   UseMethod("eeg_FASTER", data)
 }
