@@ -264,6 +264,7 @@ plot_electrodes <- function(data, interact = FALSE, ...) {
 #' @importFrom plotly plot_ly
 #' @import ggplot2
 #' @describeIn plot_electrodes generic plot electrodes function
+#' @export
 
 plot_electrodes.default <- function(data, interact = FALSE, ...) {
   if ("electrode" %in% names(data)) {
@@ -271,9 +272,9 @@ plot_electrodes.default <- function(data, interact = FALSE, ...) {
     data <- electrode_locations(data)
 
     if (interact) {
-      xyz <- pol_to_sph(data$theta, data$radius)
-      xyz$electrode <- unique(data$electrode)
-      plotly::plot_ly(xyz, x = ~x, y = ~y, z = ~z, text = ~electrode,
+      #xyz <- pol_to_sph(data$theta, data$radius)
+      #xyz$electrode <- unique(data$electrode)
+      plotly::plot_ly(data, x = ~cart_x, y = ~cart_y, z = ~cart_z, text = ~electrode,
                       type = "scatter3d", mode = "text+markers")
     } else {
       ggplot2::ggplot(data, aes(x = x, y = y, label = electrode)) +
@@ -288,6 +289,7 @@ plot_electrodes.default <- function(data, interact = FALSE, ...) {
 
 #' @importFrom plotly plot_ly
 #' @describeIn plot_electrodes Plot electrodes associated with an \code{eeg_data} object.
+#' @export
 plot_electrodes.eeg_data <- function(data, interact = FALSE, ...) {
 
   if (is.null(data$chan_info)) {
@@ -296,9 +298,8 @@ plot_electrodes.eeg_data <- function(data, interact = FALSE, ...) {
   }
 
   if (interact) {
-    xyz <- pol_to_sph(data$chan_info$theta, data$chan_info$radius)
-    xyz$electrode <- data$chan_info$electrode
-    plotly::plot_ly(xyz, x = ~x, y = ~y, z = ~z, text = ~electrode,
+
+    plotly::plot_ly(data$chan_info, x = ~cart_x, y = ~cart_y, z = ~cart_z, text = ~electrode,
                     type = "scatter3d", mode = "text+markers")
   } else {
     ggplot2::ggplot(data$chan_info, aes(x = x, y = y, label = electrode)) +

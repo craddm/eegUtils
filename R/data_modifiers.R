@@ -323,14 +323,17 @@ epoch_data.eeg_data <- function(data, events, time_lim = c(-1, 1), ...) {
 
   # Check for any epochs that contain NAs
   epoched_data <- split(epoched_data, epoched_data$epoch)
-  na_epochs <- vapply(epoched_data, function(x) any(is.na(x)), FUN.VALUE = logical(1))
+  na_epochs <- vapply(epoched_data,
+                      function(x) any(is.na(x)),
+                      FUN.VALUE = logical(1))
   epoched_data <- epoched_data[!na_epochs]
   epoched_data <- do.call("rbind", epoched_data)
 
   event_table <- event_table[event_table$epoch %in% names(na_epochs[!na_epochs]), ]
 
   if (any(na_epochs)) {
-    cat(paste(sum(na_epochs), "epoch(s) with NAs removed. Epoch boundaries would lie outside data."))
+    message(paste(sum(na_epochs),
+                  "epoch(s) with NAs removed. Epoch boundaries would lie outside data."))
   }
 
   if (!is.null(data$reference)) {

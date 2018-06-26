@@ -28,9 +28,8 @@ eeg_FASTER.eeg_epochs <- function(data, ...) {
     } else {
       orig_ref <- data$reference$ref_chans
       excluded <- data$reference$excluded
-      orig_chan <- data$chan_info
       }
-
+  orig_chan <- data$chan_info
   # Re-reference to single electrode, any should be fine, Fz is arbitrary default.
   # Note - should allow user to specify in case Fz is a known bad electrode.
 

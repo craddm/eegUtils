@@ -1,7 +1,12 @@
 # eegUtils 0.2.0.9000
 
+### Function changes
+
 ### Internal changes/ bug fixes
 - `reref_eeg()` correctly excludes multiple named electrodes (i.e. passed as characters rather than numbers), where it previously silently failed.
+- `tf_morlet` recoded to be called internally
+- `compute_psd` recoded to call `welch_fft()` in order to support possibility of different FFT methods.
+- `welch_fft()` internal function added
 
 # eegUtils 0.2.0
 
