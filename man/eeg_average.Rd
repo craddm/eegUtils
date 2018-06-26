@@ -7,7 +7,8 @@
 \usage{
 eeg_average(data, ...)
 
-\method{eeg_average}{eeg_epochs}(data, cond_label = NULL, ...)
+\method{eeg_average}{eeg_epochs}(data, cond_label = NULL, calc_var = NULL,
+  ...)
 }
 \arguments{
 \item{data}{An \code{eeg_epochs} object.}
@@ -15,6 +16,8 @@ eeg_average(data, ...)
 \item{...}{Other arguments passed to the averaging functions}
 
 \item{cond_label}{Only pick events that include a given label. Character vector.}
+
+\item{calc_var}{Can be used to calculate measures of variability around the average.}
 }
 \description{
 Calculate averages (e.g. ERPs)

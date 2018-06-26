@@ -22,7 +22,7 @@ specifying beginning and end of time-range to plot. e.g. c(-100,300)}
 between-subject CIs.}
 
 \item{baseline}{Character vector. Times to use as a baseline. Takes the mean
-over the specified period and subtracts. e.g. c(-100,0)}
+over the specified period and subtracts. e.g. c(-.1,0)}
 
 \item{colour}{Variable to colour lines by. If no variable is passed, only one
 line is drawn.}

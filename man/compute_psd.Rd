@@ -3,12 +3,16 @@
 \name{compute_psd}
 \alias{compute_psd}
 \alias{compute_psd.eeg_data}
+\alias{compute_psd.eeg_epochs}
 \title{Compute power spectral density}
 \usage{
 compute_psd(data, ...)
 
 \method{compute_psd}{eeg_data}(data, seg_length = NULL, noverlap = 0,
   n_fft = 256, srate = NULL, method = "Welch")
+
+\method{compute_psd}{eeg_epochs}(data, seg_length = NULL, noverlap = 0,
+  n_fft = 256, srate = NULL, method = "Welch", keep_trials = TRUE)
 }
 \arguments{
 \item{data}{Data to be plotted. Accepts objects of class \code{eeg_data}}
@@ -24,6 +28,8 @@ compute_psd(data, ...)
 \item{srate}{Sampling rate}
 
 \item{method}{Defaults to "Welch". No other method currently implemented.}
+
+\item{keep_trials}{Include FFT for every trial in output}
 }
 \description{
 Returns PSD calculated using Welch's method for every channel in the data.
@@ -32,6 +38,8 @@ Currently concatenates across epochs. Returns uV^2 / Hz
 \section{Methods (by class)}{
 \itemize{
 \item \code{eeg_data}: Compute PSD for an \code{eeg_data} object
+
+\item \code{eeg_epochs}: Compute PSD for an \code{eeg_epochs} object
 }}
 
 \author{
