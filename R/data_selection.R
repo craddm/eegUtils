@@ -25,13 +25,11 @@ select_times.default <- function(data, time_lim = NULL, ...) {
 
   if ("time" %in% colnames(data)) {
     if (length(time_lim) == 1) {
-      warning("Must enter two timepoints when selecting a time range;
-              using whole range.")
+      stop("Must enter two timepoints when selecting a time range.")
     } else if (length(time_lim) == 2) {
       time_lim[1] <- data$time[which.min(abs(data$time - time_lim[1]))]
       time_lim[2] <- data$time[which.min(abs(data$time - time_lim[2]))]
       data <- data[data$time >= time_lim[1] & data$time <= time_lim[2], ]
-      #data <- dplyr::filter(data, time >= time_lim[1] & time <= time_lim[2])
     }
   } else {
     warning("No time column found.")
@@ -40,28 +38,35 @@ select_times.default <- function(data, time_lim = NULL, ...) {
 }
 
 #' @param df_out Returns a data frame rather than an object of the same type that was passed in
-#' @importFrom dplyr filter select
 #' @export
 #'
 #' @describeIn select_times Select times from an eeg_data object
 
 select_times.eeg_data <- function(data, time_lim = NULL, df_out = FALSE, ...) {
 
-  proc_data <- as.data.frame(data)
-  proc_data <- select_times(proc_data, time_lim = time_lim)
+  data$signals <- as.data.frame(data)
+
+  if (length(time_lim) == 1) {
+    stop("Must enter two timepoints when selecting a time range.")
+  } else if (length(time_lim) == 2) {
+    # find the timepoints closest to the time_lim provided
+    rows <- data$timings$time >= time_lim[1] &
+      data$timings$time <= time_lim[2]
+    data$signals <- data$signals[rows, ]
+    data$timings <- data$timings[rows, ]
+    event_rows <- data$events$event_time >= time_lim[1] &
+       data$events$event_time <= time_lim[2]
+    data$events <- data$events[event_rows, ]
+    data$reference$ref_data <- data$reference$ref_data[rows]
+    data$signals$sample <- NULL
+    data$signals$time <- NULL
+  }
 
   if (df_out) {
-    return(proc_data)
-  } else {
-    data$events <- dplyr::filter(data$events, event_time >= time_lim[1],
-                                 event_time <= time_lim[2])
-    data$signals <- dplyr::select(proc_data, -sample, -time)
-    data$timings <- tibble::tibble(time = proc_data$time, sample = proc_data$sample)
-    if (!is.null(data$reference$ref_data)) {
-      data$reference$ref_data <- data$reference$ref_data[data$timings$sample,]
-    }
-    return(data)
+    return(as.data.frame(data))
   }
+
+  data
 }
 
 #' @export
@@ -71,7 +76,7 @@ select_times.eeg_epochs <- function(data, time_lim = NULL,
                                     df_out = FALSE, ...) {
 
   if (length(time_lim) == 1) {
-      warning("Must enter two timepoints when selecting a time range;
+      stop("Must enter two timepoints when selecting a time range;
         using whole range.")
   } else if (length(time_lim) == 2) {
     time_lim[1] <- data$timings$time[which.min(abs(data$timings$time - time_lim[1]))]
@@ -92,7 +97,7 @@ select_times.eeg_epochs <- function(data, time_lim = NULL,
     return(as.data.frame(data))
   } else {
 
-    return(data)
+    data
   }
 }
 
@@ -102,21 +107,21 @@ select_times.eeg_evoked <- function(data, time_lim = NULL,
                                     df_out = FALSE, ...) {
 
   data$signals <- as.data.frame(data)
-  data$signals <- select_times(data$signals, time_lim = time_lim)
+  data$signals <- select_times(data$signals,
+                               time_lim = time_lim)
 
   if (df_out) {
     return(data$signals)
   } else {
-    return(data)
+    data
   }
-
 }
 
 #' Select electrodes from a given dataset.
 #'
 #' This is a generic function for selection of electrodes from an EEG dataset.
 #'
-#' @author Matt Craddock, \email{matt@mattcraddock.com}
+#' @author Matt Craddock, \email{matt@@mattcraddock.com}
 #'
 #' @param data An EEG dataset.
 #' @param ... Arguments used with related methods
@@ -203,7 +208,7 @@ select_elecs.eeg_data <- function(data, electrode, keep = TRUE,
 #'
 #' This is a generic function for selecting epochs from an epoched data set.
 #'
-#' @author Matt Craddock, \email{matt@mattcraddock.com}
+#' @author Matt Craddock, \email{matt@@mattcraddock.com}
 #'
 #' @param data \code{eeg_epochs} object from which to select epochs.
 #' @param ... Parameters passed to specific methods
@@ -375,8 +380,6 @@ proc_events <- function(epoch_events,
     if (keep == FALSE) {
       sel_rows <- !sel_rows
     }
-
     epoch_no <- as.numeric(epoch_nos[sel_rows])
   }
-
 }
