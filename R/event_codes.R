@@ -24,7 +24,10 @@ tag_events <- function(data, ...) {
 #' @export
 #' @describeIn tag_events Tag events in an \code{eeg_data} object
 
-tag_events.eeg_data <- function(data, trigs, event_label, ...) {
+tag_events.eeg_data <- function(data,
+                                trigs,
+                                event_label,
+                                ...) {
 
   if (length(trigs) != length(event_label)) {
     stop("Trigs and event_label parameters must be the same length.")
@@ -34,24 +37,27 @@ tag_events.eeg_data <- function(data, trigs, event_label, ...) {
     stop(paste0("Trigger(s) not found. Check trigger values with list_events()."))
   }
 
-  data$events <- dplyr::left_join(data$events,
-                                  tibble::tibble(event_type = trigs,
-                                                 event_label = event_label),
-                                  by = "event_type")
+  data$events <- merge(data$events,
+                       data.frame(event_type = trigs,
+                                  event_label = as.character(event_label),
+                                  stringsAsFactors = FALSE))
   data
 }
 
 #' @describeIn tag_events Tag events in an epoched dataset
-tag_events.eeg_epochs <- function(data, trigs, event_label, ...) {
+tag_events.eeg_epochs <- function(data,
+                                  trigs,
+                                  event_label,
+                                  ...) {
 
   if (length(trigs) != length(event_label)) {
     stop("Trigs and event_label parameters must be the same length.")
   }
 
-  data$events <- dplyr::left_join(data$events,
-                                  tibble::tibble(event_type = trigs,
-                                                 event_label = event_label),
-                                  by = "event_type")
+  data$events <- merge(data$events,
+                       data.frame(event_type = trigs,
+                                  event_label = as.character(event_label),
+                                  stringsAsFactors = FALSE))
   data
 }
 

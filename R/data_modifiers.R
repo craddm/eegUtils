@@ -35,8 +35,11 @@ reref_eeg.default <- function(data, ...) {
 #' @describeIn reref_eeg Rereference objects of class \code{eeg_data}
 #' @export
 
-reref_eeg.eeg_data <- function(data, ref_chans = "average", exclude = NULL,
-                      robust = FALSE, ...) {
+reref_eeg.eeg_data <- function(data,
+                               ref_chans = "average",
+                               exclude = NULL,
+                               robust = FALSE,
+                               ...) {
 
   n_chans <- ncol(data$signals)
 
@@ -122,7 +125,6 @@ reref_eeg.eeg_data <- function(data, ref_chans = "average", exclude = NULL,
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #' @param data Data to be baseline corrected.
 #' @param ... other parameters to be passed to functions
-#' @importFrom tibble as_tibble
 #' @export
 
 rm_baseline <- function(data, ...) {
@@ -148,13 +150,15 @@ rm_baseline.eeg_data <- function(data, time_lim = NULL, ...) {
       data$reference$ref_data <- data$reference$ref_data - mean(base_times$reference$ref_data[[1]])
     }
   }
-  data$signals <- tibble::as_tibble(sweep(data$signals, 2, baseline_dat, '-'))
+  data$signals <- sweep(data$signals, 2, baseline_dat, '-')
   return(data)
 }
 
 #' @describeIn rm_baseline Remove baseline from eeg_epochs
 #' @export
-rm_baseline.eeg_epochs <- function(data, time_lim = NULL, ...) {
+rm_baseline.eeg_epochs <- function(data,
+                                   time_lim = NULL,
+                                   ...) {
 
   n_epochs <- length(unique(data$timings$epoch))
   n_times <- length(unique(data$timings$time))
@@ -170,7 +174,7 @@ rm_baseline.eeg_epochs <- function(data, time_lim = NULL, ...) {
                            array(0, dim = c(n_epochs, n_chans)))
     data$signals <- aperm(data$signals, c(3, 1, 2))
     data$signals <- array(data$signals, dim = c(n_epochs * n_times, n_chans))
-    data$signals <- tibble::as_tibble(data$signals)
+    data$signals <- as.data.frame(data$signals)
     names(data$signals) <- elecs
   } else {
     base_times <- select_times(data, time_lim = time_lim)
@@ -190,7 +194,9 @@ rm_baseline.eeg_epochs <- function(data, time_lim = NULL, ...) {
 
 #' @describeIn rm_baseline Legacy method for data.frames
 #' @export
-rm_baseline.data.frame <- function(data, time_lim = NULL, ...) {
+rm_baseline.data.frame <- function(data,
+                                   time_lim = NULL,
+                                   ...) {
 
   if (!("time" %in% colnames(data))) {
     stop("Time dimension is required.")
@@ -202,6 +208,7 @@ rm_baseline.data.frame <- function(data, time_lim = NULL, ...) {
 
   # if the data is epoched, group by electrode and epoch; otherwise, just by
   # electrode.
+
   if ("epoch" %in% colnames(data)) {
     data <- dplyr::group_by(data, electrode, epoch, add = TRUE)
   } else{
@@ -269,7 +276,10 @@ epoch_data.default <- function(data, ...) {
 #' @export
 #'
 
-epoch_data.eeg_data <- function(data, events, time_lim = c(-1, 1), ...) {
+epoch_data.eeg_data <- function(data,
+                                events,
+                                time_lim = c(-1, 1),
+                                ...) {
 
   if (!all(events %in% unique(data$events$event_type))) {
     stop("Events not found - check event codes.")
@@ -405,6 +415,21 @@ eeg_downsample.eeg_data <- function(data, q, ...) {
 
   message(paste0("Downsampling from ", data$srate, "Hz to ",
                  data$srate / q, "Hz."))
+
+  data_length <- length(unique(data$timings$time)) %% q
+
+  #ceiling(epo_length / q)
+
+  if (data_length > 0) {
+    message("Dropping ",
+            data_length,
+            " time points to make n of samples a multiple of q.")
+    new_times <- head(unique(data$timings$time),
+                      -data_length)
+    data <- select_times(data,
+                         time_lim = c(min(new_times),
+                                      max(new_times)))
+  }
 
   # make sure any saved reference gets downsampled too.
   if (!is.null(data$reference)) {
@@ -666,11 +691,15 @@ eeg_average.default <- function(data, ...) {
 
 #' Create an \code{eeg_evoked} object from eeg_epochs
 #'
-#' @param cond_label Only pick events that include a given label. Character vector.
-#' @param calc_var Can be used to calculate measures of variability around the average.
+#' @param cond_label Only pick events that include a given label. Character
+#'   vector.
+#' @param calc_var Can be used to calculate measures of variability around the
+#'   average.
 #' @describeIn eeg_average Create evoked data from \code{eeg_epochs}
 #' @export
-eeg_average.eeg_epochs <- function(data, cond_label = NULL, calc_var = NULL, ...) {
+eeg_average.eeg_epochs <- function(data,
+                                   cond_label = NULL,
+                                   calc_var = NULL, ...) {
 
   if (is.null(cond_label)) {
 
@@ -679,7 +708,8 @@ eeg_average.eeg_epochs <- function(data, cond_label = NULL, calc_var = NULL, ...
     data_means <- as.data.frame(do.call("rbind", data_means))
 
     if (!is.null(calc_var) && calc_var == "SE") {
-      data_sd <- lapply(data$signals, function(x) matrixStats::colSds(as.matrix(x)) / sqrt(nrow(x)))
+      data_sd <- lapply(data$signals,
+                        function(x) matrixStats::colSds(as.matrix(x)) / sqrt(nrow(x)))
       data_sd <- as.data.frame(do.call("rbind", data_sd))
       names(data_sd) <- names(data_means)
       data$var <- data_sd
@@ -701,9 +731,12 @@ eeg_average.eeg_epochs <- function(data, cond_label = NULL, calc_var = NULL, ...
     evoked <- vector("list", length(cond_label))
     for (i in seq_along(cond_label)) {
       tmp_dat <- select_epochs(data, cond_label[[i]])
-      tmp_dat$signals <- split(tmp_dat$signals, tmp_dat$timings$time)
-      tmp_dat$signals <- lapply(tmp_dat$signals, colMeans)
-      evoked[[i]] <- as.data.frame(do.call("rbind", tmp_dat$signals))
+      tmp_dat$signals <- split(tmp_dat$signals,
+                               tmp_dat$timings$time)
+      tmp_dat$signals <- lapply(tmp_dat$signals,
+                                colMeans)
+      evoked[[i]] <- as.data.frame(do.call("rbind",
+                                           tmp_dat$signals))
       row.names(evoked[[i]]) <- NULL
       }
     data$signals <- evoked
