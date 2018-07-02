@@ -457,6 +457,8 @@ eeg_downsample.eeg_epochs <- function(data, q, ...) {
 
   epo_length <- length(unique(data$timings$time)) %% q
 
+  #ceiling(epo_length / q)
+
   if (epo_length > 0) {
     message("Dropping ", epo_length, " time points to make n of samples a multiple of q.")
     new_times <- head(unique(data$timings$time), -epo_length)
@@ -466,7 +468,7 @@ eeg_downsample.eeg_epochs <- function(data, q, ...) {
   data$signals <- split(data$signals, data$timings$epoch)
 
   new_times <- data$timings$time
-  new_length <- nrow(data$signals[[1]]) - epo_length
+  new_length <- nrow(data$signals[[1]]) #- epo_length
   data$signals <- lapply(data$signals, `[`, 1:new_length, )
   data$signals <- purrr::map_df(data$signals,
                              ~purrr::map_df(as.list(.),

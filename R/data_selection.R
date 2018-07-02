@@ -17,7 +17,6 @@ select_times <- function(data, ...) {
 
 #' @param time_lim A character vector of two numbers indicating the time range
 #'   to be selected e.g. c(min, max)
-#' @importFrom dplyr filter
 #' @return Data frame with only data from within the specified range.
 #' @export
 #' @describeIn select_times Default select times function
@@ -31,8 +30,8 @@ select_times.default <- function(data, time_lim = NULL, ...) {
     } else if (length(time_lim) == 2) {
       time_lim[1] <- data$time[which.min(abs(data$time - time_lim[1]))]
       time_lim[2] <- data$time[which.min(abs(data$time - time_lim[2]))]
-      #data <- data[data$time >= time_lim[1] & data$time <= time_lim[2], ]
-      data <- dplyr::filter(data, time >= time_lim[1] & time <= time_lim[2])
+      data <- data[data$time >= time_lim[1] & data$time <= time_lim[2], ]
+      #data <- dplyr::filter(data, time >= time_lim[1] & time <= time_lim[2])
     }
   } else {
     warning("No time column found.")
@@ -77,12 +76,12 @@ select_times.eeg_epochs <- function(data, time_lim = NULL,
   } else if (length(time_lim) == 2) {
     time_lim[1] <- data$timings$time[which.min(abs(data$timings$time - time_lim[1]))]
     time_lim[2] <- data$timings$time[which.min(abs(data$timings$time - time_lim[2]))]
-    sel_rows <- data$timings$time > time_lim[1] & data$timings$time < time_lim[2]
+    sel_rows <- data$timings$time >= time_lim[1] & data$timings$time <= time_lim[2]
   }
 
   data$signals <- data$signals[sel_rows, ]
   data$timings <- data$timings[sel_rows, ]
-  event_rows <- data$events$event_time > time_lim[1] & data$events$event_time < time_lim[2]
+  event_rows <- data$events$event_time >= time_lim[1] & data$events$event_time <= time_lim[2]
   data$events <- data$events[event_rows, ]
 
   if (!is.null(data$reference$ref_data)) {

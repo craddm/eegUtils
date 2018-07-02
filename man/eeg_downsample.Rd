@@ -29,7 +29,7 @@ moving events to the nearest time remaining after downsampling
 \itemize{
 \item \code{eeg_data}: Downsample eeg_data objects
 
-\item \code{eeg_epochs}: Downsample eeg_data objects
+\item \code{eeg_epochs}: Downsample eeg_epochs objects
 }}
 
 \author{
