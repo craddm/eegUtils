@@ -7,7 +7,6 @@
 #' @importFrom purrr map
 #' @import tidyr
 #' @import dplyr
-#' @import broom
 #' @noRd
 
 fit_glm_indiv <- function(data, dv, iv_1) {
@@ -21,7 +20,7 @@ fit_glm_indiv <- function(data, dv, iv_1) {
   data <- tidyr::nest(data, condition, amplitude)
   data <- dplyr::mutate(data,
                         fit = purrr::map(data,
-                                         ~broom::tidy(lm(as.name(dv) ~ as.name(iv_1),
-                                                         data = .))))
+                                         ~lm(as.name(dv) ~ as.name(iv_1),
+                                                         data = .)))
 
 }

@@ -1,7 +1,7 @@
 Package: eegUtils
 Type: Package
 Title: A collection of utilities for EEG analysis 
-Version: 0.2.0
+Version: 0.2.0.9000
 Date: 2018-06-18
 Authors@R: person("Matt", "Craddock", role = c("aut", "cre"), email = "matt@mattcraddock.com")
 Maintainer: Matt Craddock <matt@mattcraddock.com>
@@ -12,7 +12,6 @@ Encoding: UTF-8
 LazyData: true
 Imports:
   ggplot2,
-  broom,
   dplyr,
   scales,
   mgcv,
