@@ -62,7 +62,7 @@ Create an eeg_evoked object from eeg_epochs" />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">eegUtils</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.1.15.9003</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.2.0.9000</span>
       </span>
     </div>
 
@@ -134,7 +134,8 @@ Create an eeg_evoked object from eeg_epochs" />
     <pre class="usage"><span class='fu'>eeg_average</span>(<span class='no'>data</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for eeg_epochs</span>
-<span class='fu'>eeg_average</span>(<span class='no'>data</span>, <span class='kw'>cond_label</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
+<span class='fu'>eeg_average</span>(<span class='no'>data</span>, <span class='kw'>cond_label</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>calc_var</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -150,6 +151,10 @@ Create an eeg_evoked object from eeg_epochs" />
     <tr>
       <th>cond_label</th>
       <td><p>Only pick events that include a given label. Character vector.</p></td>
+    </tr>
+    <tr>
+      <th>calc_var</th>
+      <td><p>Can be used to calculate measures of variability around the average.</p></td>
     </tr>
     </table>
     

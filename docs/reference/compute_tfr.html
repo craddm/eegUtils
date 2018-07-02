@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Butterworth IIR filter — iir_filt • eegUtils</title>
+<title>Compute Time-Frequency representation of EEG data — compute_tfr • eegUtils</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -30,11 +30,11 @@
 
 
 
-<meta property="og:title" content="Butterworth IIR filter — iir_filt" />
+<meta property="og:title" content="Compute Time-Frequency representation of EEG data — compute_tfr" />
 
-<meta property="og:description" content="Construct a Butterworth IIR filter and filter input data. This uses
-signal::filt_filt, which filters the signal twice to - once forwards,
-then again backwards)." />
+<meta property="og:description" content="This function creates a time frequency represention of EEG time series data.
+Currently, the only available method is a Morlet wavelet transformation
+performed using convolution in the frequency domain." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -120,80 +120,67 @@ then again backwards)." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Butterworth IIR filter</h1>
-    <small class="dont-index">Source: <a href='https://github.com/craddm/eegUtils/blob/master/R/filtering.R'><code>R/filtering.R</code></a></small>
-    <div class="hidden name"><code>iir_filt.Rd</code></div>
+    <h1>Compute Time-Frequency representation of EEG data</h1>
+    <small class="dont-index">Source: <a href='https://github.com/craddm/eegUtils/blob/master/R/frequency_analysis.R'><code>R/frequency_analysis.R</code></a></small>
+    <div class="hidden name"><code>compute_tfr.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Construct a Butterworth IIR filter and filter input data. This uses
-<code>signal::filt_filt</code>, which filters the signal twice to - once forwards,
-then again backwards).</p>
+    <p>This function creates a time frequency represention of EEG time series data.
+Currently, the only available method is a Morlet wavelet transformation
+performed using convolution in the frequency domain.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>iir_filt</span>(<span class='no'>data</span>, <span class='no'>...</span>)
+    <pre class="usage"><span class='fu'>compute_tfr</span>(<span class='no'>data</span>, <span class='no'>...</span>)
 
-<span class='co'># S3 method for data.frame</span>
-<span class='fu'>iir_filt</span>(<span class='no'>data</span>, <span class='kw'>low_freq</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>high_freq</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>filter_order</span> <span class='kw'>=</span> <span class='fl'>4</span>, <span class='no'>srate</span>, <span class='kw'>silent</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)
-
-<span class='co'># S3 method for eeg_data</span>
-<span class='fu'>iir_filt</span>(<span class='no'>data</span>, <span class='kw'>low_freq</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>high_freq</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>filter_order</span> <span class='kw'>=</span> <span class='fl'>4</span>, <span class='kw'>silent</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)
+<span class='co'># S3 method for default</span>
+<span class='fu'>compute_tfr</span>(<span class='no'>data</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for eeg_epochs</span>
-<span class='fu'>iir_filt</span>(<span class='no'>data</span>, <span class='kw'>low_freq</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>high_freq</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>filter_order</span> <span class='kw'>=</span> <span class='fl'>4</span>, <span class='kw'>silent</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)</pre>
+<span class='fu'>compute_tfr</span>(<span class='no'>data</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"morlet"</span>, <span class='no'>foi</span>, <span class='no'>n_freq</span>,
+  <span class='kw'>n_cycles</span> <span class='kw'>=</span> <span class='fl'>7</span>, <span class='kw'>keep_trials</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>data</th>
-      <td><p>Data to be filtered.</p></td>
+      <td><p>An object of class <code>eeg_epochs</code>.</p></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>Parameters passed to S3 methods</p></td>
+      <td><p>Furthere TFR parameters</p></td>
     </tr>
     <tr>
-      <th>low_freq</th>
-      <td><p>Low passband edge.</p></td>
+      <th>method</th>
+      <td><p>Time-frequency analysis method. Defaults to "morlet".</p></td>
     </tr>
     <tr>
-      <th>high_freq</th>
-      <td><p>High passband edge.</p></td>
+      <th>foi</th>
+      <td><p>Frequencies of interest. Scalar or character vector of the lowest
+and highest frequency to resolve.</p></td>
     </tr>
     <tr>
-      <th>filter_order</th>
-      <td><p>Order of the Butterworth filter.</p></td>
+      <th>n_freq</th>
+      <td><p>Number of frequencies to be resolved.</p></td>
     </tr>
     <tr>
-      <th>srate</th>
-      <td><p>Sampling rate of the signal.</p></td>
+      <th>n_cycles</th>
+      <td><p>Number of cycles at each frequency.</p></td>
     </tr>
     <tr>
-      <th>silent</th>
-      <td><p>Turns off filtering messages.</p></td>
+      <th>keep_trials</th>
+      <td><p>Keep single trials or average over them before returning.</p></td>
     </tr>
     </table>
-    
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
-
-    <p>low_freq and high_freq are passband edges. Pass low freq or high freq alone
-to perform high-pass or low-pass filtering respectively. For band-pass or
-band-stop filters, pass both low_freq and high_freq.</p>
-<p>If low_freq &lt; high_freq, bandpass filtering is performed.</p>
-<p>If low_freq &gt; high_freq, bandstop filtering is performed.</p>
     
     <h2 class="hasAnchor" id="methods-by-class-"><a class="anchor" href="#methods-by-class-"></a>Methods (by class)</h2>
 
     <ul>
-<li><p><code>data.frame</code>: Filter a data frame</p></li>
-<li><p><code>eeg_data</code>: Filter eeg_data</p></li>
-<li><p><code>eeg_epochs</code>: Filter eeg_epochs</p></li>
+<li><p><code>default</code>: Default method for compute_tfr</p></li>
+<li><p><code>eeg_epochs</code>: Default method for compute_tfr</p></li>
 </ul>
     
 
@@ -203,8 +190,6 @@ band-stop filters, pass both low_freq and high_freq.</p>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
       
-      <li><a href="#details">Details</a></li>
-
       <li><a href="#methods-by-class-">Methods (by class)</a></li>
           </ul>
 

@@ -15,9 +15,11 @@ eeg_average(data, ...)
 
 \item{...}{Other arguments passed to the averaging functions}
 
-\item{cond_label}{Only pick events that include a given label. Character vector.}
+\item{cond_label}{Only pick events that include a given label. Character
+vector.}
 
-\item{calc_var}{Can be used to calculate measures of variability around the average.}
+\item{calc_var}{Can be used to calculate measures of variability around the
+average.}
 }
 \description{
 Calculate averages (e.g. ERPs)

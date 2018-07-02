@@ -62,7 +62,7 @@ Currently concatenates across epochs. Returns uV^2 / Hz" />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">eegUtils</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.1.15.9003</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.2.0.9000</span>
       </span>
     </div>
 
@@ -135,7 +135,11 @@ Currently concatenates across epochs. Returns uV^2 / Hz</p>
 
 <span class='co'># S3 method for eeg_data</span>
 <span class='fu'>compute_psd</span>(<span class='no'>data</span>, <span class='kw'>seg_length</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>noverlap</span> <span class='kw'>=</span> <span class='fl'>0</span>,
-  <span class='kw'>n_fft</span> <span class='kw'>=</span> <span class='fl'>256</span>, <span class='kw'>srate</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"Welch"</span>)</pre>
+  <span class='kw'>n_fft</span> <span class='kw'>=</span> <span class='fl'>256</span>, <span class='kw'>srate</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"Welch"</span>)
+
+<span class='co'># S3 method for eeg_epochs</span>
+<span class='fu'>compute_psd</span>(<span class='no'>data</span>, <span class='kw'>seg_length</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>noverlap</span> <span class='kw'>=</span> <span class='fl'>0</span>,
+  <span class='kw'>n_fft</span> <span class='kw'>=</span> <span class='fl'>256</span>, <span class='kw'>srate</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"Welch"</span>, <span class='kw'>keep_trials</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -168,12 +172,17 @@ Currently concatenates across epochs. Returns uV^2 / Hz</p>
       <th>method</th>
       <td><p>Defaults to "Welch". No other method currently implemented.</p></td>
     </tr>
+    <tr>
+      <th>keep_trials</th>
+      <td><p>Include FFT for every trial in output</p></td>
+    </tr>
     </table>
     
     <h2 class="hasAnchor" id="methods-by-class-"><a class="anchor" href="#methods-by-class-"></a>Methods (by class)</h2>
 
     <ul>
 <li><p><code>eeg_data</code>: Compute PSD for an <code>eeg_data</code> object</p></li>
+<li><p><code>eeg_epochs</code>: Compute PSD for an <code>eeg_epochs</code> object</p></li>
 </ul>
     
 

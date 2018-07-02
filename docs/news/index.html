@@ -58,7 +58,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">eegUtils</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.1.15.9003</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.2.0.9000</span>
       </span>
     </div>
 
@@ -119,12 +119,36 @@
       <small>Source: <a href='https://github.com/craddm/eegUtils/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
-    <div id="eegutils-0-1-15-9003" class="section level1">
+    <div id="eegutils-0-2-0-9000" class="section level1">
 <h1 class="page-header">
-<a href="#eegutils-0-1-15-9003" class="anchor"></a>eegUtils 0.1.15.9003</h1>
+<a href="#eegutils-0-2-0-9000" class="anchor"></a>eegUtils 0.2.0.9000</h1>
 <div id="function-changes" class="section level3">
 <h3 class="hasAnchor">
 <a href="#function-changes" class="anchor"></a>Function changes</h3>
+</div>
+<div id="internal-changes-bug-fixes" class="section level3">
+<h3 class="hasAnchor">
+<a href="#internal-changes-bug-fixes" class="anchor"></a>Internal changes/ bug fixes</h3>
+<ul>
+<li>
+<code><a href="../reference/reref_eeg.html">reref_eeg()</a></code> correctly excludes multiple named electrodes (i.e. passed as characters rather than numbers), where it previously silently failed.</li>
+<li>
+<code>tf_morlet</code> recoded to be called internally</li>
+<li>
+<code>compute_psd</code> recoded to call <code>welch_fft()</code> in order to support possibility of different FFT methods.</li>
+<li>
+<code>welch_fft()</code> internal function added</li>
+<li>
+<code><a href="../reference/eeg_downsample.html">eeg_downsample()</a></code> now makes sure epoch length is a multiple of the downsampling factor to avoid problems with timing jitter</li>
+</ul>
+</div>
+</div>
+    <div id="eegutils-0-2-0" class="section level1">
+<h1 class="page-header">
+<a href="#eegutils-0-2-0" class="anchor"></a>eegUtils 0.2.0</h1>
+<div id="function-changes-1" class="section level3">
+<h3 class="hasAnchor">
+<a href="#function-changes-1" class="anchor"></a>Function changes</h3>
 <ul>
 <li>
 <code><a href="../reference/as.data.frame.eeg_epochs.html">as.data.frame.eeg_epochs()</a></code> now has a <code>cond_labels</code> parameter to select epochs with specific events and add the event label as an additional column.</li>
@@ -136,13 +160,11 @@
 <code><a href="../reference/reref_eeg.html">reref_eeg()</a></code> now removes reference channels from the data.</li>
 <li>
 <code><a href="../reference/eeg_FASTER.html">eeg_FASTER()</a></code> - FASTER artefact rejection method now (mostly) implemented (<em>experimental</em>).</li>
-<li>
-</li>
 </ul>
 </div>
-<div id="internal-changes-bug-fixes" class="section level3">
+<div id="internal-changes-bug-fixes-1" class="section level3">
 <h3 class="hasAnchor">
-<a href="#internal-changes-bug-fixes" class="anchor"></a>Internal changes / bug fixes</h3>
+<a href="#internal-changes-bug-fixes-1" class="anchor"></a>Internal changes / bug fixes</h3>
 <ul>
 <li>
 <code><a href="../reference/plot_butterfly.html">plot_butterfly()</a></code> some <code>dplyr</code> use removed.</li>
@@ -171,9 +193,9 @@
     <div id="eegutils-0-1-15" class="section level1">
 <h1 class="page-header">
 <a href="#eegutils-0-1-15" class="anchor"></a>eegUtils 0.1.15</h1>
-<div id="function-changes-1" class="section level3">
+<div id="function-changes-2" class="section level3">
 <h3 class="hasAnchor">
-<a href="#function-changes-1" class="anchor"></a>Function changes</h3>
+<a href="#function-changes-2" class="anchor"></a>Function changes</h3>
 <ul>
 <li>
 <code><a href="../reference/eeg_evoked.html">eeg_evoked()</a></code> class introduced to hold ERPS</li>
@@ -185,9 +207,9 @@
 <code><a href="../reference/as.data.frame.eeg_evoked.html">as.data.frame.eeg_evoked()</a></code> introduced to handle conversion of eeg_evoked objects to data frames.</li>
 </ul>
 </div>
-<div id="internal-changes-bug-fixes-1" class="section level3">
+<div id="internal-changes-bug-fixes-2" class="section level3">
 <h3 class="hasAnchor">
-<a href="#internal-changes-bug-fixes-1" class="anchor"></a>Internal changes / bug fixes</h3>
+<a href="#internal-changes-bug-fixes-2" class="anchor"></a>Internal changes / bug fixes</h3>
 <ul>
 <li>
 <code><a href="../reference/compute_psd.html">compute_psd()</a></code> function development, converted to S3method.</li>
@@ -211,9 +233,9 @@
     <div id="eegutils-0-1-14" class="section level1">
 <h1 class="page-header">
 <a href="#eegutils-0-1-14" class="anchor"></a>eegUtils 0.1.14</h1>
-<div id="function-changes-2" class="section level3">
+<div id="function-changes-3" class="section level3">
 <h3 class="hasAnchor">
-<a href="#function-changes-2" class="anchor"></a>Function changes</h3>
+<a href="#function-changes-3" class="anchor"></a>Function changes</h3>
 <ul>
 <li>
 <code><a href="../reference/eeg_downsample.html">eeg_downsample()</a></code> function added to downsample EEG data by an integer factor.</li>
@@ -229,9 +251,9 @@
 <code><a href="../reference/eeg_combine.html">eeg_combine()</a></code> - combine multiple <code>eeg_data</code> or <code>eeg_epochs</code> objects into one</li>
 </ul>
 </div>
-<div id="internal-changes-bug-fixes-2" class="section level3">
+<div id="internal-changes-bug-fixes-3" class="section level3">
 <h3 class="hasAnchor">
-<a href="#internal-changes-bug-fixes-2" class="anchor"></a>Internal changes/ bug fixes</h3>
+<a href="#internal-changes-bug-fixes-3" class="anchor"></a>Internal changes/ bug fixes</h3>
 <ul>
 <li>
 <code>eeg_epochs()</code> now also handles downsampled data appropriately.</li>
@@ -249,9 +271,9 @@
     <div id="eegutils-0-1-13" class="section level1">
 <h1 class="page-header">
 <a href="#eegutils-0-1-13" class="anchor"></a>eegUtils 0.1.13</h1>
-<div id="function-changes-3" class="section level3">
+<div id="function-changes-4" class="section level3">
 <h3 class="hasAnchor">
-<a href="#function-changes-3" class="anchor"></a>Function changes</h3>
+<a href="#function-changes-4" class="anchor"></a>Function changes</h3>
 <ul>
 <li>
 <code><a href="../reference/interp_elecs.html">interp_elecs()</a></code> function to perform spherical spline interpolation of individual electrodes</li>
@@ -265,9 +287,9 @@
     <div id="eegutils-0-1-12" class="section level1">
 <h1 class="page-header">
 <a href="#eegutils-0-1-12" class="anchor"></a>eegUtils 0.1.12</h1>
-<div id="function-changes-4" class="section level3">
+<div id="function-changes-5" class="section level3">
 <h3 class="hasAnchor">
-<a href="#function-changes-4" class="anchor"></a>Function changes</h3>
+<a href="#function-changes-5" class="anchor"></a>Function changes</h3>
 <ul>
 <li>
 <code><a href="../reference/iir_filt.html">iir_filt()</a></code> now also filters reference channels</li>
@@ -301,7 +323,8 @@
     <div id="tocnav">
       <h2>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
-        <li><a href="#eegutils-0-1-15-9003">0.1.15.9003</a></li>
+        <li><a href="#eegutils-0-2-0-9000">0.2.0.9000</a></li>
+        <li><a href="#eegutils-0-2-0">0.2.0</a></li>
         <li><a href="#eegutils-0-1-15">0.1.15</a></li>
         <li><a href="#eegutils-0-1-14">0.1.14</a></li>
         <li><a href="#eegutils-0-1-13">0.1.13</a></li>
