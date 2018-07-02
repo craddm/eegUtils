@@ -38,16 +38,16 @@ erp_scalp <- function(data,
                       show_guide = TRUE,
                       montage = NULL) {
 
-  if (is.eeg_data(data)) {
+  if (is.eeg_epochs(data)) {
     data <- as.data.frame(data, long = TRUE)
   }
 
   if (is.null(color)) {
-    data <- group_by(data, electrode, time)
-    data <- summarise(data, amplitude = mean(amplitude))
+    data <- dplyr::group_by(data, electrode, time)
+    data <- dplyr::summarise(data, amplitude = mean(amplitude))
   } else {
-    data <- group_by_(data, electrode, time, as.name(color))
-    data <- summarise(data, amplitude = mean(amplitude))
+    data <- dplyr::group_by_(data, electrode, time, as.name(color))
+    data <- dplyr::summarise(data, amplitude = mean(amplitude))
   }
 
   data <- as.data.frame(data)

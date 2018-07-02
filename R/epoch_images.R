@@ -75,9 +75,10 @@ erp_image <- function(data, electrode = "Cz", smoothing = 10, clim = NULL) {
 #' @param clim Character vector of min and max values of plotting colour range.
 #'   e.g. c(-5,5). Defaults to min and max.
 #' @import ggplot2
+#' @importFrom tidyr gather
 #' @import dplyr
 #' @importFrom scales squish
-#' @author Matt Craddock, \email{matt@mattcraddock.com}
+#' @author Matt Craddock, \email{matt@@mattcraddock.com}
 #' @export
 
 erp_raster <- function(data, anat_order = TRUE, time_lim = NULL, clim = NULL) {

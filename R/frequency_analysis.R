@@ -55,48 +55,6 @@ compute_psd.eeg_data <- function(data,
   }
 
   final_output
-
-  # # split data into segments
-  # if (seg_length < nrow(data$signals)) {
-  #   data_segs <- lapply(data$signals, split_vec, seg_length, noverlap)
-  # } else {
-  #   data_segs <- data
-  # }
-  #
-  # # Hamming window.
-  # win <- .54 - (1 - .54) * cos(2 * pi * seq(0, 1, by = 1 / (n_fft - 1)))
-  #
-  # #do windowing and zero padding if necessary, then FFT
-  # if (n_fft > seg_length) {
-  #   zero_pad <- rep(0, n_fft - seg_length)
-  #   data_fft <- lapply(data_segs,
-  #                      function(x) lapply(x,
-  #                                         function(y) fft(c(y * win, zero_pad))))
-  # } else if (n_fft == seg_length) {
-  #   data_fft <- lapply(data_segs,
-  #                      function(x) lapply(x,
-  #                                         function(y) fft(y * win)))
-  # }
-  #
-  # # Normalise the window
-  # U <- c(t(win) %*% win)
-  #
-  # final_out <- lapply(data_fft,
-  #                     function(x) sapply(x, function(y) abs(y * Conj(y)) / U))
-  #
-  # # Normalize by sampling rate
-  # if (is.null(srate)) {
-  #   final_out <- rowMeans(as.data.frame(final_out)) / (2 * pi)
-  #   freqs <- seq(0, seg_length / 2) / (seg_length)
-  #   } else {
-  #     final_out <- as.data.frame(lapply(final_out, rowMeans)) / srate
-  #     freqs <- seq(0, n_fft / 2) / (n_fft) * srate
-  #     }
-  #
-  # #select first half of spectrum and double amps, output is power - uV^2 / Hz
-  # final_out <- final_out[1:(n_fft / 2 + 1), ]
-  # final_out[2:(n_fft / 2 + 1), ] <- (final_out[2:(n_fft / 2 + 1), ] * 2) ^ 2
-  # data.frame(final_out, frequency = freqs)
 }
 
 #' @param keep_trials Include FFT for every trial in output
@@ -159,6 +117,7 @@ compute_psd.eeg_epochs <- function(data,
 #' @param noverlap overlap between segments
 #' @param n_sig number of samples total
 #' @param srate Sampling rate of the data
+#' @importFrom stats fft
 #' @noRd
 
 welch_fft <- function(data,
@@ -311,6 +270,7 @@ fft_n <- function(signal, n) {
 #' @param n points for FFT
 #' @param wavtime time points
 #' @param srate Sampling rate of the signal
+#' @importFrom stats mvfft
 #' @noRd
 
 conv_mor <- function(morlet_fam, signal, n, wavtime, srate) {

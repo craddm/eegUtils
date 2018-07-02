@@ -37,9 +37,13 @@ iir_filt.default <- function(data, ...) {
 #' @describeIn iir_filt Filter a data frame
 #'
 
-iir_filt.data.frame <- function(data, low_freq = NULL, high_freq = NULL,
-                                filter_order = 4, srate,
-                                silent = FALSE, ...) {
+iir_filt.data.frame <- function(data,
+                                low_freq = NULL,
+                                high_freq = NULL,
+                                filter_order = 4,
+                                srate,
+                                silent = FALSE,
+                                ...) {
   if (missing(srate)) {
     stop("sampling rate must be supplied.")
   }
@@ -55,15 +59,23 @@ iir_filt.data.frame <- function(data, low_freq = NULL, high_freq = NULL,
 #' @export
 #' @describeIn iir_filt Filter eeg_data
 
-iir_filt.eeg_data <- function(data, low_freq = NULL, high_freq = NULL,
-                              filter_order = 4, silent = FALSE, ...) {
+iir_filt.eeg_data <- function(data,
+                              low_freq = NULL,
+                              high_freq = NULL,
+                              filter_order = 4,
+                              silent = FALSE,
+                              ...) {
 
   if (!is.null(data$reference)) {
     data$signals["ref_data"] <- data$reference$ref_data
   }
 
-  data$signals <- run_iir(data$signals, low_freq, high_freq, filter_order,
-                          data$srate, silent = silent)
+  data$signals <- run_iir(data$signals,
+                          low_freq,
+                          high_freq,
+                          filter_order,
+                          data$srate,
+                          silent = silent)
 
   if (!is.null(data$reference)) {
     data$reference$ref_data <- data$signals["ref_data"]
@@ -75,17 +87,24 @@ iir_filt.eeg_data <- function(data, low_freq = NULL, high_freq = NULL,
 
 #' @export
 #' @describeIn iir_filt Filter eeg_epochs
-iir_filt.eeg_epochs <- function(data, low_freq = NULL, high_freq = NULL,
+iir_filt.eeg_epochs <- function(data,
+                                low_freq = NULL,
+                                high_freq = NULL,
                                 filter_order = 4,
-                                silent = FALSE, ...) {
+                                silent = FALSE,
+                                ...) {
 
   if (!is.null(data$reference)) {
     data$signals["ref_data"] <- data$reference$ref_data
   }
 
   data$signals$epoch <- data$timings$epoch
-  data$signals <- run_iir(data$signals, low_freq, high_freq, filter_order,
-                          data$srate, silent = silent)
+  data$signals <- run_iir(data$signals,
+                          low_freq,
+                          high_freq,
+                          filter_order,
+                          data$srate,
+                          silent = silent)
   data$signals["epoch"] <- NULL
 
   if (!is.null(data$reference)) {
@@ -110,8 +129,12 @@ iir_filt.eeg_epochs <- function(data, low_freq = NULL, high_freq = NULL,
 #' @importFrom signal filtfilt butter
 #' @noRd
 
-run_iir <- function(data, low_freq = NULL, high_freq = NULL, filter_order,
-                    srate, silent = FALSE) {
+run_iir <- function(data,
+                    low_freq = NULL,
+                    high_freq = NULL,
+                    filter_order,
+                    srate,
+                    silent = FALSE) {
 
   if (filter_order < 2 || filter_order > 20) {
     stop("Filter order should be between 2 and 20.")
