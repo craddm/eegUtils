@@ -77,14 +77,21 @@ compute_psd.eeg_epochs <- function(data,
     stop("seg_length cannot be greater than n_fft")
   }
 
+
+  data$signals <- split(data$signals, data$timings$epoch)
+  n_times <- nrow(data$signals[[1]])
+
+  if (n_times < seg_length) {
+    seg_length <- n_times
+  }
+
   if (noverlap == 0) {
     noverlap <- seg_length %/% 8
   } else if (noverlap >= seg_length) {
     stop("noverlap should not be larger than seg_length.")
   }
 
-  data$signals <- split(data$signals, data$timings$epoch)
-  n_times <- length(unique(data$timings$time))
+
 
   if (method == "Welch") {
     final_output <- lapply(data$signals, function(x)
@@ -133,40 +140,64 @@ welch_fft <- function(data,
                         split_vec,
                         seg_length,
                         noverlap)
+    n_segs <- length(data_segs)
+    # this splits the data into a list of ncol elements; each list element is
+    # also a list containing n_segs elements - consider recoding this to combine segments into
   } else {
     data_segs <- data
+    n_segs <- 1
   }
 
   # Hamming window.
-  win <- .54 - (1 - .54) * cos(2 * pi * seq(0, 1, by = 1 / (n_fft - 1)))
-
-  #do windowing and zero padding if necessary, then FFT
-  if (n_fft > seg_length) {
-    zero_pad <- numeric(n_fft - seg_length)
-    data_fft <- lapply(data_segs,
-                       function(x) lapply(x,
-                                          function(y) fft(c(y * win, zero_pad))))
-  } else if (n_fft == seg_length){
-    data_fft <- lapply(data_segs,
-                       function(x) lapply(x,
-                                          function(y) fft(y * win)))
-  }
+  win <- .54 - (1 - .54) * cos(2 * pi * seq(0, 1, by = 1 / (seg_length - 1)))
 
   # Normalise the window
   U <- c(t(win) %*% win)
 
-  final_out <- lapply(data_fft,
-                      function(x) sapply(x,
-                                         function(y) abs(y * Conj(y)) / U))
-
-  # Normalize by sampling rate
-  if (is.null(srate)) {
-    final_out <- rowMeans(as.data.frame(final_out)) / (2 * pi)
-    freqs <- seq(0, seg_length / 2) / (seg_length)
+  #do windowing and zero padding if necessary, then FFT
+  if (n_segs == 1) {
+    data_segs <- sweep(data_segs, 1, win, "*")
+    if (n_fft > seg_length) {
+      data_segs <- apply(data_segs, 2, function(x) c(x,
+                                                     numeric(n_fft - seg_length)))
+    }
+    data_fft <- mvfft(data_segs)
+    final_out <- apply(data_fft, 2,  function(x) abs(x * Conj(x)) / U)
+    # Normalize by sampling rate
+    if (is.null(srate)) {
+      final_out <- sweep(final_out, 1, (2 * pi), "/")
+      freqs <- seq(0, seg_length / 2) / (seg_length)
+    } else {
+      #final_out <- as.data.frame(final_out) / srate
+      final_out <- sweep(final_out, 1, srate, "/")
+      freqs <- seq(0, n_fft / 2) / (n_fft) * srate
+    }
   } else {
-    final_out <- as.data.frame(lapply(final_out, rowMeans)) / srate
-    freqs <- seq(0, n_fft / 2) / (n_fft) * srate
+    data_segs <- lapply(data_segs,
+                        function(x) lapply(x,
+                                           function(y) y * win))
+    if (n_fft > seg_length) {
+      data_segs <- lapply(data_segs,
+                          function(x) apply(data_segs, 2,
+                                            function(x) c(x,
+                                                          numeric(n_fft - seg_length))))
+      }
+    data_fft <- lapply(data_segs, function(x) lapply(x, fft))
+
+    final_out <- lapply(data_fft,
+                        function(x) sapply(x,
+                                           function(y) abs(y * Conj(y)) / U))
+    # Normalize by sampling rate
+    if (is.null(srate)) {
+      final_out <- rowMeans(as.data.frame(final_out)) / (2 * pi)
+      freqs <- seq(0, seg_length / 2) / (seg_length)
+    } else {
+      final_out <- as.data.frame(lapply(final_out, rowMeans)) / srate
+      freqs <- seq(0, n_fft / 2) / (n_fft) * srate
+    }
   }
+
+
 
   #select first half of spectrum and double amps, output is power - uV^2 / Hz
   final_out <- final_out[1:(n_fft / 2 + 1), , drop = FALSE]

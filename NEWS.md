@@ -1,6 +1,7 @@
 # eegUtils 0.2.0.9000
 
 ### Function changes
+- `topoplot()` added highlights parameter to allow specific electrodes to be highlighted.
 
 ### Internal changes/ bug fixes
 - `reref_eeg()` correctly excludes multiple named electrodes (i.e. passed as characters rather than numbers), where it previously silently failed.
