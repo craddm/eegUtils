@@ -66,6 +66,7 @@ topoplot.default <- function(data, ...) {
 #' @param montage Name of an existing montage set. Defaults to NULL; (currently
 #'   only 'biosemi64alpha' available other than default 10/20 system)
 #' @param colourmap Deprecated, use palette instead.
+#' @param highlights Electrodes to highlight (in white)
 #'
 #' @import ggplot2
 #' @import dplyr
@@ -83,7 +84,7 @@ topoplot.data.frame <- function(data, time_lim = NULL, limits = NULL,
                              grid_res = 67, palette = "RdBu",
                              interp_limit = "skirt", contour = TRUE,
                              chan_marker = "point", quantity = "amplitude",
-                             montage = NULL, colourmap, ...) {
+                             montage = NULL, colourmap, highlights = NULL, ...) {
 
   if (!missing(colourmap)) {
     warning("Argument colourmap is deprecated, please use palette instead.",
@@ -127,6 +128,9 @@ topoplot.data.frame <- function(data, time_lim = NULL, limits = NULL,
 
   # Average over all timepoints ----------------------------
 
+  x <- NULL
+  y <- NULL
+  electrode <- NULL
   data <- dplyr::summarise(dplyr::group_by(data, x, y, electrode),
                            z = mean(!!rlang::parse_quosure(quantity)))
 
@@ -310,6 +314,19 @@ topoplot.data.frame <- function(data, time_lim = NULL, limits = NULL,
                  size = rel(4))
     }
 
+  if (!is.null(highlights)) {
+
+    high_x <- scaled_x[data$electrode %in% highlights]
+    high_y <- scaled_y[data$electrode %in% highlights]
+    topo <- topo +
+      annotate("point",
+               x = high_x,
+               y = high_y,
+               colour = "white",
+               size = rel(2))
+
+  }
+
   # Set the palette and scale limits ------------------------
   topo <- set_palette(topo, palette, limits)
   topo
@@ -323,12 +340,19 @@ topoplot.data.frame <- function(data, time_lim = NULL, limits = NULL,
 #' @describeIn topoplot Topographical plotting of \code{eeg_data} objects.
 #' @export
 
-topoplot.eeg_data <- function(data, time_lim = NULL, limits = NULL,
-                              chanLocs = NULL, method = "Biharmonic", r = NULL,
-                              grid_res = 67, palette = "RdBu",
-                              interp_limit = "skirt", contour = TRUE,
-                              chan_marker = "point", quantity = "amplitude",
-                              montage = NULL, ...) {
+topoplot.eeg_data <- function(data, time_lim = NULL,
+                              limits = NULL,
+                              chanLocs = NULL,
+                              method = "Biharmonic",
+                              r = NULL,
+                              grid_res = 67,
+                              palette = "RdBu",
+                              interp_limit = "skirt",
+                              contour = TRUE,
+                              chan_marker = "point",
+                              quantity = "amplitude",
+                              montage = NULL, highlights = NULL,
+                              ...) {
 
   if (!is.null(data$chan_info)) {
     chanLocs <- data$chan_info
@@ -347,7 +371,7 @@ topoplot.eeg_data <- function(data, time_lim = NULL, limits = NULL,
            grid_res = grid_res, palette = palette,
            interp_limit = interp_limit, contour = contour,
            chan_marker = chan_marker, quantity = quantity,
-           montage = montage, passed = TRUE)
+           montage = montage, highlights = highlights, passed = TRUE)
 }
 
 
@@ -358,12 +382,21 @@ topoplot.eeg_data <- function(data, time_lim = NULL, limits = NULL,
 #' @describeIn topoplot Topographical plotting of \code{eeg_epochs} objects.
 #' @export
 
-topoplot.eeg_epochs <- function(data, time_lim = NULL, limits = NULL,
-                              chanLocs = NULL, method = "Biharmonic", r = NULL,
-                              grid_res = 67, palette = "RdBu",
-                              interp_limit = "skirt", contour = TRUE,
-                              chan_marker = "point", quantity = "amplitude",
-                              montage = NULL, ...) {
+topoplot.eeg_epochs <- function(data,
+                                time_lim = NULL,
+                                limits = NULL,
+                                chanLocs = NULL,
+                                method = "Biharmonic",
+                                r = NULL,
+                                grid_res = 67,
+                                palette = "RdBu",
+                                interp_limit = "skirt",
+                                contour = TRUE,
+                                chan_marker = "point",
+                                quantity = "amplitude",
+                                montage = NULL,
+                                highlights = NULL,
+                                ...) {
 
   if (!is.null(data$chan_info)) {
     chanLocs <- data$chan_info
@@ -373,29 +406,48 @@ topoplot.eeg_epochs <- function(data, time_lim = NULL, limits = NULL,
   data <- eeg_average(data)
 
   data <- as.data.frame(data, long = TRUE)
-  topoplot(data, time_lim = time_lim, limits = limits,
-           chanLocs = chanLocs, method = method, r = r,
-           grid_res = grid_res, palette = palette,
-           interp_limit = interp_limit, contour = contour,
-           chan_marker = chan_marker, quantity = quantity,
-           montage = montage, passed = TRUE)
+  topoplot(data,
+           time_lim = time_lim,
+           limits = limits,
+           chanLocs = chanLocs,
+           method = method,
+           r = r,
+           grid_res = grid_res,
+           palette = palette,
+           interp_limit = interp_limit,
+           contour = contour,
+           chan_marker = chan_marker,
+           quantity = quantity,
+           montage = montage,
+           highlights = highlights, passed = TRUE)
 }
 
 
 #' @param comp Component to plot (numeric)
 #' @describeIn topoplot Topographical plot for \code{eeg_ICA} objects
 #' @export
-topoplot.eeg_ICA <- function(data, time_lim = NULL, limits = NULL,
-                             chanLocs = NULL, method = "Biharmonic", r = NULL,
-                             grid_res = 67, palette = "RdBu",
-                             interp_limit = "skirt", contour = TRUE,
-                             chan_marker = "point", quantity = "amplitude",
-                             montage = NULL, colourmap, comp, ...) {
+topoplot.eeg_ICA <- function(data,
+                             time_lim = NULL,
+                             limits = NULL,
+                             chanLocs = NULL,
+                             method = "Biharmonic",
+                             r = NULL,
+                             grid_res = 67,
+                             palette = "RdBu",
+                             interp_limit = "skirt",
+                             contour = TRUE,
+                             chan_marker = "point",
+                             quantity = "amplitude",
+                             montage = NULL,
+                             colourmap,
+                             comp,
+                             highlights = NULL,
+                             ...) {
   if (missing(comp)) {
     stop("Component number must be specified for eeg_ICA objects.")
   }
   chan_info <- data$chan_info
-  data <- data.frame(amplitude = scale(data$mixing_matrix[, comp]),
+  data <- data.frame(amplitude = data$mixing_matrix[, comp],
                      electrode = data$mixing_matrix$electrode)
   topoplot(data, chanLocs = chan_info)
 
@@ -409,7 +461,6 @@ topoplot.eeg_ICA <- function(data, time_lim = NULL, limits = NULL,
 #' @import ggplot2
 #' @importFrom viridis scale_fill_viridis
 #' @noRd
-
 
 set_palette <- function(topo, palette, limits = NULL) {
 
