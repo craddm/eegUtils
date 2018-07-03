@@ -78,23 +78,29 @@ run_ICA.eeg_epochs <- function (data, method = "sobi", scaling = TRUE, ...) {
   mixing_matrix <- data.frame(MASS::ginv(Q, tol = 0) %*% V)
   unmixing_matrix <- data.frame(MASS::ginv(V, tol = 0))
 
-  # if (scaling) {
-  #   # rms = sqrt(sum(mean(x^2)))
-  #   m_means <- unmixing_matrix(S)
-  # }
+  dim(amp_matrix) <- c(n_channels, n_times * n_epochs)
+  S <- V %*% amp_matrix
+  S <- t(S)
 
+  if (scaling) {
+    mean_cols <- colMeans(mixing_matrix)
+    rms_cols <- apply(mixing_matrix, 2, function(x) sqrt(sum(mean(x ^ 2))))
+    mixing_matrix <- sweep(mixing_matrix, 2, mean_cols, "-")
+    mixing_matrix <- sweep(mixing_matrix, 2, rms_cols, "/")
+    S_cols <- colMeans(S)
+    rms_S <- apply(S, 2, function(x) sqrt(sum(mean(x ^ 2))))
+    S <- sweep(S, 2, S_cols, "-")
+    S <- sweep(S, 2, rms_S, "/")
+  }
 
   names(mixing_matrix) <- 1:n_channels
   mixing_matrix$electrode <- names(data$signals)
   names(unmixing_matrix) <- 1:n_channels
   unmixing_matrix$electrode <- names(data$signals)
 
-  dim(amp_matrix) <- c(n_channels, n_times * n_epochs)
-  S <- V %*% amp_matrix
-
   ica_obj <- list("mixing_matrix" = mixing_matrix,
                   "unmixing_matrix" = unmixing_matrix,
-                  "comp_activations" = t(S),
+                  "comp_activations" = S,
                   "timings" = data$timings,
                   "events" = data$events,
                   "chan_info" = data$chan_info,
