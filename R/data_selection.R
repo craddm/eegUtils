@@ -86,11 +86,11 @@ select_times.eeg_epochs <- function(data, time_lim = NULL,
 
   data$signals <- data$signals[sel_rows, ]
   data$timings <- data$timings[sel_rows, ]
-  event_rows <- data$events$event_time >= time_lim[1] & data$events$event_time <= time_lim[2]
+  event_rows <- data$events$time >= time_lim[1] & data$events$time <= time_lim[2]
   data$events <- data$events[event_rows, ]
 
   if (!is.null(data$reference$ref_data)) {
-    data$reference$ref_data <- data$reference$ref_data[data$timings$sample]
+    data$reference$ref_data <- data$reference$ref_data[sel_rows]
   }
 
   if (df_out) {

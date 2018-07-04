@@ -31,3 +31,12 @@ test_that("Removing baseline works", {
   test_bl <- rm_baseline(test_epo, c(-.1, 0))
 
 })
+
+test_that("Downsampling output is sensible", {
+
+  test_epo <- epoch_data(test_data, 255)
+  test_reref <- reref_eeg(test_epo)
+  test_ds <- eeg_downsample(test_reref, 2)
+  expect_equal(nrow(test_ds$signals), nrow(test_ds$timings))
+  expect_equal(nrow(test_ds$signals), length(test_ds$reference$ref_data))
+})

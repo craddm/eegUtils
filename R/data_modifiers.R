@@ -475,11 +475,6 @@ eeg_downsample.eeg_epochs <- function(data, q, ...) {
   message(paste0("Downsampling from ", data$srate, "Hz to ",
                  data$srate / q, "Hz."))
 
-  # make sure any saved reference gets downsampled too.
-  if (!is.null(data$reference)) {
-    data$signals["ref_data"] <- data$reference$ref_data
-  }
-
   epo_length <- length(unique(data$timings$time)) %% q
 
   #ceiling(epo_length / q)
@@ -488,6 +483,11 @@ eeg_downsample.eeg_epochs <- function(data, q, ...) {
     message("Dropping ", epo_length, " time points to make n of samples a multiple of q.")
     new_times <- head(unique(data$timings$time), -epo_length)
     data <- select_times(data, time_lim = c(min(new_times), max(new_times)))
+  }
+
+  # make sure any saved reference gets downsampled too.
+  if (!is.null(data$reference)) {
+    data$signals["ref_data"] <- data$reference$ref_data
   }
 
   data$signals <- split(data$signals, data$timings$epoch)
@@ -514,10 +514,12 @@ eeg_downsample.eeg_epochs <- function(data, q, ...) {
 
   # The event table also needs to be adjusted. Note that this inevitably jitters
   # event timings by up to q/2 sampling points.
+  data_samps <- sort(unique(data$timings$sample))
+  #samp_times <-
   nearest_samps <- findInterval(data$events$event_onset,
-                                data$timings$sample)
-  data$events$event_onset <- data$timings$sample[nearest_samps]
-  data$events$event_time <- data$timings$time[nearest_samps]
+                                data_samps)
+  data$events$event_onset <- data_samps[nearest_samps]
+  data$events$event_time <- 1 / (data$srate * q) * data$events$event_onset
   data
 }
 

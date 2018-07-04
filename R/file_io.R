@@ -63,8 +63,8 @@ import_raw <- function(file_name, file_path = NULL, chan_nos = NULL) {
                      continuous = TRUE)
   } else if (file_type == "cnt") {
     data <- import_cnt(file_name)
-    sigs <- tibble::as_tibble(t(data$chan_data))
-    names(sigs) <- data$chan_info$chan_name
+    sigs <- tibble::tibble(t(data$chan_data))
+    names(sigs) <- data$chan_info$electrode
     srate <- data$head_info$samp_rate
     timings <- tibble::tibble(sample = 1:dim(sigs)[[1]])
     timings$time <- (timings$sample - 1) / srate
@@ -72,7 +72,7 @@ import_raw <- function(file_name, file_path = NULL, chan_nos = NULL) {
                                   event_time = (data$event_list$offset + 1) / srate,
                                   event_type = data$event_list$event_type)
     data <- eeg_data(data = sigs, srate = srate,
-                     chan_info = data$chan_info[1:4],
+                     chan_info = data$chan_info,
                      events = event_table, timings = timings,
                      continuous = TRUE)
     } else{
@@ -116,22 +116,25 @@ import_cnt <- function(file_name) {
                              n = 1, endian = "little") # event table
   pos <- seek(cnt_file, 900)
 
-  data_info <- tibble::tibble(n_events,
-                              n_channels,
-                              samp_rate,
-                              event_table_pos)
+  data_info <- data.frame(n_events,
+                          n_channels,
+                          samp_rate,
+                          event_table_pos)
 
-  chan_df <- tibble::tibble(chan_name = character(n_channels),
-                            chan_no = numeric(n_channels),
-                            x = numeric(n_channels),
-                            y = numeric(n_channels)
-  )
+  chan_df <- data.frame(electrode = character(n_channels),
+                        chan_no = numeric(n_channels),
+                        x = numeric(n_channels),
+                        y = numeric(n_channels),
+                        baseline = numeric(n_channels),
+                        sens = numeric(n_channels),
+                        cal = numeric(n_channels),
+                        stringsAsFactors = FALSE)
 
   # Read channel names and locations
 
   for (i in 1:n_channels) {
     chan_start <- seek(cnt_file)
-    chan_df$chan_name[i] <- readBin(cnt_file, character(),
+    chan_df$electrode[i] <- readBin(cnt_file, character(),
                                     n = 1, endian = "little")
     chan_df$chan_no[i] <- i
     pos <- seek(cnt_file, chan_start + 19)
@@ -176,18 +179,19 @@ import_cnt <- function(file_name) {
   toffset <- readBin(cnt_file, integer(), n = 1, endian = "little")
   ev_table_start <- seek(cnt_file)
 
-  ev_list <- tibble::tibble(event_type = integer(n_events),
-                            keyboard = character(n_events),
-                            keypad_accept = integer(n_events),
-                            accept_evl = integer(n_events),
-                            offset = integer(n_events),
-                            type = integer(n_events),
-                            code = integer(n_events),
-                            latency = numeric(n_events),
-                            epochevent = integer(n_events),
-                            accept = integer(n_events),
-                            accuracy = integer(n_events)
-                            )
+  ev_list <- data.frame(event_type = integer(n_events),
+                        keyboard = character(n_events),
+                        keypad_accept = integer(n_events),
+                        accept_evl = integer(n_events),
+                        offset = integer(n_events),
+                        type = integer(n_events),
+                        code = integer(n_events),
+                        latency = numeric(n_events),
+                        epochevent = integer(n_events),
+                        accept = integer(n_events),
+                        accuracy = integer(n_events),
+                        stringsAsFactors = FALSE
+                        )
 
   for (i in 1:n_events) {
     ev_list$event_type[i] <- readBin(cnt_file, integer(), size = 2,
@@ -217,6 +221,7 @@ import_cnt <- function(file_name) {
   ev_list$offset <- (ev_list$offset - beg_data) / (4 * n_channels) + 1
 
   close(cnt_file)
+  chan_df <- chan_df[, names(chan_df) %in% c("electrode", "chan_no")]
   out <- list(chan_info = chan_df, head_info = data_info,
               chan_data = chan_data, event_list = ev_list)
 }
