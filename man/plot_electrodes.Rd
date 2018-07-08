@@ -6,19 +6,17 @@
 \alias{plot_electrodes.eeg_data}
 \title{Plot electrode locations}
 \usage{
-plot_electrodes(data, interact = FALSE, ...)
+plot_electrodes(data, interact = FALSE)
 
-\method{plot_electrodes}{default}(data, interact = FALSE, ...)
+\method{plot_electrodes}{default}(data, interact = FALSE)
 
-\method{plot_electrodes}{eeg_data}(data, interact = FALSE, ...)
+\method{plot_electrodes}{eeg_data}(data, interact = FALSE)
 }
 \arguments{
 \item{data}{Data with associated electrode locations to be plotted.}
 
 \item{interact}{Choose 2D cartesian layout, or, if set to TRUE, an
 interactive 3D plot of electrode locations. Defaults to FALSE.}
-
-\item{...}{other parameters}
 }
 \description{
 Produces either a 2D plot of the electrode locations or an interactive plot

@@ -40,7 +40,8 @@ Joins standard electrode locations to EEG data from eegUtils internal data.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{data.frame}: Adds standard locations to a data frame in long format
+\item \code{data.frame}: Adds standard locations to a data frame in
+long format
 
 \item \code{eeg_data}: Adds standard locations to the chan_info field of an eeg_data object.
 }}

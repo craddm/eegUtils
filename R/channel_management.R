@@ -136,7 +136,8 @@ electrode_locations <- function(data, ...) {
 #' @import dplyr
 #' @import ggplot2
 #' @importFrom tibble is.tibble
-#' @describeIn electrode_locations Adds standard locations to a data frame in long format
+#' @describeIn electrode_locations Adds standard locations to a data frame in
+#'   long format
 #' @return A tibble (or data.frame), or ggplot2 object if \code{plot = TRUE}.
 #' @export
 
@@ -196,7 +197,6 @@ electrode_locations.data.frame <- function(data,
 #' @param overwrite Overwrite existing channel info. Defaults to FALSE.
 #' @import dplyr
 #' @import ggplot2
-#' @importFrom tibble is.tibble
 #' @describeIn electrode_locations Adds standard locations to the chan_info field of an eeg_data object.
 #' @export
 
@@ -211,7 +211,6 @@ electrode_locations.eeg_data <- function(data,
   }
 
   if (!is.null(montage)) {
-
     electrodeLocs <- montage_check(montage)
   }
 
@@ -242,7 +241,6 @@ electrode_locations.eeg_data <- function(data,
   }
 }
 
-
 #' Plot electrode locations
 #'
 #' Produces either a 2D plot of the electrode locations or an interactive plot
@@ -253,10 +251,9 @@ electrode_locations.eeg_data <- function(data,
 #' @param data Data with associated electrode locations to be plotted.
 #' @param interact Choose 2D cartesian layout, or, if set to TRUE, an
 #'   interactive 3D plot of electrode locations. Defaults to FALSE.
-#' @param ... other parameters
 #' @export
 
-plot_electrodes <- function(data, interact = FALSE, ...) {
+plot_electrodes <- function(data, interact = FALSE) {
   UseMethod("plot_electrodes", data)
 }
 
@@ -264,7 +261,8 @@ plot_electrodes <- function(data, interact = FALSE, ...) {
 #' @describeIn plot_electrodes generic plot electrodes function
 #' @export
 
-plot_electrodes.default <- function(data, interact = FALSE, ...) {
+plot_electrodes.default <- function(data, interact = FALSE) {
+
   if ("electrode" %in% names(data)) {
     data <- data.frame(electrode = unique(data$electrode))
     data <- electrode_locations(data)
@@ -274,10 +272,18 @@ plot_electrodes.default <- function(data, interact = FALSE, ...) {
         stop("Package \"plotly\" needed for interactive electrode plots. Please install it.",
              call. = FALSE)
       }
-      plotly::plot_ly(data, x = ~cart_x, y = ~cart_y, z = ~cart_z, text = ~electrode,
-                      type = "scatter3d", mode = "text+markers")
+      plotly::plot_ly(data,
+                      x = ~cart_x,
+                      y = ~cart_y,
+                      z = ~cart_z,
+                      text = ~electrode,
+                      type = "scatter3d",
+                      mode = "text+markers")
     } else {
-      ggplot2::ggplot(data, aes(x = x, y = y, label = electrode)) +
+      ggplot2::ggplot(data,
+                      aes(x = x,
+                          y = y,
+                          label = electrode)) +
         geom_text() +
         theme_minimal() +
         coord_equal()
@@ -289,7 +295,8 @@ plot_electrodes.default <- function(data, interact = FALSE, ...) {
 
 #' @describeIn plot_electrodes Plot electrodes associated with an \code{eeg_data} object.
 #' @export
-plot_electrodes.eeg_data <- function(data, interact = FALSE, ...) {
+plot_electrodes.eeg_data <- function(data,
+                                     interact = FALSE) {
 
   if (is.null(data$chan_info)) {
     warning("Adding standard locations...")
@@ -297,15 +304,22 @@ plot_electrodes.eeg_data <- function(data, interact = FALSE, ...) {
   }
 
   if (interact) {
-
     if (!requireNamespace("plotly", quietly = TRUE)) {
       stop("Package \"plotly\" needed for interactive electrode plots. Please install it.",
            call. = FALSE)
     }
-    plotly::plot_ly(data$chan_info, x = ~cart_x, y = ~cart_y, z = ~cart_z, text = ~electrode,
-                    type = "scatter3d", mode = "text+markers")
+    plotly::plot_ly(data$chan_info,
+                    x = ~cart_x,
+                    y = ~cart_y,
+                    z = ~cart_z,
+                    text = ~electrode,
+                    type = "scatter3d",
+                    mode = "text+markers")
   } else {
-    ggplot2::ggplot(data$chan_info, aes(x = x, y = y, label = electrode)) +
+    ggplot2::ggplot(data$chan_info,
+                    aes(x = x,
+                        y = y,
+                        label = electrode)) +
       geom_text() +
       theme_minimal() +
       coord_equal()
@@ -337,6 +351,7 @@ montage_check <- function(montage) {
 create_chans <- function(chans, elecs) {
   stopifnot(is.numeric(chans),
             is.character(elecs))
-  data.frame(chan_no = chans, electrode = elecs)
+  data.frame(chan_no = chans,
+             electrode = elecs)
 
 }
