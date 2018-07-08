@@ -55,6 +55,8 @@ run_ICA.eeg_epochs <- function (data, method = "sobi", maxit = 500, ...) {
       stop("Unknown method; available methods are sobi, fastica, and infomax.")
     }
 
+    ICA_out$S <- as.data.frame(ICA_out$S)
+    names(ICA_out$S) <- 1:ncol(ICA_out$S)
     mixing_matrix <- as.data.frame(ICA_out$M)
     names(mixing_matrix) <- 1:ncol(mixing_matrix)
     mixing_matrix$electrode <- names(data$signals)
@@ -144,7 +146,8 @@ sobi_ICA <- function(data) {
   dim(amp_matrix) <- c(n_channels, n_times * n_epochs)
 
   S <- unmixing_matrix %*% amp_matrix
-  S <- t(S)
+  S <- as.data.frame(t(S))
+  names(S) <- 1:ncol(S)
 
   mixing_matrix <- as.data.frame(mixing_matrix)
   names(mixing_matrix) <- 1:n_channels
