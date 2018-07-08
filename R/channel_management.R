@@ -250,7 +250,6 @@ electrode_locations.eeg_data <- function(data,
 #'
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #'
-#' @importFrom plotly plot_ly
 #' @param data Data with associated electrode locations to be plotted.
 #' @param interact Choose 2D cartesian layout, or, if set to TRUE, an
 #'   interactive 3D plot of electrode locations. Defaults to FALSE.
@@ -261,7 +260,6 @@ plot_electrodes <- function(data, interact = FALSE, ...) {
   UseMethod("plot_electrodes", data)
 }
 
-#' @importFrom plotly plot_ly
 #' @import ggplot2
 #' @describeIn plot_electrodes generic plot electrodes function
 #' @export
@@ -272,8 +270,10 @@ plot_electrodes.default <- function(data, interact = FALSE, ...) {
     data <- electrode_locations(data)
 
     if (interact) {
-      #xyz <- pol_to_sph(data$theta, data$radius)
-      #xyz$electrode <- unique(data$electrode)
+      if (!requireNamespace("plotly", quietly = TRUE)) {
+        stop("Package \"plotly\" needed for interactive electrode plots. Please install it.",
+             call. = FALSE)
+      }
       plotly::plot_ly(data, x = ~cart_x, y = ~cart_y, z = ~cart_z, text = ~electrode,
                       type = "scatter3d", mode = "text+markers")
     } else {
@@ -287,7 +287,6 @@ plot_electrodes.default <- function(data, interact = FALSE, ...) {
   }
 }
 
-#' @importFrom plotly plot_ly
 #' @describeIn plot_electrodes Plot electrodes associated with an \code{eeg_data} object.
 #' @export
 plot_electrodes.eeg_data <- function(data, interact = FALSE, ...) {
@@ -299,6 +298,10 @@ plot_electrodes.eeg_data <- function(data, interact = FALSE, ...) {
 
   if (interact) {
 
+    if (!requireNamespace("plotly", quietly = TRUE)) {
+      stop("Package \"plotly\" needed for interactive electrode plots. Please install it.",
+           call. = FALSE)
+    }
     plotly::plot_ly(data$chan_info, x = ~cart_x, y = ~cart_y, z = ~cart_z, text = ~electrode,
                     type = "scatter3d", mode = "text+markers")
   } else {
@@ -308,7 +311,6 @@ plot_electrodes.eeg_data <- function(data, interact = FALSE, ...) {
       coord_equal()
   }
 }
-
 
 #' Montage check
 #'

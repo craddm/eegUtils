@@ -3,11 +3,14 @@
 \name{plot_psd}
 \alias{plot_psd}
 \alias{plot_psd.eeg_epochs}
+\alias{plot_psd.eeg_data}
 \title{Plot power spectral density}
 \usage{
 plot_psd(data, freq_range = NULL, ...)
 
 \method{plot_psd}{eeg_epochs}(data, freq_range = NULL, ...)
+
+\method{plot_psd}{eeg_data}(data, freq_range = NULL, ...)
 }
 \arguments{
 \item{data}{Object of class \code{eeg_epochs}}
@@ -22,6 +25,8 @@ Plot power spectral density
 \section{Methods (by class)}{
 \itemize{
 \item \code{eeg_epochs}: Plot PSDs for \code{eeg_epochs}.
+
+\item \code{eeg_data}: Plot PSDs for \code{eeg_epochs}.
 }}
 
 \author{

@@ -2,6 +2,8 @@
 
 ### Function changes
 - `topoplot()` added highlights parameter to allow specific electrodes to be highlighted.
+- `run_ICA()` now offers extended Infomax and Fastica thanks to the `ica` package
+- `plotly` is now a "suggested" package rather than a dependency
 
 ### Internal changes/ bug fixes
 - `reref_eeg()` correctly excludes multiple named electrodes (i.e. passed as characters rather than numbers), where it previously silently failed.

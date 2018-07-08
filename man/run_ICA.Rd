@@ -7,7 +7,7 @@
 \usage{
 run_ICA(data, ...)
 
-\method{run_ICA}{eeg_epochs}(data, method = "sobi", scaling = TRUE, ...)
+\method{run_ICA}{eeg_epochs}(data, method = "sobi", maxit = 500, ...)
 }
 \arguments{
 \item{data}{Data frame to be ICAed.}
@@ -16,7 +16,7 @@ run_ICA(data, ...)
 
 \item{method}{Only SOBI is currently implemented, so this is ignored.}
 
-\item{scaling}{Scale output to RMS.}
+\item{maxit}{maximum number of iterations of the Infomax and Fastica ICA algorithms.}
 }
 \description{
 Implements SOBI ICA. Although SOBI exists in R already, thanks to the JADE

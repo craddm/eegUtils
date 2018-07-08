@@ -16,11 +16,74 @@ run_ICA <- function(data, ...) {
 }
 
 #' @param method Only SOBI is currently implemented, so this is ignored.
-#' @param scaling Scale output to RMS.
+#' @param maxit maximum number of iterations of the Infomax and Fastica ICA algorithms.
 #' @describeIn run_ICA Run ICA on an \code{eeg_epochs} object
 #' @export
 
-run_ICA.eeg_epochs <- function (data, method = "sobi", scaling = TRUE, ...) {
+run_ICA.eeg_epochs <- function (data, method = "sobi", maxit = 500, ...) {
+
+  rank_check <- Matrix::rankMatrix(as.matrix(data$signals))
+  #if (rank_check < n_channels) {
+   # warning(paste("Data is rank deficient. Detected rank", rank_check))
+    #pca <- prcomp(data$signals)
+    #data$signals <- as.data.frame(pca$x[, 1:rank_check] %*% t(pca$rotation[, 1:rank_check]))
+  #}
+
+  if (method == "sobi") {
+    ica_obj <- sobi_ICA(data)
+  } else {
+
+    if (!requireNamespace("ica", quietly = TRUE)) {
+      stop("Package \"ica\" needed to use infomax or fastica. Please install it.",
+           call. = FALSE)
+    }
+
+    if (rank_check < ncol(data$signals)) {
+      warning(paste("Data is rank deficient. Detected rank", rank_check))
+    }
+
+    if (method == "fastica") {
+      ICA_out <- ica::icafast(data$signals,
+                              rank_check,
+                              maxit = maxit)
+    } else if (method == "infomax") {
+      ICA_out <- ica::icaimax(data$signals,
+                              rank_check,
+                              maxit = maxit,
+                              fun = "ext")
+    } else {
+      stop("Unknown method; available methods are sobi, fastica, and infomax.")
+    }
+
+    mixing_matrix <- as.data.frame(ICA_out$M)
+    names(mixing_matrix) <- 1:ncol(mixing_matrix)
+    mixing_matrix$electrode <- names(data$signals)
+    unmixing_matrix <- as.data.frame(ICA_out$W)
+    names(unmixing_matrix) <- names(data$signals)
+
+    ica_obj <- list("mixing_matrix" = mixing_matrix,
+                    "unmixing_matrix" = unmixing_matrix,
+                    "comp_activations" = ICA_out$S,
+                    "timings" = data$timings,
+                    "events" = data$events,
+                    "chan_info" = data$chan_info,
+                    "continuous" = FALSE)
+    class(ica_obj) <- c("eeg_ICA", "eeg_epochs", "eeg_data")
+
+  }
+  ica_obj
+}
+
+#' SOBI ICA
+#'
+#' Internal function for running SOBI ICA on an \code{eeg_epochs} object
+#'
+#' @param data Data to be ICAed.
+#'
+#' @noRd
+#'
+
+sobi_ICA <- function(data) {
 
   n_epochs <- length(unique(data$timings$epoch))
   n_channels <- ncol(data$signals)
@@ -30,24 +93,21 @@ run_ICA.eeg_epochs <- function (data, method = "sobi", scaling = TRUE, ...) {
   ## 100 is the default; only switches to smaller n if epochs are too short
   n_lags <- min(100, ceiling(n_times / 3))
 
-  # rank_check <- Matrix::rankMatrix(as.matrix(data$signals))[1]
-  # if (rank_check < n_channels) {
-  #   warning(paste("Data is rank deficient. Detected rank", rank_check))
-  #   pca <- prcomp(data$signals)
-  #  # data$signals <- as.data.frame(pca$x[, 1:rank_check] %*% t(pca$rotation[, 1:rank_check]))
-  # }
-
   ## Pre-whiten the data using the SVD. zero-mean columns and get SVD. NB:
   ## should probably edit this to zero mean *epochs*
   #do by epochs
   amp_matrix <- split(data$signals, data$timings$epoch)
-  amp_matrix <- lapply(amp_matrix, function(x) sweep(x, 2, colMeans(x)))
+  amp_matrix <- lapply(amp_matrix,
+                       function(x) sweep(x,
+                                         2,
+                                         Matrix::colMeans(x))
+                       )
   amp_matrix <- as.matrix(do.call("rbind", amp_matrix))
-  SVD_amp <- svd(t(amp_matrix))
+  SVD_amp <- svd(amp_matrix)
 
   ## get the psuedo-inverse of the diagonal matrix, multiply by singular
   ## vectors
-  Q <- MASS::ginv(diag(SVD_amp$d), tol = 0) %*% t(SVD_amp$u) # whitening matrix
+  Q <- MASS::ginv(diag(SVD_amp$d), tol = 0) %*% t(SVD_amp$v) # whitening matrix
   amp_matrix <- Q %*% t(amp_matrix)
 
   ## reshape to reflect epoching structure
@@ -61,11 +121,14 @@ run_ICA.eeg_epochs <- function (data, method = "sobi", scaling = TRUE, ...) {
 
   tmp_fun <- function(amps, k, N) {
     amps[, k:N] %*% t(amps[, 1:(N - k + 1)]) / (N - k + 1)
-    }
+  }
 
   for (u in seq(1, pm, n_channels)) {
     k <- k + 1
-    Rxp <- lapply(seq(1, n_epochs), function(x) tmp_fun(amp_matrix[, , x], k, N))
+    Rxp <- lapply(seq(1, n_epochs),
+                  function(x) tmp_fun(amp_matrix[, , x],
+                                      k,
+                                      N))
     Rxp <- Reduce("+", Rxp)
     Rxp <- Rxp / n_epochs
     M[, u:(u + n_channels - 1)] <- norm(Rxp, "F") * (Rxp) #  Frobenius norm
@@ -75,26 +138,18 @@ run_ICA.eeg_epochs <- function (data, method = "sobi", scaling = TRUE, ...) {
   V <- joint_diag(M, epsil, n_channels, pm) # V = sphered unmixing matrix
 
   ## create mixing matrix for output
-  mixing_matrix <- data.frame(MASS::ginv(Q, tol = 0) %*% V)
-  unmixing_matrix <- data.frame(MASS::ginv(V, tol = 0))
+  mixing_matrix <- MASS::ginv(Q, tol = 0) %*% V
+  unmixing_matrix <- t(V)
 
   dim(amp_matrix) <- c(n_channels, n_times * n_epochs)
-  S <- V %*% amp_matrix
+
+  S <- unmixing_matrix %*% amp_matrix
   S <- t(S)
 
-  if (scaling) {
-    mean_cols <- colMeans(mixing_matrix)
-    rms_cols <- apply(mixing_matrix, 2, function(x) sqrt(sum(mean(x ^ 2))))
-    mixing_matrix <- sweep(mixing_matrix, 2, mean_cols, "-")
-    mixing_matrix <- sweep(mixing_matrix, 2, rms_cols, "/")
-    S_cols <- colMeans(S)
-    rms_S <- apply(S, 2, function(x) sqrt(sum(mean(x ^ 2))))
-    S <- sweep(S, 2, S_cols, "-")
-    S <- sweep(S, 2, rms_S, "/")
-  }
-
+  mixing_matrix <- as.data.frame(mixing_matrix)
   names(mixing_matrix) <- 1:n_channels
   mixing_matrix$electrode <- names(data$signals)
+  unmixing_matrix <- as.data.frame(unmixing_matrix)
   names(unmixing_matrix) <- 1:n_channels
   unmixing_matrix$electrode <- names(data$signals)
 
