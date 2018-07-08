@@ -31,6 +31,9 @@
     <loc>http://craddm.github.io/eegUtils/reference/compute_tfr.html</loc>
   </url>
   <url>
+    <loc>http://craddm.github.io/eegUtils/reference/demo_epochs.html</loc>
+  </url>
+  <url>
     <loc>http://craddm.github.io/eegUtils/reference/eeg_ar_thresh.html</loc>
   </url>
   <url>
@@ -110,6 +113,9 @@
   </url>
   <url>
     <loc>http://craddm.github.io/eegUtils/reference/plot_electrodes.html</loc>
+  </url>
+  <url>
+    <loc>http://craddm.github.io/eegUtils/reference/plot_psd.html</loc>
   </url>
   <url>
     <loc>http://craddm.github.io/eegUtils/reference/plot_timecourse.html</loc>

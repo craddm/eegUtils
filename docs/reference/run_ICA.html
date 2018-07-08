@@ -138,7 +138,7 @@ only works on epoched data.</p>
     <pre class="usage"><span class='fu'>run_ICA</span>(<span class='no'>data</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for eeg_epochs</span>
-<span class='fu'>run_ICA</span>(<span class='no'>data</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"sobi"</span>, <span class='kw'>scaling</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>...</span>)</pre>
+<span class='fu'>run_ICA</span>(<span class='no'>data</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"sobi"</span>, <span class='kw'>maxit</span> <span class='kw'>=</span> <span class='fl'>500</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -156,8 +156,8 @@ only works on epoched data.</p>
       <td><p>Only SOBI is currently implemented, so this is ignored.</p></td>
     </tr>
     <tr>
-      <th>scaling</th>
-      <td><p>Scale output to RMS.</p></td>
+      <th>maxit</th>
+      <td><p>maximum number of iterations of the Infomax and Fastica ICA algorithms.</p></td>
     </tr>
     </table>
     

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Calculate averages (e.g. ERPs) — eeg_average • eegUtils</title>
+<title>Plot power spectral density — plot_psd • eegUtils</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -30,10 +30,9 @@
 
 
 
-<meta property="og:title" content="Calculate averages (e.g. ERPs) — eeg_average" />
+<meta property="og:title" content="Plot power spectral density — plot_psd" />
 
-<meta property="og:description" content="Calculate averages (e.g. ERPs)
-Create an eeg_evoked object from eeg_epochs" />
+<meta property="og:description" content="Plot power spectral density" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -119,51 +118,47 @@ Create an eeg_evoked object from eeg_epochs" />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Calculate averages (e.g. ERPs)</h1>
-    <small class="dont-index">Source: <a href='https://github.com/craddm/eegUtils/blob/master/R/data_modifiers.R'><code>R/data_modifiers.R</code></a></small>
-    <div class="hidden name"><code>eeg_average.Rd</code></div>
+    <h1>Plot power spectral density</h1>
+    <small class="dont-index">Source: <a href='https://github.com/craddm/eegUtils/blob/master/R/frequency_plotting.R'><code>R/frequency_plotting.R</code></a></small>
+    <div class="hidden name"><code>plot_psd.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Calculate averages (e.g. ERPs)</p>
-<p>Create an <code>eeg_evoked</code> object from eeg_epochs</p>
+    <p>Plot power spectral density</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>eeg_average</span>(<span class='no'>data</span>, <span class='no'>...</span>)
+    <pre class="usage"><span class='fu'>plot_psd</span>(<span class='no'>data</span>, <span class='kw'>freq_range</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for eeg_epochs</span>
-<span class='fu'>eeg_average</span>(<span class='no'>data</span>, <span class='kw'>cond_label</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>calc_var</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='no'>...</span>)</pre>
+<span class='fu'>plot_psd</span>(<span class='no'>data</span>, <span class='kw'>freq_range</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)
+
+<span class='co'># S3 method for eeg_data</span>
+<span class='fu'>plot_psd</span>(<span class='no'>data</span>, <span class='kw'>freq_range</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>data</th>
-      <td><p>An <code>eeg_epochs</code> object.</p></td>
+      <td><p>Object of class <code>eeg_epochs</code></p></td>
+    </tr>
+    <tr>
+      <th>freq_range</th>
+      <td><p>Vector of lower and upper frequencies to plot. (e.g. c(1, 40))</p></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>Other arguments passed to the averaging functions</p></td>
-    </tr>
-    <tr>
-      <th>cond_label</th>
-      <td><p>Only pick events that include a given label. Character
-vector.</p></td>
-    </tr>
-    <tr>
-      <th>calc_var</th>
-      <td><p>Can be used to calculate measures of variability around the
-average.</p></td>
+      <td><p>Additional parameters</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="methods-by-class-"><a class="anchor" href="#methods-by-class-"></a>Methods (by class)</h2>
 
     <ul>
-<li><p><code>eeg_epochs</code>: Create evoked data from <code>eeg_epochs</code></p></li>
+<li><p><code>eeg_epochs</code>: Plot PSDs for <code>eeg_epochs</code>.</p></li>
+<li><p><code>eeg_data</code>: Plot PSDs for <code>eeg_epochs</code>.</p></li>
 </ul>
     
 
@@ -178,7 +173,7 @@ average.</p></td>
 
     <h2>Author</h2>
     
-Matt craddock <a href='mailto:matt@mattcraddock.com'>matt@mattcraddock.com</a>
+Matt Craddock, <a href='mailto:matt@mattcraddock.com'>matt@mattcraddock.com</a>
 
   </div>
 </div>
