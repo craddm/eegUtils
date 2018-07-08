@@ -83,8 +83,8 @@ eeg_FASTER.eeg_epochs <- function(data, ...) {
 
 faster_chans <- function(data, sds = 3, ...) {
   chan_hurst <- scale(quick_hurst(data))
-  chan_vars <- scale(apply(data, 2, var))
-  chan_corrs <- scale(colMeans(abs(cor(data))))
+  chan_vars <- scale(apply(data, 2, stats::var))
+  chan_corrs <- scale(colMeans(abs(stats::cor(data))))
   bad_chans <- matrix(c(abs(chan_hurst) > sds,
                         abs(chan_vars) > sds,
                         abs(chan_corrs) > sds),
@@ -101,14 +101,18 @@ faster_chans <- function(data, sds = 3, ...) {
 
 faster_epochs <- function(data, ...) {
   chan_means <- colMeans(data$signals)
-  data$signals <- split(data$signals, data$timings$epoch)
-  epoch_range <- lapply(data$signals, function(x) diff(apply(x, 2, range)))
+  data$signals <- split(data$signals,
+                        data$timings$epoch)
+  epoch_range <- lapply(data$signals,
+                        function(x) diff(apply(x, 2, range)))
   epoch_range <- abs(scale(do.call("rbind", epoch_range))) > 3
-  epoch_diffs <- lapply(data$signals, function(x) {
-    apply(abs(sweep(x, 2, chan_means)), 2, mean)
-    })
+  epoch_diffs <- lapply(data$signals,
+                        function(x) {
+                          apply(abs(sweep(x, 2, chan_means)), 2, mean)
+                          })
   epoch_diffs <- abs(scale(do.call("rbind", epoch_diffs))) > 3
-  epoch_vars <- lapply(data$signals, function(x) apply(x, 2, var))
+  epoch_vars <- lapply(data$signals,
+                       function(x) apply(x, 2, stats::var))
   epoch_vars <- abs(scale(do.call("rbind", epoch_vars))) > 3
   bad_epochs <- matrix(c(rowSums(epoch_vars) > 0,
                          rowSums(epoch_range) > 0,
@@ -126,17 +130,23 @@ faster_epochs <- function(data, ...) {
 #' @noRd
 
 faster_cine <- function(data, ...) {
-  chan_means <- colMeans(data$signals)
-  epochs <- split(data$signals, data$timings$epoch)
-  bad_chans <- lapply(epochs, faster_epo_stat)
+  chan_means <- Matrix::colMeans(data$signals)
+  epochs <- split(data$signals,
+                  data$timings$epoch)
+  bad_chans <- lapply(epochs,
+                      faster_epo_stat)
   epoch_nos <- unique(data$timings$epoch)
 
-  epochs <- lapply(seq_along(epoch_nos), function(x) {
-    if (is.null(bad_chans[x])) {
-      select_epochs(data, epoch_no = epoch_nos[x])
-    } else {
-      interp_elecs(select_epochs(data, epoch_no = epoch_nos[x]), bad_chans[[x]])}
-    }
+  epochs <- lapply(seq_along(epoch_nos),
+                   function(x) {
+                     if (is.null(bad_chans[x])) {
+                       select_epochs(data, epoch_no = epoch_nos[x])
+                       } else {
+                         interp_elecs(select_epochs(data,
+                                                    epoch_no = epoch_nos[x]),
+                                      bad_chans[[x]])
+                         }
+                     }
   )
 
   data <- do.call("eeg_combine", epochs)
@@ -144,7 +154,6 @@ faster_cine <- function(data, ...) {
   #epoch_dev <- lapply(epochs, function(x) sweep(x, 2, chan_means))
 
 }
-
 
 
 #' Quickly calculate simple Hurst exponent for a matrix
@@ -155,7 +164,7 @@ faster_cine <- function(data, ...) {
 
 quick_hurst <- function(data) {
   n <- nrow(data)
-  y <- sweep(data, 2, colMeans(data))
+  y <- sweep(data, 2, Matrix::colMeans(data))
   s <- apply(data, 2, cumsum)
   rs <- (matrixStats::colMaxs(s) - matrixStats::colMins(s))
   rs <- rs / matrixStats::colSds(as.matrix(data))
@@ -195,12 +204,18 @@ faster_epo_stat <- function(data, chan_means) {
 #' @param ... Other arguments passed to eeg_ar_thresh
 #' @export
 
-eeg_ar_thresh <- function(data, threshold, reject = FALSE, ...) {
+eeg_ar_thresh <- function(data,
+                          threshold,
+                          reject = FALSE,
+                          ...) {
   UseMethod("eeg_ar_thresh", data)
 }
 
 #' @describeIn eeg_ar_thresh Reject data using a simple threshold.
-eeg_ar_thresh.eeg_data <- function(data, threshold, reject = FALSE, ...) {
+eeg_ar_thresh.eeg_data <- function(data,
+                                   threshold,
+                                   reject = FALSE,
+                                   ...) {
 
   if (length(threshold) == 1) {
     threshold <- c(threshold, -threshold)
@@ -262,8 +277,8 @@ channel_stats.eeg_data <- function(data, ...) {
   chan_means <- colMeans(data$signals)
   #chan_means <- as.data.table(data$signals)
   #chan_means <- chan_means[, lapply(.SD, mean)]
-  chan_sds <- apply(data$signals, 2, sd)
-  chan_var <- apply(data$signals, 2, var)
+  chan_sds <- apply(data$signals, 2, stats::sd)
+  chan_var <- apply(data$signals, 2, stats::var)
   chan_kurt <- apply(data$signals, 2, kurtosis)
 
   data.frame(electrode = names(data$signals),
@@ -289,8 +304,10 @@ epoch_stats <- function(data, ...) {
 #' @noRd
 epoch_stats.eeg_epochs <- function(data, ...) {
   epoch_nos <- unique(data$timings$epoch)
-  data <- split(data$signals, data$timings$epoch)
-  epoch_means <- lapply(data, colMeans)
+  data <- split(data$signals,
+                data$timings$epoch)
+  epoch_means <- lapply(data,
+                        Matrix::colMeans)
   epoch_means <- as.data.frame(do.call("rbind", epoch_means))
   epoch_means$epoch_nos <- epoch_nos
   epoch_means
@@ -314,13 +331,15 @@ interp_elecs <- function(data, bad_elecs, ...) {
 
 #' @describeIn interp_elecs Interpolate EEG channel(s)
 #' @export
-interp_elecs.eeg_data <- function(data, bad_elecs, ...) {
+interp_elecs.eeg_data <- function(data,
+                                  bad_elecs, ...) {
 
   if (is.null(data$chan_info)) {
     stop("No channel locations found.")
   }
 
-  xyz_coords <- pol_to_sph(data$chan_info$theta, data$chan_info$radius)
+  xyz_coords <- pol_to_sph(data$chan_info$theta,
+                           data$chan_info$radius)
   rads <- sqrt(xyz_coords$x ^ 2 + xyz_coords$y ^ 2 + xyz_coords$z ^ 2)
   xyz_coords <- xyz_coords / rads
 
@@ -399,7 +418,8 @@ spheric_spline <- function(good_elecs, bad_elecs, data) {
 #' @importFrom pracma legendre
 #' @noRd
 
-compute_g <- function(xyz_coords, xyz_elecs) {
+compute_g <- function(xyz_coords,
+                      xyz_elecs) {
 
   EI <- 1 - sqrt((matrix(rep(xyz_coords[, 1],
                              nrow(xyz_elecs)),
@@ -442,7 +462,7 @@ compute_g <- function(xyz_coords, xyz_elecs) {
 
 kurtosis <- function(data) {
   m4 <- mean((data - mean(data)) ^ 4)
-  kurt <- m4 / (sd(data) ^ 4) - 3
+  kurt <- m4 / (stats::sd(data) ^ 4) - 3
   kurt
 }
 
