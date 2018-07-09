@@ -32,7 +32,7 @@ column is always required; an epoch column is not.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{eeg_data}: remove baseline from continuous eeg_data
+\item \code{eeg_data}: remove baseline from continuous \code{eeg_data}
 
 \item \code{eeg_epochs}: Remove baseline from eeg_epochs
 

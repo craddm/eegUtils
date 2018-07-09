@@ -1,14 +1,23 @@
 #' Select timerange
 #'
 #' Generic function for selecting specific time ranges from a given dataset.
-#' Input can be a dataframe, or an object of class \code{eeg_data} or
-#' \code{eeg_epochs}. Note this finds the closest times to those specified, so
-#' times out may not correspond exactly to requested times.
+#' Input can be a dataframe, or an object of class \code{eeg_data},
+#' \code{eeg_epochs}, or \code{eeg_evoked}. Note this finds the closest times to
+#' those specified, so the time range returned may be slightly longer or shorter
+#' than that requested.
+#'
+#' @examples
+#' ## Select timepoints from -.1 to .3
+#' demo_epochs
+#' short_epochs <- select_times(demo_epochs, time_lim = c(-.1, .3))
+#' short_epochs
 #'
 #' @author Matt Craddock, \email{matt@@mattcraddock.com}
+#'
 #' @param data Data from which to select
 #' @param ... Further arguments passed to or from other methods.
-#'
+#' @family Data selection functions
+#' @seealso \code{\link{select_elecs}} and \code{\link{select_epochs}}
 #' @export
 
 select_times <- function(data, ...) {
@@ -37,12 +46,16 @@ select_times.default <- function(data, time_lim = NULL, ...) {
   return(data)
 }
 
-#' @param df_out Returns a data frame rather than an object of the same type that was passed in
+#' @param df_out Returns a data frame rather than an object of the same type
+#'   that was passed in
 #' @export
-#'
+#' @return \code{eeg_data} object
 #' @describeIn select_times Select times from an eeg_data object
 
-select_times.eeg_data <- function(data, time_lim = NULL, df_out = FALSE, ...) {
+select_times.eeg_data <- function(data,
+                                  time_lim = NULL,
+                                  df_out = FALSE,
+                                  ...) {
 
   data$signals <- as.data.frame(data)
 
@@ -70,10 +83,12 @@ select_times.eeg_data <- function(data, time_lim = NULL, df_out = FALSE, ...) {
 }
 
 #' @export
-#' @describeIn select_times Select times in \code{eeg_epoch} objects
+#' @describeIn select_times Select times in \code{eeg_epochs} objects
 
-select_times.eeg_epochs <- function(data, time_lim = NULL,
-                                    df_out = FALSE, ...) {
+select_times.eeg_epochs <- function(data,
+                                    time_lim = NULL,
+                                    df_out = FALSE,
+                                    ...) {
 
   if (length(time_lim) == 1) {
       stop("Must enter two timepoints when selecting a time range;
@@ -88,23 +103,22 @@ select_times.eeg_epochs <- function(data, time_lim = NULL,
   data$timings <- data$timings[sel_rows, ]
   event_rows <- data$events$time >= time_lim[1] & data$events$time <= time_lim[2]
   data$events <- data$events[event_rows, ]
-
   if (!is.null(data$reference$ref_data)) {
     data$reference$ref_data <- data$reference$ref_data[sel_rows]
   }
-
   if (df_out) {
     return(as.data.frame(data))
   } else {
-
     data
   }
 }
 
 #' @export
 #' @describeIn select_times Select times in \code{eeg_evoked} objects
-select_times.eeg_evoked <- function(data, time_lim = NULL,
-                                    df_out = FALSE, ...) {
+select_times.eeg_evoked <- function(data,
+                                    time_lim = NULL,
+                                    df_out = FALSE,
+                                    ...) {
 
   data$signals <- as.data.frame(data)
   data$signals <- select_times(data$signals,
@@ -117,15 +131,21 @@ select_times.eeg_evoked <- function(data, time_lim = NULL,
   }
 }
 
-#' Select electrodes from a given dataset.
+#' Select electrodes from a given dataset
 #'
 #' This is a generic function for selection of electrodes from an EEG dataset.
+#'
+#' @examples
+#' names(demo_epochs$signals)
+#' keep_A5 <- select_elecs(demo_epochs, electrode = "A5")
+#' remove_A5 <- select_elecs(demo_epochs, electrode = "A5", keep = FALSE)
 #'
 #' @author Matt Craddock, \email{matt@@mattcraddock.com}
 #'
 #' @param data An EEG dataset.
 #' @param ... Arguments used with related methods
-#'
+#' @family Data selection functions
+#' @seealso \code{\link{select_times}} and \code{\link{select_epochs}}
 #' @export
 #'
 
@@ -137,9 +157,7 @@ select_elecs <- function(data, ...) {
 #'   removal.
 #' @param keep Defaults to TRUE. Set to false to *remove* the selected
 #'   electrodes.
-#'
 #' @return Data frame with only data from the chosen electrodes
-#'
 #' @describeIn select_elecs Select electrodes from a generic data frame.
 #' @export
 
@@ -172,9 +190,7 @@ select_elecs.default <- function(data,  electrode = NULL, keep = TRUE, ...) {
 
 #' @param df_out Defaults to FALSE. Set to TRUE to return a dataframe rather
 #'   than an \code{eeg_data} object.
-#'
 #' @return \code{eeg_data} object with selected electrodes removed/kept.
-#'
 #' @export
 #' @describeIn select_elecs Select electrodes from a \code{eeg_data} object.
 
@@ -190,7 +206,6 @@ select_elecs.eeg_data <- function(data, electrode, keep = TRUE,
     if (!is.null(data$chan_info)) {
       data$chan_info <- data$chan_info[data$chan_info$electrode %in% names(data$signals), ]
     }
-
   } else {
     cat("Electrode(s) not found:",
         electrode[!electrode %in% colnames(data$signals)],
@@ -212,6 +227,8 @@ select_elecs.eeg_data <- function(data, electrode, keep = TRUE,
 #'
 #' @param data \code{eeg_epochs} object from which to select epochs.
 #' @param ... Parameters passed to specific methods
+#' @family data selection functions
+#' @seealso \code{\link{select_times}} and \code{\link{select_elecs}}
 #' @export
 
 select_epochs <- function(data, ...) {
@@ -248,8 +265,12 @@ select_epochs.eeg_data <- function(data, ...) {
 #' @describeIn select_epochs Selection of epochs from \code{eeg_epochs} objects.
 #' @export
 
-select_epochs.eeg_epochs <- function(data, epoch_events = NULL, epoch_no = NULL,
-                                   keep = TRUE, df_out = FALSE, ...) {
+select_epochs.eeg_epochs <- function(data,
+                                     epoch_events = NULL,
+                                     epoch_no = NULL,
+                                     keep = TRUE,
+                                     df_out = FALSE,
+                                     ...) {
 
   # First check if epoch_events has been passed; if it's numeric, select epochs
   # based on event_type. If it's a character vector, check if those labels exist
@@ -262,31 +283,19 @@ select_epochs.eeg_epochs <- function(data, epoch_events = NULL, epoch_no = NULL,
                             event_labels = data$events$event_label,
                             keep = keep)
   }
-
   if (is.numeric(epoch_no)) {
-
     if (keep == FALSE) {
       orig_epo_no <- unique(data$timings$epoch)
       epoch_no <- orig_epo_no[!orig_epo_no %in% epoch_no]
     }
-
     sel_rows <- data$timings$epoch %in% epoch_no
-
-    #if (keep == FALSE) {
-     # sel_rows <- !sel_rows
-    #}
-
     data$signals <- data$signals[sel_rows, ]
-
     if (!is.null(data$reference)) {
       data$reference$ref_data <- data$reference$ref_data[sel_rows]
     }
-
     data$timings <- data$timings[sel_rows, ]
     data$events <- data$events[data$events$epoch %in% epoch_no, ]
-
   }
-
   if (df_out) {
     as.data.frame(data)
   } else {
@@ -297,8 +306,12 @@ select_epochs.eeg_epochs <- function(data, epoch_events = NULL, epoch_no = NULL,
 #' @describeIn select_epochs Selection of epochs from \code{eeg_ICA} objects.
 #' @export
 
-select_epochs.eeg_ICA <- function(data, epoch_events = NULL, epoch_no = NULL,
-                                     keep = TRUE, df_out = FALSE, ...) {
+select_epochs.eeg_ICA <- function(data,
+                                  epoch_events = NULL,
+                                  epoch_no = NULL,
+                                  keep = TRUE,
+                                  df_out = FALSE,
+                                  ...) {
 
   # First check if epoch_events has been passed; if it's numeric, select epochs
   # based on event_type. If it's a character vector, check if those labels exist
@@ -313,24 +326,17 @@ select_epochs.eeg_ICA <- function(data, epoch_events = NULL, epoch_no = NULL,
   }
 
   if (is.numeric(epoch_no)) {
-
     sel_rows <- data$timings$epoch %in% epoch_no
-
     if (keep == FALSE) {
       sel_rows <- !sel_rows
     }
-
     data$comp_activations <- data$comp_activations[sel_rows, ]
-
     if (!is.null(data$reference)) {
       data$reference$ref_data <- data$reference$ref_data[sel_rows]
     }
-
     data$timings <- data$timings[sel_rows, ]
     data$events <- data$events[data$events$epoch %in% epoch_no, ]
-
   }
-
   if (df_out) {
     as.data.frame(data)
   } else {
@@ -352,31 +358,22 @@ proc_events <- function(epoch_events,
                         ) {
 
   if (is.numeric(epoch_events)) {
-
     sel_rows <- event_type %in% epoch_events
-
     if (!any(sel_rows)){
       stop("Events not found.")
     }
-
     if (keep == FALSE) {
       sel_rows <- !sel_rows
     }
-
     epoch_no <- as.numeric(epoch_nos[sel_rows])
-
   } else if (is.character(epoch_events)) {
-
     check_ev <- label_check(epoch_events, event_labels)
-
     if (check_ev) {
       check_ev <- grepl(epoch_events, event_labels)
     } else {
       stop("Event label not found, check with list_events.")
     }
-
     sel_rows <- check_ev
-
     if (keep == FALSE) {
       sel_rows <- !sel_rows
     }

@@ -43,6 +43,15 @@ the data before further referencing takes place.
 \item \code{eeg_data}: Rereference objects of class \code{eeg_data}
 }}
 
+\examples{
+# demo_epochs is average referenced by default
+demo_epochs
+# Rereference it but exclude B5 from calculation of the average
+reref_eeg(demo_epochs, exclude = "B5")
+# Reference data using the median of the reference channels rather than the mean
+reref_eeg(demo_epochs, robust = TRUE)
+
+}
 \author{
 Matt Craddock \email{matt@mattcraddock.com}
 }

@@ -4,7 +4,7 @@
 \alias{select_elecs}
 \alias{select_elecs.default}
 \alias{select_elecs.eeg_data}
-\title{Select electrodes from a given dataset.}
+\title{Select electrodes from a given dataset}
 \usage{
 select_elecs(data, ...)
 
@@ -42,6 +42,17 @@ This is a generic function for selection of electrodes from an EEG dataset.
 \item \code{eeg_data}: Select electrodes from a \code{eeg_data} object.
 }}
 
+\examples{
+names(demo_epochs$signals)
+keep_A5 <- select_elecs(demo_epochs, electrode = "A5")
+remove_A5 <- select_elecs(demo_epochs, electrode = "A5", keep = FALSE)
+
+}
+\seealso{
+\code{\link{select_times}} and \code{\link{select_epochs}}
+
+Other Data selection functions: \code{\link{select_times}}
+}
 \author{
 Matt Craddock, \email{matt@mattcraddock.com}
 }

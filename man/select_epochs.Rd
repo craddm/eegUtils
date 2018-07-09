@@ -49,6 +49,9 @@ This is a generic function for selecting epochs from an epoched data set.
 \item \code{eeg_ICA}: Selection of epochs from \code{eeg_ICA} objects.
 }}
 
+\seealso{
+\code{\link{select_times}} and \code{\link{select_elecs}}
+}
 \author{
 Matt Craddock, \email{matt@mattcraddock.com}
 }

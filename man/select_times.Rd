@@ -28,16 +28,20 @@ select_times(data, ...)
 \item{time_lim}{A character vector of two numbers indicating the time range
 to be selected e.g. c(min, max)}
 
-\item{df_out}{Returns a data frame rather than an object of the same type that was passed in}
+\item{df_out}{Returns a data frame rather than an object of the same type
+that was passed in}
 }
 \value{
 Data frame with only data from within the specified range.
+
+\code{eeg_data} object
 }
 \description{
 Generic function for selecting specific time ranges from a given dataset.
-Input can be a dataframe, or an object of class \code{eeg_data} or
-\code{eeg_epochs}. Note this finds the closest times to those specified, so
-times out may not correspond exactly to requested times.
+Input can be a dataframe, or an object of class \code{eeg_data},
+\code{eeg_epochs}, or \code{eeg_evoked}. Note this finds the closest times to
+those specified, so the time range returned may be slightly longer or shorter
+than that requested.
 }
 \section{Methods (by class)}{
 \itemize{
@@ -45,11 +49,23 @@ times out may not correspond exactly to requested times.
 
 \item \code{eeg_data}: Select times from an eeg_data object
 
-\item \code{eeg_epochs}: Select times in \code{eeg_epoch} objects
+\item \code{eeg_epochs}: Select times in \code{eeg_epochs} objects
 
 \item \code{eeg_evoked}: Select times in \code{eeg_evoked} objects
 }}
 
+\examples{
+## Select timepoints from -.1 to .3
+demo_epochs
+short_epochs <- select_times(demo_epochs, time_lim = c(-.1, .3))
+short_epochs
+
+}
+\seealso{
+\code{\link{select_elecs}} and \code{\link{select_epochs}}
+
+Other Data selection functions: \code{\link{select_elecs}}
+}
 \author{
 Matt Craddock, \email{matt@mattcraddock.com}
 }

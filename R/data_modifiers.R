@@ -6,12 +6,19 @@
 #' \code{eeg_data} structure; if a reference already exists, it is added back to
 #' the data before further referencing takes place.
 #'
+#' @examples
+#' # demo_epochs is average referenced by default
+#' demo_epochs
+#' # Rereference it but exclude B5 from calculation of the average
+#' reref_eeg(demo_epochs, exclude = "B5")
+#' # Reference data using the median of the reference channels rather than the mean
+#' reref_eeg(demo_epochs, robust = TRUE)
+#'
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #' @param data Data to re-reference. Primarily meant for use with data of class
 #'   \code{eeg_data}.
 #' @param ... Further parameters to be passed to reref_eeg
 #' @export
-#'
 
 reref_eeg <- function(data, ...) {
   UseMethod("reref_eeg", data)
@@ -134,7 +141,7 @@ rm_baseline <- function(data, ...) {
 #' @param time_lim Numeric character vector (e.g. time_lim <- c(-.1, 0)). If
 #'   none given, defaults to mean of the whole of each epoch if the data is epoched, or the
 #'   channel mean if the data is continuous.
-#' @describeIn rm_baseline remove baseline from continuous eeg_data
+#' @describeIn rm_baseline remove baseline from continuous \code{eeg_data}
 #' @export
 rm_baseline.eeg_data <- function(data, time_lim = NULL, ...) {
 
@@ -177,10 +184,14 @@ rm_baseline.eeg_epochs <- function(data,
     data$signals <- as.data.frame(data$signals)
     names(data$signals) <- elecs
   } else {
-    base_times <- select_times(data, time_lim = time_lim)
-    base_times$signals <- split(base_times$signals, base_times$timings$epoch)
-    base_baselines <- lapply(base_times$signals, colMeans)
-    data$signals <- split(data$signals, data$timings$epoch)
+    base_times <- select_times(data,
+                               time_lim = time_lim)
+    base_times$signals <- split(base_times$signals,
+                                base_times$timings$epoch)
+    base_baselines <- lapply(base_times$signals,
+                             Matrix::colMeans)
+    data$signals <- split(data$signals,
+                          data$timings$epoch)
     data$signals <- lapply(seq_along(data$signals),
                            function(i) sweep(data$signals[[i]],
                                              2,
@@ -245,7 +256,6 @@ rm_baseline.data.frame <- function(data,
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #' @param data Continuous data to be epoched.
 #' @param ... Parameters passed to functions
-#'
 #' @export
 
 epoch_data <- function(data, ...) {
@@ -481,8 +491,11 @@ eeg_downsample.eeg_epochs <- function(data, q, ...) {
 
   if (epo_length > 0) {
     message("Dropping ", epo_length, " time points to make n of samples a multiple of q.")
-    new_times <- head(unique(data$timings$time), -epo_length)
-    data <- select_times(data, time_lim = c(min(new_times), max(new_times)))
+    new_times <- utils::head(unique(data$timings$time),
+                             -epo_length)
+    data <- select_times(data,
+                         time_lim = c(min(new_times),
+                                      max(new_times)))
   }
 
   # make sure any saved reference gets downsampled too.
@@ -494,7 +507,10 @@ eeg_downsample.eeg_epochs <- function(data, q, ...) {
 
   new_times <- data$timings$time
   new_length <- nrow(data$signals[[1]]) #- epo_length
-  data$signals <- lapply(data$signals, `[`, 1:new_length, )
+  data$signals <- lapply(data$signals,
+                         `[`,
+                         1:new_length,
+                         )
   data$signals <- purrr::map_df(data$signals,
                              ~purrr::map_df(as.list(.),
                                             ~signal::decimate(., q)))
@@ -522,7 +538,6 @@ eeg_downsample.eeg_epochs <- function(data, q, ...) {
   data$events$event_time <- 1 / (data$srate * q) * data$events$event_onset
   data
 }
-
 
 #' Combine EEG objects
 #'

@@ -2,9 +2,17 @@
 % Please edit documentation in R/epoch_images.R
 \name{erp_image}
 \alias{erp_image}
+\alias{erp_image.default}
+\alias{erp_image.eeg_epochs}
 \title{Plot ERP images}
 \usage{
 erp_image(data, electrode = "Cz", smoothing = 10, clim = NULL)
+
+\method{erp_image}{default}(data, electrode = "Cz", smoothing = 10,
+  clim = NULL)
+
+\method{erp_image}{eeg_epochs}(data, electrode = "Cz", smoothing = 10,
+  clim = NULL)
 }
 \arguments{
 \item{data}{Data frame to be plotted. Requires an amplitude column.}
@@ -20,6 +28,13 @@ e.g. c(-5,5). Defaults to min and max.}
 Plot an ERP image from a single electrode. Smooths over a series of trials in
 order to make across-trial patterns more apparent.
 }
+\section{Methods (by class)}{
+\itemize{
+\item \code{default}: Default function operates on normal data frames
+
+\item \code{eeg_epochs}: Create an \code{erp_image} from \code{eeg_epochs}
+}}
+
 \author{
 Matt Craddock, \email{matt@mattcraddock.com}
 }

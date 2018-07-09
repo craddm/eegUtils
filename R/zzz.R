@@ -16,4 +16,7 @@ utils::globalVariables(c("time",
                          "smooth_time",
                          ".",
                          "smooth_amp",
-                         "pt"))
+                         "pt",
+                         "bl",
+                         "..level..",
+                         "condition"))
