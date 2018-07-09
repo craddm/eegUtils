@@ -274,11 +274,19 @@ as.data.frame.eeg_evoked <- function(x, row.names = NULL,
 #' @importFrom tidyr gather
 #' @export
 
-as.data.frame.eeg_ICA <- function(x, row.names = NULL,
-                                  optional = FALSE, long = FALSE,
-                                  cond_labels = NULL, ...) {
+as.data.frame.eeg_ICA <- function(x,
+                                  row.names = NULL,
+                                  optional = FALSE,
+                                  long = FALSE,
+                                  cond_labels = NULL,
+                                  ...) {
 
-  names(x$comp_activations) <- 1:ncol(x$comp_activations)
+  if (is.null(x$comp_activations)) {
+    x$comp_activations <- x$signals
+  } else {
+    x$comp_activations <- as.data.frame(x$comp_activations)
+  }
+
 
   if (!is.null(cond_labels)) {
     lab_check <- label_check(cond_labels,

@@ -56,7 +56,7 @@ run_ICA.eeg_epochs <- function (data, method = "sobi", maxit = 500, ...) {
     }
 
     ICA_out$S <- as.data.frame(ICA_out$S)
-    names(ICA_out$S) <- 1:ncol(ICA_out$S)
+    names(ICA_out$S) <- paste0("Comp", 1:ncol(ICA_out$S))
     mixing_matrix <- as.data.frame(ICA_out$M)
     names(mixing_matrix) <- 1:ncol(mixing_matrix)
     mixing_matrix$electrode <- names(data$signals)
@@ -65,7 +65,7 @@ run_ICA.eeg_epochs <- function (data, method = "sobi", maxit = 500, ...) {
 
     ica_obj <- list("mixing_matrix" = mixing_matrix,
                     "unmixing_matrix" = unmixing_matrix,
-                    "comp_activations" = ICA_out$S,
+                    "signals" = ICA_out$S,
                     "timings" = data$timings,
                     "events" = data$events,
                     "chan_info" = data$chan_info,
@@ -147,7 +147,7 @@ sobi_ICA <- function(data) {
 
   S <- unmixing_matrix %*% amp_matrix
   S <- as.data.frame(t(S))
-  names(S) <- 1:ncol(S)
+  names(S) <- paste0("Comp", 1:ncol(S))
 
   mixing_matrix <- as.data.frame(mixing_matrix)
   names(mixing_matrix) <- 1:n_channels
@@ -158,10 +158,11 @@ sobi_ICA <- function(data) {
 
   ica_obj <- list("mixing_matrix" = mixing_matrix,
                   "unmixing_matrix" = unmixing_matrix,
-                  "comp_activations" = S,
+                  "signals" = S,
                   "timings" = data$timings,
                   "events" = data$events,
                   "chan_info" = data$chan_info,
+                  "srate" = data$srate,
                   "continuous" = FALSE)
   class(ica_obj) <- c("eeg_ICA", "eeg_epochs", "eeg_data")
   return(ica_obj)

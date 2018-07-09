@@ -6,6 +6,7 @@
 #' @author Matt Craddock \email{matt@mattcraddock.com}
 #' @param data Data to be plotted. Accepts objects of class \code{eeg_data}
 #' @param ... any further parameters passed to specific methods
+#' @export
 
 compute_psd <- function(data, ...) {
   UseMethod("compute_psd", data)
@@ -17,13 +18,15 @@ compute_psd <- function(data, ...) {
 #' @param srate Sampling rate
 #' @param method Defaults to "Welch". No other method currently implemented.
 #' @describeIn compute_psd Compute PSD for an \code{eeg_data} object
+#' @export
 
 compute_psd.eeg_data <- function(data,
                                  seg_length = NULL,
                                  noverlap = 0,
                                  n_fft = 256,
                                  srate = NULL,
-                                 method = "Welch") {
+                                 method = "Welch",
+                                 ...) {
 
   srate <- data$srate
 
@@ -53,12 +56,12 @@ compute_psd.eeg_data <- function(data,
   }  else {
     stop("Welch is the only available method at this time.")
   }
-
   final_output
 }
 
 #' @param keep_trials Include FFT for every trial in output
 #' @describeIn compute_psd Compute PSD for an \code{eeg_epochs} object
+#' @export
 
 compute_psd.eeg_epochs <- function(data,
                                    seg_length = NULL,
@@ -66,33 +69,26 @@ compute_psd.eeg_epochs <- function(data,
                                    n_fft = 256,
                                    srate = NULL,
                                    method = "Welch",
-                                   keep_trials = TRUE) {
+                                   keep_trials = TRUE,
+                                   ...) {
   srate <- data$srate
-
   if (is.null(seg_length)) {
     seg_length <- n_fft
   }
-
   if (seg_length > n_fft) {
     stop("seg_length cannot be greater than n_fft")
   }
-
-
-  data$signals <- split(data$signals, data$timings$epoch)
+  data$signals <- split(data$signals,
+                        data$timings$epoch)
   n_times <- nrow(data$signals[[1]])
-
   if (n_times < seg_length) {
     seg_length <- n_times
   }
-
   if (noverlap == 0) {
     noverlap <- seg_length %/% 8
   } else if (noverlap >= seg_length) {
     stop("noverlap should not be larger than seg_length.")
   }
-
-
-
   if (method == "Welch") {
     final_output <- lapply(data$signals, function(x)
       welch_fft(x,
@@ -102,18 +98,15 @@ compute_psd.eeg_epochs <- function(data,
                 srate = srate,
                 n_sig = n_times)
     )
-
   }  else {
     stop("Welch is the only available method at this time.")
   }
-
   if (keep_trials) {
     final_output <- dplyr::bind_rows(final_output, .id = "epoch")
   } else {
     final_output <- Reduce("+", final_output) / length(final_output)
     final_output
   }
-
 }
 
 #' Welch fft
@@ -156,20 +149,33 @@ welch_fft <- function(data,
 
   #do windowing and zero padding if necessary, then FFT
   if (n_segs == 1) {
-    data_segs <- sweep(data_segs, 1, win, "*")
+    data_segs <- sweep(data_segs,
+                       1,
+                       win,
+                       "*")
     if (n_fft > seg_length) {
-      data_segs <- apply(data_segs, 2, function(x) c(x,
-                                                     numeric(n_fft - seg_length)))
+      data_segs <- apply(data_segs,
+                         2,
+                         function(x) c(x,
+                                       numeric(n_fft - seg_length)))
     }
     data_fft <- mvfft(data_segs)
-    final_out <- apply(data_fft, 2,  function(x) abs(x * Conj(x)) / U)
+    final_out <- apply(data_fft,
+                       2,
+                       function(x) abs(x * Conj(x)) / U)
     # Normalize by sampling rate
     if (is.null(srate)) {
-      final_out <- sweep(final_out, 1, (2 * pi), "/")
+      final_out <- sweep(final_out,
+                         1,
+                         (2 * pi),
+                         "/")
       freqs <- seq(0, seg_length / 2) / (seg_length)
     } else {
       #final_out <- as.data.frame(final_out) / srate
-      final_out <- sweep(final_out, 1, srate, "/")
+      final_out <- sweep(final_out,
+                         1,
+                         srate,
+                         "/")
       freqs <- seq(0, n_fft / 2) / (n_fft) * srate
     }
   } else {
@@ -178,12 +184,14 @@ welch_fft <- function(data,
                                            function(y) y * win))
     if (n_fft > seg_length) {
       data_segs <- lapply(data_segs,
-                          function(x) apply(data_segs, 2,
+                          function(x) apply(data_segs,
+                                            2,
                                             function(x) c(x,
                                                           numeric(n_fft - seg_length))))
       }
-    data_fft <- lapply(data_segs, function(x) lapply(x, fft))
-
+    data_fft <- lapply(data_segs,
+                       function(x) lapply(x,
+                                          fft))
     final_out <- lapply(data_fft,
                         function(x) sapply(x,
                                            function(y) abs(y * Conj(y)) / U))
@@ -196,17 +204,13 @@ welch_fft <- function(data,
       freqs <- seq(0, n_fft / 2) / (n_fft) * srate
     }
   }
-
-
-
   #select first half of spectrum and double amps, output is power - uV^2 / Hz
   final_out <- final_out[1:(n_fft / 2 + 1), , drop = FALSE]
   final_out[2:(n_fft / 2 + 1), ] <- (final_out[2:(n_fft / 2 + 1), ] * 2) ^ 2
-  data.frame(final_out,
-             frequency = freqs)
-
+  final_out <- data.frame(final_out,
+                          frequency = freqs)
+  final_out <- final_out[final_out$frequency > 0, ]
 }
-
 
 #' Segment data.
 #'
@@ -227,12 +231,12 @@ split_vec <- function(vec, seg_length, overlap) {
   } else {
     k <- floor((length(vec) - overlap) / (seg_length - overlap))
   }
-    starts <- seq(1, k * (seg_length - overlap), by = seg_length - overlap)
+    starts <- seq(1,
+                  k * (seg_length - overlap),
+                  by = seg_length - overlap)
     ends <- starts + seg_length - 1
     lapply(seq_along(starts), function(i) vec[starts[i]:ends[i]])
 }
-
-
 
 #' Morlet wavelet
 #'
@@ -244,23 +248,36 @@ split_vec <- function(vec, seg_length, overlap) {
 #' @param n_freq number of frequencies to resolve
 #' @noRd
 
-morlet <- function(frex, wavtime, n_cycles = 7, n_freq = 30) {
+morlet <- function(frex,
+                   wavtime,
+                   n_cycles = 7,
+                   n_freq = 30) {
 
-  frex <- seq(frex[1], frex[2], length.out = n_freq)
+  frex <- seq(frex[1],
+              frex[2],
+              length.out = n_freq)
 
   # widths of Gaussian
   if (length(n_cycles) == 1) {
     g_width <- n_cycles / (2 * pi * frex)
   } else {
-    g_width <- seq(n_cycles[1], n_cycles[2], length.out = n_freq) / (2 * pi * frex)
+    g_width <- seq(n_cycles[1],
+                   n_cycles[2],
+                   length.out = n_freq) / (2 * pi * frex)
   }
 
   t_by_f <- matrix(wavtime,
                    nrow = length(wavtime),
                    ncol = length(frex))
 
-  c_sine <- 2 * 1i * pi * sweep(t_by_f, 2, frex, "*")
-  gaussians <- sweep(t_by_f ^ 2, 2, 2 * g_width ^ 2, "/")
+  c_sine <- 2 * 1i * pi * sweep(t_by_f,
+                                2,
+                                frex,
+                                "*")
+  gaussians <- sweep(t_by_f ^ 2,
+                     2,
+                     2 * g_width ^ 2,
+                     "/")
   m_family <- exp(c_sine - gaussians)
   m_family
 }
@@ -304,10 +321,17 @@ fft_n <- function(signal, n) {
 #' @importFrom stats mvfft
 #' @noRd
 
-conv_mor <- function(morlet_fam, signal, n, wavtime, srate) {
-  sigX <- fft_n(as.matrix(signal), n)
+conv_mor <- function(morlet_fam,
+                     signal,
+                     n,
+                     wavtime,
+                     srate) {
+  sigX <- fft_n(as.matrix(signal),
+                n)
 
-  tf_matrix <- array(dim = c(nrow(sigX), ncol(signal), ncol(morlet_fam)))
+  tf_matrix <- array(dim = c(nrow(sigX),
+                             ncol(signal),
+                             ncol(morlet_fam)))
 
   for (i in 1:ncol(signal)) {
     tf_matrix[, i, ] <- mvfft(sigX[, i] * morlet_fam, inverse = TRUE) / srate
@@ -318,7 +342,6 @@ conv_mor <- function(morlet_fam, signal, n, wavtime, srate) {
   tf <- abs(tf) * 2
   tf
 }
-
 
 #' Compute Time-Frequency representation of EEG data
 #'
@@ -341,7 +364,6 @@ compute_tfr.default <- function(data, ...) {
   warning("compute_tfr requires data in eeg_epochs format.")
 }
 
-
 #' @param method Time-frequency analysis method. Defaults to "morlet".
 #' @param foi Frequencies of interest. Scalar or character vector of the lowest
 #'   and highest frequency to resolve.
@@ -351,7 +373,8 @@ compute_tfr.default <- function(data, ...) {
 #' @describeIn compute_tfr Default method for compute_tfr
 #' @export
 
-compute_tfr.eeg_epochs <- function(data, method = "morlet",
+compute_tfr.eeg_epochs <- function(data,
+                                   method = "morlet",
                                    foi,
                                    n_freq,
                                    n_cycles = 7,
@@ -375,34 +398,42 @@ compute_tfr.eeg_epochs <- function(data, method = "morlet",
 #' @param keep_trials Keep single trials or average over them before returning.
 #' @importFrom abind abind
 #' @noRd
-tf_morlet <- function(data, foi, n_freq, n_cycles = 7, keep_trials = TRUE) {
+tf_morlet <- function(data,
+                      foi,
+                      n_freq,
+                      n_cycles = 7,
+                      keep_trials = TRUE) {
 
   if (length(foi) > 2) {
     stop("No more than two frequencies should be specified.")
   } else if (length(foi) == 2) {
-    foi <- c(min(foi), max(foi))
+    foi <- c(min(foi),
+             max(foi))
   }
 
   wavtime <- unique(data$timings$time)
-
   morlet_family <- morlet(frex = foi,
                           n_freq = n_freq,
                           wavtime = wavtime,
                           n_cycles = n_cycles
                           )
 
-  data$signals <- split(data$signals, data$timings$epoch)
+  data$signals <- split(data$signals,
+                        data$timings$epoch)
   max_length <- nrow(data$signals[[1]])
   n_kern <- length(wavtime)
   n_conv <- max_length + n_kern - 1
 
   # zero-pad and run FFTs on morlets
-  mf_zp <- fft_n(morlet_family, n_conv)
+  mf_zp <- fft_n(morlet_family,
+                 n_conv)
 
   # Normalise wavelets:
   # 1) get the index for the absolute maximum
   # 2) divide each wavelet by its absolute maximum
-  mf_zp_maxes <- apply(abs(mf_zp), 2, which.max)
+  mf_zp_maxes <- apply(abs(mf_zp),
+                       2,
+                       which.max)
   mf_zp_maxes <- lapply(seq_along(mf_zp_maxes),
                   function(x) mf_zp[mf_zp_maxes[[x]], x])
   norm_mf <- matrix(unlist(lapply(seq_along(mf_zp_maxes),
@@ -430,5 +461,4 @@ tf_morlet <- function(data, foi, n_freq, n_cycles = 7, keep_trials = TRUE) {
                             mean)
       data
     }
-
 }

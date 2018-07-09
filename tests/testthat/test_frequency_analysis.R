@@ -6,8 +6,8 @@ test_epo <- epoch_data(test_data, 255)
 
 test_that("PSD computation runs correctly.", {
   test_psd <- compute_psd(test_data)
-  expect_known_hash(test_psd, "f6c17ba5ef")
+  expect_known_hash(test_psd, "969f801939")
   test_epo_psd <- compute_psd(test_epo)
   expect_equal(length(unique(test_epo_psd$epoch)), 39)
-  expect_equal(length(unique(test_epo_psd$frequency)), 129)
+  expect_equal(length(unique(test_epo_psd$frequency)), 128)
 })

@@ -3,12 +3,14 @@
 #' @param data Object of class \code{eeg_epochs}
 #' @param ... Additional parameters
 #' @author Matt Craddock, \email{matt@@mattcraddock.com}
+#' @export
 plot_psd <- function(data, freq_range = NULL, ...) {
   UseMethod("plot_psd", data)
 }
 
 #' @param freq_range Vector of lower and upper frequencies to plot. (e.g. c(1, 40))
 #' @describeIn plot_psd Plot PSDs for \code{eeg_epochs}.
+#' @export
 plot_psd.eeg_epochs <- function(data, freq_range = NULL, ...) {
 
   psd_out <- compute_psd(data, keep_trials = FALSE, n_fft = 512)
@@ -37,6 +39,7 @@ plot_psd.eeg_epochs <- function(data, freq_range = NULL, ...) {
 }
 
 #' @describeIn plot_psd Plot PSDs for \code{eeg_epochs}.
+#' @export
 plot_psd.eeg_data <- function(data, freq_range = NULL, ...) {
 
   psd_out <- compute_psd(data, n_fft = 512)
@@ -63,3 +66,4 @@ plot_psd.eeg_data <- function(data, freq_range = NULL, ...) {
     geom_line() +
     theme_bw()
 }
+

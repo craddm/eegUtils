@@ -4,6 +4,7 @@
 \alias{erp_image}
 \alias{erp_image.default}
 \alias{erp_image.eeg_epochs}
+\alias{erp_image.eeg_ICA}
 \title{Plot ERP images}
 \usage{
 erp_image(data, electrode = "Cz", smoothing = 10, clim = NULL)
@@ -12,6 +13,9 @@ erp_image(data, electrode = "Cz", smoothing = 10, clim = NULL)
   clim = NULL)
 
 \method{erp_image}{eeg_epochs}(data, electrode = "Cz", smoothing = 10,
+  clim = NULL)
+
+\method{erp_image}{eeg_ICA}(data, electrode = "V1", smoothing = 10,
   clim = NULL)
 }
 \arguments{
@@ -33,6 +37,8 @@ order to make across-trial patterns more apparent.
 \item \code{default}: Default function operates on normal data frames
 
 \item \code{eeg_epochs}: Create an \code{erp_image} from \code{eeg_epochs}
+
+\item \code{eeg_ICA}: \code{eeg_ICA}
 }}
 
 \author{

@@ -9,10 +9,10 @@
 compute_psd(data, ...)
 
 \method{compute_psd}{eeg_data}(data, seg_length = NULL, noverlap = 0,
-  n_fft = 256, srate = NULL, method = "Welch")
+  n_fft = 256, srate = NULL, method = "Welch", ...)
 
 \method{compute_psd}{eeg_epochs}(data, seg_length = NULL, noverlap = 0,
-  n_fft = 256, srate = NULL, method = "Welch", keep_trials = TRUE)
+  n_fft = 256, srate = NULL, method = "Welch", keep_trials = TRUE, ...)
 }
 \arguments{
 \item{data}{Data to be plotted. Accepts objects of class \code{eeg_data}}

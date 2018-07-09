@@ -49,11 +49,32 @@ erp_image.eeg_epochs <- function(data,
                       electrode = "Cz",
                       smoothing = 10,
                       clim = NULL) {
-
+  if (!electrode %in% names(data$signals)) {
+    stop("Specified electrode not found.")
+  }
   data <- select_elecs(data,
                        electrode = electrode)
   data <- as.data.frame(data,
                           long = TRUE)
+  create_erpimage(data,
+                  electrode = electrode,
+                  smoothing = smoothing,
+                  clim = clim)
+}
+
+#' @describeIn erp_image \code{eeg_ICA}
+#' @export
+erp_image.eeg_ICA <- function(data,
+                              electrode = "V1",
+                              smoothing = 10,
+                              clim = NULL) {
+  if (!electrode %in% names(data$signals)) {
+    stop("Specified component not found.")
+  }
+  data <- select_elecs(data,
+                       electrode = electrode)
+  data <- as.data.frame(data,
+                        long = TRUE)
   create_erpimage(data,
                   electrode = electrode,
                   smoothing = smoothing,

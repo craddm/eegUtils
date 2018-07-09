@@ -4,6 +4,9 @@
 - `topoplot()` added highlights parameter to allow specific electrodes to be highlighted.
 - `run_ICA()` now offers extended Infomax and Fastica thanks to the `ica` package
 - `plotly` is now a "suggested" package rather than a dependency
+- `plot_psd()` function added to calculate and plot the PSD for `eeg_epochs` and `eeg_data` objects
+- `erp_image()` now works with `eeg_ICA` objects
+- Generic print methods added for `eeg_epochs` and `eeg_data`
 
 ### Internal changes/ bug fixes
 - `reref_eeg()` correctly excludes multiple named electrodes (i.e. passed as characters rather than numbers), where it previously silently failed.
@@ -11,6 +14,11 @@
 - `compute_psd` recoded to call `welch_fft()` in order to support possibility of different FFT methods.
 - `welch_fft()` internal function added
 - `eeg_downsample()` now makes sure epoch length is a multiple of the downsampling factor to avoid problems with timing jitter
+- `erp_image()` is now an S3 method
+- `copmute_psd` now drops the DC component (frequency 0)
+- `run_ICA()` 
+    - now returns source activations as a "signals" data frame, with component names
+    - now returns correct unmixing matrix
 
 # eegUtils 0.2.0
 
