@@ -424,7 +424,7 @@ eeg_downsample.eeg_data <- function(data, q, ...) {
     message("Dropping ",
             data_length,
             " time points to make n of samples a multiple of q.")
-    new_times <- head(unique(data$timings$time),
+    new_times <- utils::head(unique(data$timings$time),
                       -data_length)
     data <- select_times(data,
                          time_lim = c(min(new_times),
