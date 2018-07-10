@@ -108,14 +108,14 @@ reref_eeg.eeg_data <- function(data,
       stop("Electrode(s) not found.")
     }
   }
-
-    data$signals <- tibble::as_tibble(data$signals)
-
-    if (ref_chans == "average") {
-      data$reference <- list(ref_chans = ref_chans, ref_data = ref_data,
-                             excluded = excluded)
+  data$signals <- as.data.frame(data$signals)
+  if (ref_chans == "average") {
+    data$reference <- list(ref_chans = ref_chans,
+                           ref_data = ref_data,
+                           excluded = excluded)
     } else {
-      data$reference <- list(ref_chans = ref_chans, ref_data = ref_data,
+      data$reference <- list(ref_chans = ref_chans,
+                             ref_data = ref_data,
                              excluded = excluded)
       data <- select_elecs(data, ref_chans, keep = FALSE)
       }

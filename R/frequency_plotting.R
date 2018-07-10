@@ -1,6 +1,9 @@
 #' Plot power spectral density
 #'
+#' Calculate and plot the PSD for \code{eeg_*} objects. Output units are dB.
+#'
 #' @param data Object of class \code{eeg_epochs}
+#' @param freq_range Vector of lower and upper frequencies to plot. (e.g. c(1, 40))
 #' @param ... Additional parameters
 #' @author Matt Craddock, \email{matt@@mattcraddock.com}
 #' @export
@@ -8,7 +11,6 @@ plot_psd <- function(data, freq_range = NULL, ...) {
   UseMethod("plot_psd", data)
 }
 
-#' @param freq_range Vector of lower and upper frequencies to plot. (e.g. c(1, 40))
 #' @describeIn plot_psd Plot PSDs for \code{eeg_epochs}.
 #' @export
 plot_psd.eeg_epochs <- function(data, freq_range = NULL, ...) {
@@ -35,7 +37,9 @@ plot_psd.eeg_epochs <- function(data, freq_range = NULL, ...) {
              y = power,
              colour = electrode)) +
     geom_line() +
-    theme_bw()
+    theme_bw() +
+    ylab("Decibels (10 * log10(uV^2 / Hz)") +
+    xlab("Frequency (Hz)")
 }
 
 #' @describeIn plot_psd Plot PSDs for \code{eeg_epochs}.
@@ -64,7 +68,11 @@ plot_psd.eeg_data <- function(data, freq_range = NULL, ...) {
              y = power,
              colour = electrode)) +
     geom_line() +
-    theme_bw()
+    theme_bw() +
+    ylab("Decibels (10 * log10(uV^2 / Hz)") +
+    xlab("Frequency (Hz)")
+
+
 }
 
 #' plot tfr objects

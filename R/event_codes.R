@@ -66,12 +66,12 @@ tag_events.eeg_epochs <- function(data,
 #' List trigger types and any labels found in an \code{eeg_data} object.
 #'
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
-#'
 #' @param data An object of class \code{eeg_data}
-#'
+#' @examples
+#' list_events(demo_epochs)
 #' @export
-#'
 #' @family event handlers
+#' @seealso \code{\link{tag_events}} and \code{\link{list_epochs}}
 
 list_events <- function(data) {
   if (!is.eeg_data(data)) {
@@ -96,6 +96,7 @@ list_events <- function(data) {
 #' @param ... Additional arguments
 #' @export
 #' @family event handlers
+#' @seealso \code{\link{tag_events}} and \code{\link{list_events}}
 
 list_epochs <- function(data, ...) {
   UseMethod("list_epochs", data)

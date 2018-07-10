@@ -20,7 +20,7 @@ plot_psd(data, freq_range = NULL, ...)
 \item{...}{Additional parameters}
 }
 \description{
-Plot power spectral density
+Calculate and plot the PSD for \code{eeg_*} objects. Output units are dB.
 }
 \section{Methods (by class)}{
 \itemize{

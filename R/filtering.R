@@ -35,7 +35,6 @@ iir_filt.default <- function(data, ...) {
 #' @importFrom purrr map_df
 #' @export
 #' @describeIn iir_filt Filter a data frame
-#'
 
 iir_filt.data.frame <- function(data,
                                 low_freq = NULL,
