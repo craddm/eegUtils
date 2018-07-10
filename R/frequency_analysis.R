@@ -238,110 +238,6 @@ split_vec <- function(vec, seg_length, overlap) {
     lapply(seq_along(starts), function(i) vec[starts[i]:ends[i]])
 }
 
-#' Morlet wavelet
-#'
-#' Generate Morlet wavelet family
-#'
-#' @param frex Frequency range of interest
-#' @param wavtime Times at which to place a wavelet
-#' @param n_cycles Length of wavelet in cycles
-#' @param n_freq number of frequencies to resolve
-#' @noRd
-
-morlet <- function(frex,
-                   wavtime,
-                   n_cycles = 7,
-                   n_freq = 30) {
-
-  frex <- seq(frex[1],
-              frex[2],
-              length.out = n_freq)
-
-  # widths of Gaussian
-  if (length(n_cycles) == 1) {
-    g_width <- n_cycles / (2 * pi * frex)
-  } else {
-    g_width <- seq(n_cycles[1],
-                   n_cycles[2],
-                   length.out = n_freq) / (2 * pi * frex)
-  }
-
-  t_by_f <- matrix(wavtime,
-                   nrow = length(wavtime),
-                   ncol = length(frex))
-
-  c_sine <- 2 * 1i * pi * sweep(t_by_f,
-                                2,
-                                frex,
-                                "*")
-  gaussians <- sweep(t_by_f ^ 2,
-                     2,
-                     2 * g_width ^ 2,
-                     "/")
-  m_family <- exp(c_sine - gaussians)
-  m_family
-}
-
-#' N-point FFT
-#'
-#' Either zero-pads or truncates a signal to N and runs an FFT
-#'
-#' @param signal signal to be FFT'd
-#' @param n Number of FFT points
-#' @noRd
-
-fft_n <- function(signal, n) {
-
-  if (is.vector(signal)) {
-    if (length(signal) < n) {
-      signal_n <- c(signal, rep(0, n - length(signal)))
-      } else {
-        signal_n <- signal[1:n]
-      }
-    fft(signal_n)
-  } else {
-    if (nrow(signal) < n) {
-      signal_n <- matrix(0, nrow = n, ncol = ncol(signal))
-      signal_n[1:nrow(signal), ] <- signal
-    } else {
-      signal_n <- signal[1:n, ]
-    }
-    mvfft(as.matrix(signal_n))
-  }
-
-}
-
-#' Convolve with morlets
-#'
-#' @param morlet_fam family of morlet wavelets
-#' @param signal signal to be convolved
-#' @param n points for FFT
-#' @param wavtime time points
-#' @param srate Sampling rate of the signal
-#' @importFrom stats mvfft
-#' @noRd
-
-conv_mor <- function(morlet_fam,
-                     signal,
-                     n,
-                     wavtime,
-                     srate) {
-  sigX <- fft_n(as.matrix(signal),
-                n)
-
-  tf_matrix <- array(dim = c(nrow(sigX),
-                             ncol(signal),
-                             ncol(morlet_fam)))
-
-  for (i in 1:ncol(signal)) {
-    tf_matrix[, i, ] <- mvfft(sigX[, i] * morlet_fam, inverse = TRUE) / srate
-  }
-
-  nHfkn <- floor(length(wavtime) / 2) + 1
-  tf <- tf_matrix[nHfkn:(nrow(tf_matrix) - nHfkn + 1), , ]
-  tf <- abs(tf) * 2
-  tf
-}
 
 #' Compute Time-Frequency representation of EEG data
 #'
@@ -352,14 +248,13 @@ conv_mor <- function(morlet_fam,
 #' @param data An object of class \code{eeg_epochs}.
 #' @param ... Furthere TFR parameters
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
-#' @export
 
 compute_tfr <- function(data, ...) {
   UseMethod("compute_tfr", data)
 }
 
 #' @describeIn compute_tfr Default method for compute_tfr
-#' @export
+
 compute_tfr.default <- function(data, ...) {
   warning("compute_tfr requires data in eeg_epochs format.")
 }
@@ -371,7 +266,6 @@ compute_tfr.default <- function(data, ...) {
 #' @param n_cycles Number of cycles at each frequency.
 #' @param keep_trials Keep single trials or average over them before returning.
 #' @describeIn compute_tfr Default method for compute_tfr
-#' @export
 
 compute_tfr.eeg_epochs <- function(data,
                                    method = "morlet",
@@ -400,7 +294,7 @@ compute_tfr.eeg_epochs <- function(data,
 #' @noRd
 tf_morlet <- function(data,
                       foi,
-                      n_freq,
+                      n_freq = 10,
                       n_cycles = 7,
                       keep_trials = TRUE) {
 
@@ -411,8 +305,16 @@ tf_morlet <- function(data,
              max(foi))
   }
 
+  data <- rm_baseline(data)
+  elecs <- names(data$signals)
+  frex <- seq(foi[1], foi[2], length.out = n_freq)
+  mod_frex <- frex %% 1
+  freq_res <- min(mod_frex[mod_frex > 0])
+  fft_points <- ceiling(data$srate / freq_res)
   wavtime <- unique(data$timings$time)
+  sigtime <- unique(data$timings$time)
   morlet_family <- morlet(frex = foi,
+                          srate = data$srate,
                           n_freq = n_freq,
                           wavtime = wavtime,
                           n_cycles = n_cycles
@@ -421,8 +323,10 @@ tf_morlet <- function(data,
   data$signals <- split(data$signals,
                         data$timings$epoch)
   max_length <- nrow(data$signals[[1]])
-  n_kern <- length(wavtime)
+  n_kern <- fft_points
   n_conv <- max_length + n_kern - 1
+  #if ((n_conv / 2) %% 1 > 0) {
+   # ceiling((max_length + n_kern - 1) / 2) * 2
 
   # zero-pad and run FFTs on morlets
   mf_zp <- fft_n(morlet_family,
@@ -454,11 +358,131 @@ tf_morlet <- function(data,
                     foi[2],
                     length.out = n_freq)
   if (keep_trials) {
+    dimnames(data$signals) <- list(sigtime,
+                                   elecs,
+                                   data$freqs,
+                                   unique(data$timings$epoch))
     data
   } else {
       data$signals <- apply(data$signals,
                             c(1, 2, 3),
                             mean)
+      dimnames(data$signals) <- list(sigtime,
+                                     elecs,
+                                     data$freqs)
       data
     }
+}
+
+#' Morlet wavelet
+#'
+#' Generate Morlet wavelet family
+#'
+#' @param frex Frequency range of interest
+#' @param wavtime Times at which to place a wavelet
+#' @param n_cycles Length of wavelet in cycles
+#' @param n_freq number of frequencies to resolve
+#' @noRd
+
+morlet <- function(frex,
+                   wavtime,
+                   srate,
+                   n_cycles,
+                   n_freq) {
+
+  frex <- seq(frex[1],
+              frex[2],
+              length.out = n_freq)
+  frac_freq <- (frex %% 1)
+  required_res <- min(frac_freq[frac_freq > 0])
+  n_points <- srate / required_res
+
+  orig_wavtime <- wavtime
+  #n_points <- length(orig_wavtime)
+  #n_points <- 512
+  wavtime <- seq(0, 1 / srate * n_points, by = 1 / srate)
+  wavtime <- wavtime - median(wavtime)
+  # widths of Gaussian
+  if (length(n_cycles) == 1) {
+    g_width <- n_cycles / (2 * pi * frex)
+  } else {
+    g_width <- seq(n_cycles[1],
+                   n_cycles[2],
+                   length.out = n_freq) / (2 * pi * frex)
+  }
+
+  t_by_f <- matrix(wavtime,
+                   nrow = length(wavtime),
+                   ncol = length(frex))
+  c_sine <- 2 * 1i * pi * sweep(t_by_f,
+                                2,
+                                frex,
+                                "*")
+  gaussians <- sweep(t_by_f ^ 2,
+                     2,
+                     2 * g_width ^ 2,
+                     "/")
+  m_family <- exp(c_sine - gaussians)
+  m_family
+}
+
+#' N-point FFT
+#'
+#' Either zero-pads or truncates a signal to N and runs an FFT
+#'
+#' @param signal signal to be FFT'd
+#' @param n Number of FFT points
+#' @noRd
+
+fft_n <- function(signal, n) {
+
+  if (is.vector(signal)) {
+    if (length(signal) < n) {
+      signal_n <- c(signal, rep(0, n - length(signal)))
+    } else {
+      signal_n <- signal[1:n]
+    }
+    fft(signal_n)
+  } else {
+    if (nrow(signal) < n) {
+      signal_n <- matrix(0, nrow = n, ncol = ncol(signal))
+      signal_n[1:nrow(signal), ] <- signal
+    } else {
+      signal_n <- signal[1:n, ]
+    }
+    mvfft(as.matrix(signal_n))
+  }
+
+}
+
+#' Convolve with morlets
+#'
+#' @param morlet_fam family of morlet wavelets
+#' @param signal signal to be convolved
+#' @param n points for FFT
+#' @param wavtime time points
+#' @param srate Sampling rate of the signal
+#' @importFrom stats mvfft
+#' @noRd
+
+conv_mor <- function(morlet_fam,
+                     signal,
+                     n,
+                     wavtime,
+                     srate) {
+
+  sigX <- fft_n(as.matrix(signal),
+                n)
+  tf_matrix <- array(dim = c(nrow(sigX),
+                             ncol(signal),
+                             ncol(morlet_fam)))
+  for (i in 1:ncol(signal)) {
+    tf_matrix[, i, ] <- mvfft(sigX[, i] * morlet_fam, inverse = TRUE) / srate
+  }
+
+  nkern <- n - nrow(signal) + 1
+  nHfkn <- floor(nkern / 2) + 1
+  tf <- tf_matrix[nHfkn:(nrow(tf_matrix) - nHfkn + 1), , ]
+  tf <- abs(tf) * 2
+  tf
 }

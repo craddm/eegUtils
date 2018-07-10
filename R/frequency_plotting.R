@@ -67,3 +67,29 @@ plot_psd.eeg_data <- function(data, freq_range = NULL, ...) {
     theme_bw()
 }
 
+#' plot tfr objects
+#' @param data object of class eeg_tfr
+#' @noRd
+plot_tfr <- function(data, electrode, ...) {
+  if (!class(data) == "eeg_tfr") {
+    stop("Object of class eeg_tfr required.")
+  }
+  #length(dim(data$signals))
+
+  if (electrode %in% dimnames(data$signals)[[2]]) {
+    aa <- as.data.frame.table(data$signals[, electrode, ],
+                              stringsAsFactors = FALSE)
+    names(aa) <- c("time", "frequency", "power")
+    aa$time <- as.numeric(aa$time)
+    aa$frequency <- as.numeric(aa$frequency)
+    aa$power <- as.numeric(aa$power)
+    #aa <- tidyr::gather(aa, frequency, power, -time)
+    ggplot2::ggplot(aa, aes(x = time,
+                            y = frequency,
+                            fill = power)) +
+      geom_raster(interpolate = TRUE)
+  } else {
+    stop("Electrode not found.")
+  }
+
+}
