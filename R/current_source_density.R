@@ -151,9 +151,13 @@ compute_g <- function(xyz_coords,
 
 #' Calculate current source density
 #'
+#' @param data eeg_data object
+#' @param m smoothing constraint (higher = more rigid)
+#' @param smoothing lambda constant
+#' @param scaling Unsure - don't think my coords are typically on unit sphere...
 #' @noRd
 
-compute_csd <- function(data, m = 4, smoothing = 1e-05) {
+compute_csd <- function(data, m = 4, smoothing = 1e-05, scaling = 10) {
 
   orig_elecs <- names(data$signals)
   data_chans <- toupper(names(data$signals)) %in% toupper(data$chan_info$electrode)
@@ -183,7 +187,7 @@ compute_csd <- function(data, m = 4, smoothing = 1e-05) {
                   m = m)
   diag(aa) <- diag(aa) + smoothing
   aa_inv <- solve(aa)
-  ag <- rowSums(aa_inv)
+  ag <- colSums(aa_inv)
   ag_tot <- sum(ag)
   new_sig <- as.matrix(data$signals[, data_chans])
   bb <- t(apply(new_sig,
@@ -194,14 +198,14 @@ compute_csd <- function(data, m = 4, smoothing = 1e-05) {
   #bd <- bc %*% t(ab)
   be <- t(apply(bc,
                 1,
-                function(x) rowSums(x * t(ab))))
+                function(x) rowSums(x * ab)) / scaling)
   data$signals[, data_chans] <- as.data.frame(be)
   names(data$signals) <- orig_elecs
   data
 }
 
 
-#' Compute the g function for two sets of locations of channel locations on the
+#' Compute the h function for two sets of locations of channel locations on the
 #' unit sphere.
 #'
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
@@ -210,12 +214,14 @@ compute_csd <- function(data, m = 4, smoothing = 1e-05) {
 #' @param xyz_elecs A set of electrode locations on a unit sphere.
 #' @param m Interpolation constant (higher = less flexible)
 #' @param lambda smoothing parameter
+#' @param iter iterations for calculations
 #' @importFrom pracma legendre
 #' @noRd
 
 compute_h <- function(xyz_coords,
                       xyz_elecs,
-                      m = 4) {
+                      m = 4,
+                      iter = 50) {
 
   EI <- 1 - sqrt((matrix(rep(xyz_coords[, 1],
                              nrow(xyz_elecs)),
@@ -238,7 +244,7 @@ compute_h <- function(xyz_coords,
 
   dim(EI) <- c(nrow(xyz_coords), nrow(xyz_elecs))
 
-  g <- 0
+  g <- matrix(0, ncol = ncol(EI), nrow = (EI))
 
   for (i in seq(1, 7)) {
     poly_xy <- pracma::legendre(i, EI)
@@ -248,9 +254,9 @@ compute_h <- function(xyz_coords,
     g <- g + ((2 * i + 1) / (i ^ m * (i + 1) ^ m)) * poly_xy[1, , ]
   }
 
-  h <- 0
+  h <- matrix(0, ncol = ncol(EI), nrow = (EI))
 
-  for (i in seq(1, 7)) {
+  for (i in seq(1, iter)) {
     poly_xy <- pracma::legendre(i, EI)
     dim(poly_xy) <- c(i + 1,
                       nrow(EI),
@@ -259,5 +265,5 @@ compute_h <- function(xyz_coords,
   }
 
   g <- g / (4 * pi)
-  h <- h / (4 * pi)
+  h <- -h / (4 * pi)
 }
