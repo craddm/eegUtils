@@ -112,7 +112,8 @@ topoplot.data.frame <- function(data, time_lim = NULL, limits = NULL,
   } else if (!is.null(chanLocs)) {
     if (length(grep("^x$|^y$", colnames(chanLocs))) > 1) {
       data$electrode <- toupper(data$electrode)
-      data <- dplyr::left_join(data, chanLocs, by = "electrode")
+      chanLocs$electrode <- toupper(chanLocs$electrode)
+      data <- merge(data, chanLocs)
       if (any(is.na(data$x))) {
         data <- data[!is.na(data$x), ]
         }
@@ -131,7 +132,10 @@ topoplot.data.frame <- function(data, time_lim = NULL, limits = NULL,
   x <- NULL
   y <- NULL
   electrode <- NULL
-  data <- dplyr::summarise(dplyr::group_by(data, x, y, electrode),
+  data <- dplyr::summarise(dplyr::group_by(data,
+                                           x,
+                                           y,
+                                           electrode),
                            z = mean(!!rlang::parse_quosure(quantity)))
 
   # Cut the data frame down to only the necessary columns, and make sure it has

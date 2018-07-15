@@ -2,8 +2,16 @@ context("Test channel management functions")
 
 temp_chans <- import_chans("standard_1005.elc")
 
-expected_names <- c("electrode", "cart_x", "cart_y", "cart_z", "sph_radius", "sph_phi",
-                    "sph_theta", "pol_theta", "pol_radius", "angle", "radius", "x",
+expected_names <- c("electrode",
+                    "cart_x",
+                    "cart_y",
+                    "cart_z",
+                    "sph_radius",
+                    "sph_phi",
+                    "sph_theta",
+                    "angle",
+                    "radius",
+                    "x",
                     "y")
 test_that("Import from .elc yields expected file format", {
   expect_equal(expected_names, names(temp_chans))

@@ -4,6 +4,7 @@
 #'
 #' @param file_name name and full path of file to be loaded
 #' @export
+
 import_chans <- function(file_name) {
   file_type <- tools::file_ext(file_name)
   if (file_type == "elc") {
@@ -18,29 +19,33 @@ import_chans <- function(file_name) {
 #' Loads and process ASA electrode locations.
 #'
 #' @param file_name file name
-#' @noRd
+#' @keywords internal
 
 import_elc <- function(file_name) {
   raw_locs <- readLines(file_name, n = -1)
   n_elecs <- grep("NumberPositions", raw_locs)
   n_elecs <- as.numeric(unlist(strsplit(raw_locs[n_elecs], "\t"))[2])
   pos_loc <- grep("^Positions", raw_locs)
-  pos <- raw_locs[seq(pos_loc + 1, pos_loc + n_elecs)]
+  pos <- raw_locs[seq(pos_loc + 1,
+                      pos_loc + n_elecs)]
   labs_loc <- grep("Labels", raw_locs)
   labs <- raw_locs[seq(labs_loc + 1, labs_loc + n_elecs)]
 
   pos <- strsplit(pos, " ")
-  pos <- lapply(pos, function(x) as.numeric(x[!x == ""]))
+  pos <- lapply(pos,
+                function(x) as.numeric(x[!x == ""]))
   pos <- as.data.frame(do.call("rbind", pos))
-  sph_pos <- cart_to_sph(pos[, 1], pos[, 2], pos[, 3])
-  topo_pos <- sph_to_topo(sph_pos[, 2], sph_pos[, 3])
-
-  pol_pos <- cart_to_pol(pos[, 1], pos[, 2])
-  names(pos) <- c("cart_x", "cart_y", "cart_z")
+  sph_pos <- cart_to_sph(pos[, 1],
+                         pos[, 2],
+                         pos[, 3])
+  topo_pos <- sph_to_topo(sph_pos[, 2],
+                          sph_pos[, 3])
+  names(pos) <- c("cart_x",
+                  "cart_y",
+                  "cart_z")
   final_locs <- data.frame(electrode = labs,
                            pos,
                            sph_pos,
-                           pol_pos,
                            topo_pos)
   final_locs$x <- final_locs$radius * cos(final_locs$angle / 180 * pi)
   final_locs$y <- final_locs$radius * sin(final_locs$angle / 180 * pi)
@@ -54,10 +59,9 @@ import_elc <- function(file_name) {
 #' @param y Y co-ordinates
 #' @param z z co-ordinates
 #' @return Data frame with entries "sph_radius", "sph_phi" (in degrees), "sph_theta" (in degrees).
-#' @noRd
+#' @keywords internal
 
 cart_to_sph <- function(x, y, z) {
-
   hypo <- sqrt(abs(x) ^ 2 + abs(y) ^ 2)
   radius <- sqrt(abs(hypo) ^ 2 + abs(z) ^ 2) # spherical radius
   phi <- atan2(z, hypo) / pi * 180 # spherical phi in degrees
@@ -78,7 +82,7 @@ cart_to_pol <- function(x, y) {
   data.frame(pol_theta = theta, pol_radius = radius)
 }
 
-#' Convert polar to spherical coordinates
+#' Convert EEGLAB polar to spherical coordinates
 #'
 #' Hard-coded to a radius of 85 mm (as in BESA).
 #'
@@ -105,6 +109,7 @@ pol_to_sph <- function(theta, phi) {
 }
 
 #' Convert spherical to topographical co-ordinates
+#'
 #' @param phi Phi
 #' @param theta Theta
 #' @noRd
@@ -114,6 +119,91 @@ sph_to_topo <- function(phi, theta) {
   data.frame(angle, radius)
 }
 
+#' Convert spherical to cartesian 3d
+#'
+#' @noRd
+sph_to_cart <- function(theta, phi, r) {
+  z <- r * sin(phi)
+  x <- r * cos(phi) * cos(theta)
+  y <- r * cos(phi) * sin(theta)
+  data.frame(cart_x = x, cart_y = y, cart_z = z)
+}
+#' Convert topographical 2d to cartesian 2d
+#'
+#' @noRd
+
+topo_norm <- function(angle, radius) {
+  x <- radius * cos(angle / 180 * pi)
+  y <- radius * sin(angle / 180 * pi)
+  data.frame(x, y)
+}
+
+#' Rotate channel locations
+#'
+#' @param chan_info channel information structure
+#' @param degrees degrees by which to rotate
+#' @noRd
+
+rotate_angle <- function(chan_info, degrees) {
+
+  degrees <- degrees * pi / 180
+  if ("CZ" %in% chan_info$electrode) {
+    cent_x <- chan_info[toupper(chan_info$electrode) == "Cz", ]$x
+    cent_y <- chan_info[toupper(chan_info$electrode) == "Cz", ]$y
+  } else {
+    cent_x <- 0
+    cent_y <- 0
+  }
+
+  chan_info$x <- chan_info$x - cent_x
+  chan_info$y <- chan_info$y - cent_y
+  rot_x <- cent_x + cos(degrees) * chan_info$x - sin(degrees) * chan_info$y
+  rot_y <- cent_y + sin(degrees) * chan_info$x + cos(degrees) * chan_info$y
+  chan_info$x <- rot_x
+  chan_info$y <- rot_y
+  chan_info
+}
+
+#' Rotate spherical coordinates and recalculate others
+#'
+#' @param chan_info channel information structure
+#' @param degrees degrees by which to rotate elecs
+#' @keywords internal
+rotate_sph <- function(chan_info, degrees) {
+  chan_info$sph_theta <- chan_info$sph_theta + degrees
+  chan_info$sph_theta <- ifelse(chan_info$sph_theta > 180,
+                            chan_info$sph_theta - 360,
+                            chan_info$sph_theta)
+  chan_info$sph_theta <- ifelse(chan_info$sph_theta < -180,
+                                chan_info$sph_theta + 360,
+                                chan_info$sph_theta)
+  topo_pos <- sph_to_topo(chan_info$sph_theta,
+                          phi = chan_info$sph_phi)
+  chan_info$angle <- topo_pos[, 1]
+  chan_info$radius <- topo_pos[, 2]
+  cart_sph <- pol_to_sph(chan_info$angle,
+                         phi = chan_info$radius)
+  chan_info$cart_x <- cart_sph[, 1]
+  chan_info$cart_y <- cart_sph[, 2]
+  chan_info$cart_z <- cart_sph[, 3]
+  chan_info$x <- chan_info$radius * cos(chan_info$angle / 180 * pi)
+  chan_info$y <- chan_info$radius * sin(chan_info$angle / 180 * pi)
+  chan_info
+}
+
+
+#' Flip x-axis coords
+#'
+#' @param chan_info chan-info structure
+#' @keywords internal
+
+flip_x <- function(chan_info) {
+  chan_info$cart_x <- chan_info$cart_x * -1
+  chan_info$x <- chan_info$x * -1
+  chan_info$angle <- chan_info$angle * -1
+  chan_info$sph_theta <- chan_info$sph_theta * -1
+  chan_info
+}
 #' Get standard electrode locations
 #'
 #' Joins standard electrode locations to EEG data from eegUtils internal data.
@@ -328,6 +418,7 @@ plot_electrodes.eeg_data <- function(data,
 
 #' Montage check
 #'
+#' @param montage Name of montage
 #' @noRd
 
 montage_check <- function(montage) {

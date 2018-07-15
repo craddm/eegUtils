@@ -283,12 +283,11 @@ import_set <- function(file_name, df_out = FALSE) {
   chan_info <- temp_dat$EEG[[which(var_names == "chanlocs")]]
   col_names <- dimnames(chan_info)[1]
   size_chans <- dim(chan_info)
-  chan_info <- lapply(chan_info, function(x) ifelse(purrr::is_empty(x), NA, x))
+  chan_info <- lapply(chan_info,
+                      function(x) ifelse(purrr::is_empty(x), NA, x))
   dim(chan_info) <- size_chans
   dimnames(chan_info) <- col_names
-  chan_info <- tibble::as_tibble(t(as.data.frame(chan_info)))
-  chan_info <- tibble::as_tibble(data.frame(lapply(chan_info, unlist),
-                                            stringsAsFactors = FALSE))
+  chan_info <- parse_chaninfo(chan_info)
 
   # check if the data is stored in the set or in a separate .fdt
   if (is.character(temp_dat$EEG[[which(var_names == "data")]])) {
@@ -331,7 +330,7 @@ import_set <- function(file_name, df_out = FALSE) {
 
   signals <- data.frame(cbind(t(signals), times))
   srate <- c(temp_dat$EEG[[which(var_names == "srate")]])
-  names(signals) <- c(unique(chan_info$labels), "time")
+  names(signals) <- c(unique(chan_info$electrode), "time")
   signals <- dplyr::group_by(signals, time)
   signals <- dplyr::mutate(signals, epoch = 1:n())
   signals <- dplyr::ungroup(signals)
@@ -370,3 +369,45 @@ import_set <- function(file_name, df_out = FALSE) {
     out_data
   }
 }
+
+
+#' Parse channel info from an EEGLAB set file
+#'
+#' Internal function to convert EEGLAB chan_info to eegUtils style
+#'
+#' @param chan_info Channel info list from an EEGLAB set file
+#' @noRd
+parse_chaninfo <- function(chan_info) {
+  chan_info <- tibble::as_tibble(t(as.data.frame(chan_info)))
+  chan_info <- tibble::as_tibble(data.frame(lapply(chan_info,
+                                                   unlist),
+                                            stringsAsFactors = FALSE))
+  names(chan_info) <- c("electrode",
+                        "angle",
+                        "radius",
+                        "cart_x",
+                        "cart_y",
+                        "cart_z",
+                        "sph_theta",
+                        "sph_phi",
+                        "sph_radius",
+                        "type",
+                        "ref",
+                        "urchan")
+  #pol_coords <- cart_to_pol(chan_info$cart_x, chan_info$cart_y)
+  #chan_info <- tibble::as_tibble(c(chan_info, pol_coords))
+  chan_info <- chan_info[c("electrode",
+                           "cart_x",
+                           "cart_y",
+                           "cart_z",
+                           "sph_radius",
+                           "sph_phi",
+                           "sph_theta",
+                           "angle",
+                           "radius")]
+  # EEGLAB co-ordinates are rotated 90 degrees compared to our coordinates,
+  # and left-right flipped
+  chan_info <- rotate_sph(chan_info, -90)
+  chan_info <- flip_x(chan_info)
+  chan_info
+  }

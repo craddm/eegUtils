@@ -23,12 +23,13 @@ interp_elecs.eeg_data <- function(data,
     stop("No channel locations found.")
   }
 
+  # Note - this checks for old-style electrode locations first, then for new style
   if (all(c("theta", "radius") %in% names(data$chan_info))) {
     xyz_coords <- pol_to_sph(data$chan_info$theta,
                              data$chan_info$radius)
   } else {
-    xyz_coords <- pol_to_sph(data$chan_info$pol_theta,
-                             data$chan_info$pol_radius)
+    xyz_coords <- pol_to_sph(data$chan_info$angle,
+                             data$chan_info$radius)
   }
   rads <- sqrt(xyz_coords$x ^ 2 + xyz_coords$y ^ 2 + xyz_coords$z ^ 2)
   xyz_coords <- xyz_coords / rads
@@ -163,13 +164,15 @@ compute_csd <- function(data, m = 4, smoothing = 1e-05) {
   } else {
     data <- reref_eeg(data)
   }
+
   if (all(c("theta", "radius") %in% names(data$chan_info))) {
     xyz_coords <- pol_to_sph(data$chan_info$theta,
                              data$chan_info$radius)
   } else {
-    xyz_coords <- pol_to_sph(data$chan_info$pol_theta,
-                             data$chan_info$pol_radius)
+    xyz_coords <- pol_to_sph(data$chan_info$angle,
+                             data$chan_info$radius)
   }
+
   rads <- sqrt(xyz_coords$x ^ 2 + xyz_coords$y ^ 2 + xyz_coords$z ^ 2)
   xyz_coords <- xyz_coords / rads
   aa <- compute_g(xyz_coords,

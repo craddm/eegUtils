@@ -401,7 +401,7 @@ morlet <- function(frex,
   #n_points <- length(orig_wavtime)
   #n_points <- 512
   wavtime <- seq(0, 1 / srate * n_points, by = 1 / srate)
-  wavtime <- wavtime - median(wavtime)
+  wavtime <- wavtime - stats::median(wavtime)
   # widths of Gaussian
   if (length(n_cycles) == 1) {
     g_width <- n_cycles / (2 * pi * frex)
