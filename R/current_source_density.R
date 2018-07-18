@@ -111,7 +111,8 @@ spheric_spline <- function(good_elecs, bad_elecs, data) {
 
 compute_g <- function(xyz_coords,
                       xyz_elecs,
-                      m = 4) {
+                      m = 4,
+                      iter = 7) {
 
   EI <- 1 - sqrt((matrix(rep(xyz_coords[, 1],
                              nrow(xyz_elecs)),
@@ -134,9 +135,9 @@ compute_g <- function(xyz_coords,
 
   dim(EI) <- c(nrow(xyz_coords), nrow(xyz_elecs))
 
-  g <- 0
+  g <- matrix(0, ncol = ncol(EI), nrow = nrow(EI))
 
-  for (i in seq(1, 7)) {
+  for (i in seq(1, iter)) {
     poly_xy <- pracma::legendre(i, EI)
     dim(poly_xy) <- c(i + 1,
                       nrow(EI),
@@ -146,9 +147,6 @@ compute_g <- function(xyz_coords,
   g <- g / (4 * pi)
 }
 
-
-
-
 #' Calculate current source density
 #'
 #' @param data eeg_data object
@@ -157,7 +155,10 @@ compute_g <- function(xyz_coords,
 #' @param scaling Unsure - don't think my coords are typically on unit sphere...
 #' @noRd
 
-compute_csd <- function(data, m = 4, smoothing = 1e-05, scaling = 10) {
+compute_csd <- function(data,
+                        m = 4,
+                        smoothing = 1e-05,
+                        scaling = 10) {
 
   orig_elecs <- names(data$signals)
   data_chans <- toupper(names(data$signals)) %in% toupper(data$chan_info$electrode)
@@ -179,26 +180,27 @@ compute_csd <- function(data, m = 4, smoothing = 1e-05, scaling = 10) {
 
   rads <- sqrt(xyz_coords$x ^ 2 + xyz_coords$y ^ 2 + xyz_coords$z ^ 2)
   xyz_coords <- xyz_coords / rads
-  aa <- compute_g(xyz_coords,
+  g_mat <- compute_g(xyz_coords,
                   xyz_coords,
-                  m = m)
-  ab <- compute_h(xyz_coords,
+                  m = m,
+                  iter = 50)
+  h_mat <- compute_h(xyz_coords,
                   xyz_coords,
-                  m = m)
-  diag(aa) <- diag(aa) + smoothing
-  aa_inv <- solve(aa)
-  ag <- colSums(aa_inv)
+                  m = m,
+                  iter = 50)
+  diag(g_mat) <- diag(g_mat) + smoothing
+  g_inv <- solve(g_mat)
+  ag <- colSums(g_inv)
   ag_tot <- sum(ag)
   new_sig <- as.matrix(data$signals[, data_chans])
   bb <- t(apply(new_sig,
                 1,
-                function(x) aa_inv %*% x))
+                function(x) g_inv %*% x))
   bb_rows <- rowSums(bb) / ag_tot
   bc <- bb - (bb_rows %*% t(ag))
-  #bd <- bc %*% t(ab)
   be <- t(apply(bc,
                 1,
-                function(x) rowSums(x * ab)) / scaling)
+                function(x) rowSums(x * h_mat)) / scaling)
   data$signals[, data_chans] <- as.data.frame(be)
   names(data$signals) <- orig_elecs
   data
@@ -244,17 +246,7 @@ compute_h <- function(xyz_coords,
 
   dim(EI) <- c(nrow(xyz_coords), nrow(xyz_elecs))
 
-  g <- matrix(0, ncol = ncol(EI), nrow = (EI))
-
-  for (i in seq(1, 7)) {
-    poly_xy <- pracma::legendre(i, EI)
-    dim(poly_xy) <- c(i + 1,
-                      nrow(EI),
-                      ncol(EI))
-    g <- g + ((2 * i + 1) / (i ^ m * (i + 1) ^ m)) * poly_xy[1, , ]
-  }
-
-  h <- matrix(0, ncol = ncol(EI), nrow = (EI))
+  h <- matrix(0, ncol = ncol(EI), nrow = nrow(EI))
 
   for (i in seq(1, iter)) {
     poly_xy <- pracma::legendre(i, EI)
@@ -264,6 +256,5 @@ compute_h <- function(xyz_coords,
     h <- h + ((-2 * i - 1) / (i ^ (m - 1) * (i + 1) ^ (m - 1))) * poly_xy[1, , ]
   }
 
-  g <- g / (4 * pi)
   h <- -h / (4 * pi)
 }
