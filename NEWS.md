@@ -9,16 +9,20 @@
 - Generic print methods added for `eeg_epochs` and `eeg_data`
 
 ### Internal changes/ bug fixes
-- `reref_eeg()` correctly excludes multiple named electrodes (i.e. passed as characters rather than numbers), where it previously silently failed.
+- `reref_eeg()` 
+    - correctly excludes multiple named electrodes (i.e. passed as characters rather than numbers), where it previously silently failed.
+    - no longer records the reference data in the `ref_data` field
 - `tf_morlet` recoded to be called internally
-- `compute_psd` recoded to call `welch_fft()` in order to support possibility of different FFT methods.
+- `compute_psd` 
+    - recoded to call `welch_fft()` in order to support possibility of different FFT methods.
+    - now drops the DC component (frequency 0)
 - `welch_fft()` internal function added
 - `eeg_downsample()` now makes sure epoch length is a multiple of the downsampling factor to avoid problems with timing jitter
 - `erp_image()` is now an S3 method
-- `copmute_psd` now drops the DC component (frequency 0)
 - `run_ICA()` 
     - now returns source activations as a "signals" data frame, with component names
     - now returns correct unmixing matrix
+- `compute_csd()` added
 
 # eegUtils 0.2.0
 

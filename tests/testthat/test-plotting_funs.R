@@ -31,7 +31,6 @@ test_that("Plotting of data with multiple epochs works as expected", {
 })
 
 test_that("Plotting of butterfly plots from epochs", {
-  skip_on_cran()
   vdiffr::expect_doppelganger("butterfly epochs",
                               plot_butterfly(EEG_epochs))
 })

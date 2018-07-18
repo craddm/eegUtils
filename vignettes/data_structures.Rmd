@@ -21,7 +21,7 @@ knitr::opts_chunk$set(
 `eeg_data` objects are the base class that all objects in this framework have. When raw data is imported, the output is this class. Currently, this class is a list constituting the following entries:
 
 * `signals`
-    + A data frame/tibble containing the actual EEG data in wide format. Each column is data from a single electrode, each row from a single timepoint.
+    + A data frame containing the actual EEG data in wide format. Each column is data from a single electrode, each row from a single timepoint.
 
 * `srate` 
     + A single integer giving the sampling rate of the data in Hz
@@ -56,9 +56,8 @@ knitr::opts_chunk$set(
 
 * `reference`
     + NA on loading, in the absence of a recorded reference channel.
-    * Once data is referenced, is a list consisting of three entries.
+    * Once data is referenced, is a list consisting of two entries.
         * `ref_chans` - Labels for channels used to calculate the reference data. Can also be "average".
-        * `ref_data` - The calculated reference "channel"
         * `excluded` - Labels for any channels excluded from the reference data.
 
 ## eeg_epochs

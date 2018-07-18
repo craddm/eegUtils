@@ -45,13 +45,12 @@ compute_psd.eeg_data <- function(data,
   }
 
   if (method == "Welch") {
-    final_output <- #lapply(data$signals, function(x)
-      welch_fft(data$signals,
-                seg_length,
-                noverlap = noverlap,
-                n_fft = n_fft,
-                srate = srate,
-                n_sig = nrow(data$signals))
+    final_output <- welch_fft(data$signals,
+                              seg_length,
+                              noverlap = noverlap,
+                              n_fft = n_fft,
+                              srate = srate,
+                              n_sig = nrow(data$signals))
 
   }  else {
     stop("Welch is the only available method at this time.")
@@ -400,7 +399,9 @@ morlet <- function(frex,
   orig_wavtime <- wavtime
   #n_points <- length(orig_wavtime)
   #n_points <- 512
-  wavtime <- seq(0, 1 / srate * n_points, by = 1 / srate)
+  wavtime <- seq(0,
+                 1 / srate * n_points,
+                 by = 1 / srate)
   wavtime <- wavtime - stats::median(wavtime)
   # widths of Gaussian
   if (length(n_cycles) == 1) {
@@ -432,7 +433,7 @@ morlet <- function(frex,
 #'
 #' @param signal signal to be FFT'd
 #' @param n Number of FFT points
-#' @noRd
+#' @keywords internal
 
 fft_n <- function(signal, n) {
 

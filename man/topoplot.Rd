@@ -28,11 +28,11 @@ topoplot(data, ...)
   chan_marker = "point", quantity = "amplitude", montage = NULL,
   highlights = NULL, ...)
 
-\method{topoplot}{eeg_ICA}(data, time_lim = NULL, limits = NULL,
+\method{topoplot}{eeg_ICA}(data, comp, time_lim = NULL, limits = NULL,
   chanLocs = NULL, method = "Biharmonic", r = NULL, grid_res = 67,
   palette = "RdBu", interp_limit = "skirt", contour = TRUE,
   chan_marker = "point", quantity = "amplitude", montage = NULL,
-  colourmap, comp, highlights = NULL, ...)
+  colourmap, highlights = NULL, ...)
 }
 \arguments{
 \item{data}{An EEG dataset. Must have columns x, y, and amplitude at present.

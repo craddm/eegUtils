@@ -79,12 +79,22 @@ topoplot.default <- function(data, ...) {
 #' @export
 
 
-topoplot.data.frame <- function(data, time_lim = NULL, limits = NULL,
-                             chanLocs = NULL, method = "Biharmonic", r = NULL,
-                             grid_res = 67, palette = "RdBu",
-                             interp_limit = "skirt", contour = TRUE,
-                             chan_marker = "point", quantity = "amplitude",
-                             montage = NULL, colourmap, highlights = NULL, ...) {
+topoplot.data.frame <- function(data,
+                                time_lim = NULL,
+                                limits = NULL,
+                                chanLocs = NULL,
+                                method = "Biharmonic",
+                                r = NULL,
+                                grid_res = 67,
+                                palette = "RdBu",
+                                interp_limit = "skirt",
+                                contour = TRUE,
+                                chan_marker = "point",
+                                quantity = "amplitude",
+                                montage = NULL,
+                                colourmap,
+                                highlights = NULL,
+                                ...) {
 
   if (!missing(colourmap)) {
     warning("Argument colourmap is deprecated, please use palette instead.",
@@ -147,7 +157,8 @@ topoplot.data.frame <- function(data, time_lim = NULL, limits = NULL,
 
   # Rescale electrode co-ordinates to be from -1 to 1 for plotting
   # Selects largest absolute value from x or y
-  max_dim <- max(abs(data$x), abs(data$y))
+  max_dim <- max(abs(data$x),
+                 abs(data$y))
   scaled_x <- data$x / max_dim
   scaled_y <- data$y / max_dim
 
@@ -155,37 +166,6 @@ topoplot.data.frame <- function(data, time_lim = NULL, limits = NULL,
 
   xo <- seq(-1.4, 1.4, length = grid_res)
   yo <- seq(-1.4, 1.4, length = grid_res)
-
-  # Create the head_shape -----------------
-
-  #set radius as max of y (i.e. furthest forward electrode's y position). Add a
-  #little to push the circle out a bit more.
-
-  if (is.null(r)) {
-    r <- max(scaled_y) * 1.1
-  }
-
-  circ_rads <- seq(0, 2 * pi, length.out = 101)
-
-  head_shape <- data.frame(x = r * cos(circ_rads),
-                          y = r * sin(circ_rads))
-
-  #define nose position relative to head_shape
-  nose <- data.frame(x = c(head_shape$x[[23]],
-                           head_shape$x[[26]],
-                           head_shape$x[[29]]),
-                     y = c(head_shape$y[[23]],
-                           head_shape$y[[26]] * 1.1,
-                           head_shape$y[[29]]))
-
-  ears <- data.frame(x = c(head_shape$x[[4]],
-                           head_shape$x[[97]],
-                           head_shape$x[[48]],
-                           head_shape$x[[55]]),
-                     y = c(head_shape$y[[4]],
-                           head_shape$y[[97]],
-                           head_shape$y[[48]],
-                           head_shape$y[[55]]))
 
   # Do the interpolation! ------------------------
 
@@ -212,12 +192,16 @@ topoplot.data.frame <- function(data, time_lim = NULL, limits = NULL,
              purrr::map(xo + sqrt(as.complex(-1)) * yo,
                         function (x) (abs(x - xy) ^ 2) *
                           (log(abs(x - xy)) - 1) ) %>%
-             rapply(function (x) ifelse(is.nan(x), 0, x), how = "replace") %>%
+             rapply(function (x) ifelse(is.nan(x),
+                                        0,
+                                        x),
+                    how = "replace") %>%
              purrr::map_dbl(function (x) x %*% weights)
 
            dim(outmat) <- c(grid_res, grid_res)
 
-           out_df <- data.frame(x = xo[, 1], outmat)
+           out_df <- data.frame(x = xo[, 1],
+                                outmat)
            names(out_df)[1:length(yo[1, ]) + 1] <- yo[1, ]
            out_df <- tidyr::gather(out_df,
                                   key = y,
@@ -226,8 +210,27 @@ topoplot.data.frame <- function(data, time_lim = NULL, limits = NULL,
                                   convert = TRUE)
          },
          gam = {
-           out_df <- gam_topo(data, scaled_x, scaled_y, grid_res, 40)
+           out_df <- gam_topo(data,
+                              scaled_x,
+                              scaled_y,
+                              grid_res)
          })
+
+  # Create the head_shape -----------------
+
+  #set radius as max of y (i.e. furthest forward electrode's y position). Add a
+  #little to push the circle out a bit more.
+
+  if (is.null(r)) {
+    r <- max(scaled_y) * 1.1
+  }
+
+  circ_rads <- seq(0, 2 * pi, length.out = 101)
+
+  head_df <- create_head(r, circ_rads)
+  head_shape <- head_df$head_shape
+  nose <- head_df$nose
+  ears <- head_df$ears
 
   # Check if should interp/extrap beyond head_shape, and set up ring to mask
   # edges for smoothness
@@ -246,18 +249,22 @@ topoplot.data.frame <- function(data, time_lim = NULL, limits = NULL,
   # Create the actual plot -------------------------------
 
   topo <- ggplot2::ggplot(out_df[out_df$incircle, ],
-                          aes(x, y, fill = amplitude)) +
+                          aes(x,
+                              y,
+                              fill = amplitude)) +
     geom_raster(interpolate = TRUE)
 
   if (contour) {
-    topo <- topo + stat_contour(
-      aes(z = amplitude, linetype = ..level.. < 0),
-      bins = 6,
-      colour = "black",
-      size = 1.1,
-      show.legend = FALSE
-    )
-  }
+    topo <- topo +
+      stat_contour(
+        aes(z = amplitude,
+            linetype = ..level.. < 0),
+        bins = 6,
+        colour = "black",
+        size = 1.1,
+        show.legend = FALSE
+      )
+    }
 
   topo <- topo +
     annotate("path",
@@ -306,20 +313,21 @@ topoplot.data.frame <- function(data, time_lim = NULL, limits = NULL,
   if (chan_marker == "point") {
     topo <- topo +
       annotate("point",
-               x = scaled_x, y = scaled_y,
+               x = scaled_x,
+               y = scaled_y,
                colour = "black",
                size = rel(2))
     }  else if (chan_marker == "name") {
       topo <- topo +
         annotate("text",
-                 x = scaled_x, y = scaled_y,
+                 x = scaled_x,
+                 y = scaled_y,
                  label = c(levels(data$electrode)[c(data$electrode)]),
                  colour = "black",
                  size = rel(4))
     }
 
   if (!is.null(highlights)) {
-
     high_x <- scaled_x[data$electrode %in% highlights]
     high_y <- scaled_y[data$electrode %in% highlights]
     topo <- topo +
@@ -332,7 +340,9 @@ topoplot.data.frame <- function(data, time_lim = NULL, limits = NULL,
   }
 
   # Set the palette and scale limits ------------------------
-  topo <- set_palette(topo, palette, limits)
+  topo <- set_palette(topo,
+                      palette,
+                      limits)
   topo
 }
 
@@ -365,14 +375,25 @@ topoplot.eeg_data <- function(data, time_lim = NULL,
   if (is.null(time_lim)) {
     data <- as.data.frame(data)
     data <- as.data.frame(t(colMeans(data)))
-    data <- tidyr::gather(data, electrode, amplitude, -sample, -time)
+    data <- tidyr::gather(data,
+                          electrode,
+                          amplitude,
+                          -sample,
+                          -time)
   } else {
-    data <- select_times(data, time_lim)
-    data <- as.data.frame(data, long = TRUE)
+    data <- select_times(data,
+                         time_lim)
+    data <- as.data.frame(data,
+                          long = TRUE)
   }
-  topoplot(data, time_lim = time_lim, limits = limits,
-           chanLocs = chanLocs, method = method, r = r,
-           grid_res = grid_res, palette = palette,
+  topoplot(data,
+           time_lim = time_lim,
+           limits = limits,
+           chanLocs = chanLocs,
+           method = method,
+           r = r,
+           grid_res = grid_res,
+           palette = palette,
            interp_limit = interp_limit, contour = contour,
            chan_marker = chan_marker, quantity = quantity,
            montage = montage, highlights = highlights, passed = TRUE)
@@ -409,7 +430,8 @@ topoplot.eeg_epochs <- function(data,
   # average over epochs first
   data <- eeg_average(data)
 
-  data <- as.data.frame(data, long = TRUE)
+  data <- as.data.frame(data,
+                        long = TRUE)
   topoplot(data,
            time_lim = time_lim,
            limits = limits,
@@ -431,6 +453,7 @@ topoplot.eeg_epochs <- function(data,
 #' @describeIn topoplot Topographical plot for \code{eeg_ICA} objects
 #' @export
 topoplot.eeg_ICA <- function(data,
+                             comp,
                              time_lim = NULL,
                              limits = NULL,
                              chanLocs = NULL,
@@ -444,7 +467,6 @@ topoplot.eeg_ICA <- function(data,
                              quantity = "amplitude",
                              montage = NULL,
                              colourmap,
-                             comp,
                              highlights = NULL,
                              ...) {
   if (missing(comp)) {
@@ -457,6 +479,28 @@ topoplot.eeg_ICA <- function(data,
 
 }
 
+#' Create topoplot
+#'
+#' @noRd
+#'
+
+make_topo <- function(data,
+                      time_lim,
+                      limits,
+                      chanLocs,
+                      method,
+                      r,
+                      grid_res,
+                      palette,
+                      interp_limit,
+                      contour,
+                      chan_marker,
+                      quantity,
+                      montage,
+                      highlights) {
+
+}
+
 #' Set palette and limits for topoplot
 #'
 #' @param topo ggplot2 object produced by topoplot command
@@ -464,7 +508,7 @@ topoplot.eeg_ICA <- function(data,
 #' @param limits Limits of colour scale
 #' @import ggplot2
 #' @importFrom viridis scale_fill_viridis
-#' @noRd
+#' @keywords internal
 
 set_palette <- function(topo, palette, limits = NULL) {
 
@@ -490,14 +534,20 @@ set_palette <- function(topo, palette, limits = NULL) {
 #' @param scaled_x x coordinates rescaled
 #' @param scaled_y y coordinates rescaled
 #' @param grid_res resolution of output grid
-#' @param k number of knots for GAM
-#' @noRd
 
-gam_topo <- function(data, scaled_x, scaled_y, grid_res, k = 40) {
+#' @keywords internal
+
+gam_topo <- function(data,
+                     scaled_x,
+                     scaled_y,
+                     grid_res) {
 
   data$x <- scaled_x
   data$y <- scaled_y
-  spline_smooth <- mgcv::gam(z ~ s(x, y, bs = "ts", k = 40),
+  spline_smooth <- mgcv::gam(z ~ s(x,
+                                   y,
+                                   bs = "ts",
+                                   k = 40),
                              data = data)
   out_df <- data.frame(expand.grid(x = seq(min(data$x) * 2,
                                            max(data$x) * 2,
@@ -511,4 +561,41 @@ gam_topo <- function(data, scaled_x, scaled_y, grid_res, k = 40) {
                                       type = "response")
   out_df
 
+}
+
+
+#' Create head shape for plotting
+#'
+#' Creates data frames for plotting a head with ears and nose.
+#'
+#' @param r Radius of head
+#' @param circ_rads Circle outline in radians
+#' @keywords internal
+#'
+
+create_head <- function(r, circ_rads) {
+
+  head_shape <- data.frame(x = r * cos(circ_rads),
+                           y = r * sin(circ_rads))
+  #define nose position relative to head_shape
+  nose <- data.frame(x = c(head_shape$x[[23]],
+                           head_shape$x[[26]],
+                           head_shape$x[[29]]),
+                     y = c(head_shape$y[[23]],
+                           head_shape$y[[26]] * 1.1,
+                           head_shape$y[[29]]))
+
+  ears <- data.frame(x = c(head_shape$x[[4]],
+                           head_shape$x[[97]],
+                           head_shape$x[[48]],
+                           head_shape$x[[55]]),
+                     y = c(head_shape$y[[4]],
+                           head_shape$y[[97]],
+                           head_shape$y[[48]],
+                           head_shape$y[[55]]))
+
+  head_out <- list("head_shape" = head_shape,
+                   "nose" = nose,
+                   "ears" = ears)
+  head_out
 }

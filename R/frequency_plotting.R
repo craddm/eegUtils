@@ -1,9 +1,11 @@
 #' Plot power spectral density
 #'
-#' Calculate and plot the PSD for \code{eeg_*} objects. Output units are dB.
+#' Calculate and plot the PSD for \code{eeg_*} objects. Output units are dB. 512
+#' points are used for FFTs.
 #'
 #' @param data Object of class \code{eeg_epochs}
-#' @param freq_range Vector of lower and upper frequencies to plot. (e.g. c(1, 40))
+#' @param freq_range Vector of lower and upper frequencies to plot. (e.g. c(1,
+#'   40))
 #' @param ... Additional parameters
 #' @author Matt Craddock, \email{matt@@mattcraddock.com}
 #' @export
@@ -13,9 +15,13 @@ plot_psd <- function(data, freq_range = NULL, ...) {
 
 #' @describeIn plot_psd Plot PSDs for \code{eeg_epochs}.
 #' @export
-plot_psd.eeg_epochs <- function(data, freq_range = NULL, ...) {
+plot_psd.eeg_epochs <- function(data,
+                                freq_range = NULL,
+                                ...) {
 
-  psd_out <- compute_psd(data, keep_trials = FALSE, n_fft = 512)
+  psd_out <- compute_psd(data,
+                         keep_trials = FALSE,
+                         n_fft = 512)
 
   if (!is.null(freq_range)) {
     if (length(freq_range) < 2 | length(freq_range) > 2) {
@@ -75,7 +81,7 @@ plot_psd.eeg_data <- function(data, freq_range = NULL, ...) {
 
 }
 
-#' plot tfr objects
+#' Plot TFR objects
 #' @param data object of class eeg_tfr
 #' @noRd
 plot_tfr <- function(data, electrode, ...) {

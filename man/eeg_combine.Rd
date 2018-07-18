@@ -20,8 +20,8 @@ eeg_combine(data, ...)
 \description{
 Combine multiple \code{eeg_epochs} or \code{eeg_data} objects into a single
 object. Note that this does not currently perform any sort of checking for
-internal consistency or duplication. It simply combines the objects in the order they
-are passed.
+internal consistency or duplication. It simply combines the objects in the
+order they are passed.
 }
 \section{Methods (by class)}{
 \itemize{

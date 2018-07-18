@@ -20,7 +20,10 @@ run_ICA <- function(data, ...) {
 #' @describeIn run_ICA Run ICA on an \code{eeg_epochs} object
 #' @export
 
-run_ICA.eeg_epochs <- function (data, method = "sobi", maxit = 500, ...) {
+run_ICA.eeg_epochs <- function(data,
+                               method = "sobi",
+                               maxit = 500,
+                               ...) {
 
   rank_check <- Matrix::rankMatrix(as.matrix(data$signals))
   #if (rank_check < n_channels) {
@@ -69,6 +72,7 @@ run_ICA.eeg_epochs <- function (data, method = "sobi", maxit = 500, ...) {
                     "timings" = data$timings,
                     "events" = data$events,
                     "chan_info" = data$chan_info,
+                    "srate" = data$srate,
                     "continuous" = FALSE)
     class(ica_obj) <- c("eeg_ICA", "eeg_epochs", "eeg_data")
 
@@ -82,7 +86,7 @@ run_ICA.eeg_epochs <- function (data, method = "sobi", maxit = 500, ...) {
 #'
 #' @param data Data to be ICAed.
 #'
-#' @noRd
+#' @keywords internal
 #'
 
 sobi_ICA <- function(data) {
@@ -178,7 +182,10 @@ sobi_ICA <- function(data) {
 #' @param n_channels number of channels
 #' @noRd
 
-joint_diag <- function(M, eps, n_channels, pm) {
+joint_diag <- function(M,
+                       eps,
+                       n_channels,
+                       pm) {
 
   epsil <- eps
   continue <- TRUE

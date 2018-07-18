@@ -15,12 +15,14 @@ plot_psd(data, freq_range = NULL, ...)
 \arguments{
 \item{data}{Object of class \code{eeg_epochs}}
 
-\item{freq_range}{Vector of lower and upper frequencies to plot. (e.g. c(1, 40))}
+\item{freq_range}{Vector of lower and upper frequencies to plot. (e.g. c(1,
+40))}
 
 \item{...}{Additional parameters}
 }
 \description{
-Calculate and plot the PSD for \code{eeg_*} objects. Output units are dB.
+Calculate and plot the PSD for \code{eeg_*} objects. Output units are dB. 512
+points are used for FFTs.
 }
 \section{Methods (by class)}{
 \itemize{
