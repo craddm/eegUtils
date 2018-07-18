@@ -6,10 +6,12 @@ test_that("Referencing works for eeg_* objects", {
 
   skip_on_cran()
 
+  ref_test <- rowMeans(test_data$signals)
   test_reref <- reref_eeg(test_data)
+
   expect_equal(as.data.frame(test_data$signals),
-               test_reref$signals + test_reref$reference$ref_data)
-  expect_true(all(c("ref_data", "ref_chans", "excluded") %in% names(test_reref$reference)))
+               test_reref$signals + ref_test)
+  expect_true(all(c("ref_chans", "excluded") %in% names(test_reref$reference)))
 
   test_reref <- reref_eeg(test_data, exclude = "A15")
   expect_match(test_reref$reference$excluded, "A15")
@@ -38,5 +40,4 @@ test_that("Downsampling output is sensible", {
   test_reref <- reref_eeg(test_epo)
   test_ds <- eeg_downsample(test_reref, 2)
   expect_equal(nrow(test_ds$signals), nrow(test_ds$timings))
-  expect_equal(nrow(test_ds$signals), length(test_ds$reference$ref_data))
 })

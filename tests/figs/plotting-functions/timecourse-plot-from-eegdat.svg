@@ -1,0 +1,49 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' viewBox='0 0 720.00 576.00'>
+<defs>
+  <style type='text/css'><![CDATA[
+    line, polyline, path, rect, circle {
+      fill: none;
+      stroke: #000000;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-miterlimit: 10.00;
+    }
+  ]]></style>
+</defs>
+<rect width='100%' height='100%' style='stroke: none; fill: #FFFFFF;'/>
+<defs>
+  <clipPath id='cpMzYuOTA5N3w3MTQuMDIyfDU0MS41NnwyNC4wNjQ1'>
+    <rect x='36.91' y='24.06' width='677.11' height='517.50' />
+  </clipPath>
+</defs>
+<polyline points='36.91,342.19 39.94,339.08 42.96,335.33 45.99,329.76 49.01,323.37 52.04,319.34 55.07,320.58 57.34,326.98 60.36,334.99 63.39,339.87 66.42,338.70 69.44,331.77 72.47,321.67 75.49,311.51 78.52,303.85 81.55,300.43 84.57,301.69 87.60,305.74 89.87,308.09 92.89,303.73 95.92,291.07 98.95,274.50 101.97,262.70 105.00,262.91 108.03,275.37 111.05,292.88 114.08,306.00 117.10,309.83 119.37,306.67 122.40,302.68 125.43,302.18 128.45,304.72 131.48,307.13 134.50,307.87 137.53,309.03 140.56,314.36 143.58,325.35 146.61,339.52 149.64,351.99 151.91,358.82 154.93,359.13 157.96,354.76 160.98,348.52 164.01,342.67 167.04,338.23 170.06,334.87 173.09,331.38 176.11,326.69 179.14,321.25 182.17,317.48 184.44,318.35 187.46,324.83 190.49,334.29 193.52,341.51 196.54,341.75 199.57,333.27 202.59,317.66 205.62,298.45 208.65,279.83 211.67,266.14 214.70,261.24 216.97,266.70 219.99,279.84 223.02,294.26 226.05,303.54 229.07,305.60 232.10,303.61 235.13,302.19 238.15,302.54 241.18,301.36 244.20,294.93 246.47,284.09 249.50,274.75 252.53,273.00 255.55,279.73 258.58,290.12 261.61,298.73 264.63,304.54 267.66,310.89 270.68,320.50 273.71,331.09 276.74,336.61 279.01,332.87 282.03,321.73 285.06,309.48 288.08,301.31 291.11,297.63 294.14,295.85 297.16,295.38 300.19,299.99 303.22,314.70 306.24,340.05 308.51,369.25 311.54,390.81 314.56,394.42 317.59,375.39 320.62,335.86 323.64,283.83 326.67,231.80 329.69,194.62 332.72,185.14 335.75,208.43 338.77,258.21 341.04,319.44 344.07,376.50 347.10,421.31 350.12,455.29 353.15,484.22 356.17,510.86 359.20,531.96 362.23,541.56 365.25,537.04 368.28,521.97 371.31,503.74 373.57,488.50 376.60,477.98 379.63,470.29 382.65,463.12 385.68,456.22 388.71,451.50 391.73,451.40 394.76,456.91 397.78,466.66 400.81,477.19 403.84,484.64 406.11,486.99 409.13,485.83 412.16,485.82 415.18,491.57 418.21,503.85 421.24,518.55 424.26,529.54 427.29,533.66 430.32,533.11 433.34,533.07 435.61,536.41 438.64,540.35 441.66,538.38 444.69,525.74 447.72,503.60 450.74,478.15 453.77,455.77 456.80,438.64 459.82,424.37 462.85,409.12 465.87,390.80 468.14,369.33 471.17,344.86 474.20,316.32 477.22,282.23 480.25,242.84 483.27,201.29 486.30,162.66 489.33,131.82 492.35,111.82 495.38,103.31 497.65,104.60 500.68,111.58 503.70,118.29 506.73,118.96 509.75,111.29 512.78,98.46 515.81,87.73 518.83,85.69 521.86,93.28 524.88,104.76 527.91,111.78 530.18,109.60 533.21,100.46 536.23,91.31 539.26,87.74 542.29,89.20 545.31,89.65 548.34,82.87 551.36,67.80 554.39,49.39 557.42,34.38 560.44,26.29 562.71,24.06 565.74,25.04 568.76,28.69 571.79,36.78 574.82,50.00 577.84,64.84 580.87,74.79 583.90,75.33 586.92,67.99 589.95,59.31 592.97,55.50 595.24,57.83 598.27,63.03 601.30,67.44 604.32,70.29 607.35,72.82 610.37,75.06 613.40,74.79 616.43,70.44 619.45,64.38 622.48,62.21 624.75,67.67 627.78,78.36 630.80,87.43 633.83,90.20 636.85,89.10 639.88,91.67 642.91,103.04 645.93,120.76 648.96,137.15 651.99,146.88 655.01,151.88 657.28,158.51 660.31,170.28 663.33,183.97 666.36,193.26 669.39,195.69 672.41,195.46 675.44,198.94 678.46,207.80 681.49,217.29 684.52,221.19 686.79,218.33 689.81,213.62 692.84,212.99 695.87,217.72 698.89,224.21 701.92,228.73 704.94,231.68 707.97,236.74 711.00,246.41 714.02,259.24 ' style='stroke-width: 2.56; stroke-linecap: butt;' clip-path='url(#cpMzYuOTA5N3w3MTQuMDIyfDU0MS41NnwyNC4wNjQ1)' />
+<line x1='261.61' y1='541.56' x2='261.61' y2='24.06' style='stroke-width: 1.07; stroke-linecap: butt;' clip-path='url(#cpMzYuOTA5N3w3MTQuMDIyfDU0MS41NnwyNC4wNjQ1)' />
+<line x1='36.91' y1='311.80' x2='714.02' y2='311.80' style='stroke-width: 1.07; stroke-linecap: butt;' clip-path='url(#cpMzYuOTA5N3w3MTQuMDIyfDU0MS41NnwyNC4wNjQ1)' />
+<defs>
+  <clipPath id='cpMHw3MjB8NTc2fDA='>
+    <rect x='0.00' y='0.00' width='720.00' height='576.00' />
+  </clipPath>
+</defs>
+<g clip-path='url(#cpMHw3MjB8NTc2fDA=)'><text x='22.64' y='458.60' style='font-size: 9.60px; fill: #4D4D4D; font-family: Liberation Sans;' textLength='8.89px' lengthAdjust='spacingAndGlyphs'>-1</text></g>
+<g clip-path='url(#cpMHw3MjB8NTc2fDA=)'><text x='25.97' y='315.23' style='font-size: 9.60px; fill: #4D4D4D; font-family: Liberation Sans;' textLength='5.56px' lengthAdjust='spacingAndGlyphs'>0</text></g>
+<g clip-path='url(#cpMHw3MjB8NTc2fDA=)'><text x='25.97' y='171.86' style='font-size: 9.60px; fill: #4D4D4D; font-family: Liberation Sans;' textLength='5.56px' lengthAdjust='spacingAndGlyphs'>1</text></g>
+<g clip-path='url(#cpMHw3MjB8NTc2fDA=)'><text x='25.97' y='28.49' style='font-size: 9.60px; fill: #4D4D4D; font-family: Liberation Sans;' textLength='5.56px' lengthAdjust='spacingAndGlyphs'>2</text></g>
+<polyline points='33.92,455.17 36.91,455.17 ' style='stroke-width: 1.07; stroke-linecap: butt;' clip-path='url(#cpMHw3MjB8NTc2fDA=)' />
+<polyline points='33.92,311.80 36.91,311.80 ' style='stroke-width: 1.07; stroke-linecap: butt;' clip-path='url(#cpMHw3MjB8NTc2fDA=)' />
+<polyline points='33.92,168.43 36.91,168.43 ' style='stroke-width: 1.07; stroke-linecap: butt;' clip-path='url(#cpMHw3MjB8NTc2fDA=)' />
+<polyline points='33.92,25.06 36.91,25.06 ' style='stroke-width: 1.07; stroke-linecap: butt;' clip-path='url(#cpMHw3MjB8NTc2fDA=)' />
+<polyline points='110.30,544.55 110.30,541.56 ' style='stroke-width: 1.07; stroke-linecap: butt;' clip-path='url(#cpMHw3MjB8NTc2fDA=)' />
+<polyline points='261.61,544.55 261.61,541.56 ' style='stroke-width: 1.07; stroke-linecap: butt;' clip-path='url(#cpMHw3MjB8NTc2fDA=)' />
+<polyline points='412.92,544.55 412.92,541.56 ' style='stroke-width: 1.07; stroke-linecap: butt;' clip-path='url(#cpMHw3MjB8NTc2fDA=)' />
+<polyline points='564.23,544.55 564.23,541.56 ' style='stroke-width: 1.07; stroke-linecap: butt;' clip-path='url(#cpMHw3MjB8NTc2fDA=)' />
+<g clip-path='url(#cpMHw3MjB8NTc2fDA=)'><text x='100.29' y='553.81' style='font-size: 9.60px; fill: #4D4D4D; font-family: Liberation Sans;' textLength='20.01px' lengthAdjust='spacingAndGlyphs'>-200</text></g>
+<g clip-path='url(#cpMHw3MjB8NTc2fDA=)'><text x='258.82' y='553.81' style='font-size: 9.60px; fill: #4D4D4D; font-family: Liberation Sans;' textLength='5.56px' lengthAdjust='spacingAndGlyphs'>0</text></g>
+<g clip-path='url(#cpMHw3MjB8NTc2fDA=)'><text x='404.57' y='553.81' style='font-size: 9.60px; fill: #4D4D4D; font-family: Liberation Sans;' textLength='16.68px' lengthAdjust='spacingAndGlyphs'>200</text></g>
+<g clip-path='url(#cpMHw3MjB8NTc2fDA=)'><text x='555.88' y='553.81' style='font-size: 9.60px; fill: #4D4D4D; font-family: Liberation Sans;' textLength='16.68px' lengthAdjust='spacingAndGlyphs'>400</text></g>
+<g clip-path='url(#cpMHw3MjB8NTc2fDA=)'><text x='353.47' y='567.54' style='font-size: 12.00px; font-family: Liberation Sans;' textLength='43.99px' lengthAdjust='spacingAndGlyphs'>Time (s)</text></g>
+<g clip-path='url(#cpMHw3MjB8NTc2fDA=)'><text transform='translate(14.68,322.44) rotate(-90)' style='font-size: 12.00px; font-family: Liberation Sans;' textLength='60.69px' lengthAdjust='spacingAndGlyphs'>Amplitude (</text></g>
+<g clip-path='url(#cpMHw3MjB8NTc2fDA=)'><text transform='translate(14.68,261.75) rotate(-90)' style='font-size: 12.00px; font-family: Symbola;' textLength='6.56px' lengthAdjust='spacingAndGlyphs'>μ</text></g>
+<g clip-path='url(#cpMHw3MjB8NTc2fDA=)'><text transform='translate(14.68,255.19) rotate(-90)' style='font-size: 12.00px; font-family: Liberation Sans;' textLength='12.00px' lengthAdjust='spacingAndGlyphs'>V)</text></g>
+<g clip-path='url(#cpMHw3MjB8NTc2fDA=)'><text x='36.91' y='15.60' style='font-size: 14.40px; font-family: Liberation Sans;' textLength='179.74px' lengthAdjust='spacingAndGlyphs'>timecourse plot from EEGdat</text></g>
+</svg>
