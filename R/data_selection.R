@@ -70,7 +70,6 @@ select_times.eeg_data <- function(data,
     event_rows <- data$events$event_time >= time_lim[1] &
        data$events$event_time <= time_lim[2]
     data$events <- data$events[event_rows, ]
-    data$reference$ref_data <- data$reference$ref_data[rows]
     data$signals$sample <- NULL
     data$signals$time <- NULL
   }
@@ -103,9 +102,6 @@ select_times.eeg_epochs <- function(data,
   data$timings <- data$timings[sel_rows, ]
   event_rows <- data$events$time >= time_lim[1] & data$events$time <= time_lim[2]
   data$events <- data$events[event_rows, ]
-  if (!is.null(data$reference$ref_data)) {
-    data$reference$ref_data <- data$reference$ref_data[sel_rows]
-  }
   if (df_out) {
     return(as.data.frame(data))
   } else {
@@ -290,9 +286,6 @@ select_epochs.eeg_epochs <- function(data,
     }
     sel_rows <- data$timings$epoch %in% epoch_no
     data$signals <- data$signals[sel_rows, ]
-    if (!is.null(data$reference)) {
-      data$reference$ref_data <- data$reference$ref_data[sel_rows]
-    }
     data$timings <- data$timings[sel_rows, ]
     data$events <- data$events[data$events$epoch %in% epoch_no, ]
   }
@@ -331,9 +324,6 @@ select_epochs.eeg_ICA <- function(data,
       sel_rows <- !sel_rows
     }
     data$comp_activations <- data$comp_activations[sel_rows, ]
-    if (!is.null(data$reference)) {
-      data$reference$ref_data <- data$reference$ref_data[sel_rows]
-    }
     data$timings <- data$timings[sel_rows, ]
     data$events <- data$events[data$events$epoch %in% epoch_no, ]
   }

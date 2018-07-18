@@ -65,22 +65,12 @@ iir_filt.eeg_data <- function(data,
                               silent = FALSE,
                               ...) {
 
-  if (!is.null(data$reference)) {
-    data$signals["ref_data"] <- data$reference$ref_data
-  }
-
   data$signals <- run_iir(data$signals,
                           low_freq,
                           high_freq,
                           filter_order,
                           data$srate,
                           silent = silent)
-
-  if (!is.null(data$reference)) {
-    data$reference$ref_data <- data$signals["ref_data"]
-    data$signals["ref_data"] <- NULL
-  }
-
   return(data)
 }
 
@@ -93,10 +83,6 @@ iir_filt.eeg_epochs <- function(data,
                                 silent = FALSE,
                                 ...) {
 
-  if (!is.null(data$reference)) {
-    data$signals["ref_data"] <- data$reference$ref_data
-  }
-
   data$signals$epoch <- data$timings$epoch
   data$signals <- run_iir(data$signals,
                           low_freq,
@@ -105,15 +91,8 @@ iir_filt.eeg_epochs <- function(data,
                           data$srate,
                           silent = silent)
   data$signals["epoch"] <- NULL
-
-  if (!is.null(data$reference)) {
-    data$reference$ref_data <- data$signals["ref_data"]
-    data$signals["ref_data"] <- NULL
-  }
-
   data
 }
-
 
 #' Internal function for running IIR filtering
 #'
