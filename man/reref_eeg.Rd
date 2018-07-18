@@ -24,17 +24,16 @@ average of all electrodes in data. Character vector of channel names or numbers.
 
 \item{exclude}{Electrodes to exclude from average reference calculation.}
 
-\item{robust}{Use median instead of mean; only applied for average reference.}
+\item{robust}{Use median instead of mean; only used for average reference.}
 }
 \value{
 object of class \code{eeg_data}, re-referenced as requested.
 }
 \description{
-Used to reference the EEG data to specified electrode or electrodes. Defaults
-to average reference. When specific electrodes are used, they are removed
-from the data. Note that this stores the reference channel in the
-\code{eeg_data} structure; if a reference already exists, it is added back to
-the data before further referencing takes place.
+Used to reference the EEG data to a specified electrode or electrodes.
+Defaults to average reference. When specific electrodes are used, they are
+removed from the data. Meta-data about the referencing scheme is held in the
+\code{eeg_data} structure.
 }
 \section{Methods (by class)}{
 \itemize{

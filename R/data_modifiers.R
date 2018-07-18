@@ -1,10 +1,9 @@
 #' Referencing
 #'
-#' Used to reference the EEG data to specified electrode or electrodes. Defaults
-#' to average reference. When specific electrodes are used, they are removed
-#' from the data. Note that this stores the reference channel in the
-#' \code{eeg_data} structure; if a reference already exists, it is added back to
-#' the data before further referencing takes place.
+#' Used to reference the EEG data to a specified electrode or electrodes.
+#' Defaults to average reference. When specific electrodes are used, they are
+#' removed from the data. Meta-data about the referencing scheme is held in the
+#' \code{eeg_data} structure.
 #'
 #' @examples
 #' # demo_epochs is average referenced by default
@@ -33,10 +32,7 @@ reref_eeg.default <- function(data, ...) {
 #' @param ref_chans Channels to reference data to. Defaults to "average" i.e.
 #'   average of all electrodes in data. Character vector of channel names or numbers.
 #' @param exclude Electrodes to exclude from average reference calculation.
-#' @param robust Use median instead of mean; only applied for average reference.
-#' @importFrom tidyr spread
-#' @importFrom dplyr select
-#' @importFrom tibble as_tibble
+#' @param robust Use median instead of mean; only used for average reference.
 #' @importFrom matrixStats rowMedians
 #' @return object of class \code{eeg_data}, re-referenced as requested.
 #' @describeIn reref_eeg Rereference objects of class \code{eeg_data}
@@ -52,11 +48,8 @@ reref_eeg.eeg_data <- function(data,
 
   # check for existing reference. Add it back in if it exists.
   if (!is.null(data$reference)) {
-    if (identical(data$reference$ref_chans, "average")) {
-      data$signals <- data$signals + data$reference$ref_data
-    } else {
+    if (!identical(data$reference$ref_chans, "average")) {
       data$signals[data$reference$ref_chans] <- 0
-      data$signals <- data$signals + data$reference$ref_data
     }
   }
 
@@ -78,7 +71,6 @@ reref_eeg.eeg_data <- function(data,
   }
 
   # Calculate new reference data
-
   if (ref_chans == "average") {
     if (is.null(exclude)) {
       if (robust) {
@@ -95,7 +87,6 @@ reref_eeg.eeg_data <- function(data,
     }
     #remove reference from data
     data$signals <- data$signals - ref_data
-
   } else {
     if (any(all(ref_chans %in% colnames(data$signals)) | is.numeric(ref_chans))) {
       if (length(ref_chans) > 1) {
@@ -111,15 +102,13 @@ reref_eeg.eeg_data <- function(data,
   data$signals <- as.data.frame(data$signals)
   if (ref_chans == "average") {
     data$reference <- list(ref_chans = ref_chans,
-                           ref_data = ref_data,
                            excluded = excluded)
     } else {
       data$reference <- list(ref_chans = ref_chans,
-                             ref_data = ref_data,
                              excluded = excluded)
       data <- select_elecs(data, ref_chans, keep = FALSE)
       }
-    return(data)
+  return(data)
 }
 
 #' Baseline correction
@@ -147,15 +136,9 @@ rm_baseline.eeg_data <- function(data, time_lim = NULL, ...) {
 
   if (is.null(time_lim)) {
     baseline_dat <- colMeans(data$signals)
-    if (!is.null(data$reference$ref_data)) {
-      data$reference$ref_data <- data$reference$ref_data - mean(data$reference$ref_data[[1]])
-    }
   } else {
     base_times <- select_times(data, time_lim = time_lim)
     baseline_dat <- colMeans(base_times$signals)
-    if (!is.null(data$reference$ref_data)) {
-      data$reference$ref_data <- data$reference$ref_data - mean(base_times$reference$ref_data[[1]])
-    }
   }
   data$signals <- sweep(data$signals, 2, baseline_dat, '-')
   return(data)
@@ -200,7 +183,6 @@ rm_baseline.eeg_epochs <- function(data,
     data$signals <- do.call(rbind, data$signals)
   }
   return(data)
-
 }
 
 #' @describeIn rm_baseline Legacy method for data.frames
@@ -356,18 +338,9 @@ epoch_data.eeg_data <- function(data,
                   "epoch(s) with NAs removed. Epoch boundaries would lie outside data."))
   }
 
-  if (!is.null(data$reference)) {
-    ref_data <- dplyr::left_join(epoched_data,
-                                 as.data.frame(
-                                   cbind(sample = data$timings$sample,
-                                         ref_data = data$reference$ref_data)),
-                                 by = c("sample" = "sample"))
-    data$reference$ref_data <- ref_data[["ref_data"]]
-  }
-
   epoched_data$time.y <- NULL
   names(epoched_data)[[3]] <- "time"
-  data$signals <- epoched_data[, -1:-3]
+  data$signals <- epoched_data[, -1:-3] #check which columns this is...
   data$timings <- epoched_data[, 1:3]
   data$continuous <- FALSE
   data$events <- event_table
@@ -441,20 +414,9 @@ eeg_downsample.eeg_data <- function(data, q, ...) {
                                       max(new_times)))
   }
 
-  # make sure any saved reference gets downsampled too.
-  if (!is.null(data$reference)) {
-    data$signals["ref_data"] <- data$reference$ref_data
-  }
-
   # step through each column and decimate each channel
   data$signals <- purrr::map_df(as.list(data$signals),
                                 ~signal::decimate(., q))
-
-  # separate reference from main data again
-  if (!is.null(data$reference)) {
-    data$reference$ref_data <- data$signals[["ref_data"]]
-    data$signals["ref_data"] <- NULL
-  }
 
   # select every qth timing point, and divide srate by q
   data$srate <- data$srate / q
@@ -498,11 +460,6 @@ eeg_downsample.eeg_epochs <- function(data, q, ...) {
                                       max(new_times)))
   }
 
-  # make sure any saved reference gets downsampled too.
-  if (!is.null(data$reference)) {
-    data$signals["ref_data"] <- data$reference$ref_data
-  }
-
   data$signals <- split(data$signals, data$timings$epoch)
 
   new_times <- data$timings$time
@@ -518,15 +475,11 @@ eeg_downsample.eeg_epochs <- function(data, q, ...) {
   # data$signals <- purrr::map_df(as.list(data$signals),
   #                               ~signal::decimate(., q))
 
-  # separate reference from main data again
-  if (!is.null(data$reference)) {
-    data$reference$ref_data <- data$signals[["ref_data"]]
-    data$signals["ref_data"] <- NULL
-  }
-
   # select every qth timing point, and divide srate by q
   data$srate <- data$srate / q
-  data$timings <- data$timings[seq(1, length(data$timings[[1]]), by = q), ]
+  data$timings <- data$timings[seq(1,
+                                   length(data$timings[[1]]),
+                                   by = q), ]
 
   # The event table also needs to be adjusted. Note that this inevitably jitters
   # event timings by up to q/2 sampling points.
@@ -543,8 +496,8 @@ eeg_downsample.eeg_epochs <- function(data, q, ...) {
 #'
 #' Combine multiple \code{eeg_epochs} or \code{eeg_data} objects into a single
 #' object. Note that this does not currently perform any sort of checking for
-#' internal consistency or duplication. It simply combines the objects in the order they
-#' are passed.
+#' internal consistency or duplication. It simply combines the objects in the
+#' order they are passed.
 #'
 #' @param data An \code{eeg_epochs} object
 #' @param ... additional \code{eeg_epochs} objects
@@ -575,11 +528,6 @@ eeg_combine.eeg_data <- function(data, ...){
                                       purrr::map_df(args, ~.$events))
       data$timings <- dplyr::bind_rows(data$timings,
                                        purrr::map_df(args, ~.$timings))
-      if (!is.null(data$reference$ref_data)) {
-        data$reference$ref_data <- c(data$reference$ref_data,
-                                     sapply(args,
-                                            function(x) x$reference$ref_data))
-      }
     }
   }
   data
@@ -595,25 +543,15 @@ eeg_combine.eeg_epochs <- function(data, ...) {
     stop("Nothing to combine.")
   }
   if (all(sapply(args, is.eeg_epochs))) {
-
-
     data$signals <- dplyr::bind_rows(data$signals,
                                      purrr::map_df(args, ~.$signals))
-
     data$events <- dplyr::bind_rows(data$events,
                                     purrr::map_df(args, ~.$events))
-
     data$timings <- dplyr::bind_rows(data$timings,
                         purrr::map_df(args, ~.$timings))
-
-    if (!is.null(data$reference$ref_data)) {
-      data$reference$ref_data <- c(data$reference$ref_data,
-                                   sapply(args,
-                                          function(x) x$reference$ref_data))
-    }
-  } else {
-    stop("All inputs must be eeg_epochs objects.")
-  }
+    } else {
+      stop("All inputs must be eeg_epochs objects.")
+      }
   #fix epoch numbering for combined objects
   data <- check_timings(data)
   data
@@ -763,7 +701,6 @@ eeg_average.eeg_epochs <- function(data,
         data$signals <- data$signals[[1]]
         }
   }
-  data$reference$ref_data <- NULL
   data$events <- NULL
   data$timings <- unique(data$timings["time"])
   class(data) <- c("eeg_evoked", "eeg_data")
