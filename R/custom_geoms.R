@@ -186,8 +186,13 @@ stat_scalpmap <- function(mapping = NULL, data = NULL, geom = "raster",
                             position = "identity", na.rm = FALSE,
                             show.legend = NA, inherit.aes = TRUE, ...) {
   ggplot2::layer(
-    stat = StatScalpmap, data = data, mapping = mapping, geom = geom,
-    position = position, show.legend = show.legend, inherit.aes = inherit.aes,
+    stat = StatScalpmap,
+    data = data,
+    mapping = mapping,
+    geom = geom,
+    position = position,
+    show.legend = show.legend,
+    inherit.aes = inherit.aes,
     params = list(na.rm = na.rm, ...)
   )
 }

@@ -38,7 +38,7 @@ test_that("Plotting of butterfly plots from epochs", {
 
 test_that("Topoplots", {
   vdiffr::expect_doppelganger("topoplot of epochs",
-                              topoplot(EEG_epochs))
+                              topoplot(demo_epochs))
   vdiffr::expect_doppelganger("topoplot of epochs 150-200ms",
                               topoplot(EEG_epochs,
                                        time_lim = c(150, 200)))
@@ -50,8 +50,11 @@ test_that("Topoplots", {
 
 test_that("erp_raster and erp_image function", {
   test_epo <- epoch_data(test_data, 255)
-  expect_s3_class(erp_image(test_epo, electrode = "A15"), "gg")
-  expect_s3_class(erp_raster(test_epo), "gg")
+  demo_epochs <- electrode_locations(demo_epochs,
+                                     montage = "biosemi64alpha",
+                                     overwrite = TRUE)
+  expect_s3_class(erp_image(demo_epochs, electrode = "A13"), "gg")
+  expect_s3_class(erp_raster(demo_epochs), "gg")
 
   expect_error(electrode_locations(test_epo, montage = "bio2"))
   test_epo <- electrode_locations(test_epo, montage = "biosemi64alpha")
