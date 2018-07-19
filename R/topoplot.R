@@ -271,7 +271,7 @@ topoplot.data.frame <- function(data,
              x = mask_ring$x,
              y = mask_ring$y,
              colour = "white",
-             size = rel(4.4)) +
+             size = rel(4.8)) +
     annotate("path",
              x = head_shape$x,
              y = head_shape$y,
