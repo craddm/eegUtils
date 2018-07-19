@@ -237,8 +237,8 @@ electrode_locations.data.frame <- function(data,
                                            plot = FALSE,
                                            montage = NULL, ...) {
 
+  #if a montage supplied, check if it matches known montages
   if (!is.null(montage)) {
-
     electrodeLocs <- montage_check(montage)
   }
 
@@ -252,7 +252,8 @@ electrode_locations.data.frame <- function(data,
 
     if (!all(elecs)) {
       message("Electrodes not found: ",
-              paste(dplyr::pull(unique(data[, electrode]))[!elecs], sep = ","))
+              paste(dplyr::pull(unique(data[, electrode]))[!elecs],
+                    sep = ","))
     } else if (!any(elecs)) {
       stop("No matching electrodes found.")
     }
@@ -308,12 +309,12 @@ electrode_locations.eeg_data <- function(data,
   electrodeLocs$electrode <- toupper(electrodeLocs$electrode)
 
   matched_els <- electrodeLocs$electrode %in% elec_names
-  missing_els <- elec_names %in% electrodeLocs$electrode
+  missing_els <- !elec_names %in% electrodeLocs$electrode
 
   if (!any(matched_els)) {
     stop("No matching electrodes found.")
-  } else if (!all(matched_els)) {
-    message(cat("Electrodes not found:", names(data$signals)[!missing_els]))
+  } else if (any(missing_els)) {
+    message(paste("Electrodes not found:", names(data$signals)[missing_els]))
   }
 
   data$chan_info <- electrodeLocs[matched_els, ]
@@ -419,11 +420,13 @@ plot_electrodes.eeg_data <- function(data,
 #' Montage check
 #'
 #' @param montage Name of montage
-#' @noRd
+#' @keywords internal
 
 montage_check <- function(montage) {
   if (identical(montage, "biosemi64alpha")) {
-    elocs <- orig_locs
+    elocs <- merge(orig_locs["electrode"][1:64, ],
+                   electrodeLocs,
+                   sort = FALSE) #hacky way to translate elec names
     elocs[1:64, "electrode"] <- c(paste0("A", 1:32),
                                           paste0("B", 1:32))
   } else {
