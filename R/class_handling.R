@@ -1,24 +1,28 @@
 #' @param data TFR transformed data
 #' @param srate Sampling rate in Hz.
-#' @param chan_info String of character names for electrodes.
-#' @param timings Timing information - samples and sample /samplirng rate.
-#' @param freqs vector of frequencies
+#' @param events Event tables
+#' @param chan_info Standard channel information.
+#' @param reference Reference information
+#' @param timings Timing information.
+#' @param freq_info Frequencies and other useful information
 #' @param dimensions List of which dimension is which
 #' @noRd
 eeg_tfr <- function(data,
                     srate,
                     events,
                     chan_info = NULL,
+                    reference,
                     timings = NULL,
-                    freqs,
+                    freq_info,
                     dimensions) {
 
   value <- list(signals = data,
                 srate = srate,
                 events = events,
                 chan_info = chan_info,
+                reference = reference,
                 timings = timings,
-                freqs = freqs,
+                freq_info = freq_info,
                 dimensions = dimensions)
   class(value) <- "eeg_tfr"
   value

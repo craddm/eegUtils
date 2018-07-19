@@ -83,8 +83,12 @@ plot_psd.eeg_data <- function(data, freq_range = NULL, ...) {
 
 #' Plot TFR objects
 #' @param data object of class eeg_tfr
+#' @param electrode Electrode to plot
+#' @param interpolate interpolation of raster
 #' @noRd
-plot_tfr <- function(data, electrode, ...) {
+
+plot_tfr <- function(data, electrode, interpolate = FALSE,...) {
+
   if (!class(data) == "eeg_tfr") {
     stop("Object of class eeg_tfr required.")
   }
@@ -101,7 +105,10 @@ plot_tfr <- function(data, electrode, ...) {
     ggplot2::ggplot(aa, aes(x = time,
                             y = frequency,
                             fill = power)) +
-      geom_raster(interpolate = TRUE)
+      geom_raster(interpolate = interpolate) +
+      labs(y = "Frequency (Hz)",
+           x = "Time (s)",
+           fill = "Power (a.u.)")
   } else {
     stop("Electrode not found.")
   }

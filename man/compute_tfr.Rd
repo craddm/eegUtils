@@ -8,10 +8,10 @@
 \usage{
 compute_tfr(data, ...)
 
-\method{compute_tfr}{default}(data, ...)
+\method{compute_tfr}{default}(data)
 
 \method{compute_tfr}{eeg_epochs}(data, method = "morlet", foi, n_freq,
-  n_cycles = 7, keep_trials = TRUE, ...)
+  n_cycles = 7, keep_trials = FALSE, output = "power", ...)
 }
 \arguments{
 \item{data}{An object of class \code{eeg_epochs}.}
@@ -28,6 +28,8 @@ and highest frequency to resolve.}
 \item{n_cycles}{Number of cycles at each frequency.}
 
 \item{keep_trials}{Keep single trials or average over them before returning.}
+
+\item{output}{Sets whether output is power, phase, or fourier coefficients.}
 }
 \description{
 This function creates a time frequency represention of EEG time series data.

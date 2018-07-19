@@ -142,7 +142,7 @@ topo_norm <- function(angle, radius) {
 #'
 #' @param chan_info channel information structure
 #' @param degrees degrees by which to rotate
-#' @noRd
+#' @keywords internal
 
 rotate_angle <- function(chan_info, degrees) {
 

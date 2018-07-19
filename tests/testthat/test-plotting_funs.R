@@ -32,17 +32,16 @@ test_that("Plotting of data with multiple epochs works as expected", {
 })
 
 test_that("Plotting of butterfly plots from epochs", {
-  skip('skip')
   vdiffr::expect_doppelganger("butterfly epochs",
-                              plot_butterfly(EEG_epochs))
+                              plot_butterfly(demo_epochs))
 })
 
 test_that("Topoplots", {
   vdiffr::expect_doppelganger("topoplot of epochs",
                               topoplot(demo_epochs))
   vdiffr::expect_doppelganger("topoplot of epochs 150-200ms",
-                              topoplot(EEG_epochs,
-                                       time_lim = c(150, 200)))
+                              topoplot(demo_epochs,
+                                       time_lim = c(.150, .200)))
   vdiffr::expect_doppelganger("GAM topo",
                               topoplot(EEGdat,
                                        time_lim = c(150, 200),
