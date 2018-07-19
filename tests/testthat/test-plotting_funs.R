@@ -3,6 +3,9 @@ context("Plotting functions")
 load("EEG_epochs.rda")
 load("EEGdat.rda")
 test_data <- import_raw("Newtest17-256.bdf")
+demo_epochs <- electrode_locations(demo_epochs,
+                                   montage = "biosemi64alpha",
+                                   overwrite = TRUE)
 
 test_that("Plotting of single epoch timecourses works as expected", {
   vdiffr::expect_doppelganger("timecourse over all elecs",
@@ -10,8 +13,6 @@ test_that("Plotting of single epoch timecourses works as expected", {
   vdiffr::expect_doppelganger("timecourse plot from EEGdat",
                               plot_timecourse(EEGdat,
                                               electrode = "Pz"))
-  # expect_equal_to_reference(plot_timecourse(EEGdat, electrode = "Pz"),
-  #                           file = "Pz_single_epoch.rds")
   vdiffr::expect_doppelganger("baseline corr Pz", plot_timecourse(EEGdat,
                                               baseline = c(-100,
                                                            0),
@@ -50,9 +51,6 @@ test_that("Topoplots", {
 
 test_that("erp_raster and erp_image function", {
   test_epo <- epoch_data(test_data, 255)
-  demo_epochs <- electrode_locations(demo_epochs,
-                                     montage = "biosemi64alpha",
-                                     overwrite = TRUE)
   expect_s3_class(erp_image(demo_epochs, electrode = "A13"), "gg")
   expect_s3_class(erp_raster(demo_epochs), "gg")
 
