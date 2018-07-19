@@ -68,6 +68,7 @@ erp_image.eeg_ICA <- function(data,
                               electrode = "V1",
                               smoothing = 10,
                               clim = NULL) {
+
   if (!electrode %in% names(data$signals)) {
     stop("Specified component not found.")
   }
@@ -88,11 +89,12 @@ erp_image.eeg_ICA <- function(data,
 #' @param smoothing Number of trials to smooth over when generating image
 #' @param clim Character vector of min and max values of plotting colour range.
 #'   e.g. c(-5,5). Defaults to min and max.
-#' @noRd
+#' @keywords internal
 create_erpimage <- function(data,
                             electrode,
                             smoothing,
-                            clim) {
+                            clim,
+                            interpolate = FALSE) {
 
   n_times <- length(unique(data$time))
   n_epochs <- length(unique(data$epoch))
@@ -121,7 +123,7 @@ create_erpimage <- function(data,
                   aes(x = smooth_time,
                       y = epoch,
                       fill = smooth_amp)) +
-    geom_raster(interpolate = TRUE) +
+    geom_raster(interpolate = interpolate) +
     geom_vline(xintercept = 0,
                linetype = "dashed",
                size = 1) +
@@ -152,6 +154,7 @@ create_erpimage <- function(data,
 #'   c(-.2, .5))
 #' @param clim Character vector of min and max values of plotting colour range.
 #'   e.g. c(-5,5). Defaults to min and max.
+#' @param interpolate Smooth the raster plot. Defaults to FALSE.
 #' @import ggplot2
 #' @importFrom tidyr gather
 #' @importFrom scales squish
@@ -161,7 +164,8 @@ create_erpimage <- function(data,
 erp_raster <- function(data,
                        anat_order = TRUE,
                        time_lim = NULL,
-                       clim = NULL) {
+                       clim = NULL,
+                       interpolate = FALSE) {
 
   if (!is.null(time_lim)){
     data <- select_times(data, time_lim)
@@ -172,19 +176,32 @@ erp_raster <- function(data,
     data$signals <- data$signals[, chan_order]
   }
 
-  data <- data.frame(data$signals, time = data$timings$time)
-  data <- split(data, data$time)
-  data <- lapply(data, Matrix::colMeans)
+  data <- data.frame(data$signals,
+                     time = data$timings$time)
+  data <- split(data,
+                data$time)
+  data <- lapply(data,
+                 Matrix::colMeans)
   data <- as.data.frame(do.call(rbind, data))
-  data <- tidyr::gather(data, electrode, amplitude, -time, factor_key = TRUE)
+  data <- tidyr::gather(data,
+                        electrode,
+                        amplitude,
+                        -time,
+                        factor_key = TRUE)
   if (is.null(clim)) {
-    clim <- c(min(data$amplitude), max(data$amplitude))
+    clim <- c(min(data$amplitude),
+              max(data$amplitude))
   }
-  ggplot2::ggplot(data, aes(x = time, y = electrode, fill = amplitude)) +
-    geom_raster(interpolate = TRUE) +
-    geom_vline( xintercept = 0, linetype = "dashed", size = 2) +
+  ggplot2::ggplot(data, aes(x = time,
+                            y = electrode,
+                            fill = amplitude)) +
+    geom_raster(interpolate = interpolate) +
+    geom_vline( xintercept = 0,
+                linetype = "dashed",
+                size = 2) +
     scale_fill_distiller(palette = "RdBu",
-                         limits = c(clim[1], clim[2]),
+                         limits = c(clim[1],
+                                    clim[2]),
                          oob = scales::squish) +
     scale_x_continuous(expand = c(0, 0)) +
     theme_classic() +
@@ -199,14 +216,14 @@ erp_raster <- function(data,
 #' @param data An \code{eeg_data} object
 #' @return Vector of channel positions
 #' @author Matt Craddock, \email{matt@@mattcraddock.com}
-#' @noRd
+#' @keywords internal
 
 arrange_chans <- function(data) {
 
   # Pick out electrodes on the midline (theta = 180 or 0)
   midline <- data$chan_info$pol_theta == 180 | data$chan_info$pol_theta == 0
   midline_labels <- data$chan_info$electrode[midline]
-  midline_dist <- ifelse(data$chan_info$theta[midline] == 180,
+  midline_dist <- ifelse(data$chan_info$angle[midline] == 180,
                          -data$chan_info$radius[midline],
                          data$chan_info$radius[midline])
 

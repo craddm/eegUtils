@@ -4,7 +4,8 @@
 \alias{erp_raster}
 \title{ERP raster plot}
 \usage{
-erp_raster(data, anat_order = TRUE, time_lim = NULL, clim = NULL)
+erp_raster(data, anat_order = TRUE, time_lim = NULL, clim = NULL,
+  interpolate = FALSE)
 }
 \arguments{
 \item{data}{An \code{eeg_epochs} object}
@@ -17,6 +18,8 @@ c(-.2, .5))}
 
 \item{clim}{Character vector of min and max values of plotting colour range.
 e.g. c(-5,5). Defaults to min and max.}
+
+\item{interpolate}{Smooth the raster plot. Defaults to FALSE.}
 }
 \description{
 Create a plot showing the ERP at every channel as a single ERP image. By
