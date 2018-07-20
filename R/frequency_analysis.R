@@ -134,7 +134,8 @@ welch_fft <- function(data,
                         noverlap)
     n_segs <- length(data_segs)
     # this splits the data into a list of ncol elements; each list element is
-    # also a list containing n_segs elements - consider recoding this to combine segments into
+    # also a list containing n_segs elements - consider recoding this to combine
+    # segments into
   } else {
     data_segs <- data
     n_segs <- 1
@@ -333,6 +334,9 @@ tf_morlet <- function(data,
   } else if (length(foi) == 2) {
     foi <- c(min(foi),
              max(foi))
+  } else {
+    foi <- c(foi, foi)
+    n_freq <- 1
   }
 
   frex <- seq(foi[1],
@@ -405,7 +409,7 @@ tf_morlet <- function(data,
   if (keep_trials) {
     dimnames(data$signals) <- list(sigtime,
                                    elecs,
-                                   data$freqs,
+                                   data$freq_info$freqs,
                                    unique(data$timings$epoch))
     data$signals <- sweep(data$signals,
                           c(1, 3),
@@ -439,8 +443,7 @@ tf_morlet <- function(data,
                           c(1, 3),
                           edge_mat,
                           "*")
-  }
-  data <- eeg_tfr(data$signals,
+    data <- eeg_tfr(data$signals,
                   srate = data$srate,
                   events = NULL,
                   chan_info = data$chan_info,
@@ -450,6 +453,7 @@ tf_morlet <- function(data,
                   dimensions = c("time",
                                  "channel",
                                  "frequency"))
+  }
   data
 }
 
@@ -475,7 +479,7 @@ morlet <- function(frex,
   # round the max SD to the next biggest number divisible by tstep
   round_sd <- max_sd_t + (tstep - (max_sd_t %% tstep))
 
-  # calculate length of kernel as 4 * maximum temporal SD
+  # calculate length of kernel as 6 * maximum temporal SD
   # TO DO - change this to do it for *every* frequency
   wavtime <- seq(-round_sd * 3,
                  round_sd * 3,
@@ -527,7 +531,9 @@ fft_n <- function(signal, n) {
     fft(signal_n)
   } else {
     if (nrow(signal) < n) {
-      signal_n <- matrix(0, nrow = n, ncol = ncol(signal))
+      signal_n <- matrix(0,
+                         nrow = n,
+                         ncol = ncol(signal))
       signal_n[1:nrow(signal), ] <- signal
     } else {
       signal_n <- signal[1:n, ]
@@ -545,7 +551,7 @@ fft_n <- function(signal, n) {
 #' @param wavtime time points
 #' @param srate Sampling rate of the signal
 #' @importFrom stats mvfft
-#' @noRd
+#' @keywords internal
 
 conv_mor <- function(morlet_fam,
                      signal,

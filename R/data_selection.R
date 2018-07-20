@@ -127,6 +127,22 @@ select_times.eeg_evoked <- function(data,
   }
 }
 
+#' @describeIn select_times Select times from an \code{eeg_tfr} object
+select_times.eeg_tfr <- function(data,
+                                 time_lim = NULL,
+                                 df_out = FALSE,
+                                 ...){
+
+  sel_rows <- data$timings$time > time_lim[[1]] & data$timings$time < time_lim[[2]]
+  data$timings <- data$timings[sel_rows, ]
+  if (length(data$dimensions) == 3) {
+    data$signals <- data$signals[sel_rows, , ]
+  } else {
+    data$signals <- data$signals[sel_rows, , , ]
+  }
+  data
+}
+
 #' Select electrodes from a given dataset
 #'
 #' This is a generic function for selection of electrodes from an EEG dataset.
@@ -334,6 +350,20 @@ select_epochs.eeg_ICA <- function(data,
   }
 }
 
+#'@noRd
+select_epochs.eeg_tfr <- function(data,
+                                  epoch_events = NULL,
+                                  epoch_no = NULL,
+                                  keep = TRUE,
+                                  df_out = FALSE,
+                                  ...) {
+  if ("epoch" %in% data$dimensions) {
+
+  } else {
+    stop("Data is averaged, so no epochs present.")
+  }
+  data
+}
 #' Internal function for processing epoch_events during selection
 #'
 #' Converts character strings into a vector of epoch numbers with matching labels.

@@ -5,8 +5,10 @@
 - `run_ICA()` now offers extended Infomax and Fastica thanks to the `ica` package
 - `plotly` is now a "suggested" package rather than a dependency
 - `plot_psd()` function added to calculate and plot the PSD for `eeg_epochs` and `eeg_data` objects
+- `plot_tfr()` function added to handle `eeg_tfr` objects.
 - `erp_image()` now works with `eeg_ICA` objects
 - Generic print methods added for `eeg_epochs` and `eeg_data`
+- `compute_tfr` function added to performed TFA on `eeg_epochs`
 
 ### Internal changes/ bug fixes
 - `reref_eeg()` 
@@ -23,6 +25,7 @@
     - now returns source activations as a "signals" data frame, with component names
     - now returns correct unmixing matrix
 - `compute_csd()` added
+- `compute_tfr()` added
 
 # eegUtils 0.2.0
 

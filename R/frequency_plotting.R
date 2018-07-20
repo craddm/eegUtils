@@ -85,14 +85,24 @@ plot_psd.eeg_data <- function(data, freq_range = NULL, ...) {
 #' @param data object of class eeg_tfr
 #' @param electrode Electrode to plot
 #' @param interpolate interpolation of raster
+#' @param time_lim Time limits of plot
 #' @noRd
 
-plot_tfr <- function(data, electrode, interpolate = FALSE,...) {
+plot_tfr <- function(data,
+                     electrode,
+                     interpolate = FALSE,
+                     time_lim = NULL,
+                     ...) {
 
   if (!class(data) == "eeg_tfr") {
     stop("Object of class eeg_tfr required.")
   }
-  #length(dim(data$signals))
+
+  if (length(data$dimensions) == 4) {
+    data$signals <- apply(data$signals,
+                          c(1, 2, 3),
+                          mean)
+  }
 
   if (electrode %in% dimnames(data$signals)[[2]]) {
     aa <- as.data.frame.table(data$signals[, electrode, ],
