@@ -252,14 +252,14 @@ electrode_locations.data.frame <- function(data,
 
     if (!all(elecs)) {
       message("Electrodes not found: ",
-              paste(dplyr::pull(unique(data[, electrode]))[!elecs],
+              paste(unique(data[, electrode])[!elecs],
                     sep = ","))
     } else if (!any(elecs)) {
       stop("No matching electrodes found.")
     }
   } else {
     elecs <-
-      unique(data[, electrode]) %in% dplyr::pull(electrodeLocs[, electrode])
+      unique(data[, electrode]) %in% electrodeLocs[, electrode]
     if (!all(elecs)) {
       message("Electrodes not found: ",
               paste(unique(data[, electrode])[!elecs], sep = ","))

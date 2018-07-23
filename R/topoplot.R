@@ -105,15 +105,16 @@ topoplot.data.frame <- function(data,
   # Filter out unwanted timepoints, and find nearest time values in the data
   # --------------
 
-  if ("time" %in% colnames(data)) {
-    if (length(time_lim) == 1) {
-      time_lim <- data$time[which.min(abs(data$time - time_lim))]
-      data <- data[data$time == time_lim, ]
-      } else if (length(time_lim) == 2) {
-        range(data$time)
-        data <- select_times(data, time_lim)
-      }
-    }
+  data <- select_times(data, time_lim)
+  # if ("time" %in% colnames(data)) {
+  #   if (length(time_lim) == 1) {
+  #     time_lim <- data$time[which.min(abs(data$time - time_lim))]
+  #     data <- data[data$time == time_lim, ]
+  #     } else if (length(time_lim) == 2) {
+  #       range(data$time)
+  #       data <- select_times(data, time_lim)
+  #     }
+  #   }
 
   # Check for x and y co-ordinates, try to add if not found --------------
 
@@ -131,7 +132,9 @@ topoplot.data.frame <- function(data,
         warnings("No channel locations found in chanLocs.")
       }
     } else if ("electrode" %in% colnames(data)) {
-      data <- electrode_locations(data, drop = TRUE, montage = montage)
+      data <- electrode_locations(data,
+                                  drop = TRUE,
+                                  montage = montage)
       message("Attempting to add standard electrode locations...")
     } else {
     stop("Neither electrode locations nor labels found.")
@@ -219,7 +222,7 @@ topoplot.data.frame <- function(data,
   # Create the head_shape -----------------
 
   #set radius as max of y (i.e. furthest forward electrode's y position). Add a
-  #little to push the circle out a bit more.
+  #little to push the circle out a bit more. Consider making max of abs(scaled_y)
 
   if (is.null(r)) {
     r <- max(scaled_y) * 1.1
@@ -240,7 +243,7 @@ topoplot.data.frame <- function(data,
                            y = 1.126 * sin(circ_rads)
     )
   } else {
-    out_df$incircle <- sqrt(out_df$x ^ 2 + out_df$y ^ 2) < (r * 1.03)
+    out_df$incircle <- sqrt(out_df$x ^ 2 + out_df$y ^ 2) < (r * 1.02)
     mask_ring <- data.frame(x = r * 1.03 * cos(circ_rads),
                            y = r * 1.03 * sin(circ_rads)
     )
@@ -327,6 +330,7 @@ topoplot.data.frame <- function(data,
                  size = rel(4))
     }
 
+  # Highlight specified electrodes
   if (!is.null(highlights)) {
     high_x <- scaled_x[data$electrode %in% highlights]
     high_y <- scaled_y[data$electrode %in% highlights]
@@ -498,6 +502,7 @@ make_topo <- function(data,
                       quantity,
                       montage,
                       highlights) {
+
 
 }
 

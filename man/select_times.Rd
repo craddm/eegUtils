@@ -6,6 +6,7 @@
 \alias{select_times.eeg_data}
 \alias{select_times.eeg_epochs}
 \alias{select_times.eeg_evoked}
+\alias{select_times.eeg_tfr}
 \title{Select timerange}
 \usage{
 select_times(data, ...)
@@ -19,6 +20,8 @@ select_times(data, ...)
 
 \method{select_times}{eeg_evoked}(data, time_lim = NULL, df_out = FALSE,
   ...)
+
+\method{select_times}{eeg_tfr}(data, time_lim = NULL, df_out = FALSE, ...)
 }
 \arguments{
 \item{data}{Data from which to select}
@@ -52,6 +55,8 @@ than that requested.
 \item \code{eeg_epochs}: Select times in \code{eeg_epochs} objects
 
 \item \code{eeg_evoked}: Select times in \code{eeg_evoked} objects
+
+\item \code{eeg_tfr}: Select times from an \code{eeg_tfr} object
 }}
 
 \examples{

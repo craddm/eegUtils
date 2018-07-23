@@ -1,3 +1,5 @@
+#' Object creator for eeg_tfr objects.
+#'
 #' @param data TFR transformed data
 #' @param srate Sampling rate in Hz.
 #' @param events Event tables
@@ -6,7 +8,8 @@
 #' @param timings Timing information.
 #' @param freq_info Frequencies and other useful information
 #' @param dimensions List of which dimension is which
-#' @noRd
+#' @author Matt Craddock \email{matt@@mattcraddock.com}
+#' @keywords internal
 eeg_tfr <- function(data,
                     srate,
                     events,
@@ -28,8 +31,15 @@ eeg_tfr <- function(data,
   value
 }
 
+#' Check if object is of class eeg_tfr
+#'
+#' @author Matt Craddock \email{matt@@mattcraddock.com}
+#' @param x Object to check.
+#'
+is.eeg_tfr <- function(x) inherits(x, "eeg_tfr")
 
-#' Function to create an object of class \code{eeg_psd}
+
+#' Function to create an object of class eeg_psd
 #'
 #' @param data PSD transformed data
 #' @param srate Sampling rate in Hz.
@@ -37,6 +47,7 @@ eeg_tfr <- function(data,
 #' @param timings Timing information - samples and sample /samplirng rate.
 #' @param freqs vector of frequencies
 #' @param dimensions List of which dimension is which
+#' @author Matt Craddock \email{matt@@mattcraddock.com}
 #' @noRd
 eeg_psd <- function(data,
                     srate,

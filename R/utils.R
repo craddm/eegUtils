@@ -91,7 +91,7 @@ eeg_stats <- function(statistic, chan_info, pvals, timings) {
 #'
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #' @param x Object to check.
-#' @noRd
+#' @keywords internal
 
 is.eeg_data <- function(x) inherits(x, "eeg_data")
 
@@ -99,7 +99,7 @@ is.eeg_data <- function(x) inherits(x, "eeg_data")
 #'
 #' @author Matt Craddock \email{matt@mattcraddock.com}
 #' @param x Object to check.
-#' @noRd
+#' @keywords internal
 
 is.eeg_epochs <- function(x) inherits(x, "eeg_epochs")
 
