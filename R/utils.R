@@ -250,13 +250,32 @@ as.data.frame.eeg_epochs <- function(x, row.names = NULL,
 
 as.data.frame.eeg_evoked <- function(x, row.names = NULL,
                                      optional = FALSE, long = FALSE, ...) {
-  df <- data.frame(x$signals, time = x$timings$time)
-  if (long) {
-    df <- tidyr::gather(df,
-                        electrode,
-                        amplitude,
-                        -time,
-                        factor_key = T)
+  if (class(x$signals) == "list") {
+    cond_labels <- names(x$signals)
+    df <- lapply(seq_along(cond_labels), function(ix) {
+      out_df <- data.frame(x$signals[[ix]],
+                           time = x$timings$time,
+                           cond_label = cond_labels[[ix]])
+      out_df
+    })
+    df <- do.call("rbind", df)
+    if (long) {
+      df <- tidyr::gather(df,
+                          "electrode",
+                          "amplitude",
+                          -time,
+                          -cond_label,
+                          factor_key = T)
+    }
+  } else {
+    df <- data.frame(x$signals, time = x$timings$time)
+    if (long) {
+      df <- tidyr::gather(df,
+                          "electrode",
+                          "amplitude",
+                          -time,
+                          factor_key = T)
+    }
   }
   return(df)
 }
