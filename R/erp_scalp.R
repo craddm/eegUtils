@@ -62,14 +62,24 @@ erp_scalp <- function(data,
   }
 
   plotfun <- function(x) {
-    plot <- ggplot(data = x, aes_(as.name(time), as.name(amplitude)))
-    plot <- plot + facet_wrap("electrodefacet")
-    plot <- plot + coord_cartesian(ylim = c(minAmp, maxAmp),
-                                   xlim = c(minTime, maxTime))
-    plot <- plot + geom_vline(xintercept = 0, size = .3)
-    plot <- plot + geom_hline(yintercept = 0, size = .3)
-    plot <- plot + theme_void()
-    plot <- plot + theme(strip.text = element_text(size = 8))
+    plot <- ggplot(data = x,
+                   aes_(as.name(time),
+                        as.name(amplitude)))
+    plot <- plot +
+      facet_wrap("electrodefacet")
+    plot <- plot +
+      coord_cartesian(ylim = c(minAmp, maxAmp),
+                      xlim = c(minTime, maxTime))
+    plot <- plot +
+      geom_vline(xintercept = 0,
+                 size = .3)
+    plot <- plot +
+      geom_hline(yintercept = 0,
+                 size = .3)
+    plot <- plot +
+      theme_void()
+    plot <- plot +
+      theme(strip.text = element_text(size = 8))
     if (!is.null(color)) {
       plot <- plot + scale_color_brewer(palette = "Set1")
       plot <- plot + geom_line(aes_(color = as.name(color)),

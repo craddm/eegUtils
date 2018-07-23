@@ -66,3 +66,23 @@ eeg_psd <- function(data,
   class(value) <- "eeg_tfr"
   value
 }
+
+
+#' Function to create an object of class \code{eeg_GA}
+#'
+#' @noRd
+
+eeg_GA <- function(data,
+                   srate,
+                   chan_info,
+                   timings,
+                   indivs) {
+
+  value <- list(signals = data,
+                srate = srate,
+                chan_info = chan_info,
+                timings = timings,
+                indivs = indivs)
+  class(value) <- "eeg_GA"
+  value
+}

@@ -259,7 +259,8 @@ electrode_locations.data.frame <- function(data,
     }
   } else {
     elecs <-
-      unique(data[, electrode]) %in% electrodeLocs[, electrode]
+      unique(data[, electrode]) %in% electrodeLocs[, electrode,
+                                                   drop = TRUE]
     if (!all(elecs)) {
       message("Electrodes not found: ",
               paste(unique(data[, electrode])[!elecs], sep = ","))
