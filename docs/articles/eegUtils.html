@@ -88,7 +88,7 @@
       <h1>EEG Utils</h1>
                         <h4 class="author">Matt Craddock</h4>
             
-            <h4 class="date">2018-07-08</h4>
+            <h4 class="date">2018-07-23</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/craddm/eegUtils/blob/master/vignettes/eegUtils.Rmd"><code>vignettes/eegUtils.Rmd</code></a></small>
       <div class="hidden name"><code>eegUtils.Rmd</code></div>
@@ -104,6 +104,7 @@
 <a href="#basic-eeg-processing" class="anchor"></a>Basic EEG processing</h2>
 <p>There is currently suport for loading raw data in the .BDF (typically BioSemi) and .CNT (32-bit; associated with Neuroscan) file formats using the <code><a href="../reference/import_raw.html">import_raw()</a></code> command. Loading data in these formats in results in an <code>eeg_data</code> object - a structure that contains the raw data and a variety of metadata.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(eegUtils)
+<span class="co">#&gt; Make sure to check for the latest development version at https://github.com/craddm/eegUtils!</span>
 eeg_example &lt;-<span class="st"> </span><span class="kw"><a href="../reference/import_raw.html">import_raw</a></span>(<span class="st">"F:</span><span class="ch">\\</span><span class="st">Dropbox</span><span class="ch">\\</span><span class="st">EEGData</span><span class="ch">\\</span><span class="st">RawEEGData</span><span class="ch">\\</span><span class="st">BasicCat</span><span class="ch">\\</span><span class="st">S2B1.bdf"</span>)
 <span class="kw">names</span>(eeg_example)
 <span class="co">#&gt; [1] "signals"    "srate"      "events"     "chan_info"  "timings"   </span>
@@ -152,8 +153,7 @@ eeg_example &lt;-<span class="st"> </span><span class="kw"><a href="../reference
 <p><img src="eegUtils_files/figure-html/do-plots-4.png" width="700"></p>
 <p>Standard channel locations can be added using the <code><a href="../reference/electrode_locations.html">electrode_locations()</a></code> command. Currently this only has locations for a limited number of electrodes (64 electrodes from the 10-20 system). Different built-in montages will be added, and can be specified using the <code>montage</code> parameter. In this case, the data was recorded using Biosemi with alpha-numeric channel labels (e.g. A1 rather than Fp1), which are built-in with <code>biosemi64alpha</code>. <code><a href="../reference/topoplot.html">topoplot()</a></code> can then be used to plot topographical representation of selected data. Note that it is not compulsory to use locations from electrode_locations(); if the data has x and y columns when it is a data frame, or added to <code>chan_info</code> element of the <code>eeg_data</code>/<code>eeg_epochs</code> object, then those will be used.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">eeg_example &lt;-<span class="st"> </span><span class="kw"><a href="../reference/electrode_locations.html">electrode_locations</a></span>(eeg_example, <span class="dt">montage =</span> <span class="st">"biosemi64alpha"</span>)
-<span class="co">#&gt; Electrodes not found: EXG1 EXG2 EXG3 EXG4 EXG5 EXG6 EXG7 EXG8</span>
-<span class="co">#&gt; </span>
+<span class="co">#&gt; Electrodes not found: EXG1Electrodes not found: EXG2Electrodes not found: EXG3Electrodes not found: EXG4Electrodes not found: EXG5Electrodes not found: EXG6Electrodes not found: EXG7Electrodes not found: EXG8</span>
 <span class="kw"><a href="../reference/topoplot.html">topoplot</a></span>(eeg_example, <span class="dt">time_lim =</span> <span class="kw">c</span>(.<span class="dv">1</span>, .<span class="dv">2</span>))</code></pre></div>
 <p><img src="eegUtils_files/figure-html/do-topo-1.png" width="700"></p>
 <p>Note that one electrode (Fp1/A1) was malunctioning during the the recording. We can interpolate that using spherical spline interpolation (<code><a href="../reference/interp_elecs.html">interp_elecs()</a></code>).</p>

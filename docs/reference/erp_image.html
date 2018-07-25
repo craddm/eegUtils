@@ -131,7 +131,19 @@ order to make across-trial patterns more apparent.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>erp_image</span>(<span class='no'>data</span>, <span class='kw'>electrode</span> <span class='kw'>=</span> <span class='st'>"Cz"</span>, <span class='kw'>smoothing</span> <span class='kw'>=</span> <span class='fl'>10</span>, <span class='kw'>clim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+    <pre class="usage"><span class='fu'>erp_image</span>(<span class='no'>data</span>, <span class='kw'>electrode</span> <span class='kw'>=</span> <span class='st'>"Cz"</span>, <span class='kw'>smoothing</span> <span class='kw'>=</span> <span class='fl'>10</span>, <span class='kw'>clim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)
+
+<span class='co'># S3 method for default</span>
+<span class='fu'>erp_image</span>(<span class='no'>data</span>, <span class='kw'>electrode</span> <span class='kw'>=</span> <span class='st'>"Cz"</span>, <span class='kw'>smoothing</span> <span class='kw'>=</span> <span class='fl'>10</span>,
+  <span class='kw'>clim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)
+
+<span class='co'># S3 method for eeg_epochs</span>
+<span class='fu'>erp_image</span>(<span class='no'>data</span>, <span class='kw'>electrode</span> <span class='kw'>=</span> <span class='st'>"Cz"</span>, <span class='kw'>smoothing</span> <span class='kw'>=</span> <span class='fl'>10</span>,
+  <span class='kw'>clim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)
+
+<span class='co'># S3 method for eeg_ICA</span>
+<span class='fu'>erp_image</span>(<span class='no'>data</span>, <span class='kw'>electrode</span> <span class='kw'>=</span> <span class='st'>"V1"</span>, <span class='kw'>smoothing</span> <span class='kw'>=</span> <span class='fl'>10</span>,
+  <span class='kw'>clim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -155,13 +167,23 @@ e.g. c(-5,5). Defaults to min and max.</p></td>
     </tr>
     </table>
     
+    <h2 class="hasAnchor" id="methods-by-class-"><a class="anchor" href="#methods-by-class-"></a>Methods (by class)</h2>
+
+    <ul>
+<li><p><code>default</code>: Default function operates on normal data frames</p></li>
+<li><p><code>eeg_epochs</code>: Create an <code>erp_image</code> from <code>eeg_epochs</code></p></li>
+<li><p><code>eeg_ICA</code>: <code>eeg_ICA</code></p></li>
+</ul>
+    
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-                </ul>
+      
+      <li><a href="#methods-by-class-">Methods (by class)</a></li>
+          </ul>
 
     <h2>Author</h2>
     

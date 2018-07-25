@@ -32,11 +32,10 @@
 
 <meta property="og:title" content="Referencing — reref_eeg" />
 
-<meta property="og:description" content="Used to reference the EEG data to specified electrode or electrodes. Defaults
-to average reference. When specific electrodes are used, they are removed
-from the data. Note that this stores the reference channel in the
-eeg_data structure; if a reference already exists, it is added back to
-the data before further referencing takes place." />
+<meta property="og:description" content="Used to reference the EEG data to a specified electrode or electrodes.
+Defaults to average reference. When specific electrodes are used, they are
+removed from the data. Meta-data about the referencing scheme is held in the
+eeg_data structure." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -129,11 +128,10 @@ the data before further referencing takes place." />
 
     <div class="ref-description">
     
-    <p>Used to reference the EEG data to specified electrode or electrodes. Defaults
-to average reference. When specific electrodes are used, they are removed
-from the data. Note that this stores the reference channel in the
-<code>eeg_data</code> structure; if a reference already exists, it is added back to
-the data before further referencing takes place.</p>
+    <p>Used to reference the EEG data to a specified electrode or electrodes.
+Defaults to average reference. When specific electrodes are used, they are
+removed from the data. Meta-data about the referencing scheme is held in the
+<code>eeg_data</code> structure.</p>
     
     </div>
 
@@ -169,7 +167,7 @@ average of all electrodes in data. Character vector of channel names or numbers.
     </tr>
     <tr>
       <th>robust</th>
-      <td><p>Use median instead of mean; only applied for average reference.</p></td>
+      <td><p>Use median instead of mean; only used for average reference.</p></td>
     </tr>
     </table>
     
@@ -185,6 +183,27 @@ average of all electrodes in data. Character vector of channel names or numbers.
 </ul>
     
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='co'># demo_epochs is average referenced by default</span>
+<span class='no'>demo_epochs</span></div><div class='output co'>#&gt; Epoched EEG data
+#&gt; Number of channels	:	 11 
+#&gt; Number of epochs	:	 80 
+#&gt; Epoch limits		:	 -0.1972656 - 0.4511719 seconds
+#&gt; Electrode names		:	 A5 A13 A21 A29 A31 B5 B6 B8 B16 B18 B26 
+#&gt; Sampling rate		:	 128  Hz</div><div class='input'><span class='co'># Rereference it but exclude B5 from calculation of the average</span>
+<span class='fu'>reref_eeg</span>(<span class='no'>demo_epochs</span>, <span class='kw'>exclude</span> <span class='kw'>=</span> <span class='st'>"B5"</span>)</div><div class='output co'>#&gt; Epoched EEG data
+#&gt; Number of channels	:	 11 
+#&gt; Number of epochs	:	 80 
+#&gt; Epoch limits		:	 -0.1972656 - 0.4511719 seconds
+#&gt; Electrode names		:	 A5 A13 A21 A29 A31 B5 B6 B8 B16 B18 B26 
+#&gt; Sampling rate		:	 128  Hz</div><div class='input'><span class='co'># Reference data using the median of the reference channels rather than the mean</span>
+<span class='fu'>reref_eeg</span>(<span class='no'>demo_epochs</span>, <span class='kw'>robust</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; Epoched EEG data
+#&gt; Number of channels	:	 11 
+#&gt; Number of epochs	:	 80 
+#&gt; Epoch limits		:	 -0.1972656 - 0.4511719 seconds
+#&gt; Electrode names		:	 A5 A13 A21 A29 A31 B5 B6 B8 B16 B18 B26 
+#&gt; Sampling rate		:	 128  Hz</div><div class='input'>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -194,7 +213,9 @@ average of all electrodes in data. Character vector of channel names or numbers.
       <li><a href="#value">Value</a></li>
 
       <li><a href="#methods-by-class-">Methods (by class)</a></li>
-          </ul>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
     <h2>Author</h2>
     

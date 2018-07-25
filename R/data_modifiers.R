@@ -249,7 +249,6 @@ epoch_data <- function(data, ...) {
 #' @param data Continuous data to be epoched.
 #' @param ... Parameters passed to functions
 #' @export
-#'
 
 epoch_data.default <- function(data, ...) {
   stop("Requires object of class eeg_data.")
@@ -274,7 +273,9 @@ epoch_data.eeg_data <- function(data,
                                 ...) {
 
   if (!all(events %in% unique(data$events$event_type))) {
-    stop("Events not found - check event codes.")
+    warning("Some events not found - check event codes.")
+  } else if (!any(events %in% unique(data$events$event_type))) {
+    stop("No events found - check event codes.")
   }
 
   # If the data has been downsampled, sample spacing will be greater than 1.
@@ -310,17 +311,20 @@ epoch_data.eeg_data <- function(data,
                              ~ . + samps)
 
   epoched_data <- purrr::map_df(epoched_data,
-                                ~ tibble::tibble(sample = ., time = samps / srate),
+                                ~ tibble::tibble(sample = .,
+                                                 time = samps / srate),
                                 .id = "epoch")
 
   epoched_data$epoch <- as.numeric(epoched_data$epoch)
 
   # create new event_table
-  event_table <- dplyr::inner_join(event_table, epoched_data,
+  event_table <- dplyr::inner_join(event_table,
+                                   epoched_data,
                                    by = c("event_onset" = "sample"))
 
   epoched_data <- dplyr::left_join(epoched_data,
-                                   cbind(data$signals, data$timings),
+                                   cbind(data$signals,
+                                         data$timings),
                                    by = c("sample" = "sample"))
 
   # Check for any epochs that contain NAs

@@ -141,7 +141,8 @@ original order.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>erp_raster</span>(<span class='no'>data</span>, <span class='kw'>anat_order</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>time_lim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>clim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+    <pre class="usage"><span class='fu'>erp_raster</span>(<span class='no'>data</span>, <span class='kw'>anat_order</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>time_lim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>clim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>interpolate</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -164,6 +165,10 @@ c(-.2, .5))</p></td>
       <th>clim</th>
       <td><p>Character vector of min and max values of plotting colour range.
 e.g. c(-5,5). Defaults to min and max.</p></td>
+    </tr>
+    <tr>
+      <th>interpolate</th>
+      <td><p>Smooth the raster plot. Defaults to FALSE.</p></td>
     </tr>
     </table>
     

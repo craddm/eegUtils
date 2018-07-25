@@ -1,5 +1,7 @@
 #' Calculate averages (e.g. ERPs) for single datasets
 #'
+#' This function is used to create an \code{eeg_evoked} object from \code{eeg_epochs}.
+#'
 #' @param data An \code{eeg_epochs} object.
 #' @param ... Other arguments passed to the averaging functions
 #' @author Matt craddock \email{matt@@mattcraddock.com}
@@ -16,8 +18,6 @@ eeg_average.default <- function(data, ...) {
   stop("eeg_epochs object required as input.")
 }
 
-#' Create an \code{eeg_evoked} object from eeg_epochs
-#'
 #' @param cond_label Only pick events that include a given label. Character
 #'   vector.
 #' @param calc_var Can be used to calculate measures of variability around the
@@ -133,8 +133,8 @@ eeg_grandaverage <- function(data,
 }
 
 
-#'
-#' @noRd
+#' Create a grand average file from multiple evoked objects
+#' @keywords internal
 create_grandavg <- function(data,
                             keep_indivs,
                             x = NULL) {
@@ -155,6 +155,8 @@ create_grandavg <- function(data,
     }
   }
 
+#' Check that all classes in a list match
+#'
 #' @noRd
 
 check_classes <- function(data) {
@@ -167,6 +169,7 @@ check_classes <- function(data) {
     all(check_class)
 }
 
+#' Check that all conditions in a list match
 #' @noRd
 
 check_conds <- function(data_list) {

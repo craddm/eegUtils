@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Calculate averages (e.g. ERPs) — eeg_average • eegUtils</title>
+<title>Calculate averages (e.g. ERPs) for single datasets — eeg_average • eegUtils</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -30,10 +30,9 @@
 
 
 
-<meta property="og:title" content="Calculate averages (e.g. ERPs) — eeg_average" />
+<meta property="og:title" content="Calculate averages (e.g. ERPs) for single datasets — eeg_average" />
 
-<meta property="og:description" content="Calculate averages (e.g. ERPs)
-Create an eeg_evoked object from eeg_epochs" />
+<meta property="og:description" content="This function is used to create an eeg_evoked object from eeg_epochs." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -119,19 +118,21 @@ Create an eeg_evoked object from eeg_epochs" />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Calculate averages (e.g. ERPs)</h1>
-    <small class="dont-index">Source: <a href='https://github.com/craddm/eegUtils/blob/master/R/data_modifiers.R'><code>R/data_modifiers.R</code></a></small>
+    <h1>Calculate averages (e.g. ERPs) for single datasets</h1>
+    <small class="dont-index">Source: <a href='https://github.com/craddm/eegUtils/blob/master/R/data_averaging.R'><code>R/data_averaging.R</code></a></small>
     <div class="hidden name"><code>eeg_average.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Calculate averages (e.g. ERPs)</p>
-<p>Create an <code>eeg_evoked</code> object from eeg_epochs</p>
+    <p>This function is used to create an <code>eeg_evoked</code> object from <code>eeg_epochs</code>.</p>
     
     </div>
 
     <pre class="usage"><span class='fu'>eeg_average</span>(<span class='no'>data</span>, <span class='no'>...</span>)
+
+<span class='co'># S3 method for default</span>
+<span class='fu'>eeg_average</span>(<span class='no'>data</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for eeg_epochs</span>
 <span class='fu'>eeg_average</span>(<span class='no'>data</span>, <span class='kw'>cond_label</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>calc_var</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
@@ -163,6 +164,7 @@ average.</p></td>
     <h2 class="hasAnchor" id="methods-by-class-"><a class="anchor" href="#methods-by-class-"></a>Methods (by class)</h2>
 
     <ul>
+<li><p><code>default</code>: Default method for averaging EEG objects</p></li>
 <li><p><code>eeg_epochs</code>: Create evoked data from <code>eeg_epochs</code></p></li>
 </ul>
     

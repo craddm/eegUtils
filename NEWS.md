@@ -9,6 +9,7 @@
 - `erp_image()` now works with `eeg_ICA` objects
 - Generic print methods added for `eeg_epochs` and `eeg_data`
 - `compute_tfr` function added to performed TFA on `eeg_epochs`
+- `epoch_data()` now warns if some events are not found rather than stops. Only stops if *no* events are found.
 
 ### Internal changes/ bug fixes
 - `reref_eeg()` 

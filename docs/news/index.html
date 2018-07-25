@@ -132,6 +132,17 @@
 <code><a href="../reference/run_ICA.html">run_ICA()</a></code> now offers extended Infomax and Fastica thanks to the <code>ica</code> package</li>
 <li>
 <code>plotly</code> is now a “suggested” package rather than a dependency</li>
+<li>
+<code><a href="../reference/plot_psd.html">plot_psd()</a></code> function added to calculate and plot the PSD for <code>eeg_epochs</code> and <code>eeg_data</code> objects</li>
+<li>
+<code>plot_tfr()</code> function added to handle <code>eeg_tfr</code> objects.</li>
+<li>
+<code><a href="../reference/erp_image.html">erp_image()</a></code> now works with <code>eeg_ICA</code> objects</li>
+<li>Generic print methods added for <code>eeg_epochs</code> and <code>eeg_data</code>
+</li>
+<li>
+<code>compute_tfr</code> function added to performed TFA on <code>eeg_epochs</code>
+</li>
 </ul>
 </div>
 <div id="internal-changes-bug-fixes" class="section level3">
@@ -139,15 +150,38 @@
 <a href="#internal-changes-bug-fixes" class="anchor"></a>Internal changes/ bug fixes</h3>
 <ul>
 <li>
-<code><a href="../reference/reref_eeg.html">reref_eeg()</a></code> correctly excludes multiple named electrodes (i.e. passed as characters rather than numbers), where it previously silently failed.</li>
+<code><a href="../reference/reref_eeg.html">reref_eeg()</a></code>
+<ul>
+<li>correctly excludes multiple named electrodes (i.e. passed as characters rather than numbers), where it previously silently failed.</li>
+<li>no longer records the reference data in the <code>ref_data</code> field</li>
+</ul>
+</li>
 <li>
 <code>tf_morlet</code> recoded to be called internally</li>
 <li>
-<code>compute_psd</code> recoded to call <code>welch_fft()</code> in order to support possibility of different FFT methods.</li>
+<code>compute_psd</code>
+<ul>
+<li>recoded to call <code>welch_fft()</code> in order to support possibility of different FFT methods.</li>
+<li>now drops the DC component (frequency 0)</li>
+</ul>
+</li>
 <li>
 <code>welch_fft()</code> internal function added</li>
 <li>
 <code><a href="../reference/eeg_downsample.html">eeg_downsample()</a></code> now makes sure epoch length is a multiple of the downsampling factor to avoid problems with timing jitter</li>
+<li>
+<code><a href="../reference/erp_image.html">erp_image()</a></code> is now an S3 method</li>
+<li>
+<code><a href="../reference/run_ICA.html">run_ICA()</a></code>
+<ul>
+<li>now returns source activations as a “signals” data frame, with component names</li>
+<li>now returns correct unmixing matrix</li>
+</ul>
+</li>
+<li>
+<code>compute_csd()</code> added</li>
+<li>
+<code><a href="../reference/compute_tfr.html">compute_tfr()</a></code> added</li>
 </ul>
 </div>
 </div>
@@ -179,7 +213,7 @@
 <li>
 <code>run_ica()</code> refactored SOBI method, JADE dependency removed.</li>
 <li>
-<code>montage_check()</code> command parses montage info when passed to <code><a href="../reference/electrode_locations.html">electrode_locations()</a></code>
+<code><a href="../reference/montage_check.html">montage_check()</a></code> command parses montage info when passed to <code><a href="../reference/electrode_locations.html">electrode_locations()</a></code>
 </li>
 <li>
 <code>label_check()</code> added to help parse event labels</li>
@@ -268,7 +302,7 @@
 <li>
 <code><a href="../reference/select_times.html">select_times()</a></code> no longer leaves “epoch” column in <code>eeg_epochs</code> objects.</li>
 <li>
-<code><a href="../reference/topoplot.html">topoplot()</a></code> now calls a separate function (<code>gam_topo()</code>) to create GAM smooths</li>
+<code><a href="../reference/topoplot.html">topoplot()</a></code> now calls a separate function (<code><a href="../reference/gam_topo.html">gam_topo()</a></code>) to create GAM smooths</li>
 <li>
 <code><a href="../reference/browse_data.html">browse_data()</a></code> major speed-ups, no longer converts to long format until necessary. Converted to S3method.</li>
 <li>

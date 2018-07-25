@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Select epochs from eeg_data — select_epochs • eegUtils</title>
+<title>Print eeg_data summary — print.eeg_data • eegUtils</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -30,9 +30,9 @@
 
 
 
-<meta property="og:title" content="Select epochs from eeg_data — select_epochs" />
+<meta property="og:title" content="Print eeg_data summary — print.eeg_data" />
 
-<meta property="og:description" content="This is a generic function for selecting epochs from an epoched data set." />
+<meta property="og:description" content="Print a basic summary of the contents of an eeg_data object" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -118,76 +118,32 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Select epochs from eeg_data</h1>
-    <small class="dont-index">Source: <a href='https://github.com/craddm/eegUtils/blob/master/R/data_selection.R'><code>R/data_selection.R</code></a></small>
-    <div class="hidden name"><code>select_epochs.Rd</code></div>
+    <h1>Print eeg_data summary</h1>
+    <small class="dont-index">Source: <a href='https://github.com/craddm/eegUtils/blob/master/R/print_functions.R'><code>R/print_functions.R</code></a></small>
+    <div class="hidden name"><code>print.eeg_data.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>This is a generic function for selecting epochs from an epoched data set.</p>
+    <p>Print a basic summary of the contents of an <code>eeg_data</code> object</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>select_epochs</span>(<span class='no'>data</span>, <span class='no'>...</span>)
-
-<span class='co'># S3 method for default</span>
-<span class='fu'>select_epochs</span>(<span class='no'>data</span>, <span class='no'>...</span>)
-
-<span class='co'># S3 method for eeg_data</span>
-<span class='fu'>select_epochs</span>(<span class='no'>data</span>, <span class='no'>...</span>)
-
-<span class='co'># S3 method for eeg_epochs</span>
-<span class='fu'>select_epochs</span>(<span class='no'>data</span>, <span class='kw'>epoch_events</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>epoch_no</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>keep</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>df_out</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)
-
-<span class='co'># S3 method for eeg_ICA</span>
-<span class='fu'>select_epochs</span>(<span class='no'>data</span>, <span class='kw'>epoch_events</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>epoch_no</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>keep</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>df_out</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='co'># S3 method for eeg_data</span>
+<span class='fu'>print</span>(<span class='no'>x</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>data</th>
-      <td><p><code>eeg_epochs</code> object from which to select epochs.</p></td>
+      <th>x</th>
+      <td><p><code>eeg_data</code> object to be printed</p></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>Parameters passed to specific methods</p></td>
-    </tr>
-    <tr>
-      <th>epoch_events</th>
-      <td><p>Select epochs containing any of the specified events. Can
-be numeric or a character string. Will override any epoch_no input.</p></td>
-    </tr>
-    <tr>
-      <th>epoch_no</th>
-      <td><p>Select epochs by epoch number.</p></td>
-    </tr>
-    <tr>
-      <th>keep</th>
-      <td><p>Defaults to TRUE, meaning select the specified epochs. Set to
-FALSE to remove specified epochs.</p></td>
-    </tr>
-    <tr>
-      <th>df_out</th>
-      <td><p>Output a data.frame instead of an eeg_data object.</p></td>
+      <td><p>Further arguments passed</p></td>
     </tr>
     </table>
-    
-    <h2 class="hasAnchor" id="methods-by-class-"><a class="anchor" href="#methods-by-class-"></a>Methods (by class)</h2>
-
-    <ul>
-<li><p><code>default</code>: Select from generic object</p></li>
-<li><p><code>eeg_data</code>: Select epochs from <code>eeg_data</code> objects.</p></li>
-<li><p><code>eeg_epochs</code>: Selection of epochs from <code>eeg_epochs</code> objects.</p></li>
-<li><p><code>eeg_ICA</code>: Selection of epochs from <code>eeg_ICA</code> objects.</p></li>
-</ul>
-    
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
-
-    <div class='dont-index'><p><code><a href='select_times.html'>select_times</a></code> and <code><a href='select_elecs.html'>select_elecs</a></code></p></div>
     
 
   </div>
@@ -195,15 +151,7 @@ FALSE to remove specified epochs.</p></td>
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-      
-      <li><a href="#methods-by-class-">Methods (by class)</a></li>
-
-      <li><a href="#see-also">See also</a></li>
-          </ul>
-
-    <h2>Author</h2>
-    
-Matt Craddock, <a href='mailto:matt@mattcraddock.com'>matt@mattcraddock.com</a>
+                </ul>
 
   </div>
 </div>

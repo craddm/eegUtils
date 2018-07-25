@@ -88,7 +88,7 @@
       <h1>A guide to eegUtils data structures</h1>
                         <h4 class="author">Matt Craddock</h4>
             
-            <h4 class="date">2018-07-08</h4>
+            <h4 class="date">2018-07-23</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/craddm/eegUtils/blob/master/vignettes/data_structures.Rmd"><code>vignettes/data_structures.Rmd</code></a></small>
       <div class="hidden name"><code>data_structures.Rmd</code></div>
@@ -105,7 +105,7 @@
 <li>
 <code>signals</code>
 <ul>
-<li>A data frame/tibble containing the actual EEG data in wide format. Each column is data from a single electrode, each row from a single timepoint.</li>
+<li>A data frame containing the actual EEG data in wide format. Each column is data from a single electrode, each row from a single timepoint.</li>
 </ul>
 </li>
 <li>
@@ -169,12 +169,10 @@
 <code>reference</code>
 <ul>
 <li>NA on loading, in the absence of a recorded reference channel.</li>
-<li>Once data is referenced, is a list consisting of three entries.
+<li>Once data is referenced, is a list consisting of two entries.
 <ul>
 <li>
 <code>ref_chans</code> - Labels for channels used to calculate the reference data. Can also be “average”.</li>
-<li>
-<code>ref_data</code> - The calculated reference “channel”</li>
 <li>
 <code>excluded</code> - Labels for any channels excluded from the reference data.</li>
 </ul>
