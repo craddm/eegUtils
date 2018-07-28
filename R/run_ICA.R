@@ -117,7 +117,9 @@ sobi_ICA <- function(data) {
   amp_matrix <- Q %*% t(amp_matrix)
 
   ## reshape to reflect epoching structure
-  dim(amp_matrix) <- c(n_channels, n_times, n_epochs)
+  dim(amp_matrix) <- c(n_channels,
+                       n_times,
+                       n_epochs)
 
   ## vectorise this loop if possible?
   k <- 1
@@ -168,7 +170,7 @@ sobi_ICA <- function(data) {
                   "chan_info" = data$chan_info,
                   "srate" = data$srate,
                   "continuous" = FALSE)
-  class(ica_obj) <- c("eeg_ICA", "eeg_epochs", "eeg_data")
+  class(ica_obj) <- c("eeg_ICA", "eeg_epochs")
   return(ica_obj)
 }
 
@@ -180,7 +182,7 @@ sobi_ICA <- function(data) {
 #' @param eps Convergence tolerance
 #' @param pm number of channels * number of timepoints
 #' @param n_channels number of channels
-#' @noRd
+#' @keywords internal
 
 joint_diag <- function(M,
                        eps,
@@ -233,3 +235,8 @@ joint_diag <- function(M,
   }
   V
 }
+
+
+#
+
+apply_ica <- function(data) {}

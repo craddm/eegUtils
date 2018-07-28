@@ -6,7 +6,10 @@
 #'determined by the range of the viewable data.
 #'
 #'@author Matt Craddock \email{matt@@mattcraddock.com}
-#'
+#'@import dplyr
+#'@import ggplot2
+#'@import shiny
+#'@import miniUI
 #'@param data \code{eeg_data} object to be plotted.
 #'@param ... Other parameters passed to browsing functions.
 #'@export
@@ -17,7 +20,51 @@ browse_data <- function(data, ...) {
 
 #' @export
 browse_data.eeg_ICA <- function(data, ...) {
-  warning("Not currently implemented for eeg_ICA objects.")
+
+  ui <- miniPage(
+    gadgetTitleBar("ICA dashboard"),
+    miniContentPanel(
+      fillRow(
+        fillCol(
+          plotOutput("topo_ica",
+                     height = "100%"),
+          plotOutput("comp_tc",
+                     height = "100%")),
+        fillCol(plotOutput("comp_img",
+                           height = "100%"),
+                shiny::selectInput("icomp",
+                                   "Component",
+                                   names(data$signals)))
+        )
+      )
+    )
+
+  server <- function(input,
+                     output,
+                     session) {
+
+    output$topo_ica <- renderPlot({
+      comp_no <- which(names(data$signals) == input$icomp)
+      topoplot(data, comp = comp_no)
+    })
+
+    output$comp_img <- renderPlot({
+      erp_image(data, electrode = input$icomp)
+    })
+
+    output$comp_tc <- renderPlot({
+      plot_timecourse(data, electrode = input$icomp)
+    })
+
+    observeEvent(input$done, {
+      returnValue <- "hilol"
+      stopApp(returnValue)
+    })
+    session$onSessionEnded(stopApp)
+  }
+  runGadget(ui,
+            server,
+            viewer = paneViewer(minHeight = 600))
 }
 
 #' @export
@@ -32,24 +79,20 @@ browse_data.eeg_stats <- function(data, ...) {
 #'@param downsample Only works on \code{eeg_data} objects. Reduces size of data
 #'  by only plotting every 4th point, speeding up plotting considerably.
 #'
-#'@import dplyr
-#'@import ggplot2
-#'@import shiny
-#'@import miniUI
 #'@export
 #'@describeIn browse_data Browse continuous EEG data.
 
-browse_data.eeg_data <- function(data, sig_length = 5, n_elecs = NULL,
-                        downsample = FALSE, ...) {
+browse_data.eeg_data <- function(data,
+                                 sig_length = 5,
+                                 n_elecs = NULL,
+                                 downsample = FALSE,
+                                 ...) {
 
   continuous <- data$continuous
   srate <- data$srate
   #data <- as.data.frame(data, long = TRUE)
   if (downsample) {
     data <- eeg_downsample(data, q = 4)
-    #data <- iir_filt(data, high_freq = 0.8 * (data$srate / 4 / 2))
-    #data <- as.data.frame(data, long = TRUE)
-    #data <- data[seq(1, nrow(data), 4), ]
     } else {
     #data <- as.data.frame(data, long = TRUE)
     }
@@ -117,7 +160,9 @@ browse_data.eeg_data <- function(data, sig_length = 5, n_elecs = NULL,
       )
     )
 
-    server <- function(input, output, session) {
+    server <- function(input,
+                       output,
+                       session) {
 
       output$butterfly <- renderPlot({
         # select only the time range that we want to display
@@ -129,7 +174,9 @@ browse_data.eeg_data <- function(data, sig_length = 5, n_elecs = NULL,
           tmp_data <- rm_baseline(tmp_data)
         }
 
-        zz <- plot_butterfly(tmp_data, legend = FALSE, continuous = TRUE)
+        zz <- plot_butterfly(tmp_data,
+                             legend = FALSE,
+                             continuous = TRUE)
         zz
       })
 
@@ -144,9 +191,13 @@ browse_data.eeg_data <- function(data, sig_length = 5, n_elecs = NULL,
 
         tmp_data <- as.data.frame(tmp_data, long = TRUE)
 
-        init_plot <- ggplot2::ggplot(tmp_data, aes(x = time, y = amplitude)) +
+        init_plot <- ggplot2::ggplot(tmp_data,
+                                     aes(x = time,
+                                         y = amplitude)) +
           geom_line() +
-          facet_grid(electrode ~ ., scales = "free_y", switch = "y") +
+          facet_grid(electrode ~ .,
+                     scales = "free_y",
+                     switch = "y") +
           theme_minimal() +
           theme(
             axis.text.y = element_blank(),
@@ -167,17 +218,23 @@ browse_data.eeg_data <- function(data, sig_length = 5, n_elecs = NULL,
       })
       session$onSessionEnded(stopApp)
     }
-  runGadget(ui, server, viewer = paneViewer(minHeight = 600))
+  runGadget(ui,
+            server,
+            viewer = paneViewer(minHeight = 600))
 }
 
 #'@export
 #'@describeIn browse_data Browse epoched EEG data.
 
-browse_data.eeg_epochs <- function(data, sig_length = 5,
-                                   n_elecs = NULL, downsample = FALSE, ...) {
+browse_data.eeg_epochs <- function(data,
+                                   sig_length = 5,
+                                   n_elecs = NULL,
+                                   downsample = FALSE,
+                                   ...) {
 
   if (downsample) {
-    data <- eeg_downsample(data, q = 4)
+    data <- eeg_downsample(data,
+                           q = 4)
 
   }
 
@@ -245,7 +302,9 @@ browse_data.eeg_epochs <- function(data, sig_length = 5,
       )
     )
 
-    server <- function(input, output, session) {
+    server <- function(input,
+                       output,
+                       session) {
 
       tmp_dat <- reactive({
         select_epochs(data,
@@ -253,7 +312,8 @@ browse_data.eeg_epochs <- function(data, sig_length = 5,
                                      input$time_range + input$sig_time - 1))
       })
 
-      tmp_data <- debounce(tmp_dat, 1000)
+      tmp_data <- debounce(tmp_dat,
+                           1000)
 
       output$butterfly <- renderPlot({
 
@@ -263,16 +323,20 @@ browse_data.eeg_epochs <- function(data, sig_length = 5,
           tmp_data <- tmp_data()
         }
 
-        tmp_data <- as.data.frame(tmp_data, long = TRUE)
+        tmp_data <- as.data.frame(tmp_data,
+                                  long = TRUE)
 
-        butter_out <- plot_butterfly(tmp_data, legend = FALSE,
+        butter_out <- plot_butterfly(tmp_data,
+                                     legend = FALSE,
                                      browse_mode = TRUE) +
-          facet_wrap("epoch", nrow = 1) +
+          facet_wrap("epoch",
+                     nrow = 1) +
           theme(
             panel.spacing = unit(0, "lines")
             ) +
           geom_vline(xintercept = max(unique(tmp_data$time))) +
-          geom_vline(xintercept = 0, linetype = "longdash")
+          geom_vline(xintercept = 0,
+                     linetype = "longdash")
         butter_out
       })
 
@@ -292,12 +356,16 @@ browse_data.eeg_epochs <- function(data, sig_length = 5,
           tmp_data_ind <- tmp_data_ind()
         }
 
-        tmp_data_ind <- as.data.frame(tmp_data_ind, long = TRUE)
+        tmp_data_ind <- as.data.frame(tmp_data_ind,
+                                      long = TRUE)
 
         init_plot <- ggplot2::ggplot(tmp_data_ind,
-                                     aes(x = time, y = amplitude)) +
+                                     aes(x = time,
+                                         y = amplitude)) +
           geom_line() +
-          facet_grid(electrode ~ epoch, scales = "free_y", switch = "y") +
+          facet_grid(electrode ~ epoch,
+                     scales = "free_y",
+                     switch = "y") +
           theme_minimal() +
           theme(
             axis.text.y = element_blank(),
@@ -310,7 +378,8 @@ browse_data.eeg_epochs <- function(data, sig_length = 5,
           ) +
           scale_x_continuous(expand = c(0, 0)) +
           geom_vline(xintercept = max(unique(tmp_data_ind$time))) +
-          geom_vline(xintercept = 0, linetype = "longdash")
+          geom_vline(xintercept = 0,
+                     linetype = "longdash")
 
         init_plot
       },
@@ -321,5 +390,7 @@ browse_data.eeg_epochs <- function(data, sig_length = 5,
       })
       session$onSessionEnded(stopApp)
     }
-  runGadget(ui, server, viewer = paneViewer(minHeight = 600))
+  runGadget(ui,
+            server,
+            viewer = paneViewer(minHeight = 600))
 }

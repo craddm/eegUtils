@@ -160,7 +160,7 @@ faster_cine <- function(data, ...) {
 #'
 #' @param data matrix of EEG signals
 #' @importFrom matrixStats colMaxs colMins colSds
-#' @noRd
+#' @keywords internal
 
 quick_hurst <- function(data) {
   n <- nrow(data)
@@ -174,7 +174,7 @@ quick_hurst <- function(data) {
 #' Calculate statistics for each channel in an epoch and identify bad channels
 #'
 #' @param data a matrix of signals from a single epoch
-#' @noRd
+#' @keywords internal
 
 faster_epo_stat <- function(data, chan_means) {
 
@@ -212,6 +212,7 @@ eeg_ar_thresh <- function(data,
 }
 
 #' @describeIn eeg_ar_thresh Reject data using a simple threshold.
+#' @export
 eeg_ar_thresh.eeg_data <- function(data,
                                    threshold,
                                    reject = FALSE,
@@ -237,6 +238,7 @@ eeg_ar_thresh.eeg_data <- function(data,
 }
 
 #' @describeIn eeg_ar_thresh Reject data using a simple threshold.
+#' @export
 eeg_ar_thresh.eeg_epochs <- function(data, threshold, reject = FALSE, ...) {
 
   if (length(threshold) == 1) {
@@ -263,7 +265,7 @@ eeg_ar_thresh.eeg_epochs <- function(data, threshold, reject = FALSE, ...) {
 #'
 #' @param data Data as a \code{eeg_data} or \code{eeg_epochs} object.
 #' @param ... Other parameters passed to the functions.
-#' @noRd
+#' @keywords internal
 
 channel_stats <- function(data, ...) {
   UseMethod("channel_stats", data)

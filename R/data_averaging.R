@@ -30,21 +30,24 @@ eeg_average.eeg_epochs <- function(data,
 
   if (is.null(cond_label)) {
 
-    data$signals <- split(data$signals, data$timings$time)
-    data_means <- lapply(data$signals, colMeans)
-    data_means <- as.data.frame(do.call("rbind", data_means))
+    n_times <- length(unique(data$timings$time))
+    n_epochs <- length(unique(data$timings$epoch))
+    orig_elecs <- names(data$signals)
+    data$signals <- as.matrix(data$signals)
+    dim(data$signals) <- c(n_times,
+                           n_epochs,
+                           ncol(data$signals))
+    data$signals <- base::colMeans(base::aperm(data$signals, c(2, 1, 3)))
+    data$signals <- as.data.frame(data$signals)
+    names(data$signals) <- orig_elecs
 
     if (!is.null(calc_var) && calc_var == "SE") {
       data_sd <- lapply(data$signals,
                         function(x) matrixStats::colSds(as.matrix(x)) / sqrt(nrow(x)))
       data_sd <- as.data.frame(do.call("rbind", data_sd))
-      names(data_sd) <- names(data_means)
+      names(data_sd) <- names(data$signals)
       data$var <- data_sd
     }
-
-    data$signals <- data_means
-
-    row.names(data$signals) <- NULL
 
   } else {
 
@@ -92,38 +95,38 @@ eeg_average.eeg_epochs <- function(data,
 eeg_grandaverage <- function(data,
                              keep_indivs = TRUE) {
 
-  if (class(data) == "list") {
-    if (is.eeg_evoked(data[[1]])) {
-      # Check for consistency of input
-      if (check_classes(data)) {
-        if (is.null(dim(data[[1]]$signals))) {
-          if (check_conds(data)) {
-            conds <- names(data[[1]]$signals)
-            ga_sigs <- lapply(seq_along(conds),
-                              function(x) create_grandavg(data,
-                                                          keep_indivs,
-                                                          x))
-            names(ga_sigs) <- conds
-            grand_avg <- eeg_GA(ga_sigs,
-                                srate = data[[1]]$srate,
-                                timings = data[[1]]$timings,
-                                chan_info = data[[1]]$chan_info,
-                                indivs = keep_indivs)
-            } else {
-              stop("Some conditions are not present in every object.")
-            }
-        } else {
-          ga_sigs <- create_grandavg(data, keep_indivs)
-          }
-        } else {
-          stop("Some objects are of different classes.")
-          }
-      } else {
-        stop("Only eeg_evoked objects are supported at this time.")
-      }
-  } else {
+  if (!class(data) == "list") {
     stop("A list of objects is required.")
   }
+
+  if (!is.eeg_evoked(data[[1]])) {
+    stop("Only eeg_evoked objects are supported at this time.")
+  }
+
+  # Check for consistency of input
+  if (check_classes(data)) {
+    if (is.null(dim(data[[1]]$signals))) {
+      if (check_conds(data)) {
+        conds <- names(data[[1]]$signals)
+        ga_sigs <- lapply(seq_along(conds),
+                          function(x) create_grandavg(data,
+                                                      keep_indivs,
+                                                      x))
+        names(ga_sigs) <- conds
+        grand_avg <- eeg_GA(ga_sigs,
+                            srate = data[[1]]$srate,
+                            timings = data[[1]]$timings,
+                            chan_info = data[[1]]$chan_info,
+                            indivs = keep_indivs)
+        } else {
+          stop("Some conditions are not present in every object.")
+          }
+      } else {
+        ga_sigs <- create_grandavg(data, keep_indivs)
+        }
+    } else {
+      stop("Some objects are of different classes.")
+      }
   grand_avg <- eeg_GA(ga_sigs,
                       srate = data[[1]]$srate,
                       timings = data[[1]]$timings,
@@ -161,12 +164,14 @@ create_grandavg <- function(data,
 
 check_classes <- function(data) {
 
-    dat_classes <- lapply(data,
-                          class)
-    check_class <- sapply(dat_classes,
-                          identical,
-                          dat_classes[[1]])
-    all(check_class)
+  stopifnot(is.list(data))
+
+  dat_classes <- lapply(data,
+                        class)
+  check_class <- sapply(dat_classes,
+                        identical,
+                        dat_classes[[1]])
+  all(check_class)
 }
 
 #' Check that all conditions in a list match

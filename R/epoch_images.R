@@ -28,10 +28,12 @@ erp_image.default <- function(data,
                               clim = NULL) {
   required_cols <- c("electrode", "time", "amplitude", "epoch")
   col_names <- names(data)
+
   if (!all(required_cols %in% col_names)) {
     stop("Required columns ",
          required_cols[!required_cols %in% col_names], "missing.")
   }
+
   if (all(electrode %in% data$electrode)) {
     create_erpimage(data,
                     electrode = electrode,

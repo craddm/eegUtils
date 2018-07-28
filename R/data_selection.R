@@ -104,9 +104,8 @@ select_times.eeg_epochs <- function(data,
   data$events <- data$events[event_rows, ]
   if (df_out) {
     return(as.data.frame(data))
-  } else {
-    data
   }
+  data
 }
 
 #' @export
@@ -122,9 +121,8 @@ select_times.eeg_evoked <- function(data,
 
   if (df_out) {
     return(data$signals)
-  } else {
-    data
   }
+  data
 }
 
 #' @describeIn select_times Select times from an \code{eeg_tfr} object
@@ -226,9 +224,8 @@ select_elecs.eeg_data <- function(data, electrode, keep = TRUE,
   }
   if (df_out) {
     return(as.data.frame(data))
-  } else {
-    return(data)
   }
+  data
 }
 
 #' Select epochs from eeg_data
@@ -306,10 +303,9 @@ select_epochs.eeg_epochs <- function(data,
     data$events <- data$events[data$events$epoch %in% epoch_no, ]
   }
   if (df_out) {
-    as.data.frame(data)
-  } else {
-    data
+    return(as.data.frame(data))
   }
+  data
 }
 
 #' @describeIn select_epochs Selection of epochs from \code{eeg_ICA} objects.
@@ -344,10 +340,9 @@ select_epochs.eeg_ICA <- function(data,
     data$events <- data$events[data$events$epoch %in% epoch_no, ]
   }
   if (df_out) {
-    as.data.frame(data)
-  } else {
-    data
+    return(as.data.frame(data))
   }
+  data
 }
 
 #'@noRd
@@ -364,6 +359,7 @@ select_epochs.eeg_tfr <- function(data,
   }
   data
 }
+
 #' Internal function for processing epoch_events during selection
 #'
 #' Converts character strings into a vector of epoch numbers with matching labels.

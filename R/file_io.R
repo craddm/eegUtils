@@ -328,7 +328,8 @@ import_set <- function(file_name, df_out = FALSE) {
     }
   }
 
-  signals <- data.frame(cbind(t(signals), times))
+  signals <- data.frame(cbind(t(signals),
+                              times))
   srate <- c(temp_dat$EEG[[which(var_names == "srate")]])
   names(signals) <- c(unique(chan_info$electrode), "time")
   signals <- dplyr::group_by(signals, time)
@@ -382,18 +383,30 @@ parse_chaninfo <- function(chan_info) {
   chan_info <- tibble::as_tibble(data.frame(lapply(chan_info,
                                                    unlist),
                                             stringsAsFactors = FALSE))
+  chan_info <- chan_info[, sort(names(chan_info))]
+  expected <- c("labels", "radius",
+                "ref", "sph.phi",
+                "sph.radius", "sph.theta",
+                "theta", "type",
+                "urchan", "X", "Y", "Z")
+  if (!all(names(chan_info) == expected)) {
+    warning("EEGLAb chan info has unexpected format, taking electrode names only.")
+    out <- data.frame(chan_info["labels"])
+    names(out) <- "electrode"
+  }
   names(chan_info) <- c("electrode",
-                        "angle",
                         "radius",
-                        "cart_x",
-                        "cart_y",
-                        "cart_z",
-                        "sph_theta",
+                        "ref",
                         "sph_phi",
                         "sph_radius",
+                        "sph_theta",
+                        "angle",
                         "type",
-                        "ref",
-                        "urchan")
+                        "urchan",
+                        "cart_x",
+                        "cart_y",
+                        "cart_z"
+                        )
   #pol_coords <- cart_to_pol(chan_info$cart_x, chan_info$cart_y)
   #chan_info <- tibble::as_tibble(c(chan_info, pol_coords))
   chan_info <- chan_info[c("electrode",

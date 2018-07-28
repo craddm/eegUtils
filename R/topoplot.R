@@ -105,33 +105,27 @@ topoplot.data.frame <- function(data,
   # Filter out unwanted timepoints, and find nearest time values in the data
   # --------------
 
-  data <- select_times(data, time_lim)
-  # if ("time" %in% colnames(data)) {
-  #   if (length(time_lim) == 1) {
-  #     time_lim <- data$time[which.min(abs(data$time - time_lim))]
-  #     data <- data[data$time == time_lim, ]
-  #     } else if (length(time_lim) == 2) {
-  #       range(data$time)
-  #       data <- select_times(data, time_lim)
-  #     }
-  #   }
+  if (!is.null(time_lim)) {
+    data <- select_times(data, time_lim)
+  }
 
   # Check for x and y co-ordinates, try to add if not found --------------
 
-  if (length(grep("^x$|^y$", colnames(data))) > 1) {
-    message("Electrode locations found.")
+  if (all(c("x", "y") %in% names(data))) {
+    message("Using electrode locations from data.")
   } else if (!is.null(chanLocs)) {
-    if (length(grep("^x$|^y$", colnames(chanLocs))) > 1) {
+    if (!all(c("x", "y") %in% names(chanLocs))) {
+      stop("No channel locations found in chanLocs.")
+    } else {
       data$electrode <- toupper(data$electrode)
       chanLocs$electrode <- toupper(chanLocs$electrode)
-      data <- merge(data, chanLocs)
+      data <- merge(data,
+                    chanLocs)
       if (any(is.na(data$x))) {
         data <- data[!is.na(data$x), ]
         }
-      } else {
-        warnings("No channel locations found in chanLocs.")
       }
-    } else if ("electrode" %in% colnames(data)) {
+    } else if ("electrode" %in% names(data)) {
       data <- electrode_locations(data,
                                   drop = TRUE,
                                   montage = montage)

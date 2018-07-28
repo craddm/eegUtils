@@ -132,6 +132,7 @@ rm_baseline <- function(data, ...) {
 #'   channel mean if the data is continuous.
 #' @describeIn rm_baseline remove baseline from continuous \code{eeg_data}
 #' @export
+
 rm_baseline.eeg_data <- function(data, time_lim = NULL, ...) {
 
   if (is.null(time_lim)) {
@@ -146,6 +147,7 @@ rm_baseline.eeg_data <- function(data, time_lim = NULL, ...) {
 
 #' @describeIn rm_baseline Remove baseline from eeg_epochs
 #' @export
+
 rm_baseline.eeg_epochs <- function(data,
                                    time_lim = NULL,
                                    ...) {
@@ -272,10 +274,12 @@ epoch_data.eeg_data <- function(data,
                                 time_lim = c(-1, 1),
                                 ...) {
 
+  if (!any(events %in% unique(data$events$event_type))) {
+    stop("No events found - check event codes.")
+  }
+
   if (!all(events %in% unique(data$events$event_type))) {
     warning("Some events not found - check event codes.")
-  } else if (!any(events %in% unique(data$events$event_type))) {
-    stop("No events found - check event codes.")
   }
 
   # If the data has been downsampled, sample spacing will be greater than 1.
@@ -511,6 +515,15 @@ eeg_downsample.eeg_epochs <- function(data, q, ...) {
 
 eeg_combine <- function(data, ...) {
   UseMethod("eeg_combine", data)
+}
+
+#'@export
+eeg_combine.default <- function(data, ...) {
+  stop(
+    "Don't know how to combine objects of class",
+    class(data)[[1]],
+    call. = FALSE
+  )
 }
 
 #' @describeIn eeg_combine Method for combining \code{eeg_data} objects.
