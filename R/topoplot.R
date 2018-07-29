@@ -455,7 +455,7 @@ topoplot.eeg_epochs <- function(data,
 }
 
 
-#' @param comp Component to plot (numeric)
+#' @param component Component to plot (numeric)
 #' @describeIn topoplot Topographical plot for \code{eeg_ICA} objects
 #' @export
 topoplot.eeg_ICA <- function(data,

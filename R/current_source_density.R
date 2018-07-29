@@ -36,7 +36,8 @@ interp_elecs.eeg_data <- function(data,
   if (all(c("cart_x", "cart_y", "cart_z") %in% names(data$chan_info))) {
     xyz_coords <- data$chan_info[, c("cart_x", "cart_y", "cart_z")]
     #normalise to unit sphere
-    rads <- sqrt(xyz_coords$cart_x ^ 2 + xyz_coords$cart_y ^ 2 + xyz_coords$cart_z ^ 2)
+    rads <- sqrt(rowSums(xyz_coords ^ 2))
+    #rads <- sqrt(xyz_coords$cart_x ^ 2 + xyz_coords$cart_y ^ 2 + xyz_coords$cart_z ^ 2)
     xyz_coords <- xyz_coords / rads
   } else {
     xyz_coords <- sph_to_cart(data$chan_info$sph_theta / 180 * pi,
@@ -51,13 +52,15 @@ interp_elecs.eeg_data <- function(data,
   if (nrow(xyz_bad) == 0) {
     return(data)
   }
-
+  sigs_select <- toupper(names(data$signals)) %in%
+    toupper(data$chan_info$electrode)
   bad_cols <- toupper(names(data$signals)) %in% toupper(bad_elecs)
+  final_cols <- sigs_select & !bad_cols
   weights <- spheric_spline(xyz_good,
                              xyz_coords)
-  new_w <- weights[bad_cols, ]
-  new_chans <- new_w %*% t(data$signals[, !bad_cols])
-  data$signals[bad_cols] <- t(new_chans)
+  new_w <- weights[bad_select, ]
+  new_chans <- new_w %*% t(data$signals[, final_cols])
+  data$signals[, bad_cols] <- t(new_chans)
   data
 }
 

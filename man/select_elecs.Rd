@@ -29,6 +29,8 @@ electrodes.}
 
 \item{df_out}{Defaults to FALSE. Set to TRUE to return a dataframe rather
 than an \code{eeg_data} object.}
+
+\item{component}{Component to select}
 }
 \value{
 Data frame with only data from the chosen electrodes

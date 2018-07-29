@@ -270,6 +270,7 @@ select_elecs.eeg_data <- function(data,
   data
 }
 
+#' @param component Component to select
 #' @describeIn select_elecs Select components from \code{eeg_ICA} objects.
 #' @export
 select_elecs.eeg_ICA <- function(data,

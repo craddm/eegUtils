@@ -48,24 +48,39 @@ EEGLAB can be loaded using the `import_set()` command. The command detects wheth
 Filtering can be performed using the `iir_filt()` command. This use a Butterworth filter to perform low-, high-, or band-pass or band-stop filtering of user-specified frequencies. Filtering is run twice (once forwards, once in reverse) to achieve zero-phase. (FIR filtering is currently in development, but could be performed using the `signal` package).
 
 ```{r filt-butter}
-eeg_example <- iir_filt(eeg_example, low_freq = .1, high_freq = 40, filter_order = 3) #specify a bandpass filter
+eeg_example <- iir_filt(eeg_example,
+                        low_freq = .1,
+                        high_freq = 40,
+                        filter_order = 3) #specify a bandpass filter
 ```
 
 Data can be epoched around events/triggers using `epoch_data()`, which outputs an `eeg_epochs` object. A list of the event triggers found in the data can be retrieved using `list_events()`. In this case we’ll epoch around event code 201.
 
 ```{r epoch-eeg}
 list_events(eeg_example)
-eeg_example <- epoch_data(eeg_example, events = 201, time_lim = c(-.3, .75))
+eeg_example <- epoch_data(eeg_example,
+                          events = 201,
+                          time_lim = c(-.3, .75))
 ```
 
 `eeg_epochs` can then be plotted using `plot_butterfly()` or `plot_timecourse()`. Both `plot_butterfly()` and `plot_timecourse()` average over epochs. `plot_timecourse()` will also average over electrodes - all electrodes if none are specified, or over any specified electrodes. Baseline correction can also be applied at this point if desired. Baseline correction can also be applied using `rm_baseline()`, or for plotting only using the `baseline` parameter in the plotting call..
 
 ```{r do-plots}
-plot_butterfly(eeg_example, time_lim = c(-.2, .5), legend = FALSE)
-plot_butterfly(eeg_example, time_lim = c(-.2, .5), legend = FALSE, baseline = c(-.1, 0))
-plot_timecourse(eeg_example, time_lim = c(-.2, .5),
-                baseline = c(-.1, 0), electrode = "A30") # Plot POz
-plot_timecourse(eeg_example, time_lim = c(-.2, .5), baseline = c(-.1, 0), electrode = "B6") # Plot Fz
+plot_butterfly(eeg_example,
+               time_lim = c(-.2, .5),
+               legend = FALSE)
+plot_butterfly(eeg_example,
+               time_lim = c(-.2, .5),
+               legend = FALSE,
+               baseline = c(-.1, 0))
+plot_timecourse(eeg_example,
+                time_lim = c(-.2, .5),
+                baseline = c(-.1, 0),
+                electrode = "A30") # Plot POz
+plot_timecourse(eeg_example,
+                time_lim = c(-.2, .5),
+                baseline = c(-.1, 0),
+                electrode = "B6") # Plot Fz
 ```
 
 Standard channel locations can be added using the `electrode_locations()` command. Currently this only has locations for a limited number of electrodes (64 electrodes from the 10-20 system). Different built-in montages will be added, and can be specified using the `montage` parameter. In this case, the data was recorded using Biosemi with alpha-numeric channel labels (e.g. A1 rather than Fp1), which are built-in with `biosemi64alpha`. `topoplot()` can then be used to plot topographical representation of selected data. Note that it is not compulsory to use locations from electrode_locations(); if the data has x and y columns when it is a data frame, or added to `chan_info` element of the `eeg_data`/`eeg_epochs` object, then those will be used.

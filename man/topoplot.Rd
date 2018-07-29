@@ -28,15 +28,16 @@ topoplot(data, ...)
   chan_marker = "point", quantity = "amplitude", montage = NULL,
   highlights = NULL, ...)
 
-\method{topoplot}{eeg_ICA}(data, comp, time_lim = NULL, limits = NULL,
+\method{topoplot}{eeg_ICA}(data, component, time_lim = NULL, limits = NULL,
   chanLocs = NULL, method = "Biharmonic", r = NULL, grid_res = 67,
   palette = "RdBu", interp_limit = "skirt", contour = TRUE,
   chan_marker = "point", quantity = "amplitude", montage = NULL,
   colourmap, highlights = NULL, ...)
 }
 \arguments{
-\item{data}{An EEG dataset. Must have columns x, y, and amplitude at present.
-x and y are (Cartesian) electrode co-ordinates), amplitude is amplitude.}
+\item{data}{An EEG dataset. If the input is a data.frame, then it must have
+columns x, y, and amplitude at present. x and y are (Cartesian) electrode
+co-ordinates), amplitude is amplitude.}
 
 \item{...}{Various arguments passed to specific functions}
 
@@ -85,12 +86,12 @@ only 'biosemi64alpha' available other than default 10/20 system)}
 
 \item{highlights}{Electrodes to highlight (in white)}
 
-\item{comp}{Component to plot (numeric)}
+\item{component}{Component to plot (numeric)}
 }
 \description{
 Allows topographical plotting of functional data. Output is a ggplot2 object.
 
-The functions works for both standard data frames and objects of class
+The function works for both standard data frames and objects of class
 \code{eeg_data}.
 
 Both \code{eeg_epochs} and \code{eeg_data} objects are supported.
