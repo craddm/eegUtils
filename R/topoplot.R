@@ -107,6 +107,9 @@ topoplot.data.frame <- function(data,
   # --------------
 
   if (!is.null(time_lim)) {
+    if (length(time_lim) == 1) {
+      time_lim <- c(time_lim, time_lim)
+    }
     data <- select_times(data, time_lim)
   }
 

@@ -25,8 +25,12 @@
 - `run_ICA()` 
     - now returns source activations as a "signals" data frame, with component names
     - now returns correct unmixing matrix
-- `compute_csd()` added
-- `compute_tfr()` added
+- `compute_csd()` 
+  - added.
+  - computation of g-matrix and h-matrix refactored, spherical spline calculation altered accordingly
+- `compute_tfr()` 
+  - added
+- `eeg_FASTER()` now properly selects electrodes and epochs for removal
 
 # eegUtils 0.2.0
 

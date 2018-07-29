@@ -24,6 +24,10 @@ EEG artifact Rejection. J Neurosci Methods. Not yet fully implemented.
 \item \code{eeg_epochs}: Run FASTER on \code{eeg_epochs}
 }}
 
+\references{
+Nolan, Whelan & Reilly (2010). FASTER: Fully Automated Statistical Thresholding for
+EEG artifact Rejection. J Neurosci Methods.
+}
 \author{
 Matt Craddock \email{matt@mattcraddock.com}
 }
