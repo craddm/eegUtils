@@ -22,14 +22,17 @@ import_chans <- function(file_name) {
 #' @keywords internal
 
 import_elc <- function(file_name) {
-  raw_locs <- readLines(file_name, n = -1)
-  n_elecs <- grep("NumberPositions", raw_locs)
+  raw_locs <- readLines(file_name,
+                        n = -1)
+  n_elecs <- grep("NumberPositions",
+                  raw_locs)
   n_elecs <- as.numeric(unlist(strsplit(raw_locs[n_elecs], "\t"))[2])
   pos_loc <- grep("^Positions", raw_locs)
   pos <- raw_locs[seq(pos_loc + 1,
                       pos_loc + n_elecs)]
   labs_loc <- grep("Labels", raw_locs)
-  labs <- raw_locs[seq(labs_loc + 1, labs_loc + n_elecs)]
+  labs <- raw_locs[seq(labs_loc + 1,
+                       labs_loc + n_elecs)]
 
   pos <- strsplit(pos, " ")
   pos <- lapply(pos,
@@ -38,6 +41,7 @@ import_elc <- function(file_name) {
   sph_pos <- cart_to_sph(pos[, 1],
                          pos[, 2],
                          pos[, 3])
+  sph_pos[, 2:3] <- sph_pos[, 2:3] / pi * 180
   topo_pos <- sph_to_topo(sph_pos[, 2],
                           sph_pos[, 3])
   names(pos) <- c("cart_x",
@@ -64,9 +68,11 @@ import_elc <- function(file_name) {
 cart_to_sph <- function(x, y, z) {
   hypo <- sqrt(abs(x) ^ 2 + abs(y) ^ 2)
   radius <- sqrt(abs(hypo) ^ 2 + abs(z) ^ 2) # spherical radius
-  phi <- atan2(z, hypo) / pi * 180 # spherical phi in degrees
-  theta <- atan2(y, x) / pi * 180 # spherical theta in degrees
-  data.frame(sph_radius = radius, sph_phi = phi, sph_theta = theta)
+  phi <- atan2(z, hypo) #/ pi * 180 # spherical phi in degrees
+  theta <- atan2(y, x) #/ pi * 180 # spherical theta in degrees
+  data.frame(sph_radius = radius,
+             sph_phi = phi,
+             sph_theta = theta)
 }
 
 #' Convert 3D Cartesian co-ordinates to polar co-ordinates
@@ -121,7 +127,10 @@ sph_to_topo <- function(phi, theta) {
 
 #' Convert spherical to cartesian 3d
 #'
-#' @noRd
+#' @param theta should be in radians
+#' @param phi should be in radians
+#' @param r should be in radians
+#' @keywords internal
 sph_to_cart <- function(theta, phi, r) {
   z <- r * sin(phi)
   x <- r * cos(phi) * cos(theta)
@@ -136,6 +145,16 @@ topo_norm <- function(angle, radius) {
   x <- radius * cos(angle / 180 * pi)
   y <- radius * sin(angle / 180 * pi)
   data.frame(x, y)
+}
+
+topo_to_sph <- function(angle, radius) {
+  hori <- ifelse(angle >= 0,
+                 90 - angle,
+                 -(90 + angle))
+  c_r <- ifelse(angle != 0,
+                sign(angle) * 180 * radius,
+                180 * radius)
+  data.frame(angle = hori, radius = c_r)
 }
 
 #' Rotate channel locations

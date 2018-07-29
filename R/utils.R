@@ -389,3 +389,20 @@ label_check <- function(cond_labs, data_labs) {
         }
       }
 }
+
+
+#' Check if chan_info is in old format
+#'
+#' @param chan_info Channel info structure
+#' @keywords internal
+
+check_ci_str <- function(chan_info) {
+  orig_names <- c("chanNo",
+                "theta",
+                "radius",
+                "electrode", "radianTheta", "x",
+                "y")
+  if (identical(names(orig_locs), names(chan_info))) {
+    stop("New channel locations required - see ?electrode_locations()")
+  }
+}

@@ -8,6 +8,9 @@
 #'
 #' @param data An object of class \code{eeg_epochs}
 #' @param ... Parameters passed to FASTER
+#' @references
+#' Nolan, Whelan & Reilly (2010). FASTER: Fully Automated Statistical Thresholding for
+#' EEG artifact Rejection. J Neurosci Methods.
 #' @export
 
 eeg_FASTER <- function(data, ...) {
@@ -44,20 +47,29 @@ eeg_FASTER.eeg_epochs <- function(data, ...) {
   # Step 1: channel statistics
   bad_chans <- faster_chans(data$signals[, data_chans])
   bad_chan_n <- names(data$signals)[bad_chans]
-  message(paste("Globally bad channels:", paste(bad_chan_n, collapse = " ")))
+  message(paste("Globally bad channels:",
+                paste(bad_chan_n,
+                      collapse = " ")))
 
   if (!is.null(data$chan_info)) {
-    data <- interp_elecs(data, bad_chan_n)
+    data <- interp_elecs(data,
+                         bad_chan_n)
   } else {
     warning("no chan_info, removing chans.")
-    data <- select_elecs(data, electrode = bad_chan_n, keep = FALSE)
+    data <- select_elecs(data,
+                         electrode = bad_chan_n,
+                         keep = FALSE)
   }
 
   # Step 2: epoch statistics
   bad_epochs <- faster_epochs(data)
   bad_epochs <- unique(data$timings$epoch)[bad_epochs]
-  message(paste("Globally bad epochs:", paste(bad_epochs, collapse = " ")))
-  data <- select_epochs(data, epoch_no = bad_epochs, keep = FALSE)
+  message(paste("Globally bad epochs:",
+                paste(bad_epochs,
+                      collapse = " ")))
+  data <- select_epochs(data,
+                        epoch_no = bad_epochs,
+                        keep = FALSE)
 
   # Step 3: ICA stats (not currently implemented)
 
@@ -83,13 +95,18 @@ eeg_FASTER.eeg_epochs <- function(data, ...) {
 
 faster_chans <- function(data, sds = 3, ...) {
   chan_hurst <- scale(quick_hurst(data))
-  chan_vars <- scale(apply(data, 2, stats::var))
+  chan_vars <- scale(apply(data,
+                           2,
+                           stats::var))
   chan_corrs <- scale(colMeans(abs(stats::cor(data))))
   bad_chans <- matrix(c(abs(chan_hurst) > sds,
                         abs(chan_vars) > sds,
                         abs(chan_corrs) > sds),
-                      nrow = 3)
-  bad_chans <- apply(bad_chans, 2, any)
+                      nrow = 3,
+                      byrow = TRUE)
+  bad_chans <- apply(bad_chans,
+                     2,
+                     any)
   bad_chans
 }
 
@@ -104,23 +121,42 @@ faster_epochs <- function(data, ...) {
   data$signals <- split(data$signals,
                         data$timings$epoch)
   epoch_range <- lapply(data$signals,
-                        function(x) diff(apply(x, 2, range)))
-  epoch_range <- abs(scale(do.call("rbind", epoch_range))) > 3
+                        function(x) diff(apply(x,
+                                               2,
+                                               range)))
+  epoch_range <- rowMeans(do.call(rbind,
+                                  epoch_range))
+  epoch_range <- abs(scale(epoch_range)) > 3
+  # epoch_range <- abs(scale(do.call("rbind",
+  #                                  epoch_range))) > 3
   epoch_diffs <- lapply(data$signals,
                         function(x) {
-                          apply(abs(sweep(x, 2, chan_means)), 2, mean)
+                          apply(abs(sweep(x,
+                                          2,
+                                          chan_means)),
+                                2,
+                                mean)
                           })
-  epoch_diffs <- abs(scale(do.call("rbind", epoch_diffs))) > 3
+  epoch_diffs <- rowMeans(do.call(rbind,
+                                  epoch_diffs))
+  epoch_diffs <- abs(scale(epoch_diffs)) > 3
+  # epoch_diffs <- abs(scale(do.call("rbind",
+                                   # epoch_diffs))) > 3
   epoch_vars <- lapply(data$signals,
-                       function(x) apply(x, 2, stats::var))
-  epoch_vars <- abs(scale(do.call("rbind", epoch_vars))) > 3
+                       function(x) apply(x,
+                                         2,
+                                         stats::var))
+  epoch_vars <- rowMeans(do.call(rbind,
+                                 epoch_vars))
+  epoch_vars <- abs(scale(epoch_vars)) >3
+  #epoch_vars <- abs(scale(do.call("rbind",
+   #                               epoch_vars))) > 3
   bad_epochs <- matrix(c(rowSums(epoch_vars) > 0,
                          rowSums(epoch_range) > 0,
                          rowSums(epoch_diffs) > 0),
                        ncol = 3)
   bad_epochs <- apply(bad_epochs, 1, any)
   bad_epochs
-
 }
 
 #' FASTER detection of bad channels in single epochs
