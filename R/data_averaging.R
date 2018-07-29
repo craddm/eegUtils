@@ -79,7 +79,7 @@ eeg_average.eeg_epochs <- function(data,
   }
   data$events <- NULL
   data$timings <- unique(data$timings["time"])
-  class(data) <- c("eeg_evoked", "eeg_data")
+  class(data) <- c("eeg_evoked")
   data
 }
 

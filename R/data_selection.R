@@ -85,7 +85,7 @@ select_times.eeg_data <- function(data,
 #' @describeIn select_times Select times in \code{eeg_epochs} objects
 
 select_times.eeg_epochs <- function(data,
-                                    time_lim = NULL,
+                                    time_lim,
                                     df_out = FALSE,
                                     ...) {
 
@@ -111,17 +111,30 @@ select_times.eeg_epochs <- function(data,
 #' @export
 #' @describeIn select_times Select times in \code{eeg_evoked} objects
 select_times.eeg_evoked <- function(data,
-                                    time_lim = NULL,
+                                    time_lim,
                                     df_out = FALSE,
                                     ...) {
 
   data$signals <- as.data.frame(data)
-  data$signals <- select_times(data$signals,
-                               time_lim = time_lim)
+
+  sel_rows <- find_times(data$timings,
+                         time_lim)
+  # if (length(time_lim) == 1) {
+  #   stop("Must enter two timepoints when selecting a time range;
+  #       using whole range.")
+  # } else if (length(time_lim) == 2) {
+  #   time_lim[1] <- data$timings$time[which.min(abs(data$timings$time - time_lim[1]))]
+  #   time_lim[2] <- data$timings$time[which.min(abs(data$timings$time - time_lim[2]))]
+  #   sel_rows <- data$timings$time >= time_lim[1] & data$timings$time <= time_lim[2]
+  # }
+
+  data$signals <- data$signals[sel_rows, ]
+  data$timings <- data$timings[sel_rows, ]
 
   if (df_out) {
     return(data$signals)
   }
+  data$signals$time <- NULL
   data
 }
 
@@ -131,7 +144,7 @@ select_times.eeg_tfr <- function(data,
                                  df_out = FALSE,
                                  ...){
 
-  sel_rows <- data$timings$time > time_lim[[1]] & data$timings$time < time_lim[[2]]
+  sel_rows <- find_times(data$timings$time, time_lim)
   data$timings <- data$timings[sel_rows, ]
   if (length(data$dimensions) == 3) {
     data$signals <- data$signals[sel_rows, , ]
@@ -139,6 +152,27 @@ select_times.eeg_tfr <- function(data,
     data$signals <- data$signals[sel_rows, , , ]
   }
   data
+}
+
+#' Find times in an eeg_* object
+#'
+#' Internal function to find the rows corresponding to the selected time limits
+#'
+#' @param timings timing information from the EEG object.
+#' @param time_lim character vector of the time limits
+#' @keywords internal
+find_times <- function(timings,
+                       time_lim) {
+
+  if (length(time_lim) == 1) {
+    warning("Must enter two timepoints when selecting a time range;
+        using whole range.")
+  } else if (length(time_lim) == 2) {
+    time_lim[1] <- timings$time[which.min(abs(timings$time - time_lim[1]))]
+    time_lim[2] <- timings$time[which.min(abs(timings$time - time_lim[2]))]
+    sel_rows <- timings$time >= time_lim[1] & timings$time <= time_lim[2]
+  }
+  sel_rows
 }
 
 #' Select electrodes from a given dataset
@@ -171,7 +205,10 @@ select_elecs <- function(data, ...) {
 #' @describeIn select_elecs Select electrodes from a generic data frame.
 #' @export
 
-select_elecs.default <- function(data,  electrode = NULL, keep = TRUE, ...) {
+select_elecs.default <- function(data,
+                                 electrode = NULL,
+                                 keep = TRUE,
+                                 ...) {
 
   if ("electrode" %in% colnames(data)) {
     if (all(electrode %in% data$electrode)) {
@@ -194,7 +231,7 @@ select_elecs.default <- function(data,  electrode = NULL, keep = TRUE, ...) {
       }
     }
   }
-  return(data)
+  data
 }
 
 
@@ -204,27 +241,52 @@ select_elecs.default <- function(data,  electrode = NULL, keep = TRUE, ...) {
 #' @export
 #' @describeIn select_elecs Select electrodes from a \code{eeg_data} object.
 
-select_elecs.eeg_data <- function(data, electrode, keep = TRUE,
+select_elecs.eeg_data <- function(data,
+                                  electrode,
+                                  keep = TRUE,
                                   df_out = FALSE, ...) {
 
   if (all(electrode %in% colnames(data$signals))) {
+
     if (keep) {
       data$signals <- data$signals[colnames(data$signals) %in% electrode]
     } else {
       data$signals <- data$signals[!colnames(data$signals) %in% electrode]
     }
+
     if (!is.null(data$chan_info)) {
       data$chan_info <- data$chan_info[data$chan_info$electrode %in% names(data$signals), ]
     }
+
   } else {
-    cat("Electrode(s) not found:",
+    warning("Electrode(s) not found:",
         electrode[!electrode %in% colnames(data$signals)],
         ". Returning all data.")
-    warning()
   }
+
   if (df_out) {
     return(as.data.frame(data))
   }
+  data
+}
+
+#' @describeIn select_elecs Select components from \code{eeg_ICA} objects.
+#' @export
+select_elecs.eeg_ICA <- function(data,
+                                 component,
+                                 keep = TRUE,
+                                 df_out,
+                                 ...) {
+
+  if (!all(component %in% names(data$signals))) {
+    stop("Component(s) ", component, " not found.")
+  }
+
+  comps <- names(data$signals) %in% component
+  if (!keep) {
+    comps <- !comps
+  }
+  data$signals <- data$signals[, comps]
   data
 }
 

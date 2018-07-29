@@ -4,6 +4,7 @@
 \alias{select_elecs}
 \alias{select_elecs.default}
 \alias{select_elecs.eeg_data}
+\alias{select_elecs.eeg_ICA}
 \title{Select electrodes from a given dataset}
 \usage{
 select_elecs(data, ...)
@@ -12,6 +13,8 @@ select_elecs(data, ...)
 
 \method{select_elecs}{eeg_data}(data, electrode, keep = TRUE,
   df_out = FALSE, ...)
+
+\method{select_elecs}{eeg_ICA}(data, component, keep = TRUE, df_out, ...)
 }
 \arguments{
 \item{data}{An EEG dataset.}
@@ -40,6 +43,8 @@ This is a generic function for selection of electrodes from an EEG dataset.
 \item \code{default}: Select electrodes from a generic data frame.
 
 \item \code{eeg_data}: Select electrodes from a \code{eeg_data} object.
+
+\item \code{eeg_ICA}: Select components from \code{eeg_ICA} objects.
 }}
 
 \examples{

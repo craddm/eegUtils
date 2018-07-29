@@ -15,11 +15,9 @@ select_times(data, ...)
 
 \method{select_times}{eeg_data}(data, time_lim = NULL, df_out = FALSE, ...)
 
-\method{select_times}{eeg_epochs}(data, time_lim = NULL, df_out = FALSE,
-  ...)
+\method{select_times}{eeg_epochs}(data, time_lim, df_out = FALSE, ...)
 
-\method{select_times}{eeg_evoked}(data, time_lim = NULL, df_out = FALSE,
-  ...)
+\method{select_times}{eeg_evoked}(data, time_lim, df_out = FALSE, ...)
 
 \method{select_times}{eeg_tfr}(data, time_lim = NULL, df_out = FALSE, ...)
 }

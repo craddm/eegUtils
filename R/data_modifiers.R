@@ -184,7 +184,7 @@ rm_baseline.eeg_epochs <- function(data,
                                              "-"))
     data$signals <- do.call(rbind, data$signals)
   }
-  return(data)
+  data
 }
 
 #' @describeIn rm_baseline Legacy method for data.frames
@@ -205,14 +205,20 @@ rm_baseline.data.frame <- function(data,
   # electrode.
 
   if ("epoch" %in% colnames(data)) {
-    data <- dplyr::group_by(data, electrode, epoch, add = TRUE)
+    data <- dplyr::group_by(data,
+                            electrode,
+                            epoch,
+                            add = TRUE)
   } else{
-    data <- dplyr::group_by(data, electrode, add = TRUE)
+    data <- dplyr::group_by(data,
+                            electrode,
+                            add = TRUE)
   }
 
   if (is.null(time_lim)) {
     # if no time_lim provided, just delete mean of all time points
-    data <- dplyr::mutate(data, amplitude = amplitude - mean(amplitude))
+    data <- dplyr::mutate(data,
+                          amplitude = amplitude - mean(amplitude))
   } else {
 
     data_sel <- dplyr::filter(data,
@@ -222,11 +228,13 @@ rm_baseline.data.frame <- function(data,
                                  bl = mean(amplitude))
     # This is relatively memory intensive - not so bad now but would prefer
     # another way. Could get extremely painful with time-frequency data.
-    data <- dplyr::left_join(data, baseline)
-    data <- dplyr::mutate(data, amplitude = amplitude - bl)
-    data <- dplyr::select(data, -bl)
+    data <- dplyr::left_join(data,
+                             baseline)
+    data <- dplyr::mutate(data,
+                          amplitude = amplitude - bl)
+    data <- dplyr::select(data,
+                          -bl)
   }
-
   data <- ungroup(data)
   data
 }

@@ -87,7 +87,6 @@ run_ICA.eeg_epochs <- function(data,
 #' @param data Data to be ICAed.
 #'
 #' @keywords internal
-#'
 
 sobi_ICA <- function(data) {
 
@@ -239,4 +238,6 @@ joint_diag <- function(M,
 
 #
 
-apply_ica <- function(data) {}
+apply_ica <- function(data) {
+
+}

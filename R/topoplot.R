@@ -3,8 +3,9 @@
 #' Allows topographical plotting of functional data. Output is a ggplot2 object.
 #'
 #' @author Matt Craddock, \email{matt@@mattcraddock.com}
-#' @param data An EEG dataset. Must have columns x, y, and amplitude at present.
-#'   x and y are (Cartesian) electrode co-ordinates), amplitude is amplitude.
+#' @param data An EEG dataset. If the input is a data.frame, then it must have
+#'   columns x, y, and amplitude at present. x and y are (Cartesian) electrode
+#'   co-ordinates), amplitude is amplitude.
 #' @param ... Various arguments passed to specific functions
 #' @export
 #'
@@ -26,14 +27,14 @@ topoplot <- function(data, ...) {
 #' @param data An object passed to the function
 #' @param ... Any other parameters
 #' @export
-#'
+
 topoplot.default <- function(data, ...) {
   stop("This function requires a data frame or an eeg_data/eeg_epochs object")
 }
 
 #' Topographical Plotting Function for EEG
 #'
-#' The functions works for both standard data frames and objects of class
+#' The function works for both standard data frames and objects of class
 #' \code{eeg_data}.
 #'
 #' @param time_lim Timepoint(s) to plot. Can be one time or a range to average
@@ -110,27 +111,31 @@ topoplot.data.frame <- function(data,
   }
 
   # Check for x and y co-ordinates, try to add if not found --------------
+  if (!is.null(chanLocs)) {
 
-  if (all(c("x", "y") %in% names(data))) {
-    message("Using electrode locations from data.")
-  } else if (!is.null(chanLocs)) {
     if (!all(c("x", "y") %in% names(chanLocs))) {
       stop("No channel locations found in chanLocs.")
-    } else {
-      data$electrode <- toupper(data$electrode)
-      chanLocs$electrode <- toupper(chanLocs$electrode)
-      data <- merge(data,
-                    chanLocs)
-      if (any(is.na(data$x))) {
-        data <- data[!is.na(data$x), ]
-        }
-      }
-    } else if ("electrode" %in% names(data)) {
-      data <- electrode_locations(data,
-                                  drop = TRUE,
-                                  montage = montage)
-      message("Attempting to add standard electrode locations...")
-    } else {
+    }
+
+    data$electrode <- toupper(data$electrode)
+    chanLocs$electrode <- toupper(chanLocs$electrode)
+    data <- merge(data,
+                  chanLocs)
+
+    #remove channels with no location
+    if (any(is.na(data$x))) {
+      data <- data[!is.na(data$x), ]
+      warning("Removing channels with no location.")
+    }
+
+  } else if (all(c("x", "y") %in% names(data))) {
+    message("Using electrode locations from data.")
+  } else if ("electrode" %in% names(data)) {
+    data <- electrode_locations(data,
+                                drop = TRUE,
+                                montage = montage)
+    message("Attempting to add standard electrode locations...")
+  } else {
     stop("Neither electrode locations nor labels found.")
   }
 
@@ -451,7 +456,7 @@ topoplot.eeg_epochs <- function(data,
 #' @describeIn topoplot Topographical plot for \code{eeg_ICA} objects
 #' @export
 topoplot.eeg_ICA <- function(data,
-                             comp,
+                             component,
                              time_lim = NULL,
                              limits = NULL,
                              chanLocs = NULL,
@@ -467,9 +472,11 @@ topoplot.eeg_ICA <- function(data,
                              colourmap,
                              highlights = NULL,
                              ...) {
+
   if (missing(comp)) {
     stop("Component number must be specified for eeg_ICA objects.")
   }
+
   chan_info <- data$chan_info
   data <- data.frame(amplitude = data$mixing_matrix[, comp],
                      electrode = data$mixing_matrix$electrode)
@@ -480,7 +487,6 @@ topoplot.eeg_ICA <- function(data,
 #' Create topoplot
 #'
 #' @noRd
-#'
 
 make_topo <- function(data,
                       time_lim,
@@ -514,15 +520,17 @@ set_palette <- function(topo, palette, limits = NULL) {
   if (palette %in% c("magma", "inferno", "plasma",
                   "viridis", "A", "B", "C", "D")) {
 
-    topo <- topo + viridis::scale_fill_viridis(option = palette,
-                                      limits = limits,
-                                      guide = "colourbar",
-                                      oob = scales::squish)
+    topo <- topo +
+      viridis::scale_fill_viridis(option = palette,
+                                  limits = limits,
+                                  guide = "colourbar",
+                                  oob = scales::squish)
   } else {
-    topo <- topo + scale_fill_distiller(palette = palette,
-                                        limits = limits,
-                                        guide = "colourbar",
-                                        oob = scales::squish)
+    topo <- topo +
+      scale_fill_distiller(palette = palette,
+                           limits = limits,
+                           guide = "colourbar",
+                           oob = scales::squish)
   }
   topo
 }
