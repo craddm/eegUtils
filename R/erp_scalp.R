@@ -19,7 +19,7 @@
 #' @details The function uses default electrode names and locations contained
 #' in the package.
 #'
-#' @author Matti Vuorre, \email{mv2521@columbia.edu}
+#' @author Matti Vuorre, \email{mv2521@@columbia.edu}
 #' @importFrom purrr map
 #' @import dplyr
 #' @import ggplot2
@@ -39,15 +39,23 @@ erp_scalp <- function(data,
                       montage = NULL) {
 
   if (is.eeg_epochs(data)) {
-    data <- as.data.frame(data, long = TRUE)
+    data <- as.data.frame(data,
+                          long = TRUE)
   }
 
   if (is.null(color)) {
-    data <- dplyr::group_by(data, electrode, time)
-    data <- dplyr::summarise(data, amplitude = mean(amplitude))
+    data <- dplyr::group_by(data,
+                            electrode,
+                            time)
+    data <- dplyr::summarise(data,
+                             amplitude = mean(amplitude))
   } else {
-    data <- dplyr::group_by_(data, electrode, time, as.name(color))
-    data <- dplyr::summarise(data, amplitude = mean(amplitude))
+    data <- dplyr::group_by_(data,
+                             electrode,
+                             time,
+                             as.name(color))
+    data <- dplyr::summarise(data,
+                             amplitude = mean(amplitude))
   }
 
   data <- as.data.frame(data)
@@ -96,37 +104,54 @@ erp_scalp <- function(data,
   data <- dplyr::select(data, -data)
 
   # Get default electrode locations from pkg internal data
-  data <- electrode_locations(data, drop = T, montage = montage)
+  data <- electrode_locations(data,
+                              drop = T,
+                              montage = montage)
 
-  p <- ggplot(data, aes(x, y)) +
+  p <- ggplot(data,
+              aes(x, y)) +
     geom_blank() +
     theme_void() +
     theme(plot.margin = unit(c(8, 8, 8, 8), "pt"))
 
-  guide <- ggplot(data, aes(x = time, y = amplitude)) +
-    coord_cartesian(ylim = c(minAmp, maxAmp),
-                    xlim = c(minTime, maxTime)) +
+  guide <- ggplot(data,
+                  aes(x = time,
+                      y = amplitude)) +
+    coord_cartesian(ylim = c(minAmp,
+                             maxAmp),
+                    xlim = c(minTime,
+                             maxTime)) +
     scale_x_continuous(breaks = scales::pretty_breaks(n = 3)) +
     scale_y_continuous(breaks = scales::pretty_breaks(n = 3)) +
-    geom_vline(xintercept = 0, size = .4) +
-    geom_hline(yintercept = 0, size = .4) +
-    labs(y = expression(paste("Amplitude (", mu, "V)")),
+    geom_vline(xintercept = 0,
+               size = .4) +
+    geom_hline(yintercept = 0,
+               size = .4) +
+    labs(y = expression(paste("Amplitude (",
+                              mu,
+                              "V)")),
          x = "Time (s)") +
     theme_minimal(base_size = 8) +
     theme(panel.grid = element_blank(),
           axis.ticks = element_line(size = .3),
           plot.margin = unit(c(8, 8, 8, 8), "pt"))
+
   if (show_guide) {
     p <- p +
       annotation_custom(grob = ggplotGrob(guide),
-                        xmin = min(data$x) - .07, xmax = min(data$x) + .09,
-                        ymin = min(data$y) - .09, ymax = min(data$y) + .09)
+                        xmin = min(data$x) - .07,
+                        xmax = min(data$x) + .09,
+                        ymin = min(data$y) - .09,
+                        ymax = min(data$y) + .09)
   }
+
   for (i in 1:nrow(data)) {
     p <- p +
       annotation_custom(grob = ggplotGrob(data$plot[[i]]),
-                        xmin = data$x[i] - .05, xmax = data$x[i] + .05,
-                        ymin = data$y[i] - .07, ymax = data$y[i] + .07)
+                        xmin = data$x[i] - .05,
+                        xmax = data$x[i] + .05,
+                        ymin = data$y[i] - .07,
+                        ymax = data$y[i] + .07)
   }
 
   return(p)
@@ -142,26 +167,28 @@ erp_scalp <- function(data,
 #' @param data An EEG dataset.
 #' @param colour Variable to colour lines by. If no variable is passed, only one
 #'   line is drawn for each electrode.
-#' @param baseline Character vector of times to subtract for baseline correct.
+#' @param baseline Character vector of times to subtract for baseline correction.
 #' @param montage Name of an existing montage set. Defaults to NULL; (currently
 #'   only 'biosemi64alpha' available other than default 10/20 system)
 #'
-#' @author Matt Craddock, \email{matt@mattcraddock.com}
+#' @author Matt Craddock, \email{matt@@mattcraddock.com}
 #'
 #' @import shiny
 #' @import miniUI
 #' @export
 
-interactive_scalp <- function(data, colour = NULL,
-                              baseline = NULL, montage = NULL) {
+interactive_scalp <- function(data,
+                              colour = NULL,
+                              baseline = NULL,
+                              montage = NULL) {
 
   if (is.eeg_data(data)) {
     data <- eeg_average(data)
-    data <- as.data.frame(data, long = TRUE)
   }
 
   if (!is.null(baseline)) {
-    data <- rm_baseline(data, time_lim = baseline)
+    data <- rm_baseline(data,
+                        time_lim = baseline)
   }
 
   ui <- miniPage(
@@ -192,24 +219,38 @@ interactive_scalp <- function(data, colour = NULL,
     )
   )
 
-  server <- function(input, output, session) {
+  server <- function(input,
+                     output,
+                     session) {
 
-    data <- electrode_locations(data, drop = TRUE, montage = montage)
+    tmp_data <- as.data.frame(data,
+                              long = TRUE)
+    tmp_data <- electrode_locations(tmp_data,
+                                    drop = TRUE,
+                                    montage = montage)
 
-    button_reacts <- reactiveValues(sel_elecs = list(), avg = TRUE)
+    button_reacts <- reactiveValues(sel_elecs = list(),
+                                    avg = TRUE)
 
     output$Scalp <- renderPlot({
+
       if (is.null(colour)) {
-        erp_scalp(data, montage = montage)
+        erp_scalp(tmp_data,
+                  montage = montage)
       } else {
-        erp_scalp(data, color = as.name(colour), montage = montage)
+        erp_scalp(tmp_data,
+                  color = as.name(colour),
+                  montage = montage)
       }
+
     })
 
     observeEvent(input$click_plot, {
 
-      tmp <- nearPoints(data, input$click_plot,
-                        "x", "y", threshold = 45,
+      tmp <- nearPoints(tmp_data,
+                        input$click_plot,
+                        "x", "y",
+                        threshold = 45,
                         maxpoints = 1)
 
       if (nrow(tmp) > 0) {
@@ -229,18 +270,29 @@ interactive_scalp <- function(data, colour = NULL,
       output$Selected <- renderPlot({
         if (button_reacts$avg) {
           if (is.null(colour)) {
-            plot_timecourse(data[data$electrode %in% button_reacts$sel_elecs, ])
+            #plot_timecourse(data[data$electrode %in% button_reacts$sel_elecs, ])
+            plot_tc(select_elecs(data,
+                                 button_reacts$sel_elecs))
           } else {
-            plot_timecourse(data[data$electrode %in% button_reacts$sel_elecs, ],
-                            colour = as.name(colour))
+            plot_tc(select_elecs(data,
+                                 button_reacts$sel_elecs),
+                    colour = as.name(colour))
+            #plot_timecourse(data[data$electrode %in% button_reacts$sel_elecs, ],
+             #               colour = as.name(colour))
           }
         } else {
           if (is.null(colour)) {
-            plot_timecourse(data[data$electrode %in% button_reacts$sel_elecs, ],
-                            colour = "electrode")
+            plot_tc(select_elecs(data,
+                                 button_reacts$sel_elecs),
+                    colour = "electrode")
+            #plot_timecourse(data[data$electrode %in% button_reacts$sel_elecs, ],
+             #               colour = "electrode")
           } else{
-            plot_timecourse(data[data$electrode %in% button_reacts$sel_elecs, ],
-                            colour = as.name(colour)) +
+            plot_tc(select_elecs(data,
+                                 button_reacts$sel_elecs),
+                    colour = as.name(colour)) +
+            # plot_timecourse(data[data$electrode %in% button_reacts$sel_elecs, ],
+            #                 colour = as.name(colour)) +
               facet_wrap(~electrode)
           }
         }
