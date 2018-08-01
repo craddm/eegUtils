@@ -269,30 +269,25 @@ interactive_scalp <- function(data,
       # plot selected electrodes when on appropriate tab
       output$Selected <- renderPlot({
         if (button_reacts$avg) {
+
           if (is.null(colour)) {
-            #plot_timecourse(data[data$electrode %in% button_reacts$sel_elecs, ])
-            plot_tc(select_elecs(data,
-                                 button_reacts$sel_elecs))
+            plot_timecourse(select_elecs(data,
+                                         unlist(button_reacts$sel_elecs)))
           } else {
-            plot_tc(select_elecs(data,
-                                 button_reacts$sel_elecs),
+            plot_timecourse(select_elecs(data,
+                                 unlist(button_reacts$sel_elecs)),
                     colour = as.name(colour))
-            #plot_timecourse(data[data$electrode %in% button_reacts$sel_elecs, ],
-             #               colour = as.name(colour))
           }
+
         } else {
           if (is.null(colour)) {
-            plot_tc(select_elecs(data,
-                                 button_reacts$sel_elecs),
+            plot_timecourse(select_elecs(data,
+                                 unlist(button_reacts$sel_elecs)),
                     colour = "electrode")
-            #plot_timecourse(data[data$electrode %in% button_reacts$sel_elecs, ],
-             #               colour = "electrode")
           } else{
-            plot_tc(select_elecs(data,
-                                 button_reacts$sel_elecs),
-                    colour = as.name(colour)) +
-            # plot_timecourse(data[data$electrode %in% button_reacts$sel_elecs, ],
-            #                 colour = as.name(colour)) +
+            plot_timecourse(select_elecs(data,
+                                         unlist(button_reacts$sel_elecs)),
+                             colour = as.name(colour)) +
               facet_wrap(~electrode)
           }
         }

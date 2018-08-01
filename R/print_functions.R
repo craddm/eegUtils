@@ -8,6 +8,7 @@
 print.eeg_data <- function(x, ...) {
   elec_names <- names(x$signals)
   n_chan <- length(elec_names)
+  cat("Epoched EEG data\n\n")
   cat("Number of channels\t:\t", n_chan, "\n")
   cat("Electrode names\t:", elec_names, "\n")
   cat("Sampling rate\t:", x$srate, "Hz\n")
@@ -24,7 +25,7 @@ print.eeg_epochs <- function(x, ...) {
   elec_names <- names(x$signals)
   n_chan <- length(elec_names)
   n_epochs <- length(unique(x$timings$epoch))
-  cat("Epoched EEG data\n")
+  cat("Epoched EEG data\n\n")
   cat("Number of channels\t:\t", n_chan, "\n")
   cat("Number of epochs\t:\t", n_epochs, "\n")
   cat("Epoch limits\t\t:\t", min(unique(x$timings$time)), "-", max(unique(x$timings$time)), "seconds\n")
@@ -47,7 +48,7 @@ print.eeg_tfr <- function(x, ...) {
   } else {
     n_epochs <- "None, averaged."
   }
-  cat("Epoched EEG TFR data\n")
+  cat("Epoched EEG TFR data\n\n")
   cat("Frequency range\t\t:\t", x$freq_info$freqs, "\n")
   cat("Number of channels\t:\t", n_chan, "\n")
   cat("Electrode names\t\t:\t", elec_names, "\n")
@@ -57,5 +58,22 @@ print.eeg_tfr <- function(x, ...) {
       "-",
       max(unique(x$timings$time)),
       "seconds\n")
+  cat("Sampling rate\t\t:\t", x$srate, " Hz\n")
+}
+
+#' Print eeg_evoked summary
+#'
+#' Print a basic summary of the contents of an \code{eeg_epochs} object
+#'
+#' @param x \code{eeg_epochs} object to be printed
+#' @param ... Further arguments passed
+#' @export
+print.eeg_evoked <- function(x, ...) {
+  elec_names <- names(x$signals)
+  n_chan <- length(elec_names)
+  cat("Evoked EEG data\n\n")
+  cat("Number of channels\t:\t", n_chan, "\n")
+  cat("Epoch limits\t\t:\t", min(unique(x$timings$time)), "-", max(unique(x$timings$time)), "seconds\n")
+  cat("Electrode names\t\t:\t", elec_names, "\n")
   cat("Sampling rate\t\t:\t", x$srate, " Hz\n")
 }

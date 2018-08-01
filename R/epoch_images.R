@@ -4,28 +4,29 @@
 #' order to make across-trial patterns more apparent.
 #'
 #' @param data Data frame to be plotted. Requires an amplitude column.
-#' @param electrode electrode at which to generate an ERP image.
-#' @param smoothing Number of trials to smooth over when generating image
-#' @param clim Character vector of min and max values of plotting colour range.
-#'   e.g. c(-5,5). Defaults to min and max.
+#' @param ... Other arguments passed to the method.
 #' @author Matt Craddock, \email{matt@@mattcraddock.com}
 #' @import ggplot2
 #' @importFrom scales squish
 #' @export
 
 erp_image <- function(data,
-                      electrode = "Cz",
-                      smoothing = 10,
-                      clim = NULL) {
+                      ...){
   UseMethod("erp_image", data)
 }
 
+#' @param electrode electrode at which to generate an ERP image.
+#' @param smoothing Number of trials to smooth over when generating image
+#' @param clim Character vector of min and max values of plotting colour range.
+#'   e.g. c(-5,5). Defaults to min and max.
 #' @describeIn erp_image Default function operates on normal data frames
 #' @export
 erp_image.default <- function(data,
                               electrode = "Cz",
                               smoothing = 10,
-                              clim = NULL) {
+                              clim = NULL,
+                              ...) {
+
   required_cols <- c("electrode", "time", "amplitude", "epoch")
   col_names <- names(data)
 
@@ -50,7 +51,8 @@ erp_image.default <- function(data,
 erp_image.eeg_epochs <- function(data,
                       electrode = "Cz",
                       smoothing = 10,
-                      clim = NULL) {
+                      clim = NULL,
+                      ...) {
   if (!electrode %in% names(data$signals)) {
     stop("Specified electrode not found.")
   }
@@ -64,22 +66,24 @@ erp_image.eeg_epochs <- function(data,
                   clim = clim)
 }
 
-#' @describeIn erp_image \code{eeg_ICA}
+#' @param component \code{eeg_ICA} component to plot
+#' @describeIn erp_image Plot component image from \code{eeg_ICA}
 #' @export
 erp_image.eeg_ICA <- function(data,
-                              electrode = "V1",
+                              component = "Comp1",
                               smoothing = 10,
-                              clim = NULL) {
+                              clim = NULL,
+                              ...) {
 
-  if (!electrode %in% names(data$signals)) {
+  if (!component %in% names(data$signals)) {
     stop("Specified component not found.")
   }
   data <- select_elecs(data,
-                       electrode = electrode)
+                       component = component)
   data <- as.data.frame(data,
                         long = TRUE)
   create_erpimage(data,
-                  electrode = electrode,
+                  electrode = component,
                   smoothing = smoothing,
                   clim = clim)
 }

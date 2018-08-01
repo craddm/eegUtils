@@ -42,3 +42,4 @@ Other event handlers: \code{\link{list_epochs}},
 \author{
 Matt Craddock \email{matt@mattcraddock.com}
 }
+\concept{event handlers}

@@ -1,8 +1,8 @@
 Package: eegUtils
 Type: Package
 Title: A collection of utilities for EEG analysis 
-Version: 0.2.0.9000
-Date: 2018-06-18
+Version: 0.2.1.9000
+Date: 2018-08-18
 Authors@R: person("Matt", "Craddock", role = c("aut", "cre"), email = "matt@mattcraddock.com")
 Maintainer: Matt Craddock <matt@mattcraddock.com>
 Description: A collection of functions for basic EEG processing. Includes import
@@ -33,7 +33,7 @@ Imports:
   abind
 Depends:
   R (>= 2.10)
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.0
 Suggests: testthat,
     vdiffr,
     covr,

@@ -13,9 +13,9 @@ plot_butterfly(data, ...)
   facet = NULL, baseline = NULL, colourmap = NULL, legend = TRUE,
   continuous = FALSE, browse_mode = FALSE, ...)
 
-\method{plot_butterfly}{eeg_evoked}(data, time_lim = NULL, group = NULL,
-  facet = NULL, baseline = NULL, colourmap = NULL, legend = TRUE,
-  continuous = FALSE, browse_mode = FALSE, ...)
+\method{plot_butterfly}{eeg_evoked}(data, time_lim = NULL,
+  group = NULL, facet = NULL, baseline = NULL, colourmap = NULL,
+  legend = TRUE, continuous = FALSE, browse_mode = FALSE, ...)
 
 \method{plot_butterfly}{eeg_stats}(data, time_lim = NULL, group = NULL,
   facet = NULL, baseline = NULL, colourmap = NULL, legend = TRUE,

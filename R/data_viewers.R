@@ -19,6 +19,7 @@ browse_data <- function(data, ...) {
 }
 
 #' @export
+#' @describeIn browse_data View \code{eeg_ICA} component properties
 browse_data.eeg_ICA <- function(data, ...) {
 
   ui <- miniPage(
@@ -45,15 +46,17 @@ browse_data.eeg_ICA <- function(data, ...) {
 
     output$topo_ica <- renderPlot({
       comp_no <- which(names(data$signals) == input$icomp)
-      topoplot(data, comp = comp_no)
+      topoplot(data, component = comp_no)
     })
 
     output$comp_img <- renderPlot({
-      erp_image(data, electrode = input$icomp)
+      erp_image(data,
+                component = input$icomp)
     })
 
     output$comp_tc <- renderPlot({
-      plot_timecourse(data, electrode = input$icomp)
+      plot_timecourse(data,
+                      component = input$icomp)
     })
 
     observeEvent(input$done, {
@@ -90,7 +93,7 @@ browse_data.eeg_data <- function(data,
 
   continuous <- data$continuous
   srate <- data$srate
-  #data <- as.data.frame(data, long = TRUE)
+
   if (downsample) {
     data <- eeg_downsample(data, q = 4)
     } else {

@@ -4,17 +4,23 @@
 \alias{select_elecs}
 \alias{select_elecs.default}
 \alias{select_elecs.eeg_data}
+\alias{select_elecs.eeg_evoked}
 \alias{select_elecs.eeg_ICA}
 \title{Select electrodes from a given dataset}
 \usage{
 select_elecs(data, ...)
 
-\method{select_elecs}{default}(data, electrode = NULL, keep = TRUE, ...)
+\method{select_elecs}{default}(data, electrode = NULL, keep = TRUE,
+  ...)
 
 \method{select_elecs}{eeg_data}(data, electrode, keep = TRUE,
   df_out = FALSE, ...)
 
-\method{select_elecs}{eeg_ICA}(data, component, keep = TRUE, df_out, ...)
+\method{select_elecs}{eeg_evoked}(data, electrode = NULL, keep = TRUE,
+  df_out = FALSE, ...)
+
+\method{select_elecs}{eeg_ICA}(data, component, keep = TRUE,
+  df_out = FALSE, ...)
 }
 \arguments{
 \item{data}{An EEG dataset.}
@@ -46,6 +52,8 @@ This is a generic function for selection of electrodes from an EEG dataset.
 
 \item \code{eeg_data}: Select electrodes from a \code{eeg_data} object.
 
+\item \code{eeg_evoked}: Select electrode from an eeg_evoked object
+
 \item \code{eeg_ICA}: Select components from \code{eeg_ICA} objects.
 }}
 
@@ -63,3 +71,4 @@ Other Data selection functions: \code{\link{select_times}}
 \author{
 Matt Craddock, \email{matt@mattcraddock.com}
 }
+\concept{Data selection functions}

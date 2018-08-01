@@ -6,12 +6,30 @@
 #'
 #'@author Matt Craddock, \email{matt@@mattcraddock.com}
 #'
-#'@param data EEG dataset. Should have multiple timepoints.
+#' @param data EEG dataset. Should have multiple timepoints.
+#' @param ... Other arguments passed to methods.
+#' @import dplyr
+#' @import ggplot2
+#' @importFrom rlang parse_quo
+#' @return Returns a ggplot2 plot object
+#' @export
+plot_timecourse <- function(data,
+                            ...) {
+  UseMethod("plot_timecourse", data)
+}
+
+#' @export
+plot_timecourse.default <- function(data,
+                                    ...) {
+  stop("plot_tc() doesn't handle objects of class ",
+       class(data))
+}
+
 #'@param electrode Electrode(s) to plot.
 #'@param add_CI Add confidence intervals to the graph. Defaults to 95 percent
 #'  between-subject CIs.
 #'@param time_lim Character vector. Numbers in whatever time unit is used
-#'  specifying beginning and end of time-range to plot. e.g. c(-100,300)
+#'  specifying beginning and end of time-range to plot. e.g. c(-.1, .3)
 #'@param baseline Character vector. Times to use as a baseline. Takes the mean
 #'  over the specified period and subtracts. e.g. c(-.1,0)
 #'@param colour Variable to colour lines by. If no variable is passed, only one
@@ -19,171 +37,9 @@
 #'@param color Alias for colour.
 #'@param group (not yet implemented)
 #'@param facet Create multiple plots for a specified grouping variable.
-#'
-#'@import dplyr
-#'@import ggplot2
-#'@importFrom rlang parse_quo
-#'
-#'@return Returns a ggplot2 plot object
-#'
+#'@describeIn plot_timecourse Plot a data.frame timecourse
 #'@export
-
-plot_timecourse <- function(data, time_lim = NULL,
-                            group = NULL, facet = NULL,
-                            add_CI = FALSE, baseline = NULL,
-                            colour = NULL, electrode = NULL,
-                            color = NULL) {
-
-  if (is.eeg_data(data)) {
-
-    if (data$continuous) {
-      stop("Not currently supported for continuous eeg_data objects.")
-    }
-
-    data <- as.data.frame(data,
-                          long = TRUE)
-  }
-
-  ## Select specified electrodes -----
-  if (!is.null(electrode)) {
-    data <- select_elecs(data,
-                         electrode = electrode)
-  }
-
-  ## check for US spelling of colour...
-  if (is.null(colour)) {
-    if (!is.null(color)) {
-      colour <- as.name(color)
-    }
-  } else {
-    colour <- as.name(colour)
-  }
-
-  ## Filter out unwanted timepoints, and find nearest time values in the data
-  ## -----
-
-  if (!is.null(time_lim)) {
-    data <- select_times(data,
-                         time_lim)
-  }
-
-  ## Do baseline correction
-  if (!is.null(baseline)) {
-    data <- rm_baseline(data,
-                        time_lim = baseline)
-  }
-
-  ## Average over all epochs in data (respecting "conditions"). --
-  if (is.null(colour)) {
-    data <- dplyr::summarise(dplyr::group_by(data,
-                                             time,
-                                             electrode),
-                      amplitude = mean(amplitude))
-  } else {
-    if ("electrode" %in% c(colour, color)) {
-      data <- dplyr::summarise(dplyr::group_by(data,
-                                               time,
-                                               electrode),
-                        amplitude = mean(amplitude))
-      } else {
-        data <- dplyr::summarise(dplyr::group_by(data,
-                                                 time,
-                                                 electrode,
-                                                 #!!tmp_col),
-                                                 !!colour),
-                        amplitude = mean(amplitude))
-      }
-  }
-
-  if (!is.null(group)) {
-    if (group %in% colnames(data)) {
-
-    }
-  }
-
-  ## Set up basic plot -----------
-  tc_plot <- ggplot2::ggplot(data,
-                             aes(x = time,
-                                 y = amplitude))
-
-  if (!(is.null(colour) & is.null(color))) {
-
-    tc_plot <- tc_plot + scale_color_brewer(palette = "Set1")
-    tc_plot <- tc_plot +
-      stat_summary(fun.y = mean,
-                   geom = "line",
-                   aes_(colour = as.name(colour)),
-                   size = 1.2)
-  } else {
-    tc_plot <- tc_plot +
-      stat_summary(fun.y = mean,
-                   geom = "line",
-                   size = 1.2)
-  }
-
-  if (!is.null(facet)) {
-    if (facet %in% colnames(data)){
-      data <- dplyr::mutate_(data, f1 = facet)
-      tc_plot <- tc_plot %+% data + facet_wrap(~f1)
-    } else {
-      warning("Unrecognised column name.")
-    }
-  }
-
-  ## Draw confidence intervals on plot.
-
-  if (add_CI) {
-    if (is.null(colour)) {
-      tc_plot <- tc_plot +
-        stat_summary(fun.data = mean_cl_normal,
-                     geom = "ribbon",
-                     linetype = "dashed",
-                     fill = NA,
-                     size = 1,
-                     alpha = 0.5)
-      } else {
-        tc_plot <- tc_plot +
-          stat_summary(fun.data = mean_cl_normal,
-                       geom = "ribbon",
-                       linetype = "dashed",
-                       aes_(colour = as.name(colour)),
-                       fill = NA,
-                       size = 1,
-                       alpha = 0.5)
-      }
-  }
-
-
-  tc_plot <- tc_plot +
-    labs(x = "Time (s)", y = expression(paste("Amplitude (", mu, "V)")),
-         colour = "", fill = "") +
-    geom_vline(xintercept = 0, linetype = "solid", size = 0.5) +
-    geom_hline(yintercept = 0, linetype = "solid", size = 0.5) +
-    scale_x_continuous(breaks = scales::pretty_breaks(n = 4),
-                       expand = c(0, 0)) +
-    scale_y_continuous(breaks = scales::pretty_breaks(n = 4),
-                       expand = c(0, 0)) +
-    theme_minimal(base_size = 12) +
-    theme(panel.grid = element_blank(),
-          axis.ticks = element_line(size = .5)) +
-    guides(colour = guide_legend(override.aes = list(alpha = 1)))
-
-  return(tc_plot)
-}
-
-#' Plot timecourse
-#' @noRd
-
-plot_tc <- function(data, ...) {
-  UseMethod("plot_tc", data)
-}
-
-plot_tc.default <- function(data, ...) {
-  stop("plot_tc() doesn't handle objects of class ",
-       class(data))
-}
-
-plot_tc.data.frame <- function(data,
+plot_timecourse.data.frame <- function(data,
                                electrode = NULL,
                                time_lim = NULL,
                                group = NULL,
@@ -194,9 +50,35 @@ plot_tc.data.frame <- function(data,
                                color = NULL,
                                ...) {
 
+  if (!is.null(electrode)) {
+    data <- select_elecs(data, electrode)
+  }
+
+  if (!is.null(baseline)) {
+    data <- rm_baseline(data, baseline)
+  }
+
+  if (!is.null(time_lim)) {
+    data <- select_times(data, time_lim)
+  }
+
+  if (is.null(colour)) {
+    if (!is.null(color)) {
+      colour <- as.name(color)
+    }
+  } else {
+    colour <- as.name(colour)
+  }
+
+  tc_plot <- create_tc(data,
+                       add_CI = FALSE,
+                       colour = colour)
+
 }
 
-plot_tc.eeg_evoked <- function(data,
+#' @describeIn plot_timecourse plot \code{eeg_evoked} timecourses
+#' @export
+plot_timecourse.eeg_evoked <- function(data,
                                electrode = NULL,
                                time_lim = NULL,
                                group = NULL,
@@ -233,7 +115,10 @@ plot_tc.eeg_evoked <- function(data,
   tc_plot
 }
 
-plot_tc.eeg_ICA <- function(data,
+#' @describeIn plot_timecourse Plot individual components from \code{eeg_ICA} components
+#' @param component name or number of ICA component to plot
+#' @export
+plot_timecourse.eeg_ICA <- function(data,
                             component = NULL,
                             time_lim = NULL,
                             group = NULL,
@@ -283,11 +168,11 @@ plot_tc.eeg_ICA <- function(data,
                        colour = colour)
 
   tc_plot
-
-
   }
 
-plot_tc.eeg_epochs <- function(data,
+#' @describeIn plot_timecourse Plot timecourses from \code{eeg_epochs} objects.
+#' @export
+plot_timecourse.eeg_epochs <- function(data,
                                electrode = NULL,
                                time_lim = NULL,
                                group = NULL,
@@ -297,14 +182,14 @@ plot_tc.eeg_epochs <- function(data,
                                colour = NULL,
                                color = NULL, ...) {
 
-  ## check for US spelling of colour...
+
 
   data <- parse_for_tc(data,
                        time_lim = time_lim,
                        electrode = electrode,
                        baseline = baseline,
                        add_CI = add_CI)
-
+  ## check for US spelling of colour...
   if (is.null(colour)) {
     if (!is.null(color)) {
       colour <- as.name(color)
@@ -324,10 +209,20 @@ plot_tc.eeg_epochs <- function(data,
 #' @describeIn plot_tc plot_tc for eeg_stats objects.
 #' @noRd
 #'
-plot_tc.eeg_stats <- function(data, time_lim, ...) {
-
+plot_timecourse.eeg_stats <- function(data, time_lim, ...) {
+  warning("Not yet implemented.")
 }
 
+#' Parse data for timecourses
+#'
+#' Internal command for parsing various data structures into a suitable format
+#' for \code{tc_plot}
+#'
+#' @param data data to be parsed
+#' @param time_lim time limits to be returned.
+#' @param electrode electrodes to be selected
+#' @param baseline baseline times to be average and subtracted
+#' @param add_CI Logical for whether CIS are required
 #' @keywords internal
 parse_for_tc <- function(data,
                          time_lim,
@@ -337,12 +232,6 @@ parse_for_tc <- function(data,
 
   if (is.eeg_ICA(data) & is.null(electrode)) {
     stop("Component number must be supplied for ICA.")
-  }
-
-  # Select specifed times
-  if (!is.null(time_lim)) {
-    data <- select_times(data,
-                         time_lim = time_lim)
   }
 
   ## Select specified electrodes -----
@@ -355,6 +244,12 @@ parse_for_tc <- function(data,
   if (!is.null(baseline)) {
     data <- rm_baseline(data,
                         time_lim = baseline)
+  }
+
+  # Select specifed times
+  if (!is.null(time_lim)) {
+    data <- select_times(data,
+                         time_lim = time_lim)
   }
 
   if (!is.eeg_evoked(data) & !add_CI) {
@@ -385,8 +280,6 @@ create_tc <- function(data,
                                   y = amplitude,
                                   colour = !!colour))
   }
-
-
 
   if (add_CI) {
     if (is.null(colour)) {

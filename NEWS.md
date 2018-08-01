@@ -1,4 +1,7 @@
-# eegUtils 0.2.0.9000
+# eegUtils 0.2.1.9000
+
+
+# eegUtils 0.2.1
 
 ### Function changes
 - `topoplot()` added highlights parameter to allow specific electrodes to be highlighted.

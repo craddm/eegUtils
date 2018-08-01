@@ -7,19 +7,21 @@
 \alias{erp_image.eeg_ICA}
 \title{Plot ERP images}
 \usage{
-erp_image(data, electrode = "Cz", smoothing = 10, clim = NULL)
+erp_image(data, ...)
 
 \method{erp_image}{default}(data, electrode = "Cz", smoothing = 10,
-  clim = NULL)
+  clim = NULL, ...)
 
 \method{erp_image}{eeg_epochs}(data, electrode = "Cz", smoothing = 10,
-  clim = NULL)
+  clim = NULL, ...)
 
-\method{erp_image}{eeg_ICA}(data, electrode = "V1", smoothing = 10,
-  clim = NULL)
+\method{erp_image}{eeg_ICA}(data, component = "Comp1", smoothing = 10,
+  clim = NULL, ...)
 }
 \arguments{
 \item{data}{Data frame to be plotted. Requires an amplitude column.}
+
+\item{...}{Other arguments passed to the method.}
 
 \item{electrode}{electrode at which to generate an ERP image.}
 
@@ -27,6 +29,8 @@ erp_image(data, electrode = "Cz", smoothing = 10, clim = NULL)
 
 \item{clim}{Character vector of min and max values of plotting colour range.
 e.g. c(-5,5). Defaults to min and max.}
+
+\item{component}{\code{eeg_ICA} component to plot}
 }
 \description{
 Plot an ERP image from a single electrode. Smooths over a series of trials in
@@ -38,7 +42,7 @@ order to make across-trial patterns more apparent.
 
 \item \code{eeg_epochs}: Create an \code{erp_image} from \code{eeg_epochs}
 
-\item \code{eeg_ICA}: \code{eeg_ICA}
+\item \code{eeg_ICA}: Plot component image from \code{eeg_ICA}
 }}
 
 \author{

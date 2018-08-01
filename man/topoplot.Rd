@@ -28,11 +28,11 @@ topoplot(data, ...)
   chan_marker = "point", quantity = "amplitude", montage = NULL,
   highlights = NULL, ...)
 
-\method{topoplot}{eeg_ICA}(data, component, time_lim = NULL, limits = NULL,
-  chanLocs = NULL, method = "Biharmonic", r = NULL, grid_res = 67,
-  palette = "RdBu", interp_limit = "skirt", contour = TRUE,
-  chan_marker = "point", quantity = "amplitude", montage = NULL,
-  colourmap, highlights = NULL, ...)
+\method{topoplot}{eeg_ICA}(data, component, time_lim = NULL,
+  limits = NULL, chanLocs = NULL, method = "Biharmonic", r = NULL,
+  grid_res = 67, palette = "RdBu", interp_limit = "skirt",
+  contour = TRUE, chan_marker = "point", quantity = "amplitude",
+  montage = NULL, colourmap, highlights = NULL, ...)
 }
 \arguments{
 \item{data}{An EEG dataset. If the input is a data.frame, then it must have

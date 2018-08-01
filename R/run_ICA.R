@@ -61,10 +61,11 @@ run_ICA.eeg_epochs <- function(data,
     ICA_out$S <- as.data.frame(ICA_out$S)
     names(ICA_out$S) <- paste0("Comp", 1:ncol(ICA_out$S))
     mixing_matrix <- as.data.frame(ICA_out$M)
-    names(mixing_matrix) <- 1:ncol(mixing_matrix)
+    names(mixing_matrix) <- paste0("Comp", 1:ncol(ICA_out$S))
     mixing_matrix$electrode <- names(data$signals)
     unmixing_matrix <- as.data.frame(ICA_out$W)
-    names(unmixing_matrix) <- names(data$signals)
+    names(unmixing_matrix) <- paste0("Comp", 1:ncol(ICA_out$S))
+    unmixing_matrix$electrode <- names(data$signals)
 
     ica_obj <- list("mixing_matrix" = mixing_matrix,
                     "unmixing_matrix" = unmixing_matrix,
@@ -74,8 +75,7 @@ run_ICA.eeg_epochs <- function(data,
                     "chan_info" = data$chan_info,
                     "srate" = data$srate,
                     "continuous" = FALSE)
-    class(ica_obj) <- c("eeg_ICA", "eeg_epochs", "eeg_data")
-
+    class(ica_obj) <- c("eeg_ICA", "eeg_epochs")
   }
   ica_obj
 }
@@ -126,7 +126,9 @@ sobi_ICA <- function(data) {
   N <- n_times
   M <- matrix(NA, nrow = n_channels, ncol = pm)
 
-  tmp_fun <- function(amps, k, N) {
+  tmp_fun <- function(amps,
+                      k,
+                      N) {
     amps[, k:N] %*% t(amps[, 1:(N - k + 1)]) / (N - k + 1)
   }
 
@@ -136,29 +138,34 @@ sobi_ICA <- function(data) {
                   function(x) tmp_fun(amp_matrix[, , x],
                                       k,
                                       N))
-    Rxp <- Reduce("+", Rxp)
+    Rxp <- Reduce("+",
+                  Rxp)
     Rxp <- Rxp / n_epochs
     M[, u:(u + n_channels - 1)] <- norm(Rxp, "F") * (Rxp) #  Frobenius norm
   }
 
   epsil <- 1 / sqrt(N) / 100
-  V <- joint_diag(M, epsil, n_channels, pm) # V = sphered unmixing matrix
+  V <- joint_diag(M,
+                  epsil,
+                  n_channels,
+                  pm) # V = sphered unmixing matrix
 
   ## create mixing matrix for output
   mixing_matrix <- MASS::ginv(Q, tol = 0) %*% V
   unmixing_matrix <- t(V)
 
-  dim(amp_matrix) <- c(n_channels, n_times * n_epochs)
+  dim(amp_matrix) <- c(n_channels,
+                       n_times * n_epochs)
 
-  S <- unmixing_matrix %*% amp_matrix
+  S <- unmixing_matrix %*% t(as.matrix(data$signals))
   S <- as.data.frame(t(S))
   names(S) <- paste0("Comp", 1:ncol(S))
 
   mixing_matrix <- as.data.frame(mixing_matrix)
-  names(mixing_matrix) <- 1:n_channels
+  names(mixing_matrix) <- paste0("Comp", 1:ncol(S))
   mixing_matrix$electrode <- names(data$signals)
   unmixing_matrix <- as.data.frame(unmixing_matrix)
-  names(unmixing_matrix) <- 1:n_channels
+  names(unmixing_matrix) <- paste0("Comp", 1:ncol(S))
   unmixing_matrix$electrode <- names(data$signals)
 
   ica_obj <- list("mixing_matrix" = mixing_matrix,
@@ -230,7 +237,7 @@ joint_diag <- function(M,
       }
     }
     step_n <- step_n + 1
-    cat("Iteration = ", step_n, "\n")
+    message("Iteration = ", step_n, "\n")
   }
   V
 }

@@ -10,8 +10,8 @@ reref_eeg(data, ...)
 
 \method{reref_eeg}{default}(data, ...)
 
-\method{reref_eeg}{eeg_data}(data, ref_chans = "average", exclude = NULL,
-  robust = FALSE, ...)
+\method{reref_eeg}{eeg_data}(data, ref_chans = "average",
+  exclude = NULL, robust = FALSE, ...)
 }
 \arguments{
 \item{data}{Data to re-reference. Primarily meant for use with data of class

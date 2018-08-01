@@ -4,8 +4,9 @@
 \alias{as.data.frame.eeg_epochs}
 \title{Convert \code{eeg_epochs} object to data.frame}
 \usage{
-\method{as.data.frame}{eeg_epochs}(x, row.names = NULL, optional = FALSE,
-  long = FALSE, events = FALSE, cond_labels = NULL, ...)
+\method{as.data.frame}{eeg_epochs}(x, row.names = NULL,
+  optional = FALSE, long = FALSE, events = FALSE,
+  cond_labels = NULL, ...)
 }
 \arguments{
 \item{x}{Object of class \code{eeg_epochs}}

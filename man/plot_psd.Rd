@@ -4,6 +4,7 @@
 \alias{plot_psd}
 \alias{plot_psd.eeg_epochs}
 \alias{plot_psd.eeg_data}
+\alias{plot_psd.eeg_ICA}
 \title{Plot power spectral density}
 \usage{
 plot_psd(data, freq_range = NULL, ...)
@@ -11,6 +12,9 @@ plot_psd(data, freq_range = NULL, ...)
 \method{plot_psd}{eeg_epochs}(data, freq_range = NULL, ...)
 
 \method{plot_psd}{eeg_data}(data, freq_range = NULL, ...)
+
+\method{plot_psd}{eeg_ICA}(data, freq_range = NULL, components = NULL,
+  ...)
 }
 \arguments{
 \item{data}{Object of class \code{eeg_epochs}}
@@ -19,6 +23,8 @@ plot_psd(data, freq_range = NULL, ...)
 40))}
 
 \item{...}{Additional parameters}
+
+\item{components}{Which components to compute the PSD for}
 }
 \description{
 Calculate and plot the PSD for \code{eeg_*} objects. Output units are dB. 512
@@ -29,6 +35,8 @@ points are used for FFTs.
 \item \code{eeg_epochs}: Plot PSDs for \code{eeg_epochs}.
 
 \item \code{eeg_data}: Plot PSDs for \code{eeg_epochs}.
+
+\item \code{eeg_ICA}: Plot PSD for \code{eeg_ICA} objects
 }}
 
 \author{

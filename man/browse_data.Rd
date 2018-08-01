@@ -2,11 +2,14 @@
 % Please edit documentation in R/data_viewers.R
 \name{browse_data}
 \alias{browse_data}
+\alias{browse_data.eeg_ICA}
 \alias{browse_data.eeg_data}
 \alias{browse_data.eeg_epochs}
 \title{Browse EEG data.}
 \usage{
 browse_data(data, ...)
+
+\method{browse_data}{eeg_ICA}(data, ...)
 
 \method{browse_data}{eeg_data}(data, sig_length = 5, n_elecs = NULL,
   downsample = FALSE, ...)
@@ -36,6 +39,8 @@ determined by the range of the viewable data.
 }
 \section{Methods (by class)}{
 \itemize{
+\item \code{eeg_ICA}: View \code{eeg_ICA} component properties
+
 \item \code{eeg_data}: Browse continuous EEG data.
 
 \item \code{eeg_epochs}: Browse epoched EEG data.

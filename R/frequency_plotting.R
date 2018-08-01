@@ -50,9 +50,54 @@ plot_psd.eeg_epochs <- function(data,
 
 #' @describeIn plot_psd Plot PSDs for \code{eeg_epochs}.
 #' @export
-plot_psd.eeg_data <- function(data, freq_range = NULL, ...) {
+plot_psd.eeg_data <- function(data,
+                              freq_range = NULL,
+                              ...) {
 
-  psd_out <- compute_psd(data, n_fft = 512)
+  psd_out <- compute_psd(data,
+                         n_fft = 512)
+
+  if (!is.null(freq_range)) {
+    if (length(freq_range) < 2 | length(freq_range) > 2) {
+      message("freq_range must be a vector of length 2. Displaying all frequencies.")
+    } else {
+      rows <- psd_out$frequency >= freq_range[[1]] &
+        psd_out$frequency <= freq_range[[2]]
+      psd_out <- psd_out[rows, ]
+    }
+  }
+
+  psd_out <- tidyr::gather(psd_out,
+                           electrode,
+                           power,
+                           -frequency)
+  psd_out$power <- 10 * log10(psd_out$power)
+  ggplot(psd_out,
+         aes(x = frequency,
+             y = power,
+             colour = electrode)) +
+    geom_line() +
+    theme_bw() +
+    ylab("Decibels (10 * log10(uV^2 / Hz)") +
+    xlab("Frequency (Hz)")
+}
+
+#'@param components Which components to compute the PSD for
+#'@describeIn plot_psd Plot PSD for \code{eeg_ICA} objects
+#'@export
+plot_psd.eeg_ICA <- function(data,
+                             freq_range = NULL,
+                             components = NULL,
+                             ...) {
+
+  if (!is.null(components)) {
+    data <- select_elecs(data,
+                         components)
+  }
+
+  psd_out <- compute_psd(data,
+                         n_fft = 512,
+                         keep_trials = FALSE)
 
   if (!is.null(freq_range)) {
     if (length(freq_range) < 2 | length(freq_range) > 2) {
@@ -78,10 +123,9 @@ plot_psd.eeg_data <- function(data, freq_range = NULL, ...) {
     ylab("Decibels (10 * log10(uV^2 / Hz)") +
     xlab("Frequency (Hz)")
 
-
 }
-
 #' Plot TFR objects
+#'
 #' @param data object of class eeg_tfr
 #' @param electrode Electrode to plot
 #' @param interpolate interpolation of raster

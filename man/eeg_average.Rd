@@ -10,8 +10,8 @@ eeg_average(data, ...)
 
 \method{eeg_average}{default}(data, ...)
 
-\method{eeg_average}{eeg_epochs}(data, cond_label = NULL, calc_var = NULL,
-  ...)
+\method{eeg_average}{eeg_epochs}(data, cond_label = NULL,
+  calc_var = NULL, ...)
 }
 \arguments{
 \item{data}{An \code{eeg_epochs} object.}

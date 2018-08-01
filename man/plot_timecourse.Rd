@@ -2,17 +2,39 @@
 % Please edit documentation in R/plot_timecourse.R
 \name{plot_timecourse}
 \alias{plot_timecourse}
+\alias{plot_timecourse.data.frame}
+\alias{plot_timecourse.eeg_evoked}
+\alias{plot_timecourse.eeg_ICA}
+\alias{plot_timecourse.eeg_epochs}
 \title{Plot 1-D timecourse data.}
 \usage{
-plot_timecourse(data, time_lim = NULL, group = NULL, facet = NULL,
-  add_CI = FALSE, baseline = NULL, colour = NULL, electrode = NULL,
-  color = NULL)
+plot_timecourse(data, ...)
+
+\method{plot_timecourse}{data.frame}(data, electrode = NULL,
+  time_lim = NULL, group = NULL, facet = NULL, add_CI = FALSE,
+  baseline = NULL, colour = NULL, color = NULL, ...)
+
+\method{plot_timecourse}{eeg_evoked}(data, electrode = NULL,
+  time_lim = NULL, group = NULL, facet = NULL, add_CI = FALSE,
+  baseline = NULL, colour = NULL, color = NULL, ...)
+
+\method{plot_timecourse}{eeg_ICA}(data, component = NULL,
+  time_lim = NULL, group = NULL, facet = NULL, add_CI = FALSE,
+  baseline = NULL, colour = NULL, color = NULL, ...)
+
+\method{plot_timecourse}{eeg_epochs}(data, electrode = NULL,
+  time_lim = NULL, group = NULL, facet = NULL, add_CI = FALSE,
+  baseline = NULL, colour = NULL, color = NULL, ...)
 }
 \arguments{
 \item{data}{EEG dataset. Should have multiple timepoints.}
 
+\item{...}{Other arguments passed to methods.}
+
+\item{electrode}{Electrode(s) to plot.}
+
 \item{time_lim}{Character vector. Numbers in whatever time unit is used
-specifying beginning and end of time-range to plot. e.g. c(-100,300)}
+specifying beginning and end of time-range to plot. e.g. c(-.1, .3)}
 
 \item{group}{(not yet implemented)}
 
@@ -27,9 +49,9 @@ over the specified period and subtracts. e.g. c(-.1,0)}
 \item{colour}{Variable to colour lines by. If no variable is passed, only one
 line is drawn.}
 
-\item{electrode}{Electrode(s) to plot.}
-
 \item{color}{Alias for colour.}
+
+\item{component}{name or number of ICA component to plot}
 }
 \value{
 Returns a ggplot2 plot object
@@ -39,6 +61,17 @@ Typically event-related potentials/fields, but could also be timecourses from
 frequency analyses for single frequencies. Averages over all submitted
 electrodes. Output is a ggplot2 object.
 }
+\section{Methods (by class)}{
+\itemize{
+\item \code{data.frame}: Plot a data.frame timecourse
+
+\item \code{eeg_evoked}: plot \code{eeg_evoked} timecourses
+
+\item \code{eeg_ICA}: Plot individual components from \code{eeg_ICA} components
+
+\item \code{eeg_epochs}: Plot timecourses from \code{eeg_epochs} objects.
+}}
+
 \author{
 Matt Craddock, \email{matt@mattcraddock.com}
 }

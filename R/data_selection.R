@@ -83,7 +83,6 @@ select_times.eeg_data <- function(data,
 
 #' @export
 #' @describeIn select_times Select times in \code{eeg_epochs} objects
-
 select_times.eeg_epochs <- function(data,
                                     time_lim,
                                     df_out = FALSE,
@@ -119,14 +118,6 @@ select_times.eeg_evoked <- function(data,
 
   sel_rows <- find_times(data$timings,
                          time_lim)
-  # if (length(time_lim) == 1) {
-  #   stop("Must enter two timepoints when selecting a time range;
-  #       using whole range.")
-  # } else if (length(time_lim) == 2) {
-  #   time_lim[1] <- data$timings$time[which.min(abs(data$timings$time - time_lim[1]))]
-  #   time_lim[2] <- data$timings$time[which.min(abs(data$timings$time - time_lim[2]))]
-  #   sel_rows <- data$timings$time >= time_lim[1] & data$timings$time <= time_lim[2]
-  # }
 
   data$signals <- data$signals[sel_rows, ]
   data$timings <- data$timings[sel_rows, ]
@@ -191,7 +182,6 @@ find_times <- function(timings,
 #' @family Data selection functions
 #' @seealso \code{\link{select_times}} and \code{\link{select_epochs}}
 #' @export
-#'
 
 select_elecs <- function(data, ...) {
   UseMethod("select_elecs", data)
@@ -210,7 +200,7 @@ select_elecs.default <- function(data,
                                  keep = TRUE,
                                  ...) {
 
-  if ("electrode" %in% colnames(data)) {
+  if ("electrode" %in% names(data)) {
     if (all(electrode %in% data$electrode)) {
       if (keep) {
         data <- data[data$electrode %in% electrode, ]
@@ -223,17 +213,16 @@ select_elecs.default <- function(data,
                     ". Returning all data."))
     }
   } else {
-    if (all(electrode %in% colnames(data))) {
+    if (all(electrode %in% names(data))) {
       if (keep) {
-        data <- data[, colnames(data) %in% electrode, drop = FALSE]
+        data <- data[, names(data) %in% electrode, drop = FALSE]
       } else {
-        data <- data[, !colnames(data) %in% electrode, drop = FALSE]
+        data <- data[, !names(data) %in% electrode, drop = FALSE]
       }
     }
   }
   data
 }
-
 
 #' @param df_out Defaults to FALSE. Set to TRUE to return a dataframe rather
 #'   than an \code{eeg_data} object.
@@ -246,7 +235,7 @@ select_elecs.eeg_data <- function(data,
                                   keep = TRUE,
                                   df_out = FALSE, ...) {
 
-  if (all(electrode %in% colnames(data$signals))) {
+  if (all(electrode %in% names(data$signals))) {
 
     if (keep) {
       data$signals <- data$signals[colnames(data$signals) %in% electrode]
@@ -270,13 +259,46 @@ select_elecs.eeg_data <- function(data,
   data
 }
 
+#' @describeIn select_elecs Select electrode from an eeg_evoked object
+#' @export
+select_elecs.eeg_evoked <- function(data,
+                                    electrode = NULL,
+                                    keep = TRUE,
+                                    df_out = FALSE,
+                                    ...) {
+
+  sig_names <- electrode %in% names(data$signals)
+
+  if (!all(sig_names)) {
+    warning("Electrode(s) not found:",
+            electrode[!electrode %in% names(data$signals)],
+            ". Returning all data.")
+  }
+
+  sig_names <- names(data$signals) %in% electrode
+
+  if (!keep) {
+    sig_names <- !sig_names
+  }
+  data$signals <- data$signals[, sig_names, drop = FALSE]
+
+  if (!is.null(data$chan_info)) {
+    data$chan_info <- data$chan_info[data$chan_info$electrode %in% names(data$signals), ]
+  }
+
+  if (df_out) {
+    return(as.data.frame(data))
+  }
+  data
+}
+
 #' @param component Component to select
 #' @describeIn select_elecs Select components from \code{eeg_ICA} objects.
 #' @export
 select_elecs.eeg_ICA <- function(data,
                                  component,
                                  keep = TRUE,
-                                 df_out,
+                                 df_out = FALSE,
                                  ...) {
 
   if (!all(component %in% names(data$signals))) {
@@ -287,7 +309,16 @@ select_elecs.eeg_ICA <- function(data,
   if (!keep) {
     comps <- !comps
   }
-  data$signals <- data$signals[, comps]
+  data$mixing_matrix <- data$mixing_matrix[,
+                                           c(comps, TRUE),
+                                           drop = FALSE]
+  data$unmixing_matrix <- data$unmixing_matrix[,
+                                             c(comps,
+                                               TRUE),
+                                             drop = FALSE]
+  data$signals <- data$signals[,
+                               comps,
+                               drop = FALSE]
   data
 }
 
