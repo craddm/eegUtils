@@ -469,7 +469,7 @@ proc_events <- function(epoch_events,
 
   if (is.numeric(epoch_events)) {
     sel_rows <- event_type %in% epoch_events
-    if (!any(sel_rows)){
+    if (!any(sel_rows)) {
       stop("Events not found.")
     }
     if (keep == FALSE) {

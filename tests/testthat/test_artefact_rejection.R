@@ -1,10 +1,11 @@
 context("Test artefact rejection methods")
 
-test_data <- import_raw("Newtest17-256.bdf")
-test_data <- electrode_locations(test_data, montage = "biosemi64alpha")
-test_epo <- epoch_data(test_data, 255)
+demo_epochs <- electrode_locations(demo_epochs,
+                                   montage = "biosemi64alpha",
+                                   overwrite = TRUE)
 
 test_that("FASTER runs correctly.", {
-  #test_FASTER <- eeg_FASTER(test_epo)
+  test_FASTER <- eeg_FASTER(demo_epochs)
+  expect_known_output(test_FASTER, "faster_t.Rdata")
   #expect_known_hash(test_FASTER, "04de56b5ba")
 })
