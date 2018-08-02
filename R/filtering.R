@@ -105,7 +105,7 @@ iir_filt.eeg_epochs <- function(data,
 #' @importFrom dplyr group_by
 #' @importFrom purrr map_df
 #' @importFrom signal filtfilt butter
-#' @noRd
+#' @keywords internal
 
 run_iir <- function(data,
                     low_freq = NULL,
@@ -118,15 +118,19 @@ run_iir <- function(data,
     stop("Filter order should be between 2 and 20.")
   }
 
+  if (length(low_freq) > 1 | length(high_freq) > 1) {
+    stop("Only one number should be passed to low_freq or high_freq")
+  }
+
+  if (is.null(low_freq) & is.null(high_freq)) {
+    stop("At least one frequency must be specified.")
+  }
+
   if (is.null(low_freq)) {
-    if (is.null(high_freq)) {
-      stop("At least one frequency must be specified.")
-    } else {
       filt_type <- "low"
       message(sprintf("Low-pass IIR filter at %.4g Hz", high_freq))
       W <- high_freq / (srate / 2)
-    }
-  } else if (is.null(high_freq)) {
+    } else if (is.null(high_freq)) {
     filt_type <- "high"
     message(sprintf("High-pass IIR filter at %.4g Hz", low_freq))
     W <- low_freq / (srate / 2)
@@ -140,8 +144,8 @@ run_iir <- function(data,
   } else if (low_freq > high_freq) {
     filt_type <- "stop"
     message(sprintf("Band-stop IIR filter from %.4g-%.4g Hz",
-                    low_freq, high_freq))
-    W <- c(low_freq / (srate / 2), high_freq / (srate / 2))
+                    high_freq, low_freq))
+    W <- c(high_freq / (srate / 2), low_freq / (srate / 2))
 
     if (length(dim(data)) > 1) {
       data <- sweep(data, 2, colMeans(data))
@@ -152,7 +156,8 @@ run_iir <- function(data,
     filt_type <- "pass"
     message(sprintf("Band-pass IIR filter from %.4g-%.4g Hz",
                     low_freq, high_freq))
-    W <- c(low_freq / (srate / 2), high_freq / (srate / 2))
+    W <- c(low_freq / (srate / 2),
+           high_freq / (srate / 2))
 
     if (length(dim(data)) > 1) {
       data <- sweep(data, 2, colMeans(data))
@@ -164,20 +169,27 @@ run_iir <- function(data,
   #filtfilt filters twice, so effectively doubles filter_order - we half it here
   #so that it corresponds to the expectation of the user
   filter_order <- round(filter_order / 2)
-  filt_coef <- signal::butter(filter_order, W, type = filt_type)
+  filt_coef <- signal::butter(filter_order,
+                              W,
+                              type = filt_type)
 
   if ("epoch" %in% names(data)) {
-    data <- dplyr::group_by(data, epoch)
+    data <- dplyr::group_by(data,
+                            epoch)
   }
 
   if ("electrode" %in% names(data)) {
-    data <- dplyr::group_by(data, electrode, add = TRUE)
+    data <- dplyr::group_by(data,
+                            electrode,
+                            add = TRUE)
   }
 
   if (length(dim(data)) > 1) {
-    data <- purrr::map_df(as.list(data), ~signal::filtfilt(filt_coef, .))
+    data <- purrr::map_df(as.list(data),
+                          ~signal::filtfilt(filt_coef, .))
     } else {
-    data <- signal::filtfilt(filt_coef, data)
+    data <- signal::filtfilt(filt_coef,
+                             data)
   }
   data
 }
