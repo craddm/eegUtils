@@ -1,5 +1,8 @@
 # eegUtils 0.2.1.9000
 
+### Internal changes/ bug fixes
+- `plot_timecourse()` overhauled to be S3 method
+- `select_elecs()` now works for `eeg_evoked` objects
 
 # eegUtils 0.2.1
 

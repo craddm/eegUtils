@@ -30,7 +30,8 @@ Imports:
   R.matlab,
   viridis,
   pracma,
-  abind
+  abind,
+  Matrix
 Depends:
   R (>= 2.10)
 RoxygenNote: 6.1.0
@@ -40,7 +41,8 @@ Suggests: testthat,
     knitr,
     rmarkdown,
     ica,
-    plotly
+    plotly,
+    geigen
 URL: https://github.com/craddm/eegUtils
 BugReports: https://github.com/craddm/eegUtils/issues
 VignetteBuilder: knitr

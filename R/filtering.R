@@ -132,7 +132,7 @@ run_iir <- function(data,
       W <- high_freq / (srate / 2)
     } else if (is.null(high_freq)) {
     filt_type <- "high"
-    message(sprintf("High-pass IIR filter at %.4g Hz", low_freq))
+    message("High-pass IIR filter at ", low_freq," Hz")
     W <- low_freq / (srate / 2)
 
     if (length(dim(data)) > 1) {
@@ -192,4 +192,31 @@ run_iir <- function(data,
                              data)
   }
   data
+}
+
+
+#' Gaussian filter
+#'
+#' Gaussian filtering in the frequency domain.
+#'
+#' @param data Data to be filtered
+#' @param srate Sampling rate of the data
+#' @param freq Peak frequency of the filter
+#' @param fwhm Standard deviation of the filter
+#' @noRd
+
+gauss_filter <- function(data,
+                         srate,
+                         freq,
+                         fwhm) {
+  hz <- seq(0, srate,
+            length.out = nrow(data))
+  s <- fwhm * (2 * pi - 1) / (4 * pi)
+  x <- hz - freq
+  fx <- exp(-.5 * (x / s) ^2)
+  fx <- fx / max(fx)
+  filt_sig <- apply(data, 2, function(x) {
+    2 * Re(fft(fft(x) / srate * fx,
+               inverse = TRUE))})
+  as.data.frame(filt_sig)
 }

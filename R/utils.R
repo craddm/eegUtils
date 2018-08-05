@@ -406,3 +406,27 @@ check_ci_str <- function(chan_info) {
     stop("New channel locations required - see ?electrode_locations()")
   }
 }
+
+
+#' Convert to 3d matrix
+#'
+#' @param data data to be converted
+#' @param ... additional parameters
+#' @keywords internal
+conv_to_mat <- function(data,...) {
+  UseMethod("conv_to_mat", data)
+}
+
+conv_to_mat.default <- function(data, ...) {
+  stop("Not implemented for objects of class", class(data))
+}
+
+#' @describeIn conv_to_mat Convert eeg_epochs to 3D matrix
+conv_to_mat.eeg_epochs <- function(data, ...) {
+  n_epochs <- length(unique(data$timings$epoch))
+  n_channels <- ncol(data$signals)
+  n_times <- length(unique(data$timings$time))
+  data <- array(as.matrix(data$signals),
+                dim = c(n_times, n_epochs, n_channels))
+  data
+}

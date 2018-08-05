@@ -256,7 +256,6 @@ compute_tfr <- function(data, ...) {
 }
 
 #' @describeIn compute_tfr Default method for compute_tfr
-
 compute_tfr.default <- function(data) {
   warning("compute_tfr requires data in eeg_epochs format.")
 }
@@ -278,6 +277,7 @@ compute_tfr.eeg_epochs <- function(data,
                                    keep_trials = FALSE,
                                    output = "power",
                                    ...) {
+
 
   tfr_obj <- switch(method,
                    "morlet" = tf_morlet(data,

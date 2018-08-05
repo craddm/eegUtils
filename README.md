@@ -1,4 +1,4 @@
-# eegUtils 0.2.0.9000
+# eegUtils 0.2.1.9000
 
 <a href="http://www.repostatus.org/#wip"><img src="http://www.repostatus.org/badges/latest/wip.svg" alt="Project Status: WIP – Initial development is in progress, but there has not yet been a stable, usable release suitable for the public." /></a> [![Coverage Status](https://img.shields.io/codecov/c/github/craddm/eegUtils/master.svg)](https://codecov.io/github/craddm/eegUtils?branch=master) [![Build Status](https://travis-ci.org/craddm/eegUtils.svg?branch=master)](https://travis-ci.org/craddm/eegUtils) [![AppVeyor build status](https://ci.appveyor.com/api/projects/status/github/craddm/eegUtils?branch=master&svg=true)](https://ci.appveyor.com/project/craddm/eegUtils) [![DOI](https://zenodo.org/badge/85406871.svg)](https://zenodo.org/badge/latestdoi/85406871)
 
@@ -26,4 +26,4 @@ An introduction to its use can be found at the *eegUtils* website [https://cradd
 * `interactive_scalp()` - a Shiny version of erp_scalp() that allows you to zoom in on specific electrodes.
 * `browse_data()` - a Shiny gadget for interactively scrolling through EEG data (continous or epoched)
 
-`as.data.frame()` methods exist for `eeg_data` and `eeg_epochs` objects, so you can convert your data to a data frame for use with whatever 
+`as.data.frame()` methods exist for `eeg_data` and `eeg_epochs` objects, so you can convert your data to a data frame for use with whatever analysis method you like. 
