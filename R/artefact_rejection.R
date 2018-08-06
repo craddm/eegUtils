@@ -27,11 +27,12 @@ eeg_FASTER.eeg_epochs <- function(data, ...) {
   if (is.null(data$reference)) {
     orig_ref <- NULL
     excluded <- NULL
-    } else {
-      orig_ref <- data$reference$ref_chans
-      excluded <- data$reference$excluded
-      }
-  orig_chan <- data$chan_info
+  } else {
+    orig_ref <- data$reference$ref_chans
+    excluded <- data$reference$excluded
+  }
+
+  orig_chan_info <- data$chan_info
   # Re-reference to single electrode, any should be fine, Fz is arbitrary default.
   # Note - should allow user to specify in case Fz is a known bad electrode.
 
@@ -41,8 +42,9 @@ eeg_FASTER.eeg_epochs <- function(data, ...) {
   #   data <- reref_eeg(data, ref_chans = names(data$signals)[14], exclude = excluded)
   # }
 
+  orig_names <- names(data$signals)
   # Exclude ref chan from subsequent computations (may be better to alter reref_eeg...)
-  data_chans <- !(names(data$signals) %in% data$reference$ref_chans)
+  data_chans <- !(orig_names %in% data$reference$ref_chans)
 
   # Step 1: channel statistics
   bad_chans <- faster_chans(data$signals[, data_chans])
@@ -51,14 +53,37 @@ eeg_FASTER.eeg_epochs <- function(data, ...) {
                 paste(bad_chan_n,
                       collapse = " ")))
 
-  if (!is.null(data$chan_info)) {
-    data <- interp_elecs(data,
-                         bad_chan_n)
-  } else {
-    warning("no chan_info, removing chans.")
-    data <- select_elecs(data,
-                         electrode = bad_chan_n,
-                         keep = FALSE)
+  if (length(bad_chan_n) > 0) {
+
+    #check_chans <- data$chan_info$electrode %in% bad_chan_n
+    if (is.null(data$chan_info)) {
+      warning("no chan_info, removing chans.")
+      data <- select_elecs(data,
+                           electrode = bad_chan_n,
+                           keep = FALSE)
+    } else {
+
+      #Check for any bad channels that are not in the chan_info
+      check_bads <- bad_chan_n %in% data$chan_info$electrode
+
+      # check for any bad channels that have missing coordinates
+      which_bad <- data$chan_info$electrode %in% bad_chan_n
+      missing_coords <- apply(is.na(data$chan_info[which_bad, ]), 1, any)
+
+      missing_bads <- bad_chan_n[!check_bads | missing_coords]
+
+      if (length(missing_bads) > 0 ) {
+        bad_chan_n <- bad_chan_n[!bad_chan_n %in% missing_bads]
+        warning("Missing chan_info for bad channel(s): ",
+                paste0(missing_bads,
+                       collapse = " "), ". Removing channels.")
+        data <- select_elecs(data,
+                             electrode = missing_bads,
+                             keep = FALSE)
+      }
+      data <- interp_elecs(data,
+                           bad_chan_n)
+    }
   }
 
   # Step 2: epoch statistics
@@ -82,7 +107,8 @@ eeg_FASTER.eeg_epochs <- function(data, ...) {
   if (!is.null(orig_ref)) {
     data <- reref_eeg(data, ref_chans = orig_ref, exclude = excluded)
   }
-  data$chan_info <- orig_chan
+
+  data$chan_info <- orig_chan_info
   data
 }
 
@@ -91,7 +117,7 @@ eeg_FASTER.eeg_epochs <- function(data, ...) {
 #' @param data A matrix of EEG data signals
 #' @param sds Standard deviation thresholds
 #' @param ... Further parameters (tbd)
-#' @noRd
+#' @keywords internal
 
 faster_chans <- function(data, sds = 3, ...) {
   chan_hurst <- scale(quick_hurst(data))
@@ -114,7 +140,7 @@ faster_chans <- function(data, sds = 3, ...) {
 #'
 #' @param data \code{eeg_epochs} object
 #' @param ... Further parameters (tbd)
-#' @noRd
+#' @keywords internal
 
 faster_epochs <- function(data, ...) {
   chan_means <- colMeans(data$signals)
@@ -163,32 +189,54 @@ faster_epochs <- function(data, ...) {
 #'
 #' @param data \code{eeg_epochs} object.
 #' @param ... further parameters (tbd)
-#' @noRd
+#' @keywords internal
 
 faster_cine <- function(data, ...) {
-  chan_means <- Matrix::colMeans(data$signals)
+  #chan_means <- Matrix::colMeans(data$signals)
   epochs <- split(data$signals,
                   data$timings$epoch)
   bad_chans <- lapply(epochs,
                       faster_epo_stat)
   epoch_nos <- unique(data$timings$epoch)
 
-  epochs <- lapply(seq_along(epoch_nos),
-                   function(x) {
-                     if (is.null(bad_chans[x])) {
-                       select_epochs(data, epoch_no = epoch_nos[x])
-                       } else {
-                         interp_elecs(select_epochs(data,
-                                                    epoch_no = epoch_nos[x]),
-                                      bad_chans[[x]])
-                         }
-                     }
-  )
+  good_epochs <- vapply(bad_chans,
+                       purrr::is_empty,
+                       FUN.VALUE = logical(1))
 
-  data <- do.call("eeg_combine", epochs)
+  # If there's nothing bad in any epoch, return the data
+  if (all(good_epochs)) {
+    return(data)
+  }
+
+
+
+  # go through each epoch and interpolate bad channels
+  bad_epoch_nos <- epoch_nos[!good_epochs]
+  bad_epochs <- lapply(bad_epoch_nos,
+                       function(x) select_epochs(data,
+                                                 epoch_no = x))
+  bad_epochs <- lapply(seq_along(bad_epochs),
+                       function(x) interp_elecs(bad_epochs[[x]],
+                                                bad_chans[[x]]))
+
+  if (length(bad_epochs) > 1) {
+    bad_epochs <- do.call("eeg_combine", bad_epochs)
+  } else {
+    bad_epochs <- unlist(bad_epochs)
+  }
+
+  # If there are any epochs that are ok, select them, then combine with bad
+  # epochs and return
+  if (any(good_epochs)) {
+    clean_epochs <- select_epochs(data,
+                                  epoch_no = epoch_nos[good_epochs])
+    data <- eeg_combine(clean_epochs, bad_epochs)
+    return(data)
+  }
+
+  # only get here if there were no clean epochs
+  data <- bad_epochs
   data
-  #epoch_dev <- lapply(epochs, function(x) sweep(x, 2, chan_means))
-
 }
 
 
@@ -309,7 +357,7 @@ channel_stats <- function(data, ...) {
 
 #' @describeIn channel_stats Calculate channel statistics for \code{eeg_data}
 #'   objects.
-#' @noRd
+#' @keywords internal
 channel_stats.eeg_data <- function(data, ...) {
 
   chan_means <- colMeans(data$signals)

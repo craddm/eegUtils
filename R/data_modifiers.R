@@ -574,9 +574,9 @@ eeg_combine.eeg_epochs <- function(data, ...) {
                                     purrr::map_df(args, ~.$events))
     data$timings <- dplyr::bind_rows(data$timings,
                         purrr::map_df(args, ~.$timings))
-    } else {
-      stop("All inputs must be eeg_epochs objects.")
-      }
+  } else {
+    stop("All inputs must be eeg_epochs objects.")
+  }
   #fix epoch numbering for combined objects
   data <- check_timings(data)
   data
@@ -586,11 +586,13 @@ eeg_combine.eeg_epochs <- function(data, ...) {
 #' Check consistency of event and timing tables
 #'
 #' @param data \code{eeg_epochs} object
-#' @noRd
+#' @keywords internal
 
 check_timings <- function(data) {
 
   n_rows <- nrow(data$timings)
+  epochs <- unique(data$timings$epoch)
+  duplicated()
 
   # if the epoch numbers are not ascending, fix them...
   while (any(diff(data$timings$epoch) < 0)) {

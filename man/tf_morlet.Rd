@@ -21,6 +21,7 @@ and highest frequency to resolve.}
 \item{output}{Sets whether output is power, phase, or fourier coefficients.}
 }
 \description{
-Perform Morlet time-frequency analysis
+Internal function for performing Morlet wavelet transforms using convolution
+in frequency domain
 }
 \keyword{internal}

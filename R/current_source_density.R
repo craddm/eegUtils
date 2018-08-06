@@ -1,6 +1,6 @@
 #' Channel interpolation
 #'
-#' Interpolate EEG channels using a spherical spline (Perrin et al., 1989). The
+#' Interpolate EEG channels using a spherical spline (Perrin et al., 1989; 1990). The
 #' data must have channel locations attached.
 #'
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
@@ -12,13 +12,18 @@
 #'       (1989). Spherical splines for scalp potential and current
 #'       density mapping. Electroencephalography and Clinical
 #'     Neurophysiology, 72, 184-187
-#'   [2] Perrin, F., Pernier, J., Bertrand, O., & Echallier, J. F.
+#' [2] Perrin, F., Pernier, J., Bertrand, O., & Echallier, J. F.
 #'      (1990). Corrigenda EEG 02274. Electroencephalography and
 #'      Clinical Neurophysiology, 76, 565
 #' @export
 
 interp_elecs <- function(data, bad_elecs, ...) {
   UseMethod("interp_elecs", data)
+}
+
+#' @export
+interp_elecs.default <- function(data, bad_elecs, ...) {
+  stop("Not implemented for objects of class", class(data))
 }
 
 #' @describeIn interp_elecs Interpolate EEG channel(s)
@@ -30,22 +35,45 @@ interp_elecs.eeg_data <- function(data,
     stop("No channel locations found.")
   }
 
-  # Note - this checks for old-style electrode locations first, then for new style
-  check_ci_str(data$chan_info)
+  bads_check <- bad_elecs %in% data$chan_info$electrode
 
-  if (all(c("cart_x", "cart_y", "cart_z") %in% names(data$chan_info))) {
-    xyz_coords <- data$chan_info[, c("cart_x", "cart_y", "cart_z")]
-    #normalise to unit sphere
-    rads <- sqrt(rowSums(xyz_coords ^ 2))
-    #rads <- sqrt(xyz_coords$cart_x ^ 2 + xyz_coords$cart_y ^ 2 + xyz_coords$cart_z ^ 2)
-    xyz_coords <- xyz_coords / rads
-  } else {
-    xyz_coords <- sph_to_cart(data$chan_info$sph_theta / 180 * pi,
-                              data$chan_info$sph_phi / 180 * pi,
-                              1)
+  if (!all(bads_check)) {
+    stop("Nothing to interpolate.")
   }
 
-  bad_select <- toupper(data$chan_info$electrode) %in% toupper(bad_elecs)
+  if (any(!bads_check)) {
+    warning("Electrode(s) not found: ",
+            paste0(bad_elecs[!bads_check],
+                   collapse = " "))
+    bad_elecs <- bad_elecs[bads_check]
+  }
+
+  missing_coords <- apply(is.na(data$chan_info), 1, any)
+
+  if (any(missing_coords)) {
+    warning("Coords missing for electrodes ",
+            paste0(data$chan_info$electrode[missing_coords],
+                   collapse = " "))
+  }
+
+  chan_info <- data$chan_info[!missing_coords, ]
+
+  # Note - this checks for old-style electrode locations first, then for new style
+  check_ci_str(chan_info)
+
+  if (all(c("cart_x", "cart_y", "cart_z") %in% names(chan_info))) {
+    xyz_coords <- chan_info[, c("cart_x", "cart_y", "cart_z")]
+
+    #normalise to unit sphere
+    rads <- sqrt(rowSums(xyz_coords ^ 2))
+    xyz_coords <- xyz_coords / rads
+  } else {
+    xyz_coords <- sph_to_cart(chan_info$sph_theta / 180 * pi,
+                              chan_info$sph_phi / 180 * pi,
+                              1)
+  }
+  #xyz_coords <- xyz_coords[!missing_coords, ]
+  bad_select <- toupper(chan_info$electrode) %in% toupper(bad_elecs)
   xyz_bad <- xyz_coords[bad_select, ]
   xyz_good <- xyz_coords[!bad_select, ]
 
@@ -53,7 +81,7 @@ interp_elecs.eeg_data <- function(data,
     return(data)
   }
   sigs_select <- toupper(names(data$signals)) %in%
-    toupper(data$chan_info$electrode)
+    toupper(chan_info$electrode)
   bad_cols <- toupper(names(data$signals)) %in% toupper(bad_elecs)
   final_cols <- sigs_select & !bad_cols
   weights <- spheric_spline(xyz_good,
@@ -97,8 +125,6 @@ spheric_spline <- function(good_elecs,
 
 #' Calculate current source densities
 #'
-#'
-#'
 #' @param data \code{eeg_data} object
 #' @param m smoothing constraint (higher = more rigid)
 #' @param smoothing lambda constant
@@ -116,8 +142,18 @@ compute_csd <- function(data,
 
   if (any(!data_chans)) {
     stop("No channel information found for ",
-         names(data$signals)[!data_chans],
+         paste0(names(data$signals)[!data_chans],
+                collapse = " "),
          ". Either remove channel or add channel info.")
+  }
+
+  missing_coords <- apply(data$chan_info, 1, function(x) any(is.na(x)))
+
+  if (any(missing_coords)) {
+    stop("No coordinates for ",
+         paste0(data$chan_info$electrode[missing_coords],
+                collapse = " ")
+         )
   }
 
   # Use average reference

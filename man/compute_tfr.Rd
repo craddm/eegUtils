@@ -4,6 +4,7 @@
 \alias{compute_tfr}
 \alias{compute_tfr.default}
 \alias{compute_tfr.eeg_epochs}
+\alias{compute_tfr.eeg_evoked}
 \title{Compute Time-Frequency representation of EEG data}
 \usage{
 compute_tfr(data, ...)
@@ -12,11 +13,14 @@ compute_tfr(data, ...)
 
 \method{compute_tfr}{eeg_epochs}(data, method = "morlet", foi, n_freq,
   n_cycles = 7, keep_trials = FALSE, output = "power", ...)
+
+\method{compute_tfr}{eeg_evoked}(data, method = "morlet", foi, n_freq,
+  n_cycles = 7, keep_trials = FALSE, output = "power", ...)
 }
 \arguments{
 \item{data}{An object of class \code{eeg_epochs}.}
 
-\item{...}{Furthere TFR parameters}
+\item{...}{Further TFR parameters}
 
 \item{method}{Time-frequency analysis method. Defaults to "morlet".}
 
@@ -41,6 +45,8 @@ performed using convolution in the frequency domain.
 \item \code{default}: Default method for compute_tfr
 
 \item \code{eeg_epochs}: Default method for compute_tfr
+
+\item \code{eeg_evoked}: Method for \code{eeg_evoked} objects.
 }}
 
 \author{

@@ -58,21 +58,22 @@ run_SSD <- function(data,
                     noise_range) {
 
   if (!requireNamespace("geigen", quietly = TRUE)) {
-    stop("Package \"geigen\" needed for interactive electrode plots. Please install it.",
+    stop("Package \"geigen\" needed for SSD. Please install it.",
          call. = FALSE)
   }
+
   signal <- iir_filt(data,
                      low_freq = sig_range[1],
                      high_freq = sig_range[2],
-                     filter_order = 4)
+                     filter_order = 2)
   noise <- iir_filt(data,
                     low_freq = noise_range[1],
                     high_freq = noise_range[2],
-                    filter_order = 4)
+                    filter_order = 2)
   noise <- iir_filt(data,
                     low_freq = (sig_range[2] + noise_range[2]) / 2,
                     high_freq = (sig_range[1] + noise_range[1]) / 2,
-                    filter_order = 4)
+                    filter_order = 2)
   # Calculate covariance respecting the epoching structure of the data
   cov_sig <- cov_epochs(signal)
   cov_noise <- cov_epochs(noise)
@@ -81,6 +82,13 @@ run_SSD <- function(data,
   # Get the rank of the covariance matrix and select only as many components as
   # there are ranks
   rank_sig <- Matrix::rankMatrix(cov_sig)
+
+  if (rank_sig < ncol(cov_sig)) {
+    message("Input data is not full rank; returning ",
+            rank_sig,
+            "components")
+  }
+
   M <- eig_sigs$vectors[, 1:rank_sig] %*% (diag(eig_sigs$values[1:rank_sig] ^ -0.5))
 
   C_s_r <- t(M) %*% cov_sig %*% M

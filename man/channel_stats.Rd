@@ -2,9 +2,12 @@
 % Please edit documentation in R/artefact_rejection.R
 \name{channel_stats}
 \alias{channel_stats}
+\alias{channel_stats.eeg_data}
 \title{Channel statistics}
 \usage{
 channel_stats(data, ...)
+
+\method{channel_stats}{eeg_data}(data, ...)
 }
 \arguments{
 \item{data}{Data as a \code{eeg_data} or \code{eeg_epochs} object.}
@@ -14,6 +17,12 @@ channel_stats(data, ...)
 \description{
 Channel statistics
 }
+\section{Methods (by class)}{
+\itemize{
+\item \code{eeg_data}: Calculate channel statistics for \code{eeg_data}
+objects.
+}}
+
 \author{
 Matt Craddock \email{matt@mattcraddock.com}
 }
