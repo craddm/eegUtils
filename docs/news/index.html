@@ -58,7 +58,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">eegUtils</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.2.0.9000</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.2.1.9000</span>
       </span>
     </div>
 
@@ -119,9 +119,23 @@
       <small>Source: <a href='https://github.com/craddm/eegUtils/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
-    <div id="eegutils-0-2-0-9000" class="section level1">
+    <div id="eegutils-0-2-1-9000" class="section level1">
 <h1 class="page-header">
-<a href="#eegutils-0-2-0-9000" class="anchor"></a>eegUtils 0.2.0.9000</h1>
+<a href="#eegutils-0-2-1-9000" class="anchor"></a>eegUtils 0.2.1.9000</h1>
+<div id="internal-changes-bug-fixes" class="section level3">
+<h3 class="hasAnchor">
+<a href="#internal-changes-bug-fixes" class="anchor"></a>Internal changes/ bug fixes</h3>
+<ul>
+<li>
+<code><a href="../reference/plot_timecourse.html">plot_timecourse()</a></code> overhauled to be S3 method</li>
+<li>
+<code><a href="../reference/select_elecs.html">select_elecs()</a></code> now works for <code>eeg_evoked</code> objects</li>
+</ul>
+</div>
+</div>
+    <div id="eegutils-0-2-1" class="section level1">
+<h1 class="page-header">
+<a href="#eegutils-0-2-1" class="anchor"></a>eegUtils 0.2.1</h1>
 <div id="function-changes" class="section level3">
 <h3 class="hasAnchor">
 <a href="#function-changes" class="anchor"></a>Function changes</h3>
@@ -143,11 +157,13 @@
 <li>
 <code>compute_tfr</code> function added to performed TFA on <code>eeg_epochs</code>
 </li>
+<li>
+<code><a href="../reference/epoch_data.html">epoch_data()</a></code> now warns if some events are not found rather than stops. Only stops if <em>no</em> events are found.</li>
 </ul>
 </div>
-<div id="internal-changes-bug-fixes" class="section level3">
+<div id="internal-changes-bug-fixes-1" class="section level3">
 <h3 class="hasAnchor">
-<a href="#internal-changes-bug-fixes" class="anchor"></a>Internal changes/ bug fixes</h3>
+<a href="#internal-changes-bug-fixes-1" class="anchor"></a>Internal changes/ bug fixes</h3>
 <ul>
 <li>
 <code><a href="../reference/reref_eeg.html">reref_eeg()</a></code>
@@ -179,9 +195,20 @@
 </ul>
 </li>
 <li>
-<code>compute_csd()</code> added</li>
+<code><a href="../reference/compute_csd.html">compute_csd()</a></code>
+<ul>
+<li>added.</li>
+<li>computation of g-matrix and h-matrix refactored, spherical spline calculation altered accordingly</li>
+</ul>
+</li>
 <li>
-<code><a href="../reference/compute_tfr.html">compute_tfr()</a></code> added</li>
+<code><a href="../reference/compute_tfr.html">compute_tfr()</a></code>
+<ul>
+<li>added</li>
+</ul>
+</li>
+<li>
+<code><a href="../reference/eeg_FASTER.html">eeg_FASTER()</a></code> now properly selects electrodes and epochs for removal</li>
 </ul>
 </div>
 </div>
@@ -204,9 +231,9 @@
 <code><a href="../reference/eeg_FASTER.html">eeg_FASTER()</a></code> - FASTER artefact rejection method now (mostly) implemented (<em>experimental</em>).</li>
 </ul>
 </div>
-<div id="internal-changes-bug-fixes-1" class="section level3">
+<div id="internal-changes-bug-fixes-2" class="section level3">
 <h3 class="hasAnchor">
-<a href="#internal-changes-bug-fixes-1" class="anchor"></a>Internal changes / bug fixes</h3>
+<a href="#internal-changes-bug-fixes-2" class="anchor"></a>Internal changes / bug fixes</h3>
 <ul>
 <li>
 <code><a href="../reference/plot_butterfly.html">plot_butterfly()</a></code> some <code>dplyr</code> use removed.</li>
@@ -249,9 +276,9 @@
 <code><a href="../reference/as.data.frame.eeg_evoked.html">as.data.frame.eeg_evoked()</a></code> introduced to handle conversion of eeg_evoked objects to data frames.</li>
 </ul>
 </div>
-<div id="internal-changes-bug-fixes-2" class="section level3">
+<div id="internal-changes-bug-fixes-3" class="section level3">
 <h3 class="hasAnchor">
-<a href="#internal-changes-bug-fixes-2" class="anchor"></a>Internal changes / bug fixes</h3>
+<a href="#internal-changes-bug-fixes-3" class="anchor"></a>Internal changes / bug fixes</h3>
 <ul>
 <li>
 <code><a href="../reference/compute_psd.html">compute_psd()</a></code> function development, converted to S3method.</li>
@@ -293,9 +320,9 @@
 <code><a href="../reference/eeg_combine.html">eeg_combine()</a></code> - combine multiple <code>eeg_data</code> or <code>eeg_epochs</code> objects into one</li>
 </ul>
 </div>
-<div id="internal-changes-bug-fixes-3" class="section level3">
+<div id="internal-changes-bug-fixes-4" class="section level3">
 <h3 class="hasAnchor">
-<a href="#internal-changes-bug-fixes-3" class="anchor"></a>Internal changes/ bug fixes</h3>
+<a href="#internal-changes-bug-fixes-4" class="anchor"></a>Internal changes/ bug fixes</h3>
 <ul>
 <li>
 <code>eeg_epochs()</code> now also handles downsampled data appropriately.</li>
@@ -343,12 +370,18 @@
 <h3 class="hasAnchor">
 <a href="#internal-changes" class="anchor"></a>Internal changes</h3>
 <ul>
-<li>Converted <code><a href="../reference/select_times.html">select_times()</a></code> to an S3 generic method</li>
+<li>Converted <code><a href="../reference/select_times.html">select_times()</a></code> to an S3 generic method
+<ul>
 <li><code>select_times.eeg_data</code></li>
-<li><p><code>select_times.eeg_epochs</code></p></li>
-<li>Converted <code><a href="../reference/iir_filt.html">iir_filt()</a></code> to an S3 generic method</li>
+<li><code>select_times.eeg_epochs</code></li>
+</ul>
+</li>
+<li>Converted <code><a href="../reference/iir_filt.html">iir_filt()</a></code> to an S3 generic method
+<ul>
 <li><code>iir_filt.eeg_data</code></li>
-<li><p><code>iir_filt.eeg_epochs</code></p></li>
+<li><code>iir_filt.eeg_epochs</code></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
@@ -365,7 +398,8 @@
     <div id="tocnav">
       <h2>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
-        <li><a href="#eegutils-0-2-0-9000">0.2.0.9000</a></li>
+        <li><a href="#eegutils-0-2-1-9000">0.2.1.9000</a></li>
+        <li><a href="#eegutils-0-2-1">0.2.1</a></li>
         <li><a href="#eegutils-0-2-0">0.2.0</a></li>
         <li><a href="#eegutils-0-1-15">0.1.15</a></li>
         <li><a href="#eegutils-0-1-14">0.1.14</a></li>

@@ -64,7 +64,7 @@ determined by the range of the viewable data." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">eegUtils</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.2.0.9000</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.2.1.9000</span>
       </span>
     </div>
 
@@ -137,6 +137,9 @@ determined by the range of the viewable data.</p>
 
     <pre class="usage"><span class='fu'>browse_data</span>(<span class='no'>data</span>, <span class='no'>...</span>)
 
+<span class='co'># S3 method for eeg_ICA</span>
+<span class='fu'>browse_data</span>(<span class='no'>data</span>, <span class='no'>...</span>)
+
 <span class='co'># S3 method for eeg_data</span>
 <span class='fu'>browse_data</span>(<span class='no'>data</span>, <span class='kw'>sig_length</span> <span class='kw'>=</span> <span class='fl'>5</span>, <span class='kw'>n_elecs</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>downsample</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)
@@ -176,6 +179,7 @@ by only plotting every 4th point, speeding up plotting considerably.</p></td>
     <h2 class="hasAnchor" id="methods-by-class-"><a class="anchor" href="#methods-by-class-"></a>Methods (by class)</h2>
 
     <ul>
+<li><p><code>eeg_ICA</code>: View <code>eeg_ICA</code> component properties</p></li>
 <li><p><code>eeg_data</code>: Browse continuous EEG data.</p></li>
 <li><p><code>eeg_epochs</code>: Browse epoched EEG data.</p></li>
 </ul>

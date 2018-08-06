@@ -63,7 +63,7 @@ performed using convolution in the frequency domain." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">eegUtils</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.2.0.9000</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.2.1.9000</span>
       </span>
     </div>
 
@@ -140,6 +140,10 @@ performed using convolution in the frequency domain.</p>
 
 <span class='co'># S3 method for eeg_epochs</span>
 <span class='fu'>compute_tfr</span>(<span class='no'>data</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"morlet"</span>, <span class='no'>foi</span>, <span class='no'>n_freq</span>,
+  <span class='kw'>n_cycles</span> <span class='kw'>=</span> <span class='fl'>7</span>, <span class='kw'>keep_trials</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>output</span> <span class='kw'>=</span> <span class='st'>"power"</span>, <span class='no'>...</span>)
+
+<span class='co'># S3 method for eeg_evoked</span>
+<span class='fu'>compute_tfr</span>(<span class='no'>data</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"morlet"</span>, <span class='no'>foi</span>, <span class='no'>n_freq</span>,
   <span class='kw'>n_cycles</span> <span class='kw'>=</span> <span class='fl'>7</span>, <span class='kw'>keep_trials</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>output</span> <span class='kw'>=</span> <span class='st'>"power"</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -151,7 +155,7 @@ performed using convolution in the frequency domain.</p>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>Furthere TFR parameters</p></td>
+      <td><p>Further TFR parameters</p></td>
     </tr>
     <tr>
       <th>method</th>
@@ -185,6 +189,7 @@ and highest frequency to resolve.</p></td>
     <ul>
 <li><p><code>default</code>: Default method for compute_tfr</p></li>
 <li><p><code>eeg_epochs</code>: Default method for compute_tfr</p></li>
+<li><p><code>eeg_evoked</code>: Method for <code>eeg_evoked</code> objects.</p></li>
 </ul>
     
 

@@ -62,7 +62,7 @@ order to make across-trial patterns more apparent." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">eegUtils</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.2.0.9000</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.2.1.9000</span>
       </span>
     </div>
 
@@ -131,19 +131,19 @@ order to make across-trial patterns more apparent.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>erp_image</span>(<span class='no'>data</span>, <span class='kw'>electrode</span> <span class='kw'>=</span> <span class='st'>"Cz"</span>, <span class='kw'>smoothing</span> <span class='kw'>=</span> <span class='fl'>10</span>, <span class='kw'>clim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)
+    <pre class="usage"><span class='fu'>erp_image</span>(<span class='no'>data</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for default</span>
 <span class='fu'>erp_image</span>(<span class='no'>data</span>, <span class='kw'>electrode</span> <span class='kw'>=</span> <span class='st'>"Cz"</span>, <span class='kw'>smoothing</span> <span class='kw'>=</span> <span class='fl'>10</span>,
-  <span class='kw'>clim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)
+  <span class='kw'>clim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for eeg_epochs</span>
 <span class='fu'>erp_image</span>(<span class='no'>data</span>, <span class='kw'>electrode</span> <span class='kw'>=</span> <span class='st'>"Cz"</span>, <span class='kw'>smoothing</span> <span class='kw'>=</span> <span class='fl'>10</span>,
-  <span class='kw'>clim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)
+  <span class='kw'>clim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for eeg_ICA</span>
-<span class='fu'>erp_image</span>(<span class='no'>data</span>, <span class='kw'>electrode</span> <span class='kw'>=</span> <span class='st'>"V1"</span>, <span class='kw'>smoothing</span> <span class='kw'>=</span> <span class='fl'>10</span>,
-  <span class='kw'>clim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+<span class='fu'>erp_image</span>(<span class='no'>data</span>, <span class='kw'>component</span> <span class='kw'>=</span> <span class='st'>"Comp1"</span>, <span class='kw'>smoothing</span> <span class='kw'>=</span> <span class='fl'>10</span>,
+  <span class='kw'>clim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -151,6 +151,10 @@ order to make across-trial patterns more apparent.</p>
     <tr>
       <th>data</th>
       <td><p>Data frame to be plotted. Requires an amplitude column.</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>Other arguments passed to the method.</p></td>
     </tr>
     <tr>
       <th>electrode</th>
@@ -165,6 +169,10 @@ order to make across-trial patterns more apparent.</p>
       <td><p>Character vector of min and max values of plotting colour range.
 e.g. c(-5,5). Defaults to min and max.</p></td>
     </tr>
+    <tr>
+      <th>component</th>
+      <td><p><code>eeg_ICA</code> component to plot</p></td>
+    </tr>
     </table>
     
     <h2 class="hasAnchor" id="methods-by-class-"><a class="anchor" href="#methods-by-class-"></a>Methods (by class)</h2>
@@ -172,7 +180,7 @@ e.g. c(-5,5). Defaults to min and max.</p></td>
     <ul>
 <li><p><code>default</code>: Default function operates on normal data frames</p></li>
 <li><p><code>eeg_epochs</code>: Create an <code>erp_image</code> from <code>eeg_epochs</code></p></li>
-<li><p><code>eeg_ICA</code>: <code>eeg_ICA</code></p></li>
+<li><p><code>eeg_ICA</code>: Plot component image from <code>eeg_ICA</code></p></li>
 </ul>
     
 

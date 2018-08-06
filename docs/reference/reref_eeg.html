@@ -64,7 +64,7 @@ eeg_data structure." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">eegUtils</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.2.0.9000</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.2.1.9000</span>
       </span>
     </div>
 
@@ -141,8 +141,8 @@ removed from the data. Meta-data about the referencing scheme is held in the
 <span class='fu'>reref_eeg</span>(<span class='no'>data</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for eeg_data</span>
-<span class='fu'>reref_eeg</span>(<span class='no'>data</span>, <span class='kw'>ref_chans</span> <span class='kw'>=</span> <span class='st'>"average"</span>, <span class='kw'>exclude</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>robust</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)</pre>
+<span class='fu'>reref_eeg</span>(<span class='no'>data</span>, <span class='kw'>ref_chans</span> <span class='kw'>=</span> <span class='st'>"average"</span>,
+  <span class='kw'>exclude</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>robust</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -186,18 +186,21 @@ average of all electrodes in data. Character vector of channel names or numbers.
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># demo_epochs is average referenced by default</span>
 <span class='no'>demo_epochs</span></div><div class='output co'>#&gt; Epoched EEG data
+#&gt; 
 #&gt; Number of channels	:	 11 
 #&gt; Number of epochs	:	 80 
 #&gt; Epoch limits		:	 -0.1972656 - 0.4511719 seconds
 #&gt; Electrode names		:	 A5 A13 A21 A29 A31 B5 B6 B8 B16 B18 B26 
 #&gt; Sampling rate		:	 128  Hz</div><div class='input'><span class='co'># Rereference it but exclude B5 from calculation of the average</span>
 <span class='fu'>reref_eeg</span>(<span class='no'>demo_epochs</span>, <span class='kw'>exclude</span> <span class='kw'>=</span> <span class='st'>"B5"</span>)</div><div class='output co'>#&gt; Epoched EEG data
+#&gt; 
 #&gt; Number of channels	:	 11 
 #&gt; Number of epochs	:	 80 
 #&gt; Epoch limits		:	 -0.1972656 - 0.4511719 seconds
 #&gt; Electrode names		:	 A5 A13 A21 A29 A31 B5 B6 B8 B16 B18 B26 
 #&gt; Sampling rate		:	 128  Hz</div><div class='input'><span class='co'># Reference data using the median of the reference channels rather than the mean</span>
 <span class='fu'>reref_eeg</span>(<span class='no'>demo_epochs</span>, <span class='kw'>robust</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; Epoched EEG data
+#&gt; 
 #&gt; Number of channels	:	 11 
 #&gt; Number of epochs	:	 80 
 #&gt; Epoch limits		:	 -0.1972656 - 0.4511719 seconds
