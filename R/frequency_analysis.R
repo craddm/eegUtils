@@ -3,7 +3,7 @@
 #' Returns PSD calculated using Welch's method for every channel in the data.
 #' Currently concatenates across epochs. Returns uV^2 / Hz
 #'
-#' @author Matt Craddock \email{matt@mattcraddock.com}
+#' @author Matt Craddock \email{matt@@mattcraddock.com}
 #' @param data Data to be plotted. Accepts objects of class \code{eeg_data}
 #' @param ... any further parameters passed to specific methods
 #' @export
@@ -110,6 +110,8 @@ compute_psd.eeg_epochs <- function(data,
 
 #' Welch fft
 #'
+#' Internal function for calculating the PSD using Welch's method
+#'
 #' @param data Object to perform FFT on
 #' @param seg_length length of each segment of data
 #' @param n_fft length of FFT
@@ -117,7 +119,7 @@ compute_psd.eeg_epochs <- function(data,
 #' @param n_sig number of samples total
 #' @param srate Sampling rate of the data
 #' @importFrom stats fft
-#' @noRd
+#' @keywords internal
 
 welch_fft <- function(data,
                       seg_length,
@@ -142,39 +144,33 @@ welch_fft <- function(data,
   }
 
   # Hamming window.
-  win <- .54 - (1 - .54) * cos(2 * pi * seq(0, 1, by = 1 / (seg_length - 1)))
+  win <- .54 - (1 - .54) * cos(2 * pi * seq(0, 1,
+                                            by = 1 / (seg_length - 1)))
 
   # Normalise the window
   U <- c(t(win) %*% win)
 
   #do windowing and zero padding if necessary, then FFT
   if (n_segs == 1) {
-    data_segs <- sweep(data_segs,
-                       1,
-                       win,
-                       "*")
+    data_segs <- sweep(data_segs, 1, win, "*")
+
     if (n_fft > seg_length) {
-      data_segs <- apply(data_segs,
-                         2,
+      data_segs <- apply(data_segs, 2,
                          function(x) c(x,
                                        numeric(n_fft - seg_length)))
     }
+
     data_fft <- mvfft(data_segs)
     final_out <- apply(data_fft,
                        2,
                        function(x) abs(x * Conj(x)) / U)
+
     # Normalize by sampling rate
     if (is.null(srate)) {
-      final_out <- sweep(final_out,
-                         1,
-                         (2 * pi),
-                         "/")
+      final_out <- final_out / (2 * pi)
       freqs <- seq(0, seg_length / 2) / (seg_length)
     } else {
-      final_out <- sweep(final_out,
-                         1,
-                         srate,
-                         "/")
+      final_out <- final_out / srate
       freqs <- seq(0, n_fft / 2) / (n_fft) * srate
     }
   } else {
@@ -187,7 +183,7 @@ welch_fft <- function(data,
                                             2,
                                             function(x) c(x,
                                                           numeric(n_fft - seg_length))))
-      }
+    }
     data_fft <- lapply(data_segs,
                        function(x) lapply(x,
                                           fft))
@@ -230,11 +226,12 @@ split_vec <- function(vec, seg_length, overlap) {
   } else {
     k <- floor((length(vec) - overlap) / (seg_length - overlap))
   }
-    starts <- seq(1,
-                  k * (seg_length - overlap),
-                  by = seg_length - overlap)
-    ends <- starts + seg_length - 1
-    lapply(seq_along(starts), function(i) vec[starts[i]:ends[i]])
+
+  starts <- seq(1,
+                k * (seg_length - overlap),
+                by = seg_length - overlap)
+  ends <- starts + seg_length - 1
+  lapply(seq_along(starts), function(i) vec[starts[i]:ends[i]])
 }
 
 

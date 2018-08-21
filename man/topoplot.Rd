@@ -14,25 +14,26 @@ topoplot(data, ...)
   chanLocs = NULL, method = "Biharmonic", r = NULL, grid_res = 67,
   palette = "RdBu", interp_limit = "skirt", contour = TRUE,
   chan_marker = "point", quantity = "amplitude", montage = NULL,
-  colourmap, highlights = NULL, ...)
+  colourmap, highlights = NULL, scaling = 1, ...)
 
 \method{topoplot}{eeg_data}(data, time_lim = NULL, limits = NULL,
   chanLocs = NULL, method = "Biharmonic", r = NULL, grid_res = 67,
   palette = "RdBu", interp_limit = "skirt", contour = TRUE,
   chan_marker = "point", quantity = "amplitude", montage = NULL,
-  highlights = NULL, ...)
+  highlights = NULL, scaling = 1, ...)
 
 \method{topoplot}{eeg_epochs}(data, time_lim = NULL, limits = NULL,
   chanLocs = NULL, method = "Biharmonic", r = NULL, grid_res = 67,
   palette = "RdBu", interp_limit = "skirt", contour = TRUE,
   chan_marker = "point", quantity = "amplitude", montage = NULL,
-  highlights = NULL, ...)
+  highlights = NULL, scaling = 1, ...)
 
 \method{topoplot}{eeg_ICA}(data, component, time_lim = NULL,
   limits = NULL, chanLocs = NULL, method = "Biharmonic", r = NULL,
   grid_res = 67, palette = "RdBu", interp_limit = "skirt",
   contour = TRUE, chan_marker = "point", quantity = "amplitude",
-  montage = NULL, colourmap, highlights = NULL, ...)
+  montage = NULL, colourmap, highlights = NULL, scaling = scaling,
+  ...)
 }
 \arguments{
 \item{data}{An EEG dataset. If the input is a data.frame, then it must have
@@ -85,6 +86,8 @@ only 'biosemi64alpha' available other than default 10/20 system)}
 \item{colourmap}{Deprecated, use palette instead.}
 
 \item{highlights}{Electrodes to highlight (in white)}
+
+\item{scaling}{Scaling factor for labels and any plot lines. Defaults to 1.}
 
 \item{component}{Component to plot (numeric)}
 }

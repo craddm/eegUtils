@@ -68,6 +68,7 @@ topoplot.default <- function(data, ...) {
 #'   only 'biosemi64alpha' available other than default 10/20 system)
 #' @param colourmap Deprecated, use palette instead.
 #' @param highlights Electrodes to highlight (in white)
+#' @param scaling Scaling factor for labels and any plot lines. Defaults to 1.
 #'
 #' @import ggplot2
 #' @import dplyr
@@ -78,7 +79,6 @@ topoplot.default <- function(data, ...) {
 #' @describeIn topoplot Topographical plotting of data.frames and other non
 #'   eeg_data objects.
 #' @export
-
 
 topoplot.data.frame <- function(data,
                                 time_lim = NULL,
@@ -95,6 +95,7 @@ topoplot.data.frame <- function(data,
                                 montage = NULL,
                                 colourmap,
                                 highlights = NULL,
+                                scaling = 1,
                                 ...) {
 
   if (!missing(colourmap)) {
@@ -266,7 +267,7 @@ topoplot.data.frame <- function(data,
             linetype = ..level.. < 0),
         bins = 6,
         colour = "black",
-        size = 1.1,
+        size = rel(1.1 * scaling),
         show.legend = FALSE
       )
     }
@@ -280,11 +281,11 @@ topoplot.data.frame <- function(data,
     annotate("path",
              x = head_shape$x,
              y = head_shape$y,
-              size = rel(1.5)) +
+             size = rel(1.5 * scaling)) +
     annotate("path",
              x = nose$x,
              y = nose$y,
-              size = rel(1.5)) +
+             size = rel(1.5 * scaling)) +
     annotate("curve",
              x = ears$x[[1]],
              y = ears$y[[1]],
@@ -292,7 +293,7 @@ topoplot.data.frame <- function(data,
              yend = ears$y[[2]],
              curvature = -.5,
              angle = 60,
-             size = rel(1.5)) +
+             size = rel(1.5 * scaling)) +
     annotate("curve",
              x = ears$x[[3]],
              y = ears$y[[3]],
@@ -300,7 +301,7 @@ topoplot.data.frame <- function(data,
              yend = ears$y[[4]],
              curvature = .5,
              angle = 120,
-             size = rel(1.5)) +
+             size = rel(1.5 * scaling)) +
     coord_equal() +
     theme_bw() +
     theme(rect = element_blank(),
@@ -321,7 +322,7 @@ topoplot.data.frame <- function(data,
                x = scaled_x,
                y = scaled_y,
                colour = "black",
-               size = rel(2))
+               size = rel(2 * scaling))
     }  else if (chan_marker == "name") {
       topo <- topo +
         annotate("text",
@@ -329,7 +330,7 @@ topoplot.data.frame <- function(data,
                  y = scaled_y,
                  label = c(levels(data$electrode)[c(data$electrode)]),
                  colour = "black",
-                 size = rel(4))
+                 size = rel(4 * scaling))
     }
 
   # Highlight specified electrodes
@@ -341,7 +342,7 @@ topoplot.data.frame <- function(data,
                x = high_x,
                y = high_y,
                colour = "white",
-               size = rel(2))
+               size = rel(2 * scaling))
 
   }
 
@@ -371,7 +372,9 @@ topoplot.eeg_data <- function(data, time_lim = NULL,
                               contour = TRUE,
                               chan_marker = "point",
                               quantity = "amplitude",
-                              montage = NULL, highlights = NULL,
+                              montage = NULL,
+                              highlights = NULL,
+                              scaling = 1,
                               ...) {
 
   if (!is.null(data$chan_info)) {
@@ -400,9 +403,14 @@ topoplot.eeg_data <- function(data, time_lim = NULL,
            r = r,
            grid_res = grid_res,
            palette = palette,
-           interp_limit = interp_limit, contour = contour,
-           chan_marker = chan_marker, quantity = quantity,
-           montage = montage, highlights = highlights, passed = TRUE)
+           interp_limit = interp_limit,
+           contour = contour,
+           chan_marker = chan_marker,
+           quantity = quantity,
+           montage = montage,
+           highlights = highlights,
+           passed = TRUE,
+           scaling = scaling)
 }
 
 
@@ -427,6 +435,7 @@ topoplot.eeg_epochs <- function(data,
                                 quantity = "amplitude",
                                 montage = NULL,
                                 highlights = NULL,
+                                scaling = 1,
                                 ...) {
 
   if (!is.null(data$chan_info)) {
@@ -451,7 +460,9 @@ topoplot.eeg_epochs <- function(data,
            chan_marker = chan_marker,
            quantity = quantity,
            montage = montage,
-           highlights = highlights, passed = TRUE)
+           highlights = highlights,
+           scaling = scaling,
+           passed = TRUE)
 }
 
 
@@ -474,6 +485,7 @@ topoplot.eeg_ICA <- function(data,
                              montage = NULL,
                              colourmap,
                              highlights = NULL,
+                             scaling = scaling,
                              ...) {
 
    if (missing(component)) {

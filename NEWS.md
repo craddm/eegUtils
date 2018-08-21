@@ -1,8 +1,13 @@
 # eegUtils 0.2.1.9000
 
+
+### Function changes
+- `topoplot()` now has a scaling parameter to scale the size of any lines or markers drawn on the plot
+
 ### Internal changes/ bug fixes
 - `plot_timecourse()` overhauled to be S3 method
 - `select_elecs()` now works for `eeg_evoked` objects
+- `eeg_decomp` function in progress for performing SSD analyses
 
 # eegUtils 0.2.1
 
