@@ -38,10 +38,15 @@ eeg_decomp.eeg_epochs <- function(data,
                                   noise_range = NULL,
                                   method = "ssd") {
 
+
   data <- switch(method,
                  "ssd" = run_SSD(data,
                                  sig_range,
-                                 noise_range))
+                                 noise_range),
+                 "ress" = run_SSD(data,
+                                  sig_range,
+                                  noise_range,
+                                  RESS = TRUE))
   class(data) <- c("eeg_ICA", "eeg_epochs")
   data
 }
@@ -55,7 +60,8 @@ eeg_decomp.eeg_epochs <- function(data,
 
 run_SSD <- function(data,
                     sig_range,
-                    noise_range) {
+                    noise_range,
+                    RESS = FALSE) {
 
   if (!requireNamespace("geigen", quietly = TRUE)) {
     stop("Package \"geigen\" needed for SSD. Please install it.",
@@ -102,16 +108,20 @@ run_SSD <- function(data,
   names(data$mixing_matrix) <- paste0("Comp", 1:ncol(data$mixing_matrix))
   data$mixing_matrix$electrode <- names(data$signals)
 
-  data$signals <- as.data.frame(as.matrix(signal$signals) %*% W)
-  names(data$signals) <- paste0("Comp", 1:ncol(W))
   data$unmixing_matrix <- as.data.frame(W)
   names(data$unmixing_matrix) <- paste0("Comp", 1:ncol(W))
   data$unmixing_matrix$electrode <- data$mixing_matrix$electrode
+
+  if (RESS) {
+    data$signals <- as.data.frame(as.matrix(data$signals) %*% W)
+    names(data$signals) <- paste0("Comp", 1:ncol(W))
+    return(data)
+  }
+  data$signals <- as.data.frame(as.matrix(signal$signals) %*% W)
+  names(data$signals) <- paste0("Comp", 1:ncol(W))
   data
+
 }
-
-
-
 
 #' Covariance of epoched data
 #'

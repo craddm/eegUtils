@@ -122,6 +122,66 @@ spheric_spline <- function(good_elecs,
   W
 }
 
+#' Convert to Current Source Density
+#'
+#' Convert an \code{eeg_data} or \code{eeg_epochs} object to using Current
+#' Source Densities. This command uses a spherical spline algorithm (Perrin et
+#' al., 1989) to compute scalp surface Laplacian/current source density
+#' estimates of scalp potentials, a reference-free measure of electrical
+#' activity that emphasises more local spatial features
+#'
+#' @param data \code{eeg_data} or \code{eeg_epochs} object
+#' @param ... Other parameters
+#' @author Matt Craddock \email{matt@@mattcraddock.com}
+#' @references [1] Perrin, F., Pernier, J., Bertrand, O., Echallier, J.F.
+#'   (1989). Spherical splines for scalp potential and current density mapping.
+#'   Electroencephalography and Clinical Neurophysiology, 72(2), 184-187. PMID:
+#'   2464490 [2] Kayser, J., Tenke, C.E. (2006). Principal components analysis
+#'   of Laplacian waveforms as a generic method for identifying ERP generator
+#'   patterns: I. Evaluation with auditory oddball tasks. Clinical
+#'   Neurophysiology, 117(2), 348-368. [3] Kayser, J., Tenke, C.E. (2015).
+#'   Issues and considerations for using the scalp surface Laplacian in EEG/ERP
+#'   research: A tutorial review. International Journal of Psycholphysiology,
+#'   97(3), 189-209
+#' @examples
+#' csd_epochs <- compute_csd(demo_epochs)
+#' plot_butterfly(csd_epochs)
+#' @export
+compute_csd <- function(data,
+                        ...) {
+  UseMethod("compute_csd", data)
+}
+
+#' @describeIn compute_csd Default method to detect unknown classes.
+#' @export
+compute_csd.default <- function(data,
+                                ...) {
+  warning("compute_csd not implemented for objects of class", class(data))
+}
+
+#' @param m smoothing constraint (higher = more rigid splines)
+#' @param smoothing lambda constant. Added to the Defaults to 1e-05
+#' @param scaling Default scaling (1) is uV / m^2. Note that this depends on the
+#'   units of the electrode co-ordinates.
+#' @describeIn compute_csd Transform eeg_data to CSD
+#' @export
+compute_csd.eeg_data <- function(data,
+                                 m = 4,
+                                 smoothing = 1e-05,
+                                 scaling = 1,
+                                 ...) {
+  convert_to_csd(data, m, smoothing, scaling)
+}
+
+#' @describeIn compute_csd Transform eeg_data to CSD
+#' @export
+compute_csd.eeg_epochs <- function(data,
+                                 m = 4,
+                                 smoothing = 1e-05,
+                                 scaling = 1,
+                                 ...) {
+  convert_to_csd(data, m, smoothing, scaling)
+}
 
 #' Calculate current source densities
 #'
@@ -131,10 +191,10 @@ spheric_spline <- function(good_elecs,
 #' @param scaling Default scaling (1) is uV / m^2.
 #' @keywords internal
 
-compute_csd <- function(data,
-                        m = 4,
-                        smoothing = 1e-05,
-                        scaling = 1) {
+convert_to_csd <- function(data,
+                           m = 4,
+                           smoothing = 1e-05,
+                           scaling = 1) {
 
   orig_elecs <- names(data$signals)
   data_chans <- toupper(names(data$signals)) %in% toupper(data$chan_info$electrode)
@@ -156,7 +216,7 @@ compute_csd <- function(data,
          )
   }
 
-  # Use average reference
+  # Convert data to average reference
   data <- reref_eeg(data)
 
   if (all(c("cart_x", "cart_y", "cart_z") %in% names(data$chan_info))) {
@@ -181,14 +241,14 @@ compute_csd <- function(data,
 
   diag(g_mat) <- diag(g_mat) + smoothing
   g_inv <- solve(g_mat)
-  ag <- colSums(g_inv)
-  ag_tot <- sum(ag)
+  sums_g <- colSums(g_inv)
+  total_g <- sum(sums_g)
   new_sig <- as.matrix(data$signals[, data_chans])
   bb <- t(apply(new_sig,
                 1,
                 function(x) g_inv %*% x))
-  bb_rows <- rowSums(bb) / ag_tot
-  bc <- bb - (bb_rows %*% t(ag))
+  bb_rows <- rowSums(bb) / total_g
+  bc <- bb - (bb_rows %*% t(sums_g))
   be <- t(apply(bc,
                 1,
                 function(x) colSums(x * h_mat)) / scaling)

@@ -4,7 +4,7 @@
 \alias{run_SSD}
 \title{Internal function for running SSD algorithm}
 \usage{
-run_SSD(data, sig_range, noise_range)
+run_SSD(data, sig_range, noise_range, RESS = FALSE)
 }
 \arguments{
 \item{data}{\code{eeg_epochs} object to be decomposed}

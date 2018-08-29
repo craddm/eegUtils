@@ -63,7 +63,7 @@ run_ICA.eeg_epochs <- function(data,
     mixing_matrix <- as.data.frame(ICA_out$M)
     names(mixing_matrix) <- paste0("Comp", 1:ncol(ICA_out$S))
     mixing_matrix$electrode <- names(data$signals)
-    unmixing_matrix <- as.data.frame(ICA_out$W)
+    unmixing_matrix <- as.data.frame(t(ICA_out$W))
     names(unmixing_matrix) <- paste0("Comp", 1:ncol(ICA_out$S))
     unmixing_matrix$electrode <- names(data$signals)
 

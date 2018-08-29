@@ -2,20 +2,65 @@
 % Please edit documentation in R/current_source_density.R
 \name{compute_csd}
 \alias{compute_csd}
-\title{Calculate current source densities}
+\alias{compute_csd.default}
+\alias{compute_csd.eeg_data}
+\alias{compute_csd.eeg_epochs}
+\title{Convert to Current Source Density}
 \usage{
-compute_csd(data, m = 4, smoothing = 1e-05, scaling = 1)
+compute_csd(data, ...)
+
+\method{compute_csd}{default}(data, ...)
+
+\method{compute_csd}{eeg_data}(data, m = 4, smoothing = 1e-05,
+  scaling = 1, ...)
+
+\method{compute_csd}{eeg_epochs}(data, m = 4, smoothing = 1e-05,
+  scaling = 1, ...)
 }
 \arguments{
-\item{data}{\code{eeg_data} object}
+\item{data}{\code{eeg_data} or \code{eeg_epochs} object}
 
-\item{m}{smoothing constraint (higher = more rigid)}
+\item{...}{Other parameters}
 
-\item{smoothing}{lambda constant}
+\item{m}{smoothing constraint (higher = more rigid splines)}
 
-\item{scaling}{Default scaling (1) is uV / m^2.}
+\item{smoothing}{lambda constant. Added to the Defaults to 1e-05}
+
+\item{scaling}{Default scaling (1) is uV / m^2. Note that this depends on the
+units of the electrode co-ordinates.}
 }
 \description{
-Calculate current source densities
+Convert an \code{eeg_data} or \code{eeg_epochs} object to using Current
+Source Densities. This command uses a spherical spline algorithm (Perrin et
+al., 1989) to compute scalp surface Laplacian/current source density
+estimates of scalp potentials, a reference-free measure of electrical
+activity that emphasises more local spatial features
 }
-\keyword{internal}
+\section{Methods (by class)}{
+\itemize{
+\item \code{default}: Default method to detect unknown classes.
+
+\item \code{eeg_data}: Transform eeg_data to CSD
+
+\item \code{eeg_epochs}: Transform eeg_data to CSD
+}}
+
+\examples{
+csd_epochs <- compute_csd(demo_epochs)
+plot_butterfly(csd_epochs)
+}
+\references{
+[1] Perrin, F., Pernier, J., Bertrand, O., Echallier, J.F.
+  (1989). Spherical splines for scalp potential and current density mapping.
+  Electroencephalography and Clinical Neurophysiology, 72(2), 184-187. PMID:
+  2464490 [2] Kayser, J., Tenke, C.E. (2006). Principal components analysis
+  of Laplacian waveforms as a generic method for identifying ERP generator
+  patterns: I. Evaluation with auditory oddball tasks. Clinical
+  Neurophysiology, 117(2), 348-368. [3] Kayser, J., Tenke, C.E. (2015).
+  Issues and considerations for using the scalp surface Laplacian in EEG/ERP
+  research: A tutorial review. International Journal of Psycholphysiology,
+  97(3), 189-209
+}
+\author{
+Matt Craddock \email{matt@mattcraddock.com}
+}
