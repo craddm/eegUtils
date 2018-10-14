@@ -68,7 +68,7 @@ topoplot.default <- function(data, ...) {
 #'   only 'biosemi64alpha' available other than default 10/20 system)
 #' @param colourmap Deprecated, use palette instead.
 #' @param highlights Electrodes to highlight (in white)
-#' @param scaling Scaling factor for labels and any plot lines. Defaults to 1.
+#' @param scaling Scaling multiplication factor for labels and any plot lines. Defaults to 1.
 #'
 #' @import ggplot2
 #' @import dplyr

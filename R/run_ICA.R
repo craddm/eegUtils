@@ -15,7 +15,7 @@ run_ICA <- function(data, ...) {
   UseMethod("run_ICA", data)
 }
 
-#' @param method Only SOBI is currently implemented, so this is ignored.
+#' @param method "sobi", "fastica", or "infomax"
 #' @param maxit maximum number of iterations of the Infomax and Fastica ICA algorithms.
 #' @describeIn run_ICA Run ICA on an \code{eeg_epochs} object
 #' @export
@@ -245,6 +245,44 @@ joint_diag <- function(M,
 
 #
 
-apply_ica <- function(data) {
+apply_ica <- function(data, ...) {
+  UseMethod("apply_ica", data)
+}
 
+apply_ica.eeg_ICA <- function(data, comps, ...) {
+  ncomps <- ncol(data$mixing_matrix)
+  new_mixmat <- data$mixing_matrix[1:(ncomps - 1)]
+  new_mixmat[ , comps] <- 0
+  new_dat <- as.matrix(new_mixmat) %*% t(as.matrix(data$signals))
+  new_dat <- as.data.frame(t(new_dat))
+  names(new_dat) <- data$chan_info$electrode
+  out <-
+    eeg_data(new_dat,
+           data$srate,
+           data$events,
+           data$chan_info,
+           data$timings,
+           data$continuous,
+           reference = NULL
+          )
+  class(out) <- c("eeg_epochs", "eeg_data")
+  out
+}
+
+apply_ica.eeg_epochs <- function(data, decomp, comps, ...) {
+  if (!is.eeg_ICA(decomp)) {
+    stop("An eeg_ICA object must be supplied as decomp.")
+  } else {
+    ncomps <- ncol(decomp$mixing_matrix) - 1
+    new_mixmat <- decomp$mixing_matrix[1:(ncomps)]
+    new_mixmat[ , comps] <- 0
+    source_sigs <- as.matrix(data$signals) %*%
+      as.matrix(decomp$unmixing_matrix[, 1:ncomps])
+
+    new_dat <- as.matrix(new_mixmat) %*% t(source_sigs)
+    new_dat <- as.data.frame(t(new_dat))
+    names(new_dat) <- data$chan_info$electrode
+    data$signals <- new_dat
+    data
+  }
 }
