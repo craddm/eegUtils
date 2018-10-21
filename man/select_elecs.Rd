@@ -6,6 +6,7 @@
 \alias{select_elecs.eeg_data}
 \alias{select_elecs.eeg_evoked}
 \alias{select_elecs.eeg_ICA}
+\alias{select_elecs.eeg_tfr}
 \title{Select electrodes from a given dataset}
 \usage{
 select_elecs(data, ...)
@@ -20,6 +21,9 @@ select_elecs(data, ...)
   df_out = FALSE, ...)
 
 \method{select_elecs}{eeg_ICA}(data, component, keep = TRUE,
+  df_out = FALSE, ...)
+
+\method{select_elecs}{eeg_tfr}(data, electrode, keep = TRUE,
   df_out = FALSE, ...)
 }
 \arguments{
@@ -55,6 +59,8 @@ This is a generic function for selection of electrodes from an EEG dataset.
 \item \code{eeg_evoked}: Select electrode from an eeg_evoked object
 
 \item \code{eeg_ICA}: Select components from \code{eeg_ICA} objects.
+
+\item \code{eeg_tfr}: Select electrodes from \code{eeg_tfr} objects.
 }}
 
 \examples{

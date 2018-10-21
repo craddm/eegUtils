@@ -5,6 +5,7 @@
 \alias{rm_baseline.eeg_data}
 \alias{rm_baseline.eeg_epochs}
 \alias{rm_baseline.data.frame}
+\alias{rm_baseline.eeg_tfr}
 \title{Baseline correction}
 \usage{
 rm_baseline(data, ...)
@@ -14,6 +15,9 @@ rm_baseline(data, ...)
 \method{rm_baseline}{eeg_epochs}(data, time_lim = NULL, ...)
 
 \method{rm_baseline}{data.frame}(data, time_lim = NULL, ...)
+
+\method{rm_baseline}{eeg_tfr}(data, time_lim = NULL, type = "divide",
+  ...)
 }
 \arguments{
 \item{data}{Data to be baseline corrected.}
@@ -23,6 +27,9 @@ rm_baseline(data, ...)
 \item{time_lim}{Numeric character vector (e.g. time_lim <- c(-.1, 0)). If
 none given, defaults to mean of the whole of each epoch if the data is epoched, or the
 channel mean if the data is continuous.}
+
+\item{type}{Type of baseline correction to apply. Options are ("divide",
+"ratio", "absolute", "db")}
 }
 \description{
 Used to remove the mean of a specified time period from the data. Currently
@@ -37,6 +44,8 @@ column is always required; an epoch column is not.
 \item \code{eeg_epochs}: Remove baseline from eeg_epochs
 
 \item \code{data.frame}: Legacy method for data.frames
+
+\item \code{eeg_tfr}: Method for \code{eeg_tfr} objects
 }}
 
 \author{

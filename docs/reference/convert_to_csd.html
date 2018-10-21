@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Convolve with morlets — conv_mor • eegUtils</title>
+<title>Calculate current source densities — convert_to_csd • eegUtils</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -30,9 +30,9 @@
 
 
 
-<meta property="og:title" content="Convolve with morlets — conv_mor" />
+<meta property="og:title" content="Calculate current source densities — convert_to_csd" />
 
-<meta property="og:description" content="Convolve with morlets" />
+<meta property="og:description" content="Calculate current source densities" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -118,41 +118,37 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Convolve with morlets</h1>
-    <small class="dont-index">Source: <a href='https://github.com/craddm/eegUtils/blob/master/R/frequency_analysis.R'><code>R/frequency_analysis.R</code></a></small>
-    <div class="hidden name"><code>conv_mor.Rd</code></div>
+    <h1>Calculate current source densities</h1>
+    <small class="dont-index">Source: <a href='https://github.com/craddm/eegUtils/blob/master/R/current_source_density.R'><code>R/current_source_density.R</code></a></small>
+    <div class="hidden name"><code>convert_to_csd.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Convolve with morlets</p>
+    <p>Calculate current source densities</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>conv_mor</span>(<span class='no'>morlet_fam</span>, <span class='no'>signal</span>, <span class='no'>n</span>, <span class='no'>wavtime</span>, <span class='no'>srate</span>)</pre>
+    <pre class="usage"><span class='fu'>convert_to_csd</span>(<span class='no'>data</span>, <span class='kw'>m</span> <span class='kw'>=</span> <span class='fl'>4</span>, <span class='kw'>smoothing</span> <span class='kw'>=</span> <span class='fl'>1e-05</span>, <span class='kw'>scaling</span> <span class='kw'>=</span> <span class='fl'>1</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>morlet_fam</th>
-      <td><p>family of morlet wavelets</p></td>
+      <th>data</th>
+      <td><p><code>eeg_data</code> object</p></td>
     </tr>
     <tr>
-      <th>signal</th>
-      <td><p>signal to be convolved</p></td>
+      <th>m</th>
+      <td><p>smoothing constraint (higher = more rigid)</p></td>
     </tr>
     <tr>
-      <th>n</th>
-      <td><p>points for FFT</p></td>
+      <th>smoothing</th>
+      <td><p>lambda constant</p></td>
     </tr>
     <tr>
-      <th>wavtime</th>
-      <td><p>time points</p></td>
-    </tr>
-    <tr>
-      <th>srate</th>
-      <td><p>Sampling rate of the signal</p></td>
+      <th>scaling</th>
+      <td><p>Default scaling (1) is uV / m^2.</p></td>
     </tr>
     </table>
     
@@ -163,10 +159,6 @@
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
                 </ul>
-
-    <h2>Author</h2>
-    
-Matt Craddock <a href='mailto:matt@mattcraddock.com'>matt@mattcraddock.com</a>
 
   </div>
 </div>

@@ -12,6 +12,6 @@ morlet_res(frex, n_cycles)
 \item{n_cycles}{Number of cycles for each frequency}
 }
 \description{
-Calculate frequency and temporal standard deviations
+Calculate frequency and temporal standard deviations for the Morlet wavelets
 }
 \keyword{internal}

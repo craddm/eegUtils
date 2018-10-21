@@ -87,7 +87,7 @@ only 'biosemi64alpha' available other than default 10/20 system)}
 
 \item{highlights}{Electrodes to highlight (in white)}
 
-\item{scaling}{Scaling factor for labels and any plot lines. Defaults to 1.}
+\item{scaling}{Scaling multiplication factor for labels and any plot lines. Defaults to 1.}
 
 \item{component}{Component to plot (numeric)}
 }

@@ -20,4 +20,7 @@ conv_mor(morlet_fam, signal, n, wavtime, srate)
 \description{
 Convolve with morlets
 }
+\author{
+Matt Craddock \email{matt@mattcraddock.com}
+}
 \keyword{internal}

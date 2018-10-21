@@ -144,28 +144,29 @@ Both eeg_epochs and eeg_data objects are supported." />
   <span class='kw'>chanLocs</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"Biharmonic"</span>, <span class='kw'>r</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>grid_res</span> <span class='kw'>=</span> <span class='fl'>67</span>,
   <span class='kw'>palette</span> <span class='kw'>=</span> <span class='st'>"RdBu"</span>, <span class='kw'>interp_limit</span> <span class='kw'>=</span> <span class='st'>"skirt"</span>, <span class='kw'>contour</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
   <span class='kw'>chan_marker</span> <span class='kw'>=</span> <span class='st'>"point"</span>, <span class='kw'>quantity</span> <span class='kw'>=</span> <span class='st'>"amplitude"</span>, <span class='kw'>montage</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='no'>colourmap</span>, <span class='kw'>highlights</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)
+  <span class='no'>colourmap</span>, <span class='kw'>highlights</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>scaling</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for eeg_data</span>
 <span class='fu'>topoplot</span>(<span class='no'>data</span>, <span class='kw'>time_lim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>limits</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>chanLocs</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"Biharmonic"</span>, <span class='kw'>r</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>grid_res</span> <span class='kw'>=</span> <span class='fl'>67</span>,
   <span class='kw'>palette</span> <span class='kw'>=</span> <span class='st'>"RdBu"</span>, <span class='kw'>interp_limit</span> <span class='kw'>=</span> <span class='st'>"skirt"</span>, <span class='kw'>contour</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
   <span class='kw'>chan_marker</span> <span class='kw'>=</span> <span class='st'>"point"</span>, <span class='kw'>quantity</span> <span class='kw'>=</span> <span class='st'>"amplitude"</span>, <span class='kw'>montage</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>highlights</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)
+  <span class='kw'>highlights</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>scaling</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for eeg_epochs</span>
 <span class='fu'>topoplot</span>(<span class='no'>data</span>, <span class='kw'>time_lim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>limits</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>chanLocs</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"Biharmonic"</span>, <span class='kw'>r</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>grid_res</span> <span class='kw'>=</span> <span class='fl'>67</span>,
   <span class='kw'>palette</span> <span class='kw'>=</span> <span class='st'>"RdBu"</span>, <span class='kw'>interp_limit</span> <span class='kw'>=</span> <span class='st'>"skirt"</span>, <span class='kw'>contour</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
   <span class='kw'>chan_marker</span> <span class='kw'>=</span> <span class='st'>"point"</span>, <span class='kw'>quantity</span> <span class='kw'>=</span> <span class='st'>"amplitude"</span>, <span class='kw'>montage</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>highlights</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)
+  <span class='kw'>highlights</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>scaling</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for eeg_ICA</span>
 <span class='fu'>topoplot</span>(<span class='no'>data</span>, <span class='no'>component</span>, <span class='kw'>time_lim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>limits</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>chanLocs</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"Biharmonic"</span>, <span class='kw'>r</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>grid_res</span> <span class='kw'>=</span> <span class='fl'>67</span>, <span class='kw'>palette</span> <span class='kw'>=</span> <span class='st'>"RdBu"</span>, <span class='kw'>interp_limit</span> <span class='kw'>=</span> <span class='st'>"skirt"</span>,
   <span class='kw'>contour</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>chan_marker</span> <span class='kw'>=</span> <span class='st'>"point"</span>, <span class='kw'>quantity</span> <span class='kw'>=</span> <span class='st'>"amplitude"</span>,
-  <span class='kw'>montage</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>colourmap</span>, <span class='kw'>highlights</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
+  <span class='kw'>montage</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>colourmap</span>, <span class='kw'>highlights</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>scaling</span> <span class='kw'>=</span> <span class='no'>scaling</span>,
+  <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -252,6 +253,10 @@ only 'biosemi64alpha' available other than default 10/20 system)</p></td>
     <tr>
       <th>highlights</th>
       <td><p>Electrodes to highlight (in white)</p></td>
+    </tr>
+    <tr>
+      <th>scaling</th>
+      <td><p>Scaling multiplication factor for labels and any plot lines. Defaults to 1.</p></td>
     </tr>
     <tr>
       <th>component</th>

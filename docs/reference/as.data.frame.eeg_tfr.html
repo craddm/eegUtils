@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Convolve with morlets — conv_mor • eegUtils</title>
+<title>Convert <code>eeg_tfr</code> objects to data frames — as.data.frame.eeg_tfr • eegUtils</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -30,9 +30,9 @@
 
 
 
-<meta property="og:title" content="Convolve with morlets — conv_mor" />
+<meta property="og:title" content="Convert <code>eeg_tfr</code> objects to data frames — as.data.frame.eeg_tfr" />
 
-<meta property="og:description" content="Convolve with morlets" />
+<meta property="og:description" content="Convert eeg_tfr objects to data frames" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -118,41 +118,43 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Convolve with morlets</h1>
-    <small class="dont-index">Source: <a href='https://github.com/craddm/eegUtils/blob/master/R/frequency_analysis.R'><code>R/frequency_analysis.R</code></a></small>
-    <div class="hidden name"><code>conv_mor.Rd</code></div>
+    <h1>Convert <code>eeg_tfr</code> objects to data frames</h1>
+    <small class="dont-index">Source: <a href='https://github.com/craddm/eegUtils/blob/master/R/utils.R'><code>R/utils.R</code></a></small>
+    <div class="hidden name"><code>as.data.frame.eeg_tfr.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Convolve with morlets</p>
+    <p>Convert <code>eeg_tfr</code> objects to data frames</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>conv_mor</span>(<span class='no'>morlet_fam</span>, <span class='no'>signal</span>, <span class='no'>n</span>, <span class='no'>wavtime</span>, <span class='no'>srate</span>)</pre>
+    <pre class="usage"><span class='co'># S3 method for eeg_tfr</span>
+<span class='fu'>as.data.frame</span>(<span class='no'>x</span>, <span class='kw'>row.names</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>optional</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>long</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>morlet_fam</th>
-      <td><p>family of morlet wavelets</p></td>
+      <th>x</th>
+      <td><p>Object of class <code>eeg_tfr</code></p></td>
     </tr>
     <tr>
-      <th>signal</th>
-      <td><p>signal to be convolved</p></td>
+      <th>row.names</th>
+      <td><p>Kept for compatability with S3 generic, ignored.</p></td>
     </tr>
     <tr>
-      <th>n</th>
-      <td><p>points for FFT</p></td>
+      <th>optional</th>
+      <td><p>Kept for compatability with S3 generic, ignored.</p></td>
     </tr>
     <tr>
-      <th>wavtime</th>
-      <td><p>time points</p></td>
+      <th>long</th>
+      <td><p>Convert to long format. Defaults to FALSE.</p></td>
     </tr>
     <tr>
-      <th>srate</th>
-      <td><p>Sampling rate of the signal</p></td>
+      <th>...</th>
+      <td><p>arguments for other as.data.frame commands</p></td>
     </tr>
     </table>
     

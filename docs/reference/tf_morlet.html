@@ -131,7 +131,7 @@ in frequency domain</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>tf_morlet</span>(<span class='no'>data</span>, <span class='no'>foi</span>, <span class='no'>n_freq</span>, <span class='no'>n_cycles</span>, <span class='no'>keep_trials</span>, <span class='no'>output</span>)</pre>
+    <pre class="usage"><span class='fu'>tf_morlet</span>(<span class='no'>data</span>, <span class='no'>foi</span>, <span class='no'>n_freq</span>, <span class='no'>n_cycles</span>, <span class='no'>keep_trials</span>, <span class='no'>output</span>, <span class='no'>downsample</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -160,6 +160,10 @@ and highest frequency to resolve.</p></td>
     <tr>
       <th>output</th>
       <td><p>Sets whether output is power, phase, or fourier coefficients.</p></td>
+    </tr>
+    <tr>
+      <th>downsample</th>
+      <td><p>Downsampling factor (integer)</p></td>
     </tr>
     </table>
     

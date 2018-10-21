@@ -14,7 +14,7 @@ run_ICA(data, ...)
 
 \item{...}{Other parameters passed to function.}
 
-\item{method}{Only SOBI is currently implemented, so this is ignored.}
+\item{method}{"sobi", "fastica", or "infomax"}
 
 \item{maxit}{maximum number of iterations of the Infomax and Fastica ICA algorithms.}
 }

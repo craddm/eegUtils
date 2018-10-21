@@ -144,7 +144,11 @@ column is always required; an epoch column is not.</p>
 <span class='fu'>rm_baseline</span>(<span class='no'>data</span>, <span class='kw'>time_lim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for data.frame</span>
-<span class='fu'>rm_baseline</span>(<span class='no'>data</span>, <span class='kw'>time_lim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
+<span class='fu'>rm_baseline</span>(<span class='no'>data</span>, <span class='kw'>time_lim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)
+
+<span class='co'># S3 method for eeg_tfr</span>
+<span class='fu'>rm_baseline</span>(<span class='no'>data</span>, <span class='kw'>time_lim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"divide"</span>,
+  <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -163,6 +167,11 @@ column is always required; an epoch column is not.</p>
 none given, defaults to mean of the whole of each epoch if the data is epoched, or the
 channel mean if the data is continuous.</p></td>
     </tr>
+    <tr>
+      <th>type</th>
+      <td><p>Type of baseline correction to apply. Options are ("divide",
+"ratio", "absolute", "db")</p></td>
+    </tr>
     </table>
     
     <h2 class="hasAnchor" id="methods-by-class-"><a class="anchor" href="#methods-by-class-"></a>Methods (by class)</h2>
@@ -171,6 +180,7 @@ channel mean if the data is continuous.</p></td>
 <li><p><code>eeg_data</code>: remove baseline from continuous <code>eeg_data</code></p></li>
 <li><p><code>eeg_epochs</code>: Remove baseline from eeg_epochs</p></li>
 <li><p><code>data.frame</code>: Legacy method for data.frames</p></li>
+<li><p><code>eeg_tfr</code>: Method for <code>eeg_tfr</code> objects</p></li>
 </ul>
     
 

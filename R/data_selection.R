@@ -135,7 +135,7 @@ select_times.eeg_tfr <- function(data,
                                  df_out = FALSE,
                                  ...){
 
-  sel_rows <- find_times(data$timings$time, time_lim)
+  sel_rows <- find_times(data$timings, time_lim)
   data$timings <- data$timings[sel_rows, ]
   if (length(data$dimensions) == 3) {
     data$signals <- data$signals[sel_rows, , ]
@@ -251,6 +251,7 @@ select_elecs.eeg_data <- function(data,
     warning("Electrode(s) not found:",
         electrode[!electrode %in% colnames(data$signals)],
         ". Returning all data.")
+    return(data)
   }
 
   if (df_out) {
@@ -273,6 +274,7 @@ select_elecs.eeg_evoked <- function(data,
     warning("Electrode(s) not found:",
             electrode[!electrode %in% names(data$signals)],
             ". Returning all data.")
+    return(data)
   }
 
   sig_names <- names(data$signals) %in% electrode
@@ -280,6 +282,7 @@ select_elecs.eeg_evoked <- function(data,
   if (!keep) {
     sig_names <- !sig_names
   }
+
   data$signals <- data$signals[, sig_names, drop = FALSE]
 
   if (!is.null(data$chan_info)) {
@@ -319,6 +322,47 @@ select_elecs.eeg_ICA <- function(data,
   data$signals <- data$signals[,
                                comps,
                                drop = FALSE]
+  data
+}
+
+#'@importFrom abind asub
+#'@describeIn select_elecs Select electrodes from \code{eeg_tfr} objects.
+select_elecs.eeg_tfr <- function(data,
+                                 electrode,
+                                 keep = TRUE,
+                                 df_out = FALSE,
+                                 ...) {
+
+  elec_dim <- which(data$dimensions == "electrode")
+  data_elecs <- dimnames(data$signals)[[elec_dim]]
+  sig_names <- electrode %in% data_elecs
+
+  if (!all(sig_names)) {
+    warning("Electrode(s) not found:",
+            electrode[!electrode %in% names(data$signals)],
+            ". Returning all data.")
+    return(data)
+  }
+
+  sig_names <- data_elecs %in% electrode
+
+  if (!keep) {
+    sig_names <- !sig_names
+  }
+
+  data$signals <- abind::asub(data$signals,
+                              sig_names,
+                              elec_dim,
+                              drop = FALSE)
+
+  if (!is.null(data$chan_info)) {
+    data$chan_info <- data$chan_info[data$chan_info$electrode %in% data_elecs[sig_names], ]
+  }
+
+  if (df_out) {
+    #return(as.data.frame(data))
+  }
+
   data
 }
 

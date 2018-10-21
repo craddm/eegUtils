@@ -12,6 +12,7 @@ fft_n(signal, n)
 \item{n}{Number of FFT points}
 }
 \description{
-Either zero-pads or truncates a signal to N and runs an FFT
+Either zero-pads by adding trailing zeroes, or truncates a signal to N and
+runs an FFT.
 }
 \keyword{internal}

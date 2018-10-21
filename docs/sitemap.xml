@@ -19,6 +19,9 @@
     <loc>http://craddm.github.io/eegUtils/reference/as.data.frame.eeg_ICA.html</loc>
   </url>
   <url>
+    <loc>http://craddm.github.io/eegUtils/reference/as.data.frame.eeg_tfr.html</loc>
+  </url>
+  <url>
     <loc>http://craddm.github.io/eegUtils/reference/browse_data.html</loc>
   </url>
   <url>
@@ -56,6 +59,9 @@
   </url>
   <url>
     <loc>http://craddm.github.io/eegUtils/reference/convert_tfr.html</loc>
+  </url>
+  <url>
+    <loc>http://craddm.github.io/eegUtils/reference/convert_to_csd.html</loc>
   </url>
   <url>
     <loc>http://craddm.github.io/eegUtils/reference/conv_mor.html</loc>
@@ -296,6 +302,9 @@
   </url>
   <url>
     <loc>http://craddm.github.io/eegUtils/reference/topoplot.html</loc>
+  </url>
+  <url>
+    <loc>http://craddm.github.io/eegUtils/reference/welch_fft.html</loc>
   </url>
   <url>
     <loc>http://craddm.github.io/eegUtils/articles/data_structures.html</loc>

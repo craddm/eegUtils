@@ -140,11 +140,13 @@ performed using convolution in the frequency domain.</p>
 
 <span class='co'># S3 method for eeg_epochs</span>
 <span class='fu'>compute_tfr</span>(<span class='no'>data</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"morlet"</span>, <span class='no'>foi</span>, <span class='no'>n_freq</span>,
-  <span class='kw'>n_cycles</span> <span class='kw'>=</span> <span class='fl'>7</span>, <span class='kw'>keep_trials</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>output</span> <span class='kw'>=</span> <span class='st'>"power"</span>, <span class='no'>...</span>)
+  <span class='kw'>n_cycles</span> <span class='kw'>=</span> <span class='fl'>7</span>, <span class='kw'>keep_trials</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>output</span> <span class='kw'>=</span> <span class='st'>"power"</span>,
+  <span class='kw'>downsample</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for eeg_evoked</span>
 <span class='fu'>compute_tfr</span>(<span class='no'>data</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"morlet"</span>, <span class='no'>foi</span>, <span class='no'>n_freq</span>,
-  <span class='kw'>n_cycles</span> <span class='kw'>=</span> <span class='fl'>7</span>, <span class='kw'>keep_trials</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>output</span> <span class='kw'>=</span> <span class='st'>"power"</span>, <span class='no'>...</span>)</pre>
+  <span class='kw'>n_cycles</span> <span class='kw'>=</span> <span class='fl'>7</span>, <span class='kw'>keep_trials</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>output</span> <span class='kw'>=</span> <span class='st'>"power"</span>,
+  <span class='kw'>downsample</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -172,15 +174,19 @@ and highest frequency to resolve.</p></td>
     </tr>
     <tr>
       <th>n_cycles</th>
-      <td><p>Number of cycles at each frequency.</p></td>
+      <td><p>Scalar. Number of cycles at each frequency. Currently only supports a single n_cycles at all frequencies</p></td>
     </tr>
     <tr>
       <th>keep_trials</th>
-      <td><p>Keep single trials or average over them before returning.</p></td>
+      <td><p>Keep single trials or average over them before returning. Defaults to FALSE.</p></td>
     </tr>
     <tr>
       <th>output</th>
       <td><p>Sets whether output is power, phase, or fourier coefficients.</p></td>
+    </tr>
+    <tr>
+      <th>downsample</th>
+      <td><p>Downsample after performing time-frequency analysis. Scalar. Selects every</p></td>
     </tr>
     </table>
     

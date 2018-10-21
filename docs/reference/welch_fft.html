@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Convolve with morlets — conv_mor • eegUtils</title>
+<title>Welch fft — welch_fft • eegUtils</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -30,9 +30,9 @@
 
 
 
-<meta property="og:title" content="Convolve with morlets — conv_mor" />
+<meta property="og:title" content="Welch fft — welch_fft" />
 
-<meta property="og:description" content="Convolve with morlets" />
+<meta property="og:description" content="Internal function for calculating the PSD using Welch's method" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -118,41 +118,45 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Convolve with morlets</h1>
+    <h1>Welch fft</h1>
     <small class="dont-index">Source: <a href='https://github.com/craddm/eegUtils/blob/master/R/frequency_analysis.R'><code>R/frequency_analysis.R</code></a></small>
-    <div class="hidden name"><code>conv_mor.Rd</code></div>
+    <div class="hidden name"><code>welch_fft.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Convolve with morlets</p>
+    <p>Internal function for calculating the PSD using Welch's method</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>conv_mor</span>(<span class='no'>morlet_fam</span>, <span class='no'>signal</span>, <span class='no'>n</span>, <span class='no'>wavtime</span>, <span class='no'>srate</span>)</pre>
+    <pre class="usage"><span class='fu'>welch_fft</span>(<span class='no'>data</span>, <span class='no'>seg_length</span>, <span class='no'>n_fft</span>, <span class='no'>noverlap</span>, <span class='no'>n_sig</span>, <span class='no'>srate</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>morlet_fam</th>
-      <td><p>family of morlet wavelets</p></td>
+      <th>data</th>
+      <td><p>Object to perform FFT on</p></td>
     </tr>
     <tr>
-      <th>signal</th>
-      <td><p>signal to be convolved</p></td>
+      <th>seg_length</th>
+      <td><p>length of each segment of data</p></td>
     </tr>
     <tr>
-      <th>n</th>
-      <td><p>points for FFT</p></td>
+      <th>n_fft</th>
+      <td><p>length of FFT</p></td>
     </tr>
     <tr>
-      <th>wavtime</th>
-      <td><p>time points</p></td>
+      <th>noverlap</th>
+      <td><p>overlap between segments</p></td>
+    </tr>
+    <tr>
+      <th>n_sig</th>
+      <td><p>number of samples total</p></td>
     </tr>
     <tr>
       <th>srate</th>
-      <td><p>Sampling rate of the signal</p></td>
+      <td><p>Sampling rate of the data</p></td>
     </tr>
     </table>
     
@@ -163,10 +167,6 @@
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
                 </ul>
-
-    <h2>Author</h2>
-    
-Matt Craddock <a href='mailto:matt@mattcraddock.com'>matt@mattcraddock.com</a>
 
   </div>
 </div>

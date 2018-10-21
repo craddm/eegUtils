@@ -349,6 +349,36 @@ as.data.frame.eeg_ICA <- function(x,
   df
 }
 
+#' Convert \code{eeg_tfr} objects to data frames
+#'
+#' @author Matt Craddock \email{matt@@mattcraddock.com}
+#' @param x Object of class \code{eeg_tfr}
+#' @param row.names Kept for compatability with S3 generic, ignored.
+#' @param optional Kept for compatability with S3 generic, ignored.
+#' @param long Convert to long format. Defaults to FALSE.
+#' @param ... arguments for other as.data.frame commands
+#'
+#' @importFrom tidyr spread
+#' @export
+as.data.frame.eeg_tfr <- function(x,
+                                  row.names = NULL,
+                                  optional = FALSE,
+                                  long = FALSE,
+                                  ...) {
+
+  out_df <- as.data.frame.table(x$signals,
+                                stringsAsFactors = FALSE)
+  names(out_df) <- c(x$dimensions, "power")
+  out_df$time <- as.numeric(out_df$time)
+  out_df$frequency <- as.numeric(out_df$frequency)
+  if (!long) {
+    out_df <- tidyr::spread(out_df, electrode, power)
+    return(out_df)
+  }
+  out_df
+}
+
+
 
 #' Check consistency of labels
 #'
@@ -359,6 +389,7 @@ as.data.frame.eeg_ICA <- function(x,
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #' @param cond_labs labels submitted by the user
 #' @param data_labs labels from the actual data
+#' @keywords internal
 #' @noRd
 
 label_check <- function(cond_labs, data_labs) {

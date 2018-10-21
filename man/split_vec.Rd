@@ -2,7 +2,7 @@
 % Please edit documentation in R/frequency_analysis.R
 \name{split_vec}
 \alias{split_vec}
-\title{Segment data.}
+\title{Segment data}
 \usage{
 split_vec(vec, seg_length, overlap)
 }

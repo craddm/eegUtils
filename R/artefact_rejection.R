@@ -208,8 +208,6 @@ faster_cine <- function(data, ...) {
     return(data)
   }
 
-
-
   # go through each epoch and interpolate bad channels
   bad_epoch_nos <- epoch_nos[!good_epochs]
   bad_epochs <- lapply(bad_epoch_nos,

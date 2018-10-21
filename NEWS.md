@@ -8,6 +8,7 @@
 - `plot_timecourse()` overhauled to be S3 method
 - `select_elecs()` now works for `eeg_evoked` objects
 - `eeg_decomp` function in progress for performing SSD analyses
+- Various methods added for TFR analyses
 
 # eegUtils 0.2.1
 

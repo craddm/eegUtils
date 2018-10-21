@@ -142,6 +142,10 @@ plot_tfr <- function(data,
     stop("Object of class eeg_tfr required.")
   }
 
+  if (!is.null(time_lim)) {
+    data <- select_times(data, time_lim)
+  }
+
   if (length(data$dimensions) == 4) {
     data$signals <- apply(data$signals,
                           c(1, 2, 3),
@@ -155,7 +159,6 @@ plot_tfr <- function(data,
     aa$time <- as.numeric(aa$time)
     aa$frequency <- as.numeric(aa$frequency)
     aa$power <- as.numeric(aa$power)
-    #aa <- tidyr::gather(aa, frequency, power, -time)
     ggplot2::ggplot(aa, aes(x = time,
                             y = frequency,
                             fill = power)) +

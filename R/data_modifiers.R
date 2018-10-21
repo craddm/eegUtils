@@ -239,6 +239,47 @@ rm_baseline.data.frame <- function(data,
   data
 }
 
+#' @param type Type of baseline correction to apply. Options are ("divide",
+#'   "ratio", "absolute", "db")
+#' @describeIn rm_baseline Method for \code{eeg_tfr} objects
+rm_baseline.eeg_tfr <- function(data,
+                                time_lim = NULL,
+                                type = "divide",
+                                ...) {
+  bline <- select_times(data, time_lim)
+  bline <- apply(bline$signals,
+                 c(2, 3),
+                 mean,
+                 na.rm = TRUE)
+
+  do_corrs <- function(data,
+                       type,
+                       bline) {
+    switch(type,
+           "divide" = ((data - bline) / bline) * 100,
+           "absolute" = data - bline,
+           "db" = 10 * log10(data / bline),
+           "ratio" = data / bline,
+           )
+  }
+  zz <- apply(data$signals,
+              1,
+              do_corrs,
+              type = type,
+              bline = bline)
+
+              #function(x) x / bline)
+  orig_dims <- dim(data$signals)
+  dim(zz) <- c(orig_dims[2],
+               orig_dims[3],
+               orig_dims[1])
+  zz <- aperm(zz,
+              c(3, 1, 2))
+  data$signals[,,] <- zz
+  data$freq_info$baseline <- type
+  data
+}
+
 #' Create epochs from EEG data
 #'
 #' Creates epochs around specified event triggers. Requires data of class
