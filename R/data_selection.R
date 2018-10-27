@@ -138,9 +138,9 @@ select_times.eeg_tfr <- function(data,
   sel_rows <- find_times(data$timings, time_lim)
   data$timings <- data$timings[sel_rows, ]
   if (length(data$dimensions) == 3) {
-    data$signals <- data$signals[sel_rows, , ]
+    data$signals <- data$signals[sel_rows, , , drop = FALSE]
   } else {
-    data$signals <- data$signals[sel_rows, , , ]
+    data$signals <- data$signals[sel_rows, , , , drop = FALSE]
   }
   data
 }
@@ -155,14 +155,16 @@ select_times.eeg_tfr <- function(data,
 find_times <- function(timings,
                        time_lim) {
 
-  if (length(time_lim) == 1) {
-    warning("Must enter two timepoints when selecting a time range;
-        using whole range.")
-  } else if (length(time_lim) == 2) {
+  if (length(time_lim) == 2) {
     time_lim[1] <- timings$time[which.min(abs(timings$time - time_lim[1]))]
     time_lim[2] <- timings$time[which.min(abs(timings$time - time_lim[2]))]
     sel_rows <- timings$time >= time_lim[1] & timings$time <= time_lim[2]
+  } else {
+  warning("Must enter two timepoints when selecting a time range;
+          using whole range.")
+    sel_rows <- rep(TRUE, length = length(timings$time))
   }
+
   sel_rows
 }
 

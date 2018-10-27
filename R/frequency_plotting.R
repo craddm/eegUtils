@@ -124,18 +124,33 @@ plot_psd.eeg_ICA <- function(data,
     xlab("Frequency (Hz)")
 
 }
-#' Plot TFR objects
+#' Time-frequency plot
 #'
-#' @param data object of class eeg_tfr
-#' @param electrode Electrode to plot
-#' @param interpolate interpolation of raster
-#' @param time_lim Time limits of plot
-#' @noRd
+#' Create time-frequency plot of an \code{eeg_tfr} object.
+#'
+#' Various different baseline options can be applied.
+#'
+#' @param data Object of class \code{eeg_tfr}
+#' @param electrode Electrode to plot. If none is supplied, averages over all electrodes.
+#' @param time_lim Time limits of plot.
+#' @param freq_range Vector of two numbers. (e.g. c(8, 40)).
+#' @param baseline Baseline period
+#' @param baseline_type baseline correction to apply. Defaults to "none".
+#' @param fill_lims Custom colour scale (i.e. range of power). e.g. c(-5, 5).
+#' @param interpolate Interpolation of raster for smoother plotting.
+#' @author Matt Craddock \email{matt@@mattcraddock.com}
+#' @importFrom purrr partial
+#' @import ggplot2
+#' @export
 
 plot_tfr <- function(data,
-                     electrode,
-                     interpolate = FALSE,
+                     electrode = NULL,
                      time_lim = NULL,
+                     freq_range = NULL,
+                     baseline_type = "none",
+                     baseline = NULL,
+                     fill_lims = NULL,
+                     interpolate = FALSE,
                      ...) {
 
   if (!class(data) == "eeg_tfr") {
@@ -146,28 +161,76 @@ plot_tfr <- function(data,
     data <- select_times(data, time_lim)
   }
 
+  if (!is.null(electrode)) {
+    data <- select_elecs(data, electrode)
+  }
+
+  if (!is.null(freq_range)) {
+    data_freqs <- as.numeric(dimnames(data$signals)[[3]])
+    data_freqs <- (data_freqs >= freq_range[1] & data_freqs <= freq_range[2])
+    data$signals <- data$signals[, , data_freqs, drop = FALSE]
+  }
+
   if (length(data$dimensions) == 4) {
     data$signals <- apply(data$signals,
                           c(1, 2, 3),
                           mean)
   }
 
-  if (electrode %in% dimnames(data$signals)[[2]]) {
-    aa <- as.data.frame.table(data$signals[, electrode, ],
-                              stringsAsFactors = FALSE)
-    names(aa) <- c("time", "frequency", "power")
-    aa$time <- as.numeric(aa$time)
-    aa$frequency <- as.numeric(aa$frequency)
-    aa$power <- as.numeric(aa$power)
-    ggplot2::ggplot(aa, aes(x = time,
-                            y = frequency,
-                            fill = power)) +
-      geom_raster(interpolate = interpolate) +
-      labs(y = "Frequency (Hz)",
-           x = "Time (s)",
-           fill = "Power (a.u.)")
-  } else {
-    stop("Electrode not found.")
+  if (baseline_type != "none") {
+    data <- rm_baseline(data,
+                        time_lim = baseline,
+                        type = baseline_type)
   }
 
+  fill_lab <-
+    switch(data$freq_info$baseline,
+           "none" = "Power (a.u.)",
+           "db" = "Power (dB)",
+           "divide" = "Relative power (%)",
+           "ratio" = "Power ratio",
+           "pc" = "Percent change (%)",
+           "absolute" = "Power (a.u.)",
+           "Power (a.u.)")
+
+  if (is.null(fill_lims)) {
+    fill_lims <- abs(c(min(data$signals, na.rm = TRUE),
+                       max(data$signals, na.rm = TRUE)))
+    fill_lims <- max(fill_lims)
+    fill_lims <- c(-fill_lims, fill_lims)
+  }
+
+  fill_dist <- purrr::partial(scale_fill_distiller,
+                              palette = "RdBu",
+                              limits = fill_lims,
+                              oob = scales::squish)
+
+  fill_colour <-
+    switch(data$freq_info$baseline,
+           "none" = scale_fill_viridis_c(limits = fill_lims,
+                                         oob = scales::squish),
+           "absolute" = fill_dist(),
+           "db" = fill_dist(),
+           "divide" = fill_dist(),
+           "ratio" = fill_dist(),
+           "pc" = fill_dist(),
+           scale_fill_viridis_c())
+
+  data <- as.data.frame(data, long = TRUE)
+
+  tfr_plot <-
+    ggplot2::ggplot(data,
+                    aes(x = time,
+                        y = frequency,
+                        fill = power)) +
+    geom_raster(interpolate = interpolate) +
+    labs(x = "Time (s)",
+         y = "Frequency (Hz)",
+         fill = fill_lab) +
+    scale_x_continuous(expand = c(0, 0)) +
+    scale_y_continuous(expand = c(0, 0)) +
+    theme_classic() +
+    fill_colour
+
+  tfr_plot
 }

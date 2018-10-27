@@ -3,6 +3,11 @@
 
 ### Function changes
 - `topoplot()` now has a scaling parameter to scale the size of any lines or markers drawn on the plot
+- `plot_tfr` function now useable, with baseline correction added.
+- `rm_baseline` now handles `eeg_tfr` objects.
+- `as.data.frame` method added for `eeg_tfr` objects.
+- `compute_tfr` function now available for use.
+- Data selectors added for `eeg_tfr` objects (e.g. `select_elecs`)
 
 ### Internal changes/ bug fixes
 - `plot_timecourse()` overhauled to be S3 method

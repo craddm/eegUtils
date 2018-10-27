@@ -245,12 +245,16 @@ split_vec <- function(vec, seg_length, overlap) {
 #' @param data An object of class \code{eeg_epochs}.
 #' @param ... Further TFR parameters
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
+#' @examples
+#' compute_tfr(demo_epochs, method = "morlet", foi = c(4, 30), n_freqs = 10, n_cycles = 3)
+#' @export
 
 compute_tfr <- function(data, ...) {
   UseMethod("compute_tfr", data)
 }
 
 #' @describeIn compute_tfr Default method for compute_tfr
+#' @export
 compute_tfr.default <- function(data) {
   warning("compute_tfr requires data in eeg_epochs format.")
 }
@@ -258,12 +262,16 @@ compute_tfr.default <- function(data) {
 #' @param method Time-frequency analysis method. Defaults to "morlet".
 #' @param foi Frequencies of interest. Scalar or character vector of the lowest
 #'   and highest frequency to resolve.
-#' @param n_freq Number of frequencies to be resolved.
-#' @param n_cycles Scalar. Number of cycles at each frequency. Currently only supports a single n_cycles at all frequencies
-#' @param keep_trials Keep single trials or average over them before returning. Defaults to FALSE.
+#' @param n_freq Number of frequencies to be resolved. Scalar.
+#' @param n_cycles Scalar. Number of cycles at each frequency. Currently only
+#'   supports a single number of cycles at all frequencies.
+#' @param keep_trials Keep single trials or average over them before returning.
+#'   Defaults to FALSE.
 #' @param output Sets whether output is power, phase, or fourier coefficients.
-#' @param downsample Downsample after performing time-frequency analysis. Scalar. Selects every
+#' @param downsample Downsampling factor. Integer. Selects every n samples after
+#'   performing time-frequency analysis.
 #' @describeIn compute_tfr Default method for compute_tfr
+#' @export
 
 compute_tfr.eeg_epochs <- function(data,
                                    method = "morlet",
@@ -370,6 +378,11 @@ tf_morlet <- function(data,
                           n_cycles = n_cycles
                           )
 
+  # This is a total hack to make the rest of the code behave with eeg_evoked data
+  if (is.eeg_evoked(data)) {
+    data$timings$epoch <- 1
+  }
+
   data$signals <- split(data$signals,
                         data$timings$epoch)
   max_length <- nrow(data$signals[[1]])
@@ -380,22 +393,16 @@ tf_morlet <- function(data,
   mf_zp <- fft_n(morlet_family,
                  n_conv)
 
+
   # Normalise wavelets for FFT (as suggested by Mike X. Cohen):
-  # 1) get the index for the absolute maximum
-  # 2) divide each wavelet by its absolute maximum
-  mf_zp_maxes <- apply(abs(mf_zp),
-                       2,
-                       which.max)
-  mf_zp_maxes <- lapply(seq_along(mf_zp_maxes),
-                  function(x) mf_zp[mf_zp_maxes[[x]], x])
-  norm_mf <- lapply(seq_along(mf_zp_maxes),
-                                  function(x) mf_zp[, x] / mf_zp_maxes[[x]])
-  norm_mf <- matrix(unlist(norm_mf), ncol = n_freq)
+  norm_mf <- wavelet_norm(mf_zp,
+                          n_freq)
 
   # Run the FFT convolutions on each individual trial
 
   # generate a vector for selection of specific timepoints
   time_sel <- seq(1, max_length, by = downsample)
+
   trial_conv <- function(trial_dat) {
     trial_dat <-
       convert_tfr(
@@ -405,15 +412,17 @@ tf_morlet <- function(data,
                  sigtime,
                  data$srate),
         output)
-    trial_dat[time_sel, , ]
+    trial_dat[time_sel, , , drop = FALSE]
   }
 
   data$signals <- lapply(data$signals,
                          trial_conv)
 
   sigtime <- sigtime[time_sel]
+  data$timings <- data$timings[data$timings$time %in% sigtime, ]
   n_epochs <- length(data$signals)
   sig_dims <- dim(data$signals[[1]])
+
   # Bind single trial matrices together into a single matrix
   # do.call method is slower than abind, but uses less memory
   data$signals <- do.call(rbind, data$signals)
@@ -457,19 +466,21 @@ tf_morlet <- function(data,
     return(data)
   }
 
-  if (output == "phase") {
-    data$signals <- apply(data$signals,
-                          c(1, 2, 3),
-                          circ_mean)
-  } else {
-    avg_tf <- array(0, dim = dim(data$signals)[2:4])
-    for (iz in 1:dim(data$signals)[3]) {
-      for (ij in 1:dim(data$signals)[4]) {
-        avg_tf[, iz, ij] <- colMeans(data$signals[ , , iz, ij])
-        }
-    }
-    data$signals <- avg_tf
-  }
+
+  data$signals <- average_tf(data)
+  # if (output == "phase") {
+  #   data$signals <- apply(data$signals,
+  #                         c(1, 2, 3),
+  #                         circ_mean)
+  # } else {
+  #   avg_tf <- array(0, dim = dim(data$signals)[2:4])
+  #   for (iz in 1:dim(data$signals)[3]) {
+  #     for (ij in 1:dim(data$signals)[4]) {
+  #       avg_tf[, iz, ij] <- colMeans(data$signals[ , , iz, ij])
+  #       }
+  #   }
+  #   data$signals <- avg_tf
+  # }
 
   dimnames(data$signals) <- list(sigtime,
                                  elecs,
@@ -612,8 +623,7 @@ conv_mor <- function(morlet_fam,
 
   nkern <- n - n_times + 1
   nHfkn <- floor(nkern / 2) + 1
-  tf_matrix <- tf_matrix[nHfkn:(nrow(tf_matrix) - nHfkn + 1), , ]
-  #message("trial done")
+  tf_matrix <- tf_matrix[nHfkn:(nrow(tf_matrix) - nHfkn + 1), , , drop = FALSE]
   tf_matrix
 }
 
@@ -679,5 +689,48 @@ convert_tfr <- function(data, output) {
          "fourier" = data)
   } else {
     warning("Data is not complex, returning original data.")
+  }
+}
+
+#' Normalise Morlet wavelets
+#'
+#' Normalise the FFT'd Morlet wavelet family as recommended by Mike X Cohen,
+#' dividing each wavelet by its absolute maximum. This should result in each
+#' frequency being passed at unit amplitude, and the resulting convolution with
+#' the signal should return units approximately on the original scale (i.e. uV^2
+#' / Hz)
+#'
+#' @param mf_zp A zero-padded, FFT'd morlet wavelet family
+#' @param n_freq Number of frequencies
+#' @keywords internal
+wavelet_norm <- function(mf_zp, n_freq) {
+  mf_zp_maxes <- apply(abs(mf_zp),
+                       2,
+                       which.max)
+  mf_zp_maxes <- lapply(seq_along(mf_zp_maxes),
+                        function(x) mf_zp[mf_zp_maxes[[x]], x])
+  norm_mf <- lapply(seq_along(mf_zp_maxes),
+                    function(x) mf_zp[, x] / mf_zp_maxes[[x]])
+  norm_mf <- matrix(unlist(norm_mf),
+                    ncol = n_freq)
+}
+
+#' Internal function for averaging over epochs
+#' @param data data to average over
+#' @keywords internal
+average_tf <- function(data) {
+
+  if (data$freq_info$output == "phase") {
+    data$signals <- apply(data$signals,
+                          c(1, 2, 3),
+                          circ_mean)
+  } else {
+    avg_tf <- array(0, dim = dim(data$signals)[2:4])
+    for (iz in 1:dim(data$signals)[3]) {
+      for (ij in 1:dim(data$signals)[4]) {
+        avg_tf[, iz, ij] <- colMeans(data$signals[ , , iz, ij, drop = FALSE])
+      }
+    }
+    data$signals <- avg_tf
   }
 }

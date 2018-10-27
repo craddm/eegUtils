@@ -242,41 +242,56 @@ rm_baseline.data.frame <- function(data,
 #' @param type Type of baseline correction to apply. Options are ("divide",
 #'   "ratio", "absolute", "db")
 #' @describeIn rm_baseline Method for \code{eeg_tfr} objects
+#' @export
 rm_baseline.eeg_tfr <- function(data,
                                 time_lim = NULL,
                                 type = "divide",
                                 ...) {
+
+  valid_types <- c("absolute",
+                   "divide",
+                   "pc",
+                   "ratio",
+                   "db")
+  if (!(type %in% valid_types)) {
+    stop("Unknown baseline type ", type)
+  }
+
   bline <- select_times(data, time_lim)
-  bline <- apply(bline$signals,
-                 c(2, 3),
-                 mean,
-                 na.rm = TRUE)
+  bline <- colMeans(bline$signals, na.rm = TRUE)
 
   do_corrs <- function(data,
                        type,
                        bline) {
     switch(type,
            "divide" = ((data - bline) / bline) * 100,
+           "pc" = ((data - bline) / bline) * 100 - 100,
            "absolute" = data - bline,
            "db" = 10 * log10(data / bline),
-           "ratio" = data / bline,
+           "ratio" = data / bline
            )
   }
-  zz <- apply(data$signals,
+
+  orig_dims <- dim(data$signals)
+
+  orig_dimnames <- dimnames(data$signals)
+
+  data$signals <- apply(data$signals,
               1,
               do_corrs,
               type = type,
               bline = bline)
 
               #function(x) x / bline)
-  orig_dims <- dim(data$signals)
-  dim(zz) <- c(orig_dims[2],
+
+  dim(data$signals) <- c(orig_dims[2],
                orig_dims[3],
                orig_dims[1])
-  zz <- aperm(zz,
-              c(3, 1, 2))
-  data$signals[,,] <- zz
+  data$signals <- aperm(data$signals,
+                        c(3, 1, 2))
+  dimnames(data$signals) <- orig_dimnames
   data$freq_info$baseline <- type
+  data$freq_info$baseline_time <- time_lim
   data
 }
 

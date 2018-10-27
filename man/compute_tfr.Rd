@@ -29,15 +29,18 @@ compute_tfr(data, ...)
 \item{foi}{Frequencies of interest. Scalar or character vector of the lowest
 and highest frequency to resolve.}
 
-\item{n_freq}{Number of frequencies to be resolved.}
+\item{n_freq}{Number of frequencies to be resolved. Scalar.}
 
-\item{n_cycles}{Scalar. Number of cycles at each frequency. Currently only supports a single n_cycles at all frequencies}
+\item{n_cycles}{Scalar. Number of cycles at each frequency. Currently only
+supports a single number of cycles at all frequencies.}
 
-\item{keep_trials}{Keep single trials or average over them before returning. Defaults to FALSE.}
+\item{keep_trials}{Keep single trials or average over them before returning.
+Defaults to FALSE.}
 
 \item{output}{Sets whether output is power, phase, or fourier coefficients.}
 
-\item{downsample}{Downsample after performing time-frequency analysis. Scalar. Selects every}
+\item{downsample}{Downsampling factor. Integer. Selects every n samples after
+performing time-frequency analysis.}
 }
 \description{
 This function creates a time frequency represention of EEG time series data.
@@ -53,6 +56,9 @@ performed using convolution in the frequency domain.
 \item \code{eeg_evoked}: Method for \code{eeg_evoked} objects.
 }}
 
+\examples{
+compute_tfr(demo_epochs, method = "morlet", foi = c(4, 30), n_freqs = 10, n_cycles = 3)
+}
 \author{
 Matt Craddock \email{matt@mattcraddock.com}
 }
