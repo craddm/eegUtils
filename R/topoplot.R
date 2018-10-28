@@ -152,7 +152,8 @@ topoplot.data.frame <- function(data,
                                            x,
                                            y,
                                            electrode),
-                           z = mean(!!rlang::parse_quosure(quantity)))
+                           z = mean(!!rlang::parse_quosure(quantity),
+                                    na.rm = TRUE))
 
   # Cut the data frame down to only the necessary columns, and make sure it has
   # the right names
@@ -497,6 +498,63 @@ topoplot.eeg_ICA <- function(data,
                      electrode = data$mixing_matrix$electrode)
   topoplot(data, chanLocs = chan_info)
 
+}
+
+#' @param freq_range Range of frequencies to average over.
+#' @describeIn topoplot Topographical plotting of \code{eeg_tfr} objects.
+#' @export
+
+topoplot.eeg_tfr <- function(data,
+                             time_lim = NULL,
+                             limits = NULL,
+                             chanLocs = NULL,
+                             method = "Biharmonic",
+                             r = NULL,
+                             grid_res = 67,
+                             palette = "RdBu",
+                             interp_limit = "skirt",
+                             contour = TRUE,
+                             chan_marker = "point",
+                             quantity = "power",
+                             montage = NULL,
+                             highlights = NULL,
+                             scaling = 1,
+                             freq_range = NULL,
+                             ...) {
+
+  if (!is.null(data$chan_info)) {
+    chanLocs <- data$chan_info
+  }
+
+  if (!is.null(freq_range)) {
+    data <- select_freqs(data, freq_range)
+  }
+
+  if (data$freq_info$baseline == "none") {
+    palette <- "viridis"
+  }
+
+  # average over epochs first
+  data <- eeg_average(data)
+
+  data <- as.data.frame(data,
+                        long = TRUE)
+  topoplot(data,
+           time_lim = time_lim,
+           limits = limits,
+           chanLocs = chanLocs,
+           method = method,
+           r = r,
+           grid_res = grid_res,
+           palette = palette,
+           interp_limit = interp_limit,
+           contour = contour,
+           chan_marker = chan_marker,
+           quantity = quantity,
+           montage = montage,
+           highlights = highlights,
+           scaling = scaling,
+           passed = TRUE)
 }
 
 #' Create topoplot

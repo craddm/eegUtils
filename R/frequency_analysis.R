@@ -108,6 +108,49 @@ compute_psd.eeg_epochs <- function(data,
   }
 }
 
+#' @describeIn compute_psd Compute PSD for an \code{eeg_evoked} object
+#' @export
+
+compute_psd.eeg_evoked <- function(data,
+                                   seg_length = NULL,
+                                   noverlap = 0,
+                                   n_fft = 256,
+                                   srate = NULL,
+                                   method = "Welch",
+                                   ...) {
+  srate <- data$srate
+  if (is.null(seg_length)) {
+    seg_length <- n_fft
+  }
+  if (seg_length > n_fft) {
+    stop("seg_length cannot be greater than n_fft")
+  }
+
+  n_times <- nrow(data$signals)
+  if (n_times < seg_length) {
+    seg_length <- n_times
+  }
+  if (noverlap == 0) {
+    noverlap <- seg_length %/% 8
+  } else if (noverlap >= seg_length) {
+    stop("noverlap should not be larger than seg_length.")
+  }
+
+    if (method == "Welch") {
+    final_output <-
+      welch_fft(data$signals,
+                seg_length,
+                noverlap = noverlap,
+                n_fft = n_fft,
+                srate = srate,
+                n_sig = n_times)
+  }  else {
+    stop("Welch is the only available method at this time.")
+  }
+
+  final_output
+}
+
 #' Welch fft
 #'
 #' Internal function for calculating the PSD using Welch's method
@@ -144,8 +187,7 @@ welch_fft <- function(data,
   }
 
   # Hamming window.
-  win <- .54 - (1 - .54) * cos(2 * pi * seq(0, 1,
-                                            by = 1 / (seg_length - 1)))
+  win <- .54 - (1 - .54) * cos(2 * pi * seq(0, 1, by = 1 / (seg_length - 1)))
 
   # Normalise the window
   U <- c(t(win) %*% win)
@@ -467,20 +509,7 @@ tf_morlet <- function(data,
   }
 
 
-  data$signals <- average_tf(data)
-  # if (output == "phase") {
-  #   data$signals <- apply(data$signals,
-  #                         c(1, 2, 3),
-  #                         circ_mean)
-  # } else {
-  #   avg_tf <- array(0, dim = dim(data$signals)[2:4])
-  #   for (iz in 1:dim(data$signals)[3]) {
-  #     for (ij in 1:dim(data$signals)[4]) {
-  #       avg_tf[, iz, ij] <- colMeans(data$signals[ , , iz, ij])
-  #       }
-  #   }
-  #   data$signals <- avg_tf
-  # }
+  data <- average_tf(data)
 
   dimnames(data$signals) <- list(sigtime,
                                  elecs,
@@ -733,4 +762,5 @@ average_tf <- function(data) {
     }
     data$signals <- avg_tf
   }
+  data
 }

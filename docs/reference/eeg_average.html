@@ -92,6 +92,9 @@
     <li>
       <a href="../articles/Introduction.html">Introduction</a>
     </li>
+    <li>
+      <a href="../articles/time-frequency-analysis.html">Frequency analysis</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -136,7 +139,11 @@
 
 <span class='co'># S3 method for eeg_epochs</span>
 <span class='fu'>eeg_average</span>(<span class='no'>data</span>, <span class='kw'>cond_label</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>calc_var</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
+  <span class='kw'>calc_var</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)
+
+<span class='co'># S3 method for eeg_tfr</span>
+<span class='fu'>eeg_average</span>(<span class='no'>data</span>, <span class='kw'>cond_label</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>calc_var</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -166,6 +173,7 @@ average.</p></td>
     <ul>
 <li><p><code>default</code>: Default method for averaging EEG objects</p></li>
 <li><p><code>eeg_epochs</code>: Create evoked data from <code>eeg_epochs</code></p></li>
+<li><p><code>eeg_tfr</code>: average an eeg_tfr objects over epochs.</p></li>
 </ul>
     
 

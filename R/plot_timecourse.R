@@ -21,7 +21,7 @@ plot_timecourse <- function(data,
 #' @export
 plot_timecourse.default <- function(data,
                                     ...) {
-  stop("plot_tc() doesn't handle objects of class ",
+  stop("plot_timecourse() doesn't handle objects of class ",
        class(data))
 }
 
@@ -332,7 +332,6 @@ create_tc <- function(data,
 #' @param data EEG dataset. Should have multiple timepoints.
 #' @param ... Other parameters passed to plot_butterfly
 #' @export
-
 
 plot_butterfly <- function(data, ...) {
   UseMethod("plot_butterfly", data)

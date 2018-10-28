@@ -5,6 +5,7 @@
 \alias{plot_psd.eeg_epochs}
 \alias{plot_psd.eeg_data}
 \alias{plot_psd.eeg_ICA}
+\alias{plot_psd.data.frame}
 \title{Plot power spectral density}
 \usage{
 plot_psd(data, freq_range = NULL, ...)
@@ -15,6 +16,8 @@ plot_psd(data, freq_range = NULL, ...)
 
 \method{plot_psd}{eeg_ICA}(data, freq_range = NULL, components = NULL,
   ...)
+
+\method{plot_psd}{data.frame}(data, freq_range = NULL, ...)
 }
 \arguments{
 \item{data}{Object of class \code{eeg_epochs}}
@@ -37,6 +40,8 @@ points are used for FFTs.
 \item \code{eeg_data}: Plot PSDs for \code{eeg_epochs}.
 
 \item \code{eeg_ICA}: Plot PSD for \code{eeg_ICA} objects
+
+\item \code{data.frame}: Plot PSDs for \code{data.frame}s.
 }}
 
 \author{

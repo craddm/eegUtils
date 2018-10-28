@@ -4,6 +4,7 @@
 \alias{compute_psd}
 \alias{compute_psd.eeg_data}
 \alias{compute_psd.eeg_epochs}
+\alias{compute_psd.eeg_evoked}
 \title{Compute power spectral density}
 \usage{
 compute_psd(data, ...)
@@ -14,6 +15,9 @@ compute_psd(data, ...)
 \method{compute_psd}{eeg_epochs}(data, seg_length = NULL, noverlap = 0,
   n_fft = 256, srate = NULL, method = "Welch", keep_trials = TRUE,
   ...)
+
+\method{compute_psd}{eeg_evoked}(data, seg_length = NULL, noverlap = 0,
+  n_fft = 256, srate = NULL, method = "Welch", ...)
 }
 \arguments{
 \item{data}{Data to be plotted. Accepts objects of class \code{eeg_data}}
@@ -41,6 +45,8 @@ Currently concatenates across epochs. Returns uV^2 / Hz
 \item \code{eeg_data}: Compute PSD for an \code{eeg_data} object
 
 \item \code{eeg_epochs}: Compute PSD for an \code{eeg_epochs} object
+
+\item \code{eeg_evoked}: Compute PSD for an \code{eeg_evoked} object
 }}
 
 \author{

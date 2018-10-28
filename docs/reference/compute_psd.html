@@ -93,6 +93,9 @@ Currently concatenates across epochs. Returns uV^2 / Hz" />
     <li>
       <a href="../articles/Introduction.html">Introduction</a>
     </li>
+    <li>
+      <a href="../articles/time-frequency-analysis.html">Frequency analysis</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -140,7 +143,11 @@ Currently concatenates across epochs. Returns uV^2 / Hz</p>
 <span class='co'># S3 method for eeg_epochs</span>
 <span class='fu'>compute_psd</span>(<span class='no'>data</span>, <span class='kw'>seg_length</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>noverlap</span> <span class='kw'>=</span> <span class='fl'>0</span>,
   <span class='kw'>n_fft</span> <span class='kw'>=</span> <span class='fl'>256</span>, <span class='kw'>srate</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"Welch"</span>, <span class='kw'>keep_trials</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='no'>...</span>)</pre>
+  <span class='no'>...</span>)
+
+<span class='co'># S3 method for eeg_evoked</span>
+<span class='fu'>compute_psd</span>(<span class='no'>data</span>, <span class='kw'>seg_length</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>noverlap</span> <span class='kw'>=</span> <span class='fl'>0</span>,
+  <span class='kw'>n_fft</span> <span class='kw'>=</span> <span class='fl'>256</span>, <span class='kw'>srate</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"Welch"</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -184,6 +191,7 @@ Currently concatenates across epochs. Returns uV^2 / Hz</p>
     <ul>
 <li><p><code>eeg_data</code>: Compute PSD for an <code>eeg_data</code> object</p></li>
 <li><p><code>eeg_epochs</code>: Compute PSD for an <code>eeg_epochs</code> object</p></li>
+<li><p><code>eeg_evoked</code>: Compute PSD for an <code>eeg_evoked</code> object</p></li>
 </ul>
     
 

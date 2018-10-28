@@ -1,0 +1,68 @@
+---
+title: "Frequency analysis"
+author: "Matt Craddock"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{TFA}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  eval = nzchar(Sys.getenv("EVAL_EEG_VIGNETTE"))
+)
+```
+
+
+Periodicity is commonly observed in EEG signals. For example, oscillations in the alpha frequency range (approximately 8-13 Hz) were one of the first signals observed in the human EEG. One method of analysing this periodicity is to calculate the Power Spectral Density using a method such as Welch's FFT.
+
+In `eegUtils`, this can be achieved using `compute_psd()` and `plot_psd()`. With epoched data, `compute_psd()` calculates the PSD for each trial separately. `compute_psd()` returns a data.frame with spectral power at each resolved frequency and for each electrode. Note that `plot_psd()` can be called directly on `eeg_data` or `eeg_epochs` objects without first having to `compute_psd()`. With epoched data, it will average over epochs before plotting.
+
+```{r create-psd}
+library(eegUtils)
+demo_psd <- compute_psd(demo_epochs)
+plot_psd(demo_epochs)
+```
+
+
+## Time-frequency analysis
+
+Frequency analysis necessarily discards temporal information. One problem is that it assumes stationarity - that the signal remains stable in terms of frequency and power across the whole analysed time window. However, this is rarely the case with EEG data;
+
+Time-frequency analysis is a method of accounting for non-stationarity by decomposing the signal using a moving-window analysis, tiling the time-frequency space to resolve power over relatively shorter time-windows.
+
+In `eegUtils`, `compute_tfr()` can be used to calculate a time-frequency representation of  `eeg_epochs()`. Currently, this is achieved using Morlet wavelets. Morlet wavelets are used to window the signal, controlling spectral leakage and time-frequency specificity. Morlet wavelets have a user-defined temporal extent, which in turn determines the frequency extent. We define the temporal extent of our wavelets by **cycles**; we define it as an integer number of cycles at each frequency of interest.
+
+```{r calc-tfr}
+demo_tfr <- compute_tfr(demo_epochs,
+                        method = "morlet",
+                        foi = c(4, 30),
+                        n_freq = 12,
+                        n_cycles = 3)
+demo_tfr
+```
+
+Note that the characteristics of the wavelets, in terms of temporal and frequency standard deviations, are stored inside the \code{eeg_tfr} object:
+
+```{r morlet-res}
+demo_tfr$freq_info$morlet_resolution
+```
+
+The results of the time-frequency transformation can be plotted using the `plot_tfr()` function.
+
+```{r tfr-plot}
+plot_tfr(demo_tfr)
+```
+
+Baseline correction is common in the literature. Several different methods are possible, both for plotting only, and as a modification to the \code{eeg_tfr} object using `rm_baseline`.
+
+```{r db-plot}
+plot_tfr(demo_tfr, baseline_type = "absolute", baseline = c(-.1, 0))
+plot_tfr(demo_tfr, baseline_type = "db", baseline = c(-.1, 0))
+```
+
+

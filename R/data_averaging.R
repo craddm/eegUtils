@@ -83,6 +83,19 @@ eeg_average.eeg_epochs <- function(data,
   data
 }
 
+#' @describeIn eeg_average average an eeg_tfr objects over epochs.
+#' @export
+eeg_average.eeg_tfr <- function(data,
+                                cond_label = NULL,
+                                calc_var = NULL, ...) {
+  if (!"epoch" %in% data$dimensions) {
+    #message("Data is already averaged.")
+  } else {
+    data <- average_tf(data)
+    data$dimensions <- data$dimensions[-which(data$dimensions == "epoch")]
+  }
+  data
+}
 
 #' Grand average
 #'

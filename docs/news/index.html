@@ -89,6 +89,9 @@
     <li>
       <a href="../articles/Introduction.html">Introduction</a>
     </li>
+    <li>
+      <a href="../articles/time-frequency-analysis.html">Frequency analysis</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -128,6 +131,15 @@
 <ul>
 <li>
 <code><a href="../reference/topoplot.html">topoplot()</a></code> now has a scaling parameter to scale the size of any lines or markers drawn on the plot</li>
+<li>
+<code>plot_tfr</code> function now useable, with baseline correction added.</li>
+<li>
+<code>rm_baseline</code> now handles <code>eeg_tfr</code> objects.</li>
+<li>
+<code>as.data.frame</code> method added for <code>eeg_tfr</code> objects.</li>
+<li>
+<code>compute_tfr</code> function now available for use.</li>
+<li>Data selectors added for <code>eeg_tfr</code> objects (e.g. <code>select_elecs</code>)</li>
 </ul>
 </div>
 <div id="internal-changes-bug-fixes" class="section level3">
@@ -160,7 +172,7 @@
 <li>
 <code><a href="../reference/plot_psd.html">plot_psd()</a></code> function added to calculate and plot the PSD for <code>eeg_epochs</code> and <code>eeg_data</code> objects</li>
 <li>
-<code>plot_tfr()</code> function added to handle <code>eeg_tfr</code> objects.</li>
+<code><a href="../reference/plot_tfr.html">plot_tfr()</a></code> function added to handle <code>eeg_tfr</code> objects.</li>
 <li>
 <code><a href="../reference/erp_image.html">erp_image()</a></code> now works with <code>eeg_ICA</code> objects</li>
 <li>Generic print methods added for <code>eeg_epochs</code> and <code>eeg_data</code>

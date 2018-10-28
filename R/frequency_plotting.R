@@ -122,8 +122,35 @@ plot_psd.eeg_ICA <- function(data,
     theme_bw() +
     ylab("Decibels (10 * log10(uV^2 / Hz)") +
     xlab("Frequency (Hz)")
-
 }
+
+#' @describeIn plot_psd Plot PSDs for \code{data.frame}s.
+#' @export
+plot_psd.data.frame <- function(data,
+                                freq_range = NULL,
+                                ...) {
+
+  if ("epoch" %in% names(data)) {
+    data <- dplyr::select(data, -epoch)
+    data <- dplyr::group_by(data, frequency)
+    data <- dplyr::summarise_all(data, mean)
+  }
+  data <- tidyr::gather(data,
+                        electrode,
+                        power,
+                        -frequency)
+
+  data$power <- 10 * log10(data$power)
+  ggplot(data,
+         aes(x = frequency,
+             y = power,
+             colour = electrode)) +
+    geom_line() +
+    theme_bw() +
+    ylab("Decibels (10 * log10(uV^2 / Hz)") +
+    xlab("Frequency (Hz)")
+}
+
 #' Time-frequency plot
 #'
 #' Creates a time-frequency plot of an \code{eeg_tfr} object. The plot has time
@@ -180,6 +207,7 @@ plot_tfr <- function(data,
     data$signals <- apply(data$signals,
                           c(1, 2, 3),
                           mean)
+    data$dimensions <- data$dimensions[1:3]
   }
 
   if (baseline_type != "none") {

@@ -1,6 +1,6 @@
 ---
 title: "Introduction"
-author: "Matt Cradock and Eryk Walczak"
+author: "Matt Craddock and Eryk Walczak"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >

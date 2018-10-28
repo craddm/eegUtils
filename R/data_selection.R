@@ -362,7 +362,7 @@ select_elecs.eeg_tfr <- function(data,
   }
 
   if (df_out) {
-    #return(as.data.frame(data))
+    return(as.data.frame(data))
   }
 
   data
@@ -497,6 +497,54 @@ select_epochs.eeg_tfr <- function(data,
   } else {
     stop("Data is averaged, so no epochs present.")
   }
+  data
+}
+
+#' Select frequencies
+#'
+#' Select specific frequencies from \code{eeg_tfr} objects. Can be used to
+#' selecting either single frequencies or anything within a range.
+#'
+#' @param data An \code{eeg_tfr} object.
+#' @param freq_range The range of frequencies to retain. Can be a scale or the
+#'   lower and upper bounds. (e.g. c(5, 30))
+#' @export
+select_freqs <- function(data,
+                         freq_range) {
+  UseMethod("select_freqs", data)
+}
+
+#' @export
+select_freqs.default <- function(data,
+                                 freq_range) {
+
+  warning(paste("select_freqs() does not handle objects of class", class(data),
+                "and can currently only be used on eeg_tfr objects."))
+}
+
+#' @describeIn select_freqs Function for selecting specific frequencies from \code{eeg_tfr} objects.
+#' @export
+select_freqs.eeg_tfr <- function(data,
+                                 freq_range) {
+
+  freq_dim <- which(data$dimensions == "frequency")
+  if (length(freq_range) == 2) {
+    data_freqs <- as.numeric(dimnames(data$signals)[[freq_dim]])
+    freqs <- data_freqs >= freq_range[[1]] & data_freqs <= freq_range[[2]]
+    data$freq_info$freqs <- data$freq_info$freqs[freqs]
+  } else if (length(freq_range) == 1) {
+
+    closest_freq <- which.min(abs(data$freq_info$freqs - freq_range[1]))
+    freqs <- closest_freq
+    message(paste("Returning closest frequency, ", data$freq_info$freqs[freqs], "Hz"))
+    data$freq_info$freqs <- data$freq_info$freqs[closest_freq]
+  }
+
+  data$signals <-
+    abind::asub(data$signals,
+                freqs,
+                freq_dim,
+                drop = FALSE)
   data
 }
 

@@ -16,7 +16,12 @@ test_that("PSD computation runs correctly.", {
 test_that("TFA works on epoched data", {
   tfr_test <- compute_tfr(demo_epochs,
                           foi = c(4, 30),
-                          n_freq = 16,
+                          n_freq = 10,
                           n_cycles = 3)
   expect_s3_class(tfr_test, "eeg_tfr")
+  n_times <- length(unique(demo_epochs$timings$time))
+  expect_equal(dim(tfr_test$signals),
+               c(n_times,
+                 ncol(demo_epochs$signals),
+                 10))
 })

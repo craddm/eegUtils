@@ -93,6 +93,9 @@ points are used for FFTs." />
     <li>
       <a href="../articles/Introduction.html">Introduction</a>
     </li>
+    <li>
+      <a href="../articles/time-frequency-analysis.html">Frequency analysis</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -141,7 +144,10 @@ points are used for FFTs.</p>
 
 <span class='co'># S3 method for eeg_ICA</span>
 <span class='fu'>plot_psd</span>(<span class='no'>data</span>, <span class='kw'>freq_range</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>components</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='no'>...</span>)</pre>
+  <span class='no'>...</span>)
+
+<span class='co'># S3 method for data.frame</span>
+<span class='fu'>plot_psd</span>(<span class='no'>data</span>, <span class='kw'>freq_range</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -171,6 +177,7 @@ points are used for FFTs.</p>
 <li><p><code>eeg_epochs</code>: Plot PSDs for <code>eeg_epochs</code>.</p></li>
 <li><p><code>eeg_data</code>: Plot PSDs for <code>eeg_epochs</code>.</p></li>
 <li><p><code>eeg_ICA</code>: Plot PSD for <code>eeg_ICA</code> objects</p></li>
+<li><p><code>data.frame</code>: Plot PSDs for <code>data.frame</code>s.</p></li>
 </ul>
     
 
