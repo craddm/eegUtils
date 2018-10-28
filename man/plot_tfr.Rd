@@ -6,12 +6,13 @@
 \usage{
 plot_tfr(data, electrode = NULL, time_lim = NULL, freq_range = NULL,
   baseline_type = "none", baseline = NULL, fill_lims = NULL,
-  interpolate = FALSE, ...)
+  interpolate = FALSE)
 }
 \arguments{
 \item{data}{Object of class \code{eeg_tfr}}
 
-\item{electrode}{Electrode to plot. If none is supplied, averages over all electrodes.}
+\item{electrode}{Electrode to plot. If none is supplied, averages over all
+electrodes.}
 
 \item{time_lim}{Time limits of plot.}
 
@@ -26,10 +27,17 @@ plot_tfr(data, electrode = NULL, time_lim = NULL, freq_range = NULL,
 \item{interpolate}{Interpolation of raster for smoother plotting.}
 }
 \description{
-Create time-frequency plot of an \code{eeg_tfr} object.
+Creates a time-frequency plot of an \code{eeg_tfr} object. The plot has time
+on the x-axis and frequency on the y-axis. If no electrode is supplied, it
+will average over all electrodes.
 }
 \details{
-Various different baseline options can be applied.
+Various different baseline options can be applied here (e.g. "db" for
+decibels, "pc" for percent change, "divide" for division; see
+\code{rm_baseline} for details).
+}
+\seealso{
+rm_baseline
 }
 \author{
 Matt Craddock \email{matt@mattcraddock.com}

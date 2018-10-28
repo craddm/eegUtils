@@ -126,12 +126,17 @@ plot_psd.eeg_ICA <- function(data,
 }
 #' Time-frequency plot
 #'
-#' Create time-frequency plot of an \code{eeg_tfr} object.
+#' Creates a time-frequency plot of an \code{eeg_tfr} object. The plot has time
+#' on the x-axis and frequency on the y-axis. If no electrode is supplied, it
+#' will average over all electrodes.
 #'
-#' Various different baseline options can be applied.
+#' Various different baseline options can be applied here (e.g. "db" for
+#' decibels, "pc" for percent change, "divide" for division; see
+#' \code{rm_baseline} for details).
 #'
 #' @param data Object of class \code{eeg_tfr}
-#' @param electrode Electrode to plot. If none is supplied, averages over all electrodes.
+#' @param electrode Electrode to plot. If none is supplied, averages over all
+#'   electrodes.
 #' @param time_lim Time limits of plot.
 #' @param freq_range Vector of two numbers. (e.g. c(8, 40)).
 #' @param baseline Baseline period
@@ -141,6 +146,7 @@ plot_psd.eeg_ICA <- function(data,
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #' @importFrom purrr partial
 #' @import ggplot2
+#' @seealso rm_baseline
 #' @export
 
 plot_tfr <- function(data,
