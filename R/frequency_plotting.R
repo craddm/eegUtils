@@ -150,8 +150,7 @@ plot_tfr <- function(data,
                      baseline_type = "none",
                      baseline = NULL,
                      fill_lims = NULL,
-                     interpolate = FALSE,
-                     ...) {
+                     interpolate = FALSE) {
 
   if (!class(data) == "eeg_tfr") {
     stop("Object of class eeg_tfr required.")
