@@ -246,7 +246,7 @@ split_vec <- function(vec, seg_length, overlap) {
 #' @param ... Further TFR parameters
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #' @examples
-#' compute_tfr(demo_epochs, method = "morlet", foi = c(4, 30), n_freqs = 10, n_cycles = 3)
+#' compute_tfr(demo_epochs, method = "morlet", foi = c(4, 30), n_freq = 10, n_cycles = 3)
 #' @export
 
 compute_tfr <- function(data, ...) {
@@ -255,7 +255,7 @@ compute_tfr <- function(data, ...) {
 
 #' @describeIn compute_tfr Default method for compute_tfr
 #' @export
-compute_tfr.default <- function(data) {
+compute_tfr.default <- function(data, ...) {
   warning("compute_tfr requires data in eeg_epochs format.")
 }
 

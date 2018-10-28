@@ -9,7 +9,7 @@
 \usage{
 compute_tfr(data, ...)
 
-\method{compute_tfr}{default}(data)
+\method{compute_tfr}{default}(data, ...)
 
 \method{compute_tfr}{eeg_epochs}(data, method = "morlet", foi, n_freq,
   n_cycles = 7, keep_trials = FALSE, output = "power",
@@ -57,7 +57,7 @@ performed using convolution in the frequency domain.
 }}
 
 \examples{
-compute_tfr(demo_epochs, method = "morlet", foi = c(4, 30), n_freqs = 10, n_cycles = 3)
+compute_tfr(demo_epochs, method = "morlet", foi = c(4, 30), n_freq = 10, n_cycles = 3)
 }
 \author{
 Matt Craddock \email{matt@mattcraddock.com}

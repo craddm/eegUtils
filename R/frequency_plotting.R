@@ -194,10 +194,14 @@ plot_tfr <- function(data,
            "Power (a.u.)")
 
   if (is.null(fill_lims)) {
-    fill_lims <- abs(c(min(data$signals, na.rm = TRUE),
-                       max(data$signals, na.rm = TRUE)))
-    fill_lims <- max(fill_lims)
-    fill_lims <- c(-fill_lims, fill_lims)
+    fill_lims <- c(min(data$signals, na.rm = TRUE),
+                   max(data$signals, na.rm = TRUE))
+    if (all(fill_lims > 0)) {
+      fill_lims <- c(0, max(abs(fill_lims)))
+    } else {
+      fill_lims <- max(abs(fill_lims))
+      fill_lims <- c(-fill_lims, fill_lims)
+    }
   }
 
   fill_dist <- purrr::partial(scale_fill_distiller,
