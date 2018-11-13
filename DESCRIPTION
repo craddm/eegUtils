@@ -33,7 +33,7 @@ Imports:
   abind
 Depends:
   R (>= 2.10)
-RoxygenNote: 6.1.0
+RoxygenNote: 6.1.1
 Suggests: testthat,
     vdiffr,
     covr,

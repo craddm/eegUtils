@@ -33,6 +33,7 @@ browse_data.eeg_ICA <- function(data, ...) {
                      height = "100%")),
         fillCol(plotOutput("comp_img",
                            height = "100%"),
+                checkboxInput("rejectButton", "Reject component"),
                 shiny::selectInput("icomp",
                                    "Component",
                                    names(data$signals)))
@@ -44,20 +45,23 @@ browse_data.eeg_ICA <- function(data, ...) {
                      output,
                      session) {
 
-    output$topo_ica <- renderPlot({
+    output$topo_ica <- renderCachedPlot({
       comp_no <- which(names(data$signals) == input$icomp)
       topoplot(data, component = comp_no)
-    })
+      },
+      cacheKeyExpr = {input$icomp})
 
-    output$comp_img <- renderPlot({
+    output$comp_img <- renderCachedPlot({
       erp_image(data,
                 component = input$icomp)
-    })
+    },
+    cacheKeyExpr = {input$icomp})
 
-    output$comp_tc <- renderPlot({
+    output$comp_tc <- renderCachedPlot({
       plot_timecourse(data,
                       component = input$icomp)
-    })
+    },
+    cacheKeyExpr = {input$icomp})
 
     observeEvent(input$done, {
       returnValue <- "hilol"
@@ -96,9 +100,7 @@ browse_data.eeg_data <- function(data,
 
   if (downsample) {
     data <- eeg_downsample(data, q = 4)
-    } else {
-    #data <- as.data.frame(data, long = TRUE)
-    }
+  }
 
   ui <- miniPage(
       gadgetTitleBar("Continous data browser"),

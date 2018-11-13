@@ -19,12 +19,14 @@ erp_image <- function(data,
 #' @param smoothing Number of trials to smooth over when generating image
 #' @param clim Character vector of min and max values of plotting colour range.
 #'   e.g. c(-5,5). Defaults to min and max.
+#' @param interpolate Perform interpolation to produce smoother looking plots. Defaults to FALSE.
 #' @describeIn erp_image Default function operates on normal data frames
 #' @export
 erp_image.default <- function(data,
                               electrode = "Cz",
                               smoothing = 10,
                               clim = NULL,
+                              interpolate = FALSE,
                               ...) {
 
   required_cols <- c("electrode", "time", "amplitude", "epoch")
@@ -52,6 +54,7 @@ erp_image.eeg_epochs <- function(data,
                       electrode = "Cz",
                       smoothing = 10,
                       clim = NULL,
+                      interpolate = FALSE,
                       ...) {
   if (!electrode %in% names(data$signals)) {
     stop("Specified electrode not found.")
@@ -63,7 +66,8 @@ erp_image.eeg_epochs <- function(data,
   create_erpimage(data,
                   electrode = electrode,
                   smoothing = smoothing,
-                  clim = clim)
+                  clim = clim,
+                  interpolate = interpolate)
 }
 
 #' @param component \code{eeg_ICA} component to plot
@@ -73,6 +77,7 @@ erp_image.eeg_ICA <- function(data,
                               component = "Comp1",
                               smoothing = 10,
                               clim = NULL,
+                              interpolate = FALSE,
                               ...) {
 
   if (!component %in% names(data$signals)) {
@@ -85,7 +90,8 @@ erp_image.eeg_ICA <- function(data,
   create_erpimage(data,
                   electrode = component,
                   smoothing = smoothing,
-                  clim = clim)
+                  clim = clim,
+                  interpolate = interpolate)
 }
 
 #' Function for creating an ERP image
@@ -95,6 +101,7 @@ erp_image.eeg_ICA <- function(data,
 #' @param smoothing Number of trials to smooth over when generating image
 #' @param clim Character vector of min and max values of plotting colour range.
 #'   e.g. c(-5,5). Defaults to min and max.
+#' @param interpolate Turn on geom_raster() interpolation for smoother images.
 #' @keywords internal
 create_erpimage <- function(data,
                             electrode,
@@ -116,11 +123,11 @@ create_erpimage <- function(data,
                                               sides = 2))
   data$epoch <- as.numeric(factor(data$epoch))
   if (is.null(clim)) {
-    clim <- max(abs(max(data$smooth_amp, na.rm = T)),
-                abs(min(data$smooth_amp, na.rm = T)))
+    clim <- max(abs(max(data$smooth_amp, na.rm = TRUE)),
+                abs(min(data$smooth_amp, na.rm = TRUE)))
     clim <- c(-clim, clim)
   } else if (length(clim) != 2) {
-    clim <- max(abs(max(data$smooth_amp, na.rm = T)),
+    clim <- max(abs(max(data$smooth_amp, na.rm = TRUE)),
                 abs(min(data$smooth_amp, na.rm = T)))
     clim <- c(-clim, clim)
   }
@@ -139,7 +146,7 @@ create_erpimage <- function(data,
     scale_y_continuous(expand = c(0, 0)) +
     scale_x_continuous(expand = c(0, 0)) +
     theme_classic() +
-    xlab("Time (s)") +
+    labs(x = "Time (s)", fill = "Amplitude", y = "Epoch number") +
     ggtitle(paste("ERP Image for electrode", electrode))
 }
 

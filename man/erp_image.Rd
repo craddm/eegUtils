@@ -10,13 +10,13 @@
 erp_image(data, ...)
 
 \method{erp_image}{default}(data, electrode = "Cz", smoothing = 10,
-  clim = NULL, ...)
+  clim = NULL, interpolate = FALSE, ...)
 
 \method{erp_image}{eeg_epochs}(data, electrode = "Cz", smoothing = 10,
-  clim = NULL, ...)
+  clim = NULL, interpolate = FALSE, ...)
 
 \method{erp_image}{eeg_ICA}(data, component = "Comp1", smoothing = 10,
-  clim = NULL, ...)
+  clim = NULL, interpolate = FALSE, ...)
 }
 \arguments{
 \item{data}{Data frame to be plotted. Requires an amplitude column.}
@@ -29,6 +29,8 @@ erp_image(data, ...)
 
 \item{clim}{Character vector of min and max values of plotting colour range.
 e.g. c(-5,5). Defaults to min and max.}
+
+\item{interpolate}{Perform interpolation to produce smoother looking plots. Defaults to FALSE.}
 
 \item{component}{\code{eeg_ICA} component to plot}
 }

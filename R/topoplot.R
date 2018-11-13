@@ -123,8 +123,7 @@ topoplot.data.frame <- function(data,
 
     data$electrode <- toupper(data$electrode)
     chanLocs$electrode <- toupper(chanLocs$electrode)
-    data <- merge(data,
-                  chanLocs)
+    data <- merge(data, chanLocs)
 
     #remove channels with no location
     if (any(is.na(data$x))) {

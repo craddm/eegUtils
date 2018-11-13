@@ -15,6 +15,8 @@ create_erpimage(data, electrode, smoothing, clim, interpolate = FALSE)
 
 \item{clim}{Character vector of min and max values of plotting colour range.
 e.g. c(-5,5). Defaults to min and max.}
+
+\item{interpolate}{Turn on geom_raster() interpolation for smoother images.}
 }
 \description{
 Function for creating an ERP image
