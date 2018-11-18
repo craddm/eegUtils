@@ -241,15 +241,13 @@ topoplot.data.frame <- function(data,
   # Check if should interp/extrap beyond head_shape, and set up ring to mask
   # edges for smoothness
   if (identical(interp_limit, "skirt")) {
-    out_df$incircle <- sqrt(out_df$x ^ 2 + out_df$y ^ 2) < 1.125
-    mask_ring <- data.frame(x = 1.126 * cos(circ_rads),
-                           y = 1.126 * sin(circ_rads)
-    )
+    out_df$incircle <- sqrt(out_df$x ^ 2 + out_df$y ^ 2) < 1.124
+    mask_ring <- data.frame(x = 1.127 * cos(circ_rads),
+                           y = 1.127 * sin(circ_rads))
   } else {
     out_df$incircle <- sqrt(out_df$x ^ 2 + out_df$y ^ 2) < (r * 1.02)
     mask_ring <- data.frame(x = r * 1.03 * cos(circ_rads),
-                           y = r * 1.03 * sin(circ_rads)
-    )
+                           y = r * 1.03 * sin(circ_rads))
   }
 
   # Create the actual plot -------------------------------
@@ -258,7 +256,7 @@ topoplot.data.frame <- function(data,
                           aes(x,
                               y,
                               fill = amplitude)) +
-    geom_raster(interpolate = TRUE)
+    geom_raster(interpolate = TRUE, na.rm = TRUE)
 
   if (contour) {
     topo <- topo +
@@ -273,11 +271,11 @@ topoplot.data.frame <- function(data,
     }
 
   topo <- topo +
-    annotate("path",
-             x = mask_ring$x,
-             y = mask_ring$y,
-             colour = "white",
-             size = rel(4.8)) +
+     annotate("path",
+              x = mask_ring$x,
+              y = mask_ring$y,
+              colour = "white",
+              size = rel(6.5)) +
     annotate("path",
              x = head_shape$x,
              y = head_shape$y,
@@ -311,8 +309,8 @@ topoplot.data.frame <- function(data,
     guides(fill = guide_colorbar(title = expression(paste("Amplitude (",
                                                           mu, "V)")),
                                  title.position = "right",
-                                 barwidth = 1,
-                                 barheight = 6,
+                                 barwidth = rel(1),
+                                 barheight = rel(6),
                                  title.theme = element_text(angle = 270)))
 
   # Add electrode points or names -------------------
@@ -353,11 +351,6 @@ topoplot.data.frame <- function(data,
   topo
 }
 
-
-#' Topographical Plotting Function for EEG data
-#'
-#' Both \code{eeg_epochs} and \code{eeg_data} objects are supported.
-#'
 #' @describeIn topoplot Topographical plotting of \code{eeg_data} objects.
 #' @export
 
@@ -414,10 +407,6 @@ topoplot.eeg_data <- function(data, time_lim = NULL,
 }
 
 
-#' Topographical Plotting Function for EEG data
-#'
-#' Both \code{eeg_epochs} and \code{eeg_data} objects are supported.
-#'
 #' @describeIn topoplot Topographical plotting of \code{eeg_epochs} objects.
 #' @export
 

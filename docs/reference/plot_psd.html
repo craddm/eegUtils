@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Plot power spectral density — plot_psd • eegUtils</title>
+<title>Plot Power Spectral Density — plot_psd • eegUtils</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -30,10 +30,10 @@
 
 
 
-<meta property="og:title" content="Plot power spectral density — plot_psd" />
+<meta property="og:title" content="Plot Power Spectral Density — plot_psd" />
 
-<meta property="og:description" content="Calculate and plot the PSD for eeg_* objects. Output units are dB. 512
-points are used for FFTs." />
+<meta property="og:description" content="Calculate and plot the PSD for eeg_* objects. Output units are dB. The
+PSD is calculated using Welch's method." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -122,29 +122,31 @@ points are used for FFTs." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Plot power spectral density</h1>
+    <h1>Plot Power Spectral Density</h1>
     <small class="dont-index">Source: <a href='https://github.com/craddm/eegUtils/blob/master/R/frequency_plotting.R'><code>R/frequency_plotting.R</code></a></small>
     <div class="hidden name"><code>plot_psd.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Calculate and plot the PSD for <code>eeg_*</code> objects. Output units are dB. 512
-points are used for FFTs.</p>
+    <p>Calculate and plot the PSD for <code>eeg_*</code> objects. Output units are dB. The
+PSD is calculated using Welch's method.</p>
     
     </div>
 
     <pre class="usage"><span class='fu'>plot_psd</span>(<span class='no'>data</span>, <span class='kw'>freq_range</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for eeg_epochs</span>
-<span class='fu'>plot_psd</span>(<span class='no'>data</span>, <span class='kw'>freq_range</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)
+<span class='fu'>plot_psd</span>(<span class='no'>data</span>, <span class='kw'>freq_range</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>n_fft</span> <span class='kw'>=</span> <span class='fl'>512</span>,
+  <span class='kw'>seg_length</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>noverlap</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for eeg_data</span>
-<span class='fu'>plot_psd</span>(<span class='no'>data</span>, <span class='kw'>freq_range</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)
+<span class='fu'>plot_psd</span>(<span class='no'>data</span>, <span class='kw'>freq_range</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>n_fft</span> <span class='kw'>=</span> <span class='fl'>2048</span>,
+  <span class='kw'>noverlap</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>seg_length</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for eeg_ICA</span>
 <span class='fu'>plot_psd</span>(<span class='no'>data</span>, <span class='kw'>freq_range</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>components</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='no'>...</span>)
+  <span class='kw'>seg_length</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>noverlap</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>n_fft</span> <span class='kw'>=</span> <span class='fl'>512</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for data.frame</span>
 <span class='fu'>plot_psd</span>(<span class='no'>data</span>, <span class='kw'>freq_range</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
@@ -154,7 +156,7 @@ points are used for FFTs.</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>data</th>
-      <td><p>Object of class <code>eeg_epochs</code></p></td>
+      <td><p>Object of class <code>eeg_epochs</code>, <code>eeg_data</code>, or <code>eeg_ICA</code>.</p></td>
     </tr>
     <tr>
       <th>freq_range</th>
@@ -163,32 +165,61 @@ points are used for FFTs.</p>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>Additional parameters</p></td>
+      <td><p>Additional parameters.</p></td>
+    </tr>
+    <tr>
+      <th>n_fft</th>
+      <td><p>Number of points to use for the underlying FFTs. Defaults to 512
+for <code>eeg_epochs</code> or minimum of 2048 or the signal length for
+<code>eeg_data</code>.</p></td>
+    </tr>
+    <tr>
+      <th>seg_length</th>
+      <td><p>Length of individual segments. Defaults to n_fft. Must be &lt;= n_fft.</p></td>
+    </tr>
+    <tr>
+      <th>noverlap</th>
+      <td><p>Amount of overlap between segments, in sampling points.
+Defaults to 50%.</p></td>
     </tr>
     <tr>
       <th>components</th>
-      <td><p>Which components to compute the PSD for</p></td>
+      <td><p>Which components to compute the PSD for. Defaults to all.</p></td>
     </tr>
     </table>
+    
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>Welch's method splits the data into multiple segments and then averages over
+those segments. For epoched data, Welch's FFT is calculated separately for
+each trial.</p>
+<p>Specific parameters such as the number of FFT points and the amount of
+overlap between segments can be passed to Welch's FFT</p>
     
     <h2 class="hasAnchor" id="methods-by-class-"><a class="anchor" href="#methods-by-class-"></a>Methods (by class)</h2>
 
     <ul>
-<li><p><code>eeg_epochs</code>: Plot PSDs for <code>eeg_epochs</code>.</p></li>
-<li><p><code>eeg_data</code>: Plot PSDs for <code>eeg_epochs</code>.</p></li>
+<li><p><code>eeg_epochs</code>: Plot PSD for <code>eeg_epochs</code>.</p></li>
+<li><p><code>eeg_data</code>: Plot PSD for <code>eeg_data</code>.</p></li>
 <li><p><code>eeg_ICA</code>: Plot PSD for <code>eeg_ICA</code> objects</p></li>
-<li><p><code>data.frame</code>: Plot PSDs for <code>data.frame</code>s.</p></li>
+<li><p><code>data.frame</code>: Plot PSD for <code>data.frame</code>s.</p></li>
 </ul>
     
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'> <span class='fu'>plot_psd</span>(<span class='no'>demo_epochs</span>)</div><div class='img'><img src='plot_psd-1.png' alt='' width='700' height='433' /></div><div class='input'> <span class='fu'>plot_psd</span>(<span class='no'>demo_epochs</span>, <span class='kw'>seg_length</span> <span class='kw'>=</span> <span class='fl'>256</span>)</div><div class='img'><img src='plot_psd-2.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
       
+      <li><a href="#details">Details</a></li>
+
       <li><a href="#methods-by-class-">Methods (by class)</a></li>
-          </ul>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
     <h2>Author</h2>
     

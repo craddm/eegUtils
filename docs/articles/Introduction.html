@@ -91,7 +91,7 @@
       <h1>Introduction</h1>
                         <h4 class="author">Matt Craddock and Eryk Walczak</h4>
             
-            <h4 class="date">2018-10-28</h4>
+            <h4 class="date">2018-11-18</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/craddm/eegUtils/blob/master/vignettes/Introduction.Rmd"><code>vignettes/Introduction.Rmd</code></a></small>
       <div class="hidden name"><code>Introduction.Rmd</code></div>
@@ -168,13 +168,12 @@
 <a href="#figures" class="anchor"></a>Figures</h2>
 <p>Create a butterfly plot showing data from all the electrodes</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="kw"><a href="../reference/plot_butterfly.html">plot_butterfly</a></span>(my_data, <span class="dt">baseline =</span> <span class="kw">c</span>(<span class="op">-</span>.<span class="dv">2</span>, <span class="dv">0</span>), <span class="dt">time_lim =</span> <span class="kw">c</span>(<span class="op">-</span>.<span class="dv">1</span>, <span class="fl">.2</span>), <span class="dt">legend =</span> <span class="ot">FALSE</span>)</a></code></pre></div>
-<pre><code>## Joining, by = "electrode"</code></pre>
 <p><img src="Introduction_files/figure-html/unnamed-chunk-5-1.png" width="700"></p>
 <p>Or the timecourse of a single electrode</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1"><span class="kw"><a href="../reference/plot_timecourse.html">plot_timecourse</a></span>(my_data, <span class="dt">electrode =</span> <span class="st">"A3"</span>, <span class="dt">baseline =</span> <span class="kw">c</span>(<span class="op">-</span>.<span class="dv">2</span>,<span class="dv">0</span>), <span class="dt">time_lim =</span> <span class="kw">c</span>(<span class="op">-</span>.<span class="dv">1</span>, <span class="fl">.2</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1"><span class="kw"><a href="../reference/plot_timecourse.html">plot_timecourse</a></span>(my_data, <span class="dt">electrode =</span> <span class="st">"A3"</span>, <span class="dt">baseline =</span> <span class="kw">c</span>(<span class="op">-</span>.<span class="dv">2</span>,<span class="dv">0</span>), <span class="dt">time_lim =</span> <span class="kw">c</span>(<span class="op">-</span>.<span class="dv">1</span>, <span class="fl">.2</span>))</a></code></pre></div>
 <p><img src="Introduction_files/figure-html/unnamed-chunk-6-1.png" width="700"></p>
 <p>How about an EEGLAB style ERP image?</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1"><span class="kw"><a href="../reference/erp_image.html">erp_image</a></span>(my_data, <span class="dt">electrode =</span> <span class="st">"A9"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1"><span class="kw"><a href="../reference/erp_image.html">erp_image</a></span>(my_data, <span class="dt">electrode =</span> <span class="st">"A9"</span>)</a></code></pre></div>
 <p><img src="Introduction_files/figure-html/unnamed-chunk-7-1.png" width="700"></p>
 </div>
   </div>
