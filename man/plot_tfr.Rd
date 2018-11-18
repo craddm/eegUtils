@@ -37,7 +37,7 @@ decibels, "pc" for percent change, "divide" for division; see
 \code{rm_baseline} for details).
 }
 \seealso{
-rm_baseline
+[rm_baseline()]
 }
 \author{
 Matt Craddock \email{matt@mattcraddock.com}

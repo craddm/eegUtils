@@ -7,12 +7,13 @@
 - `rm_baseline()` now handles `eeg_tfr` objects.
 - `as.data.frame()` method added for `eeg_tfr` objects.
 - `compute_tfr()` function now available for use with Morlet wavelets.
+- `plot_psd()` now allows changing of FFT parameters (e.g. number off FFT points, segment length)
 - Data selectors added for `eeg_tfr` objects (e.g. `select_elecs()`)
 
 ### Internal changes/ bug fixes
 - `plot_timecourse()` overhauled to be S3 method
 - `plot_butterfly()` reworked internally to be more efficient
-- `rm_baseline()` simplified internally, reworked to use matrices
+- `rm_baseline()` simplified internally, reworked to use matrices; split to separate file.
 - `select_elecs()` now works for `eeg_evoked` objects
 - `eeg_decomp` function in progress for performing SSD analyses
 - Various methods added for TFR analyses
