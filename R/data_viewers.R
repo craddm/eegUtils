@@ -240,7 +240,6 @@ browse_data.eeg_epochs <- function(data,
   if (downsample) {
     data <- eeg_downsample(data,
                            q = 4)
-
   }
 
   ui <- miniPage(

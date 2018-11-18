@@ -52,7 +52,8 @@ eeg_average.eeg_epochs <- function(data,
   } else {
 
     # Check for presence of labels
-    lab_check <- label_check(cond_label, unique(list_epochs(data)$event_label))
+    lab_check <- label_check(cond_label,
+                             unique(list_epochs(data)$event_label))
 
     if (!all(lab_check)) {
       stop("Not all labels found. Use list_events to check labels.")

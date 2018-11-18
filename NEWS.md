@@ -3,14 +3,16 @@
 
 ### Function changes
 - `topoplot()` now has a scaling parameter to scale the size of any lines or markers drawn on the plot
-- `plot_tfr` function now useable, with baseline correction added.
-- `rm_baseline` now handles `eeg_tfr` objects.
-- `as.data.frame` method added for `eeg_tfr` objects.
-- `compute_tfr` function now available for use.
-- Data selectors added for `eeg_tfr` objects (e.g. `select_elecs`)
+- `plot_tfr()` function now useable, with baseline correction added.
+- `rm_baseline()` now handles `eeg_tfr` objects.
+- `as.data.frame()` method added for `eeg_tfr` objects.
+- `compute_tfr()` function now available for use with Morlet wavelets.
+- Data selectors added for `eeg_tfr` objects (e.g. `select_elecs()`)
 
 ### Internal changes/ bug fixes
 - `plot_timecourse()` overhauled to be S3 method
+- `plot_butterfly()` reworked internally to be more efficient
+- `rm_baseline()` simplified internally, reworked to use matrices
 - `select_elecs()` now works for `eeg_evoked` objects
 - `eeg_decomp` function in progress for performing SSD analyses
 - Various methods added for TFR analyses
@@ -25,7 +27,7 @@
 - `plot_tfr()` function added to handle `eeg_tfr` objects.
 - `erp_image()` now works with `eeg_ICA` objects
 - Generic print methods added for `eeg_epochs` and `eeg_data`
-- `compute_tfr` function added to performed TFA on `eeg_epochs`
+- `compute_tfr()` function added to performed TFA on `eeg_epochs`
 - `epoch_data()` now warns if some events are not found rather than stops. Only stops if *no* events are found.
 
 ### Internal changes/ bug fixes
@@ -33,7 +35,7 @@
     - correctly excludes multiple named electrodes (i.e. passed as characters rather than numbers), where it previously silently failed.
     - no longer records the reference data in the `ref_data` field
 - `tf_morlet` recoded to be called internally
-- `compute_psd` 
+- `compute_psd()` 
     - recoded to call `welch_fft()` in order to support possibility of different FFT methods.
     - now drops the DC component (frequency 0)
 - `welch_fft()` internal function added
