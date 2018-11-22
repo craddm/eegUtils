@@ -1,22 +1,24 @@
-# eegUtils 0.2.1.9000
+# eegUtils 0.3.0
 
 
 ### Function changes
-- `topoplot()` now has a scaling parameter to scale the size of any lines or markers drawn on the plot
-- `plot_tfr()` function now useable, with baseline correction added.
+- `topoplot()` now has a scaling parameter to scale the size of any lines or markers drawn on the plot.
+- `plot_tfr()` function now useable, with baseline correction also added.
 - `rm_baseline()` now handles `eeg_tfr` objects.
 - `as.data.frame()` method added for `eeg_tfr` objects.
 - `compute_tfr()` function now available for use with Morlet wavelets.
-- `plot_psd()` now allows changing of FFT parameters (e.g. number off FFT points, segment length)
+- `plot_psd()` now allows changing of FFT parameters (e.g. number of FFT points, segment length)
 - Data selectors added for `eeg_tfr` objects (e.g. `select_elecs()`)
 
 ### Internal changes/ bug fixes
-- `plot_timecourse()` overhauled to be S3 method
+- `plot_timecourse()` overhauled to be S3 method.
 - `plot_butterfly()` reworked internally to be more efficient
 - `rm_baseline()` simplified internally, reworked to use matrices; split to separate file.
 - `select_elecs()` now works for `eeg_evoked` objects
 - `eeg_decomp` function in progress for performing SSD analyses
 - Various methods added for TFR analyses
+- `topoplot()` improvements internally. Now offers potential for facetting.
+- Some `dplyr` functions implemented internally for some objects.
 
 # eegUtils 0.2.1
 

@@ -1,9 +1,11 @@
 Package: eegUtils
 Type: Package
 Title: A collection of utilities for EEG analysis 
-Version: 0.2.1.9000
-Date: 2018-08-18
-Authors@R: person("Matt", "Craddock", role = c("aut", "cre"), email = "matt@mattcraddock.com")
+Version: 0.3.0
+Date: 2018-11-22
+Authors@R: c(
+  person("Matt", "Craddock", role = c("aut", "cre"), email = "matt@mattcraddock.com"),
+  person("Matti", "Vuorre", role = "ctb", email = "mv2521@columbia.edu"))
 Maintainer: Matt Craddock <matt@mattcraddock.com>
 Description: A collection of functions for basic EEG processing. Includes import
   functions for Biosemi (BDF) and Neuroscan (CNT), topographical plotting, referencing, and epoching.

@@ -25,6 +25,9 @@
     <loc>http://craddm.github.io/eegUtils/reference/average_tf.html</loc>
   </url>
   <url>
+    <loc>http://craddm.github.io/eegUtils/reference/biharm_topo.html</loc>
+  </url>
+  <url>
     <loc>http://craddm.github.io/eegUtils/reference/browse_data.html</loc>
   </url>
   <url>
@@ -308,9 +311,6 @@
   </url>
   <url>
     <loc>http://craddm.github.io/eegUtils/reference/tf_morlet.html</loc>
-  </url>
-  <url>
-    <loc>http://craddm.github.io/eegUtils/reference/topoplot.default.html</loc>
   </url>
   <url>
     <loc>http://craddm.github.io/eegUtils/reference/topoplot.html</loc>

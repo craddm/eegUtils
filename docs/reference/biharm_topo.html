@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Downsampling EEG data — eeg_downsample • eegUtils</title>
+<title>Create a biharmonic smooth across the scalp — biharm_topo • eegUtils</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,12 +30,9 @@
 
 
 
-<meta property="og:title" content="Downsampling EEG data — eeg_downsample" />
+<meta property="og:title" content="Create a biharmonic smooth across the scalp — biharm_topo" />
 
-<meta property="og:description" content="Performs low-pass anti-aliasing filtering and downsamples EEG data by a
-specified factor. This is a wrapper for decimate from the
-signal package. Note that this will also adjust the event table,
-moving events to the nearest time remaining after downsampling" />
+<meta property="og:description" content="Create a biharmonic smooth across the scalp" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -126,51 +123,39 @@ moving events to the nearest time remaining after downsampling" />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Downsampling EEG data</h1>
-    <small class="dont-index">Source: <a href='https://github.com/craddm/eegUtils/blob/master/R/data_modifiers.R'><code>R/data_modifiers.R</code></a></small>
-    <div class="hidden name"><code>eeg_downsample.Rd</code></div>
+    <h1>Create a biharmonic smooth across the scalp</h1>
+    <small class="dont-index">Source: <a href='https://github.com/craddm/eegUtils/blob/master/R/topoplot.R'><code>R/topoplot.R</code></a></small>
+    <div class="hidden name"><code>biharm_topo.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Performs low-pass anti-aliasing filtering and downsamples EEG data by a
-specified factor. This is a wrapper for <code>decimate</code> from the
-<code>signal</code> package. Note that this will also adjust the event table,
-moving events to the nearest time remaining after downsampling</p>
+    <p>Create a biharmonic smooth across the scalp</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>eeg_downsample</span>(<span class='no'>data</span>, <span class='no'>...</span>)
-
-<span class='co'># S3 method for eeg_data</span>
-<span class='fu'>eeg_downsample</span>(<span class='no'>data</span>, <span class='no'>q</span>, <span class='no'>...</span>)
-
-<span class='co'># S3 method for eeg_epochs</span>
-<span class='fu'>eeg_downsample</span>(<span class='no'>data</span>, <span class='no'>q</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>biharm_topo</span>(<span class='no'>data</span>, <span class='no'>scaled_x</span>, <span class='no'>scaled_y</span>, <span class='no'>grid_res</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>data</th>
-      <td><p>An <code>eeg_data</code> object to be downsampled</p></td>
+      <td><p>Data frame from which to generate predictions</p></td>
     </tr>
     <tr>
-      <th>...</th>
-      <td><p>Parameters passed to functions</p></td>
+      <th>scaled_x</th>
+      <td><p>x coordinates rescaled</p></td>
     </tr>
     <tr>
-      <th>q</th>
-      <td><p>Integer factor to downsample by</p></td>
+      <th>scaled_y</th>
+      <td><p>y coordinates rescaled</p></td>
+    </tr>
+    <tr>
+      <th>grid_res</th>
+      <td><p>resolution of output grid</p></td>
     </tr>
     </table>
-    
-    <h2 class="hasAnchor" id="methods-by-class-"><a class="anchor" href="#methods-by-class-"></a>Methods (by class)</h2>
-
-    <ul>
-<li><p><code>eeg_data</code>: Downsample eeg_data objects</p></li>
-<li><p><code>eeg_epochs</code>: Downsample eeg_epochs objects</p></li>
-</ul>
     
 
   </div>
@@ -178,12 +163,8 @@ moving events to the nearest time remaining after downsampling</p>
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-      
-      <li><a href="#methods-by-class-">Methods (by class)</a></li>
-          </ul>
+                </ul>
 
-    <h2>Author</h2>
-    <p>Matt Craddock <a href='mailto:matt@mattcraddock.com'>matt@mattcraddock.com</a></p>
   </div>
 </div>
 
