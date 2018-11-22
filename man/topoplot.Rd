@@ -108,9 +108,14 @@ only 'biosemi64alpha' available other than default 10/20 system)}
 \description{
 Allows topographical plotting of functional data. Output is a ggplot2 object.
 
+<<<<<<< HEAD
 Both \code{eeg_epochs} and \code{eeg_data} objects are supported.
 
 Both \code{eeg_epochs} and \code{eeg_data} objects are supported.
+=======
+The function works for both standard data frames and objects of class
+\code{eeg_data}.
+>>>>>>> 3c42aa5ec7db0cf6dfa6477bdfffcf6ff8f3bf5a
 }
 \section{Methods (by class)}{
 \itemize{

@@ -132,14 +132,16 @@
 <li>
 <code><a href="../reference/topoplot.html">topoplot()</a></code> now has a scaling parameter to scale the size of any lines or markers drawn on the plot</li>
 <li>
-<code>plot_tfr</code> function now useable, with baseline correction added.</li>
+<code><a href="../reference/plot_tfr.html">plot_tfr()</a></code> function now useable, with baseline correction added.</li>
 <li>
-<code>rm_baseline</code> now handles <code>eeg_tfr</code> objects.</li>
+<code><a href="../reference/rm_baseline.html">rm_baseline()</a></code> now handles <code>eeg_tfr</code> objects.</li>
 <li>
-<code>as.data.frame</code> method added for <code>eeg_tfr</code> objects.</li>
+<code>as.data.frame()</code> method added for <code>eeg_tfr</code> objects.</li>
 <li>
-<code>compute_tfr</code> function now available for use.</li>
-<li>Data selectors added for <code>eeg_tfr</code> objects (e.g. <code>select_elecs</code>)</li>
+<code><a href="../reference/compute_tfr.html">compute_tfr()</a></code> function now available for use with Morlet wavelets.</li>
+<li>
+<code><a href="../reference/plot_psd.html">plot_psd()</a></code> now allows changing of FFT parameters (e.g. number off FFT points, segment length)</li>
+<li>Data selectors added for <code>eeg_tfr</code> objects (e.g. <code><a href="../reference/select_elecs.html">select_elecs()</a></code>)</li>
 </ul>
 </div>
 <div id="internal-changes-bug-fixes" class="section level3">
@@ -148,6 +150,10 @@
 <ul>
 <li>
 <code><a href="../reference/plot_timecourse.html">plot_timecourse()</a></code> overhauled to be S3 method</li>
+<li>
+<code><a href="../reference/plot_butterfly.html">plot_butterfly()</a></code> reworked internally to be more efficient</li>
+<li>
+<code><a href="../reference/rm_baseline.html">rm_baseline()</a></code> simplified internally, reworked to use matrices; split to separate file.</li>
 <li>
 <code><a href="../reference/select_elecs.html">select_elecs()</a></code> now works for <code>eeg_evoked</code> objects</li>
 <li>
@@ -178,7 +184,7 @@
 <li>Generic print methods added for <code>eeg_epochs</code> and <code>eeg_data</code>
 </li>
 <li>
-<code>compute_tfr</code> function added to performed TFA on <code>eeg_epochs</code>
+<code><a href="../reference/compute_tfr.html">compute_tfr()</a></code> function added to performed TFA on <code>eeg_epochs</code>
 </li>
 <li>
 <code><a href="../reference/epoch_data.html">epoch_data()</a></code> now warns if some events are not found rather than stops. Only stops if <em>no</em> events are found.</li>
@@ -198,7 +204,7 @@
 <li>
 <code>tf_morlet</code> recoded to be called internally</li>
 <li>
-<code>compute_psd</code>
+<code><a href="../reference/compute_psd.html">compute_psd()</a></code>
 <ul>
 <li>recoded to call <code><a href="../reference/welch_fft.html">welch_fft()</a></code> in order to support possibility of different FFT methods.</li>
 <li>now drops the DC component (frequency 0)</li>

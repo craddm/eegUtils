@@ -32,8 +32,10 @@
 
 <meta property="og:title" content="Compute power spectral density — compute_psd" />
 
-<meta property="og:description" content="Returns PSD calculated using Welch's method for every channel in the data.
-Currently concatenates across epochs. Returns uV^2 / Hz" />
+<meta property="og:description" content="compute_psd returns the PSD calculated using Welch's method for every
+channel in the data. The output is in  microvolts ^2 / Hz. If the object has
+multiple epochs, it will perform Welch's FFT separately for each epoch and
+then average them afterwards." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -129,25 +131,27 @@ Currently concatenates across epochs. Returns uV^2 / Hz" />
 
     <div class="ref-description">
     
-    <p>Returns PSD calculated using Welch's method for every channel in the data.
-Currently concatenates across epochs. Returns uV^2 / Hz</p>
+    <p><code>compute_psd</code> returns the PSD calculated using Welch's method for every
+channel in the data. The output is in  microvolts ^2 / Hz. If the object has
+multiple epochs, it will perform Welch's FFT separately for each epoch and
+then average them afterwards.</p>
     
     </div>
 
     <pre class="usage"><span class='fu'>compute_psd</span>(<span class='no'>data</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for eeg_data</span>
-<span class='fu'>compute_psd</span>(<span class='no'>data</span>, <span class='kw'>seg_length</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>noverlap</span> <span class='kw'>=</span> <span class='fl'>0</span>,
-  <span class='kw'>n_fft</span> <span class='kw'>=</span> <span class='fl'>256</span>, <span class='kw'>srate</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"Welch"</span>, <span class='no'>...</span>)
+<span class='fu'>compute_psd</span>(<span class='no'>data</span>, <span class='kw'>seg_length</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>noverlap</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>n_fft</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"Welch"</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for eeg_epochs</span>
-<span class='fu'>compute_psd</span>(<span class='no'>data</span>, <span class='kw'>seg_length</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>noverlap</span> <span class='kw'>=</span> <span class='fl'>0</span>,
-  <span class='kw'>n_fft</span> <span class='kw'>=</span> <span class='fl'>256</span>, <span class='kw'>srate</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"Welch"</span>, <span class='kw'>keep_trials</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='no'>...</span>)
+<span class='fu'>compute_psd</span>(<span class='no'>data</span>, <span class='kw'>seg_length</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>noverlap</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>n_fft</span> <span class='kw'>=</span> <span class='fl'>256</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"Welch"</span>,
+  <span class='kw'>keep_trials</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for eeg_evoked</span>
-<span class='fu'>compute_psd</span>(<span class='no'>data</span>, <span class='kw'>seg_length</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>noverlap</span> <span class='kw'>=</span> <span class='fl'>0</span>,
-  <span class='kw'>n_fft</span> <span class='kw'>=</span> <span class='fl'>256</span>, <span class='kw'>srate</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"Welch"</span>, <span class='no'>...</span>)</pre>
+<span class='fu'>compute_psd</span>(<span class='no'>data</span>, <span class='kw'>seg_length</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>noverlap</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>n_fft</span> <span class='kw'>=</span> <span class='fl'>256</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"Welch"</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -162,19 +166,17 @@ Currently concatenates across epochs. Returns uV^2 / Hz</p>
     </tr>
     <tr>
       <th>seg_length</th>
-      <td><p>Length of rolling data segments.</p></td>
+      <td><p>Length of rolling data segments. Defaults to <code>n_fft</code>.
+Must be &lt;= <code>n_fft</code>.</p></td>
     </tr>
     <tr>
       <th>noverlap</th>
-      <td><p>Number of (sampling) points of overlap between segments.</p></td>
+      <td><p>Number of (sampling) points of overlap between segments. Must
+be &lt;= <code>seg_length</code>.</p></td>
     </tr>
     <tr>
       <th>n_fft</th>
-      <td><p>Length of FFT to be calculated.</p></td>
-    </tr>
-    <tr>
-      <th>srate</th>
-      <td><p>Sampling rate</p></td>
+      <td><p>Length of FFT to be calculated in sampling points. See details.</p></td>
     </tr>
     <tr>
       <th>method</th>
@@ -182,9 +184,27 @@ Currently concatenates across epochs. Returns uV^2 / Hz</p>
     </tr>
     <tr>
       <th>keep_trials</th>
-      <td><p>Include FFT for every trial in output</p></td>
+      <td><p>Include FFT for every trial in output, or average over them if FALSE.</p></td>
     </tr>
     </table>
+    
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>Currently, a data frame with the PSD for each channel separately.</p>
+    
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>Welch's FFT splits the data into multiple segments, calculates the FFT
+separately for each segment, and then averages over segments. Each segment is
+windowed with a Hanning window to counter spectral leakage. For epoched data,
+Welch's FFT is calculated separately for each trial.</p>
+<p>The number of sampling points used for the FFT can be specified using n_fft.
+n_fft defaults to 256 sampling points for <code>eeg_epochs</code> data, or the
+minimum of 2048 or the length of the signal for continuous <code>eeg_data</code>.</p>
+<p><code>seg_length</code> defaults to be <code>n_fft</code>, and must be less than or equal
+to it.</p>
+<p><code>noverlap</code> specifies the amount of overlap between windows in sampling
+points. If not specified, it defaults to 50<!-- % overlap between segments. --></p>
     
     <h2 class="hasAnchor" id="methods-by-class-"><a class="anchor" href="#methods-by-class-"></a>Methods (by class)</h2>
 
@@ -195,14 +215,23 @@ Currently concatenates across epochs. Returns uV^2 / Hz</p>
 </ul>
     
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='fu'>compute_psd</span>(<span class='no'>demo_epochs</span>)
+<span class='fu'>compute_psd</span>(<span class='no'>demo_epochs</span>, <span class='kw'>n_fft</span> <span class='kw'>=</span> <span class='fl'>256</span>, <span class='kw'>seg_length</span> <span class='kw'>=</span> <span class='fl'>128</span>)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
       
+      <li><a href="#value">Value</a></li>
+
+      <li><a href="#details">Details</a></li>
+
       <li><a href="#methods-by-class-">Methods (by class)</a></li>
-          </ul>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
     <h2>Author</h2>
     

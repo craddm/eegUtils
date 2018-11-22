@@ -182,8 +182,6 @@ plot_timecourse.eeg_epochs <- function(data,
                                colour = NULL,
                                color = NULL, ...) {
 
-
-
   data <- parse_for_tc(data,
                        time_lim = time_lim,
                        electrode = electrode,
@@ -367,33 +365,10 @@ plot_butterfly.default <- function(data,
                            browse_mode = FALSE,
                            ...) {
 
-
-
-  if (is.eeg_data(data)) {
-    if (continuous | data$continuous) {
-      data <- as.data.frame(data, long = TRUE)
-      continuous <- TRUE
-    } else {
-      data <- as.data.frame(data)
-      data <- dplyr::select(data, -epoch)
-      data <- split(data, data$time)
-      names(data) <- NULL
-      data <- lapply(data, colMeans)
-      data <- as.data.frame(do.call("rbind", data))
-      #data <- dplyr::group_by(data, time)
-      #data <- dplyr::summarise_all(data, mean)
-      data <- tidyr::gather(data,
-                            electrode,
-                            amplitude,
-                            -time,
-                            factor_key = TRUE)
-      }
-  } else {
-    if (browse_mode == FALSE && is.null(facet)) {
-      data <- dplyr::group_by(data, time, electrode)
-      data <- dplyr::summarise(data, amplitude = mean(amplitude))
-      data <- dplyr::ungroup(data)
-    }
+  if (browse_mode == FALSE && is.null(facet)) {
+    data <- dplyr::group_by(data, time, electrode)
+    data <- dplyr::summarise(data, amplitude = mean(amplitude))
+    data <- dplyr::ungroup(data)
   }
 
   ## select time-range of interest -------------
@@ -407,55 +382,14 @@ plot_butterfly.default <- function(data,
   }
 
   #Set up basic plot -----------
-  butterfly_plot <- ggplot2::ggplot(data, aes(x = time, y = amplitude))
-
-  if (browse_mode) {
-    butterfly_plot <- butterfly_plot +
-      geom_line(aes(group = electrode),
-                colour = "black",
-                alpha = 0.2) +
-      labs(x = "Time (s)",
-           y = expression(paste("Amplitude (", mu, "V)")),
-           colour = "") +
-      geom_hline(yintercept = 0,
-                 size = 0.5,
-                 linetype = "dashed",
-                 alpha = 0.5) +
-      scale_x_continuous(expand = c(0, 0)) +
-      theme_minimal(base_size = 12) +
-      theme(panel.grid = element_blank(),
-            axis.ticks = element_line(size = .5))
-  } else {
-    butterfly_plot <- butterfly_plot +
-      geom_line(aes(group = electrode, colour = electrode), alpha = 0.5) +
-      labs(x = "Time (s)",
-           y = expression(paste("Amplitude (", mu, "V)")),
-           colour = "") +
-      geom_hline(yintercept = 0, size = 0.5) +
-      scale_x_continuous(expand = c(0, 0)) +
-      theme_minimal(base_size = 12) +
-      theme(panel.grid = element_blank(),
-            axis.ticks = element_line(size = .5))
-
-    if (!continuous) {
-      butterfly_plot <- butterfly_plot + geom_vline(xintercept = 0, size = 0.5)
-    }
-
-    if (!is.null(facet)) {
-      butterfly_plot + facet_wrap(facet)
-    }
-  }
-
-  if (legend) {
-    butterfly_plot +
-      guides(colour = guide_legend(override.aes = list(alpha = 1)))
-  } else {
-    butterfly_plot +
-      theme(legend.position = "none")
-  }
+  create_bf(data,
+            legend = legend,
+            browse_mode = browse_mode,
+            continuous = FALSE)
 }
 
-#' @describeIn plot_butterfly Plot butterfly for `eeg_evoked` objects`
+#' @describeIn plot_butterfly Plot butterfly for \code{eeg_evoked} objects
+#' @export
 plot_butterfly.eeg_evoked <- function(data,
                                       time_lim = NULL,
                                       group = NULL,
@@ -480,7 +414,8 @@ plot_butterfly.eeg_evoked <- function(data,
     data <- as.data.frame(data, long = TRUE)
   }
 
-  plot_butterfly(data, time_lim,
+  plot_butterfly(data,
+                 time_lim,
                  group,
                  facet,
                  baseline,
@@ -492,7 +427,8 @@ plot_butterfly.eeg_evoked <- function(data,
 
 #' @describeIn plot_butterfly Butterfly plot for EEG statistics
 
-plot_butterfly.eeg_stats <- function(data, time_lim = NULL,
+plot_butterfly.eeg_stats <- function(data,
+                                     time_lim = NULL,
                                      group = NULL,
                                      facet = NULL,
                                      baseline = NULL,
@@ -515,4 +451,134 @@ plot_butterfly.eeg_stats <- function(data, time_lim = NULL,
                  continuous,
                  browse_mode)
 
+}
+
+
+#' @describeIn plot_butterfly Create butterfly plot for \code{eeg_data} objects
+#' @export
+plot_butterfly.eeg_data <- function(data,
+                             time_lim = NULL,
+                             baseline = NULL,
+                             legend = TRUE,
+                             browse_mode = FALSE,
+                             ...) {
+
+  data <- parse_for_bf(data,
+                       time_lim,
+                       baseline)
+  create_bf(data,
+            legend = legend,
+            browse_mode = browse_mode,
+            continuous = TRUE)
+}
+
+#' @describeIn plot_butterfly Create butterfly plot for \code{eeg_epochs} objects
+#' @export
+plot_butterfly.eeg_epochs <- function(data,
+                               time_lim = NULL,
+                               baseline = NULL,
+                               legend = TRUE,
+                               browse_mode = FALSE,
+                               ...) {
+
+  data <- eeg_average(data)
+  data <- parse_for_bf(data,
+                       time_lim,
+                       baseline)
+  create_bf(data,
+            legend = legend,
+            browse_mode = browse_mode,
+            continuous = FALSE)
+}
+
+#' Parse data for butterfly plots
+#'
+#' Internal command for parsing various data structures into a suitable format
+#' for \code{plot_butterfly}
+#'
+#' @param data data to be parsed
+#' @param time_lim time limits to be returned.
+#' @param baseline baseline times to be average and subtracted
+#' @keywords internal
+parse_for_bf <- function(data,
+                         time_lim = NULL,
+                         baseline = NULL) {
+
+  # Select specifed times
+  if (!is.null(time_lim)) {
+    data <- select_times(data,
+                         time_lim = time_lim)
+  }
+
+  ## Do baseline correction
+  if (!is.null(baseline)) {
+    data <- rm_baseline(data,
+                        time_lim = baseline)
+  }
+  data <- as.data.frame(data,
+                        long = TRUE)
+  data
+}
+
+#' @import ggplot2
+#' @keywords internal
+create_bf <- function(data,
+                      legend,
+                      browse_mode,
+                      facet = FALSE,
+                      continuous) {
+
+  #Set up basic plot -----------
+  butterfly_plot <- ggplot2::ggplot(data,
+                                    aes(x = time,
+                                        y = amplitude))
+
+  if (browse_mode) {
+    butterfly_plot <- butterfly_plot +
+      geom_line(aes(group = electrode),
+                colour = "black",
+                alpha = 0.2) +
+      labs(x = "Time (s)",
+           y = expression(paste("Amplitude (", mu, "V)")),
+           colour = "") +
+      geom_hline(yintercept = 0,
+                 size = 0.5,
+                 linetype = "dashed",
+                 alpha = 0.5) +
+      scale_x_continuous(expand = c(0, 0)) +
+      theme_minimal(base_size = 12) +
+      theme(panel.grid = element_blank(),
+            axis.ticks = element_line(size = .5))
+  } else {
+    butterfly_plot <- butterfly_plot +
+      geom_line(aes(group = electrode,
+                    colour = electrode),
+                alpha = 0.5) +
+      labs(x = "Time (s)",
+           y = expression(paste("Amplitude (", mu, "V)")),
+           colour = "") +
+      geom_hline(yintercept = 0, size = 0.5) +
+      scale_x_continuous(expand = c(0, 0)) +
+      theme_minimal(base_size = 12) +
+      theme(panel.grid = element_blank(),
+            axis.ticks = element_line(size = .5))
+
+    if (!continuous) {
+      butterfly_plot <- butterfly_plot +
+        geom_vline(xintercept = 0, size = 0.5)
+    }
+
+    if (!is.null(facet)) {
+      butterfly_plot +
+        facet_wrap(facet)
+    }
+  }
+
+  if (legend) {
+    butterfly_plot +
+      guides(colour = guide_legend(override.aes = list(alpha = 1)))
+  } else {
+    butterfly_plot +
+      theme(legend.position = "none")
+  }
 }

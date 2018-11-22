@@ -1,34 +1,59 @@
 #' Compute power spectral density
 #'
-#' Returns PSD calculated using Welch's method for every channel in the data.
-#' Currently concatenates across epochs. Returns uV^2 / Hz
+#' \code{compute_psd} returns the PSD calculated using Welch's method for every
+#' channel in the data. The output is in  microvolts ^2 / Hz. If the object has
+#' multiple epochs, it will perform Welch's FFT separately for each epoch and
+#' then average them afterwards.
 #'
+#' Welch's FFT splits the data into multiple segments, calculates the FFT
+#' separately for each segment, and then averages over segments. Each segment is
+#' windowed with a Hanning window to counter spectral leakage. For epoched data,
+#' Welch's FFT is calculated separately for each trial.
+#'
+#' The number of sampling points used for the FFT can be specified using n_fft.
+#' n_fft defaults to 256 sampling points for \code{eeg_epochs} data, or the
+#' minimum of 2048 or the length of the signal for continuous \code{eeg_data}.
+#'
+#' \code{seg_length} defaults to be \code{n_fft}, and must be less than or equal
+#' to it.
+#'
+#' \code{noverlap} specifies the amount of overlap between windows in sampling
+#' points. If not specified, it defaults to 50% overlap between segments.
+#'
+#' @examples
+#' compute_psd(demo_epochs)
+#' compute_psd(demo_epochs, n_fft = 256, seg_length = 128)
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #' @param data Data to be plotted. Accepts objects of class \code{eeg_data}
 #' @param ... any further parameters passed to specific methods
+#' @return Currently, a data frame with the PSD for each channel separately.
 #' @export
 
 compute_psd <- function(data, ...) {
   UseMethod("compute_psd", data)
 }
 
-#' @param n_fft Length of FFT to be calculated.
-#' @param seg_length Length of rolling data segments.
-#' @param noverlap Number of (sampling) points of overlap between segments.
-#' @param srate Sampling rate
+#' @param n_fft Length of FFT to be calculated in sampling points. See details.
+#' @param seg_length Length of rolling data segments. Defaults to \code{n_fft}.
+#'   Must be <= \code{n_fft}.
+#' @param noverlap Number of (sampling) points of overlap between segments. Must
+#'   be <= \code{seg_length}.
 #' @param method Defaults to "Welch". No other method currently implemented.
 #' @describeIn compute_psd Compute PSD for an \code{eeg_data} object
 #' @export
 
 compute_psd.eeg_data <- function(data,
                                  seg_length = NULL,
-                                 noverlap = 0,
-                                 n_fft = 256,
-                                 srate = NULL,
+                                 noverlap = NULL,
+                                 n_fft = NULL,
                                  method = "Welch",
                                  ...) {
 
   srate <- data$srate
+
+  if (is.null(n_fft)) {
+    n_fft <- min(2048, c(nrow(data$signals)))
+  }
 
   if (is.null(seg_length)) {
     seg_length <- n_fft
@@ -38,8 +63,8 @@ compute_psd.eeg_data <- function(data,
     stop("seg_length cannot be greater than n_fft")
   }
 
-  if (noverlap == 0) {
-    noverlap <- seg_length %/% 8
+  if (is.null(noverlap)) {
+    noverlap <- seg_length %/% 2
   } else if (noverlap >= seg_length) {
     stop("noverlap should not be larger than seg_length.")
   }
@@ -58,15 +83,14 @@ compute_psd.eeg_data <- function(data,
   final_output
 }
 
-#' @param keep_trials Include FFT for every trial in output
+#' @param keep_trials Include FFT for every trial in output, or average over them if FALSE.
 #' @describeIn compute_psd Compute PSD for an \code{eeg_epochs} object
 #' @export
 
 compute_psd.eeg_epochs <- function(data,
                                    seg_length = NULL,
-                                   noverlap = 0,
+                                   noverlap = NULL,
                                    n_fft = 256,
-                                   srate = NULL,
                                    method = "Welch",
                                    keep_trials = TRUE,
                                    ...) {
@@ -83,8 +107,8 @@ compute_psd.eeg_epochs <- function(data,
   if (n_times < seg_length) {
     seg_length <- n_times
   }
-  if (noverlap == 0) {
-    noverlap <- seg_length %/% 8
+  if (is.null(noverlap)) {
+    noverlap <- seg_length %/% 2
   } else if (noverlap >= seg_length) {
     stop("noverlap should not be larger than seg_length.")
   }
@@ -113,9 +137,8 @@ compute_psd.eeg_epochs <- function(data,
 
 compute_psd.eeg_evoked <- function(data,
                                    seg_length = NULL,
-                                   noverlap = 0,
+                                   noverlap = NULL,
                                    n_fft = 256,
-                                   srate = NULL,
                                    method = "Welch",
                                    ...) {
   srate <- data$srate
@@ -155,12 +178,12 @@ compute_psd.eeg_evoked <- function(data,
 #'
 #' Internal function for calculating the PSD using Welch's method
 #'
-#' @param data Object to perform FFT on
-#' @param seg_length length of each segment of data
-#' @param n_fft length of FFT
-#' @param noverlap overlap between segments
-#' @param n_sig number of samples total
-#' @param srate Sampling rate of the data
+#' @param data Object to perform FFT on.
+#' @param seg_length length of each segment of data.
+#' @param n_fft length of FFT.
+#' @param noverlap overlap between segments.
+#' @param n_sig number of samples total.
+#' @param srate Sampling rate of the data.
 #' @importFrom stats fft
 #' @keywords internal
 

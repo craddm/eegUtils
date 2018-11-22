@@ -125,7 +125,7 @@ column is always required; an epoch column is not." />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Baseline correction</h1>
-    <small class="dont-index">Source: <a href='https://github.com/craddm/eegUtils/blob/master/R/data_modifiers.R'><code>R/data_modifiers.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/craddm/eegUtils/blob/master/R/baseline_correction.R'><code>R/baseline_correction.R</code></a></small>
     <div class="hidden name"><code>rm_baseline.Rd</code></div>
     </div>
 
@@ -151,7 +151,10 @@ column is always required; an epoch column is not.</p>
 
 <span class='co'># S3 method for eeg_tfr</span>
 <span class='fu'>rm_baseline</span>(<span class='no'>data</span>, <span class='kw'>time_lim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"divide"</span>,
-  <span class='no'>...</span>)</pre>
+  <span class='no'>...</span>)
+
+<span class='co'># S3 method for eeg_evoked</span>
+<span class='fu'>rm_baseline</span>(<span class='no'>data</span>, <span class='kw'>time_lim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -184,6 +187,7 @@ channel mean if the data is continuous.</p></td>
 <li><p><code>eeg_epochs</code>: Remove baseline from eeg_epochs</p></li>
 <li><p><code>data.frame</code>: Legacy method for data.frames</p></li>
 <li><p><code>eeg_tfr</code>: Method for <code>eeg_tfr</code> objects</p></li>
+<li><p><code>eeg_evoked</code>: Method for <code>eeg_evoked</code> objects</p></li>
 </ul>
     
 

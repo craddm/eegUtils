@@ -6,44 +6,67 @@
 \alias{plot_psd.eeg_data}
 \alias{plot_psd.eeg_ICA}
 \alias{plot_psd.data.frame}
-\title{Plot power spectral density}
+\title{Plot Power Spectral Density}
 \usage{
 plot_psd(data, freq_range = NULL, ...)
 
-\method{plot_psd}{eeg_epochs}(data, freq_range = NULL, ...)
+\method{plot_psd}{eeg_epochs}(data, freq_range = NULL, n_fft = 512,
+  seg_length = NULL, noverlap = NULL, ...)
 
-\method{plot_psd}{eeg_data}(data, freq_range = NULL, ...)
+\method{plot_psd}{eeg_data}(data, freq_range = NULL, n_fft = 2048,
+  noverlap = NULL, seg_length = NULL, ...)
 
 \method{plot_psd}{eeg_ICA}(data, freq_range = NULL, components = NULL,
-  ...)
+  seg_length = NULL, noverlap = NULL, n_fft = 512, ...)
 
 \method{plot_psd}{data.frame}(data, freq_range = NULL, ...)
 }
 \arguments{
-\item{data}{Object of class \code{eeg_epochs}}
+\item{data}{Object of class \code{eeg_epochs}, \code{eeg_data}, or \code{eeg_ICA}.}
 
 \item{freq_range}{Vector of lower and upper frequencies to plot. (e.g. c(1,
 40))}
 
-\item{...}{Additional parameters}
+\item{...}{Additional parameters.}
 
-\item{components}{Which components to compute the PSD for}
+\item{n_fft}{Number of points to use for the underlying FFTs. Defaults to 512
+for \code{eeg_epochs} or minimum of 2048 or the signal length for
+\code{eeg_data}.}
+
+\item{seg_length}{Length of individual segments. Defaults to n_fft. Must be <= n_fft.}
+
+\item{noverlap}{Amount of overlap between segments, in sampling points.
+Defaults to 50\%.}
+
+\item{components}{Which components to compute the PSD for. Defaults to all.}
 }
 \description{
-Calculate and plot the PSD for \code{eeg_*} objects. Output units are dB. 512
-points are used for FFTs.
+Calculate and plot the PSD for \code{eeg_*} objects. Output units are dB. The
+PSD is calculated using Welch's method.
+}
+\details{
+Welch's method splits the data into multiple segments and then averages over
+those segments. For epoched data, Welch's FFT is calculated separately for
+each trial.
+
+Specific parameters such as the number of FFT points and the amount of
+overlap between segments can be passed to Welch's FFT
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{eeg_epochs}: Plot PSDs for \code{eeg_epochs}.
+\item \code{eeg_epochs}: Plot PSD for \code{eeg_epochs}.
 
-\item \code{eeg_data}: Plot PSDs for \code{eeg_epochs}.
+\item \code{eeg_data}: Plot PSD for \code{eeg_data}.
 
 \item \code{eeg_ICA}: Plot PSD for \code{eeg_ICA} objects
 
-\item \code{data.frame}: Plot PSDs for \code{data.frame}s.
+\item \code{data.frame}: Plot PSD for \code{data.frame}s.
 }}
 
+\examples{
+ plot_psd(demo_epochs)
+ plot_psd(demo_epochs, seg_length = 256)
+}
 \author{
 Matt Craddock, \email{matt@mattcraddock.com}
 }

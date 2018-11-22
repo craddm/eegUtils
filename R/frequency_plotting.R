@@ -1,27 +1,49 @@
-#' Plot power spectral density
+#' Plot Power Spectral Density
 #'
-#' Calculate and plot the PSD for \code{eeg_*} objects. Output units are dB. 512
-#' points are used for FFTs.
+#' Calculate and plot the PSD for \code{eeg_*} objects. Output units are dB. The
+#' PSD is calculated using Welch's method.
 #'
-#' @param data Object of class \code{eeg_epochs}
+#' Welch's method splits the data into multiple segments and then averages over
+#' those segments. For epoched data, Welch's FFT is calculated separately for
+#' each trial.
+#'
+#' Specific parameters such as the number of FFT points and the amount of
+#' overlap between segments can be passed to Welch's FFT
+#'
+#' @examples
+#'  plot_psd(demo_epochs)
+#'  plot_psd(demo_epochs, seg_length = 256)
+#' @param data Object of class \code{eeg_epochs}, \code{eeg_data}, or \code{eeg_ICA}.
 #' @param freq_range Vector of lower and upper frequencies to plot. (e.g. c(1,
 #'   40))
-#' @param ... Additional parameters
+#' @param ... Additional parameters.
 #' @author Matt Craddock, \email{matt@@mattcraddock.com}
 #' @export
+
 plot_psd <- function(data, freq_range = NULL, ...) {
   UseMethod("plot_psd", data)
 }
 
-#' @describeIn plot_psd Plot PSDs for \code{eeg_epochs}.
+#' @param n_fft Number of points to use for the underlying FFTs. Defaults to 512
+#'   for \code{eeg_epochs} or minimum of 2048 or the signal length for
+#'   \code{eeg_data}.
+#' @param noverlap Amount of overlap between segments, in sampling points.
+#'   Defaults to 50\%.
+#' @param seg_length Length of individual segments. Defaults to n_fft. Must be <= n_fft.
+#' @describeIn plot_psd Plot PSD for \code{eeg_epochs}.
 #' @export
 plot_psd.eeg_epochs <- function(data,
                                 freq_range = NULL,
+                                n_fft = 512,
+                                seg_length = NULL,
+                                noverlap = NULL,
                                 ...) {
 
   psd_out <- compute_psd(data,
                          keep_trials = FALSE,
-                         n_fft = 512)
+                         n_fft = n_fft,
+                         seg_length = seg_length,
+                         noverlap = noverlap)
 
   if (!is.null(freq_range)) {
     if (length(freq_range) < 2 | length(freq_range) > 2) {
@@ -48,14 +70,19 @@ plot_psd.eeg_epochs <- function(data,
     xlab("Frequency (Hz)")
 }
 
-#' @describeIn plot_psd Plot PSDs for \code{eeg_epochs}.
+#' @describeIn plot_psd Plot PSD for \code{eeg_data}.
 #' @export
 plot_psd.eeg_data <- function(data,
                               freq_range = NULL,
+                              n_fft = 2048,
+                              noverlap = NULL,
+                              seg_length = NULL,
                               ...) {
 
   psd_out <- compute_psd(data,
-                         n_fft = 512)
+                         n_fft = n_fft,
+                         seg_length = NULL,
+                         noverlap = NULL)
 
   if (!is.null(freq_range)) {
     if (length(freq_range) < 2 | length(freq_range) > 2) {
@@ -82,12 +109,15 @@ plot_psd.eeg_data <- function(data,
     xlab("Frequency (Hz)")
 }
 
-#'@param components Which components to compute the PSD for
-#'@describeIn plot_psd Plot PSD for \code{eeg_ICA} objects
-#'@export
+#' @param components Which components to compute the PSD for. Defaults to all.
+#' @describeIn plot_psd Plot PSD for \code{eeg_ICA} objects
+#' @export
 plot_psd.eeg_ICA <- function(data,
                              freq_range = NULL,
                              components = NULL,
+                             seg_length = NULL,
+                             noverlap = NULL,
+                             n_fft = 512,
                              ...) {
 
   if (!is.null(components)) {
@@ -96,7 +126,9 @@ plot_psd.eeg_ICA <- function(data,
   }
 
   psd_out <- compute_psd(data,
-                         n_fft = 512,
+                         n_fft = n_fft,
+                         seg_length = seg_length,
+                         noverlap = noverlap,
                          keep_trials = FALSE)
 
   if (!is.null(freq_range)) {
@@ -124,7 +156,8 @@ plot_psd.eeg_ICA <- function(data,
     xlab("Frequency (Hz)")
 }
 
-#' @describeIn plot_psd Plot PSDs for \code{data.frame}s.
+#' @describeIn plot_psd Plot PSD for \code{data.frame}s.
+#' @import dplyr
 #' @export
 plot_psd.data.frame <- function(data,
                                 freq_range = NULL,
@@ -173,7 +206,7 @@ plot_psd.data.frame <- function(data,
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #' @importFrom purrr partial
 #' @import ggplot2
-#' @seealso rm_baseline
+#' @seealso [rm_baseline()]
 #' @export
 
 plot_tfr <- function(data,
@@ -237,6 +270,7 @@ plot_tfr <- function(data,
     }
   }
 
+  # Use purrr::partial to save copy pasting the whole thing in every
   fill_dist <- purrr::partial(scale_fill_distiller,
                               palette = "RdBu",
                               limits = fill_lims,

@@ -7,17 +7,17 @@
 welch_fft(data, seg_length, n_fft, noverlap, n_sig, srate)
 }
 \arguments{
-\item{data}{Object to perform FFT on}
+\item{data}{Object to perform FFT on.}
 
-\item{seg_length}{length of each segment of data}
+\item{seg_length}{length of each segment of data.}
 
-\item{n_fft}{length of FFT}
+\item{n_fft}{length of FFT.}
 
-\item{noverlap}{overlap between segments}
+\item{noverlap}{overlap between segments.}
 
-\item{n_sig}{number of samples total}
+\item{n_sig}{number of samples total.}
 
-\item{srate}{Sampling rate of the data}
+\item{srate}{Sampling rate of the data.}
 }
 \description{
 Internal function for calculating the PSD using Welch's method

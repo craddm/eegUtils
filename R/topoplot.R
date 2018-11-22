@@ -229,6 +229,7 @@ topoplot.data.frame <- function(data,
 
   # Check if should interp/extrap beyond head_shape, and set up ring to mask
   # edges for smoothness
+
   out_df <- round_topo(out_df,
                        r = r,
                        interp_limit = interp_limit,
@@ -242,7 +243,7 @@ topoplot.data.frame <- function(data,
                           aes(x,
                               y,
                               fill = amplitude)) +
-    geom_raster(interpolate = TRUE)
+    geom_raster(interpolate = TRUE, na.rm = TRUE)
 
   if (contour) {
     topo <- topo +
@@ -258,11 +259,11 @@ topoplot.data.frame <- function(data,
 
   # Add head and mask to topoplot
   topo <- topo +
-    annotate("path",
-             x = mask_ring$x,
-             y = mask_ring$y,
-             colour = "white",
-             size = rel(4.8)) +
+     annotate("path",
+              x = mask_ring$x,
+              y = mask_ring$y,
+              colour = "white",
+              size = rel(6.5)) +
     annotate("path",
              x = head_shape$x,
              y = head_shape$y,
@@ -296,8 +297,8 @@ topoplot.data.frame <- function(data,
     guides(fill = guide_colorbar(title = expression(paste("Amplitude (",
                                                           mu, "V)")),
                                  title.position = "right",
-                                 barwidth = 1,
-                                 barheight = 6,
+                                 barwidth = rel(1),
+                                 barheight = rel(6),
                                  title.theme = element_text(angle = 270)))
 
   # Add electrode points or names -------------------
@@ -337,11 +338,6 @@ topoplot.data.frame <- function(data,
   topo
 }
 
-
-#' Topographical Plotting Function for EEG data
-#'
-#' Both \code{eeg_epochs} and \code{eeg_data} objects are supported.
-#'
 #' @describeIn topoplot Topographical plotting of \code{eeg_data} objects.
 #' @export
 
@@ -398,10 +394,6 @@ topoplot.eeg_data <- function(data, time_lim = NULL,
 }
 
 
-#' Topographical Plotting Function for EEG data
-#'
-#' Both \code{eeg_epochs} and \code{eeg_data} objects are supported.
-#'
 #' @describeIn topoplot Topographical plotting of \code{eeg_epochs} objects.
 #' @export
 
