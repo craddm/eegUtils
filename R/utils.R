@@ -200,7 +200,7 @@ as.data.frame.eeg_epochs <- function(x, row.names = NULL,
     df <- lapply(seq_along(cond_labels), function(ix) {
       out_df <- as.data.frame(select_epochs(x,
                                             cond_labels[[ix]]))
-      out_df$cond_label <- cond_labels[[ix]]
+      out_df$conditions <- cond_labels[[ix]]
       out_df
     })
 
@@ -212,7 +212,7 @@ as.data.frame.eeg_epochs <- function(x, row.names = NULL,
                           amplitude,
                           -time,
                           -epoch,
-                          -cond_label,
+                          -conditions,
                           factor_key = T)
     }
 
@@ -220,13 +220,19 @@ as.data.frame.eeg_epochs <- function(x, row.names = NULL,
     df <- data.frame(x$signals,
                      time = x$timings$time,
                      epoch = x$timings$epoch)
+  # combine the new data frame with any condition labels from the events table
+    if ("event_label" %in% names(x$events)) {
+      df <- merge(df,
+                  x$events[c("epoch", "event_label")],
+                  by = "epoch")
+      names(df)[which(names(df) == "event_label")] <- "conditions"
+    }
 
     if (long) {
       df <- tidyr::gather(df,
                           electrode,
                           amplitude,
-                          -time,
-                          -epoch,
+                          names(x$signals),
                           factor_key = T)
     }
   }
@@ -235,8 +241,9 @@ as.data.frame.eeg_epochs <- function(x, row.names = NULL,
     df <- dplyr::left_join(df,
                            x$events,
                            by = c("sample" = "event_onset"))
-    }
-  return(df)
+  }
+
+  df
 }
 
 #' Convert \code{eeg_evoked} object to data frame
@@ -258,7 +265,7 @@ as.data.frame.eeg_evoked <- function(x, row.names = NULL,
     df <- lapply(seq_along(cond_labels), function(ix) {
       out_df <- data.frame(x$signals[[ix]],
                            time = x$timings$time,
-                           cond_label = cond_labels[[ix]])
+                           conditions = cond_labels[[ix]])
       out_df
     })
     df <- do.call("rbind", df)
@@ -267,7 +274,7 @@ as.data.frame.eeg_evoked <- function(x, row.names = NULL,
                           "electrode",
                           "amplitude",
                           -time,
-                          -cond_label,
+                          -conditions,
                           factor_key = T)
     }
   } else {
@@ -280,7 +287,7 @@ as.data.frame.eeg_evoked <- function(x, row.names = NULL,
                           factor_key = T)
     }
   }
-  return(df)
+  df
 }
 
 #' Convert \code{eeg_ICA} object to data frame
@@ -319,7 +326,7 @@ as.data.frame.eeg_ICA <- function(x,
 
     df <- lapply(seq_along(cond_labels), function(ix) {
       out_df <- as.data.frame(select_epochs(x, cond_labels[[ix]]))
-      out_df$cond_label <- cond_labels[[ix]]
+      out_df$conditions <- cond_labels[[ix]]
       out_df
     })
 
@@ -331,7 +338,7 @@ as.data.frame.eeg_ICA <- function(x,
                           amplitude,
                           -time,
                           -epoch,
-                          -cond_label,
+                          -conditions,
                           factor_key = T)
     }
   } else {
@@ -372,13 +379,13 @@ as.data.frame.eeg_tfr <- function(x,
   out_df$time <- as.numeric(out_df$time)
   out_df$frequency <- as.numeric(out_df$frequency)
   if (!long) {
-    out_df <- tidyr::spread(out_df, electrode, power)
+    out_df <- tidyr::spread(out_df,
+                            electrode,
+                            power)
     return(out_df)
   }
   out_df
 }
-
-
 
 #' Check consistency of labels
 #'

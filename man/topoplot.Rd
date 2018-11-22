@@ -2,6 +2,7 @@
 % Please edit documentation in R/topoplot.R
 \name{topoplot}
 \alias{topoplot}
+\alias{topoplot.default}
 \alias{topoplot.data.frame}
 \alias{topoplot.eeg_data}
 \alias{topoplot.eeg_epochs}
@@ -11,11 +12,13 @@
 \usage{
 topoplot(data, ...)
 
+\method{topoplot}{default}(data, ...)
+
 \method{topoplot}{data.frame}(data, time_lim = NULL, limits = NULL,
   chanLocs = NULL, method = "Biharmonic", r = NULL, grid_res = 67,
   palette = "RdBu", interp_limit = "skirt", contour = TRUE,
   chan_marker = "point", quantity = "amplitude", montage = NULL,
-  colourmap, highlights = NULL, scaling = 1, ...)
+  colourmap, highlights = NULL, scaling = 1, groups = NULL, ...)
 
 \method{topoplot}{eeg_data}(data, time_lim = NULL, limits = NULL,
   chanLocs = NULL, method = "Biharmonic", r = NULL, grid_res = 67,
@@ -27,7 +30,7 @@ topoplot(data, ...)
   chanLocs = NULL, method = "Biharmonic", r = NULL, grid_res = 67,
   palette = "RdBu", interp_limit = "skirt", contour = TRUE,
   chan_marker = "point", quantity = "amplitude", montage = NULL,
-  highlights = NULL, scaling = 1, ...)
+  highlights = NULL, scaling = 1, groups = NULL, ...)
 
 \method{topoplot}{eeg_ICA}(data, component, time_lim = NULL,
   limits = NULL, chanLocs = NULL, method = "Biharmonic", r = NULL,
@@ -96,6 +99,8 @@ only 'biosemi64alpha' available other than default 10/20 system)}
 
 \item{scaling}{Scaling multiplication factor for labels and any plot lines. Defaults to 1.}
 
+\item{groups}{Column name for groups to retain.}
+
 \item{component}{Component to plot (numeric)}
 
 \item{freq_range}{Range of frequencies to average over.}
@@ -103,15 +108,14 @@ only 'biosemi64alpha' available other than default 10/20 system)}
 \description{
 Allows topographical plotting of functional data. Output is a ggplot2 object.
 
-The function works for both standard data frames and objects of class
-\code{eeg_data}.
-
 Both \code{eeg_epochs} and \code{eeg_data} objects are supported.
 
 Both \code{eeg_epochs} and \code{eeg_data} objects are supported.
 }
 \section{Methods (by class)}{
 \itemize{
+\item \code{default}: Default method for data frames.
+
 \item \code{data.frame}: Topographical plotting of data.frames and other non
 eeg_data objects.
 

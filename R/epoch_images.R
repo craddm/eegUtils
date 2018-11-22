@@ -56,7 +56,8 @@ erp_image.eeg_epochs <- function(data,
                       clim = NULL,
                       interpolate = FALSE,
                       ...) {
-  if (!electrode %in% names(data$signals)) {
+
+   if (!electrode %in% names(data$signals)) {
     stop("Specified electrode not found.")
   }
   data <- select_elecs(data,

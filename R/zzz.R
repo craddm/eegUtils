@@ -19,4 +19,6 @@ utils::globalVariables(c("time",
                          "pt",
                          "bl",
                          "..level..",
-                         "condition"))
+                         "condition",
+                         "conditions",
+                         "topos"))

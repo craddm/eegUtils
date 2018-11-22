@@ -22,21 +22,13 @@ topoplot <- function(data, ...) {
   UseMethod("topoplot", data)
 }
 
-#' Topographical Plotting Function for EEG
-#'
-#' @param data An object passed to the function
-#' @param ... Any other parameters
+#' @describeIn topoplot Default method for data frames.
 #' @export
 
 topoplot.default <- function(data, ...) {
   stop("This function requires a data frame or an eeg_data/eeg_epochs object")
 }
 
-#' Topographical Plotting Function for EEG
-#'
-#' The function works for both standard data frames and objects of class
-#' \code{eeg_data}.
-#'
 #' @param time_lim Timepoint(s) to plot. Can be one time or a range to average
 #'   over. If none is supplied, the function will average across all timepoints
 #'   in the supplied data.
@@ -69,11 +61,11 @@ topoplot.default <- function(data, ...) {
 #' @param colourmap Deprecated, use palette instead.
 #' @param highlights Electrodes to highlight (in white)
 #' @param scaling Scaling multiplication factor for labels and any plot lines. Defaults to 1.
-#'
+#' @param groups Column name for groups to retain.
 #' @import ggplot2
 #' @import dplyr
 #' @import tidyr
-#' @importFrom rlang parse_quosure
+#' @importFrom rlang parse_quo current_env
 #' @import scales
 #' @importFrom mgcv gam
 #' @describeIn topoplot Topographical plotting of data.frames and other non
@@ -96,6 +88,7 @@ topoplot.data.frame <- function(data,
                                 colourmap,
                                 highlights = NULL,
                                 scaling = 1,
+                                groups = NULL,
                                 ...) {
 
   if (!missing(colourmap)) {
@@ -125,7 +118,7 @@ topoplot.data.frame <- function(data,
     chanLocs$electrode <- toupper(chanLocs$electrode)
     data <- merge(data, chanLocs)
 
-    #remove channels with no location
+    # Remove channels with no location
     if (any(is.na(data$x))) {
       data <- data[!is.na(data$x), ]
       warning("Removing channels with no location.")
@@ -142,85 +135,81 @@ topoplot.data.frame <- function(data,
     stop("Neither electrode locations nor labels found.")
   }
 
+
   # Average over all timepoints ----------------------------
 
   x <- NULL
   y <- NULL
   electrode <- NULL
-  data <- dplyr::summarise(dplyr::group_by(data,
-                                           x,
-                                           y,
-                                           electrode),
-                           z = mean(!!rlang::parse_quosure(quantity),
-                                    na.rm = TRUE))
-
-  # Cut the data frame down to only the necessary columns, and make sure it has
-  # the right names
-  data <- data.frame(x = data$x,
-                   y = data$y,
-                   z = data$z,
-                   electrode = data$electrode)
-
-  # Rescale electrode co-ordinates to be from -1 to 1 for plotting
-  # Selects largest absolute value from x or y
-  max_dim <- max(abs(data$x),
-                 abs(data$y))
-  scaled_x <- data$x / max_dim
-  scaled_y <- data$y / max_dim
-
-  # Create the interpolation grid --------------------------
-
-  xo <- seq(-1.4, 1.4, length = grid_res)
-  yo <- seq(-1.4, 1.4, length = grid_res)
+  if (!is.null(groups)) {
+    groups <- rlang::parse_quo(groups,
+                               rlang::current_env())
+    data <- dplyr::group_by(data,
+                            x,
+                            y,
+                            electrode,
+                            !!groups)
+    data <- dplyr::summarise(data,
+                             z = mean(!!rlang::parse_quo(quantity,
+                                                         rlang::current_env()),
+                                      na.rm = TRUE))
+    data <- dplyr::ungroup(data)
+    data <- tidyr::nest(data, -!!groups)
+    # Rescale electrode co-ordinates to be from -1 to 1 for plotting
+    # Selects largest absolute value from x or y
+    max_dim <- max(abs(data$data[[1]]$x),
+                   abs(data$data[[1]]$y))
+    scaled_x <- data$data[[1]]$x / max_dim
+    scaled_y <- data$data[[1]]$y / max_dim
+  } else {
+    data <- dplyr::summarise(dplyr::group_by(data,
+                                             x,
+                                             y,
+                                             electrode),
+                             z = mean(!!rlang::parse_quo(quantity,
+                                                         rlang::current_env()),
+                                      na.rm = TRUE))
+    # Cut the data frame down to only the necessary columns, and make sure it has
+    # the right names
+    data <- data.frame(x = data$x,
+                       y = data$y,
+                       z = data$z,
+                       electrode = data$electrode)
+    # Rescale electrode co-ordinates to be from -1 to 1 for plotting
+    # Selects largest absolute value from x or y
+    max_dim <- max(abs(data$x),
+                   abs(data$y))
+    scaled_x <- data$x / max_dim
+    scaled_y <- data$y / max_dim
+    data <- dplyr::ungroup(data)
+    data <- tidyr::nest(tibble::as_tibble(data))
+  }
 
   # Do the interpolation! ------------------------
 
   switch(method,
          Biharmonic = {
-           xo <- matrix(rep(xo, grid_res),
-                        nrow = grid_res,
-                        ncol = grid_res)
-           yo <- t(matrix(rep(yo, grid_res),
-                          nrow = grid_res,
-                          ncol = grid_res))
-           xy <- scaled_x + scaled_y * sqrt(as.complex(-1))
-           d <- matrix(rep(xy, length(xy)),
-                       nrow = length(xy),
-                       ncol = length(xy))
-           d <- abs(d - t(d))
-           diag(d) <- 1
-           g <- (d ^ 2) * (log(d) - 1) #Green's function
-           diag(g) <- 0
-           weights <- qr.solve(g, data$z)
-           xy <- t(xy)
-
-           outmat <-
-             purrr::map(xo + sqrt(as.complex(-1)) * yo,
-                        function (x) (abs(x - xy) ^ 2) *
-                          (log(abs(x - xy)) - 1) ) %>%
-             rapply(function (x) ifelse(is.nan(x),
-                                        0,
-                                        x),
-                    how = "replace") %>%
-             purrr::map_dbl(function (x) x %*% weights)
-
-           dim(outmat) <- c(grid_res, grid_res)
-
-           out_df <- data.frame(x = xo[, 1],
-                                outmat)
-           names(out_df)[1:length(yo[1, ]) + 1] <- yo[1, ]
-           out_df <- tidyr::gather(out_df,
-                                  key = y,
-                                  value = amplitude,
-                                  -x,
-                                  convert = TRUE)
+           out_df <- dplyr::mutate(data,
+                                 topos = map(data,
+                                             ~biharm_topo(.x,
+                                                          grid_res = grid_res,
+                                                          scaled_x = scaled_x,
+                                                          scaled_y = scaled_y)))
          },
          gam = {
-           out_df <- gam_topo(data,
-                              scaled_x,
-                              scaled_y,
-                              grid_res)
+           out_df <- dplyr::mutate(data,
+                                 topos = map(data,
+                                             ~gam_topo(.x,
+                                                       grid_res = grid_res,
+                                                       scaled_x = scaled_x,
+                                                       scaled_y = scaled_y)))
+           # out_df <- gam_topo(data,
+           #                    scaled_x,
+           #                    scaled_y,
+           #                    grid_res)
          })
+
+  out_df <- tidyr::unnest(out_df, topos)
 
   # Create the head_shape -----------------
 
@@ -240,21 +229,16 @@ topoplot.data.frame <- function(data,
 
   # Check if should interp/extrap beyond head_shape, and set up ring to mask
   # edges for smoothness
-  if (identical(interp_limit, "skirt")) {
-    out_df$incircle <- sqrt(out_df$x ^ 2 + out_df$y ^ 2) < 1.125
-    mask_ring <- data.frame(x = 1.126 * cos(circ_rads),
-                           y = 1.126 * sin(circ_rads)
-    )
-  } else {
-    out_df$incircle <- sqrt(out_df$x ^ 2 + out_df$y ^ 2) < (r * 1.02)
-    mask_ring <- data.frame(x = r * 1.03 * cos(circ_rads),
-                           y = r * 1.03 * sin(circ_rads)
-    )
-  }
+  out_df <- round_topo(out_df,
+                       r = r,
+                       interp_limit = interp_limit,
+                       circ_rads = circ_rads)
+  mask_ring <- out_df$mask_ring
+  out_df <- out_df$out_df
 
   # Create the actual plot -------------------------------
 
-  topo <- ggplot2::ggplot(out_df[out_df$incircle, ],
+  topo <- ggplot2::ggplot(out_df,
                           aes(x,
                               y,
                               fill = amplitude)) +
@@ -272,6 +256,7 @@ topoplot.data.frame <- function(data,
       )
     }
 
+  # Add head and mask to topoplot
   topo <- topo +
     annotate("path",
              x = mask_ring$x,
@@ -343,7 +328,6 @@ topoplot.data.frame <- function(data,
                y = high_y,
                colour = "white",
                size = rel(2 * scaling))
-
   }
 
   # Set the palette and scale limits ------------------------
@@ -436,17 +420,24 @@ topoplot.eeg_epochs <- function(data,
                                 montage = NULL,
                                 highlights = NULL,
                                 scaling = 1,
+                                groups = NULL,
                                 ...) {
 
   if (!is.null(data$chan_info)) {
     chanLocs <- data$chan_info
   }
 
-  # average over epochs first
-  data <- eeg_average(data)
+  # average over epochs first, but preserve conditions
+  if ("event_label" %in% names(data$events)) {
+    data <- eeg_average(data,
+                        cond_label = list_events(data)$event_label)
+  } else {
+    data <- eeg_average(data)
+  }
 
   data <- as.data.frame(data,
                         long = TRUE)
+
   topoplot(data,
            time_lim = time_lim,
            limits = limits,
@@ -462,7 +453,8 @@ topoplot.eeg_epochs <- function(data,
            montage = montage,
            highlights = highlights,
            scaling = scaling,
-           passed = TRUE)
+           groups = groups
+           )
 }
 
 
@@ -613,7 +605,7 @@ set_palette <- function(topo, palette, limits = NULL) {
 #' @param scaled_x x coordinates rescaled
 #' @param scaled_y y coordinates rescaled
 #' @param grid_res resolution of output grid
-
+#' @importFrom mgcv gam
 #' @keywords internal
 
 gam_topo <- function(data,
@@ -642,6 +634,62 @@ gam_topo <- function(data,
 
 }
 
+#' Create a biharmonic smooth across the scalp
+#'
+#' @param data Data frame from which to generate predictions
+#' @param scaled_x x coordinates rescaled
+#' @param scaled_y y coordinates rescaled
+#' @param grid_res resolution of output grid
+#' @importFrom purrr map
+#' @keywords internal
+
+biharm_topo <- function(data,
+                        scaled_x,
+                        scaled_y,
+                        grid_res) {
+
+  # Create the interpolation grid --------------------------
+  xo <- seq(-1.4, 1.4, length = grid_res)
+  yo <- seq(-1.4, 1.4, length = grid_res)
+
+  xo <- matrix(rep(xo, grid_res),
+               nrow = grid_res,
+               ncol = grid_res)
+  yo <- t(matrix(rep(yo, grid_res),
+                 nrow = grid_res,
+                 ncol = grid_res))
+  xy <- scaled_x + scaled_y * sqrt(as.complex(-1))
+  d <- matrix(rep(xy, length(xy)),
+              nrow = length(xy),
+              ncol = length(xy))
+  d <- abs(d - t(d))
+  diag(d) <- 1
+  g <- (d ^ 2) * (log(d) - 1) #Green's function
+  diag(g) <- 0
+  weights <- qr.solve(g, data$z)
+  xy <- t(xy)
+
+  outmat <-
+    purrr::map(xo + sqrt(as.complex(-1)) * yo,
+               function (x) (abs(x - xy) ^ 2) *
+                 (log(abs(x - xy)) - 1) ) %>%
+    rapply(function (x) ifelse(is.nan(x),
+                               0,
+                               x),
+           how = "replace") %>%
+    purrr::map_dbl(function (x) x %*% weights)
+
+  dim(outmat) <- c(grid_res, grid_res)
+
+  out_df <- data.frame(x = xo[, 1],
+                       outmat)
+  names(out_df)[1:length(yo[1, ]) + 1] <- yo[1, ]
+  out_df <- tidyr::gather(out_df,
+                          key = y,
+                          value = amplitude,
+                          -x,
+                          convert = TRUE)
+}
 
 #' Create head shape for plotting
 #'
@@ -650,7 +698,6 @@ gam_topo <- function(data,
 #' @param r Radius of head
 #' @param circ_rads Circle outline in radians
 #' @keywords internal
-#'
 
 create_head <- function(r, circ_rads) {
 
@@ -677,4 +724,20 @@ create_head <- function(r, circ_rads) {
                    "nose" = nose,
                    "ears" = ears)
   head_out
+}
+
+#' @noRd
+round_topo <- function(.data, interp_limit, r, circ_rads) {
+
+  if (identical(interp_limit, "skirt")) {
+    .data$incircle <- sqrt(.data$x ^ 2 + .data$y ^ 2) < 1.125
+    mask_ring <- data.frame(x = 1.126 * cos(circ_rads),
+                            y = 1.126 * sin(circ_rads))
+    } else {
+      .data$incircle <- sqrt(.data$x ^ 2 + .data$y ^ 2) < (r * 1.02)
+      mask_ring <- data.frame(x = r * 1.03 * cos(circ_rads),
+                              y = r * 1.03 * sin(circ_rads))
+    }
+  topo_out <- list("out_df" = .data[.data$incircle, ],
+                   "mask_ring" = mask_ring)
 }
