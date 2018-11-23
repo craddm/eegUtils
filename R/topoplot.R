@@ -203,13 +203,12 @@ topoplot.data.frame <- function(data,
                                                        grid_res = grid_res,
                                                        scaled_x = scaled_x,
                                                        scaled_y = scaled_y)))
-           # out_df <- gam_topo(data,
-           #                    scaled_x,
-           #                    scaled_y,
-           #                    grid_res)
          })
 
-  out_df <- tidyr::unnest(out_df, topos)
+  out_df <- tidyr::unnest(out_df,
+                          topos)
+
+  data <- tidyr::unnest(data)
 
   # Create the head_shape -----------------
 

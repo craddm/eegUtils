@@ -1,9 +1,9 @@
 #' @noRd
 filter.eeg_epochs <- function(.data, ...) {
+  orig_cols <- names(.data$signals)
   .data$signals <- as.data.frame(.data)
   .data$signals <- dplyr::filter(.data$signals, ...)
-  .data$signals$time <- NULL
-  .data$signals$epoch <- NULL
+  .data$signals <- dplyr::select(.data$signals, orig_cols)
   .data$timings <- dplyr::filter(.data$timings, ...)
   .data
 }
