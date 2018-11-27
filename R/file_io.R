@@ -333,7 +333,7 @@ import_set <- function(file_name, df_out = FALSE) {
   srate <- c(temp_dat$EEG[[which(var_names == "srate")]])
   names(signals) <- c(unique(chan_info$electrode), "time")
   signals <- dplyr::group_by(signals, time)
-  signals <- dplyr::mutate(signals, epoch = 1:n())
+  signals <- dplyr::mutate(signals, epoch = 1:dplyr::n())
   signals <- dplyr::ungroup(signals)
 
   event_info <- temp_dat$EEG[[which(var_names == "event")]]
@@ -345,7 +345,8 @@ import_set <- function(file_name, df_out = FALSE) {
   names(event_table) <- unlist(dimnames(event_info)[1])
   event_table$event_time <- (event_table$latency - 1) / srate
   event_table <- event_table[c("latency", "event_time", "type", "epoch")]
-  event_table <- dplyr::rename(event_table, event_type = "type",
+  event_table <- dplyr::rename(event_table,
+                               event_type = "type",
                                event_onset = "latency")
   event_table$time <- NA
 

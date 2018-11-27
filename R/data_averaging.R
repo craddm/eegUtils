@@ -153,6 +153,7 @@ eeg_grandaverage <- function(data,
 
 
 #' Create a grand average file from multiple evoked objects
+#' @importFrom dplyr bind_rows
 #' @keywords internal
 create_grandavg <- function(data,
                             keep_indivs,

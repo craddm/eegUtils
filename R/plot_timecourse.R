@@ -8,7 +8,7 @@
 #'
 #' @param data EEG dataset. Should have multiple timepoints.
 #' @param ... Other arguments passed to methods.
-#' @import dplyr
+#' @importFrom dplyr summarise group_by ungroup
 #' @import ggplot2
 #' @importFrom rlang parse_quo
 #' @return Returns a ggplot2 plot object
@@ -349,7 +349,7 @@ plot_butterfly <- function(data, ...) {
 #' @return ggplot2 object showing ERPs for all electrodes overlaid on a single
 #'   plot.
 #' @import ggplot2
-#' @import dplyr
+#' @importFrom dplyr group_by ungroup summarise
 #' @import tidyr
 #' @describeIn plot_butterfly Default `plot_butterfly` method for data.frames, \code{eeg_data}
 #' @export

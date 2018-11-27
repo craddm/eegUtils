@@ -5,8 +5,8 @@
 #' @param dv Column containing dependent variable. (e.g. amplitude)
 #' @param iv_1 Column containing predictor.
 #' @importFrom purrr map
-#' @import tidyr
-#' @import dplyr
+#' @importFrom tidyr nest
+#' @importFrom dplyr mutate ungroup is_grouped_df
 #' @noRd
 
 fit_glm_indiv <- function(data, dv, iv_1) {
@@ -14,7 +14,7 @@ fit_glm_indiv <- function(data, dv, iv_1) {
   if (!"epoch" %in% colnames(data)) {
     stop("Single trial data required for fitting.")
   }
-  if (is_grouped_df(data)) {
+  if (dplyr::is_grouped_df(data)) {
     data <- dplyr::ungroup(data)
   }
   data <- tidyr::nest(data, condition, amplitude)

@@ -242,7 +242,7 @@ electrode_locations <- function(data, ...) {
 #' @param plot Plot obtained electrode locations.
 #' @param montage Name of an existing montage set. Defaults to NULL; (currently
 #'   only 'biosemi64alpha' available other than default 10/20 system)
-#' @import dplyr
+#' @importFrom dplyr inner_join pull left_join distinct
 #' @import ggplot2
 #' @importFrom tibble is.tibble
 #' @describeIn electrode_locations Adds standard locations to a data frame in
@@ -306,7 +306,6 @@ electrode_locations.data.frame <- function(data,
 }
 
 #' @param overwrite Overwrite existing channel info. Defaults to FALSE.
-#' @import dplyr
 #' @import ggplot2
 #' @describeIn electrode_locations Adds standard locations to the chan_info field of an eeg_data object.
 #' @export

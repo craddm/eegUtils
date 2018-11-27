@@ -187,7 +187,8 @@ as.data.frame.eeg_data <- function(x, row.names = NULL,
 
 as.data.frame.eeg_epochs <- function(x, row.names = NULL,
                                      optional = FALSE,
-                                     long = FALSE, events = FALSE,
+                                     long = FALSE,
+                                     events = FALSE,
                                      cond_labels = NULL, ...) {
 
   if (!is.null(cond_labels)) {
@@ -213,7 +214,7 @@ as.data.frame.eeg_epochs <- function(x, row.names = NULL,
                           -time,
                           -epoch,
                           -conditions,
-                          factor_key = T)
+                          factor_key = TRUE)
     }
 
   } else {
@@ -233,7 +234,7 @@ as.data.frame.eeg_epochs <- function(x, row.names = NULL,
                           electrode,
                           amplitude,
                           names(x$signals),
-                          factor_key = T)
+                          factor_key = TRUE)
     }
   }
 
