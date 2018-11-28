@@ -1,7 +1,7 @@
 Package: eegUtils
 Type: Package
 Title: A collection of utilities for EEG analysis 
-Version: 0.3.0
+Version: 0.3.0.9000
 Date: 2018-11-22
 Authors@R: c(
   person("Matt", "Craddock", role = c("aut", "cre"), email = "matt@mattcraddock.com"),
@@ -32,7 +32,8 @@ Imports:
   R.matlab,
   viridis,
   pracma,
-  abind
+  abind,
+  data.table
 Depends:
   R (>= 2.10)
 RoxygenNote: 6.1.1

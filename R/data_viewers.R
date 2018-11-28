@@ -6,7 +6,6 @@
 #'determined by the range of the viewable data.
 #'
 #'@author Matt Craddock \email{matt@@mattcraddock.com}
-#'@import dplyr
 #'@import ggplot2
 #'@import shiny
 #'@import miniUI

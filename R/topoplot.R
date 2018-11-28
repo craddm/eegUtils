@@ -63,7 +63,7 @@ topoplot.default <- function(data, ...) {
 #' @param scaling Scaling multiplication factor for labels and any plot lines. Defaults to 1.
 #' @param groups Column name for groups to retain.
 #' @import ggplot2
-#' @import dplyr
+#' @importFrom dplyr group_by mutate summarise ungroup
 #' @import tidyr
 #' @importFrom rlang parse_quo current_env
 #' @import scales

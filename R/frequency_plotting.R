@@ -157,7 +157,7 @@ plot_psd.eeg_ICA <- function(data,
 }
 
 #' @describeIn plot_psd Plot PSD for \code{data.frame}s.
-#' @import dplyr
+#' @importFrom dplyr select group_by summarise_all
 #' @export
 plot_psd.data.frame <- function(data,
                                 freq_range = NULL,

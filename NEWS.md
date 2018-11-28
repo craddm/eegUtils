@@ -1,5 +1,16 @@
-# eegUtils 0.3.0
+# eegUtils 0.3.0.9000
 
+### Function changes
+- Some wrappers around `dplyr` functions added:
+    - `select()` now works for selecting electrodes from `eeg_data` and `eeg_epochs` objects.
+    - `filter()` now works for selecting time points or epochs from `eeg_data` and `eeg_epochs` objects.
+- `topoplot()` now has a `groups` parameter that allows the possibility of facetting.
+
+### Internal changes / bug fixes
+- `data.table` now used during re-referencing - increases speed and decreases memory use.
+- `reref_eeg` now correctly excludes electrodes as requested
+
+# eegUtils 0.3.0
 
 ### Function changes
 - `topoplot()` now has a scaling parameter to scale the size of any lines or markers drawn on the plot.

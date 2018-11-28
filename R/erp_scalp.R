@@ -21,7 +21,7 @@
 #'
 #' @author Matti Vuorre, \email{mv2521@@columbia.edu}
 #' @importFrom purrr map
-#' @import dplyr
+#' @importFrom dplyr group_by summarise mutate select
 #' @import ggplot2
 #' @import tidyr
 #' @import scales
