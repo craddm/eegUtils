@@ -21,4 +21,11 @@ utils::globalVariables(c("time",
                          "..level..",
                          "condition",
                          "conditions",
-                         "topos"))
+                         "topos",
+                         "variance",
+                         "means",
+                         "add_markers",
+                         "plotlyOutput",
+                         "value",
+                         "var",
+                         "measure"))

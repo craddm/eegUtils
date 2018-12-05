@@ -1,11 +1,8 @@
-#' Re-export filter from dplyr
 #' @importFrom dplyr filter
-#' @name filter
-#' @rdname filter
 #' @export
-NULL
+dplyr::filter
 
-#' @importFrom dplyr select filter
+#' @importFrom dplyr filter
 #' @export
 filter.eeg_epochs <- function(.data, ...) {
   orig_cols <- names(.data$signals)
@@ -16,7 +13,7 @@ filter.eeg_epochs <- function(.data, ...) {
   .data
 }
 
-#' @importFrom dplyr select filter
+#' @importFrom dplyr filter
 #' @export
 filter.eeg_data <- function(.data, ...) {
   orig_cols <- names(.data$signals)
@@ -27,6 +24,7 @@ filter.eeg_data <- function(.data, ...) {
   .data
 }
 
+#' @importFrom dplyr select
 #' @export
 dplyr::select
 
@@ -34,9 +32,10 @@ dplyr::select
 #' @export
 select.eeg_epochs <- function(.data, ...) {
   .data$signals <- dplyr::select(.data$signals, ...)
+  new_cols <- names(.data$signals) # dplyr::filter can't find .data$signals to get names directly
   if (!is.null(.data$chan_info)) {
     .data$chan_info <- dplyr::filter(.data$chan_info,
-                                     electrode %in% names(.data$signals))
+                                     electrode %in% new_cols)
   }
   .data
 }
@@ -52,7 +51,11 @@ select.eeg_data <- function(.data, ...) {
 }
 
 #' @importFrom dplyr mutate
-#' @noRd
+#' @export
+dplyr::mutate
+
+#' @importFrom dplyr mutate
+#' @export
 
 mutate.eeg_data <- function(.data, ...) {
   .data$signals <- dplyr::mutate(.data$signals, ...)
@@ -60,7 +63,7 @@ mutate.eeg_data <- function(.data, ...) {
 }
 
 #' @importFrom dplyr mutate
-#' @noRd
+#' @export
 mutate.eeg_epochs <- function(.data, ...) {
   .data$signals <- dplyr::mutate(.data$signals, ...)
   .data

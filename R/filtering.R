@@ -12,6 +12,11 @@
 #'
 #' If low_freq > high_freq, bandstop filtering is performed.
 #'
+#' Note that the signal is first zero-meaned using either channel means or
+#' by-channel epoch means.
+#' @examples
+#' plot_psd(iir_filt(demo_epochs, low_freq = 1, high_freq = 30))
+#' plot_psd(iir_filt(demo_epochs, low_freq = 12, high_freq = 8))
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #' @param data Data to be filtered.
 #' @param ... Parameters passed to S3 methods
@@ -56,7 +61,7 @@ iir_filt.data.frame <- function(data,
 }
 
 #' @export
-#' @describeIn iir_filt Filter eeg_data
+#' @describeIn iir_filt Filter \code{eeg_data} objects
 
 iir_filt.eeg_data <- function(data,
                               low_freq = NULL,
@@ -71,11 +76,11 @@ iir_filt.eeg_data <- function(data,
                           filter_order,
                           data$srate,
                           silent = silent)
-  return(data)
+  data
 }
 
 #' @export
-#' @describeIn iir_filt Filter eeg_epochs
+#' @describeIn iir_filt Filter \code{eeg_epochs} objects.
 iir_filt.eeg_epochs <- function(data,
                                 low_freq = NULL,
                                 high_freq = NULL,
@@ -173,25 +178,22 @@ run_iir <- function(data,
                               W,
                               type = filt_type)
 
+  data <- data.table(data)
+
   if ("epoch" %in% names(data)) {
-    data <- dplyr::group_by(data,
-                            epoch)
+    data <- data[, lapply(.SD, function(x) signal::filtfilt(filt_coef, x)), by = epoch]
+  } else {
+    data <- data[, lapply(.SD, function(x) signal::filtfilt(filt_coef, x))]
   }
 
-  if ("electrode" %in% names(data)) {
-    data <- dplyr::group_by(data,
-                            electrode,
-                            add = TRUE)
-  }
-
-  if (length(dim(data)) > 1) {
-    data <- purrr::map_df(as.list(data),
-                          ~signal::filtfilt(filt_coef, .))
-    } else {
-    data <- signal::filtfilt(filt_coef,
-                             data)
-  }
-  data
+  # if (length(dim(data)) > 1) {
+  #   data <- furrr::future_map_dfr(as.list(data),
+  #                         ~signal::filtfilt(filt_coef, .))
+  #   } else {
+  #   data <- signal::filtfilt(filt_coef,
+  #                            data)
+  # }
+  tibble::as_tibble(data)
 }
 
 

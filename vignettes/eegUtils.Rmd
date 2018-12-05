@@ -54,6 +54,8 @@ eeg_example <- iir_filt(eeg_example,
                         filter_order = 3) #specify a bandpass filter
 ```
 
+## Creating epochs
+
 Data can be epoched around events/triggers using `epoch_data()`, which outputs an `eeg_epochs` object. A list of the event triggers found in the data can be retrieved using `list_events()`. In this case we’ll epoch around event code 201.
 
 ```{r epoch-eeg}
@@ -62,6 +64,8 @@ eeg_example <- epoch_data(eeg_example,
                           events = 201,
                           time_lim = c(-.3, .75))
 ```
+
+## Plotting 
 
 `eeg_epochs` can then be plotted using `plot_butterfly()` or `plot_timecourse()`. Both `plot_butterfly()` and `plot_timecourse()` average over epochs. `plot_timecourse()` will also average over electrodes - all electrodes if none are specified, or over any specified electrodes. Baseline correction can also be applied at this point if desired. Baseline correction can also be applied using `rm_baseline()`, or for plotting only using the `baseline` parameter in the plotting call..
 
@@ -95,4 +99,45 @@ Note that one electrode (Fp1/A1) was malunctioning during the the recording. We 
 ```{r inter}
 eeg_example <- interp_elecs(eeg_example, bad_elecs = "A1")
 topoplot(eeg_example, time_lim = c(.1, .2))
+```
+
+At any point, `eegUtils` objects can be transformed into data frames for use with functions that don't natively support them.
+
+```{r}
+library(ggplot2)
+library(dplyr)
+eeg_example %>%
+  select_epochs(epoch_no = 1:5) %>%
+  select_elecs(c("A29", "B6")) %>%
+  as.data.frame(long = TRUE) %>%
+  ggplot(aes(x = time, y = amplitude)) +
+  geom_line(aes(group = epoch), alpha = 0.2) + 
+  stat_summary(fun.y = mean,
+               geom = "line",
+               size = 2,
+               aes(colour = electrode)) + 
+  facet_wrap(~electrode) + 
+  theme_classic()
+```
+
+# Tidyverse functions
+
+In addition, there are overloaded versions of some `dplyr` functions that operate on the `signals` element of `eeg_data` and `eeg_epochs` objects. For example, `select()` can be used to choose particular electrodes, and `filter()` can be used to filter out epochs or timepoints. `mutate()` can be used to add new columns (e.g. creating ROIs from multiple electrodes).
+
+```{r}
+
+eeg_example %>%
+  mutate(occipital = (A29 + A27 + B32) / 3) %>%
+  select(A29, B6, occipital) %>%
+  filter(epoch <= 60, time < .5) %>%
+  as.data.frame(long = TRUE) %>%
+  ggplot(aes(x = time, y = amplitude)) +
+  geom_line(aes(group = epoch), alpha = 0.2) + 
+  stat_summary(fun.y = mean,
+               geom = "line",
+               size = 2,
+               aes(colour = electrode)) +
+  facet_wrap(~electrode) + 
+  scale_colour_viridis_d() +
+  theme_classic()
 ```
