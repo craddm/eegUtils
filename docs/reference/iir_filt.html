@@ -65,7 +65,7 @@ then again backwards)." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">eegUtils</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0.9000</span>
       </span>
     </div>
 
@@ -192,16 +192,20 @@ to perform high-pass or low-pass filtering respectively. For band-pass or
 band-stop filters, pass both low_freq and high_freq.</p>
 <p>If low_freq &lt; high_freq, bandpass filtering is performed.</p>
 <p>If low_freq &gt; high_freq, bandstop filtering is performed.</p>
+<p>Note that the signal is first zero-meaned using either channel means or
+by-channel epoch means.</p>
     
     <h2 class="hasAnchor" id="methods-by-class-"><a class="anchor" href="#methods-by-class-"></a>Methods (by class)</h2>
 
     <ul>
 <li><p><code>data.frame</code>: Filter a data frame</p></li>
-<li><p><code>eeg_data</code>: Filter eeg_data</p></li>
-<li><p><code>eeg_epochs</code>: Filter eeg_epochs</p></li>
+<li><p><code>eeg_data</code>: Filter <code>eeg_data</code> objects</p></li>
+<li><p><code>eeg_epochs</code>: Filter <code>eeg_epochs</code> objects.</p></li>
 </ul>
     
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='fu'><a href='plot_psd.html'>plot_psd</a></span>(<span class='fu'>iir_filt</span>(<span class='no'>demo_epochs</span>, <span class='kw'>low_freq</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>high_freq</span> <span class='kw'>=</span> <span class='fl'>30</span>))</div><div class='output co'>#&gt; <span class='message'>Band-pass IIR filter from 1-30 Hz</span></div><div class='img'><img src='iir_filt-1.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'><a href='plot_psd.html'>plot_psd</a></span>(<span class='fu'>iir_filt</span>(<span class='no'>demo_epochs</span>, <span class='kw'>low_freq</span> <span class='kw'>=</span> <span class='fl'>12</span>, <span class='kw'>high_freq</span> <span class='kw'>=</span> <span class='fl'>8</span>))</div><div class='output co'>#&gt; <span class='message'>Band-stop IIR filter from 8-12 Hz</span></div><div class='img'><img src='iir_filt-2.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -211,7 +215,9 @@ band-stop filters, pass both low_freq and high_freq.</p>
       <li><a href="#details">Details</a></li>
 
       <li><a href="#methods-by-class-">Methods (by class)</a></li>
-          </ul>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
     <h2>Author</h2>
     <p>Matt Craddock <a href='mailto:matt@mattcraddock.com'>matt@mattcraddock.com</a></p>

@@ -162,9 +162,11 @@ as.data.frame.eeg_data <- function(x, row.names = NULL,
   }
 
   if (events) {
-    df <- dplyr::left_join(df, x$events, by = c("sample" = "event_onset"))
+    df <- dplyr::left_join(df,
+                           x$events,
+                           by = c("sample" = "event_onset"))
   }
-  return(df)
+  df
 }
 
 #' Convert \code{eeg_epochs} object to data.frame
@@ -221,7 +223,7 @@ as.data.frame.eeg_epochs <- function(x, row.names = NULL,
     df <- data.frame(x$signals,
                      time = x$timings$time,
                      epoch = x$timings$epoch)
-  # combine the new data frame with any condition labels from the events table
+    # combine the new data frame with any condition labels from the events table
     if ("event_label" %in% names(x$events)) {
       df <- merge(df,
                   x$events[c("epoch", "event_label")],

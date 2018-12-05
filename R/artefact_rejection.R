@@ -68,7 +68,11 @@ eeg_FASTER.eeg_epochs <- function(data, ...) {
 
       # check for any bad channels that have missing coordinates
       which_bad <- data$chan_info$electrode %in% bad_chan_n
-      missing_coords <- apply(is.na(data$chan_info[which_bad, ]), 1, any)
+      missing_coords <- FALSE
+
+      if (any(which_bad)){
+        missing_coords <- apply(is.na(data$chan_info[which_bad, ]), 1, any)
+      }
 
       missing_bads <- bad_chan_n[!check_bads | missing_coords]
 
@@ -105,7 +109,9 @@ eeg_FASTER.eeg_epochs <- function(data, ...) {
 
   # Return to original reference, if one existed.
   if (!is.null(orig_ref)) {
-    data <- reref_eeg(data, ref_chans = orig_ref, exclude = excluded)
+    data <- reref_eeg(data,
+                      ref_chans = orig_ref,
+                      exclude = excluded)
   }
 
   data$chan_info <- orig_chan_info
@@ -192,7 +198,7 @@ faster_epochs <- function(data, ...) {
 #' @keywords internal
 
 faster_cine <- function(data, ...) {
-  #chan_means <- Matrix::colMeans(data$signals)
+
   epochs <- split(data$signals,
                   data$timings$epoch)
   bad_chans <- lapply(epochs,
@@ -228,7 +234,8 @@ faster_cine <- function(data, ...) {
   if (any(good_epochs)) {
     clean_epochs <- select_epochs(data,
                                   epoch_no = epoch_nos[good_epochs])
-    data <- eeg_combine(clean_epochs, bad_epochs)
+    data <- eeg_combine(clean_epochs,
+                        bad_epochs)
     return(data)
   }
 
@@ -246,7 +253,7 @@ faster_cine <- function(data, ...) {
 
 quick_hurst <- function(data) {
   n <- nrow(data)
-  y <- sweep(data, 2, Matrix::colMeans(data))
+  #y <- sweep(data, 2, Matrix::colMeans(data))
   s <- apply(data, 2, cumsum)
   rs <- (matrixStats::colMaxs(s) - matrixStats::colMins(s))
   rs <- rs / matrixStats::colSds(as.matrix(data))
@@ -374,6 +381,8 @@ channel_stats.eeg_data <- function(data, ...) {
 
 #' Epoch statistics
 #'
+#' Calculate various statistics for each epoch in the data
+#'
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #'
 #' @param data Data as a \code{eeg_data} or \code{eeg_epochs} object.
@@ -387,17 +396,21 @@ epoch_stats <- function(data, ...) {
 #' @describeIn epoch_stats Calculate statistics for each epoch.
 #' @noRd
 epoch_stats.eeg_epochs <- function(data, ...) {
-  epoch_nos <- unique(data$timings$epoch)
-  data <- split(data$signals,
-                data$timings$epoch)
-  epoch_means <- lapply(data,
-                        Matrix::colMeans)
-  epoch_means <- as.data.frame(do.call("rbind", epoch_means))
-  epoch_means$epoch_nos <- epoch_nos
-  epoch_means
+  data$signals$epoch <- data$timings$epoch
+  data <- data.table::data.table(as.data.frame(data$signals))
+  epoch_vars <- data[, lapply(.SD, var), by = epoch]
+  epoch_kur <- data[, lapply(.SD, kurtosis), by = epoch]
+  epoch_max <- data[, lapply(.SD, max), by = epoch]
+  epoch_min <- data[, lapply(.SD, min), by = epoch]
+  #epoch_vars <- data[, value := matrixStats::rowVars(as.matrix(.SD), na.rm = TRUE), by = epoch][, c("epoch", "value")]
+  #epoch_kur <- data[, value := kurtosis(x), by = epoch][, c("epoch", "value")]
+  stats_out <- data.table::rbindlist(list(max = epoch_max,
+                                          min = epoch_min,
+                                          variance = epoch_vars,
+                                          kurtosis = epoch_kur),
+                                     idcol = "measure")
+  stats_out
 }
-
-
 
 #' Calculate kurtosis
 #'
@@ -415,7 +428,8 @@ kurtosis <- function(data) {
 #' @param data data to regress
 #' @param heog Horizontal EOG channels
 #' @param veog Vertical EOG channels
-#' @param bipolarize Bipolarize the EOG channels. Only works when four channels are supplied (2 HEOG and 2 VEOG).
+#' @param bipolarize Bipolarize the EOG channels. Only works when four channels
+#'   are supplied (2 HEOG and 2 VEOG).
 #' @author Matt Craddock, \email{matt@@mattcraddock.com}
 #' @noRd
 

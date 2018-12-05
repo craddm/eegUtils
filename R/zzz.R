@@ -25,4 +25,11 @@ utils::globalVariables(c("time",
                          ".electrode",
                          "phi",
                          "theta",
-                         "event_onset"))
+                         "event_onset",
+                         "variance",
+                         "means",
+                         "add_markers",
+                         "plotlyOutput",
+                         "value",
+                         "var",
+                         "measure"))

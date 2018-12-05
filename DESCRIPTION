@@ -34,7 +34,9 @@ Imports:
   pracma,
   abind,
   data.table,
-  ini
+  ini,
+  shinydashboard,
+  plotly
 Depends:
   R (>= 2.10)
 RoxygenNote: 6.1.1
@@ -44,7 +46,6 @@ Suggests: testthat,
     knitr,
     rmarkdown,
     ica,
-    plotly,
     geigen
 URL: https://github.com/craddm/eegUtils
 BugReports: https://github.com/craddm/eegUtils/issues

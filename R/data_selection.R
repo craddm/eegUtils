@@ -36,14 +36,14 @@ select_times.default <- function(data, time_lim = NULL, ...) {
     if (length(time_lim) == 1) {
       stop("Must enter two timepoints when selecting a time range.")
     } else if (length(time_lim) == 2) {
-      time_lim[1] <- data$time[which.min(abs(data$time - time_lim[1]))]
-      time_lim[2] <- data$time[which.min(abs(data$time - time_lim[2]))]
+      #time_lim[1] <- data$time[which.min(abs(data$time - time_lim[1]))]
+      #time_lim[2] <- data$time[which.min(abs(data$time - time_lim[2]))]
       data <- data[data$time >= time_lim[1] & data$time <= time_lim[2], ]
     }
   } else {
     warning("No time column found.")
   }
-  return(data)
+  data
 }
 
 #' @param df_out Returns a data frame rather than an object of the same type
@@ -88,14 +88,8 @@ select_times.eeg_epochs <- function(data,
                                     df_out = FALSE,
                                     ...) {
 
-  if (length(time_lim) == 1) {
-      stop("Must enter two timepoints when selecting a time range;
-        using whole range.")
-  } else if (length(time_lim) == 2) {
-    time_lim[1] <- data$timings$time[which.min(abs(data$timings$time - time_lim[1]))]
-    time_lim[2] <- data$timings$time[which.min(abs(data$timings$time - time_lim[2]))]
-    sel_rows <- data$timings$time >= time_lim[1] & data$timings$time <= time_lim[2]
-  }
+  sel_rows <- find_times(data$timings,
+                         time_lim)
 
   data$signals <- data$signals[sel_rows, ]
   data$timings <- data$timings[sel_rows, ]
@@ -156,9 +150,9 @@ find_times <- function(timings,
                        time_lim) {
 
   if (length(time_lim) == 2) {
-    time_lim[1] <- timings$time[which.min(abs(timings$time - time_lim[1]))]
-    time_lim[2] <- timings$time[which.min(abs(timings$time - time_lim[2]))]
-    sel_rows <- timings$time >= time_lim[1] & timings$time <= time_lim[2]
+    #time_lim[1] <- timings$time[which.min(abs(timings$time - time_lim[1]))]
+    #time_lim[2] <- timings$time[which.min(abs(timings$time - time_lim[2]))]
+    sel_rows <- timings$time > time_lim[1] & timings$time < time_lim[2]
   } else {
   warning("Must enter two timepoints when selecting a time range;
           using whole range.")

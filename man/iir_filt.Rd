@@ -46,16 +46,23 @@ band-stop filters, pass both low_freq and high_freq.
 If low_freq < high_freq, bandpass filtering is performed.
 
 If low_freq > high_freq, bandstop filtering is performed.
+
+Note that the signal is first zero-meaned using either channel means or
+by-channel epoch means.
 }
 \section{Methods (by class)}{
 \itemize{
 \item \code{data.frame}: Filter a data frame
 
-\item \code{eeg_data}: Filter eeg_data
+\item \code{eeg_data}: Filter \code{eeg_data} objects
 
-\item \code{eeg_epochs}: Filter eeg_epochs
+\item \code{eeg_epochs}: Filter \code{eeg_epochs} objects.
 }}
 
+\examples{
+plot_psd(iir_filt(demo_epochs, low_freq = 1, high_freq = 30))
+plot_psd(iir_filt(demo_epochs, low_freq = 12, high_freq = 8))
+}
 \author{
 Matt Craddock \email{matt@mattcraddock.com}
 }
