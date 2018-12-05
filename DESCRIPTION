@@ -33,7 +33,8 @@ Imports:
   viridis,
   pracma,
   abind,
-  data.table
+  data.table,
+  ini
 Depends:
   R (>= 2.10)
 RoxygenNote: 6.1.1

@@ -41,19 +41,26 @@ import_elc <- function(file_name) {
   sph_pos <- cart_to_sph(pos[, 1],
                          pos[, 2],
                          pos[, 3])
-  sph_pos[, 2:3] <- sph_pos[, 2:3] / pi * 180
-  topo_pos <- sph_to_topo(sph_pos[, 2],
-                          sph_pos[, 3])
+
+  topo_pos <- sph_to_topo(phi = sph_pos[, 2],
+                          theta = sph_pos[, 3])
+  pol_coords <- cart_to_pol(pos[, 1],
+                            pos[, 2])
   names(pos) <- c("cart_x",
                   "cart_y",
                   "cart_z")
   final_locs <- data.frame(electrode = labs,
                            pos,
                            sph_pos,
-                           topo_pos)
-  final_locs$x <- final_locs$radius * cos(final_locs$angle / 180 * pi)
-  final_locs$y <- final_locs$radius * sin(final_locs$angle / 180 * pi)
-  final_locs
+                           pol_coords,
+                           topo_pos)#,
+  final_locs <- cbind(final_locs,
+                      topo_norm(final_locs$angle,
+                                final_locs$radius))
+
+  #final_locs$x <- final_locs$radius * cos(final_locs$angle / 180 * pi)
+  #final_locs$y <- final_locs$radius * sin(-final_locs$angle / 180 * pi)
+  tibble::as.tibble(final_locs)
 }
 
 #' Convert 3D Cartesian co-ordinates to spherical
@@ -61,15 +68,18 @@ import_elc <- function(file_name) {
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #' @param x X co-ordinates
 #' @param y Y co-ordinates
-#' @param z z co-ordinates
-#' @return Data frame with entries "sph_radius", "sph_phi" (in degrees), "sph_theta" (in degrees).
+#' @param z Z co-ordinates
+#' @return Data frame with entries "sph_radius",
+#'  "sph_phi" (in degrees),
+#'   "sph_theta" (in degrees).
 #' @keywords internal
 
 cart_to_sph <- function(x, y, z) {
+
   hypo <- sqrt(abs(x) ^ 2 + abs(y) ^ 2)
   radius <- sqrt(abs(hypo) ^ 2 + abs(z) ^ 2) # spherical radius
-  phi <- atan2(z, hypo) #/ pi * 180 # spherical phi in degrees
-  theta <- atan2(y, x) #/ pi * 180 # spherical theta in degrees
+  phi <- atan2(z, hypo)  * 180 / pi# spherical phi in degrees
+  theta <- atan2(y, x)  * 180 / pi# spherical theta in degrees
   data.frame(sph_radius = radius,
              sph_phi = phi,
              sph_theta = theta)
@@ -97,7 +107,7 @@ cart_to_pol <- function(x, y) {
 #'   locations)
 #' @param phi Elevation from polar co-ordinates (radius in supplied electrode
 #'   locations)
-#' @noRd
+#' @keywords internal
 
 pol_to_sph <- function(theta, phi) {
 
@@ -116,10 +126,13 @@ pol_to_sph <- function(theta, phi) {
 
 #' Convert spherical to topographical co-ordinates
 #'
+#' Expects input in degrees
+#'
 #' @param phi Phi
 #' @param theta Theta
-#' @noRd
-sph_to_topo <- function(phi, theta) {
+#' @keywords internal
+sph_to_topo <- function(theta, phi) {
+
   angle <- -theta
   radius <- 0.5 - phi / 180
   data.frame(angle, radius)
@@ -127,34 +140,30 @@ sph_to_topo <- function(phi, theta) {
 
 #' Convert spherical to cartesian 3d
 #'
-#' @param theta should be in radians
-#' @param phi should be in radians
-#' @param r should be in radians
+#' Note that phi follows EEGLAB conventions (i.e. needs correcting to 90 - phi in some cases)
+#' @param theta should be in degrees
+#' @param phi should be in degrees
+#' @param r should be in degrees
 #' @keywords internal
-sph_to_cart <- function(theta, phi, r) {
-  z <- r * sin(phi)
-  x <- r * cos(phi) * cos(theta)
-  y <- r * cos(phi) * sin(theta)
+sph_to_cart <- function(theta, phi, radius) {
+  z <- radius * sin(phi * pi / 180)
+  x <- radius * cos(phi * pi / 180) * cos(theta * pi / 180)
+  y <- radius * cos(phi * pi / 180) * sin(theta * pi / 180)
   data.frame(cart_x = x, cart_y = y, cart_z = z)
 }
+
 #' Convert topographical 2d to cartesian 2d
 #'
-#' @noRd
+#' Expects input to be in degrees
+#'
+#' @param angle Angle
+#' @param radius Radius
+#' @keywords internal
 
 topo_norm <- function(angle, radius) {
-  x <- radius * cos(angle / 180 * pi)
-  y <- radius * sin(angle / 180 * pi)
+  x <- radius * cos(angle * pi / 180)
+  y <- radius * sin(-angle * pi / 180)
   data.frame(x, y)
-}
-
-topo_to_sph <- function(angle, radius) {
-  hori <- ifelse(angle >= 0,
-                 90 - angle,
-                 -(90 + angle))
-  c_r <- ifelse(angle != 0,
-                sign(angle) * 180 * radius,
-                180 * radius)
-  data.frame(angle = hori, radius = c_r)
 }
 
 #' Rotate channel locations
@@ -196,7 +205,7 @@ rotate_sph <- function(chan_info, degrees) {
   chan_info$sph_theta <- ifelse(chan_info$sph_theta < -180,
                                 chan_info$sph_theta + 360,
                                 chan_info$sph_theta)
-  topo_pos <- sph_to_topo(chan_info$sph_theta,
+  topo_pos <- sph_to_topo(theta = chan_info$sph_theta,
                           phi = chan_info$sph_phi)
   chan_info$angle <- topo_pos[, 1]
   chan_info$radius <- topo_pos[, 2]
@@ -218,6 +227,7 @@ rotate_sph <- function(chan_info, degrees) {
 
 flip_x <- function(chan_info) {
   chan_info$cart_x <- chan_info$cart_x * -1
+  chan_info$cart_y <- chan_info$cart_y * -1
   chan_info$x <- chan_info$x * -1
   chan_info$angle <- chan_info$angle * -1
   chan_info$sph_theta <- chan_info$sph_theta * -1
@@ -371,7 +381,8 @@ plot_electrodes <- function(data, interact = FALSE) {
 #' @describeIn plot_electrodes generic plot electrodes function
 #' @export
 
-plot_electrodes.default <- function(data, interact = FALSE) {
+plot_electrodes.default <- function(data,
+                                    interact = FALSE) {
 
   if ("electrode" %in% names(data)) {
     data <- data.frame(electrode = unique(data$electrode))
@@ -418,6 +429,7 @@ plot_electrodes.eeg_data <- function(data,
       stop("Package \"plotly\" needed for interactive electrode plots. Please install it.",
            call. = FALSE)
     }
+
     plotly::plot_ly(data$chan_info,
                     x = ~cart_x,
                     y = ~cart_y,
@@ -467,4 +479,20 @@ create_chans <- function(chans, elecs) {
   data.frame(chan_no = chans,
              electrode = elecs)
 
+}
+
+empty_chans <- function() {
+  data.frame(electrode = character(),
+             cart_x = numeric(),
+             cart_y = numeric(),
+             cart_z = numeric(),
+             sph_radius = numeric(),
+             sph_ph = numeric(),
+             sph_theta = numeric(),
+             pol_theta = numeric(),
+             pol_radius = numeric(),
+             angle = numeric(),
+             radius = numeric(),
+             x = numeric(),
+             y = numeric())
 }

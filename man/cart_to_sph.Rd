@@ -11,10 +11,12 @@ cart_to_sph(x, y, z)
 
 \item{y}{Y co-ordinates}
 
-\item{z}{z co-ordinates}
+\item{z}{Z co-ordinates}
 }
 \value{
-Data frame with entries "sph_radius", "sph_phi" (in degrees), "sph_theta" (in degrees).
+Data frame with entries "sph_radius",
+ "sph_phi" (in degrees),
+  "sph_theta" (in degrees).
 }
 \description{
 Convert 3D Cartesian co-ordinates to spherical

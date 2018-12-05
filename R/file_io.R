@@ -58,8 +58,10 @@ import_raw <- function(file_name, file_path = NULL, chan_nos = NULL) {
     event_table <- tibble::tibble(event_onset = which(events_diff > 0) + 1,
                                   event_time = which(events_diff > 0) / srate,
                               event_type = events[which(events_diff > 0) + 1])
-    data <- eeg_data(data = sigs, srate = srate,
-                     events = event_table, timings = timings,
+    data <- eeg_data(data = sigs,
+                     srate = srate,
+                     events = event_table,
+                     timings = timings,
                      continuous = TRUE)
   } else if (file_type == "cnt") {
     data <- import_cnt(file_name)
@@ -75,7 +77,7 @@ import_raw <- function(file_name, file_path = NULL, chan_nos = NULL) {
                      chan_info = data$chan_info,
                      events = event_table, timings = timings,
                      continuous = TRUE)
-    } else{
+    } else {
     warning("Unsupported filetype")
     return()
   }
@@ -226,6 +228,137 @@ import_cnt <- function(file_name) {
               chan_data = chan_data, event_list = ev_list)
 }
 
+#' @noRd
+import_vhdr <- function(file_name) {
+
+  .data <- read_vhdr(file_name)
+  .data
+}
+
+#' @importFrom ini read.ini
+#' @noRd
+read_vhdr <- function(file_name) {
+
+  header_info <- ini::read.ini(file_name)
+
+  if (identical(header_info$`Common Infos`$DataType,
+                "FREQUENCYDOMAIN")) {
+    stop("Only time domain data is currently supported,
+     this data is in the frequency domain.")
+  }
+
+  if (identical(header_info$`Common Infos`$DataOrientation,
+                "VECTORIZED")) {
+    multiplexed <- FALSE
+  } else {
+    multiplexed <- TRUE
+  }
+
+  data_file <- header_info$`Common Infos`$DataFile
+  vmrk_file <- header_info$`Common Infos`$MarkerFile
+  n_chan <- as.numeric(header_info$`Common Infos`$NumberOfChannels)
+  # header gives sampling times in microseconds
+  srate <- 1000000 / as.numeric(header_info$`Common Infos`$SamplingInterval)
+  bin_format <- header_info$`Binary Infos`$BinaryFormat
+
+  chan_labels <- lapply(header_info$`Channel Infos`,
+                        function(x) unlist(strsplit(x = x, split = ",")))
+  chan_labels <- sapply(chan_labels, "[[", 1)
+  chan_info <- parse_vhdr_chans(chan_labels,
+                                header_info$`Coordinates`)
+
+  file_size <- file.size(data_file)
+  .data <- read_dat(data_file,
+                    n_chan = n_chan,
+                    file_size = file_size,
+                    bin_format = bin_format,
+                    multiplexed)
+
+  .data <- matrix(.data, ncol = n_chan, byrow = multiplexed)
+  .data <- tibble::as.tibble(.data)
+  names(.data) <- chan_labels
+  n_points <- nrow(.data)
+  timings <- tibble::tibble(sample = 1:n_points,
+                            time = (sample - 1) / srate)
+
+  .markers <- read_vmrk(vmrk_file)
+  .markers <-
+    dplyr::mutate(.markers,
+                  event_onset = as.numeric(event_onset),
+                  length = as.numeric(length),
+                  .electrode = ifelse(.electrode == 0,
+                                      NA,
+                                      as.character(chan_info$electrode[.electrode])),
+                  event_time = (event_onset - 1) / srate)
+  .data <- eeg_data(data = .data,
+                    srate = srate,
+                    events = .markers,
+                    chan_info = chan_info,
+                    timings = timings,
+                    reference = NULL,
+                    continuous = TRUE
+                    )
+  .data
+}
+
+#' Read the raw data for a BVA file.
+#' @noRd
+read_dat <- function(file_name,
+                     n_chan,
+                     file_size,
+                     bin_format,
+                     multiplexed) {
+
+  if (identical(bin_format, "IEEE_FLOAT_32")) {
+    nbytes <- 4
+    signed <- TRUE
+  } else if (identical(bin_format, "UINT_16")) {
+    nbytes <- 2
+    signed <- FALSE
+  } else {
+    nbytes <- 2
+    signed <- TRUE
+  }
+
+  raw_data <- readBin(file_name,
+                      what = "double",
+                      n = file_size,
+                      size = nbytes,
+                      signed = signed)
+}
+
+#' Read BVA markers
+#'
+#' Import and parse BVA marker files.
+#'
+#' @param file_name File name of the .vmrk markers file.
+#' @keywords internal
+read_vmrk <- function(file_name) {
+  vmrks <- ini::read.ini(file_name)
+  marker_id <- names(vmrks$`Marker Infos`)
+
+  markers <- lapply(vmrks$`Marker Infos`, function(x) unlist(strsplit(x, ",")))
+
+  if (length(markers[[1]]) == 6) {
+    date <- markers[[1]][[6]]
+    markers[[1]] <- markers[[1]][1:5]
+  } else {
+    date <- NA
+  }
+
+  markers <- tibble::as.tibble(do.call(rbind, markers))
+  names(markers) <- c("BVA_type",
+                      "event_type",
+                      "event_onset",
+                      "length",
+                      ".electrode")
+  markers <- dplyr::mutate(markers,
+                           event_onset = as.numeric(event_onset),
+                           length = as.numeric(length),
+                           .electrode = as.numeric(.electrode))
+
+  markers
+}
 #' Load EEGLAB .set files
 #'
 #' DEPRECATED - use \code{import_set}
@@ -378,7 +511,7 @@ import_set <- function(file_name, df_out = FALSE) {
 #' Internal function to convert EEGLAB chan_info to eegUtils style
 #'
 #' @param chan_info Channel info list from an EEGLAB set file
-#' @noRd
+#' @keywords internal
 parse_chaninfo <- function(chan_info) {
   chan_info <- tibble::as_tibble(t(as.data.frame(chan_info)))
   chan_info <- tibble::as_tibble(data.frame(lapply(chan_info,
@@ -391,7 +524,7 @@ parse_chaninfo <- function(chan_info) {
                 "theta", "type",
                 "urchan", "X", "Y", "Z")
   if (!all(names(chan_info) == expected)) {
-    warning("EEGLAb chan info has unexpected format, taking electrode names only.")
+    warning("EEGLAB chan info has unexpected format, taking electrode names only.")
     out <- data.frame(chan_info["labels"])
     names(out) <- "electrode"
   }
@@ -425,3 +558,41 @@ parse_chaninfo <- function(chan_info) {
   chan_info <- flip_x(chan_info)
   chan_info
   }
+
+#' Parse BVA channel info
+#'
+#' @param chan_labels The `Channel Infos` section from a BVA vhdr file
+#' @param chan_info The `Coordinates` section from a BVA vhdr file
+#' @keywords internal
+parse_vhdr_chans <- function(chan_labels,
+                             chan_info) {
+  init_chans <- data.frame(electrode = chan_labels)
+  coords <- lapply(chan_info,
+                   function(x) as.numeric(unlist(strsplit(x, split = ","))))
+
+  new_coords <- data.frame(do.call(rbind, coords))
+  names(new_coords) <- c("radius", "theta", "phi")
+  new_coords <- cbind(init_chans, new_coords)
+
+  new_coords[new_coords$radius == 0, 2:4] <- NA
+
+  chan_info <- bva_elecs(new_coords)
+  tibble::as.tibble(chan_info)
+}
+
+#' Convert BVA spherical locations
+#'
+#' Reads the BrainVoyager spherical electrode locations and converts them to
+#' Cartesian 3D and 2D projections.
+#'
+#' @param chan_info A data.frame containing electrodes
+#' @keywords internal
+bva_elecs <- function(chan_info) {
+  chan_info <- dplyr::mutate(chan_info,
+                             cart_x = sin(theta * pi / 180) * cos(phi * pi / 180),
+                             cart_y = sin(theta * pi / 180) * sin(phi * pi / 180),
+                             cart_z = cos(theta * pi / 180),
+                             x = theta * cos(phi * pi / 180),
+                             y = theta * sin(phi * pi /180))
+  chan_info
+}

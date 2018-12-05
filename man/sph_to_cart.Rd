@@ -4,16 +4,16 @@
 \alias{sph_to_cart}
 \title{Convert spherical to cartesian 3d}
 \usage{
-sph_to_cart(theta, phi, r)
+sph_to_cart(theta, phi, radius)
 }
 \arguments{
-\item{theta}{should be in radians}
+\item{theta}{should be in degrees}
 
-\item{phi}{should be in radians}
+\item{phi}{should be in degrees}
 
-\item{r}{should be in radians}
+\item{r}{should be in degrees}
 }
 \description{
-Convert spherical to cartesian 3d
+Note that phi follows EEGLAB conventions (i.e. needs correcting to 90 - phi in some cases)
 }
 \keyword{internal}

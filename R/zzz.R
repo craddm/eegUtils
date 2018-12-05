@@ -21,4 +21,8 @@ utils::globalVariables(c("time",
                          "..level..",
                          "condition",
                          "conditions",
-                         "topos"))
+                         "topos",
+                         ".electrode",
+                         "phi",
+                         "theta",
+                         "event_onset"))
