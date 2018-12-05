@@ -256,6 +256,9 @@
     <loc>http://craddm.github.io/eegUtils/reference/quick_hurst.html</loc>
   </url>
   <url>
+    <loc>http://craddm.github.io/eegUtils/reference/reexports.html</loc>
+  </url>
+  <url>
     <loc>http://craddm.github.io/eegUtils/reference/remove_edges.html</loc>
   </url>
   <url>
@@ -314,6 +317,9 @@
   </url>
   <url>
     <loc>http://craddm.github.io/eegUtils/reference/topoplot.html</loc>
+  </url>
+  <url>
+    <loc>http://craddm.github.io/eegUtils/reference/view_artefacts.html</loc>
   </url>
   <url>
     <loc>http://craddm.github.io/eegUtils/reference/wavelet_norm.html</loc>

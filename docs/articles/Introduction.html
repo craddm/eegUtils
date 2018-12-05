@@ -30,7 +30,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">eegUtils</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0.9000</span>
       </span>
     </div>
 
@@ -92,7 +92,7 @@
       <h1>Introduction</h1>
                         <h4 class="author">Matt Craddock and Eryk Walczak</h4>
             
-            <h4 class="date">2018-11-22</h4>
+            <h4 class="date">2018-12-05</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/craddm/eegUtils/blob/master/vignettes/Introduction.Rmd"><code>vignettes/Introduction.Rmd</code></a></small>
       <div class="hidden name"><code>Introduction.Rmd</code></div>
@@ -106,22 +106,22 @@
 <h2 class="hasAnchor">
 <a href="#downloading-a-bdf" class="anchor"></a>Downloading a bdf</h2>
 <p>Two example Biosemi bdf files can be downloaded from the producer’s <a href="https://www.biosemi.com/faq/file_format.htm">website</a>. To download and unzip example bdf files use:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">url_bdf_zip &lt;-<span class="st"> "https://www.biosemi.com/download/BDFtestfiles.zip"</span>
-temp &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/tempfile">tempfile</a></span>()
-<span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/download.file">download.file</a></span>(url_bdf_zip, temp)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/unzip">unzip</a></span>(temp)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/unlink">unlink</a></span>(temp)</code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1">url_bdf_zip &lt;-<span class="st"> "https://www.biosemi.com/download/BDFtestfiles.zip"</span></a>
+<a class="sourceLine" id="cb1-2" data-line-number="2">temp &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/tempfile">tempfile</a></span>()</a>
+<a class="sourceLine" id="cb1-3" data-line-number="3"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/download.file">download.file</a></span>(url_bdf_zip, temp)</a>
+<a class="sourceLine" id="cb1-4" data-line-number="4"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/unzip">unzip</a></span>(temp)</a>
+<a class="sourceLine" id="cb1-5" data-line-number="5"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/unlink">unlink</a></span>(temp)</a></code></pre></div>
 </div>
 <div id="loading-a-bdf-file" class="section level2">
 <h2 class="hasAnchor">
 <a href="#loading-a-bdf-file" class="anchor"></a>Loading a bdf file</h2>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(eegUtils)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(dplyr)
-
-bdf_filename &lt;-<span class="st"> "Newtest17-256.bdf"</span>
-bdf_data &lt;-<span class="st"> </span><span class="kw"><a href="../reference/import_raw.html">import_raw</a></span>(bdf_filename)</code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(eegUtils)</a>
+<a class="sourceLine" id="cb2-2" data-line-number="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(dplyr)</a>
+<a class="sourceLine" id="cb2-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb2-4" data-line-number="4">bdf_filename &lt;-<span class="st"> "Newtest17-256.bdf"</span></a>
+<a class="sourceLine" id="cb2-5" data-line-number="5">bdf_data &lt;-<span class="st"> </span><span class="kw"><a href="../reference/import_raw.html">import_raw</a></span>(bdf_filename)</a></code></pre></div>
 <p>The file is now loaded. You can see its structure</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/str">str</a></span>(bdf_data)</code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/str">str</a></span>(bdf_data)</a></code></pre></div>
 <pre><code>## List of 7
 ##  $ signals   :Classes 'tbl_df', 'tbl' and 'data.frame':  15360 obs. of  16 variables:
 ##   ..$ A1 : num [1:15360] -527 -522 -526 -529 -532 ...
@@ -157,25 +157,24 @@ bdf_data &lt;-<span class="st"> </span><span class="kw"><a href="../reference/im
 <h2 class="hasAnchor">
 <a href="#pre-processing" class="anchor"></a>Pre-processing</h2>
 <p>eegUtils allows loading the bdf files, selecting channels</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">my_data &lt;-<span class="st"> </span>bdf_data <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw"><a href="../reference/select_elecs.html">select_elecs</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"A1"</span>, <span class="st">"A2"</span>), <span class="dt">keep =</span> <span class="ot">FALSE</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># remove channels</span>
-<span class="st">  </span><span class="kw"><a href="../reference/reref_eeg.html">reref_eeg</a></span>(<span class="dt">ref_chans =</span> <span class="st">"average"</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># re-reference</span>
-<span class="st">  </span><span class="kw"><a href="../reference/iir_filt.html">iir_filt</a></span>(<span class="dt">low_freq =</span> <span class="fl">0.1</span>, <span class="dt">high_freq =</span> <span class="dv">40</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># band-pass filter</span>
-<span class="st">  </span><span class="kw"><a href="../reference/epoch_data.html">epoch_data</a></span>(<span class="dv">255</span>, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="op">-</span>.<span class="dv">2</span>,.<span class="dv">2</span>)) <span class="co"># epoch: choose a trigger and time limits</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">my_data &lt;-<span class="st"> </span>bdf_data <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb5-2" data-line-number="2"><span class="st">  </span><span class="kw"><a href="../reference/select_elecs.html">select_elecs</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"A1"</span>, <span class="st">"A2"</span>), <span class="dt">keep =</span> <span class="ot">FALSE</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># remove channels</span></a>
+<a class="sourceLine" id="cb5-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="../reference/reref_eeg.html">reref_eeg</a></span>(<span class="dt">ref_chans =</span> <span class="st">"average"</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># re-reference</span></a>
+<a class="sourceLine" id="cb5-4" data-line-number="4"><span class="st">  </span><span class="kw"><a href="../reference/iir_filt.html">iir_filt</a></span>(<span class="dt">low_freq =</span> <span class="fl">0.1</span>, <span class="dt">high_freq =</span> <span class="dv">40</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># band-pass filter</span></a>
+<a class="sourceLine" id="cb5-5" data-line-number="5"><span class="st">  </span><span class="kw"><a href="../reference/epoch_data.html">epoch_data</a></span>(<span class="dv">255</span>, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="op">-</span>.<span class="dv">2</span>,.<span class="dv">2</span>)) <span class="co"># epoch: choose a trigger and time limits</span></a></code></pre></div>
 <pre><code>## Band-pass IIR filter from 0.1-40 Hz</code></pre>
 </div>
 <div id="figures" class="section level2">
 <h2 class="hasAnchor">
 <a href="#figures" class="anchor"></a>Figures</h2>
 <p>Create a butterfly plot showing data from all the electrodes</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/plot_butterfly.html">plot_butterfly</a></span>(my_data, <span class="dt">baseline =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="op">-</span>.<span class="dv">2</span>, <span class="dv">0</span>), <span class="dt">time_lim =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="op">-</span>.<span class="dv">1</span>, .<span class="dv">2</span>), <span class="dt">legend =</span> <span class="ot">FALSE</span>)</code></pre></div>
-<pre><code>## Joining, by = "electrode"</code></pre>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="kw"><a href="../reference/plot_butterfly.html">plot_butterfly</a></span>(my_data, <span class="dt">baseline =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="op">-</span>.<span class="dv">2</span>, <span class="dv">0</span>), <span class="dt">time_lim =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="op">-</span>.<span class="dv">1</span>, <span class="fl">.2</span>), <span class="dt">legend =</span> <span class="ot">FALSE</span>)</a></code></pre></div>
 <p><img src="Introduction_files/figure-html/unnamed-chunk-5-1.png" width="700"></p>
 <p>Or the timecourse of a single electrode</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/plot_timecourse.html">plot_timecourse</a></span>(my_data, <span class="dt">electrode =</span> <span class="st">"A3"</span>, <span class="dt">baseline =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="op">-</span>.<span class="dv">2</span>,<span class="dv">0</span>), <span class="dt">time_lim =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="op">-</span>.<span class="dv">1</span>, .<span class="dv">2</span>))</code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1"><span class="kw"><a href="../reference/plot_timecourse.html">plot_timecourse</a></span>(my_data, <span class="dt">electrode =</span> <span class="st">"A3"</span>, <span class="dt">baseline =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="op">-</span>.<span class="dv">2</span>,<span class="dv">0</span>), <span class="dt">time_lim =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="op">-</span>.<span class="dv">1</span>, <span class="fl">.2</span>))</a></code></pre></div>
 <p><img src="Introduction_files/figure-html/unnamed-chunk-6-1.png" width="700"></p>
 <p>How about an EEGLAB style ERP image?</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/erp_image.html">erp_image</a></span>(my_data, <span class="dt">electrode =</span> <span class="st">"A9"</span>)</code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1"><span class="kw"><a href="../reference/erp_image.html">erp_image</a></span>(my_data, <span class="dt">electrode =</span> <span class="st">"A9"</span>)</a></code></pre></div>
 <p><img src="Introduction_files/figure-html/unnamed-chunk-7-1.png" width="700"></p>
 </div>
   </div>
