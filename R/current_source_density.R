@@ -38,7 +38,7 @@ interp_elecs.eeg_data <- function(data,
   bads_check <- bad_elecs %in% data$chan_info$electrode
 
   if (!all(bads_check)) {
-    stop("Nothing to interpolate.")
+    stop("No specified channels found.")
   }
 
   if (any(!bads_check)) {
@@ -49,10 +49,11 @@ interp_elecs.eeg_data <- function(data,
   }
 
   missing_coords <- apply(is.na(data$chan_info), 1, any)
+  missing_chans <- names(data$signals)[missing_coords]
 
   if (any(missing_coords)) {
-    warning("Coords missing for electrodes ",
-            paste0(data$chan_info$electrode[missing_coords],
+    message("Coords missing for electrodes ",
+            paste0(missing_chans,
                    collapse = " "))
   }
 
@@ -72,7 +73,7 @@ interp_elecs.eeg_data <- function(data,
                               chan_info$sph_phi / 180 * pi,
                               1)
   }
-  #xyz_coords <- xyz_coords[!missing_coords, ]
+
   bad_select <- toupper(chan_info$electrode) %in% toupper(bad_elecs)
   xyz_bad <- xyz_coords[bad_select, ]
   xyz_good <- xyz_coords[!bad_select, ]
@@ -80,15 +81,24 @@ interp_elecs.eeg_data <- function(data,
   if (nrow(xyz_bad) == 0) {
     return(data)
   }
+
   sigs_select <- toupper(names(data$signals)) %in%
     toupper(chan_info$electrode)
+
   bad_cols <- toupper(names(data$signals)) %in% toupper(bad_elecs)
   final_cols <- sigs_select & !bad_cols
+
   weights <- spheric_spline(xyz_good,
                              xyz_coords)
-  new_w <- weights[bad_select, ]
-  new_chans <- new_w %*% t(data$signals[, final_cols])
-  data$signals[, bad_cols] <- t(new_chans)
+
+  data$signals <- interp_chans(data$signals,
+                          bad_elecs,
+                          missing_coords = missing_coords,
+                          weights)
+
+  #new_w <- weights[bad_select, ]
+  #new_chans <- new_w %*% t(data$signals[, final_cols])
+  #data$signals[, bad_cols] <- t(new_chans)
   data
 }
 
@@ -98,7 +108,7 @@ interp_elecs.eeg_data <- function(data,
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #'
 #' @param good_elecs Electrode positions that do not need interpolation
-#' @param bad_elecs Electrode positions to be interpolated
+#' @param all_elecs Electrode positions including those to be interpolated
 #' @keywords internal
 
 spheric_spline <- function(good_elecs,
@@ -120,6 +130,18 @@ spheric_spline <- function(good_elecs,
   W <- cbind(ph, 1)
   W <- W %*% invC[ , 1:g_dims[1]]
   W
+}
+
+interp_chans <- function(.data,
+                         bad_chans,
+                         missing_coords = FALSE,
+                         weights) {
+
+  bad_cols <- (toupper(names(.data)) %in% toupper(bad_chans)) | missing_coords
+  weight_rows <- names(.data[, !missing_coords]) %in% bad_chans
+  new_chans <- weights[weight_rows, ] %*% t(.data[ , !bad_cols])
+  .data[, bad_chans] <- t(new_chans)
+  .data
 }
 
 #' Convert to Current Source Density

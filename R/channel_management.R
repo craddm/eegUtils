@@ -53,7 +53,7 @@ import_elc <- function(file_name) {
                            pos,
                            sph_pos,
                            pol_coords,
-                           topo_pos)#,
+                           topo_pos)
   final_locs <- cbind(final_locs,
                       topo_norm(final_locs$angle,
                                 final_locs$radius))
@@ -95,7 +95,8 @@ cart_to_sph <- function(x, y, z) {
 cart_to_pol <- function(x, y) {
   theta <- atan2(y, x) / pi * 180
   radius <- sqrt(abs(x) ^ 2 + abs(y) ^ 2)
-  data.frame(pol_theta = theta, pol_radius = radius)
+  data.frame(pol_theta = theta,
+             pol_radius = radius)
 }
 
 #' Convert EEGLAB polar to spherical coordinates
@@ -149,7 +150,9 @@ sph_to_cart <- function(theta, phi, radius) {
   z <- radius * sin(phi * pi / 180)
   x <- radius * cos(phi * pi / 180) * cos(theta * pi / 180)
   y <- radius * cos(phi * pi / 180) * sin(theta * pi / 180)
-  data.frame(cart_x = x, cart_y = y, cart_z = z)
+  data.frame(cart_x = x,
+             cart_y = y,
+             cart_z = z)
 }
 
 #' Convert topographical 2d to cartesian 2d

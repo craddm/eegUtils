@@ -9,7 +9,7 @@ spheric_spline(good_elecs, all_elecs)
 \arguments{
 \item{good_elecs}{Electrode positions that do not need interpolation}
 
-\item{bad_elecs}{Electrode positions to be interpolated}
+\item{all_elecs}{Electrode positions including those to be interpolated}
 }
 \description{
 Calculate a spherical spline smooth for interpolation of electrodes

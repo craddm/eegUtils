@@ -92,7 +92,7 @@ import_raw <- function(file_name, file_path = NULL, chan_nos = NULL) {
 #'
 #' @param file_name Name of .CNT file to be loaded.
 #' @importFrom tibble tibble
-#' @noRd
+#' @keywords internal
 
 import_cnt <- function(file_name) {
 
