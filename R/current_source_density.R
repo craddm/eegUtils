@@ -95,10 +95,6 @@ interp_elecs.eeg_data <- function(data,
                           bad_elecs,
                           missing_coords = missing_coords,
                           weights)
-
-  #new_w <- weights[bad_select, ]
-  #new_chans <- new_w %*% t(data$signals[, final_cols])
-  #data$signals[, bad_cols] <- t(new_chans)
   data
 }
 
