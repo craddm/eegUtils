@@ -29,7 +29,8 @@ interp_elecs.default <- function(data, bad_elecs, ...) {
 #' @describeIn interp_elecs Interpolate EEG channel(s)
 #' @export
 interp_elecs.eeg_data <- function(data,
-                                  bad_elecs, ...) {
+                                  bad_elecs,
+                                  ...) {
 
   if (is.null(data$chan_info)) {
     stop("No channel locations found.")
@@ -132,6 +133,13 @@ spheric_spline <- function(good_elecs,
   W
 }
 
+#' Interpolate channels
+#' @param .data Channel data containing all data
+#' @param bad_chans Vector of names of bad channels
+#' @param missing_coords Logical vector indicating any channels in the data that
+#'   had no associated coordinates
+#' @param weights Spherical spline weights for interpolation
+#' @keywords internal
 interp_chans <- function(.data,
                          bad_chans,
                          missing_coords = FALSE,
@@ -139,7 +147,7 @@ interp_chans <- function(.data,
 
   bad_cols <- (toupper(names(.data)) %in% toupper(bad_chans)) | missing_coords
   weight_rows <- names(.data[, !missing_coords]) %in% bad_chans
-  new_chans <- weights[weight_rows, ] %*% t(.data[ , !bad_cols])
+  new_chans <- weights[weight_rows, , drop = TRUE] %*% t(.data[ , !bad_cols])
   .data[, bad_chans] <- t(new_chans)
   .data
 }

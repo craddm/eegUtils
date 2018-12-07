@@ -13,26 +13,28 @@
 #' EEG artifact Rejection. J Neurosci Methods.
 #' @export
 
-eeg_FASTER <- function(data, ...) {
-  UseMethod("eeg_FASTER", data)
+eeg_FASTER <- function(.data) {
+  UseMethod("eeg_FASTER", .data)
 }
 
 #' @describeIn eeg_FASTER Run FASTER on \code{eeg_epochs}
 #' @export
-eeg_FASTER.eeg_epochs <- function(data, ...) {
+eeg_FASTER.eeg_epochs <- function(.data, ...) {
+
+  check_ci_str(.data$chan_info)
 
   # TODO - keep a record of which trials/channels etc are removed/interpolated
   # and allow marking for inspection rather than outright rejection.
 
-  if (is.null(data$reference)) {
+  if (is.null(.data$reference)) {
     orig_ref <- NULL
     excluded <- NULL
   } else {
-    orig_ref <- data$reference$ref_chans
-    excluded <- data$reference$excluded
+    orig_ref <- .data$reference$ref_chans
+    excluded <- .data$reference$excluded
   }
 
-  orig_chan_info <- data$chan_info
+  orig_chan_info <- .data$chan_info
   # Re-reference to single electrode, any should be fine, Fz is arbitrary default.
   # Note - should allow user to specify in case Fz is a known bad electrode.
 
@@ -42,36 +44,35 @@ eeg_FASTER.eeg_epochs <- function(data, ...) {
   #   data <- reref_eeg(data, ref_chans = names(data$signals)[14], exclude = excluded)
   # }
 
-  orig_names <- names(data$signals)
+  orig_names <- names(.data$signals)
   # Exclude ref chan from subsequent computations (may be better to alter reref_eeg...)
-  data_chans <- !(orig_names %in% data$reference$ref_chans)
+  data_chans <- !(orig_names %in% .data$reference$ref_chans)
 
   # Step 1: channel statistics
-  bad_chans <- faster_chans(data$signals[, data_chans])
-  bad_chan_n <- names(data$signals)[bad_chans]
+  bad_chans <- faster_chans(.data$signals[, data_chans])
+  bad_chan_n <- names(.data$signals)[bad_chans]
   message(paste("Globally bad channels:",
                 paste(bad_chan_n,
                       collapse = " ")))
 
   if (length(bad_chan_n) > 0) {
 
-    #check_chans <- data$chan_info$electrode %in% bad_chan_n
-    if (is.null(data$chan_info)) {
+    if (is.null(.data$chan_info)) {
       warning("no chan_info, removing chans.")
-      data <- select_elecs(data,
+      data <- select_elecs(.data,
                            electrode = bad_chan_n,
                            keep = FALSE)
     } else {
 
       #Check for any bad channels that are not in the chan_info
-      check_bads <- bad_chan_n %in% data$chan_info$electrode
+      check_bads <- bad_chan_n %in% .data$chan_info$electrode
 
       # check for any bad channels that have missing coordinates
-      which_bad <- data$chan_info$electrode %in% bad_chan_n
+      which_bad <- .data$chan_info$electrode %in% bad_chan_n
       missing_coords <- FALSE
 
       if (any(which_bad)){
-        missing_coords <- apply(is.na(data$chan_info[which_bad, ]), 1, any)
+        missing_coords <- apply(is.na(.data$chan_info[which_bad, ]), 1, any)
       }
 
       missing_bads <- bad_chan_n[!check_bads | missing_coords]
@@ -81,41 +82,44 @@ eeg_FASTER.eeg_epochs <- function(data, ...) {
         warning("Missing chan_info for bad channel(s): ",
                 paste0(missing_bads,
                        collapse = " "), ". Removing channels.")
-        data <- select_elecs(data,
+        .data <- select_elecs(.data,
                              electrode = missing_bads,
                              keep = FALSE)
       }
-      data <- interp_elecs(data,
-                           bad_chan_n)
+
+      if (length(bad_chan_n) > 0) {
+        .data <- interp_elecs(.data,
+                             bad_chan_n)
+      }
     }
   }
 
   # Step 2: epoch statistics
-  bad_epochs <- faster_epochs(data)
-  bad_epochs <- unique(data$timings$epoch)[bad_epochs]
+  bad_epochs <- faster_epochs(.data)
+  bad_epochs <- unique(.data$timings$epoch)[bad_epochs]
   message(paste("Globally bad epochs:",
                 paste(bad_epochs,
                       collapse = " ")))
-  data <- select_epochs(data,
+  .data <- select_epochs(.data,
                         epoch_no = bad_epochs,
                         keep = FALSE)
 
   # Step 3: ICA stats (not currently implemented)
 
   # Step 4: Channels in Epochs
-  data <- faster_cine(data)
+  .data <- faster_cine(.data)
 
   # Step 5: Grand average step (not currently implemented, probably never will be!)
 
   # Return to original reference, if one existed.
   if (!is.null(orig_ref)) {
-    data <- reref_eeg(data,
+    .data <- reref_eeg(.data,
                       ref_chans = orig_ref,
                       exclude = excluded)
   }
 
-  data$chan_info <- orig_chan_info
-  data
+  .data$chan_info <- orig_chan_info
+  .data
 }
 
 #' Perform global bad channel detection for FASTER
@@ -197,67 +201,129 @@ faster_epochs <- function(data, ...) {
 #' @param ... further parameters (tbd)
 #' @keywords internal
 
-faster_cine <- function(data, ...) {
+faster_cine <- function(.data, ...) {
 
-  epochs <- split(data$signals,
-                  data$timings$epoch)
+  # get xyz coords only
+  xyz_coords <- .data$chan_info[, c("electrode",
+                                    "cart_x",
+                                    "cart_y",
+                                    "cart_z")]
+  # check for rows with missing values
+  missing_values <- apply(xyz_coords, 1, function(x) any(is.na(x)))
+  #remove any rows with missing values
+  xyz_coords <- xyz_coords[!missing_values, ]
+
+  keep_chans <- names(.data$signals) %in% xyz_coords$electrode
+
+  epochs <- split(.data$signals,
+                  .data$timings$epoch)
+
+  # Work out which chans are bad according to FASTER in each epoch
   bad_chans <- lapply(epochs,
                       faster_epo_stat)
-  epoch_nos <- unique(data$timings$epoch)
 
-  good_epochs <- vapply(bad_chans,
-                       purrr::is_empty,
-                       FUN.VALUE = logical(1))
+  # remove channel names that are for channels we have no locations for
+  bad_chans <- lapply(bad_chans,
+                      function(x) x[x %in% xyz_coords$electrode])
+
+  # remove any epochs where there were no bad channels
+  bad_chans <- bad_chans[lapply(bad_chans, length) > 0]
+
+  # Get a transfer matrix for each epoch
+  bad_coords <- lapply(bad_chans,
+                       function(x) interp_weights(xyz_coords,
+                                                  x))
+
+  # Work out which epochs have no transfer matrix (either all good or no bad
+  # chans with locations)
+  # good_epochs <- vapply(bad_coords,
+  #                       is.null,
+  #                       FUN.VALUE = logical(1))
+
+  bad_coords <- bad_coords[lapply(bad_coords, length) > 0]
 
   # If there's nothing bad in any epoch, return the data
-  if (all(good_epochs)) {
-    return(data)
+  if (length(bad_coords) == 0) {
+    return(.data)
   }
 
+  bad_epochs <- names(bad_coords)
+
+  new_epochs <- lapply(bad_epochs,
+                       function(x) interp_chans(epochs[[x]],
+                                                bad_chans[[x]],
+                                                !keep_chans,
+                                                bad_coords[[x]]))
+
+  epochs <- replace(epochs, bad_epochs, new_epochs)
+  epochs <- data.table::rbindlist(epochs)
+  .data$signals <- as.data.frame(epochs)
+  .data
   # go through each epoch and interpolate bad channels
-  bad_epoch_nos <- epoch_nos[!good_epochs]
-  bad_epochs <- lapply(bad_epoch_nos,
-                       function(x) select_epochs(data,
-                                                 epoch_no = x))
-  bad_epochs <- lapply(seq_along(bad_epochs),
-                       function(x) interp_elecs(bad_epochs[[x]],
-                                                bad_chans[[x]]))
+  # This is an obscenely awkward hack that needs replacing ASAP.
+  # bad_epoch_nos <- epoch_nos[!good_epochs]
+  # bad_epochs <- lapply(bad_epoch_nos,
+  #                      function(x) select_epochs(.data,
+  #                                                epoch_no = x))
+  # bad_epochs <- lapply(seq_along(bad_epochs),
+  #                      function(x) interp_elecs(bad_epochs[[x]],
+  #                                               bad_chans[[x]]))
 
-  if (length(bad_epochs) > 1) {
-    bad_epochs <- do.call("eeg_combine", bad_epochs)
-  } else {
-    bad_epochs <- unlist(bad_epochs)
-  }
+  # if (length(bad_epochs) > 1) {
+  #   bad_epochs <- do.call("eeg_combine", bad_epochs)
+  # } else {
+  #   bad_epochs <- unlist(bad_epochs)
+  # }
 
   # If there are any epochs that are ok, select them, then combine with bad
   # epochs and return
-  if (any(good_epochs)) {
-    clean_epochs <- select_epochs(data,
-                                  epoch_no = epoch_nos[good_epochs])
-    data <- eeg_combine(clean_epochs,
-                        bad_epochs)
-    return(data)
-  }
+  # if (any(good_epochs)) {
+  #   clean_epochs <- select_epochs(.data,
+  #                                 epoch_no = epoch_nos[good_epochs])
+  #   .data <- eeg_combine(clean_epochs,
+  #                       bad_epochs)
+  #   return(.data)
+  # }
 
   # only get here if there were no clean epochs
-  data <- bad_epochs
-  data
+  # .data <- bad_epochs
+
 }
 
+#' @noRd
+interp_weights <- function(xyz_coords, x) {
+
+  rads <- sqrt(rowSums(xyz_coords[, c("cart_x", "cart_y", "cart_z")] ^ 2))
+  xyz_coords[, c("cart_x", "cart_y", "cart_z")] <-
+    xyz_coords[, c("cart_x", "cart_y", "cart_z")] / rads
+
+  bad_coords <- xyz_coords[xyz_coords$electrode %in% x, ]
+
+  if (nrow(bad_coords) == 0) {
+    return(NULL)
+  }
+
+  good_coords <- xyz_coords[!xyz_coords$electrode %in% x, ]
+
+  transfer_mat <- spheric_spline(good_coords[, c("cart_x", "cart_y", "cart_z")],
+                                 xyz_coords[, c("cart_x", "cart_y", "cart_z")])
+
+  transfer_mat
+}
 
 #' Quickly calculate simple Hurst exponent for a matrix
 #'
 #' @param data matrix of EEG signals
-#' @importFrom matrixStats colMaxs colMins colSds
+#' @importFrom data.table data.table
 #' @keywords internal
 
 quick_hurst <- function(data) {
   n <- nrow(data)
-  #y <- sweep(data, 2, Matrix::colMeans(data))
-  s <- apply(data, 2, cumsum)
-  rs <- (matrixStats::colMaxs(s) - matrixStats::colMins(s))
-  rs <- rs / matrixStats::colSds(as.matrix(data))
-  log(rs) / log(n)
+  data <- data.table::data.table(data)
+  dat_cumsum <- data[, lapply(.SD, cumsum)]
+  rs <- dat_cumsum[, lapply(.SD, max)] - dat_cumsum[, lapply(.SD, min)]
+  rs <- rs / data[, lapply(.SD, sd)]#column_sd
+  as.numeric(log(rs) / log(n))
 }
 
 #' Calculate statistics for each channel in an epoch and identify bad channels

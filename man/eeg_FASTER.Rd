@@ -5,14 +5,14 @@
 \alias{eeg_FASTER.eeg_epochs}
 \title{FASTER EEG artefact rejection}
 \usage{
-eeg_FASTER(data, ...)
+eeg_FASTER(.data)
 
-\method{eeg_FASTER}{eeg_epochs}(data, ...)
+\method{eeg_FASTER}{eeg_epochs}(.data, ...)
 }
 \arguments{
-\item{data}{An object of class \code{eeg_epochs}}
-
 \item{...}{Parameters passed to FASTER}
+
+\item{data}{An object of class \code{eeg_epochs}}
 }
 \description{
 An implementation of the FASTER artefact rejection method for EEG by Nolan,
