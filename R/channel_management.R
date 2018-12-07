@@ -499,3 +499,18 @@ empty_chans <- function() {
              x = numeric(),
              y = numeric())
 }
+
+
+bids_channels <- function(.data) {
+  tibble::tibble(name = names(.data$signals),
+                 type = character(),
+                 units = character(),
+                 description = character(),
+                 sampling_frequency = .data$srate,
+                 reference = character(),
+                 low_cutoff = 0,
+                 high_cutoff = Inf,
+                 status = character(),
+                 status_description = character()
+                 )
+}

@@ -113,3 +113,29 @@ list_epochs.eeg_epochs <- function(data, ...) {
 list_epochs.eeg_ICA <- function(data, ...) {
   data$events[, c("epoch", "event_type", "event_label")]
 }
+
+
+#events.eeg_epochs <- function(.data) {
+ # .data$events
+#}
+
+events <- function(.data, value) {
+  UseMethod("events", .data)
+}
+
+events.eeg_data <- function(.data) {
+  .data$events
+}
+
+events.eeg_epochs <- function(.data) {
+  .data$events
+}
+
+`events<-` <- function(.data, value) {
+  UseMethod("events<-", .data)
+}
+
+`events<-.eeg_epochs` <- function(.data, value) {
+  .data$events <- value
+  .data
+}
