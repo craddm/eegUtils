@@ -49,6 +49,7 @@ interp_elecs.eeg_data <- function(data,
     bad_elecs <- bad_elecs[bads_check]
   }
 
+  data$chan_info <- validate_channels(data)
   missing_coords <- apply(is.na(data$chan_info), 1, any)
   missing_chans <- names(data$signals)[missing_coords]
 

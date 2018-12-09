@@ -6,7 +6,7 @@
 #'
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #'
-#' @param data An object of class \code{eeg_epochs}
+#' @param .data An object of class \code{eeg_epochs}
 #' @param ... Parameters passed to FASTER
 #' @references
 #' Nolan, Whelan & Reilly (2010). FASTER: Fully Automated Statistical Thresholding for
@@ -160,6 +160,8 @@ faster_epochs <- function(data, ...) {
                         function(x) diff(apply(x,
                                                2,
                                                range)))
+  #DT  - [, lapply(.SD, function(x) max(x) - min(x)), by = data$timings$epoch]
+
   epoch_range <- rowMeans(do.call(rbind,
                                   epoch_range))
   epoch_range <- abs(scale(epoch_range)) > 3
@@ -173,6 +175,7 @@ faster_epochs <- function(data, ...) {
                                 2,
                                 mean)
                           })
+  #
   epoch_diffs <- rowMeans(do.call(rbind,
                                   epoch_diffs))
   epoch_diffs <- abs(scale(epoch_diffs)) > 3
@@ -317,12 +320,12 @@ interp_weights <- function(xyz_coords, x) {
 #' @importFrom data.table data.table
 #' @keywords internal
 
-quick_hurst <- function(data) {
-  n <- nrow(data)
-  data <- data.table::data.table(data)
-  dat_cumsum <- data[, lapply(.SD, cumsum)]
+quick_hurst <- function(.data) {
+  n <- nrow(.data)
+  .data <- data.table::data.table(.data)
+  dat_cumsum <- .data[, lapply(.SD, cumsum)]
   rs <- dat_cumsum[, lapply(.SD, max)] - dat_cumsum[, lapply(.SD, min)]
-  rs <- rs / data[, lapply(.SD, sd)]#column_sd
+  rs <- rs / .data[, lapply(.SD, stats::sd)]#column_sd
   as.numeric(log(rs) / log(n))
 }
 

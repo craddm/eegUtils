@@ -47,7 +47,7 @@ select_times.default <- function(data, time_lim = NULL, ...) {
 }
 
 #' @param df_out Returns a data frame rather than an object of the same type
-#'   that was passed in
+#'   that was passed in.
 #' @export
 #' @return \code{eeg_data} object
 #' @describeIn select_times Select times from an eeg_data object
@@ -62,7 +62,6 @@ select_times.eeg_data <- function(data,
   if (length(time_lim) == 1) {
     stop("Must enter two timepoints when selecting a time range.")
   } else if (length(time_lim) == 2) {
-    # find the timepoints closest to the time_lim provided
     rows <- data$timings$time >= time_lim[1] &
       data$timings$time <= time_lim[2]
     data$signals <- data$signals[rows, ]

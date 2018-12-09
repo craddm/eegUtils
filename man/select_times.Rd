@@ -32,7 +32,7 @@ select_times(data, ...)
 to be selected e.g. c(min, max)}
 
 \item{df_out}{Returns a data frame rather than an object of the same type
-that was passed in}
+that was passed in.}
 }
 \value{
 Data frame with only data from within the specified range.

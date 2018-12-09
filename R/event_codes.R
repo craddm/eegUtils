@@ -115,10 +115,6 @@ list_epochs.eeg_ICA <- function(data, ...) {
 }
 
 
-#events.eeg_epochs <- function(.data) {
- # .data$events
-#}
-
 events <- function(.data, value) {
   UseMethod("events", .data)
 }
@@ -136,6 +132,13 @@ events.eeg_epochs <- function(.data) {
 }
 
 `events<-.eeg_epochs` <- function(.data, value) {
+
   .data$events <- value
   .data
 }
+
+`events<-.eeg_data` <- function(.data, value) {
+  .data$events <- value
+  .data
+}
+
