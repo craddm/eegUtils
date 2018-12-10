@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Function to create an S3 object of class "eeg_stats". — eeg_stats • eegUtils</title>
+<title>Check consistency of labels — label_check • eegUtils</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,9 +30,11 @@
 
 
 
-<meta property="og:title" content="Function to create an S3 object of class "eeg_stats". — eeg_stats" />
+<meta property="og:title" content="Check consistency of labels — label_check" />
 
-<meta property="og:description" content="Function to create an S3 object of class &quot;eeg_stats&quot;." />
+<meta property="og:description" content="Internal function for checking 1) whether the labels submitted are a mixture
+of hierarchical and non-hierarchical types 2) whether the labels submitted
+are present in the data" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -123,37 +125,31 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Function to create an S3 object of class "eeg_stats".</h1>
-    <small class="dont-index">Source: <a href='https://github.com/craddm/eegUtils/blob/master/R/class_handling.R'><code>R/class_handling.R</code></a></small>
-    <div class="hidden name"><code>eeg_stats.Rd</code></div>
+    <h1>Check consistency of labels</h1>
+    <small class="dont-index">Source: <a href='https://github.com/craddm/eegUtils/blob/master/R/utils.R'><code>R/utils.R</code></a></small>
+    <div class="hidden name"><code>label_check.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Function to create an S3 object of class "eeg_stats".</p>
+    <p>Internal function for checking 1) whether the labels submitted are a mixture
+of hierarchical and non-hierarchical types 2) whether the labels submitted
+are present in the data</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>eeg_stats</span>(<span class='no'>statistic</span>, <span class='no'>chan_info</span>, <span class='no'>pvals</span>, <span class='no'>timings</span>)</pre>
+    <pre class="usage"><span class='fu'>label_check</span>(<span class='no'>cond_labs</span>, <span class='no'>data_labs</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>statistic</th>
-      <td><p>Calculated statistic (e.g. t-statistic)</p></td>
+      <th>cond_labs</th>
+      <td><p>labels submitted by the user</p></td>
     </tr>
     <tr>
-      <th>chan_info</th>
-      <td><p>String of character names for electrodes.</p></td>
-    </tr>
-    <tr>
-      <th>pvals</th>
-      <td><p>calculated p-values for that statistic</p></td>
-    </tr>
-    <tr>
-      <th>timings</th>
-      <td><p>Unique timepoints remaining in the data.</p></td>
+      <th>data_labs</th>
+      <td><p>labels from the actual data</p></td>
     </tr>
     </table>
     

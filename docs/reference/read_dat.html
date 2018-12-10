@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Function to create an S3 object of class "eeg_stats". — eeg_stats • eegUtils</title>
+<title>Read the raw data for a BVA file. — read_dat • eegUtils</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,9 +30,9 @@
 
 
 
-<meta property="og:title" content="Function to create an S3 object of class "eeg_stats". — eeg_stats" />
+<meta property="og:title" content="Read the raw data for a BVA file. — read_dat" />
 
-<meta property="og:description" content="Function to create an S3 object of class &quot;eeg_stats&quot;." />
+<meta property="og:description" content="Read the raw data for a BVA file." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -123,37 +123,37 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Function to create an S3 object of class "eeg_stats".</h1>
-    <small class="dont-index">Source: <a href='https://github.com/craddm/eegUtils/blob/master/R/class_handling.R'><code>R/class_handling.R</code></a></small>
-    <div class="hidden name"><code>eeg_stats.Rd</code></div>
+    <h1>Read the raw data for a BVA file.</h1>
+    <small class="dont-index">Source: <a href='https://github.com/craddm/eegUtils/blob/master/R/file_io.R'><code>R/file_io.R</code></a></small>
+    <div class="hidden name"><code>read_dat.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Function to create an S3 object of class "eeg_stats".</p>
+    <p>Read the raw data for a BVA file.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>eeg_stats</span>(<span class='no'>statistic</span>, <span class='no'>chan_info</span>, <span class='no'>pvals</span>, <span class='no'>timings</span>)</pre>
+    <pre class="usage"><span class='fu'>read_dat</span>(<span class='no'>file_name</span>, <span class='no'>file_size</span>, <span class='no'>bin_format</span>, <span class='no'>multiplexed</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>statistic</th>
-      <td><p>Calculated statistic (e.g. t-statistic)</p></td>
+      <th>file_name</th>
+      <td><p>Filename of the .dat file</p></td>
     </tr>
     <tr>
-      <th>chan_info</th>
-      <td><p>String of character names for electrodes.</p></td>
+      <th>file_size</th>
+      <td><p>Size of the .dat file</p></td>
     </tr>
     <tr>
-      <th>pvals</th>
-      <td><p>calculated p-values for that statistic</p></td>
+      <th>bin_format</th>
+      <td><p>Storage format.</p></td>
     </tr>
     <tr>
-      <th>timings</th>
-      <td><p>Unique timepoints remaining in the data.</p></td>
+      <th>multiplexed</th>
+      <td><p>Logical; whether the data is VECTORIZED (FALSE) or MULTIPLEXED (TRUE)</p></td>
     </tr>
     </table>
     
@@ -165,8 +165,6 @@
       <li><a href="#arguments">Arguments</a></li>
                 </ul>
 
-    <h2>Author</h2>
-    <p>Matt Craddock <a href='mailto:matt@mattcraddock.com'>matt@mattcraddock.com</a></p>
   </div>
 </div>
 

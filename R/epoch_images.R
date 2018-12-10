@@ -3,9 +3,12 @@
 #' Plot an ERP image from a single electrode. Smooths over a series of trials in
 #' order to make across-trial patterns more apparent.
 #'
+#' @examples
+#' erp_image(demo_epochs, electrode = "A31")
+#' erp_image(demo_epochs, electrode = "A31", interpolate = TRUE)
+#' erp_image(demo_epochs, electrode = "A31", smoothing = 5)
 #' @param data Data frame to be plotted. Requires an amplitude column.
 #' @param ... Other arguments passed to the method.
-#' @author Matt Craddock, \email{matt@@mattcraddock.com}
 #' @import ggplot2
 #' @importFrom scales squish
 #' @export
@@ -161,9 +164,12 @@ create_erpimage <- function(data,
 #' middle. If no locations are found, it simply displays the data in its
 #' original order.
 #'
+#' @examples
+#' erp_raster(demo_epochs)
+#' erp_raster(demo_epochs, interpolate = TRUE)
 #' @param data An \code{eeg_epochs} object
 #' @param anat_order Arrange the channels in a more anatomically representative
-#'   order.
+#'   order. Defaults to TRUE.
 #' @param time_lim Time limits of plot - should be a character vector (e.g.
 #'   c(-.2, .5))
 #' @param clim Character vector of min and max values of plotting colour range.

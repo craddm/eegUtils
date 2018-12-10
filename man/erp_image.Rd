@@ -47,6 +47,8 @@ order to make across-trial patterns more apparent.
 \item \code{eeg_ICA}: Plot component image from \code{eeg_ICA}
 }}
 
-\author{
-Matt Craddock, \email{matt@mattcraddock.com}
+\examples{
+erp_image(demo_epochs, electrode = "A31")
+erp_image(demo_epochs, electrode = "A31", interpolate = TRUE)
+erp_image(demo_epochs, electrode = "A31", smoothing = 5)
 }

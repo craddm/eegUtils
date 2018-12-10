@@ -11,7 +11,7 @@ erp_raster(data, anat_order = TRUE, time_lim = NULL, clim = NULL,
 \item{data}{An \code{eeg_epochs} object}
 
 \item{anat_order}{Arrange the channels in a more anatomically representative
-order.}
+order. Defaults to TRUE.}
 
 \item{time_lim}{Time limits of plot - should be a character vector (e.g.
 c(-.2, .5))}
@@ -29,6 +29,10 @@ rows from the most posterior electrode on the right hemisphere to the most
 anterior electrode on the left hemisphere, with midline electrodes in the
 middle. If no locations are found, it simply displays the data in its
 original order.
+}
+\examples{
+erp_raster(demo_epochs)
+erp_raster(demo_epochs, interpolate = TRUE)
 }
 \author{
 Matt Craddock, \email{matt@mattcraddock.com}
