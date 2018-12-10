@@ -114,29 +114,54 @@ list_epochs.eeg_ICA <- function(data, ...) {
   data$events[, c("epoch", "event_type", "event_label")]
 }
 
-
-events <- function(.data, value) {
+#' Modify events structure
+#'
+#' Get or set the values in the `events` structure of an eegUtils object.
+#'
+#' @examples
+#' events(demo_epochs)
+#' events(demo_epochs) <- mutate(events(demo_epochs),
+#'  sf = dplyr::case_when(
+#'          event_type %% 2 == 0 ~ "HSF",
+#'          event_type %% 2 == 1 ~ "LSF",
+#'  ))
+#' events(demo_epochs)
+#'
+#' @author Matt Craddock \email{matt@@mattcraddock.com}
+#' @param .data \code{eegUtils} object to view
+#' @export
+events <- function(.data) {
   UseMethod("events", .data)
 }
 
+#' @export
 events.eeg_data <- function(.data) {
   .data$events
 }
 
+#' @export
 events.eeg_epochs <- function(.data) {
   .data$events
 }
 
+
+#' @param value Value to replace `events` structure with.
+#' @rdname events
+#' @export
 `events<-` <- function(.data, value) {
   UseMethod("events<-", .data)
 }
 
+#' @rdname events
+#' @export
 `events<-.eeg_epochs` <- function(.data, value) {
 
   .data$events <- value
   .data
 }
 
+#' @rdname events
+#' @export
 `events<-.eeg_data` <- function(.data, value) {
   .data$events <- value
   .data

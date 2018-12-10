@@ -6,3 +6,4 @@
 ^_pkgdown\.yml$
 ^appveyor\.yml$
 ^data-raw$
+^codemeta\.json$

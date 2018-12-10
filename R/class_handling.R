@@ -151,11 +151,13 @@ eeg_data <- function(data,
 #' @param ... Other parameters
 #' @keywords internal
 
-eeg_evoked <- function(data, chan_info, timings, ...) {
+eeg_evoked <- function(data,
+                       chan_info,
+                       timings, ...) {
   value <- list(signals = data,
                 chan_info = chan_info,
                 timings = timings)
-  class(value) <- c("eeg_evoked", "eeg_data")
+  class(value) <- c("eeg_evoked")
 }
 
 #' Function to create an S3 object of class "eeg_stats".
@@ -167,7 +169,10 @@ eeg_evoked <- function(data, chan_info, timings, ...) {
 #' @param timings Unique timepoints remaining in the data.
 #' @keywords internal
 
-eeg_stats <- function(statistic, chan_info, pvals, timings) {
+eeg_stats <- function(statistic,
+                      chan_info,
+                      pvals,
+                      timings) {
 
   value <- list(statistic = statistic,
                 pvals = pvals,
@@ -175,6 +180,17 @@ eeg_stats <- function(statistic, chan_info, pvals, timings) {
                 timings = timings)
   class(value) <- "eeg_stats"
   value
+}
+
+
+eeg_ICA <- function(mixing_matrix,
+                    unmixing_matrix,
+                    signals,
+                    timings,
+                    events,
+                    chan_info,
+                    srate) {
+
 }
 
 #' Check if object is of class "eeg_data".
