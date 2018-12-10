@@ -1,8 +1,9 @@
 #' Function for reading raw data.
 #'
-#' Currently BDF/EDF and 32-bit .CNT files are supported. Filetype is determined
-#' by the file extension.The \code{edfReader} package is used to load BDF/EDF files.
-#' The function creates an \code{eeg_data} structure for subsequent use.
+#' Currently BDF/EDF, 32-bit .CNT, and Brain Vision Analyzer files are
+#' supported. Filetype is determined by the file extension.The \code{edfReader}
+#' package is used to load BDF/EDF files. The function creates an
+#' \code{eeg_data} structure for subsequent use.
 #'
 #' @author Matt Craddock, \email{matt@@mattcraddock.com}
 #' @param file_name File to import. Should include file extension.
@@ -21,7 +22,8 @@ import_raw <- function(file_name, file_path = NULL, chan_nos = NULL) {
     data <- edfReader::readEdfSignals(edfReader::readEdfHeader(file_name))
 
     #check for an annotations channel
-    anno_chan <- which(vapply(data, function(x) isTRUE(x$isAnnotation),
+    anno_chan <- which(vapply(data,
+                              function(x) isTRUE(x$isAnnotation),
                  FUN.VALUE = logical(1)))
 
     #remove annotations if present - could put in separate list...
@@ -63,6 +65,7 @@ import_raw <- function(file_name, file_path = NULL, chan_nos = NULL) {
                      events = event_table,
                      timings = timings,
                      continuous = TRUE)
+    data
   } else if (file_type == "cnt") {
     data <- import_cnt(file_name)
     sigs <- tibble::tibble(t(data$chan_data))
@@ -70,18 +73,22 @@ import_raw <- function(file_name, file_path = NULL, chan_nos = NULL) {
     srate <- data$head_info$samp_rate
     timings <- tibble::tibble(sample = 1:dim(sigs)[[1]])
     timings$time <- (timings$sample - 1) / srate
-    event_table <- tibble::tibble(event_onset = data$event_list$offset + 1,
-                                  event_time = (data$event_list$offset + 1) / srate,
-                                  event_type = data$event_list$event_type)
-    data <- eeg_data(data = sigs, srate = srate,
+    event_table <-
+      tibble::tibble(event_onset = data$event_list$offset + 1,
+                     event_time = (data$event_list$offset + 1) / srate,
+                     event_type = data$event_list$event_type)
+    data <- eeg_data(data = sigs,
+                     srate = srate,
                      chan_info = data$chan_info,
-                     events = event_table, timings = timings,
+                     events = event_table,
+                     timings = timings,
                      continuous = TRUE)
+    } else if (file_type == "vhdr") {
+      data <- import_vhdr(file_name)
     } else {
-    warning("Unsupported filetype")
-    return()
-  }
-  return(data)
+      stop("Unsupported filetype")
+    }
+  data
 }
 
 
@@ -224,11 +231,15 @@ import_cnt <- function(file_name) {
 
   close(cnt_file)
   chan_df <- chan_df[, names(chan_df) %in% c("electrode", "chan_no")]
-  out <- list(chan_info = chan_df, head_info = data_info,
-              chan_data = chan_data, event_list = ev_list)
+  out <- list(chan_info = chan_df,
+              head_info = data_info,
+              chan_data = chan_data,
+              event_list = ev_list)
 }
 
-#' @noRd
+#' Function for import Brain Vision Analyzer files
+#' @param file_name file name of the header file.
+#' @keywords internal
 import_vhdr <- function(file_name) {
 
   .data <- read_vhdr(file_name)
@@ -236,10 +247,14 @@ import_vhdr <- function(file_name) {
 }
 
 #' @importFrom ini read.ini
-#' @noRd
+#' @keywords internal
 read_vhdr <- function(file_name) {
 
   header_info <- ini::read.ini(file_name)
+
+  if (identical(header_info$`Common Infos`$DataFormat, "ASCII")) {
+    stop("BVA ASCII not currently supported.")
+  }
 
   if (identical(header_info$`Common Infos`$DataType,
                 "FREQUENCYDOMAIN")) {
@@ -258,7 +273,7 @@ read_vhdr <- function(file_name) {
   vmrk_file <- header_info$`Common Infos`$MarkerFile
   n_chan <- as.numeric(header_info$`Common Infos`$NumberOfChannels)
   # header gives sampling times in microseconds
-  srate <- 1000000 / as.numeric(header_info$`Common Infos`$SamplingInterval)
+  srate <- 1e6 / as.numeric(header_info$`Common Infos`$SamplingInterval)
   bin_format <- header_info$`Binary Infos`$BinaryFormat
 
   chan_labels <- lapply(header_info$`Channel Infos`,
@@ -269,7 +284,6 @@ read_vhdr <- function(file_name) {
 
   file_size <- file.size(data_file)
   .data <- read_dat(data_file,
-                    n_chan = n_chan,
                     file_size = file_size,
                     bin_format = bin_format,
                     multiplexed)
@@ -302,9 +316,14 @@ read_vhdr <- function(file_name) {
 }
 
 #' Read the raw data for a BVA file.
-#' @noRd
+#'
+#' @param file_name Filename of the .dat file
+#' @param file_size Size of the .dat file
+#' @param bin_format Storage format.
+#' @param multiplexed Logical; whether the data is VECTORIZED (FALSE) or MULTIPLEXED (TRUE)
+#' @keywords internal
+
 read_dat <- function(file_name,
-                     n_chan,
                      file_size,
                      bin_format,
                      multiplexed) {
@@ -339,6 +358,7 @@ read_vmrk <- function(file_name) {
 
   markers <- lapply(vmrks$`Marker Infos`, function(x) unlist(strsplit(x, ",")))
 
+  # to do - fix to check for "New segment" instead - it's the extra date field that causes issues
   if (length(markers[[1]]) == 6) {
     date <- markers[[1]][[6]]
     markers[[1]] <- markers[[1]][1:5]
@@ -425,7 +445,8 @@ import_set <- function(file_name, df_out = FALSE) {
   # check if the data is stored in the set or in a separate .fdt
   if (is.character(temp_dat$EEG[[which(var_names == "data")]])) {
     message("loading from .fdt")
-    fdt_file <- paste0(tools::file_path_sans_ext(file_name), ".fdt")
+    fdt_file <- paste0(tools::file_path_sans_ext(file_name),
+                       ".fdt")
     fdt_file <- file(fdt_file, "rb")
 
     # read in data from .fdt
@@ -491,7 +512,8 @@ import_set <- function(file_name, df_out = FALSE) {
     timings <- tibble::tibble(time = signals$time,
                               epoch = signals$epoch,
                               sample = 1:length(signals$time))
-    event_table$time <- timings[which(timings$sample %in% event_table$event_onset, arr.ind = TRUE), ]$time
+    event_table$time <- timings[which(timings$sample %in% event_table$event_onset,
+                                      arr.ind = TRUE), ]$time
     out_data <- eeg_data(signals[, 1:n_chans],
                          srate = srate,
                          timings = timings,
@@ -541,8 +563,6 @@ parse_chaninfo <- function(chan_info) {
                         "cart_y",
                         "cart_z"
                         )
-  #pol_coords <- cart_to_pol(chan_info$cart_x, chan_info$cart_y)
-  #chan_info <- tibble::as_tibble(c(chan_info, pol_coords))
   chan_info <- chan_info[c("electrode",
                            "cart_x",
                            "cart_y",
@@ -586,13 +606,148 @@ parse_vhdr_chans <- function(chan_labels,
 #' Cartesian 3D and 2D projections.
 #'
 #' @param chan_info A data.frame containing electrodes
+#' @param circumference Head circumference in millimetres
 #' @keywords internal
-bva_elecs <- function(chan_info) {
-  chan_info <- dplyr::mutate(chan_info,
-                             cart_x = sin(theta * pi / 180) * cos(phi * pi / 180),
-                             cart_y = sin(theta * pi / 180) * sin(phi * pi / 180),
-                             cart_z = cos(theta * pi / 180),
-                             x = theta * cos(phi * pi / 180),
-                             y = theta * sin(phi * pi /180))
+bva_elecs <- function(chan_info, circumference = 85) {
+  chan_info <-
+    dplyr::mutate(chan_info,
+                  cart_x = sin(theta * pi / 180) * cos(phi * pi / 180),
+                  cart_y = sin(theta * pi / 180) * sin(phi * pi / 180),
+                  cart_z = cos(theta * pi / 180),
+                  x = theta * cos(phi * pi / 180),
+                  y = theta * sin(phi * pi /180))
+  chan_info[, c("cart_x", "cart_y", "cart_z")] <-
+    chan_info[, c("cart_x", "cart_y", "cart_z")] * circumference
   chan_info
+}
+
+#' @noRd
+export_bva <- function(.data,
+                       filename,
+                       orientation) {
+  UseMethod("export_bva", .data)
+}
+
+export_bva.default <- function(.data,
+                               filename,
+                               orientation) {
+  stop("export_bva() can currently only export continuous eeg_data objects.")
+}
+
+export_bva.eeg_epochs <- function(.data,
+                                  filename,
+                                  orientation = "VECTORIZED") {
+
+  if (!(orientation %in% c("VECTORIZED", "MULTIPLEXED"))) {
+    stop("Orientation must be VECTORIZED or MULTIPLEXED.")
+  }
+
+  filename <- tools::file_path_sans_ext(filename)
+
+  write_vhdr(.data, filename, orientation)
+  write_dat(.data, filename, orientation)
+  write_vmrk(.data, filename)
+}
+
+
+write_vhdr <- function(.data,
+                       filename,
+                       orientation) {
+  vhdr_file <- paste0(filename, ".vhdr")
+  con <- file(vhdr_file, open = "w", encoding = "UTF-8")
+
+  on.exit(close(con))
+  new_header <- list()
+  new_header[["Common Infos"]] <-
+    list(Codepage = "UTF-8",
+         DataFile = paste0(filename, ".dat"),
+         MarkerFile = paste0(filename, ".vmrk"),
+         DataFormat = "BINARY",
+         DataOrientation=orientation,
+         DataType = "TIMEDOMAIN",
+         NumberOfChannels = ncol(.data$signals),
+         DataPoints = nrow(.data$signals) * ncol(.data$signals),
+         SamplingInterval = 1e6 / .data$srate)
+  #new_header[["User Infos"]] <- ""
+  new_header[["Binary Infos"]] <- list(BinaryFormat = "IEEE_FLOAT_32")
+  new_header[["Channel Infos"]] <- as.list(paste(names(.data$signals),
+                                                 .data$reference$ref_chans,
+                                                 "",
+                                                 paste0(intToUtf8(0x03BC), "V"),
+                                                 sep = ","))
+  names(new_header[["Channel Infos"]]) <- paste0("Ch", 1:ncol(.data$signals))
+  new_header[["Coordinates"]] <- as.list(paste(.data$chan_info$sph_radius,
+                                       .data$chan_info$sph_theta,
+                                       .data$chan_info$sph_phi,
+                                       sep = ","))
+  names(new_header[["Coordinates"]]) <- paste0("Ch", 1:ncol(.data$signals))
+  writeLines("Brain Vision Data Exchange Header File Version 2.0", con)
+  writeLines(paste0("; Created using eegUtils http://craddm.github.io/eegUtils/"),
+             con)
+  writeLines("", con)
+
+  for (i in names(new_header)) {
+    writeLines(paste0("[", i,"]"), con)
+    entries <-
+      lapply(seq_along(new_header[[i]]),
+             function(x) paste0(names(new_header[[i]][x]),
+                                "=",
+                                new_header[[i]][x]))
+    lapply(entries,
+           writeLines,
+           con)
+    writeLines("", con)
+  }
+  writeLines("", con)
+}
+
+write_dat <- function(.data,
+                      filename,
+                      orientation) {
+  vdat_file <- paste0(filename, ".dat")
+  con <- file(vdat_file, open = "wb")
+  on.exit(close(con))
+  if (identical(orientation, "VECTORIZED")) {
+    # convert to matrix and vector before writiing
+    writeBin(as.vector(as.matrix(.data$signals)), con, size = 4)
+  } else if (identical(orientation, "MULTIPLEXED")) {
+    # transpose matrix before vectorizing
+    writeBin(as.vector(t(as.matrix(.data$signals))), con, size = 4)
+  }
+}
+
+write_vmrk <- function(.data,
+                       filename) {
+  vmrk_file <- paste0(filename, ".vmrk")
+  con <- file(vmrk_file, open = "w")
+  on.exit(close(con))
+  writeLines("Brain Vision Data Exchange Header File Version 2.0", con)
+  writeLines(paste0("; Created using eegUtils http://craddm.github.io/eegUtils/"),
+             con)
+  writeLines("", con)
+
+  new_markers <- list("Common Infos" = list(Codepage = "UTF-8",
+                                            DataFile = paste0(filename, ".dat")),
+                      "Marker Infos" = as.list(paste("Stimulus",
+                                      .data$events$event_type,
+                                      .data$events$event_onset,
+                                      1,
+                                      0,
+                                      sep = ",")))
+  names(new_markers[["Marker Infos"]]) <-
+    paste0("Mk", 1:nrow(.data$events))
+
+  for (i in names(new_markers)) {
+    writeLines(paste0("[", i,"]"), con)
+    entries <-
+      lapply(seq_along(new_markers[[i]]),
+             function(x) paste0(names(new_markers[[i]][x]),
+                                "=",
+                                new_markers[[i]][x]))
+    lapply(entries,
+           writeLines,
+           con)
+
+    writeLines("", con)
+  }
 }

@@ -32,4 +32,6 @@ utils::globalVariables(c("time",
                          "plotlyOutput",
                          "value",
                          "var",
-                         "measure"))
+                         "measure",
+                         "keep_rows",
+                         "xyz_coords"))

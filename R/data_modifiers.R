@@ -67,7 +67,7 @@ reref_eeg.eeg_data <- function(data,
     if (is.numeric(exclude)) {
       exclude <- names(data$signals)[exclude]
     } else {
-      exclude <- exclude[which(exclude  %in% names(data$signals))]
+      exclude <- exclude[which(exclude %in% names(data$signals))]
     }
     reference <- reference[!(reference %in% exclude)]
   }
@@ -82,7 +82,6 @@ reref_eeg.eeg_data <- function(data,
     #remove reference from data
     data$signals <- data.table(data$signals)
     data$signals <- data$signals[, lapply(.SD, function(x) x - ref_data)]
-    #data$signals <- data$signals - ref_data
   } else {
     if (any(all(ref_chans %in% colnames(data$signals)) | is.numeric(ref_chans))) {
       if (length(ref_chans) > 1) {
@@ -92,7 +91,6 @@ reref_eeg.eeg_data <- function(data,
       }
       data$signals <- data.table(data$signals)
       data$signals <- data$signals[, lapply(.SD, function(x) x - ref_data)]
-      #data$signals <- data$signals - ref_data
     } else {
       stop("Electrode(s) not found.")
     }
@@ -106,7 +104,7 @@ reref_eeg.eeg_data <- function(data,
                              excluded = exclude)
       data <- select_elecs(data, ref_chans, keep = FALSE)
       }
-  return(data)
+  data
 }
 
 #' Create epochs from EEG data
@@ -252,6 +250,9 @@ epoch_data.eeg_epochs <- function(data, ...) {
 #' \code{signal} package. Note that this will also adjust the event table,
 #' moving events to the nearest time remaining after downsampling
 #'
+#' @examples
+#' eeg_downsample(demo_epochs, 2)
+#'
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #'
 #' @param data An \code{eeg_data} object to be downsampled
@@ -320,7 +321,9 @@ eeg_downsample.eeg_data <- function(data, q, ...) {
 #' @describeIn eeg_downsample Downsample eeg_epochs objects
 #' @export
 
-eeg_downsample.eeg_epochs <- function(data, q, ...) {
+eeg_downsample.eeg_epochs <- function(data,
+                                      q,
+                                      ...) {
 
   q <- as.integer(q)
 
@@ -330,7 +333,8 @@ eeg_downsample.eeg_epochs <- function(data, q, ...) {
     stop("srate / q must give a round number.")
   }
 
-  message(paste0("Downsampling from ", data$srate, "Hz to ",
+  message(paste0("Downsampling from ",
+                 data$srate, "Hz to ",
                  data$srate / q, "Hz."))
 
   epo_length <- length(unique(data$timings$time)) %% q
@@ -338,7 +342,9 @@ eeg_downsample.eeg_epochs <- function(data, q, ...) {
   #ceiling(epo_length / q)
 
   if (epo_length > 0) {
-    message("Dropping ", epo_length, " time points to make n of samples a multiple of q.")
+    message("Dropping ",
+            epo_length,
+            " time points to make n of samples a multiple of q.")
     new_times <- utils::head(unique(data$timings$time),
                              -epo_length)
     data <- select_times(data,

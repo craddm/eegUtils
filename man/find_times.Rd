@@ -11,6 +11,9 @@ find_times(timings, time_lim)
 
 \item{time_lim}{character vector of the time limits}
 }
+\value{
+logical vector of selected timepoints
+}
 \description{
 Internal function to find the rows corresponding to the selected time limits
 }

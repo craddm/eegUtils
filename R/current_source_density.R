@@ -61,15 +61,17 @@ interp_elecs.eeg_data <- function(data,
 
   chan_info <- data$chan_info[!missing_coords, ]
 
-  # Note - this checks for old-style electrode locations first, then for new style
+  # Note - this checks for old-style electrode locations first, then for new
+  # style
   check_ci_str(chan_info)
 
   if (all(c("cart_x", "cart_y", "cart_z") %in% names(chan_info))) {
     xyz_coords <- chan_info[, c("cart_x", "cart_y", "cart_z")]
 
     #normalise to unit sphere
-    rads <- sqrt(rowSums(xyz_coords ^ 2))
-    xyz_coords <- xyz_coords / rads
+    #rads <- sqrt(rowSums(xyz_coords ^ 2))
+    #xyz_coords <- xyz_coords / rads
+    xyz_coords <- norm_sphere(xyz_coords)
   } else {
     xyz_coords <- sph_to_cart(chan_info$sph_theta / 180 * pi,
                               chan_info$sph_phi / 180 * pi,
@@ -249,8 +251,9 @@ convert_to_csd <- function(data,
   if (all(c("cart_x", "cart_y", "cart_z") %in% names(data$chan_info))) {
     xyz_coords <- data$chan_info[, c("cart_x", "cart_y", "cart_z")]
     #normalise to unit sphere
-    rads <- sqrt(xyz_coords$cart_x ^ 2 + xyz_coords$cart_y ^ 2 + xyz_coords$cart_z ^ 2)
-    xyz_coords <- xyz_coords / rads
+    #rads <- sqrt(xyz_coords$cart_x ^ 2 + xyz_coords$cart_y ^ 2 + xyz_coords$cart_z ^ 2)
+    #xyz_coords <- xyz_coords / rads
+    xyz_coords <- norm_sphere(xyz_coords)
   } else {
     xyz_coords <- sph_to_cart(data$chan_info$sph_theta / 180 * pi,
                               data$chan_info$sph_phi / 180 * pi,
@@ -320,6 +323,7 @@ compute_g <- function(xyz_coords,
     g <- g + ((2 * i + 1) / (i ^ m * (i + 1) ^ m)) * poly_xy[1, , ]
   }
   g <- g / 4 / pi
+  g
 }
 
 #' Compute the h function for two sets of locations of channel locations on the
@@ -359,4 +363,5 @@ compute_h <- function(xyz_coords,
   }
 
   h <- -h / 4 / pi
+  h
 }

@@ -22,10 +22,10 @@ new_dat <-
 
 time_sel <-
   data.frame(
-    Fp1 = c(100, 99, 80, 135, 3515),
-    AFz = c(120, -299, -200, 35, 2112),
-    Pz = c(-24, -199, -265, -123, 12),
-    time = c(-.1, 0, .1, .2, .3)
+    Fp1 = c(99, 80, 135),
+    AFz = c(-299, -200, 35),
+    Pz = c(-199, -265, -123),
+    time = c( 0, .1, .2)
   )
 
 test_data <- import_raw("Newtest17-256.bdf")
@@ -34,7 +34,7 @@ test_that("selection of electrodes and times works as expected", {
 
   expect_equal(select_elecs(test_dat, electrode = "Fp1"), new_dat)
 
-  expect_equal(select_times(test_dat_time, c(-.1, .3)), time_sel)
+  expect_equivalent(select_times(test_dat_time, c(-.1, .3)), time_sel)
 })
 
 test_that("Selection of electrodes and times works for eeg_* objects", {
@@ -75,16 +75,23 @@ test_that("Selection of epochs functions for eeg_epochs objects only", {
   expect_is(test_epo_255, "eeg_epochs")
   expect_identical(test_epo_255$signals, test_epo$signals)
   test_epo_testing <- select_epochs(test_epo, "testing")
-  expect_identical(test_epo_255$signals, test_epo_testing$signals)
+  expect_identical(test_epo_255$signals,
+                   test_epo_testing$signals)
   expect_error(select_epochs(test_epo, 234))
   expect_error(select_epochs(test_epo, "no trig"))
   expect_error(select_epochs(test_data, 255))
   expect_warning(select_epochs(test_dat, 255))
   sel_epochs <- c(1, 2, 10, 34)
-  test_epo_testing <- select_epochs(test_epo, epoch_no = sel_epochs)
-  expect_equal(unique(test_epo_testing$events$epoch), sel_epochs)
-  expect_equal(unique(test_epo_testing$events$epoch), unique(test_epo_testing$timings$epoch))
-  test_epo_testing <- select_epochs(test_epo, epoch_no = sel_epochs, keep = FALSE)
-  expect_equal(unique(test_epo_testing$events$epoch), unique(test_epo_testing$timings$epoch))
+  test_epo_testing <- select_epochs(test_epo,
+                                    epoch_no = sel_epochs)
+  expect_equal(unique(test_epo_testing$events$epoch),
+               sel_epochs)
+  expect_equal(unique(test_epo_testing$events$epoch),
+               unique(test_epo_testing$timings$epoch))
+  test_epo_testing <- select_epochs(test_epo,
+                                    epoch_no = sel_epochs,
+                                    keep = FALSE)
+  expect_equal(unique(test_epo_testing$events$epoch),
+               unique(test_epo_testing$timings$epoch))
 
 })

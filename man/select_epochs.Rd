@@ -6,7 +6,7 @@
 \alias{select_epochs.eeg_data}
 \alias{select_epochs.eeg_epochs}
 \alias{select_epochs.eeg_ICA}
-\title{Select epochs from eeg_data}
+\title{Select epochs}
 \usage{
 select_epochs(data, ...)
 
@@ -49,6 +49,10 @@ This is a generic function for selecting epochs from an epoched data set.
 \item \code{eeg_ICA}: Selection of epochs from \code{eeg_ICA} objects.
 }}
 
+\examples{
+select_epochs(demo_epochs, epoch_no = 1:5)
+
+}
 \seealso{
 \code{\link{select_times}} and \code{\link{select_elecs}}
 }

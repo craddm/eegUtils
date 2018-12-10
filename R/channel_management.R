@@ -358,9 +358,9 @@ electrode_locations.eeg_data <- function(data,
     p <- ggplot2::ggplot(data$chan_info, aes(x, y)) +
       geom_label(aes(label = electrode))
     return(p)
-  } else {
-    return(data)
   }
+  data$chan_info <- validate_channels(data)
+  data
 }
 
 #' Plot electrode locations
@@ -484,7 +484,6 @@ validate_channels <- function(.data) {
                            .data$chan_info, all.x = TRUE)
   }
   .data$chan_info
-  #rep(NA, ncol(.data$signals)-1)
 }
 
 
@@ -526,4 +525,20 @@ channels.eeg_data <- function(.data, value) {
 `channels<-.eeg_evoked` <- function(.data, value) {
   .data$chan_info <- value
   .data
+}
+
+
+norm_sphere <- function(xyz_coords) {
+
+  circ <- sqrt(rowSums(xyz_coords ^ 2))
+  xyz_coords <- xyz_coords / circ
+  xyz_coords
+}
+
+cart_to <- function(xyz_norm) {
+
+  radius <- sqrt(rowSums(xyz_coords ^ 2))
+  theta <- atan(xyz_coords$cart_y / xyz_coords$cart_x)
+  phi <- acos(xyz_coords$cart_z / radius)
+  data.frame(radius, theta, phi)
 }

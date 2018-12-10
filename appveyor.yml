@@ -47,3 +47,4 @@ artifacts:
 environment:
   global:
     WARNINGS_ARE_ERRORS: 1
+    USE_RTOOLS: true

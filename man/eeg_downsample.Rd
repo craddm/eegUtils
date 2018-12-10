@@ -32,6 +32,10 @@ moving events to the nearest time remaining after downsampling
 \item \code{eeg_epochs}: Downsample eeg_epochs objects
 }}
 
+\examples{
+eeg_downsample(demo_epochs, 2)
+
+}
 \author{
 Matt Craddock \email{matt@mattcraddock.com}
 }

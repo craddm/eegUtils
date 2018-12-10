@@ -30,15 +30,16 @@ select_times <- function(data, ...) {
 #' @export
 #' @describeIn select_times Default select times function
 
-select_times.default <- function(data, time_lim = NULL, ...) {
+select_times.default <- function(data,
+                                 time_lim = NULL,
+                                 ...) {
 
   if ("time" %in% colnames(data)) {
     if (length(time_lim) == 1) {
       stop("Must enter two timepoints when selecting a time range.")
     } else if (length(time_lim) == 2) {
-      #time_lim[1] <- data$time[which.min(abs(data$time - time_lim[1]))]
-      #time_lim[2] <- data$time[which.min(abs(data$time - time_lim[2]))]
-      data <- data[data$time >= time_lim[1] & data$time <= time_lim[2], ]
+      data <- data[data$time > time_lim[1] &
+                     data$time < time_lim[2], ]
     }
   } else {
     warning("No time column found.")
@@ -57,21 +58,26 @@ select_times.eeg_data <- function(data,
                                   df_out = FALSE,
                                   ...) {
 
-  data$signals <- as.data.frame(data)
+  #data$signals <- as.data.frame(data)
+  keep_rows <- find_times(data$timings, time_lim)
+  data$signals <- data$signals[keep_rows, ]
+  data$timings <- data$timings[keep_rows, ]
+  event_rows <- data$events$event_time > time_lim[1] &
+        data$events$event_time < time_lim[2]
+  data$events <- data$events[event_rows, ]
 
-  if (length(time_lim) == 1) {
-    stop("Must enter two timepoints when selecting a time range.")
-  } else if (length(time_lim) == 2) {
-    rows <- data$timings$time >= time_lim[1] &
-      data$timings$time <= time_lim[2]
-    data$signals <- data$signals[rows, ]
-    data$timings <- data$timings[rows, ]
-    event_rows <- data$events$event_time >= time_lim[1] &
-       data$events$event_time <= time_lim[2]
-    data$events <- data$events[event_rows, ]
-    data$signals$sample <- NULL
-    data$signals$time <- NULL
-  }
+  # if (length(time_lim) == 1) {
+  #   stop("Must enter two timepoints when selecting a time range.")
+  # } else if (length(time_lim) == 2) {
+    # rows <- data$timings$time >= time_lim[1] &
+    #   data$timings$time <= time_lim[2]
+    # data$signals <- data$signals[rows, ]
+    # data$timings <- data$timings[rows, ]
+    # event_rows <- data$events$event_time >= time_lim[1] &
+    #    data$events$event_time <= time_lim[2]
+    # data$events <- data$events[event_rows, ]
+    # data$signals$sample <- NULL
+    # data$signals$time <- NULL
 
   if (df_out) {
     return(as.data.frame(data))
@@ -87,12 +93,13 @@ select_times.eeg_epochs <- function(data,
                                     df_out = FALSE,
                                     ...) {
 
-  sel_rows <- find_times(data$timings,
+  keep_rows <- find_times(data$timings,
                          time_lim)
 
-  data$signals <- data$signals[sel_rows, ]
-  data$timings <- data$timings[sel_rows, ]
-  event_rows <- data$events$time >= time_lim[1] & data$events$time <= time_lim[2]
+  data$signals <- data$signals[keep_rows, ]
+  data$timings <- data$timings[keep_rows, ]
+  event_rows <- data$events$time > time_lim[1] &
+    data$events$time < time_lim[2]
   data$events <- data$events[event_rows, ]
   if (df_out) {
     return(as.data.frame(data))
@@ -107,33 +114,34 @@ select_times.eeg_evoked <- function(data,
                                     df_out = FALSE,
                                     ...) {
 
-  data$signals <- as.data.frame(data)
+  #data$signals <- as.data.frame(data)
 
-  sel_rows <- find_times(data$timings,
-                         time_lim)
+  keep_rows <- find_times(data$timings,
+                          time_lim)
 
-  data$signals <- data$signals[sel_rows, ]
-  data$timings <- data$timings[sel_rows, ]
+  data$signals <- data$signals[keep_rows, ]
+  data$timings <- data$timings[keep_rows, ]
 
   if (df_out) {
     return(data$signals)
   }
-  data$signals$time <- NULL
+  #data$signals$time <- NULL
   data
 }
 
 #' @describeIn select_times Select times from an \code{eeg_tfr} object
+#' @export
 select_times.eeg_tfr <- function(data,
                                  time_lim = NULL,
                                  df_out = FALSE,
                                  ...){
 
-  sel_rows <- find_times(data$timings, time_lim)
-  data$timings <- data$timings[sel_rows, ]
+  keep_rows <- find_times(data$timings, time_lim)
+  data$timings <- data$timings[keep_rows, ]
   if (length(data$dimensions) == 3) {
-    data$signals <- data$signals[sel_rows, , , drop = FALSE]
+    data$signals <- data$signals[keep_rows, , , drop = FALSE]
   } else {
-    data$signals <- data$signals[sel_rows, , , , drop = FALSE]
+    data$signals <- data$signals[keep_rows, , , , drop = FALSE]
   }
   data
 }
@@ -144,21 +152,19 @@ select_times.eeg_tfr <- function(data,
 #'
 #' @param timings timing information from the EEG object.
 #' @param time_lim character vector of the time limits
+#' @return logical vector of selected timepoints
 #' @keywords internal
 find_times <- function(timings,
                        time_lim) {
 
   if (length(time_lim) == 2) {
-    #time_lim[1] <- timings$time[which.min(abs(timings$time - time_lim[1]))]
-    #time_lim[2] <- timings$time[which.min(abs(timings$time - time_lim[2]))]
-    sel_rows <- timings$time > time_lim[1] & timings$time < time_lim[2]
+    keep_rows <- timings$time > time_lim[1] & timings$time < time_lim[2]
   } else {
   warning("Must enter two timepoints when selecting a time range;
           using whole range.")
-    sel_rows <- rep(TRUE, length = length(timings$time))
+    keep_rows <- rep(TRUE, length = length(timings$time))
   }
-
-  sel_rows
+  keep_rows
 }
 
 #' Select electrodes from a given dataset
@@ -322,6 +328,7 @@ select_elecs.eeg_ICA <- function(data,
 
 #'@importFrom abind asub
 #'@describeIn select_elecs Select electrodes from \code{eeg_tfr} objects.
+#'@export
 select_elecs.eeg_tfr <- function(data,
                                  electrode,
                                  keep = TRUE,
@@ -361,9 +368,12 @@ select_elecs.eeg_tfr <- function(data,
   data
 }
 
-#' Select epochs from eeg_data
+#' Select epochs
 #'
 #' This is a generic function for selecting epochs from an epoched data set.
+#'
+#' @examples
+#' select_epochs(demo_epochs, epoch_no = 1:5)
 #'
 #' @author Matt Craddock, \email{matt@@mattcraddock.com}
 #'
@@ -430,9 +440,9 @@ select_epochs.eeg_epochs <- function(data,
       orig_epo_no <- unique(data$timings$epoch)
       epoch_no <- orig_epo_no[!orig_epo_no %in% epoch_no]
     }
-    sel_rows <- data$timings$epoch %in% epoch_no
-    data$signals <- data$signals[sel_rows, ]
-    data$timings <- data$timings[sel_rows, ]
+    keep_rows <- data$timings$epoch %in% epoch_no
+    data$signals <- data$signals[keep_rows, ]
+    data$timings <- data$timings[keep_rows, ]
     data$events <- data$events[data$events$epoch %in% epoch_no, ]
   }
   if (df_out) {
@@ -464,12 +474,12 @@ select_epochs.eeg_ICA <- function(data,
   }
 
   if (is.numeric(epoch_no)) {
-    sel_rows <- data$timings$epoch %in% epoch_no
+    keep_rows <- data$timings$epoch %in% epoch_no
     if (keep == FALSE) {
-      sel_rows <- !sel_rows
+      keep_rows <- !keep_rows
     }
-    data$comp_activations <- data$comp_activations[sel_rows, ]
-    data$timings <- data$timings[sel_rows, ]
+    data$comp_activations <- data$comp_activations[keep_rows, ]
+    data$timings <- data$timings[keep_rows, ]
     data$events <- data$events[data$events$epoch %in% epoch_no, ]
   }
   if (df_out) {
@@ -523,7 +533,8 @@ select_freqs.eeg_tfr <- function(data,
   freq_dim <- which(data$dimensions == "frequency")
   if (length(freq_range) == 2) {
     data_freqs <- as.numeric(dimnames(data$signals)[[freq_dim]])
-    freqs <- data_freqs >= freq_range[[1]] & data_freqs <= freq_range[[2]]
+    freqs <- data_freqs >= freq_range[[1]] &
+      data_freqs <= freq_range[[2]]
     data$freq_info$freqs <- data$freq_info$freqs[freqs]
   } else if (length(freq_range) == 1) {
 
@@ -555,14 +566,14 @@ proc_events <- function(epoch_events,
                         ) {
 
   if (is.numeric(epoch_events)) {
-    sel_rows <- event_type %in% epoch_events
-    if (!any(sel_rows)) {
+    keep_rows <- event_type %in% epoch_events
+    if (!any(keep_rows)) {
       stop("Events not found.")
     }
     if (keep == FALSE) {
-      sel_rows <- !sel_rows
+      keep_rows <- !keep_rows
     }
-    epoch_no <- as.numeric(epoch_nos[sel_rows])
+    epoch_no <- as.numeric(epoch_nos[keep_rows])
   } else if (is.character(epoch_events)) {
     check_ev <- label_check(epoch_events, event_labels)
     if (check_ev) {
@@ -570,10 +581,10 @@ proc_events <- function(epoch_events,
     } else {
       stop("Event label not found, check with list_events.")
     }
-    sel_rows <- check_ev
+    keep_rows <- check_ev
     if (keep == FALSE) {
-      sel_rows <- !sel_rows
+      keep_rows <- !keep_rows
     }
-    epoch_no <- as.numeric(epoch_nos[sel_rows])
+    epoch_no <- as.numeric(epoch_nos[keep_rows])
   }
 }

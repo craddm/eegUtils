@@ -4,7 +4,7 @@
 #'frequency analyses for single frequencies. Averages over all submitted
 #'electrodes. Output is a ggplot2 object.
 #'
-#'@author Matt Craddock, \email{matt@@mattcraddock.com}
+#' @author Matt Craddock, \email{matt@@mattcraddock.com}
 #'
 #' @param data EEG dataset. Should have multiple timepoints.
 #' @param ... Other arguments passed to methods.
