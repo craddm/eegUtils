@@ -19,6 +19,9 @@
 #' @details The function uses default electrode names and locations contained
 #' in the package.
 #'
+#' @examples
+#' erp_scalp(demo_epochs, montage = "biosemi64alpha")
+#'
 #' @author Matti Vuorre, \email{mv2521@@columbia.edu}
 #' @importFrom purrr map
 #' @importFrom dplyr group_by summarise mutate select

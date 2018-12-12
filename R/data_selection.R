@@ -66,19 +66,6 @@ select_times.eeg_data <- function(data,
         data$events$event_time < time_lim[2]
   data$events <- data$events[event_rows, ]
 
-  # if (length(time_lim) == 1) {
-  #   stop("Must enter two timepoints when selecting a time range.")
-  # } else if (length(time_lim) == 2) {
-    # rows <- data$timings$time >= time_lim[1] &
-    #   data$timings$time <= time_lim[2]
-    # data$signals <- data$signals[rows, ]
-    # data$timings <- data$timings[rows, ]
-    # event_rows <- data$events$event_time >= time_lim[1] &
-    #    data$events$event_time <= time_lim[2]
-    # data$events <- data$events[event_rows, ]
-    # data$signals$sample <- NULL
-    # data$signals$time <- NULL
-
   if (df_out) {
     return(as.data.frame(data))
   }
@@ -374,6 +361,8 @@ select_elecs.eeg_tfr <- function(data,
 #'
 #' @examples
 #' select_epochs(demo_epochs, epoch_no = 1:5)
+#' (demo_ica <- run_ICA(demo_epochs))
+#' select_epochs(demo_ica, epoch_no = 1:5)
 #'
 #' @author Matt Craddock, \email{matt@@mattcraddock.com}
 #'
@@ -508,6 +497,9 @@ select_epochs.eeg_tfr <- function(data,
 #' Select specific frequencies from \code{eeg_tfr} objects. Can be used to
 #' selecting either single frequencies or anything within a range.
 #'
+#' @examples
+#' demo_tfr <- compute_tfr(demo_epochs, foi = c(4, 30), n_freq = 10, n_cycles = 5)
+#' select_freqs(demo_tfr, c(8, 12))
 #' @param data An \code{eeg_tfr} object.
 #' @param freq_range The range of frequencies to retain. Can be a scale or the
 #'   lower and upper bounds. (e.g. c(5, 30))
@@ -556,7 +548,7 @@ select_freqs.eeg_tfr <- function(data,
 #'
 #' Converts character strings into a vector of epoch numbers with matching labels.
 #'
-#' @noRd
+#' @keywords internal
 
 proc_events <- function(epoch_events,
                         event_type,

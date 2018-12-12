@@ -422,9 +422,11 @@ eeg_ar_thresh.eeg_epochs <- function(data, threshold, reject = FALSE, ...) {
   crossed_thresh <- data$signals > max(threshold) |
     data$signals < min(threshold)
 
+  crossed_thresh <- rowSums(crossed_thresh) == 1
+  rej_epochs <- unique(data$timings$epoch[crossed_thresh])
   if (reject) {
-    crossed_thresh <- rowSums(crossed_thresh) == 1
-    rej_epochs <- unique(data$timings$epoch[crossed_thresh])
+    # crossed_thresh <- rowSums(crossed_thresh) == 1
+    # rej_epochs <- unique(data$timings$epoch[crossed_thresh])
     data <- select_epochs(data, rej_epochs, keep = FALSE)
     # consider creating select_timerange vs select_timepoints
   } else {

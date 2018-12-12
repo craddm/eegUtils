@@ -41,6 +41,10 @@ Creates an ERP figure for each electrode and layouts them on the scalp.
 The function uses default electrode names and locations contained
 in the package.
 }
+\examples{
+erp_scalp(demo_epochs, montage = "biosemi64alpha")
+
+}
 \author{
 Matti Vuorre, \email{mv2521@columbia.edu}
 }

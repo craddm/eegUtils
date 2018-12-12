@@ -51,6 +51,8 @@ This is a generic function for selecting epochs from an epoched data set.
 
 \examples{
 select_epochs(demo_epochs, epoch_no = 1:5)
+(demo_ica <- run_ICA(demo_epochs))
+select_epochs(demo_ica, epoch_no = 1:5)
 
 }
 \seealso{

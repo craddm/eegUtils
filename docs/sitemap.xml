@@ -133,10 +133,10 @@
     <loc>http://craddm.github.io/eegUtils/reference/epoch_data.default.html</loc>
   </url>
   <url>
-    <loc>http://craddm.github.io/eegUtils/reference/epoch_data.eeg_epochs.html</loc>
+    <loc>http://craddm.github.io/eegUtils/reference/epoch_data.html</loc>
   </url>
   <url>
-    <loc>http://craddm.github.io/eegUtils/reference/epoch_data.html</loc>
+    <loc>http://craddm.github.io/eegUtils/reference/epoch_stats.html</loc>
   </url>
   <url>
     <loc>http://craddm.github.io/eegUtils/reference/erp_image.html</loc>
@@ -146,6 +146,9 @@
   </url>
   <url>
     <loc>http://craddm.github.io/eegUtils/reference/erp_scalp.html</loc>
+  </url>
+  <url>
+    <loc>http://craddm.github.io/eegUtils/reference/events.html</loc>
   </url>
   <url>
     <loc>http://craddm.github.io/eegUtils/reference/faster_chans.html</loc>
@@ -223,6 +226,9 @@
     <loc>http://craddm.github.io/eegUtils/reference/joint_diag.html</loc>
   </url>
   <url>
+    <loc>http://craddm.github.io/eegUtils/reference/kurtosis.html</loc>
+  </url>
+  <url>
     <loc>http://craddm.github.io/eegUtils/reference/label_check.html</loc>
   </url>
   <url>
@@ -284,6 +290,9 @@
   </url>
   <url>
     <loc>http://craddm.github.io/eegUtils/reference/print.eeg_tfr.html</loc>
+  </url>
+  <url>
+    <loc>http://craddm.github.io/eegUtils/reference/proc_events.html</loc>
   </url>
   <url>
     <loc>http://craddm.github.io/eegUtils/reference/quick_hurst.html</loc>

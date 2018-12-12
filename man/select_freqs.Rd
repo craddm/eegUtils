@@ -24,3 +24,7 @@ selecting either single frequencies or anything within a range.
 \item \code{eeg_tfr}: Function for selecting specific frequencies from \code{eeg_tfr} objects.
 }}
 
+\examples{
+demo_tfr <- compute_tfr(demo_epochs, foi = c(4, 30), n_freq = 10, n_cycles = 5)
+select_freqs(demo_tfr, c(8, 12))
+}
