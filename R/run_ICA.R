@@ -1,13 +1,13 @@
-#' ICA for EEG data
+#' Independent Component Analysis for EEG data
 #'
-#' Implements SOBI ICA. Although SOBI exists in R already, thanks to the JADE
-#' package, it doesn't respect epoch boundaries when computing correlations
-#' across different time lags. This is a port of SOBI from EEGLAB. Currently
-#' only works on epoched data.
+#' Performs Independent Component Analysis for EEG data. Currently only
+#' available with on epoched data. Implements three different methods of ICA -
+#' fastica, extended Infomax, and Second-Order Blind Identification (SOBI).
 #'
-#' @param data Data frame to be ICAed.
+#' @param data Data to be ICAed.
 #' @param ... Other parameters passed to function.
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
+#' @return An \code{eeg_ICA} object containing an ICA decomposition
 #' @importFrom MASS ginv
 #' @export
 
@@ -15,8 +15,9 @@ run_ICA <- function(data, ...) {
   UseMethod("run_ICA", data)
 }
 
-#' @param method "sobi", "fastica", or "infomax"
-#' @param maxit maximum number of iterations of the Infomax and Fastica ICA algorithms.
+#' @param method "sobi" (default), "fastica", or "infomax".
+#' @param maxit Maximum number of iterations of the Infomax and Fastica ICA
+#'   algorithms.
 #' @describeIn run_ICA Run ICA on an \code{eeg_epochs} object
 #' @export
 
@@ -67,15 +68,14 @@ run_ICA.eeg_epochs <- function(data,
     names(unmixing_matrix) <- paste0("Comp", 1:ncol(ICA_out$S))
     unmixing_matrix$electrode <- names(data$signals)
 
-    ica_obj <- list("mixing_matrix" = mixing_matrix,
-                    "unmixing_matrix" = unmixing_matrix,
-                    "signals" = ICA_out$S,
-                    "timings" = data$timings,
-                    "events" = data$events,
-                    "chan_info" = data$chan_info,
-                    "srate" = data$srate,
-                    "continuous" = FALSE)
-    class(ica_obj) <- c("eeg_ICA", "eeg_epochs")
+    ica_obj <- eeg_ICA(mixing_matrix = mixing_matrix,
+                    unmixing_matrix = unmixing_matrix,
+                    signals = ICA_out$S,
+                    timings = data$timings,
+                    events = data$events,
+                    chan_info = data$chan_info,
+                    srate = data$srate,
+                    continuous = FALSE)
   }
   ica_obj
 }
@@ -85,7 +85,6 @@ run_ICA.eeg_epochs <- function(data,
 #' Internal function for running SOBI ICA on an \code{eeg_epochs} object
 #'
 #' @param data Data to be ICAed.
-#'
 #' @keywords internal
 
 sobi_ICA <- function(data) {

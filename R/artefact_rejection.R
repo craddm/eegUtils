@@ -23,6 +23,8 @@ eeg_FASTER.eeg_epochs <- function(.data, ...) {
 
   check_ci_str(.data$chan_info)
 
+  channels(.data) <- validate_channels(.data)
+
   # TODO - keep a record of which trials/channels etc are removed/interpolated
   # and allow marking for inspection rather than outright rejection.
 
@@ -152,44 +154,58 @@ faster_chans <- function(data, sds = 3, ...) {
 #' @param ... Further parameters (tbd)
 #' @keywords internal
 
-faster_epochs <- function(data, ...) {
-  chan_means <- colMeans(data$signals)
-  data$signals <- split(data$signals,
-                        data$timings$epoch)
-  epoch_range <- lapply(data$signals,
-                        function(x) diff(apply(x,
-                                               2,
-                                               range)))
+faster_epochs <- function(.data, ...) {
+  chans <- channel_names(.data)
+  .data <- data.table::as.data.table(.data)
+  chan_means <- .data[, lapply(.SD, mean), .SDcols = chans]
+  #colMeans(data$signals)
+  #data$signals <- split(data$signals,
+  #                      data$timings$epoch)
+  epoch_range <- .data[, lapply(.SD, function(x) max(x) - min(x)),
+                          .SDcols = chans,
+                          by = epoch]
+  # epoch_range <- lapply(.data$signals,
+  #                       function(x) diff(apply(x,
+  #                                              2,
+                                               # range)))
   #DT  - [, lapply(.SD, function(x) max(x) - min(x)), by = data$timings$epoch]
 
-  epoch_range <- rowMeans(do.call(rbind,
-                                  epoch_range))
-  epoch_range <- abs(scale(epoch_range)) > 3
+  # epoch_range <- rowMeans(do.call(rbind,
+  #                                 epoch_range))
+  epoch_range <- epoch_range[, .(Mean = rowMeans(.SD)), by = epoch]
+  epoch_range <- abs(scale(epoch_range$Mean)) > 3
+  #epooch_range <- abs(scale(epoch_range)) > 3
   # epoch_range <- abs(scale(do.call("rbind",
   #                                  epoch_range))) > 3
-  epoch_diffs <- lapply(data$signals,
-                        function(x) {
-                          apply(abs(sweep(x,
-                                          2,
-                                          chan_means)),
-                                2,
-                                mean)
-                          })
-  #
-  epoch_diffs <- rowMeans(do.call(rbind,
-                                  epoch_diffs))
-  epoch_diffs <- abs(scale(epoch_diffs)) > 3
-  # epoch_diffs <- abs(scale(do.call("rbind",
-                                   # epoch_diffs))) > 3
-  epoch_vars <- lapply(data$signals,
-                       function(x) apply(x,
-                                         2,
-                                         stats::var))
-  epoch_vars <- rowMeans(do.call(rbind,
-                                 epoch_vars))
+  # epoch_diffs <- lapply(.data$signals,
+  #                       function(x) {
+  #                         apply(abs(sweep(x,
+  #                                         2,
+  #                                         chan_means)),
+  #                               2,
+  #                               mean)
+  #                         })
+  # #
+  # epoch_diffs <- rowMeans(do.call(rbind,
+  #                                 epoch_diffs))
+  epoch_diffs <- .data[, lapply(.SD, mean),
+                       .SDcols = chans,
+                       by = epoch][, lapply(.SD, function(x) x - mean(x)),
+                                   .SDcols = chans][ ,
+                                                     .(Mean = rowMeans(.SD))]
+  epoch_diffs <- abs(scale(epoch_diffs$Mean)) > 3
+
+  #epoch_vars <- lapply(.data$signals,
+   #                    function(x) apply(x,
+    #                                     2,
+     #                                    stats::var))
+  #epoch_vars <- rowMeans(do.call(rbind,
+   #                              epoch_vars))
+  epoch_vars <- .data[, lapply(.SD, var), .SDcols = chans,
+                      by = epoch][, apply(.SD, 1, mean),
+                                  .SDcols = chans]
   epoch_vars <- abs(scale(epoch_vars)) >3
-  #epoch_vars <- abs(scale(do.call("rbind",
-   #                               epoch_vars))) > 3
+
   bad_epochs <- matrix(c(rowSums(epoch_vars) > 0,
                          rowSums(epoch_range) > 0,
                          rowSums(epoch_diffs) > 0),

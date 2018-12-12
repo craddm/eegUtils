@@ -313,18 +313,26 @@ compute_g <- function(xyz_coords,
 
   g <- matrix(0, ncol = ncol(EI), nrow = nrow(EI))
 
+  gg <- 1:iter
+  gg <- (2 * gg + 1) / (gg ^ m *(gg + 1) ^ m)
+  legpoly <- matrix(0,
+                    nrow = length(c(EI)),
+                    ncol = iter)
+
   for (i in seq(1, iter)) {
     suppressWarnings(
       poly_xy <- pracma::legendre(i, EI)
     )
-    dim(poly_xy) <- c(i + 1,
-                      nrow(EI),
-                      ncol(EI))
-    g <- g + ((2 * i + 1) / (i ^ m * (i + 1) ^ m)) * poly_xy[1, , ]
+    legpoly[, i] <- t(poly_xy[1, ])
   }
+
+  g <- sweep(legpoly, 2, gg, "*")#g + gg
+  g <- rowSums(g)
   g <- g / 4 / pi
+  dim(g) <- c(nrow(EI), ncol(EI))
   g
 }
+
 
 #' Compute the h function for two sets of locations of channel locations on the
 #' unit sphere.
@@ -352,6 +360,7 @@ compute_h <- function(xyz_coords,
               ncol = ncol(EI),
               nrow = nrow(EI))
 
+  # vectorize this too, just like compute_g!
   for (i in seq(1, iter)) {
     suppressWarnings(
       poly_xy <- pracma::legendre(i, EI)

@@ -527,6 +527,10 @@ channels.eeg_data <- function(.data, value) {
   .data
 }
 
+channel_names <- function(.data) {
+  names(.data$signals)
+}
+
 
 norm_sphere <- function(xyz_coords) {
 

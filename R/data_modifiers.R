@@ -140,7 +140,7 @@ epoch_data.default <- function(data, ...) {
 #'
 #' @return Returns an epoched object of class \code{eeg_data}
 #'
-#' @describeIn epoch_data
+#' @describeIn epoch_data Epoch \code{eeg_data} objects
 #'
 #' @export
 #'
@@ -232,12 +232,7 @@ epoch_data.eeg_data <- function(data,
   return(data)
 }
 
-#' Create epochs
-#'
-#' @param data Continuous data to be epoched
-#' @param ... Parameters passed to methods
 #' @export
-#'
 
 epoch_data.eeg_epochs <- function(data, ...) {
   stop("Data is already epoched, cannot currently re-epoch.")
@@ -338,8 +333,6 @@ eeg_downsample.eeg_epochs <- function(data,
                  data$srate / q, "Hz."))
 
   epo_length <- length(unique(data$timings$time)) %% q
-
-  #ceiling(epo_length / q)
 
   if (epo_length > 0) {
     message("Dropping ",

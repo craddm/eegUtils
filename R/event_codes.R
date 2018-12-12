@@ -19,7 +19,6 @@ tag_events <- function(data, ...) {
 
 #' @param trigs Character vector of trigger numbers
 #' @param event_label Labels for the events.
-#' @importFrom dplyr left_join
 #' @importFrom tibble as_tibble
 #' @export
 #' @describeIn tag_events Tag events in an \code{eeg_data} object
@@ -45,6 +44,7 @@ tag_events.eeg_data <- function(data,
 }
 
 #' @describeIn tag_events Tag events in an epoched dataset
+#' @export
 tag_events.eeg_epochs <- function(data,
                                   trigs,
                                   event_label,

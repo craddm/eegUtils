@@ -189,7 +189,19 @@ eeg_ICA <- function(mixing_matrix,
                     timings,
                     events,
                     chan_info,
-                    srate) {
+                    srate,
+                    continuous) {
+
+  value <- list(mixing_matrix = mixing_matrix,
+                unmixing_matrix = unmixing_matrix,
+                signals = signals,
+                timings = timings,
+                events = events,
+                chan_info = chan_info,
+                srate = srate,
+                continuous = continuous)
+  class(value) <- c("eeg_ICA", "eeg_epochs")
+  value
 
 }
 

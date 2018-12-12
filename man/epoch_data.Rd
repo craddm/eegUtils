@@ -29,7 +29,7 @@ around each event.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{eeg_data}: 
+\item \code{eeg_data}: Epoch \code{eeg_data} objects
 }}
 
 \author{
