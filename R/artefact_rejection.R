@@ -456,14 +456,14 @@ channel_stats.eeg_data <- function(data, ...) {
 #'
 #' @param data Data as a \code{eeg_data} or \code{eeg_epochs} object.
 #' @param ... Other parameters passed to the functions.
-#' @noRd
+#' @keywords internal
 
 epoch_stats <- function(data, ...) {
   UseMethod("epoch_stats", data)
 }
 
 #' @describeIn epoch_stats Calculate statistics for each epoch.
-#' @noRd
+#' @keywords internal
 epoch_stats.eeg_epochs <- function(data, ...) {
   data$signals$epoch <- data$timings$epoch
   data <- data.table::data.table(as.data.frame(data$signals))
@@ -484,7 +484,7 @@ epoch_stats.eeg_epochs <- function(data, ...) {
 #' Calculate kurtosis
 #'
 #' @param data Data to calculate kurtosis for
-#' @noRd
+#' @keywords internal
 
 kurtosis <- function(data) {
   m4 <- mean((data - mean(data)) ^ 4)
