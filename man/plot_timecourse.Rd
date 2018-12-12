@@ -72,6 +72,10 @@ electrodes. Output is a ggplot2 object.
 \item \code{eeg_epochs}: Plot timecourses from \code{eeg_epochs} objects.
 }}
 
+\examples{
+plot_timecourse(demo_epochs, "A29")
+plot_timecourse(demo_epochs, "A29", add_CI = TRUE)
+}
 \author{
 Matt Craddock, \email{matt@mattcraddock.com}
 }

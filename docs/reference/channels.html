@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Plot electrode locations — plot_electrodes • eegUtils</title>
+<title>Modify channel information — channels • eegUtils</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,10 +30,9 @@
 
 
 
-<meta property="og:title" content="Plot electrode locations — plot_electrodes" />
+<meta property="og:title" content="Modify channel information — channels" />
 
-<meta property="og:description" content="Produces either a 2D plot of the electrode locations or an interactive plot
-of electrode locations in 3D space." />
+<meta property="og:description" content="Get or set the contents of the channel information inside eegUtils objects." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -124,60 +123,67 @@ of electrode locations in 3D space." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Plot electrode locations</h1>
+    <h1>Modify channel information</h1>
     <small class="dont-index">Source: <a href='https://github.com/craddm/eegUtils/blob/master/R/channel_management.R'><code>R/channel_management.R</code></a></small>
-    <div class="hidden name"><code>plot_electrodes.Rd</code></div>
+    <div class="hidden name"><code>channels.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Produces either a 2D plot of the electrode locations or an interactive plot
-of electrode locations in 3D space.</p>
+    <p>Get or set the contents of the channel information inside <code>eegUtils</code> objects.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>plot_electrodes</span>(<span class='no'>data</span>, <span class='kw'>interact</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+    <pre class="usage"><span class='fu'>channels</span>(<span class='no'>.data</span>)
 
-<span class='co'># S3 method for default</span>
-<span class='fu'>plot_electrodes</span>(<span class='no'>data</span>, <span class='kw'>interact</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
-
-<span class='co'># S3 method for eeg_data</span>
-<span class='fu'>plot_electrodes</span>(<span class='no'>data</span>, <span class='kw'>interact</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+<span class='fu'>channels</span>(<span class='no'>.data</span>) <span class='kw'>&lt;-</span> <span class='no'>value</span></pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>data</th>
-      <td><p>Data with associated electrode locations to be plotted.</p></td>
+      <th>.data</th>
+      <td><p><code>eegUtils</code> object to view</p></td>
     </tr>
     <tr>
-      <th>interact</th>
-      <td><p>Choose 2D cartesian layout, or, if set to TRUE, an
-interactive 3D plot of electrode locations. Defaults to FALSE.</p></td>
+      <th>value</th>
+      <td><p>Value to replace `chan_info` structure with.</p></td>
     </tr>
     </table>
     
-    <h2 class="hasAnchor" id="methods-by-class-"><a class="anchor" href="#methods-by-class-"></a>Methods (by class)</h2>
-
-    <ul>
-<li><p><code>default</code>: generic plot electrodes function</p></li>
-<li><p><code>eeg_data</code>: Plot electrodes associated with an <code>eeg_data</code> object.</p></li>
-</ul>
-    
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'>
-<span class='fu'>plot_electrodes</span>(<span class='no'>demo_epochs</span>)</div><div class='img'><img src='plot_electrodes-1.png' alt='' width='700' height='433' /></div><div class='input'>
+    <pre class="examples"><div class='input'><span class='fu'>channels</span>(<span class='no'>demo_epochs</span>)</div><div class='output co'>#&gt;    electrode   cart_x    cart_y  cart_z sph_radius   sph_phi   sph_theta
+#&gt; 5         A5 -50.2438   53.1112  42.192   84.41211 29.988986  133.410838
+#&gt; 13       A13 -65.3581  -11.6317  64.358   92.46042 44.111744 -169.908795
+#&gt; 21       A21 -53.0073  -78.7878  55.940  110.21150 30.502073 -123.932099
+#&gt; 29       A29   0.1076 -114.8920  14.657  115.82319  7.270063  -89.946341
+#&gt; 31       A31   0.3247  -81.1150  82.615  115.77991 45.524667  -89.770649
+#&gt; 37        B5   0.2313   80.7710  35.417   88.19508 23.676720   89.835925
+#&gt; 38        B6   0.3122   58.5120  66.462   88.54913 48.639461   89.694292
+#&gt; 40        B8  51.8362   54.3048  40.814   85.45049 28.530945   46.332330
+#&gt; 48       B16   0.4009   -9.1670 100.244  100.66307 84.770046  -87.495882
+#&gt; 50       B18  67.1179  -10.9003  63.580   93.09160 43.077206   -9.224598
+#&gt; 58       B26  55.6667  -78.5602  56.561  111.66751 30.431813  -54.679127
+#&gt;      pol_theta pol_radius       angle    radius             x           y
+#&gt; 5   133.410838  73.111141 -133.410838 0.3333945 -0.2291170322  0.24219268
+#&gt; 13 -169.908795  66.385071  169.908795 0.2549348 -0.2509909374 -0.04466855
+#&gt; 21 -123.932099  94.959419  123.932099 0.3305440 -0.1845129978 -0.27425229
+#&gt; 29  -89.946341 114.892050   89.946341 0.4596108  0.0004304399 -0.45961056
+#&gt; 31  -89.770649  81.115650   89.770649 0.2470852  0.0009890639 -0.24708320
+#&gt; 37   89.835925  80.771331  -89.835925 0.3684627  0.0010551444  0.36846116
+#&gt; 38   89.694292  58.512833  -89.694292 0.2297808  0.0012260141  0.22977750
+#&gt; 40   46.332330  75.073317  -46.332330 0.3414948  0.2357933675  0.24702258
+#&gt; 48  -87.495882   9.175762   87.495882 0.0290553  0.0012694607 -0.02902755
+#&gt; 50   -9.224598  67.997272    9.224598 0.2606822  0.2573109279 -0.04178865
+#&gt; 58  -54.679127  96.283366   54.679127 0.3309344  0.1913313313 -0.27001830</div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-      
-      <li><a href="#methods-by-class-">Methods (by class)</a></li>
-      
+            
       <li><a href="#examples">Examples</a></li>
     </ul>
 

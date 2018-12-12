@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Plot electrode locations — plot_electrodes • eegUtils</title>
+<title>Normalize 3d Cartesian co-ordinates to unit sphere — norm_sphere • eegUtils</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,10 +30,9 @@
 
 
 
-<meta property="og:title" content="Plot electrode locations — plot_electrodes" />
+<meta property="og:title" content="Normalize 3d Cartesian co-ordinates to unit sphere — norm_sphere" />
 
-<meta property="og:description" content="Produces either a 2D plot of the electrode locations or an interactive plot
-of electrode locations in 3D space." />
+<meta property="og:description" content="Normalize 3d Cartesian co-ordinates to unit sphere" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -124,65 +123,36 @@ of electrode locations in 3D space." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Plot electrode locations</h1>
+    <h1>Normalize 3d Cartesian co-ordinates to unit sphere</h1>
     <small class="dont-index">Source: <a href='https://github.com/craddm/eegUtils/blob/master/R/channel_management.R'><code>R/channel_management.R</code></a></small>
-    <div class="hidden name"><code>plot_electrodes.Rd</code></div>
+    <div class="hidden name"><code>norm_sphere.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Produces either a 2D plot of the electrode locations or an interactive plot
-of electrode locations in 3D space.</p>
+    <p>Normalize 3d Cartesian co-ordinates to unit sphere</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>plot_electrodes</span>(<span class='no'>data</span>, <span class='kw'>interact</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
-
-<span class='co'># S3 method for default</span>
-<span class='fu'>plot_electrodes</span>(<span class='no'>data</span>, <span class='kw'>interact</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
-
-<span class='co'># S3 method for eeg_data</span>
-<span class='fu'>plot_electrodes</span>(<span class='no'>data</span>, <span class='kw'>interact</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+    <pre class="usage"><span class='fu'>norm_sphere</span>(<span class='no'>xyz_coords</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>data</th>
-      <td><p>Data with associated electrode locations to be plotted.</p></td>
-    </tr>
-    <tr>
-      <th>interact</th>
-      <td><p>Choose 2D cartesian layout, or, if set to TRUE, an
-interactive 3D plot of electrode locations. Defaults to FALSE.</p></td>
+      <th>xyz_coords</th>
+      <td><p>3D Cartesian electrode locations</p></td>
     </tr>
     </table>
     
-    <h2 class="hasAnchor" id="methods-by-class-"><a class="anchor" href="#methods-by-class-"></a>Methods (by class)</h2>
 
-    <ul>
-<li><p><code>default</code>: generic plot electrodes function</p></li>
-<li><p><code>eeg_data</code>: Plot electrodes associated with an <code>eeg_data</code> object.</p></li>
-</ul>
-    
-
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'>
-<span class='fu'>plot_electrodes</span>(<span class='no'>demo_epochs</span>)</div><div class='img'><img src='plot_electrodes-1.png' alt='' width='700' height='433' /></div><div class='input'>
-</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-      
-      <li><a href="#methods-by-class-">Methods (by class)</a></li>
-      
-      <li><a href="#examples">Examples</a></li>
-    </ul>
+                </ul>
 
-    <h2>Author</h2>
-    <p>Matt Craddock <a href='mailto:matt@mattcraddock.com'>matt@mattcraddock.com</a></p>
   </div>
 </div>
 

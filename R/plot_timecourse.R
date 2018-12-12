@@ -6,6 +6,9 @@
 #'
 #' @author Matt Craddock, \email{matt@@mattcraddock.com}
 #'
+#' @examples
+#' plot_timecourse(demo_epochs, "A29")
+#' plot_timecourse(demo_epochs, "A29", add_CI = TRUE)
 #' @param data EEG dataset. Should have multiple timepoints.
 #' @param ... Other arguments passed to methods.
 #' @importFrom dplyr summarise group_by ungroup

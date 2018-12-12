@@ -29,6 +29,11 @@ of electrode locations in 3D space.
 \item \code{eeg_data}: Plot electrodes associated with an \code{eeg_data} object.
 }}
 
+\examples{
+
+plot_electrodes(demo_epochs)
+
+}
 \author{
 Matt Craddock \email{matt@mattcraddock.com}
 }

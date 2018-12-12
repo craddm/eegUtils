@@ -368,6 +368,10 @@ electrode_locations.eeg_data <- function(data,
 #' Produces either a 2D plot of the electrode locations or an interactive plot
 #' of electrode locations in 3D space.
 #'
+#' @examples
+#'
+#' plot_electrodes(demo_epochs)
+#'
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #'
 #' @param data Data with associated electrode locations to be plotted.
@@ -486,52 +490,85 @@ validate_channels <- function(.data) {
   .data$chan_info
 }
 
-
-channels <- function(.data, value) {
+#' Modify channel information
+#'
+#' Get or set the contents of the channel information inside \code{eegUtils} objects.
+#'
+#' @examples
+#' channels(demo_epochs)
+#'
+#' @author Matt Craddock \email{matt@@mattcraddock.com}
+#' @param .data \code{eegUtils} object to view
+#'
+#'
+#' @export
+channels <- function(.data) {
   UseMethod("channels", .data)
 }
 
-channels.eeg_epochs <- function(.data, value) {
+#' @export
+channels.eeg_epochs <- function(.data) {
   .data$chan_info
 }
 
-channels.eeg_tfr <- function(.data, value) {
+#' @export
+channels.eeg_tfr <- function(.data) {
   .data$chan_info
 }
 
-channels.eeg_data <- function(.data, value) {
+#' @export
+channels.eeg_data <- function(.data) {
   .data$chan_info
 }
 
+#' @param value Value to replace `chan_info` structure with.
+#' @rdname channels
+#' @export
 `channels<-` <- function(.data, value) {
   UseMethod("channels<-", .data)
 }
 
+#' @export
 `channels<-.eeg_epochs` <- function(.data, value) {
   .data$chan_info <- value
   .data
 }
 
+#' @export
 `channels<-.eeg_data` <- function(.data, value) {
   .data$chan_info <- value
   .data
 }
 
+#' @export
 `channels<-.eeg_tfr` <- function(.data, value) {
   .data$chan_info <- value
   .data
 }
 
+#' @export
 `channels<-.eeg_evoked` <- function(.data, value) {
   .data$chan_info <- value
   .data
 }
 
+#' Retrieve signal/channel names
+#'
+#' Get the names of the `signals` element of `eegUtils` objects.
+#'
+#' @examples
+#' channel_names(demo_epochs)
+#'
+#' @param .data \code{eegUtils object}
+#' @export
 channel_names <- function(.data) {
   names(.data$signals)
 }
 
-
+#' Normalize 3d Cartesian co-ordinates to unit sphere
+#'
+#' @param xyz_coords 3D Cartesian electrode locations
+#' @keywords internal
 norm_sphere <- function(xyz_coords) {
 
   circ <- sqrt(rowSums(xyz_coords ^ 2))
