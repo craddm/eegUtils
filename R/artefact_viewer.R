@@ -1,6 +1,6 @@
 #' Artefact browser
 #'
-#' An interactive Shiny app that allows exploration of channel statistics.
+#' An interactive Shiny app that allows exploration of channel and epoch statistics.
 #'
 #' @import shiny
 #' @import shinydashboard

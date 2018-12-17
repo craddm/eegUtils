@@ -621,6 +621,8 @@ bva_elecs <- function(chan_info, circumference = 85) {
   chan_info
 }
 
+
+# Export continuous data in Brain Vision Analyzer format
 #' @noRd
 export_bva <- function(.data,
                        filename,
