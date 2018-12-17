@@ -7,6 +7,9 @@
     <loc>http://craddm.github.io/eegUtils/reference/arrange_chans.html</loc>
   </url>
   <url>
+    <loc>http://craddm.github.io/eegUtils/reference/ar_eogreg.html</loc>
+  </url>
+  <url>
     <loc>http://craddm.github.io/eegUtils/reference/as.data.frame.eeg_data.html</loc>
   </url>
   <url>
@@ -34,7 +37,13 @@
     <loc>http://craddm.github.io/eegUtils/reference/bva_elecs.html</loc>
   </url>
   <url>
-    <loc>http://craddm.github.io/eegUtils/reference/cart_to_sph.html</loc>
+    <loc>http://craddm.github.io/eegUtils/reference/cart_to_spherical.html</loc>
+  </url>
+  <url>
+    <loc>http://craddm.github.io/eegUtils/reference/channels.html</loc>
+  </url>
+  <url>
+    <loc>http://craddm.github.io/eegUtils/reference/channel_names.html</loc>
   </url>
   <url>
     <loc>http://craddm.github.io/eegUtils/reference/channel_stats.html</loc>
@@ -94,6 +103,9 @@
     <loc>http://craddm.github.io/eegUtils/reference/create_tc.html</loc>
   </url>
   <url>
+    <loc>http://craddm.github.io/eegUtils/reference/deg2rad.html</loc>
+  </url>
+  <url>
     <loc>http://craddm.github.io/eegUtils/reference/demo_epochs.html</loc>
   </url>
   <url>
@@ -113,6 +125,9 @@
   </url>
   <url>
     <loc>http://craddm.github.io/eegUtils/reference/eeg_downsample.html</loc>
+  </url>
+  <url>
+    <loc>http://craddm.github.io/eegUtils/reference/eeg_epochs.html</loc>
   </url>
   <url>
     <loc>http://craddm.github.io/eegUtils/reference/eeg_evoked.html</loc>
@@ -193,6 +208,9 @@
     <loc>http://craddm.github.io/eegUtils/reference/import_set.html</loc>
   </url>
   <url>
+    <loc>http://craddm.github.io/eegUtils/reference/import_txt.html</loc>
+  </url>
+  <url>
     <loc>http://craddm.github.io/eegUtils/reference/import_vhdr.html</loc>
   </url>
   <url>
@@ -250,6 +268,12 @@
     <loc>http://craddm.github.io/eegUtils/reference/morlet_res.html</loc>
   </url>
   <url>
+    <loc>http://craddm.github.io/eegUtils/reference/norm_sphere.html</loc>
+  </url>
+  <url>
+    <loc>http://craddm.github.io/eegUtils/reference/ortho_norm.html</loc>
+  </url>
+  <url>
     <loc>http://craddm.github.io/eegUtils/reference/parse_chaninfo.html</loc>
   </url>
   <url>
@@ -277,9 +301,6 @@
     <loc>http://craddm.github.io/eegUtils/reference/plot_timecourse.html</loc>
   </url>
   <url>
-    <loc>http://craddm.github.io/eegUtils/reference/pol_to_sph.html</loc>
-  </url>
-  <url>
     <loc>http://craddm.github.io/eegUtils/reference/print.eeg_data.html</loc>
   </url>
   <url>
@@ -295,7 +316,13 @@
     <loc>http://craddm.github.io/eegUtils/reference/proc_events.html</loc>
   </url>
   <url>
+    <loc>http://craddm.github.io/eegUtils/reference/project_elecs.html</loc>
+  </url>
+  <url>
     <loc>http://craddm.github.io/eegUtils/reference/quick_hurst.html</loc>
+  </url>
+  <url>
+    <loc>http://craddm.github.io/eegUtils/reference/rad2deg.html</loc>
   </url>
   <url>
     <loc>http://craddm.github.io/eegUtils/reference/read_dat.html</loc>
@@ -317,9 +344,6 @@
   </url>
   <url>
     <loc>http://craddm.github.io/eegUtils/reference/rotate_angle.html</loc>
-  </url>
-  <url>
-    <loc>http://craddm.github.io/eegUtils/reference/rotate_sph.html</loc>
   </url>
   <url>
     <loc>http://craddm.github.io/eegUtils/reference/run_ICA.html</loc>
@@ -355,10 +379,10 @@
     <loc>http://craddm.github.io/eegUtils/reference/sph_to_cart.html</loc>
   </url>
   <url>
-    <loc>http://craddm.github.io/eegUtils/reference/sph_to_topo.html</loc>
+    <loc>http://craddm.github.io/eegUtils/reference/split_vec.html</loc>
   </url>
   <url>
-    <loc>http://craddm.github.io/eegUtils/reference/split_vec.html</loc>
+    <loc>http://craddm.github.io/eegUtils/reference/stereo_norm.html</loc>
   </url>
   <url>
     <loc>http://craddm.github.io/eegUtils/reference/summary.eeg_data.html</loc>
@@ -392,9 +416,6 @@
   </url>
   <url>
     <loc>http://craddm.github.io/eegUtils/articles/eegUtils.html</loc>
-  </url>
-  <url>
-    <loc>http://craddm.github.io/eegUtils/articles/Introduction.html</loc>
   </url>
   <url>
     <loc>http://craddm.github.io/eegUtils/articles/time-frequency-analysis.html</loc>

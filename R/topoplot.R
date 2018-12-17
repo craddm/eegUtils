@@ -100,12 +100,12 @@ topoplot.data.frame <- function(data,
   # Filter out unwanted timepoints, and find nearest time values in the data
   # --------------
 
-  if (!is.null(time_lim)) {
-    if (length(time_lim) == 1) {
-      time_lim <- c(time_lim, time_lim)
-    }
+   if (!is.null(time_lim)) {
+  #   if (length(time_lim) == 1) {
+  #     time_lim <- c(time_lim, time_lim)
+  #   }
     data <- select_times(data, time_lim)
-  }
+   }
 
   # Check for x and y co-ordinates, try to add if not found --------------
   if (!is.null(chanLocs)) {
@@ -189,12 +189,13 @@ topoplot.data.frame <- function(data,
 
   switch(method,
          Biharmonic = {
-           out_df <- dplyr::mutate(data,
-                                 topos = map(data,
-                                             ~biharm_topo(.x,
-                                                          grid_res = grid_res,
-                                                          scaled_x = scaled_x,
-                                                          scaled_y = scaled_y)))
+           out_df <-
+             dplyr::mutate(data,
+                           topos = map(data,
+                                       ~biharm_topo(.x,
+                                                    grid_res = grid_res,
+                                                    scaled_x = scaled_x,
+                                                    scaled_y = scaled_y)))
          },
          gam = {
            out_df <- dplyr::mutate(data,
@@ -357,7 +358,7 @@ topoplot.eeg_data <- function(data, time_lim = NULL,
                               ...) {
 
   if (!is.null(data$chan_info)) {
-    chanLocs <- data$chan_info
+    chanLocs <- channels(data)
   }
 
   if (is.null(time_lim)) {
@@ -415,7 +416,7 @@ topoplot.eeg_epochs <- function(data,
                                 ...) {
 
   if (!is.null(data$chan_info)) {
-    chanLocs <- data$chan_info
+    chanLocs <- channels(data)
   }
 
   # average over epochs first, but preserve conditions
@@ -470,15 +471,16 @@ topoplot.eeg_ICA <- function(data,
                              highlights = NULL,
                              scaling = scaling,
                              ...) {
-
-   if (missing(component)) {
-     stop("Component number must be specified for eeg_ICA objects.")
-   }
+  if (missing(component)) {
+    stop("Component number must be specified for eeg_ICA objects.")
+  }
 
   chan_info <- data$chan_info
   data <- data.frame(amplitude = data$mixing_matrix[, component],
                      electrode = data$mixing_matrix$electrode)
-  topoplot(data, chanLocs = chan_info)
+  topoplot(data,
+           chanLocs = chan_info,
+           time_lim = NULL)
 
 }
 
@@ -731,4 +733,15 @@ round_topo <- function(.data, interp_limit, r, circ_rads) {
     }
   topo_out <- list("out_df" = .data[.data$incircle, ],
                    "mask_ring" = mask_ring)
+  topo_out
+}
+
+
+parse_for_topo <- function(.data,
+                           time_lim) {
+
+  if (!is.null(time_lim)) {
+    .data <- select_times(.data, time_lim)
+  }
+  .data
 }

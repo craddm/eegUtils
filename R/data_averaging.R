@@ -15,7 +15,7 @@ eeg_average <- function(data, ...) {
 #' @export
 
 eeg_average.default <- function(data, ...) {
-  stop("eeg_epochs object required as input.")
+  stop("eeg_epochs or eeg_tfr object required as input.")
 }
 
 #' @param cond_label Only pick events that include a given label. Character

@@ -4,11 +4,16 @@
 \alias{import_chans}
 \title{Import channel locations from various file formats}
 \usage{
-import_chans(file_name)
+import_chans(file_name, format = "spherical")
 }
 \arguments{
 \item{file_name}{name and full path of file to be loaded}
+
+\item{format}{If the file is not .elc format, "spherical", "geographic". Default is NULL.}
 }
 \description{
 Currently only ASA .elc format with Cartesian x-y-z coordinates is supported.
+}
+\author{
+Matt Craddock \email{matt@mattcraddock.com}
 }

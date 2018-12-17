@@ -16,9 +16,13 @@ knitr::opts_chunk$set(
 )
 ```
 
+## eegUtils
+
+`eegUtils` uses S3 objects to store EEG data and associated information such as channel locations. Using different object classes for data structured in different ways ensures that the various plotting functions work consistently across different types of EEG data. For example, there are different classes for epoched (`eeg_epochs`) and continuous data (`eeg_data`), and for time-frequency representations of data (`eeg_tfr`).
+
 ## eeg_data objects
 
-`eeg_data` objects are the base class that all objects in this framework have. When raw data is imported, the output is this class. Currently, this class is a list constituting the following entries:
+`eeg_data` objects are the base class that all continuous data has. When raw data is imported, the output is this class. Currently, this class is a list constituting the following entries:
 
 * `signals`
     + A data frame containing the actual EEG data in wide format. Each column is data from a single electrode, each row from a single timepoint.
@@ -33,21 +37,18 @@ knitr::opts_chunk$set(
         + event_type (typically integer, others possible)
 
 * `chan_info`
-    + Typically NA on import as no channel locations are usually available in raw data.
+    + Often NA on import, since BDF and CNT do not contain (useable) electrode locations. 
     + A data.frame/tibble containing channel location information can be added. Currently similar to EEGLAB style, with the following columns (may change):
-        * `labels` - channel names
-        * `type` - Designator for channel type (e.g., EEG/EOG). Not currently used for anything.
-        * `theta` - 
-        * `radius`
-        * `X`
-        * `Y`
-        * `Z`
-        * `sph.theta`
-        * `sph.phi`
-        * `sph.radius`
-        * `urchan`
-        * `ref`
-
+        * `electrode` - electrode names
+        * `radius` - Spherical co-ordinates (Radius is typically normalized to 1)
+        * `theta` - Spherical co-ordinates (theta)
+        * `phi` - Spherical co-ordinates (theta)
+        * `cart_x` - Cartesian 3D coordinates
+        * `cart_y` - Cartesian 3D coordinates
+        * `cart_z` - Cartesian 3D coordinates
+        * `x` - 2D Stereographic projection  of the spherical coordinates 
+        * `y` - 2D Stereographic projection  of the spherical coordinates 
+        
 * `timings`
     + A data.frame containing a description of each row in time (s) and sample numbers (samples)
 
@@ -76,3 +77,21 @@ knitr::opts_chunk$set(
         - `sample` still uniquely identifies each datapoint
         - `time` now gives the time relative to the zero-point of the epoch, i.e. the *event* on which the epoch is centred.
     
+## eeg_tfr
+
+`eeg_tfr` objects hold time-frequency representations of `eeg_epochs` objects.
+
+* `signals`
+    - a 4D matrix - time by electrode by frequency by epoch
+* `dimensions`
+    - keeps track of which matrix dimension corresponds to which property.
+
+## eeg_ICA
+
+`eeg_ICA` objects contain the results of an ICA decomposition applied to an `eeg_epochs` objects.
+
+* `mixing_matrix`
+    - The weights that are used to convert the source data into the original data
+* `unmixing_matrix` 
+    - The weights that are used to convert the original data into source data
+* `signals` - individual component activations

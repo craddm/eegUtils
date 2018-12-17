@@ -40,6 +40,7 @@ tag_events.eeg_data <- function(data,
                        data.frame(event_type = trigs,
                                   event_label = as.character(event_label),
                                   stringsAsFactors = FALSE))
+  data$events <- tibble::as.tibble(data$events)
   data
 }
 
@@ -58,6 +59,7 @@ tag_events.eeg_epochs <- function(data,
                        data.frame(event_type = trigs,
                                   event_label = as.character(event_label),
                                   stringsAsFactors = FALSE))
+  data$events <- tibble::as.tibble(data$events)
   data
 }
 

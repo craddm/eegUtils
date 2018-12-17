@@ -59,9 +59,6 @@
       <a href="../articles/data_structures.html">A guide to eegUtils data structures</a>
     </li>
     <li>
-      <a href="../articles/Introduction.html">Introduction</a>
-    </li>
-    <li>
       <a href="../articles/time-frequency-analysis.html">Frequency analysis</a>
     </li>
   </ul>
@@ -92,7 +89,7 @@
       <h1>A guide to eegUtils data structures</h1>
                         <h4 class="author">Matt Craddock</h4>
             
-            <h4 class="date">2018-12-12</h4>
+            <h4 class="date">2018-12-17</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/craddm/eegUtils/blob/master/vignettes/data_structures.Rmd"><code>vignettes/data_structures.Rmd</code></a></small>
       <div class="hidden name"><code>data_structures.Rmd</code></div>
@@ -101,10 +98,15 @@
 
     
     
+<div id="eegutils" class="section level2">
+<h2 class="hasAnchor">
+<a href="#eegutils" class="anchor"></a>eegUtils</h2>
+<p><code>eegUtils</code> uses S3 objects to store EEG data and associated information such as channel locations. Using different object classes for data structured in different ways ensures that the various plotting functions work consistently across different types of EEG data. For example, there are different classes for epoched (<code>eeg_epochs</code>) and continuous data (<code>eeg_data</code>), and for time-frequency representations of data (<code>eeg_tfr</code>).</p>
+</div>
 <div id="eeg_data-objects" class="section level2">
 <h2 class="hasAnchor">
 <a href="#eeg_data-objects" class="anchor"></a>eeg_data objects</h2>
-<p><code>eeg_data</code> objects are the base class that all objects in this framework have. When raw data is imported, the output is this class. Currently, this class is a list constituting the following entries:</p>
+<p><code>eeg_data</code> objects are the base class that all continuous data has. When raw data is imported, the output is this class. Currently, this class is a list constituting the following entries:</p>
 <ul>
 <li>
 <code>signals</code>
@@ -135,24 +137,27 @@
 <li>
 <code>chan_info</code>
 <ul>
-<li>Typically NA on import as no channel locations are usually available in raw data.</li>
+<li>Often NA on import, since BDF and CNT do not contain (useable) electrode locations.</li>
 <li>A data.frame/tibble containing channel location information can be added. Currently similar to EEGLAB style, with the following columns (may change):
 <ul>
 <li>
-<code>labels</code> - channel names</li>
+<code>electrode</code> - electrode names</li>
 <li>
-<code>type</code> - Designator for channel type (e.g., EEG/EOG). Not currently used for anything.</li>
+<code>radius</code> - Spherical co-ordinates (Radius is typically normalized to 1)</li>
 <li>
-<code>theta</code> -</li>
-<li><code>radius</code></li>
-<li><code>X</code></li>
-<li><code>Y</code></li>
-<li><code>Z</code></li>
-<li><code>sph.theta</code></li>
-<li><code>sph.phi</code></li>
-<li><code>sph.radius</code></li>
-<li><code>urchan</code></li>
-<li><code>ref</code></li>
+<code>theta</code> - Spherical co-ordinates (theta)</li>
+<li>
+<code>phi</code> - Spherical co-ordinates (theta)</li>
+<li>
+<code>cart_x</code> - Cartesian 3D coordinates</li>
+<li>
+<code>cart_y</code> - Cartesian 3D coordinates</li>
+<li>
+<code>cart_z</code> - Cartesian 3D coordinates</li>
+<li>
+<code>x</code> - 2D Stereographic projection of the spherical coordinates</li>
+<li>
+<code>y</code> - 2D Stereographic projection of the spherical coordinates</li>
 </ul>
 </li>
 </ul>
@@ -224,6 +229,46 @@
 </li>
 </ul>
 </div>
+<div id="eeg_tfr" class="section level2">
+<h2 class="hasAnchor">
+<a href="#eeg_tfr" class="anchor"></a>eeg_tfr</h2>
+<p><code>eeg_tfr</code> objects hold time-frequency representations of <code>eeg_epochs</code> objects.</p>
+<ul>
+<li>
+<code>signals</code>
+<ul>
+<li>a 4D matrix - time by electrode by frequency by epoch</li>
+</ul>
+</li>
+<li>
+<code>dimensions</code>
+<ul>
+<li>keeps track of which matrix dimension corresponds to which property.</li>
+</ul>
+</li>
+</ul>
+</div>
+<div id="eeg_ica" class="section level2">
+<h2 class="hasAnchor">
+<a href="#eeg_ica" class="anchor"></a>eeg_ICA</h2>
+<p><code>eeg_ICA</code> objects contain the results of an ICA decomposition applied to an <code>eeg_epochs</code> objects.</p>
+<ul>
+<li>
+<code>mixing_matrix</code>
+<ul>
+<li>The weights that are used to convert the source data into the original data</li>
+</ul>
+</li>
+<li>
+<code>unmixing_matrix</code>
+<ul>
+<li>The weights that are used to convert the original data into source data</li>
+</ul>
+</li>
+<li>
+<code>signals</code> - individual component activations</li>
+</ul>
+</div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -231,8 +276,11 @@
       <h2 class="hasAnchor">
 <a href="#tocnav" class="anchor"></a>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
-<li><a href="#eeg_data-objects">eeg_data objects</a></li>
+<li><a href="#eegutils">eegUtils</a></li>
+      <li><a href="#eeg_data-objects">eeg_data objects</a></li>
       <li><a href="#eeg_epochs">eeg_epochs</a></li>
+      <li><a href="#eeg_tfr">eeg_tfr</a></li>
+      <li><a href="#eeg_ica">eeg_ICA</a></li>
       </ul>
 </div>
       </div>

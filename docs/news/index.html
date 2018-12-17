@@ -89,9 +89,6 @@
       <a href="../articles/data_structures.html">A guide to eegUtils data structures</a>
     </li>
     <li>
-      <a href="../articles/Introduction.html">Introduction</a>
-    </li>
-    <li>
       <a href="../articles/time-frequency-analysis.html">Frequency analysis</a>
     </li>
   </ul>
@@ -144,6 +141,13 @@
 </li>
 <li>
 <code><a href="../reference/topoplot.html">topoplot()</a></code> now has a <code>groups</code> parameter that allows the possibility of facetting by event labels.</li>
+<li>more Biosemi montages added</li>
+<li>
+<code><a href="../reference/events.html">events()</a></code> function added to easily access and modify the events structure of all <code>eegUtils</code> objects.</li>
+<li>
+<code><a href="../reference/channels.html">channels()</a></code> function added to easily access and modify the chan_info structure of all <code>eegUtils</code> objects.</li>
+<li>
+<code>eeg_ar_eogreg()</code> function added for removing eye movement activity using regression.</li>
 </ul>
 </div>
 <div id="internal-changes-bug-fixes" class="section level3">
@@ -155,12 +159,16 @@
 <ul>
 <li><code>reref_eeg</code></li>
 <li><code>iir_filt</code></li>
+<li><code><a href="../reference/eeg_FASTER.html">eeg_FASTER()</a></code></li>
 </ul>
 </li>
 <li>
 <code>reref_eeg</code> now correctly excludes electrodes as requested.</li>
 <li>
 <code>iir_filt</code> now correctly respects epoch boundaries.</li>
+<li>New field <code>epochs</code> added to <code>eeg_data</code> and <code>eeg_epochs</code> objects.</li>
+<li>
+<code>chan_info</code> changes to make chan_info consistent across systems.</li>
 </ul>
 </div>
 </div>
@@ -399,7 +407,7 @@
 <a href="#internal-changes-bug-fixes-5" class="anchor"></a>Internal changes/ bug fixes</h3>
 <ul>
 <li>
-<code>eeg_epochs()</code> now also handles downsampled data appropriately.</li>
+<code><a href="../reference/eeg_epochs.html">eeg_epochs()</a></code> now also handles downsampled data appropriately.</li>
 <li>
 <code><a href="../reference/select_times.html">select_times()</a></code> no longer leaves “epoch” column in <code>eeg_epochs</code> objects.</li>
 <li>

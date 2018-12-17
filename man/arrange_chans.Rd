@@ -4,10 +4,12 @@
 \alias{arrange_chans}
 \title{Topographical channel ordering}
 \usage{
-arrange_chans(data)
+arrange_chans(chan_info, sig_names)
 }
 \arguments{
-\item{data}{An \code{eeg_data} object}
+\item{chan_info}{channel info structure}
+
+\item{sig_names}{names of signals in the data}
 }
 \value{
 Vector of channel positions

@@ -5,7 +5,8 @@
 \title{Function to create an S3 object of class "eeg_data".}
 \usage{
 eeg_data(data, srate, events = NULL, chan_info = NULL,
-  timings = NULL, continuous = NULL, reference = NULL)
+  timings = NULL, continuous = NULL, reference = NULL,
+  epochs = NULL)
 }
 \arguments{
 \item{data}{Raw data - signals from electrodes/channels.}
@@ -22,6 +23,8 @@ eeg_data(data, srate, events = NULL, chan_info = NULL,
 
 \item{reference}{Reference channel information, including names of reference
 channels, excluded channels etc.}
+
+\item{epochs}{Information about the epochs contained in the data.}
 }
 \description{
 Function to create an S3 object of class "eeg_data".

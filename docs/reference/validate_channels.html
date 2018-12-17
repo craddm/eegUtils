@@ -32,8 +32,10 @@
 
 <meta property="og:title" content="Chan_info checker — validate_channels" />
 
-<meta property="og:description" content="Checks for any missing channels in the chan_info; populates them with NA if
-it finds any" />
+<meta property="og:description" content="Performs several checks on the structure of channel info: 1) Checks that
+&quot;electrode&quot; is character, not factor. 2) rounds any numeric values to 2
+decimal places. 3) Checks for any missing channels in the chan_info if signal names are supplied; populates
+them with NA if it finds any" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -93,9 +95,6 @@ it finds any" />
       <a href="../articles/data_structures.html">A guide to eegUtils data structures</a>
     </li>
     <li>
-      <a href="../articles/Introduction.html">Introduction</a>
-    </li>
-    <li>
       <a href="../articles/time-frequency-analysis.html">Frequency analysis</a>
     </li>
   </ul>
@@ -131,19 +130,25 @@ it finds any" />
 
     <div class="ref-description">
     
-    <p>Checks for any missing channels in the chan_info; populates them with NA if
-it finds any</p>
+    <p>Performs several checks on the structure of channel info: 1) Checks that
+"electrode" is character, not factor. 2) rounds any numeric values to 2
+decimal places. 3) Checks for any missing channels in the chan_info if signal names are supplied; populates
+them with NA if it finds any</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>validate_channels</span>(<span class='no'>.data</span>)</pre>
+    <pre class="usage"><span class='fu'>validate_channels</span>(<span class='no'>chan_info</span>, <span class='kw'>sig_names</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>.data</th>
-      <td><p>an eeg_* object</p></td>
+      <th>chan_info</th>
+      <td><p>A channel info structure</p></td>
+    </tr>
+    <tr>
+      <th>sig_names</th>
+      <td><p>signal names from eegUtils signals</p></td>
     </tr>
     </table>
     

@@ -11,5 +11,6 @@ import_elc(file_name)
 }
 \description{
 Loads and process ASA electrode locations.
+ASA electrode locations are given as Cartesian XYZ.
 }
 \keyword{internal}

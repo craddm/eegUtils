@@ -59,9 +59,6 @@
       <a href="../articles/data_structures.html">A guide to eegUtils data structures</a>
     </li>
     <li>
-      <a href="../articles/Introduction.html">Introduction</a>
-    </li>
-    <li>
       <a href="../articles/time-frequency-analysis.html">Frequency analysis</a>
     </li>
   </ul>
@@ -92,7 +89,7 @@
       <h1>Frequency analysis</h1>
                         <h4 class="author">Matt Craddock</h4>
             
-            <h4 class="date">2018-12-12</h4>
+            <h4 class="date">2018-12-17</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/craddm/eegUtils/blob/master/vignettes/time-frequency-analysis.Rmd"><code>vignettes/time-frequency-analysis.Rmd</code></a></small>
       <div class="hidden name"><code>time-frequency-analysis.Rmd</code></div>
@@ -118,7 +115,7 @@
 <a href="#time-frequency-analysis" class="anchor"></a>Time-frequency analysis</h2>
 <p>Frequency analysis necessarily discards temporal information. One problem is that it assumes stationarity - that the signal remains stable in terms of frequency and power across the whole analysed time window. However, this is rarely the case with EEG data;</p>
 <p>Time-frequency analysis is a method of accounting for non-stationarity by decomposing the signal using a moving-window analysis, tiling the time-frequency space to resolve power over relatively shorter time-windows.</p>
-<p>In <code>eegUtils</code>, <code><a href="../reference/compute_tfr.html">compute_tfr()</a></code> can be used to calculate a time-frequency representation of <code>eeg_epochs()</code>. Currently, this is achieved using Morlet wavelets. Morlet wavelets are used to window the signal, controlling spectral leakage and time-frequency specificity. Morlet wavelets have a user-defined temporal extent, which in turn determines the frequency extent. We define the temporal extent of our wavelets by <strong>cycles</strong>; we define it as an integer number of cycles at each frequency of interest.</p>
+<p>In <code>eegUtils</code>, <code><a href="../reference/compute_tfr.html">compute_tfr()</a></code> can be used to calculate a time-frequency representation of <code><a href="../reference/eeg_epochs.html">eeg_epochs()</a></code>. Currently, this is achieved using Morlet wavelets. Morlet wavelets are used to window the signal, controlling spectral leakage and time-frequency specificity. Morlet wavelets have a user-defined temporal extent, which in turn determines the frequency extent. We define the temporal extent of our wavelets by <strong>cycles</strong>; we define it as an integer number of cycles at each frequency of interest.</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1">demo_tfr &lt;-<span class="st"> </span><span class="kw"><a href="../reference/compute_tfr.html">compute_tfr</a></span>(demo_epochs,</a>
 <a class="sourceLine" id="cb2-2" data-line-number="2">                        <span class="dt">method =</span> <span class="st">"morlet"</span>,</a>
 <a class="sourceLine" id="cb2-3" data-line-number="3">                        <span class="dt">foi =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">4</span>, <span class="dv">30</span>),</a>
