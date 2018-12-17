@@ -118,6 +118,7 @@ validate_eeg_data <- function(data,
 #' @param reference Reference channel information, including names of reference
 #'   channels, excluded channels etc.
 #' @param events Event table
+#' @param epochs Information about the epochs contained in the data.
 #' @export
 
 eeg_data <- function(data,
@@ -126,7 +127,8 @@ eeg_data <- function(data,
                      chan_info = NULL,
                      timings = NULL,
                      continuous = NULL,
-                     reference = NULL) {
+                     reference = NULL,
+                     epochs = NULL) {
   if (srate < 1) {
     stop("Sampling rate must be above 0")
   }
@@ -136,11 +138,46 @@ eeg_data <- function(data,
                 chan_info = chan_info,
                 timings = timings,
                 continuous = continuous,
-                reference = reference
-  )
+                reference = reference,
+                epochs = epochs)
   class(value) <- "eeg_data"
   value
 }
+
+#' Function to create an S3 object of class "eeg_epochs".
+#'
+#' @author Matt Craddock \email{matt@@mattcraddock.com}
+#' @param data Raw data - signals from electrodes/channels.
+#' @param srate Sampling rate in Hz.
+#' @param chan_info String of character names for electrodes.
+#' @param timings Timing information - samples and sample /sampling rate.
+#' @param reference Reference channel information, including names of reference
+#'   channels, excluded channels etc.
+#' @param events Event table
+#' @param epochs Information about the epochs contained in the data.
+#' @export
+
+eeg_epochs <- function(data,
+                       srate,
+                       events = NULL,
+                       chan_info = NULL,
+                       timings = NULL,
+                       reference = NULL,
+                       epochs = NULL) {
+  if (srate < 1) {
+    stop("Sampling rate must be above 0")
+  }
+  value <- list(signals = data,
+                srate = srate,
+                events = events,
+                chan_info = chan_info,
+                timings = timings,
+                reference = reference,
+                epochs = epochs)
+  class(value) <- c("eeg_epochs", "eeg_data")
+  value
+}
+
 
 #' Function to create an S3 object of class "eeg_evoked"
 #'

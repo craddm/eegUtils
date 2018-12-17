@@ -29,6 +29,8 @@ import_raw <- function(file_name, file_path = NULL, chan_nos = NULL) {
     #remove annotations if present - could put in separate list...
     if (length(anno_chan) > 0) {
       data <- data[-anno_chan]
+      message("Annotations are currently discarded. File an issue if you'd like
+ this to change.")
     }
 
     sigs <- purrr::map_df(data, "signal")
@@ -60,11 +62,15 @@ import_raw <- function(file_name, file_path = NULL, chan_nos = NULL) {
     event_table <- tibble::tibble(event_onset = which(events_diff > 0) + 1,
                                   event_time = which(events_diff > 0) / srate,
                               event_type = events[which(events_diff > 0) + 1])
+
+    epochs <- data.frame(epoch = 1,
+                         recording = basename(tools::file_path_sans_ext(file_name)))
     data <- eeg_data(data = sigs,
                      srate = srate,
                      events = event_table,
                      timings = timings,
-                     continuous = TRUE)
+                     continuous = TRUE,
+                     epochs = epochs)
     data
   } else if (file_type == "cnt") {
     data <- import_cnt(file_name)
@@ -77,12 +83,15 @@ import_raw <- function(file_name, file_path = NULL, chan_nos = NULL) {
       tibble::tibble(event_onset = data$event_list$offset + 1,
                      event_time = (data$event_list$offset + 1) / srate,
                      event_type = data$event_list$event_type)
+    epochs <- data.frame(epoch = 1,
+                         recording = basename(tools::file_path_sans_ext(file_name)))
     data <- eeg_data(data = sigs,
                      srate = srate,
                      chan_info = data$chan_info,
                      events = event_table,
                      timings = timings,
-                     continuous = TRUE)
+                     continuous = TRUE,
+                     epochs = epochs)
     } else if (file_type == "vhdr") {
       data <- import_vhdr(file_name)
     } else {
@@ -243,6 +252,9 @@ import_cnt <- function(file_name) {
 import_vhdr <- function(file_name) {
 
   .data <- read_vhdr(file_name)
+  epochs <- data.frame(epoch = 1,
+                       recording = basename(tools::file_path_sans_ext(file_name)))
+  .data$epochs <- epochs
   .data
 }
 
@@ -566,17 +578,22 @@ parse_chaninfo <- function(chan_info) {
   chan_info <- chan_info[c("electrode",
                            "cart_x",
                            "cart_y",
-                           "cart_z",
-                           "sph_radius",
-                           "sph_phi",
-                           "sph_theta",
-                           "angle",
-                           "radius")]
+                           "cart_z")]
   # EEGLAB co-ordinates are rotated 90 degrees compared to our coordinates,
   # and left-right flipped
-  chan_info <- rotate_sph(chan_info, -90)
-  chan_info <- flip_x(chan_info)
+  #chan_info <- rotate_sph(chan_info, -90)
+  chan_info$cart_y <- -chan_info$cart_y
+  names(chan_info) <- names(chan_info)[c(1, 3, 2, 4)]
+  chan_info <- chan_info[, c(1, 3, 2, 4)]
+  #chan_info <- flip_x(chan_info)
+  sph_coords <- cart_to_spherical(chan_info[, c("cart_x", "cart_y", "cart_z")])
+  xy <- project_elecs(sph_coords)
+  chan_info <- dplyr::bind_cols(electrode = as.character(chan_info$electrode),
+                                sph_coords,
+                                chan_info[, 2:4],
+                                xy)
   chan_info
+  #tibble::as.tibble(chan_info)
   }
 
 #' Parse BVA channel info

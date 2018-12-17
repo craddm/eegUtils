@@ -56,6 +56,7 @@ as.data.frame.eeg_data <- function(x, row.names = NULL,
 #' @param optional Kept for compatability with S3 generic, ignored.
 #' @param long Convert to long format. Defaults to FALSE.
 #' @param events Include events in output. Defaults to FALSE.
+#' @param conditions Column names of
 #' @param cond_labels Add column tagging epochs with events that have matching
 #'   labels.
 #' @param ... arguments for other as.data.frame commands
@@ -67,7 +68,16 @@ as.data.frame.eeg_epochs <- function(x, row.names = NULL,
                                      optional = FALSE,
                                      long = FALSE,
                                      events = FALSE,
+                                     conditions = NULL,
                                      cond_labels = NULL, ...) {
+
+  if (!is.null(conditions)) {
+    cond_cols <- conditions %in% names(events(x))
+    if (!any(cond_cols)) {
+      message("Columns not found.")
+    }
+    cond_cols <- events(x)[, cond_cols]
+  }
 
   if (!is.null(cond_labels)) {
     lab_check <- label_check(cond_labels,
@@ -308,21 +318,7 @@ label_check <- function(cond_labs,
 }
 
 
-#' Check if chan_info is in old format
-#'
-#' @param chan_info Channel info structure
-#' @keywords internal
 
-check_ci_str <- function(chan_info) {
-  orig_names <- c("chanNo",
-                "theta",
-                "radius",
-                "electrode", "radianTheta", "x",
-                "y")
-  if (identical(names(orig_locs), names(chan_info))) {
-    stop("New channel locations required - see ?electrode_locations()")
-  }
-}
 
 
 #' Convert to 3d matrix
@@ -346,4 +342,9 @@ conv_to_mat.eeg_epochs <- function(data, ...) {
   data <- array(as.matrix(data$signals),
                 dim = c(n_times, n_epochs, n_channels))
   data
+}
+
+
+is.true <- function(x) {
+  !is.na(x) & x
 }

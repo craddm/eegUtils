@@ -28,8 +28,7 @@ There is currently suport for loading raw data in the .BDF (typically BioSemi) a
 ```{r basic-proc}
 library(eegUtils)
 eeg_example <- import_raw("F:\\Dropbox\\EEGData\\RawEEGData\\BasicCat\\S2B1.bdf")
-names(eeg_example)
-eeg_example$srate
+eeg_example
 ```
 
 The data itself is stored in the `signals` data frame within the object; the timing of events is stored in the `events` data frame, and timings for each sample are stored in the `timings` data frame. Times are stored in samples and seconds.
@@ -90,15 +89,19 @@ plot_timecourse(eeg_example,
 Standard channel locations can be added using the `electrode_locations()` command. Currently this only has locations for a limited number of electrodes (64 electrodes from the 10-20 system). Different built-in montages will be added, and can be specified using the `montage` parameter. In this case, the data was recorded using Biosemi with alpha-numeric channel labels (e.g. A1 rather than Fp1), which are built-in with `biosemi64alpha`. `topoplot()` can then be used to plot topographical representation of selected data. Note that it is not compulsory to use locations from electrode_locations(); if the data has x and y columns when it is a data frame, or added to `chan_info` element of the `eeg_data`/`eeg_epochs` object, then those will be used.
 
 ```{r do-topo}
-eeg_example <- electrode_locations(eeg_example, montage = "biosemi64alpha")
-topoplot(eeg_example, time_lim = c(.1, .2))
+eeg_example <- electrode_locations(eeg_example,
+                                   montage = "biosemi64alpha")
+topoplot(eeg_example,
+         time_lim = c(.1, .2))
 ```
 
 Note that one electrode (Fp1/A1) was malunctioning during the the recording. We can interpolate that using spherical spline interpolation (`interp_elecs()`).
 
 ```{r inter}
-eeg_example <- interp_elecs(eeg_example, bad_elecs = "A1")
-topoplot(eeg_example, time_lim = c(.1, .2))
+eeg_example <- interp_elecs(eeg_example,
+                            bad_elecs = "A1")
+topoplot(eeg_example,
+         time_lim = c(.1, .2))
 ```
 
 At any point, `eegUtils` objects can be transformed into data frames for use with functions that don't natively support them.

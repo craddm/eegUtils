@@ -192,7 +192,8 @@ erp_raster <- function(data,
   }
 
   if (all(anat_order && !is.null(data$chan_info))) {
-    chan_order <- arrange_chans(data)
+    chan_order <- arrange_chans(channels(data),
+                                channel_names(data))
     data$signals <- data$signals[, chan_order]
   }
 
@@ -233,19 +234,20 @@ erp_raster <- function(data,
 #' Rearrange channels in a more anatomical order (e.g. left to right, anterior
 #' to posterior).
 #'
-#' @param data An \code{eeg_data} object
+#' @param chan_info channel info structure
+#' @param sig_names names of signals in the data
 #' @return Vector of channel positions
 #' @author Matt Craddock, \email{matt@@mattcraddock.com}
 #' @keywords internal
 
-arrange_chans <- function(data) {
+arrange_chans <- function(chan_info, sig_names) {
 
-  # Pick out electrodes on the midline (theta = 180 or 0)
-  midline <- data$chan_info$pol_theta == 180 | data$chan_info$pol_theta == 0
-  midline_labels <- data$chan_info$electrode[midline]
-  midline_dist <- ifelse(data$chan_info$angle[midline] == 180,
-                         -data$chan_info$radius[midline],
-                         data$chan_info$radius[midline])
+  # Use the sterographic projections to check which electrodes are midline
+  midline <- is.true(chan_info$x == 0)
+
+  # get labels of channels that are on the midline
+  midline_labels <- chan_info$electrode[midline]
+  midline_dist <- chan_info$y[midline]
 
   # Order them from back to front
   midline_labels <- midline_labels[sort(midline_dist,
@@ -253,28 +255,27 @@ arrange_chans <- function(data) {
                                         index.return = T)$ix]
 
   # Pick out electrodes from the left hemisphere
-  left <- sapply(data$chan_info$pol_theta,
-                 function(x) x < 0 && x > -180)
-  left_labels <- data$chan_info$electrode[left]
-  left_dist <- data$chan_info$y[left]
+  left <- is.true(chan_info$x < 0)
+  left_labels <- chan_info$electrode[left ]
+  left_dist <- chan_info$y[left]
   left_labels <- left_labels[sort(left_dist,
                                   index.return = T)$ix]
 
-  # Pirck out electrodes from the right hemisphere
-  right <- sapply(data$chan_info$pol_theta,
-                  function(x) x > 0 && x < 180)
-  right_labels <- data$chan_info$electrode[right]
-  right_dist <- data$chan_info$y[right]
+  # Pick out electrodes from the right hemisphere
+  right <- is.true(chan_info$x > 0)
+  right_labels <- chan_info$electrode[right]
+  right_dist <- chan_info$y[right]
   right_labels <- right_labels[sort(right_dist,
                                     index.return = T)$ix]
 
   all_labels <- c(left_labels,
                   midline_labels,
                   right_labels)
-  elecs_found <- toupper(names(data$signals)) %in% all_labels
-  elecs_not_found <- !elecs_found
+
+  elecs_found <- toupper(sig_names) %in% toupper(all_labels)
+
   new_ord <- match(toupper(c(all_labels,
-                             names(data$signals[!elecs_found]))),
-                   toupper(names(data$signals)))
+                             sig_names[!elecs_found])),
+                   toupper(sig_names))
   new_ord
 }

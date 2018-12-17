@@ -23,7 +23,8 @@ eeg_FASTER.eeg_epochs <- function(.data, ...) {
 
   check_ci_str(.data$chan_info)
 
-  channels(.data) <- validate_channels(.data)
+  channels(.data) <- validate_channels(channels(.data),
+                                       channel_names(.data))
 
   # TODO - keep a record of which trials/channels etc are removed/interpolated
   # and allow marking for inspection rather than outright rejection.
@@ -278,34 +279,6 @@ faster_cine <- function(.data, ...) {
   epochs <- data.table::rbindlist(epochs)
   .data$signals <- as.data.frame(epochs)
   .data
-  # go through each epoch and interpolate bad channels
-  # This is an obscenely awkward hack that needs replacing ASAP.
-  # bad_epoch_nos <- epoch_nos[!good_epochs]
-  # bad_epochs <- lapply(bad_epoch_nos,
-  #                      function(x) select_epochs(.data,
-  #                                                epoch_no = x))
-  # bad_epochs <- lapply(seq_along(bad_epochs),
-  #                      function(x) interp_elecs(bad_epochs[[x]],
-  #                                               bad_chans[[x]]))
-
-  # if (length(bad_epochs) > 1) {
-  #   bad_epochs <- do.call("eeg_combine", bad_epochs)
-  # } else {
-  #   bad_epochs <- unlist(bad_epochs)
-  # }
-
-  # If there are any epochs that are ok, select them, then combine with bad
-  # epochs and return
-  # if (any(good_epochs)) {
-  #   clean_epochs <- select_epochs(.data,
-  #                                 epoch_no = epoch_nos[good_epochs])
-  #   .data <- eeg_combine(clean_epochs,
-  #                       bad_epochs)
-  #   return(.data)
-  # }
-
-  # only get here if there were no clean epochs
-  # .data <- bad_epochs
 
 }
 
@@ -510,35 +483,84 @@ kurtosis <- function(data) {
   kurt
 }
 
-#' Regress EOG
+#' Remove EOG using regression
 #'
-#' @param data data to regress
-#' @param heog Horizontal EOG channels
-#' @param veog Vertical EOG channels
+#' Calculates and removes the contribution of eye movements to the EEG signal using
+#' least-squares regression.
+#'
+#' @param .data data to regress - \code{eeg_data} or \code{eeg_epochs}
+#' @param heog Horizontal EOG channel labels
+#' @param veog Vertical EOG channel labels
 #' @param bipolarize Bipolarize the EOG channels. Only works when four channels
 #'   are supplied (2 HEOG and 2 VEOG).
 #' @author Matt Craddock, \email{matt@@mattcraddock.com}
-#' @noRd
+#' @export
 
-eeg_ar_eogreg <- function(data, heog, veog, bipolarize = TRUE, ...) {
-  UseMethod("eeg_ar_eogreg", data)
+ar_eogreg <- function(.data,
+                          heog,
+                          veog,
+                          bipolarize = TRUE) {
+  UseMethod("eeg_ar_eogreg", .data)
 
 }
 
-eeg_ar_eogreg.eeg_data <- function(data, heog, veog, bipolarize = TRUE, ...) {
+#' @rdname ar_eogreg
+#' @export
+ar_eogreg.eeg_data <- function(.data,
+                               heog,
+                               veog,
+                               bipolarize = TRUE) {
 
-  heog_only <- select_elecs(data, electrode = heog)
-  veog_only <- select_elecs(data, electrode = veog)
+  eogreg(.data,
+         heog,
+         veog,
+         bipolarize)
+}
 
-  EOG <- data.frame(heog = NA, veog = NA)
+#' @rdname ar_eogreg
+#' @export
+ar_eogreg.eeg_epochs <- function(.data,
+                                 heog,
+                                 veog,
+                                 bipolarize = TRUE) {
+
+  eogreg(.data,
+         heog,
+         veog,
+         bipolarize)
+
+}
+
+#' @noRd
+eogreg <- function(.data,
+                   heog,
+                   veog,
+                   bipolarize) {
+
   if (bipolarize) {
-    EOG$heog <- heog_only$signals[, 1] - heog_only$signals[, 2]
-    EOG$veog <- veog_only$signals[, 1] - veog_only$signals[, 2]
+    # HEOG <- .data$signals[, heog[1]] - .data$signals[, heog[2]]
+    # VEOG <- .data$signals[, veog[1]] - .data$signals[, veog[2]]
+    EOG <- bip_EOG(.data$signals, heog, veog)
   } else {
-    EOG$heog <- heog_only$signals[, 1]
-    EOG$veog <- veog_only$signals[, 1]
+    HEOG <- .data$signals[, heog, drop = TRUE]
+    VEOG <- .data$signals[, veog, drop = TRUE]
+    EOG <- data.frame(HEOG, VEOG)
   }
 
-  hmz <- solve(EOG * t(EOG), EOG * t(data$signals))
-  hmz
+  data_chans <- channel_names(.data)[!channel_names(.data) %in% c(heog, veog)]
+  hmz <- solve(crossprod(as.matrix(EOG)),
+               crossprod(as.matrix(EOG),
+                         as.matrix(.data$signals[, data_chans])))
+  .data$signals[, data_chans] <- .data$signals[, data_chans] - crossprod(t(as.matrix(EOG)), hmz)
+  .data
+}
+
+#' @noRd
+bip_EOG <- function(.data,
+                    HEOG,
+                    VEOG) {
+  HEOG <- .data[, HEOG[1]] - .data[, HEOG[2]]
+  VEOG <- .data[, VEOG[1]] - .data[, VEOG[2]]
+  EOG <- data.frame(HEOG, VEOG)
+  EOG
 }

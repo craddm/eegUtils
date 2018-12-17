@@ -92,9 +92,6 @@
       <a href="../articles/data_structures.html">A guide to eegUtils data structures</a>
     </li>
     <li>
-      <a href="../articles/Introduction.html">Introduction</a>
-    </li>
-    <li>
       <a href="../articles/time-frequency-analysis.html">Frequency analysis</a>
     </li>
   </ul>
@@ -135,7 +132,8 @@
     </div>
 
     <pre class="usage"><span class='fu'>eeg_data</span>(<span class='no'>data</span>, <span class='no'>srate</span>, <span class='kw'>events</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>chan_info</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>timings</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>continuous</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>reference</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+  <span class='kw'>timings</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>continuous</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>reference</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>epochs</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -168,6 +166,10 @@
       <th>reference</th>
       <td><p>Reference channel information, including names of reference
 channels, excluded channels etc.</p></td>
+    </tr>
+    <tr>
+      <th>epochs</th>
+      <td><p>Information about the epochs contained in the data.</p></td>
     </tr>
     </table>
     

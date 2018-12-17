@@ -49,7 +49,8 @@ interp_elecs.eeg_data <- function(data,
     bad_elecs <- bad_elecs[bads_check]
   }
 
-  data$chan_info <- validate_channels(data)
+  data$chan_info <- validate_channels(data$chan_info,
+                                      channel_names(data))
   missing_coords <- apply(is.na(data$chan_info), 1, any)
   missing_chans <- names(data$signals)[missing_coords]
 
@@ -73,8 +74,8 @@ interp_elecs.eeg_data <- function(data,
     #xyz_coords <- xyz_coords / rads
     xyz_coords <- norm_sphere(xyz_coords)
   } else {
-    xyz_coords <- sph_to_cart(chan_info$sph_theta / 180 * pi,
-                              chan_info$sph_phi / 180 * pi,
+    xyz_coords <- sph_to_cart(chan_info$theta,
+                              chan_info$phi,
                               1)
   }
 
@@ -255,8 +256,8 @@ convert_to_csd <- function(data,
     #xyz_coords <- xyz_coords / rads
     xyz_coords <- norm_sphere(xyz_coords)
   } else {
-    xyz_coords <- sph_to_cart(data$chan_info$sph_theta / 180 * pi,
-                              data$chan_info$sph_phi / 180 * pi,
+    xyz_coords <- sph_to_cart(data$chan_info$theta,
+                              data$chan_info$phi,
                               1)
   }
 

@@ -92,9 +92,6 @@
       <a href="../articles/data_structures.html">A guide to eegUtils data structures</a>
     </li>
     <li>
-      <a href="../articles/Introduction.html">Introduction</a>
-    </li>
-    <li>
       <a href="../articles/time-frequency-analysis.html">Frequency analysis</a>
     </li>
   </ul>
@@ -134,7 +131,7 @@
     
     </div>
 
-    <pre class="usage"><span class='fu'>import_chans</span>(<span class='no'>file_name</span>)</pre>
+    <pre class="usage"><span class='fu'>import_chans</span>(<span class='no'>file_name</span>, <span class='kw'>format</span> <span class='kw'>=</span> <span class='st'>"spherical"</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -142,6 +139,10 @@
     <tr>
       <th>file_name</th>
       <td><p>name and full path of file to be loaded</p></td>
+    </tr>
+    <tr>
+      <th>format</th>
+      <td><p>If the file is not .elc format, "spherical", "geographic". Default is NULL.</p></td>
     </tr>
     </table>
     
@@ -153,6 +154,8 @@
       <li><a href="#arguments">Arguments</a></li>
                 </ul>
 
+    <h2>Author</h2>
+    <p>Matt Craddock <a href='mailto:matt@mattcraddock.com'>matt@mattcraddock.com</a></p>
   </div>
 </div>
 

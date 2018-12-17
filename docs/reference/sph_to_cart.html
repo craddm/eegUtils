@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Convert spherical to cartesian 3d — sph_to_cart • eegUtils</title>
+<title>Convert spherical co-ordinates to Cartesian 3D co-ordinates — sph_to_cart • eegUtils</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,9 +30,9 @@
 
 
 
-<meta property="og:title" content="Convert spherical to cartesian 3d — sph_to_cart" />
+<meta property="og:title" content="Convert spherical co-ordinates to Cartesian 3D co-ordinates — sph_to_cart" />
 
-<meta property="og:description" content="Note that phi follows EEGLAB conventions (i.e. needs correcting to 90 - phi in some cases)" />
+<meta property="og:description" content="Convert spherical co-ordinates to Cartesian 3D co-ordinates" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -92,9 +92,6 @@
       <a href="../articles/data_structures.html">A guide to eegUtils data structures</a>
     </li>
     <li>
-      <a href="../articles/Introduction.html">Introduction</a>
-    </li>
-    <li>
       <a href="../articles/time-frequency-analysis.html">Frequency analysis</a>
     </li>
   </ul>
@@ -123,33 +120,29 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Convert spherical to cartesian 3d</h1>
+    <h1>Convert spherical co-ordinates to Cartesian 3D co-ordinates</h1>
     <small class="dont-index">Source: <a href='https://github.com/craddm/eegUtils/blob/master/R/channel_management.R'><code>R/channel_management.R</code></a></small>
     <div class="hidden name"><code>sph_to_cart.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Note that phi follows EEGLAB conventions (i.e. needs correcting to 90 - phi in some cases)</p>
+    <p>Convert spherical co-ordinates to Cartesian 3D co-ordinates</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>sph_to_cart</span>(<span class='no'>theta</span>, <span class='no'>phi</span>, <span class='no'>radius</span>)</pre>
+    <pre class="usage"><span class='fu'>sph_to_cart</span>(<span class='no'>theta</span>, <span class='no'>phi</span>, <span class='kw'>radius</span> <span class='kw'>=</span> <span class='fl'>85</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>theta</th>
-      <td><p>should be in degrees</p></td>
+      <th>radius</th>
+      <td><p>Radius of head (in mm)</p></td>
     </tr>
     <tr>
-      <th>phi</th>
-      <td><p>should be in degrees</p></td>
-    </tr>
-    <tr>
-      <th>r</th>
-      <td><p>should be in degrees</p></td>
+      <th>sph_coords</th>
+      <td><p>Theta and phi in degrees.</p></td>
     </tr>
     </table>
     

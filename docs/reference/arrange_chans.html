@@ -93,9 +93,6 @@ to posterior)." />
       <a href="../articles/data_structures.html">A guide to eegUtils data structures</a>
     </li>
     <li>
-      <a href="../articles/Introduction.html">Introduction</a>
-    </li>
-    <li>
       <a href="../articles/time-frequency-analysis.html">Frequency analysis</a>
     </li>
   </ul>
@@ -136,14 +133,18 @@ to posterior).</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>arrange_chans</span>(<span class='no'>data</span>)</pre>
+    <pre class="usage"><span class='fu'>arrange_chans</span>(<span class='no'>chan_info</span>, <span class='no'>sig_names</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>data</th>
-      <td><p>An <code>eeg_data</code> object</p></td>
+      <th>chan_info</th>
+      <td><p>channel info structure</p></td>
+    </tr>
+    <tr>
+      <th>sig_names</th>
+      <td><p>names of signals in the data</p></td>
     </tr>
     </table>
     

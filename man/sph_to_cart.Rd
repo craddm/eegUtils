@@ -2,18 +2,16 @@
 % Please edit documentation in R/channel_management.R
 \name{sph_to_cart}
 \alias{sph_to_cart}
-\title{Convert spherical to cartesian 3d}
+\title{Convert spherical co-ordinates to Cartesian 3D co-ordinates}
 \usage{
-sph_to_cart(theta, phi, radius)
+sph_to_cart(theta, phi, radius = 85)
 }
 \arguments{
-\item{theta}{should be in degrees}
+\item{radius}{Radius of head (in mm)}
 
-\item{phi}{should be in degrees}
-
-\item{r}{should be in degrees}
+\item{sph_coords}{Theta and phi in degrees.}
 }
 \description{
-Note that phi follows EEGLAB conventions (i.e. needs correcting to 90 - phi in some cases)
+Convert spherical co-ordinates to Cartesian 3D co-ordinates
 }
 \keyword{internal}

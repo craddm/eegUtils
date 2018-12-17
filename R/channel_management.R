@@ -2,22 +2,31 @@
 #'
 #' Currently only ASA .elc format with Cartesian x-y-z coordinates is supported.
 #'
+#' @author Matt Craddock \email{matt@@mattcraddock.com}
 #' @param file_name name and full path of file to be loaded
+#' @param format If the file is not .elc format, "spherical", "geographic". Default is NULL.
 #' @export
 
-import_chans <- function(file_name) {
+import_chans <- function(file_name,
+                         format = "spherical") {
   file_type <- tools::file_ext(file_name)
   if (file_type == "elc") {
     chan_locs <- import_elc(file_name)
+  } else if (file_type == "txt") {
+    chan_locs <-
+      switch(format,
+             spherical = import_txt(file_name))
   } else {
     stop("File type ", file_type, " is unknown.")
   }
+  chan_locs <- validate_channels(chan_locs)
   chan_locs
 }
 
 #' Import ASA .elc electrode location files
 #'
 #' Loads and process ASA electrode locations.
+#' ASA electrode locations are given as Cartesian XYZ.
 #'
 #' @param file_name file name
 #' @keywords internal
@@ -39,119 +48,57 @@ import_elc <- function(file_name) {
   pos <- lapply(pos,
                 function(x) as.numeric(x[!x == ""]))
   pos <- as.data.frame(do.call("rbind", pos))
-  sph_pos <- cart_to_sph(pos[, 1],
-                         pos[, 2],
-                         pos[, 3])
+  #names(pos) <- c("x", "y", "z")
 
-  topo_pos <- sph_to_topo(phi = sph_pos[, 2],
-                          theta = sph_pos[, 3])
-  pol_coords <- cart_to_pol(pos[, 1],
-                            pos[, 2])
+  sph_pos <- cart_to_spherical(norm_sphere(pos))
+
   names(pos) <- c("cart_x",
                   "cart_y",
                   "cart_z")
+
   final_locs <- data.frame(electrode = labs,
-                           pos,
                            sph_pos,
-                           pol_coords,
-                           topo_pos)
+                           round(pos, 2))
+
+  xy <- project_elecs(final_locs,
+                      method = "stereographic")
   final_locs <- cbind(final_locs,
-                      topo_norm(final_locs$angle,
-                                final_locs$radius))
+                      xy)
 
   tibble::as.tibble(final_locs)
 }
 
-#' Convert 3D Cartesian co-ordinates to spherical
+#' Import electrode locations from text
 #'
-#' @author Matt Craddock \email{matt@@mattcraddock.com}
-#' @param x X co-ordinates
-#' @param y Y co-ordinates
-#' @param z Z co-ordinates
-#' @return Data frame with entries "sph_radius",
-#'  "sph_phi" (in degrees),
-#'   "sph_theta" (in degrees).
+#' Currently only supports locations given in spherical coordinates.
+#'
+#' @param file_name file name of .txt electrode locations to import.
+#' @return A data frame containing standard channel_info
 #' @keywords internal
-
-cart_to_sph <- function(x, y, z) {
-
-  hypo <- sqrt(abs(x) ^ 2 + abs(y) ^ 2)
-  radius <- sqrt(abs(hypo) ^ 2 + abs(z) ^ 2) # spherical radius
-  phi <- atan2(z, hypo)  * 180 / pi# spherical phi in degrees
-  theta <- atan2(y, x)  * 180 / pi# spherical theta in degrees
-  data.frame(sph_radius = radius,
-             sph_phi = phi,
-             sph_theta = theta)
-}
-
-#' Convert 3D Cartesian co-ordinates to polar co-ordinates
-#'
-#' @author Matt Craddock \email{matt@@mattcraddock.com}
-#' @param x X co-ordinates
-#' @param y Y co-ordinates
-#' @noRd
-
-cart_to_pol <- function(x, y) {
-  theta <- atan2(y, x) / pi * 180
-  radius <- sqrt(abs(x) ^ 2 + abs(y) ^ 2)
-  data.frame(pol_theta = theta,
-             pol_radius = radius)
-}
-
-#' Convert EEGLAB polar to spherical coordinates
-#'
-#' Hard-coded to a radius of 85 mm (as in BESA).
-#'
-#' @author Matt Craddock \email{matt@@mattcraddock.com}
-#' @param theta Azimuth from polar co-ordinates (theta in supplied electrode
-#'   locations)
-#' @param phi Elevation from polar co-ordinates (radius in supplied electrode
-#'   locations)
-#' @keywords internal
-
-pol_to_sph <- function(theta, phi) {
-
-  theta <- -theta
-  phi <- (0.5 - phi) * 180
-  sph_theta <- theta / 180 * pi
-  sph_phi <- phi / 180 * pi
-  radius <- 85
-
-  z <- radius * sin(sph_phi)
-  z_cos <- radius * cos(sph_phi)
-  x <- z_cos * cos(sph_theta)
-  y <- z_cos * sin(sph_theta)
-  data.frame(x, y, z)
-}
-
-#' Convert spherical to topographical co-ordinates
-#'
-#' Expects input in degrees
-#'
-#' @param phi Phi
-#' @param theta Theta
-#' @keywords internal
-sph_to_topo <- function(theta, phi) {
-
-  angle <- -theta
-  radius <- 0.5 - phi / 180
-  data.frame(angle, radius)
-}
-
-#' Convert spherical to cartesian 3d
-#'
-#' Note that phi follows EEGLAB conventions (i.e. needs correcting to 90 - phi in some cases)
-#' @param theta should be in degrees
-#' @param phi should be in degrees
-#' @param r should be in degrees
-#' @keywords internal
-sph_to_cart <- function(theta, phi, radius) {
-  z <- radius * sin(phi * pi / 180)
-  x <- radius * cos(phi * pi / 180) * cos(theta * pi / 180)
-  y <- radius * cos(phi * pi / 180) * sin(theta * pi / 180)
-  data.frame(cart_x = x,
-             cart_y = y,
-             cart_z = z)
+import_txt <- function(file_name) {
+  raw_locs <- utils::read.delim(file_name,
+                                stringsAsFactors = FALSE)
+  elec_labs <- grepl("electrode",
+                     names(raw_locs),
+                     ignore.case = TRUE)
+  theta_col <- grepl("theta",
+                     names(raw_locs),
+                     ignore.case = TRUE)
+  phi_col <- grepl("phi",
+                   names(raw_locs),
+                   ignore.case = TRUE)
+  cart_xyz <- sph_to_cart(raw_locs[, theta_col],
+                          raw_locs[, phi_col])
+  final_locs <- tibble::tibble(electrode = as.character(raw_locs[, elec_labs]),
+                               radius = 1,
+                               theta = raw_locs[, theta_col],
+                               phi = raw_locs[, phi_col])
+  xy <- project_elecs(final_locs,
+                      method = "stereographic")
+  final_locs <- cbind(final_locs,
+                      cart_xyz,
+                      xy)
+  tibble::as.tibble(final_locs)
 }
 
 #' Convert topographical 2d to cartesian 2d
@@ -164,7 +111,7 @@ sph_to_cart <- function(theta, phi, radius) {
 
 topo_norm <- function(angle, radius) {
   x <- radius * cos(angle * pi / 180)
-  y <- radius * sin(-angle * pi / 180)
+  y <- radius * sin(angle * pi / 180)
   data.frame(x, y)
 }
 
@@ -194,34 +141,6 @@ rotate_angle <- function(chan_info, degrees) {
   chan_info
 }
 
-#' Rotate spherical coordinates and recalculate others
-#'
-#' @param chan_info channel information structure
-#' @param degrees degrees by which to rotate elecs
-#' @keywords internal
-rotate_sph <- function(chan_info, degrees) {
-  chan_info$sph_theta <- chan_info$sph_theta + degrees
-  chan_info$sph_theta <- ifelse(chan_info$sph_theta > 180,
-                            chan_info$sph_theta - 360,
-                            chan_info$sph_theta)
-  chan_info$sph_theta <- ifelse(chan_info$sph_theta < -180,
-                                chan_info$sph_theta + 360,
-                                chan_info$sph_theta)
-  topo_pos <- sph_to_topo(theta = chan_info$sph_theta,
-                          phi = chan_info$sph_phi)
-  chan_info$angle <- topo_pos[, 1]
-  chan_info$radius <- topo_pos[, 2]
-  cart_sph <- pol_to_sph(chan_info$angle,
-                         phi = chan_info$radius)
-  chan_info$cart_x <- cart_sph[, 1]
-  chan_info$cart_y <- cart_sph[, 2]
-  chan_info$cart_z <- cart_sph[, 3]
-  chan_info$x <- chan_info$radius * cos(chan_info$angle / 180 * pi)
-  chan_info$y <- chan_info$radius * sin(chan_info$angle / 180 * pi)
-  chan_info
-}
-
-
 #' Flip x-axis coords
 #'
 #' @param chan_info chan-info structure
@@ -235,6 +154,7 @@ flip_x <- function(chan_info) {
   chan_info$sph_theta <- chan_info$sph_theta * -1
   chan_info
 }
+
 #' Get standard electrode locations
 #'
 #' Joins standard electrode locations to EEG data from eegUtils internal data.
@@ -359,7 +279,8 @@ electrode_locations.eeg_data <- function(data,
       geom_label(aes(label = electrode))
     return(p)
   }
-  data$chan_info <- validate_channels(data)
+  data$chan_info <- validate_channels(data$chan_info,
+                                      channel_names(data))
   data
 }
 
@@ -460,34 +381,67 @@ plot_electrodes.eeg_data <- function(data,
 #' @keywords internal
 
 montage_check <- function(montage) {
-  if (identical(montage, "biosemi64alpha")) {
-    elocs <- merge(orig_locs["electrode"][1:64, ],
-                   electrodeLocs,
-                   sort = FALSE) #hacky way to translate elec names
-    elocs[1:64, "electrode"] <- c(paste0("A", 1:32),
-                                          paste0("B", 1:32))
-  } else {
-    stop("Unknown montage. Current only biosemi64alpha is available.")
+
+  elocs <-
+    switch(montage,
+           biosemi64 = biosemi64,
+           biosemi64alpha = biosemi64alpha,
+           biosemi128 = biosemi128,
+           biosemi256 = biosemi256,
+           biosemi16 = biosemi16,
+           biosemi32 = biosemi32)
+
+  if (is.null(elocs)) {
+    stop("Unknown montage specified.")
   }
+  # if (identical(montage, "biosemi64alpha")) {
+  #   elocs <- merge(orig_locs["electrode"][1:64, ],
+  #                  electrodeLocs,
+  #                  sort = FALSE) #hacky way to translate elec names
+  #   elocs[1:64, "electrode"] <- c(paste0("A", 1:32),
+  #                                         paste0("B", 1:32))
+  #} else {
+   # stop("Unknown montage. Current only biosemi64alpha is available.")
+  #}
   elocs
 }
 
 #' Chan_info checker
 #'
-#' Checks for any missing channels in the chan_info; populates them with NA if
-#' it finds any
+#' Performs several checks on the structure of channel info: 1) Checks that
+#' "electrode" is character, not factor. 2) rounds any numeric values to 2
+#' decimal places. 3) Checks for any missing channels in the chan_info if signal names are supplied; populates
+#' them with NA if it finds any
 #'
-#' @param .data an eeg_* object
+#' @param chan_info A channel info structure
+#' @param sig_names signal names from eegUtils signals
 #' @keywords internal
-validate_channels <- function(.data) {
+validate_channels <- function(chan_info,
+                              sig_names = NULL) {
 
-  sig_names <- names(.data$signals)
-  missing_sigs <- !(sig_names %in% .data$chan_info$electrode)
-  if (any(missing_sigs)) {
-    .data$chan_info <- merge(data.frame(electrode = sig_names),
-                           .data$chan_info, all.x = TRUE)
+  #sig_names <- channel_names(.data)
+  #missing_sigs <- !(sig_names %in% .data$chan_info$electrode)
+
+  if (!is.null(sig_names)) {
+    missing_sigs <- !(sig_names %in% chan_info$electrode)
+
+    if (any(missing_sigs)) {
+      # .data$chan_info <- merge(data.frame(electrode = sig_names),
+    #                        .data$chan_info,
+    #                        all.x = TRUE,
+    #                        sort = FALSE)
+      chan_info <- merge(data.frame(electrode = sig_names),
+                         chan_info,
+                         all.x = TRUE,
+                         sort = FALSE)
+    }
   }
-  .data$chan_info
+  # merge always converts strings to factors, so also make sure electrode is not a factor
+  chan_info$electrode <- as.character(chan_info$electrode)
+  num_chans <- sapply(chan_info, is.numeric)
+  chan_info[, num_chans] <- round(chan_info[, num_chans], 2)
+
+  tibble::as.tibble(chan_info)
 }
 
 #' Modify channel information
@@ -521,6 +475,11 @@ channels.eeg_data <- function(.data) {
   .data$chan_info
 }
 
+#' @export
+channels.eeg_ICA <- function(.data) {
+  .data$chan_info
+}
+
 #' @param value Value to replace `chan_info` structure with.
 #' @rdname channels
 #' @export
@@ -542,6 +501,12 @@ channels.eeg_data <- function(.data) {
 
 #' @export
 `channels<-.eeg_tfr` <- function(.data, value) {
+  .data$chan_info <- value
+  .data
+}
+
+#' @export
+`channels<-.eeg_ICA` <- function(.data, value) {
   .data$chan_info <- value
   .data
 }
@@ -573,13 +538,129 @@ norm_sphere <- function(xyz_coords) {
 
   circ <- sqrt(rowSums(xyz_coords ^ 2))
   xyz_coords <- xyz_coords / circ
+  names(xyz_coords) <- c("cart_x", "cart_y", "cart_z")
   xyz_coords
 }
 
-cart_to <- function(xyz_norm) {
+#' Convert 3D Cartesian coordinates to spherical coordinates
+#'
+#' Output theta and phi are in degrees.
+#'
+#' @param xyz_coords 3D Cartesian electrode locations
+#' @keywords internal
+cart_to_spherical <- function(xyz_coords) {
 
   radius <- sqrt(rowSums(xyz_coords ^ 2))
-  theta <- atan(xyz_coords$cart_y / xyz_coords$cart_x)
-  phi <- acos(xyz_coords$cart_z / radius)
-  data.frame(radius, theta, phi)
+  phi <- rad2deg(atan(xyz_coords$cart_y / xyz_coords$cart_x))
+  theta <- rad2deg(acos(xyz_coords$cart_z / radius))
+  theta <- ifelse(xyz_coords$cart_x >= 0, theta, -theta)
+  phi <- ifelse(xyz_coords$cart_x == 0, -phi, phi)
+  data.frame(radius = 1,
+             theta = round(theta),
+             phi = round(phi))
+}
+
+#' Convert spherical co-ordinates to Cartesian 3D co-ordinates
+
+#' @param sph_coords Theta and phi in degrees.
+#' @param radius Radius of head (in mm)
+#' @keywords internal
+sph_to_cart <- function(theta,
+                             phi,
+                             radius = 85) {
+  theta <- deg2rad(theta)
+  phi <- deg2rad(phi)
+  cart_x <- radius * sin(theta) * cos(phi)
+  cart_y <- radius * sin(theta) * sin(phi)
+  cart_z <- radius * cos(theta)
+  tibble::tibble(cart_x = round(cart_x, 2),
+                 cart_y = round(cart_y, 2),
+                 cart_z = round(cart_z, 2))
+}
+
+#' Convert degrees to radians
+#' @param x Degrees to convert
+#' @keywords internal
+deg2rad <- function(x) {
+  x <- x * pi / 180
+  x
+}
+
+#' Convert radians to degrees
+#' @param x Radians to convert
+#' @keywords internal
+rad2deg <- function(x) {
+  x <- x * 180 / pi
+  x
+}
+
+#' Electrode projection
+#'
+#' Project a set of 3D Cartesian co-ordinates to a 2D plane for plotting. The
+#' projection can be orthographic or stereographic. Orthographic is closer to
+#' how the scalp would look from above, since it does not compensate for
+#' height/distance from the xy plane. This causes bunching up of electrodes near
+#' the limits of the head.Stereographic preserves more of the general shape of
+#' the features by "unrolling" the electrode positions.
+#'
+#' @param chan_info Channel information from an eegUtils object
+#' @param method Method of projection. "stereographic" or "orthographic".
+#'   Defaults to sterographic.
+#' @keywords internal
+project_elecs <- function(chan_info,
+                          method = "stereographic") {
+  switch(method,
+         stereographic = stereo_norm(chan_info),
+         orthographic = ortho_norm(chan_info))
+}
+
+#' Stereographic electrode projection
+#'
+#' Produce a set of x and y coordinates for plotting from 3D Cartesian
+#' coordinates. This is a stereographic projection of the 3D coordinates, which
+#' compensates for the distance of the electrode from the projecting point and
+#' flattens out the scalp.
+#'
+#' @param chan_info Channel information from an eegUtils objects
+#' @return A data.frame with x and y columns indictating electrode positions in
+#'   degrees
+#' @keywords internal
+stereo_norm <- function(chan_info) {
+  x <- deg2rad(chan_info$theta) * cos(deg2rad(chan_info$phi))
+  y <- deg2rad(chan_info$theta) * sin(deg2rad(chan_info$phi))
+  data.frame(x = round(rad2deg(x), 2),
+             y = round(rad2deg(y), 2))
+}
+
+
+#' Orthographic electrode projection
+#'
+#' Produce a set of x and y coordinates for plotting from 3D Cartesian
+#' coordinates. This is an orthographic projection of the 3D coordinates,
+#' resulting in bunching up of electrodes at the further reaches of the head.
+#'
+#' @param chan_info Channel information from an eegUtils objects
+#' @return A data.frame with x and y columns indictating electrode positions in
+#'   mm
+#' @keywords internal
+ortho_norm <- function(chan_info) {
+  x <- round(chan_info$cart_x, 2)
+  y <- round(chan_info$cart_y, 2)
+  data.frame(x, y)
+}
+
+#' Check if chan_info is in old format
+#'
+#' @param chan_info Channel info structure
+#' @keywords internal
+
+check_ci_str <- function(chan_info) {
+  orig_names <- c("chanNo",
+                  "theta",
+                  "radius",
+                  "electrode", "radianTheta", "x",
+                  "y")
+  if (identical(orig_names, names(chan_info))) {
+    stop("New channel locations required - see ?electrode_locations()")
+  }
 }

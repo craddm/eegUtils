@@ -6,7 +6,7 @@
 \usage{
 \method{as.data.frame}{eeg_epochs}(x, row.names = NULL,
   optional = FALSE, long = FALSE, events = FALSE,
-  cond_labels = NULL, ...)
+  conditions = NULL, cond_labels = NULL, ...)
 }
 \arguments{
 \item{x}{Object of class \code{eeg_epochs}}
@@ -18,6 +18,8 @@
 \item{long}{Convert to long format. Defaults to FALSE.}
 
 \item{events}{Include events in output. Defaults to FALSE.}
+
+\item{conditions}{Column names of}
 
 \item{cond_labels}{Add column tagging epochs with events that have matching
 labels.}
