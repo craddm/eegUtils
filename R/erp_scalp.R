@@ -41,7 +41,12 @@ erp_scalp <- function(data,
                       show_guide = TRUE,
                       montage = NULL) {
 
-  if (is.eeg_epochs(data)) {
+  chan_info <- NULL
+  if (is.eeg_epochs(data) & is.null(montage)) {
+    chan_info <- channels(data)
+    data <- as.data.frame(data,
+                          long = TRUE)
+  } else if (is.eeg_epochs(data)) {
     data <- as.data.frame(data,
                           long = TRUE)
   }
@@ -60,6 +65,7 @@ erp_scalp <- function(data,
     data <- dplyr::summarise(data,
                              amplitude = mean(amplitude))
   }
+
 
   data <- as.data.frame(data)
   # Data maxima for plot limits
@@ -98,24 +104,41 @@ erp_scalp <- function(data,
     } else {
       plot <- plot + geom_line(size = size)
     }
-    return(plot)
+    plot
   }
 
   data$electrodefacet <- data[, electrode]
-  data <- tidyr::nest(data, -electrode)
+  data <- tidyr::nest(tibble::as.tibble(data), -electrode)
   data <- dplyr::mutate(data, plot = map(data, plotfun))
   data <- dplyr::select(data, -data)
 
   # Get default electrode locations from pkg internal data
-  data <- electrode_locations(data,
-                              drop = T,
-                              montage = montage)
+  if (is.null(chan_info)){
+    data <- electrode_locations(data,
+                                drop = TRUE,
+                                montage = montage)
+  } else {
+    data <- dplyr::left_join(data, chan_info)
+    data <- filter(data, !(is.na(x) | is.na(y)))
+  }
 
-  p <- ggplot(data,
+  max_x <- max(abs(min(data$x, na.rm = TRUE)),
+               abs(max(data$x, na.rm = TRUE)))
+  max_y <- max(abs(min(data$y, na.rm = TRUE)),
+               abs(max(data$y, na.rm = TRUE)))
+
+  plot_area <- max_x * max_y
+
+  panel_size <- floor(sqrt(plot_area / nrow(data)))
+
+  coords_space <- data.frame(x = c(-(max_x + panel_size), max_x + panel_size),
+                             y = c(-(max_y + panel_size), max_y + panel_size))
+
+  p <- ggplot(coords_space,
               aes(x, y)) +
     geom_blank() +
     theme_void() +
-    theme(plot.margin = unit(c(8, 8, 8, 8), "pt"))
+    theme(plot.margin = unit(c(10, 10, 10, 10), "pt"))
 
   guide <- ggplot(data,
                   aes(x = time,
@@ -139,25 +162,29 @@ erp_scalp <- function(data,
           axis.ticks = element_line(size = .3),
           plot.margin = unit(c(8, 8, 8, 8), "pt"))
 
+  plot_area <- max_x * max_y
+
+  panel_size <- floor(sqrt(plot_area / nrow(data)))
+
   if (show_guide) {
     p <- p +
       annotation_custom(grob = ggplotGrob(guide),
-                        xmin = min(data$x) - .07,
-                        xmax = min(data$x) + .09,
-                        ymin = min(data$y) - .09,
-                        ymax = min(data$y) + .09)
+                        xmin = min(data$x) - panel_size,
+                        xmax = min(data$x) + panel_size,
+                        ymin = min(data$y) - panel_size,
+                        ymax = min(data$y) + panel_size)
   }
 
   for (i in 1:nrow(data)) {
     p <- p +
       annotation_custom(grob = ggplotGrob(data$plot[[i]]),
-                        xmin = data$x[i] - .05,
-                        xmax = data$x[i] + .05,
-                        ymin = data$y[i] - .07,
-                        ymax = data$y[i] + .07)
+                        xmin = data$x[i] - panel_size,
+                        xmax = data$x[i] + panel_size,
+                        ymin = data$y[i] - panel_size,
+                        ymax = data$y[i] + panel_size)
   }
 
-  return(p)
+  p
 }
 
 #' Interactive scalp maps
@@ -226,12 +253,21 @@ interactive_scalp <- function(data,
                      output,
                      session) {
 
+    chan_info <- NULL
+    if (is.eeg_evoked(data)) {
+      chan_info <- channels(data)
+    }
     tmp_data <- as.data.frame(data,
                               long = TRUE)
-    tmp_data <- electrode_locations(tmp_data,
-                                    drop = TRUE,
-                                    montage = montage)
 
+    if (is.null(chan_info)){
+      tmp_data <- electrode_locations(tmp_data,
+                                      drop = TRUE,
+                                      montage = montage)
+    } else {
+      tmp_data <- dplyr::left_join(tmp_data, chan_info)
+      tmp_data <- filter(tmp_data, !(is.na(x) | is.na(y)))
+    }
     button_reacts <- reactiveValues(sel_elecs = list(),
                                     avg = TRUE)
 
