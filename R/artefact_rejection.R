@@ -62,7 +62,7 @@ eeg_FASTER.eeg_epochs <- function(.data, ...) {
 
     if (is.null(.data$chan_info)) {
       warning("no chan_info, removing chans.")
-      data <- select_elecs(.data,
+      .data <- select_elecs(.data,
                            electrode = bad_chan_n,
                            keep = FALSE)
     } else {
@@ -86,13 +86,13 @@ eeg_FASTER.eeg_epochs <- function(.data, ...) {
                 paste0(missing_bads,
                        collapse = " "), ". Removing channels.")
         .data <- select_elecs(.data,
-                             electrode = missing_bads,
-                             keep = FALSE)
+                              electrode = missing_bads,
+                              keep = FALSE)
       }
 
       if (length(bad_chan_n) > 0) {
         .data <- interp_elecs(.data,
-                             bad_chan_n)
+                              bad_chan_n)
       }
     }
   }
@@ -196,16 +196,10 @@ faster_epochs <- function(.data, ...) {
                                                      .(Mean = rowMeans(.SD))]
   epoch_diffs <- abs(scale(epoch_diffs$Mean)) > 3
 
-  #epoch_vars <- lapply(.data$signals,
-   #                    function(x) apply(x,
-    #                                     2,
-     #                                    stats::var))
-  #epoch_vars <- rowMeans(do.call(rbind,
-   #                              epoch_vars))
   epoch_vars <- .data[, lapply(.SD, var), .SDcols = chans,
                       by = epoch][, apply(.SD, 1, mean),
                                   .SDcols = chans]
-  epoch_vars <- abs(scale(epoch_vars)) >3
+  epoch_vars <- abs(scale(epoch_vars)) > 3
 
   bad_epochs <- matrix(c(rowSums(epoch_vars) > 0,
                          rowSums(epoch_range) > 0,
