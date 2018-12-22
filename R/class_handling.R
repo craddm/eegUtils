@@ -92,7 +92,7 @@ eeg_GA <- function(data,
 #' Function to create an S3 object of class \code{eeg_data}
 #'
 #' @noRd
-validate_eeg_data <- function(data,
+new_eeg_data <- function(data,
                          srate,
                          events = NULL,
                          chan_info = NULL,
@@ -237,7 +237,7 @@ eeg_ICA <- function(mixing_matrix,
                 chan_info = chan_info,
                 srate = srate,
                 continuous = continuous)
-  class(value) <- c("eeg_ICA", "eeg_epochs")
+  class(value) <- c("eeg_ICA", "eeg_epochs")#
   value
 
 }

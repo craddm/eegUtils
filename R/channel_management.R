@@ -203,7 +203,7 @@ electrode_locations.data.frame <- function(data,
 
     if (!all(elecs)) {
       message("Electrodes not found: ",
-              paste(unique(data[, electrode])[!elecs],
+              paste(unique(data[, electrode])[!elecs, ],
                     sep = ","))
     } else if (!any(elecs)) {
       stop("No matching electrodes found.")
@@ -479,6 +479,12 @@ channels.eeg_data <- function(.data) {
 channels.eeg_ICA <- function(.data) {
   .data$chan_info
 }
+
+#' @export
+channels.eeg_evoked <- function(.data) {
+  .data$chan_info
+}
+
 
 #' @param value Value to replace `chan_info` structure with.
 #' @rdname channels
