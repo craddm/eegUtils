@@ -4,12 +4,12 @@
 \alias{bva_elecs}
 \title{Convert BVA spherical locations}
 \usage{
-bva_elecs(chan_info, circumference = 85)
+bva_elecs(chan_info, radius = 85)
 }
 \arguments{
 \item{chan_info}{A data.frame containing electrodes}
 
-\item{circumference}{Head circumference in millimetres}
+\item{radius}{Head radius in millimetres}
 }
 \description{
 Reads the BrainVoyager spherical electrode locations and converts them to

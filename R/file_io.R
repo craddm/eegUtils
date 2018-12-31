@@ -15,7 +15,9 @@
 #' @importFrom tibble tibble as_tibble
 #' @export
 
-import_raw <- function(file_name, file_path = NULL, chan_nos = NULL) {
+import_raw <- function(file_name,
+                       file_path = NULL,
+                       chan_nos = NULL) {
   file_type <- tools::file_ext(file_name)
 
   if (file_type == "bdf" | file_type == "edf") {
@@ -623,18 +625,18 @@ parse_vhdr_chans <- function(chan_labels,
 #' Cartesian 3D and 2D projections.
 #'
 #' @param chan_info A data.frame containing electrodes
-#' @param circumference Head circumference in millimetres
+#' @param radius Head radius in millimetres
 #' @keywords internal
-bva_elecs <- function(chan_info, circumference = 85) {
+bva_elecs <- function(chan_info, radius = 85) {
   chan_info <-
     dplyr::mutate(chan_info,
-                  cart_x = sin(theta * pi / 180) * cos(phi * pi / 180),
-                  cart_y = sin(theta * pi / 180) * sin(phi * pi / 180),
-                  cart_z = cos(theta * pi / 180),
-                  x = theta * cos(phi * pi / 180),
-                  y = theta * sin(phi * pi /180))
+                  cart_x = sin(deg2rad(theta)) * cos(deg2rad(phi)),
+                  cart_y = sin(deg2rad(theta)) * sin(deg2rad(phi)),
+                  cart_z = cos(deg2rad(theta)),
+                  x = theta * cos(deg2rad(phi)),
+                  y = theta * sin(deg2rad(phi)))
   chan_info[, c("cart_x", "cart_y", "cart_z")] <-
-    chan_info[, c("cart_x", "cart_y", "cart_z")] * circumference
+    chan_info[, c("cart_x", "cart_y", "cart_z")] * radius
   chan_info
 }
 
