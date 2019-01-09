@@ -89,7 +89,7 @@ import_raw <- function(file_name,
                          recording = basename(tools::file_path_sans_ext(file_name)))
     data <- eeg_data(data = sigs,
                      srate = srate,
-                     chan_info = data$chan_info,
+                     chan_info = validate_channels(data$chan_info),
                      events = event_table,
                      timings = timings,
                      continuous = TRUE,
@@ -270,7 +270,7 @@ import_cnt <- function(file_name) {
               event_list = ev_list)
 }
 
-#' Function for import Brain Vision Analyzer files
+#' Function for importing Brain Vision Analyzer files
 #' @param file_name file name of the header file.
 #' @keywords internal
 import_vhdr <- function(file_name) {
@@ -380,6 +380,7 @@ read_dat <- function(file_name,
                       n = file_size,
                       size = nbytes,
                       signed = signed)
+  raw_data
 }
 
 #' Read BVA markers

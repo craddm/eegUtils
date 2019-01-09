@@ -20,7 +20,9 @@ rm_baseline <- function(data, ...) {
 #' @describeIn rm_baseline remove baseline from continuous \code{eeg_data}
 #' @export
 
-rm_baseline.eeg_data <- function(data, time_lim = NULL, ...) {
+rm_baseline.eeg_data <- function(data,
+                                 time_lim = NULL,
+                                 ...) {
 
   if (is.null(time_lim)) {
     baseline_dat <- colMeans(data$signals)

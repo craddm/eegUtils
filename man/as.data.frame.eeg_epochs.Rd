@@ -19,7 +19,7 @@
 
 \item{events}{Include events in output. Defaults to FALSE.}
 
-\item{conditions}{Column names of}
+\item{conditions}{Names of columns from the events table to include in output}
 
 \item{cond_labels}{Add column tagging epochs with events that have matching
 labels.}

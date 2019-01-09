@@ -2,7 +2,7 @@
 % Please edit documentation in R/file_io.R
 \name{import_vhdr}
 \alias{import_vhdr}
-\title{Function for import Brain Vision Analyzer files}
+\title{Function for importing Brain Vision Analyzer files}
 \usage{
 import_vhdr(file_name)
 }
@@ -10,6 +10,6 @@ import_vhdr(file_name)
 \item{file_name}{file name of the header file.}
 }
 \description{
-Function for import Brain Vision Analyzer files
+Function for importing Brain Vision Analyzer files
 }
 \keyword{internal}

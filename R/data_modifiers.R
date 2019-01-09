@@ -102,7 +102,9 @@ reref_eeg.eeg_data <- function(data,
     } else {
       data$reference <- list(ref_chans = ref_chans,
                              excluded = exclude)
-      data <- select_elecs(data, ref_chans, keep = FALSE)
+      data <- select_elecs(data,
+                           ref_chans,
+                           keep = FALSE)
       }
   data
 }
@@ -152,8 +154,6 @@ eeg_downsample.eeg_data <- function(data, q, ...) {
                  data$srate / q, "Hz."))
 
   data_length <- length(unique(data$timings$time)) %% q
-
-  #ceiling(epo_length / q)
 
   if (data_length > 0) {
     message("Dropping ",

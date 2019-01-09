@@ -256,7 +256,7 @@ electrode_locations.eeg_data <- function(data,
     electrodeLocs <- montage_check(montage)
   }
 
-  elec_names <- toupper(names(data$signals))
+  elec_names <- toupper(channel_names(data))
   electrodeLocs$electrode <- toupper(electrodeLocs$electrode)
 
   matched_els <- electrodeLocs$electrode %in% elec_names
@@ -265,7 +265,8 @@ electrode_locations.eeg_data <- function(data,
   if (!any(matched_els)) {
     stop("No matching electrodes found.")
   } else if (any(missing_els)) {
-    message(paste("Electrodes not found:", names(data$signals)[missing_els]))
+    message(paste("Electrodes not found:",
+                  names(data$signals)[missing_els]))
   }
 
   data$chan_info <- electrodeLocs[matched_els, ]
@@ -275,11 +276,12 @@ electrode_locations.eeg_data <- function(data,
   }
 
   if (plot) {
-    p <- ggplot2::ggplot(data$chan_info, aes(x, y)) +
+    p <- ggplot2::ggplot(data$chan_info,
+                         aes(x, y)) +
       geom_label(aes(label = electrode))
     return(p)
   }
-  data$chan_info <- validate_channels(data$chan_info,
+  channels(data) <- validate_channels(channels(data),
                                       channel_names(data))
   data
 }
@@ -394,15 +396,6 @@ montage_check <- function(montage) {
   if (is.null(elocs)) {
     stop("Unknown montage specified.")
   }
-  # if (identical(montage, "biosemi64alpha")) {
-  #   elocs <- merge(orig_locs["electrode"][1:64, ],
-  #                  electrodeLocs,
-  #                  sort = FALSE) #hacky way to translate elec names
-  #   elocs[1:64, "electrode"] <- c(paste0("A", 1:32),
-  #                                         paste0("B", 1:32))
-  #} else {
-   # stop("Unknown montage. Current only biosemi64alpha is available.")
-  #}
   elocs
 }
 
@@ -419,27 +412,36 @@ montage_check <- function(montage) {
 validate_channels <- function(chan_info,
                               sig_names = NULL) {
 
-  #sig_names <- channel_names(.data)
-  #missing_sigs <- !(sig_names %in% .data$chan_info$electrode)
-
   if (!is.null(sig_names)) {
     missing_sigs <- !(sig_names %in% chan_info$electrode)
 
     if (any(missing_sigs)) {
-      # .data$chan_info <- merge(data.frame(electrode = sig_names),
-    #                        .data$chan_info,
-    #                        all.x = TRUE,
-    #                        sort = FALSE)
       chan_info <- merge(data.frame(electrode = sig_names),
                          chan_info,
                          all.x = TRUE,
                          sort = FALSE)
     }
   }
-  # merge always converts strings to factors, so also make sure electrode is not a factor
+  # merge always converts strings to factors,
+  # so also make sure electrode is not a factor
   chan_info$electrode <- as.character(chan_info$electrode)
   num_chans <- sapply(chan_info, is.numeric)
   chan_info[, num_chans] <- round(chan_info[, num_chans], 2)
+
+  required_cols <- c("electrode",
+                     "radius",
+                     "theta",
+                     "phi",
+                     "cart_x",
+                     "cart_y",
+                     "cart_z",
+                     "x",
+                     "y")
+
+  missing <- setdiff(required_cols,
+                     names(chan_info))
+  chan_info[missing] <- NA
+  chan_info <- chan_info[required_cols]
 
   tibble::as.tibble(chan_info)
 }

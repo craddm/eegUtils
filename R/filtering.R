@@ -141,7 +141,9 @@ run_iir <- function(data,
     W <- low_freq / (srate / 2)
 
     if (length(dim(data)) > 1) {
-      data <- sweep(data, 2, colMeans(data))
+      data <- sweep(data,
+                    2,
+                    colMeans(data))
     } else {
       data <- data - mean(data)
     }
@@ -150,10 +152,13 @@ run_iir <- function(data,
     filt_type <- "stop"
     message(sprintf("Band-stop IIR filter from %.4g-%.4g Hz",
                     high_freq, low_freq))
-    W <- c(high_freq / (srate / 2), low_freq / (srate / 2))
+    W <- c(high_freq / (srate / 2),
+           low_freq / (srate / 2))
 
     if (length(dim(data)) > 1) {
-      data <- sweep(data, 2, colMeans(data))
+      data <- sweep(data,
+                    2,
+                    colMeans(data))
     } else {
       data <- data - mean(data)
     }
