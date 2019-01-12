@@ -257,7 +257,8 @@ faster_cine <- function(.data, ...) {
 #' @noRd
 interp_weights <- function(xyz_coords, x) {
 
-  xyz_coords <- norm_sphere(xyz_coords)
+  xyz_coords[, c("cart_x", "cart_y", "cart_z")] <-
+    norm_sphere(xyz_coords[, c("cart_x", "cart_y", "cart_z")])
   # rads <- sqrt(rowSums(xyz_coords[, c("cart_x", "cart_y", "cart_z")] ^ 2))
   # xyz_coords[, c("cart_x", "cart_y", "cart_z")] <-
   #   xyz_coords[, c("cart_x", "cart_y", "cart_z")] / rads
