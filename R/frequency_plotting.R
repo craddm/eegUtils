@@ -45,29 +45,8 @@ plot_psd.eeg_epochs <- function(data,
                          seg_length = seg_length,
                          noverlap = noverlap)
 
-  if (!is.null(freq_range)) {
-    if (length(freq_range) < 2 | length(freq_range) > 2) {
-      message("freq_range must be a vector of length 2. Displaying all frequencies.")
-    } else {
-      rows <- psd_out$frequency >= freq_range[[1]] &
-        psd_out$frequency <= freq_range[[2]]
-      psd_out <- psd_out[rows, ]
-    }
-  }
-
-  psd_out <- tidyr::gather(psd_out,
-                           electrode,
-                           power,
-                           -frequency)
-  psd_out$power <- 10 * log10(psd_out$power)
-  ggplot(psd_out,
-         aes(x = frequency,
-             y = power,
-             colour = electrode)) +
-    geom_line() +
-    theme_bw() +
-    ylab("Decibels (10 * log10(uV^2 / Hz)") +
-    xlab("Frequency (Hz)")
+  create_psd_plot(psd_out,
+                  freq_range)
 }
 
 #' @describeIn plot_psd Plot PSD for \code{eeg_data}.
@@ -84,29 +63,9 @@ plot_psd.eeg_data <- function(data,
                          seg_length = NULL,
                          noverlap = NULL)
 
-  if (!is.null(freq_range)) {
-    if (length(freq_range) < 2 | length(freq_range) > 2) {
-      message("freq_range must be a vector of length 2. Displaying all frequencies.")
-    } else {
-      rows <- psd_out$frequency >= freq_range[[1]] &
-        psd_out$frequency <= freq_range[[2]]
-      psd_out <- psd_out[rows, ]
-    }
-  }
+  create_psd_plot(psd_out,
+                  freq_range)
 
-  psd_out <- tidyr::gather(psd_out,
-                           electrode,
-                           power,
-                           -frequency)
-  psd_out$power <- 10 * log10(psd_out$power)
-  ggplot(psd_out,
-         aes(x = frequency,
-             y = power,
-             colour = electrode)) +
-    geom_line() +
-    theme_bw() +
-    ylab("Decibels (10 * log10(uV^2 / Hz)") +
-    xlab("Frequency (Hz)")
 }
 
 #' @param components Which components to compute the PSD for. Defaults to all.
@@ -131,29 +90,8 @@ plot_psd.eeg_ICA <- function(data,
                          noverlap = noverlap,
                          keep_trials = FALSE)
 
-  if (!is.null(freq_range)) {
-    if (length(freq_range) < 2 | length(freq_range) > 2) {
-      message("freq_range must be a vector of length 2. Displaying all frequencies.")
-    } else {
-      rows <- psd_out$frequency >= freq_range[[1]] &
-        psd_out$frequency <= freq_range[[2]]
-      psd_out <- psd_out[rows, ]
-    }
-  }
-
-  psd_out <- tidyr::gather(psd_out,
-                           electrode,
-                           power,
-                           -frequency)
-  psd_out$power <- 10 * log10(psd_out$power)
-  ggplot(psd_out,
-         aes(x = frequency,
-             y = power,
-             colour = electrode)) +
-    geom_line() +
-    theme_bw() +
-    ylab("Decibels (10 * log10(uV^2 / Hz)") +
-    xlab("Frequency (Hz)")
+  create_psd_plot(psd_out,
+                  freq_range)
 }
 
 #' @describeIn plot_psd Plot PSD for \code{data.frame}s.
@@ -175,6 +113,39 @@ plot_psd.data.frame <- function(data,
 
   data$power <- 10 * log10(data$power)
   ggplot(data,
+         aes(x = frequency,
+             y = power,
+             colour = electrode)) +
+    geom_line() +
+    theme_bw() +
+    ylab("Decibels (10 * log10(uV^2 / Hz)") +
+    xlab("Frequency (Hz)")
+}
+
+#' Create a PSD plot
+#'
+#' @param psd_out PSD to plot.
+#' @param freq_range Frequency range to plot.
+#' @return ggplot showing power spectral density.
+#' @keywords internal
+create_psd_plot <- function(psd_out,
+                            freq_range) {
+  if (!is.null(freq_range)) {
+    if (length(freq_range) < 2 | length(freq_range) > 2) {
+      message("freq_range must be a vector of length 2. Displaying all frequencies.")
+    } else {
+      rows <- psd_out$frequency >= freq_range[[1]] &
+        psd_out$frequency <= freq_range[[2]]
+      psd_out <- psd_out[rows, ]
+    }
+  }
+
+  psd_out <- tidyr::gather(psd_out,
+                           electrode,
+                           power,
+                           -frequency)
+  psd_out$power <- 10 * log10(psd_out$power)
+  ggplot(psd_out,
          aes(x = frequency,
              y = power,
              colour = electrode)) +
