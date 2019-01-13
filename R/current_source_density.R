@@ -237,7 +237,9 @@ convert_to_csd <- function(data,
          ". Either remove channel or add channel info.")
   }
 
-  missing_coords <- apply(data$chan_info, 1, function(x) any(is.na(x)))
+  missing_coords <- apply(data$chan_info,
+                          1,
+                          function(x) any(is.na(x)))
 
   if (any(missing_coords)) {
     stop("No coordinates for ",

@@ -10,14 +10,14 @@
 \usage{
 plot_psd(data, freq_range = NULL, ...)
 
-\method{plot_psd}{eeg_epochs}(data, freq_range = NULL, n_fft = 512,
+\method{plot_psd}{eeg_epochs}(data, freq_range = NULL, n_fft = 256,
   seg_length = NULL, noverlap = NULL, ...)
 
 \method{plot_psd}{eeg_data}(data, freq_range = NULL, n_fft = 2048,
   noverlap = NULL, seg_length = NULL, ...)
 
 \method{plot_psd}{eeg_ICA}(data, freq_range = NULL, components = NULL,
-  seg_length = NULL, noverlap = NULL, n_fft = 512, ...)
+  seg_length = NULL, noverlap = NULL, n_fft = 256, ...)
 
 \method{plot_psd}{data.frame}(data, freq_range = NULL, ...)
 }
@@ -29,7 +29,7 @@ plot_psd(data, freq_range = NULL, ...)
 
 \item{...}{Additional parameters.}
 
-\item{n_fft}{Number of points to use for the underlying FFTs. Defaults to 512
+\item{n_fft}{Number of points to use for the underlying FFTs. Defaults to 256
 for \code{eeg_epochs} or minimum of 2048 or the signal length for
 \code{eeg_data}.}
 

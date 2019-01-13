@@ -36,7 +36,8 @@ Imports:
   data.table,
   ini,
   shinydashboard,
-  plotly
+  plotly,
+  future.apply
 Depends:
   R (>= 2.10)
 RoxygenNote: 6.1.1

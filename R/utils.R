@@ -1,9 +1,7 @@
-
-
 #' Convert eeg_data to data.frame
 #'
 #' Convert an object of class \code{eeg_data} into a standard data.frame / tibble
-#' @author Matt Craddock \email{matt@mattcraddock.com}
+#' @author Matt Craddock \email{matt@@mattcraddock.com}
 #' @param x Object of class \code{eeg_data}
 #' @param row.names Kept for compatability with S3 generic, ignored.
 #' @param optional Kept for compatability with S3 generic, ignored.
@@ -13,10 +11,13 @@
 #' @importFrom tidyr gather
 #' @export
 
-as.data.frame.eeg_data <- function(x, row.names = NULL,
-                                   optional = FALSE, long = FALSE,
+as.data.frame.eeg_data <- function(x,
+                                   row.names = NULL,
+                                   optional = FALSE,
+                                   long = FALSE,
                                    events = FALSE, ...) {
-  df <- data.frame(x$signals, x$timings)
+  df <- data.frame(x$signals,
+                   x$timings)
 
   if (long) {
     if (x$continuous) {
@@ -56,7 +57,7 @@ as.data.frame.eeg_data <- function(x, row.names = NULL,
 #' @param optional Kept for compatability with S3 generic, ignored.
 #' @param long Convert to long format. Defaults to FALSE.
 #' @param events Include events in output. Defaults to FALSE.
-#' @param conditions Column names of
+#' @param conditions Names of columns from the events table to include in output
 #' @param cond_labels Add column tagging epochs with events that have matching
 #'   labels.
 #' @param ... arguments for other as.data.frame commands
@@ -72,11 +73,17 @@ as.data.frame.eeg_epochs <- function(x, row.names = NULL,
                                      cond_labels = NULL, ...) {
 
   if (!is.null(conditions)) {
-    cond_cols <- conditions %in% names(events(x))
+    cond_cols <- names(events(x)) %in% c("epoch", conditions)
     if (!any(cond_cols)) {
       message("Columns not found.")
     }
-    cond_cols <- events(x)[, cond_cols]
+
+    missing_rows <- apply(events(x)[, conditions],
+                          2,
+                          is.na)
+    missing_rows <- apply(missing_rows, 1, any)
+
+    events(x) <- events(x)[!missing_rows, cond_cols]
   }
 
   if (!is.null(cond_labels)) {
@@ -86,12 +93,12 @@ as.data.frame.eeg_epochs <- function(x, row.names = NULL,
       stop("Not all labels found. Use list_events to check labels.")
     }
 
-    df <- lapply(seq_along(cond_labels), function(ix) {
-      out_df <- as.data.frame(select_epochs(x,
-                                            cond_labels[[ix]]))
-      out_df$conditions <- cond_labels[[ix]]
-      out_df
-    })
+    df <- lapply(seq_along(cond_labels),
+                 function(ix) {
+                   out_df <- as.data.frame(select_epochs(x,
+                                                         cond_labels[[ix]]))
+                   out_df$conditions <- cond_labels[[ix]]
+                   out_df})
 
     df <- do.call("rbind", df)
 
@@ -347,4 +354,50 @@ conv_to_mat.eeg_epochs <- function(data, ...) {
 
 is.true <- function(x) {
   !is.na(x) & x
+}
+
+#' Generate a zero centred vector
+#'
+#' @param vec_length how many points you want the vector to have
+#' @importFrom stats median
+#' @keywords internal
+zero_vec <- function(vec_length) {
+  out_seq <- seq(1, vec_length, by = 1)
+  out_seq - stats::median(out_seq)
+}
+
+#' Pad a vector with zeros
+#'
+#' Pads a vector with zeros at the beginning and end.
+#'
+#' @param x vector to pad
+#' @param n number of zeros to pad
+#' @keywords internal
+
+pad <- function(x, n) {x <- c(rep(0, n), x, rep(0, n))}
+
+#' Unpad a vector
+#'
+#' remove a specified number of points from the beginning and end of a vector
+#' @param x Vector to unpad/trim
+#' @param n Number of points to remove
+#' @keywords internal
+unpad <- function(x, n) {
+  start <- n + 1
+  end <- length(x) - n
+  x <- x[start:end]
+  x
+}
+
+
+#' Fix group delay
+#'
+#' Corrects a signal for the group delay of an FIR filter.
+#'
+#' @keywords internal
+fix_grpdelay <- function(x, n, grp_delay) {
+  start <- n + 1 + grp_delay
+  end <- length(x) - n + grp_delay
+  x <- x[start:end]
+  x
 }

@@ -24,7 +24,7 @@ plot_psd <- function(data, freq_range = NULL, ...) {
   UseMethod("plot_psd", data)
 }
 
-#' @param n_fft Number of points to use for the underlying FFTs. Defaults to 512
+#' @param n_fft Number of points to use for the underlying FFTs. Defaults to 256
 #'   for \code{eeg_epochs} or minimum of 2048 or the signal length for
 #'   \code{eeg_data}.
 #' @param noverlap Amount of overlap between segments, in sampling points.
@@ -34,7 +34,7 @@ plot_psd <- function(data, freq_range = NULL, ...) {
 #' @export
 plot_psd.eeg_epochs <- function(data,
                                 freq_range = NULL,
-                                n_fft = 512,
+                                n_fft = 256,
                                 seg_length = NULL,
                                 noverlap = NULL,
                                 ...) {
@@ -76,7 +76,7 @@ plot_psd.eeg_ICA <- function(data,
                              components = NULL,
                              seg_length = NULL,
                              noverlap = NULL,
-                             n_fft = 512,
+                             n_fft = 256,
                              ...) {
 
   if (!is.null(components)) {
@@ -130,6 +130,7 @@ plot_psd.data.frame <- function(data,
 #' @keywords internal
 create_psd_plot <- function(psd_out,
                             freq_range) {
+
   if (!is.null(freq_range)) {
     if (length(freq_range) < 2 | length(freq_range) > 2) {
       message("freq_range must be a vector of length 2. Displaying all frequencies.")
@@ -151,8 +152,9 @@ create_psd_plot <- function(psd_out,
              colour = electrode)) +
     geom_line() +
     theme_bw() +
-    ylab("Decibels (10 * log10(uV^2 / Hz)") +
-    xlab("Frequency (Hz)")
+    ylab(expression(paste(mu, V^2, "/ Hz(dB)"))) +
+    xlab("Frequency (Hz)") +
+    scale_x_continuous(expand = c(0, 0))
 }
 
 #' Time-frequency plot
