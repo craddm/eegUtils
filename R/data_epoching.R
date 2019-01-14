@@ -9,7 +9,8 @@
 #' @param ... Parameters passed to functions
 #' @export
 
-epoch_data <- function(data, ...) {
+epoch_data <- function(data,
+                       ...) {
   UseMethod("epoch_data", data)
 }
 
@@ -119,10 +120,13 @@ epoch_data.eeg_data <- function(data,
     data$epochs$recording <- NA
   }
 
-  epoch_trigs <- event_table[event_table$event_type %in% events, c("event_type", "epoch")]
+  epoch_trigs <- event_table[event_table$event_type %in% events,
+                             c("event_type", "epoch")]
   epochs <- tibble::tibble(epoch = unique(epoched_data$epoch),
                            recording = as.character(data$epochs$recording))
-  epochs <- dplyr::left_join(epochs, epoch_trigs, by = "epoch")
+  epochs <- dplyr::left_join(epochs,
+                             epoch_trigs,
+                             by = "epoch")
   data <- eeg_epochs(data = epoched_data[, -1:-3],
                      srate = data$srate,
                      timings = epoched_data[, 1:3],
@@ -130,13 +134,6 @@ epoch_data.eeg_data <- function(data,
                      chan_info = data$chan_info,
                      reference = data$reference,
                      epochs = epochs)
-  #data$signals <- epoched_data[, -1:-3] #check which columns this is...
-  #data$timings <- epoched_data[, 1:3]
-  #data$continuous <- FALSE
-  #data$events <- event_table
-  # data$epochs <- data.frame(epochs = unique(data$timings$epoch),
-  #                           recording = )
-  # class(data) <- c("eeg_epochs", "eeg_data")
   data
 }
 
