@@ -24,7 +24,7 @@ plot_psd <- function(data, freq_range = NULL, ...) {
   UseMethod("plot_psd", data)
 }
 
-#' @param n_fft Number of points to use for the underlying FFTs. Defaults to 512
+#' @param n_fft Number of points to use for the underlying FFTs. Defaults to 256
 #'   for \code{eeg_epochs} or minimum of 2048 or the signal length for
 #'   \code{eeg_data}.
 #' @param noverlap Amount of overlap between segments, in sampling points.
@@ -34,7 +34,7 @@ plot_psd <- function(data, freq_range = NULL, ...) {
 #' @export
 plot_psd.eeg_epochs <- function(data,
                                 freq_range = NULL,
-                                n_fft = 512,
+                                n_fft = 256,
                                 seg_length = NULL,
                                 noverlap = NULL,
                                 ...) {
@@ -45,29 +45,8 @@ plot_psd.eeg_epochs <- function(data,
                          seg_length = seg_length,
                          noverlap = noverlap)
 
-  if (!is.null(freq_range)) {
-    if (length(freq_range) < 2 | length(freq_range) > 2) {
-      message("freq_range must be a vector of length 2. Displaying all frequencies.")
-    } else {
-      rows <- psd_out$frequency >= freq_range[[1]] &
-        psd_out$frequency <= freq_range[[2]]
-      psd_out <- psd_out[rows, ]
-    }
-  }
-
-  psd_out <- tidyr::gather(psd_out,
-                           electrode,
-                           power,
-                           -frequency)
-  psd_out$power <- 10 * log10(psd_out$power)
-  ggplot(psd_out,
-         aes(x = frequency,
-             y = power,
-             colour = electrode)) +
-    geom_line() +
-    theme_bw() +
-    ylab("Decibels (10 * log10(uV^2 / Hz)") +
-    xlab("Frequency (Hz)")
+  create_psd_plot(psd_out,
+                  freq_range)
 }
 
 #' @describeIn plot_psd Plot PSD for \code{eeg_data}.
@@ -84,29 +63,9 @@ plot_psd.eeg_data <- function(data,
                          seg_length = NULL,
                          noverlap = NULL)
 
-  if (!is.null(freq_range)) {
-    if (length(freq_range) < 2 | length(freq_range) > 2) {
-      message("freq_range must be a vector of length 2. Displaying all frequencies.")
-    } else {
-      rows <- psd_out$frequency >= freq_range[[1]] &
-        psd_out$frequency <= freq_range[[2]]
-      psd_out <- psd_out[rows, ]
-    }
-  }
+  create_psd_plot(psd_out,
+                  freq_range)
 
-  psd_out <- tidyr::gather(psd_out,
-                           electrode,
-                           power,
-                           -frequency)
-  psd_out$power <- 10 * log10(psd_out$power)
-  ggplot(psd_out,
-         aes(x = frequency,
-             y = power,
-             colour = electrode)) +
-    geom_line() +
-    theme_bw() +
-    ylab("Decibels (10 * log10(uV^2 / Hz)") +
-    xlab("Frequency (Hz)")
 }
 
 #' @param components Which components to compute the PSD for. Defaults to all.
@@ -117,7 +76,7 @@ plot_psd.eeg_ICA <- function(data,
                              components = NULL,
                              seg_length = NULL,
                              noverlap = NULL,
-                             n_fft = 512,
+                             n_fft = 256,
                              ...) {
 
   if (!is.null(components)) {
@@ -131,29 +90,8 @@ plot_psd.eeg_ICA <- function(data,
                          noverlap = noverlap,
                          keep_trials = FALSE)
 
-  if (!is.null(freq_range)) {
-    if (length(freq_range) < 2 | length(freq_range) > 2) {
-      message("freq_range must be a vector of length 2. Displaying all frequencies.")
-    } else {
-      rows <- psd_out$frequency >= freq_range[[1]] &
-        psd_out$frequency <= freq_range[[2]]
-      psd_out <- psd_out[rows, ]
-    }
-  }
-
-  psd_out <- tidyr::gather(psd_out,
-                           electrode,
-                           power,
-                           -frequency)
-  psd_out$power <- 10 * log10(psd_out$power)
-  ggplot(psd_out,
-         aes(x = frequency,
-             y = power,
-             colour = electrode)) +
-    geom_line() +
-    theme_bw() +
-    ylab("Decibels (10 * log10(uV^2 / Hz)") +
-    xlab("Frequency (Hz)")
+  create_psd_plot(psd_out,
+                  freq_range)
 }
 
 #' @describeIn plot_psd Plot PSD for \code{data.frame}s.
@@ -182,6 +120,41 @@ plot_psd.data.frame <- function(data,
     theme_bw() +
     ylab("Decibels (10 * log10(uV^2 / Hz)") +
     xlab("Frequency (Hz)")
+}
+
+#' Create a PSD plot
+#'
+#' @param psd_out PSD to plot.
+#' @param freq_range Frequency range to plot.
+#' @return ggplot showing power spectral density.
+#' @keywords internal
+create_psd_plot <- function(psd_out,
+                            freq_range) {
+
+  if (!is.null(freq_range)) {
+    if (length(freq_range) < 2 | length(freq_range) > 2) {
+      message("freq_range must be a vector of length 2. Displaying all frequencies.")
+    } else {
+      rows <- psd_out$frequency >= freq_range[[1]] &
+        psd_out$frequency <= freq_range[[2]]
+      psd_out <- psd_out[rows, ]
+    }
+  }
+
+  psd_out <- tidyr::gather(psd_out,
+                           electrode,
+                           power,
+                           -frequency)
+  psd_out$power <- 10 * log10(psd_out$power)
+  ggplot(psd_out,
+         aes(x = frequency,
+             y = power,
+             colour = electrode)) +
+    geom_line() +
+    theme_bw() +
+    ylab(expression(paste(mu, V^2, "/ Hz(dB)"))) +
+    xlab("Frequency (Hz)") +
+    scale_x_continuous(expand = c(0, 0))
 }
 
 #' Time-frequency plot

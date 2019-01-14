@@ -27,6 +27,7 @@ epoch_data.default <- function(data, ...) {
 #' @param events Character vector of events to epoch around.
 #' @param time_lim Time in seconds to form epoch around the events. Defaults to
 #'   one second either side.
+#' @param baseline Baseline times to subtract. Defaults to NULL (mean centres epochs). Set to "none" to perform no corrections.
 #' @importFrom dplyr left_join
 #' @importFrom purrr map map_df
 #'
@@ -39,6 +40,7 @@ epoch_data.default <- function(data, ...) {
 epoch_data.eeg_data <- function(data,
                                 events,
                                 time_lim = c(-1, 1),
+                                baseline = NULL,
                                 ...) {
 
   if (!any(events %in% unique(data$events$event_type))) {
@@ -99,7 +101,8 @@ epoch_data.eeg_data <- function(data,
                                    by = c("sample" = "sample"))
 
   # Check for any epochs that contain NAs
-  epoched_data <- split(epoched_data, epoched_data$epoch)
+  epoched_data <- split(epoched_data,
+                        epoched_data$epoch)
   na_epochs <- vapply(epoched_data,
                       function(x) any(is.na(x)),
                       FUN.VALUE = logical(1))
@@ -127,6 +130,7 @@ epoch_data.eeg_data <- function(data,
   epochs <- dplyr::left_join(epochs,
                              epoch_trigs,
                              by = "epoch")
+
   data <- eeg_epochs(data = epoched_data[, -1:-3],
                      srate = data$srate,
                      timings = epoched_data[, 1:3],
@@ -134,6 +138,11 @@ epoch_data.eeg_data <- function(data,
                      chan_info = data$chan_info,
                      reference = data$reference,
                      epochs = epochs)
+
+  if (!identical(baseline, "none")) {
+    data <- rm_baseline(data,
+                        time_lim = baseline)
+  }
   data
 }
 

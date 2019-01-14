@@ -49,6 +49,8 @@ compute_psd.eeg_data <- function(data,
                                  method = "Welch",
                                  ...) {
 
+
+  data <- rm_baseline(data)
   srate <- data$srate
 
   if (is.null(n_fft)) {
@@ -94,6 +96,8 @@ compute_psd.eeg_epochs <- function(data,
                                    method = "Welch",
                                    keep_trials = TRUE,
                                    ...) {
+
+  data <- rm_baseline(data)
   srate <- data$srate
   if (is.null(seg_length)) {
     seg_length <- n_fft
@@ -141,6 +145,7 @@ compute_psd.eeg_evoked <- function(data,
                                    n_fft = 256,
                                    method = "Welch",
                                    ...) {
+  data <- rm_baseline(data)
   srate <- data$srate
   if (is.null(seg_length)) {
     seg_length <- n_fft
@@ -220,9 +225,9 @@ welch_fft <- function(data,
     data_segs <- sweep(data_segs, 1, win, "*")
 
     if (n_fft > seg_length) {
-      data_segs <- apply(data_segs, 2,
-                         function(x) c(x,
-                                       numeric(n_fft - seg_length)))
+       data_segs <- apply(data_segs, 2,
+                          function(x) c(x,
+                                        numeric(n_fft - seg_length)))
     }
 
     data_fft <- mvfft(data_segs)
@@ -267,7 +272,7 @@ welch_fft <- function(data,
 
   #select first half of spectrum and double amps, output is power - uV^2 / Hz
   final_out <- final_out[1:(n_fft / 2 + 1), , drop = FALSE]
-  final_out[2:(n_fft / 2 + 1), ] <- (final_out[2:(n_fft / 2 + 1), ] * 2) ^ 2
+  #final_out[2:(n_fft / 2 + 1), ] <- (final_out[2:(n_fft / 2 + 1), ] * 2) ^ 2
   final_out <- data.frame(final_out,
                           frequency = freqs)
   final_out <- final_out[final_out$frequency > 0, ]

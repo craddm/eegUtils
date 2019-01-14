@@ -7,7 +7,8 @@
 \usage{
 epoch_data(data, ...)
 
-\method{epoch_data}{eeg_data}(data, events, time_lim = c(-1, 1), ...)
+\method{epoch_data}{eeg_data}(data, events, time_lim = c(-1, 1),
+  baseline = NULL, ...)
 }
 \arguments{
 \item{data}{Continuous data to be epoched.}
@@ -18,6 +19,8 @@ epoch_data(data, ...)
 
 \item{time_lim}{Time in seconds to form epoch around the events. Defaults to
 one second either side.}
+
+\item{baseline}{Baseline times to subtract. Defaults to NULL (mean centres epochs). Set to "none" to perform no corrections.}
 }
 \value{
 Returns an epoched object of class \code{eeg_epochs}
