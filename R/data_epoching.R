@@ -137,8 +137,13 @@ epoch_data.eeg_data <- function(data,
                      reference = data$reference,
                      epochs = epochs)
   if (!identical(baseline, "none")) {
-    data <- rm_baseline(data, time_lim = baseline)
+    data <- rm_baseline(data,
+                        time_lim = baseline)
   }
+
+  n_epochs <- length(unique(epochs$epoch))
+  message(paste("Creating", n_epochs, "epochs."))
+
   data
 }
 
