@@ -9,7 +9,8 @@
 #' @param ... Parameters passed to functions
 #' @export
 
-epoch_data <- function(data, ...) {
+epoch_data <- function(data,
+                       ...) {
   UseMethod("epoch_data", data)
 }
 
@@ -122,7 +123,8 @@ epoch_data.eeg_data <- function(data,
     data$epochs$recording <- NA
   }
 
-  epoch_trigs <- event_table[event_table$event_type %in% events, c("event_type", "epoch")]
+  epoch_trigs <- event_table[event_table$event_type %in% events,
+                             c("event_type", "epoch")]
   epochs <- tibble::tibble(epoch = unique(epoched_data$epoch),
                            recording = as.character(data$epochs$recording))
   epochs <- dplyr::left_join(epochs,
@@ -136,6 +138,7 @@ epoch_data.eeg_data <- function(data,
                      chan_info = data$chan_info,
                      reference = data$reference,
                      epochs = epochs)
+
   if (!identical(baseline, "none")) {
     data <- rm_baseline(data,
                         time_lim = baseline)

@@ -4,10 +4,29 @@
 #' \code{eeg_epochs}. WARNING: with epoched data, epoch boundaries are currently
 #' ignored, which can result in minor edge artifacts.
 #'
+#' low_freq and high_freq are the low and high cutoff frequencies. Pass low freq
+#' or high freq alone to perform high-pass or low-pass filtering respectively.
+#' For band-pass or band-stop filters, pass both low_freq and high_freq.
+#'
+#' If low_freq < high_freq, bandpass filtering is performed.
+#'
+#' If low_freq > high_freq, bandstop filtering is performed.
+#'
+#' Note that the signal is first zero-meaned using either channel means or
+#' by-channel epoch means.
+#'
 #' @section FIR versus IIR filtering: Finite Impulse Response (FIR) filtering is
-#'   performed using an overlap-add FFT method. Infinite Impulse Response (IIR)
-#'   filtering is performed using a two-pass (once forwards, once reversed)
-#'   method to correct for phase alignment.
+#'   performed using an overlap-add FFT method. Note that this only performs a
+#'   single-pass; the data is shifted back in time by the group delay of the
+#'   filter to compensate for the phase delay imposed by the linear filtering
+#'   process. Infinite Impulse Response (IIR) filtering is performed using a
+#'   two-pass (once forwards, once reversed) method to correct for phase
+#'   alignment.
+#'
+#' @examples
+#' plot_psd(eeg_filter(demo_epochs, low_freq = 1, high_freq = 30))
+#' plot_psd(eeg_filter(demo_epochs, low_freq = 12, high_freq = 8))
+#' plot_psd(eeg_filter(demo_epochs, low_freq = 12, high_freq = 8, method = "iir"))
 #'
 #' @param .data An \code{eeg_data} or \code{eeg_epochs} object to be filtered
 #' @param ... Additional parameters.

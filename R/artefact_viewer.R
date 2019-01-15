@@ -33,14 +33,13 @@ view_artefacts <- function(data) {
     shinydashboard::dashboardBody(
       shinydashboard::tabItems(
         shinydashboard::tabItem(tabName = "plotly_chans",
-                                h2("plotly chans"),
+                                h2("Channel statistics"),
                                 channelPlotly(chan_dat),
                                 plotly::plotlyOutput("erpplot")
                                 ),
         shinydashboard::tabItem(tabName = "plotly_epochs",
-                                h2("plotly epochs"),
+                                h2("Epoch statistics"),
                                 epochPlotly(epoch_dat))
-                                #verbatimTextOutput("selection"))
       )
     )
   )
@@ -144,7 +143,8 @@ epochPlotly <- function(id,
       shinydashboard::box(plotly::plotlyOutput("plotly_evars",
                                                height = 250)),
       shinydashboard::box(plotly::plotlyOutput("plotly_kurt",
-                                    height = 250))
+                                    height = 250,
+                                    width = "auto"))
     )
   )
 }

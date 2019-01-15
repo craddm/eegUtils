@@ -254,8 +254,6 @@ convert_to_csd <- function(data,
   if (all(c("cart_x", "cart_y", "cart_z") %in% names(data$chan_info))) {
     xyz_coords <- data$chan_info[, c("cart_x", "cart_y", "cart_z")]
     #normalise to unit sphere
-    #rads <- sqrt(xyz_coords$cart_x ^ 2 + xyz_coords$cart_y ^ 2 + xyz_coords$cart_z ^ 2)
-    #xyz_coords <- xyz_coords / rads
     xyz_coords <- norm_sphere(xyz_coords)
   } else {
     xyz_coords <- sph_to_cart(data$chan_info$theta,
