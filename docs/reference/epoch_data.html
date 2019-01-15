@@ -138,7 +138,8 @@ around each event.</p>
     <pre class="usage"><span class='fu'>epoch_data</span>(<span class='no'>data</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for eeg_data</span>
-<span class='fu'>epoch_data</span>(<span class='no'>data</span>, <span class='no'>events</span>, <span class='kw'>time_lim</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(-<span class='fl'>1</span>, <span class='fl'>1</span>), <span class='no'>...</span>)</pre>
+<span class='fu'>epoch_data</span>(<span class='no'>data</span>, <span class='no'>events</span>, <span class='kw'>time_lim</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(-<span class='fl'>1</span>, <span class='fl'>1</span>),
+  <span class='kw'>baseline</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -159,6 +160,10 @@ around each event.</p>
       <th>time_lim</th>
       <td><p>Time in seconds to form epoch around the events. Defaults to
 one second either side.</p></td>
+    </tr>
+    <tr>
+      <th>baseline</th>
+      <td><p>Baseline times to subtract. Defaults to NULL (mean centres epochs). Set to "none" to perform no corrections.</p></td>
     </tr>
     </table>
     

@@ -26,6 +26,7 @@ rm_baseline.eeg_data <- function(data,
 
   if (is.null(time_lim)) {
     baseline_dat <- colMeans(data$signals)
+    message("Removing channel means...")
   } else {
     base_times <- select_times(data,
                                time_lim = time_lim)
@@ -79,7 +80,7 @@ rm_baseline.eeg_epochs <- function(data,
   # Reshape and turn back into data frame
   data$signals <- array(data$signals,
                         dim = c(n_epochs * n_times, n_chans))
-  data$signals <- as.data.frame(data$signals)
+  data$signals <- tibble::as_tibble(data$signals)
   names(data$signals) <- elecs
   data
 }

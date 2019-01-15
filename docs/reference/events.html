@@ -169,8 +169,8 @@
 #&gt; </span><span style='color: #555555;'> 8</span><span>       </span><span style='text-decoration: underline;'>24</span><span>554      48.0         213     8     0
 #&gt; </span><span style='color: #555555;'> 9</span><span>       </span><span style='text-decoration: underline;'>27</span><span>379      53.5         222     9     0
 #&gt; </span><span style='color: #555555;'>10</span><span>       </span><span style='text-decoration: underline;'>30</span><span>306      59.2         208    10     0
-#&gt; </span><span style='color: #555555;'># ... with 70 more rows</span><span></div><div class='input'><span class='fu'>events</span>(<span class='no'>demo_epochs</span>) <span class='kw'>&lt;-</span> <span class='fu'><a href='http://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span>(<span class='fu'>events</span>(<span class='no'>demo_epochs</span>),
- <span class='kw'>sf</span> <span class='kw'>=</span> <span class='kw pkg'>dplyr</span><span class='kw ns'>::</span><span class='fu'><a href='http://dplyr.tidyverse.org/reference/case_when.html'>case_when</a></span>(
+#&gt; </span><span style='color: #555555;'># ... with 70 more rows</span><span></div><div class='input'><span class='fu'>events</span>(<span class='no'>demo_epochs</span>) <span class='kw'>&lt;-</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span>(<span class='fu'>events</span>(<span class='no'>demo_epochs</span>),
+ <span class='kw'>sf</span> <span class='kw'>=</span> <span class='kw pkg'>dplyr</span><span class='kw ns'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/case_when.html'>case_when</a></span>(
          <span class='no'>event_type</span> <span class='kw'>%%</span> <span class='fl'>2</span> <span class='kw'>==</span> <span class='fl'>0</span> ~ <span class='st'>"HSF"</span>,
          <span class='no'>event_type</span> <span class='kw'>%%</span> <span class='fl'>2</span> <span class='kw'>==</span> <span class='fl'>1</span> ~ <span class='st'>"LSF"</span>,
  ))

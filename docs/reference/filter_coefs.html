@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Objects exported from other packages — reexports • eegUtils</title>
+<title>Generate filter coefficients — filter_coefs • eegUtils</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,13 +30,9 @@
 
 
 
-<meta property="og:title" content="Objects exported from other packages — reexports" />
+<meta property="og:title" content="Generate filter coefficients — filter_coefs" />
 
-<meta property="og:description" content="These objects are imported from other packages. Follow the links
-below to see their documentation.
-
-  dplyrfilter, select, mutate
-" />
+<meta property="og:description" content="Generate filter coefficients for an IIR or FIR filter." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -124,27 +120,46 @@ below to see their documentation.
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Objects exported from other packages</h1>
-    <small class="dont-index">Source: <a href='https://github.com/craddm/eegUtils/blob/master/R/dplyr-extensions.R'><code>R/dplyr-extensions.R</code></a></small>
-    <div class="hidden name"><code>reexports.Rd</code></div>
+    <h1>Generate filter coefficients</h1>
+    <small class="dont-index">Source: <a href='https://github.com/craddm/eegUtils/blob/master/R/filtering.R'><code>R/filtering.R</code></a></small>
+    <div class="hidden name"><code>filter_coefs.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>These objects are imported from other packages. Follow the links
-below to see their documentation.</p>
-<dl class='dl-horizontal'>
-  <dt>dplyr</dt><dd><p><code><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></code>, <code><a href='https://dplyr.tidyverse.org/reference/select.html'>select</a></code>, <code><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></code></p></dd>
-</dl>
+    <p>Generate filter coefficients for an IIR or FIR filter.</p>
     
     </div>
 
-        
+    <pre class="usage"><span class='fu'>filter_coefs</span>(<span class='no'>method</span>, <span class='no'>filt_pars</span>, <span class='no'>filter_order</span>, <span class='no'>window</span>)</pre>
+    
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>method</th>
+      <td><p>IIR or FIR</p></td>
+    </tr>
+    <tr>
+      <th>filt_pars</th>
+      <td><p>output of parse_filt_freqs</p></td>
+    </tr>
+    <tr>
+      <th>filter_order</th>
+      <td><p>order of the filter in samples</p></td>
+    </tr>
+    <tr>
+      <th>window</th>
+      <td><p>Ignored for IIR</p></td>
+    </tr>
+    </table>
+    
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
+      <li><a href="#arguments">Arguments</a></li>
                 </ul>
 
   </div>

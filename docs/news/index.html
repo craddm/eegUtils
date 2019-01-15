@@ -132,11 +132,11 @@
 <li>Some wrappers around <code>dplyr</code> functions added:
 <ul>
 <li>
-<code><a href="http://dplyr.tidyverse.org/reference/select.html">select()</a></code> now works for selecting electrodes from <code>eeg_data</code> and <code>eeg_epochs</code> objects.</li>
+<code><a href="https://dplyr.tidyverse.org/reference/select.html">select()</a></code> now works for selecting electrodes from <code>eeg_data</code> and <code>eeg_epochs</code> objects.</li>
 <li>
-<code><a href="http://dplyr.tidyverse.org/reference/filter.html">filter()</a></code> filters by time points or epochs from <code>eeg_data</code> and <code>eeg_epochs</code> objects.</li>
+<code><a href="https://dplyr.tidyverse.org/reference/filter.html">filter()</a></code> filters by time points or epochs from <code>eeg_data</code> and <code>eeg_epochs</code> objects.</li>
 <li>
-<code><a href="http://dplyr.tidyverse.org/reference/mutate.html">mutate()</a></code> adds columns to the <code>signals</code> from <code>eeg_data</code> and <code>eeg_epochs</code> objects.</li>
+<code><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate()</a></code> adds columns to the <code>signals</code> from <code>eeg_data</code> and <code>eeg_epochs</code> objects.</li>
 </ul>
 </li>
 <li>
@@ -147,7 +147,16 @@
 <li>
 <code><a href="../reference/channels.html">channels()</a></code> function added to easily access and modify the chan_info structure of all <code>eegUtils</code> objects.</li>
 <li>
-<code>eeg_ar_eogreg()</code> function added for removing eye movement activity using regression.</li>
+<code><a href="../reference/ar_eogreg.html">ar_eogreg()</a></code> function added for removing eye movement activity using regression.</li>
+<li>
+<code><a href="../reference/eeg_filter.html">eeg_filter()</a></code> function added for a unified method of filtering using either FIR or IIR
+<ul>
+<li>
+<code><a href="../reference/eeg_filter.html">eeg_filter()</a></code> supports use of multiple threads/cores through the <code>future</code> package.</li>
+<li>
+<code><a href="../reference/iir_filt.html">iir_filt()</a></code> will be deprecated</li>
+</ul>
+</li>
 </ul>
 </div>
 <div id="internal-changes-bug-fixes" class="section level3">
@@ -157,18 +166,19 @@
 <li>
 <code>data.table</code> now used in the following functions internally:
 <ul>
-<li><code>reref_eeg</code></li>
-<li><code>iir_filt</code></li>
+<li><code><a href="../reference/reref_eeg.html">reref_eeg()</a></code></li>
+<li><code><a href="../reference/iir_filt.html">iir_filt()</a></code></li>
 <li><code><a href="../reference/eeg_FASTER.html">eeg_FASTER()</a></code></li>
 </ul>
 </li>
 <li>
-<code>reref_eeg</code> now correctly excludes electrodes as requested.</li>
+<code><a href="../reference/reref_eeg.html">reref_eeg()</a></code> now correctly excludes electrodes as requested.</li>
 <li>
-<code>iir_filt</code> now correctly respects epoch boundaries.</li>
+<code><a href="../reference/iir_filt.html">iir_filt()</a></code> now correctly respects epoch boundaries.</li>
 <li>New field <code>epochs</code> added to <code>eeg_data</code> and <code>eeg_epochs</code> objects.</li>
 <li>
 <code>chan_info</code> changes to make chan_info consistent across systems.</li>
+<li>Corrected scaling factor for PSD</li>
 </ul>
 </div>
 </div>

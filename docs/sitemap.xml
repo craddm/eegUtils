@@ -100,6 +100,9 @@
     <loc>http://craddm.github.io/eegUtils/reference/create_head.html</loc>
   </url>
   <url>
+    <loc>http://craddm.github.io/eegUtils/reference/create_psd_plot.html</loc>
+  </url>
+  <url>
     <loc>http://craddm.github.io/eegUtils/reference/create_tc.html</loc>
   </url>
   <url>
@@ -136,6 +139,9 @@
     <loc>http://craddm.github.io/eegUtils/reference/eeg_FASTER.html</loc>
   </url>
   <url>
+    <loc>http://craddm.github.io/eegUtils/reference/eeg_filter.html</loc>
+  </url>
+  <url>
     <loc>http://craddm.github.io/eegUtils/reference/eeg_stats.html</loc>
   </url>
   <url>
@@ -163,6 +169,12 @@
     <loc>http://craddm.github.io/eegUtils/reference/erp_scalp.html</loc>
   </url>
   <url>
+    <loc>http://craddm.github.io/eegUtils/reference/est_filt_order.html</loc>
+  </url>
+  <url>
+    <loc>http://craddm.github.io/eegUtils/reference/est_tbw.html</loc>
+  </url>
+  <url>
     <loc>http://craddm.github.io/eegUtils/reference/events.html</loc>
   </url>
   <url>
@@ -181,7 +193,16 @@
     <loc>http://craddm.github.io/eegUtils/reference/fft_n.html</loc>
   </url>
   <url>
+    <loc>http://craddm.github.io/eegUtils/reference/filter_coefs.html</loc>
+  </url>
+  <url>
+    <loc>http://craddm.github.io/eegUtils/reference/filt_kernel.html</loc>
+  </url>
+  <url>
     <loc>http://craddm.github.io/eegUtils/reference/find_times.html</loc>
+  </url>
+  <url>
+    <loc>http://craddm.github.io/eegUtils/reference/fix_grpdelay.html</loc>
   </url>
   <url>
     <loc>http://craddm.github.io/eegUtils/reference/flip_x.html</loc>
@@ -274,7 +295,13 @@
     <loc>http://craddm.github.io/eegUtils/reference/ortho_norm.html</loc>
   </url>
   <url>
+    <loc>http://craddm.github.io/eegUtils/reference/pad.html</loc>
+  </url>
+  <url>
     <loc>http://craddm.github.io/eegUtils/reference/parse_chaninfo.html</loc>
+  </url>
+  <url>
+    <loc>http://craddm.github.io/eegUtils/reference/parse_filt_freqs.html</loc>
   </url>
   <url>
     <loc>http://craddm.github.io/eegUtils/reference/parse_for_bf.html</loc>
@@ -346,6 +373,9 @@
     <loc>http://craddm.github.io/eegUtils/reference/rotate_angle.html</loc>
   </url>
   <url>
+    <loc>http://craddm.github.io/eegUtils/reference/run_fir.html</loc>
+  </url>
+  <url>
     <loc>http://craddm.github.io/eegUtils/reference/run_ICA.html</loc>
   </url>
   <url>
@@ -367,10 +397,16 @@
     <loc>http://craddm.github.io/eegUtils/reference/select_times.html</loc>
   </url>
   <url>
+    <loc>http://craddm.github.io/eegUtils/reference/select_window.html</loc>
+  </url>
+  <url>
     <loc>http://craddm.github.io/eegUtils/reference/set_palette.html</loc>
   </url>
   <url>
     <loc>http://craddm.github.io/eegUtils/reference/sobi_ICA.html</loc>
+  </url>
+  <url>
+    <loc>http://craddm.github.io/eegUtils/reference/spec_inv.html</loc>
   </url>
   <url>
     <loc>http://craddm.github.io/eegUtils/reference/spheric_spline.html</loc>
@@ -400,6 +436,9 @@
     <loc>http://craddm.github.io/eegUtils/reference/topo_norm.html</loc>
   </url>
   <url>
+    <loc>http://craddm.github.io/eegUtils/reference/unpad.html</loc>
+  </url>
+  <url>
     <loc>http://craddm.github.io/eegUtils/reference/validate_channels.html</loc>
   </url>
   <url>
@@ -410,6 +449,9 @@
   </url>
   <url>
     <loc>http://craddm.github.io/eegUtils/reference/welch_fft.html</loc>
+  </url>
+  <url>
+    <loc>http://craddm.github.io/eegUtils/reference/zero_vec.html</loc>
   </url>
   <url>
     <loc>http://craddm.github.io/eegUtils/articles/data_structures.html</loc>

@@ -11,7 +11,7 @@ An introduction to its use can be found at the *eegUtils* website [https://cradd
 ## Pre-processing functions
 * `import_raw()` - for import of BDF/EDF (BioSemi/European Data Format) and .CNT (Neuroscan) EEG files
 * `import_set()` - for import of EEGLAB .set files.
-* `iir_filter()` - for performing IIR Butterworth filtering on data  (FIR filtering in development)
+* `eeg_filter()` - for performing IIR or FIR filtering on data
 * `reref_eeg()` - for re-referencing data
 * `epoch_data()` - for creating epochs around trigger events
 * `tag_events()` - for labelling events 

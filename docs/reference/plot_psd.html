@@ -136,7 +136,7 @@ PSD is calculated using Welch's method.</p>
     <pre class="usage"><span class='fu'>plot_psd</span>(<span class='no'>data</span>, <span class='kw'>freq_range</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for eeg_epochs</span>
-<span class='fu'>plot_psd</span>(<span class='no'>data</span>, <span class='kw'>freq_range</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>n_fft</span> <span class='kw'>=</span> <span class='fl'>512</span>,
+<span class='fu'>plot_psd</span>(<span class='no'>data</span>, <span class='kw'>freq_range</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>n_fft</span> <span class='kw'>=</span> <span class='fl'>256</span>,
   <span class='kw'>seg_length</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>noverlap</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for eeg_data</span>
@@ -145,7 +145,7 @@ PSD is calculated using Welch's method.</p>
 
 <span class='co'># S3 method for eeg_ICA</span>
 <span class='fu'>plot_psd</span>(<span class='no'>data</span>, <span class='kw'>freq_range</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>components</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>seg_length</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>noverlap</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>n_fft</span> <span class='kw'>=</span> <span class='fl'>512</span>, <span class='no'>...</span>)
+  <span class='kw'>seg_length</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>noverlap</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>n_fft</span> <span class='kw'>=</span> <span class='fl'>256</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for data.frame</span>
 <span class='fu'>plot_psd</span>(<span class='no'>data</span>, <span class='kw'>freq_range</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
@@ -168,7 +168,7 @@ PSD is calculated using Welch's method.</p>
     </tr>
     <tr>
       <th>n_fft</th>
-      <td><p>Number of points to use for the underlying FFTs. Defaults to 512
+      <td><p>Number of points to use for the underlying FFTs. Defaults to 256
 for <code>eeg_epochs</code> or minimum of 2048 or the signal length for
 <code>eeg_data</code>.</p></td>
     </tr>

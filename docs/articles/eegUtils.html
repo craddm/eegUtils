@@ -89,7 +89,7 @@
       <h1>EEG Utils</h1>
                         <h4 class="author">Matt Craddock</h4>
             
-            <h4 class="date">2018-12-31</h4>
+            <h4 class="date">2019-01-15</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/craddm/eegUtils/blob/master/vignettes/eegUtils.Rmd"><code>vignettes/eegUtils.Rmd</code></a></small>
       <div class="hidden name"><code>eegUtils.Rmd</code></div>
@@ -224,12 +224,12 @@
 <div id="tidyverse-functions" class="section level1">
 <h1 class="hasAnchor">
 <a href="#tidyverse-functions" class="anchor"></a>Tidyverse functions</h1>
-<p>In addition, there are overloaded versions of some <code>dplyr</code> functions that operate on the <code>signals</code> element of <code>eeg_data</code> and <code>eeg_epochs</code> objects. For example, <code><a href="http://dplyr.tidyverse.org/reference/select.html">select()</a></code> can be used to choose particular electrodes, and <code><a href="http://dplyr.tidyverse.org/reference/filter.html">filter()</a></code> can be used to filter out epochs or timepoints. <code><a href="http://dplyr.tidyverse.org/reference/mutate.html">mutate()</a></code> can be used to add new columns (e.g. creating ROIs from multiple electrodes).</p>
+<p>In addition, there are overloaded versions of some <code>dplyr</code> functions that operate on the <code>signals</code> element of <code>eeg_data</code> and <code>eeg_epochs</code> objects. For example, <code><a href="https://dplyr.tidyverse.org/reference/select.html">select()</a></code> can be used to choose particular electrodes, and <code><a href="https://dplyr.tidyverse.org/reference/filter.html">filter()</a></code> can be used to filter out epochs or timepoints. <code><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate()</a></code> can be used to add new columns (e.g. creating ROIs from multiple electrodes).</p>
 <div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" data-line-number="1"></a>
 <a class="sourceLine" id="cb12-2" data-line-number="2">eeg_example <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb12-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(<span class="dt">occipital =</span> (A29 <span class="op">+</span><span class="st"> </span>A27 <span class="op">+</span><span class="st"> </span>B32) <span class="op">/</span><span class="st"> </span><span class="dv">3</span>) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb12-4" data-line-number="4"><span class="st">  </span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/select.html">select</a></span>(A29, B6, occipital) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb12-5" data-line-number="5"><span class="st">  </span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(epoch <span class="op">&lt;=</span><span class="st"> </span><span class="dv">60</span>, time <span class="op">&lt;</span><span class="st"> </span><span class="fl">.5</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb12-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(<span class="dt">occipital =</span> (A29 <span class="op">+</span><span class="st"> </span>A27 <span class="op">+</span><span class="st"> </span>B32) <span class="op">/</span><span class="st"> </span><span class="dv">3</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb12-4" data-line-number="4"><span class="st">  </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(A29, B6, occipital) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb12-5" data-line-number="5"><span class="st">  </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(epoch <span class="op">&lt;=</span><span class="st"> </span><span class="dv">60</span>, time <span class="op">&lt;</span><span class="st"> </span><span class="fl">.5</span>) <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb12-6" data-line-number="6"><span class="st">  </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/as.data.frame">as.data.frame</a></span>(<span class="dt">long =</span> <span class="ot">TRUE</span>) <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb12-7" data-line-number="7"><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> time, <span class="dt">y =</span> amplitude)) <span class="op">+</span></a>
 <a class="sourceLine" id="cb12-8" data-line-number="8"><span class="st">  </span><span class="kw">geom_line</span>(<span class="kw">aes</span>(<span class="dt">group =</span> epoch), <span class="dt">alpha =</span> <span class="fl">0.2</span>) <span class="op">+</span><span class="st"> </span></a>

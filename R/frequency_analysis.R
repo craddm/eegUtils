@@ -18,7 +18,7 @@
 #' to it.
 #'
 #' \code{noverlap} specifies the amount of overlap between windows in sampling
-#' points. If not specified, it defaults to 50% overlap between segments.
+#' points. If not specified, it defaults to 50\% overlap between segments.
 #'
 #' @examples
 #' compute_psd(demo_epochs)

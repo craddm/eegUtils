@@ -59,7 +59,7 @@ minimum of 2048 or the length of the signal for continuous \code{eeg_data}.
 to it.
 
 \code{noverlap} specifies the amount of overlap between windows in sampling
-points. If not specified, it defaults to 50% overlap between segments.
+points. If not specified, it defaults to 50\% overlap between segments.
 }
 \section{Methods (by class)}{
 \itemize{

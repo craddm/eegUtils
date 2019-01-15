@@ -6,11 +6,14 @@
     - `select()` now works for selecting electrodes from `eeg_data` and `eeg_epochs` objects.
     - `filter()` filters by time points or epochs from `eeg_data` and `eeg_epochs` objects.
     - `mutate()` adds columns to the `signals` from `eeg_data` and `eeg_epochs` objects.
-- `topoplot()` now has a `groups` parameter that allows the possibility of facetting by  event labels.
+- `topoplot()` now has a `groups` parameter that allows the possibility of facetting by event labels.
 - more Biosemi montages added
 - `events()` function added to easily access and modify the events structure of all `eegUtils` objects.
 - `channels()` function added to easily access and modify the chan_info structure of all `eegUtils` objects.
 - `ar_eogreg()` function added for removing eye movement activity using regression.
+- `eeg_filter()` function added for a unified method of filtering using either FIR or IIR
+    - `eeg_filter()` supports use of multiple threads/cores through the `future` package.
+    - `iir_filt()` will be deprecated
 
 ### Internal changes / bug fixes
 - `data.table` now used in the following functions internally:
@@ -21,7 +24,7 @@
 - `iir_filt()` now correctly respects epoch boundaries.
 - New field `epochs` added to `eeg_data` and `eeg_epochs` objects.
 - `chan_info` changes to make chan_info consistent across systems. 
-
+- Corrected scaling factor for PSD
 
 # eegUtils 0.3.0
 
