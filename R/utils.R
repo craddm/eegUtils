@@ -15,28 +15,19 @@ as.data.frame.eeg_data <- function(x,
                                    row.names = NULL,
                                    optional = FALSE,
                                    long = FALSE,
-                                   events = FALSE, ...) {
+                                   events = FALSE,
+                                   ...) {
   df <- data.frame(x$signals,
                    x$timings)
 
   if (long) {
-    if (x$continuous) {
-      df <- tidyr::gather(df,
-                          electrode,
-                          amplitude,
-                          -time,
-                          -sample,
-                          factor_key = T)
-    } else {
-      df <- tidyr::gather(df,
-                          electrode,
-                          amplitude,
-                          -time,
-                          -sample,
-                          -epoch,
-                          factor_key = T)
+    df <- tidyr::gather(df,
+                        electrode,
+                        amplitude,
+                        -time,
+                        -sample,
+                        factor_key = T)
     }
-  }
 
   if (events) {
     df <- dplyr::left_join(df,
@@ -211,7 +202,6 @@ as.data.frame.eeg_ICA <- function(x,
   } else {
     x$comp_activations <- as.data.frame(x$comp_activations)
   }
-
 
   if (!is.null(cond_labels)) {
     lab_check <- label_check(cond_labels,

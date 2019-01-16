@@ -341,6 +341,8 @@ eeg_combine.eeg_epochs <- function(data, ...) {
                                     purrr::map_df(args, ~.$events))
     data$timings <- dplyr::bind_rows(data$timings,
                         purrr::map_df(args, ~.$timings))
+    data$epochs <- dplyr::bind_rows(data$epochs,
+                                    purrr::map_df(args, ~.$epochs))
   } else {
     stop("All inputs must be eeg_epochs objects.")
   }
