@@ -4,7 +4,7 @@
 \alias{import_vhdr}
 \title{Function for importing Brain Vision Analyzer files}
 \usage{
-import_vhdr(file_name)
+import_vhdr(file_name, recording)
 }
 \arguments{
 \item{file_name}{file name of the header file.}

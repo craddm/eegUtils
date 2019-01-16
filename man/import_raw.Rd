@@ -4,7 +4,8 @@
 \alias{import_raw}
 \title{Function for reading raw data.}
 \usage{
-import_raw(file_name, file_path = NULL, chan_nos = NULL)
+import_raw(file_name, file_path = NULL, chan_nos = NULL,
+  recording = NULL)
 }
 \arguments{
 \item{file_name}{File to import. Should include file extension.}
@@ -12,6 +13,8 @@ import_raw(file_name, file_path = NULL, chan_nos = NULL)
 \item{file_path}{Path to file name, if not included in filename.}
 
 \item{chan_nos}{Channels to import. All channels are included by default.}
+
+\item{recording}{Name of the recording. By default, the filename will be used.}
 }
 \description{
 Currently BDF/EDF, 32-bit .CNT, and Brain Vision Analyzer files are

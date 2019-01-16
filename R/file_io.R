@@ -9,6 +9,7 @@
 #' @param file_name File to import. Should include file extension.
 #' @param file_path Path to file name, if not included in filename.
 #' @param chan_nos Channels to import. All channels are included by default.
+#' @param recording Name of the recording. By default, the filename will be used.
 #' @import edfReader
 #' @import tools
 #' @importFrom purrr map_df is_empty
@@ -17,16 +18,27 @@
 
 import_raw <- function(file_name,
                        file_path = NULL,
-                       chan_nos = NULL) {
+                       chan_nos = NULL,
+                       recording = NULL) {
+
   file_type <- tools::file_ext(file_name)
 
+  if (is.null(recording)) {
+    recording <- basename(tools::file_path_sans_ext(file_name))
+  }
+
   if (file_type == "bdf" | file_type == "edf") {
+    message(paste("Importing",
+                  file_name,
+                  "as",
+                  toupper(file_type)))
+
     data <- edfReader::readEdfSignals(edfReader::readEdfHeader(file_name))
 
     #check for an annotations channel
     anno_chan <- which(vapply(data,
                               function(x) isTRUE(x$isAnnotation),
-                 FUN.VALUE = logical(1)))
+                              FUN.VALUE = logical(1)))
 
     #remove annotations if present - could put in separate list...
     if (length(anno_chan) > 0) {
@@ -38,6 +50,8 @@ import_raw <- function(file_name,
     sigs <- purrr::map_df(data, "signal")
     srate <- data[[1]]$sRate
 
+    # Biosemi triggers should be in the range 0-255, but sometimes are read from
+    # the wrong "end"
     if ("Status" %in% names(sigs)) {
       events <- sigs$Status %% (256)
     } else {
@@ -60,21 +74,25 @@ import_raw <- function(file_name,
     }
 
     sigs <- tibble::as_tibble(sigs[, chan_nos])
+
+    # The events are often recorded over a number of samples, but should
+    # typically be point events; this finds
     events_diff <- diff(events)
-    event_table <- tibble::tibble(event_onset = which(events_diff > 0) + 1,
-                                  event_time = which(events_diff > 0) / srate,
-                              event_type = events[which(events_diff > 0) + 1])
+    event_table <-
+      tibble::tibble(event_onset = which(events_diff > 0) + 1,
+                     event_time = which(events_diff > 0) / srate,
+                     event_type = events[which(events_diff > 0) + 1])
 
     epochs <- data.frame(epoch = 1,
-                         recording = basename(tools::file_path_sans_ext(file_name)))
+                         recording = recording)
     data <- eeg_data(data = sigs,
                      srate = srate,
                      events = event_table,
                      timings = timings,
-                     continuous = TRUE,
                      epochs = epochs)
     data
   } else if (file_type == "cnt") {
+    message(paste("Importing Neuroscan", toupper(file_type), file_name))
     data <- import_cnt(file_name)
     sigs <- tibble::as.tibble(t(data$chan_data))
     names(sigs) <- data$chan_info$electrode
@@ -86,22 +104,21 @@ import_raw <- function(file_name,
                      event_time = (data$event_list$offset + 1) / srate,
                      event_type = data$event_list$event_type)
     epochs <- data.frame(epoch = 1,
-                         recording = basename(tools::file_path_sans_ext(file_name)))
+                         recording = recording)
     data <- eeg_data(data = sigs,
                      srate = srate,
                      chan_info = validate_channels(data$chan_info),
                      events = event_table,
                      timings = timings,
-                     continuous = TRUE,
                      epochs = epochs)
     } else if (file_type == "vhdr") {
-      data <- import_vhdr(file_name)
+      message(paste("Importing Brain Vision Analyzer file", file_name))
+      data <- import_vhdr(file_name, recording = recording)
     } else {
       stop("Unsupported filetype")
     }
   data
 }
-
 
 #' Import Neuroscan .CNT file
 #'
@@ -120,17 +137,36 @@ import_cnt <- function(file_name) {
   # rate...
 
   pos <- seek(cnt_file, 12)
-  next_file <- readBin(cnt_file, integer(), size = 4, n = 1, endian = "little")
+  next_file <- readBin(cnt_file,
+                       integer(),
+                       size = 4,
+                       n = 1,
+                       endian = "little")
   pos <- seek(cnt_file, 353)
-  n_events <- readBin(cnt_file, integer(), n = 1, endian = "little")
+  n_events <- readBin(cnt_file,
+                      integer(),
+                      n = 1,
+                      endian = "little")
   pos <- seek(cnt_file, 370)
-  n_channels <- readBin(cnt_file, integer(), n = 1, size = 2,
-                        signed = FALSE, endian = "little")
+  n_channels <- readBin(cnt_file,
+                        integer(),
+                        n = 1,
+                        size = 2,
+                        signed = FALSE,
+                        endian = "little")
   pos <- seek(cnt_file, 376)
-  samp_rate <-  readBin(cnt_file, integer(), n = 1, size = 2,
-                        signed = FALSE, endian = "little")
+  samp_rate <-  readBin(cnt_file,
+                        integer(),
+                        n = 1,
+                        size = 2,
+                        signed = FALSE,
+                        endian = "little")
   pos <- seek(cnt_file, 864)
-  n_samples <- readBin(cnt_file, integer(), size = 4, n = 1, endian = "little")
+  n_samples <- readBin(cnt_file,
+                       integer(),
+                       size = 4,
+                       n = 1,
+                       endian = "little")
   pos <- seek(cnt_file, 886)
   event_table_pos <- readBin(cnt_file,
                              integer(),
@@ -161,9 +197,13 @@ import_cnt <- function(file_name) {
                                     n = 1, endian = "little")
     chan_df$chan_no[i] <- i
     pos <- seek(cnt_file, chan_start + 19)
-    chan_df$x[i] <- readBin(cnt_file, double(), size = 4,
+    chan_df$x[i] <- readBin(cnt_file,
+                            double(),
+                            size = 4,
                             n = 1, endian = "little") # x coord
-    chan_df$y[i] <- readBin(cnt_file, double(), size = 4,
+    chan_df$y[i] <- readBin(cnt_file,
+                            double(),
+                            size = 4,
                             n = 1, endian = "little") # y coord
 
     pos <- seek(cnt_file, chan_start + 47)
@@ -236,28 +276,59 @@ import_cnt <- function(file_name) {
                         )
 
   for (i in 1:n_events) {
-    ev_list$event_type[i] <- readBin(cnt_file, integer(), size = 2,
-                                     n = 1, endian = "little")
-    ev_list$keyboard[i] <- readBin(cnt_file, integer(), size = 1,
-                                   n = 1, endian = "little")
-    temp <- readBin(cnt_file, integer(), size = 1, n = 1, signed = FALSE,
+    ev_list$event_type[i] <- readBin(cnt_file,
+                                     integer(),
+                                     size = 2,
+                                     n = 1,
+                                     endian = "little")
+    ev_list$keyboard[i] <- readBin(cnt_file,
+                                   integer(),
+                                   size = 1,
+                                   n = 1,
+                                   endian = "little")
+    temp <- readBin(cnt_file,
+                    integer(),
+                    size = 1,
+                    n = 1,
+                    signed = FALSE,
                     endian = "little")
     ev_list$keypad_accept[i] <- bitwAnd(15, temp)
     ev_list$accept_evl[i] <- bitwShiftR(temp, 4)
-    ev_list$offset[i] <- readBin(cnt_file, integer(), size = 4,
-                                 n = 1, endian = "little")
-    ev_list$type[i] <- readBin(cnt_file, integer(), size = 2,
-                               n = 1, endian = "little")
-    ev_list$code[i] <- readBin(cnt_file, integer(), size = 2,
-                               n = 1, endian = "little")
-    ev_list$latency[i] <- readBin(cnt_file, double(), size = 4,
-                                  n = 1, endian = "little")
-    ev_list$epochevent[i] <- readBin(cnt_file, integer(), size = 1,
-                                     n = 1, endian = "little")
-    ev_list$accept[i] <- readBin(cnt_file, integer(), size = 1,
-                                 n = 1, endian = "little")
-    ev_list$accuracy[i] <- readBin(cnt_file, integer(), size = 1,
-                                   n = 1, endian = "little")
+    ev_list$offset[i] <- readBin(cnt_file,
+                                 integer(),
+                                 size = 4,
+                                 n = 1,
+                                 endian = "little")
+    ev_list$type[i] <- readBin(cnt_file,
+                               integer(),
+                               size = 2,
+                               n = 1,
+                               endian = "little")
+    ev_list$code[i] <- readBin(cnt_file,
+                               integer(),
+                               size = 2,
+                               n = 1,
+                               endian = "little")
+    ev_list$latency[i] <- readBin(cnt_file,
+                                  double(),
+                                  size = 4,
+                                  n = 1,
+                                  endian = "little")
+    ev_list$epochevent[i] <- readBin(cnt_file,
+                                     integer(),
+                                     size = 1,
+                                     n = 1,
+                                     endian = "little")
+    ev_list$accept[i] <- readBin(cnt_file,
+                                 integer(),
+                                 size = 1,
+                                 n = 1,
+                                 endian = "little")
+    ev_list$accuracy[i] <- readBin(cnt_file,
+                                   integer(),
+                                   size = 1,
+                                   n = 1,
+                                   endian = "little")
   }
 
   ev_list$offset <- (ev_list$offset - beg_data) / (4 * n_channels) + 1
@@ -273,11 +344,12 @@ import_cnt <- function(file_name) {
 #' Function for importing Brain Vision Analyzer files
 #' @param file_name file name of the header file.
 #' @keywords internal
-import_vhdr <- function(file_name) {
+import_vhdr <- function(file_name,
+                        recording) {
 
   .data <- read_vhdr(file_name)
   epochs <- data.frame(epoch = 1,
-                       recording = basename(tools::file_path_sans_ext(file_name)))
+                       recording = recording)
   .data$epochs <- epochs
   .data
 }
@@ -324,7 +396,9 @@ read_vhdr <- function(file_name) {
                     bin_format = bin_format,
                     multiplexed)
 
-  .data <- matrix(.data, ncol = n_chan, byrow = multiplexed)
+  .data <- matrix(.data,
+                  ncol = n_chan,
+                  byrow = multiplexed)
   .data <- tibble::as.tibble(.data)
   names(.data) <- chan_labels
   n_points <- nrow(.data)
@@ -345,9 +419,7 @@ read_vhdr <- function(file_name) {
                     events = .markers,
                     chan_info = chan_info,
                     timings = timings,
-                    reference = NULL,
-                    continuous = TRUE
-                    )
+                    reference = NULL)
   .data
 }
 
@@ -523,8 +595,10 @@ import_set <- function(file_name, df_out = FALSE) {
                               times))
   srate <- c(temp_dat$EEG[[which(var_names == "srate")]])
   names(signals) <- c(unique(chan_info$electrode), "time")
-  signals <- dplyr::group_by(signals, time)
-  signals <- dplyr::mutate(signals, epoch = 1:dplyr::n())
+  signals <- dplyr::group_by(signals,
+                             time)
+  signals <- dplyr::mutate(signals,
+                           epoch = 1:dplyr::n())
   signals <- dplyr::ungroup(signals)
 
   event_info <- temp_dat$EEG[[which(var_names == "event")]]
@@ -606,11 +680,9 @@ parse_chaninfo <- function(chan_info) {
                            "cart_z")]
   # EEGLAB co-ordinates are rotated 90 degrees compared to our coordinates,
   # and left-right flipped
-  #chan_info <- rotate_sph(chan_info, -90)
   chan_info$cart_y <- -chan_info$cart_y
   names(chan_info) <- names(chan_info)[c(1, 3, 2, 4)]
   chan_info <- chan_info[, c(1, 3, 2, 4)]
-  #chan_info <- flip_x(chan_info)
   sph_coords <- cart_to_spherical(chan_info[, c("cart_x", "cart_y", "cart_z")])
   xy <- project_elecs(sph_coords)
   chan_info <- dplyr::bind_cols(electrode = as.character(chan_info$electrode),
@@ -618,7 +690,6 @@ parse_chaninfo <- function(chan_info) {
                                 chan_info[, 2:4],
                                 xy)
   chan_info
-  #tibble::as.tibble(chan_info)
   }
 
 #' Parse BVA channel info
@@ -628,6 +699,7 @@ parse_chaninfo <- function(chan_info) {
 #' @keywords internal
 parse_vhdr_chans <- function(chan_labels,
                              chan_info) {
+
   init_chans <- data.frame(electrode = chan_labels)
   coords <- lapply(chan_info,
                    function(x) as.numeric(unlist(strsplit(x, split = ","))))
