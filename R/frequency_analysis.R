@@ -532,7 +532,8 @@ tf_morlet <- function(data,
                     dimensions = c("time",
                                    "electrode",
                                    "frequency",
-                                   "epoch"))
+                                   "epoch"),
+                    epochs = data$epochs)
     return(data)
   }
 

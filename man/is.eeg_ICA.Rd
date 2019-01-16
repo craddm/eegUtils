@@ -12,4 +12,7 @@ is.eeg_ICA(x)
 \description{
 Check if object is of class \code{eeg_ICA}
 }
+\author{
+Matt Craddock \email{matt@mattcraddock.com}
+}
 \keyword{internal}

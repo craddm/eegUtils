@@ -8,6 +8,7 @@
 #' @param timings Timing information.
 #' @param freq_info Frequencies and other useful information
 #' @param dimensions List of which dimension is which
+#' @param epochs Epoch information
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #' @keywords internal
 eeg_tfr <- function(data,
@@ -17,7 +18,8 @@ eeg_tfr <- function(data,
                     reference,
                     timings = NULL,
                     freq_info,
-                    dimensions) {
+                    dimensions,
+                    epochs = NULL) {
 
   value <- list(signals = data,
                 srate = srate,
@@ -26,18 +28,11 @@ eeg_tfr <- function(data,
                 reference = reference,
                 timings = timings,
                 freq_info = freq_info,
-                dimensions = dimensions)
+                dimensions = dimensions,
+                epochs = epochs)
   class(value) <- "eeg_tfr"
   value
 }
-
-#' Check if object is of class eeg_tfr
-#'
-#' @author Matt Craddock \email{matt@@mattcraddock.com}
-#' @param x Object to check.
-#'
-is.eeg_tfr <- function(x) inherits(x, "eeg_tfr")
-
 
 #' Function to create an object of class eeg_psd
 #'
@@ -47,8 +42,9 @@ is.eeg_tfr <- function(x) inherits(x, "eeg_tfr")
 #' @param timings Timing information - samples and sample /samplirng rate.
 #' @param freqs vector of frequencies
 #' @param dimensions List of which dimension is which
+#' @param epochs Epoch information
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
-#' @noRd
+#' @keywords internal
 eeg_psd <- function(data,
                     srate,
                     events,
@@ -63,7 +59,7 @@ eeg_psd <- function(data,
                 timings = timings,
                 freqs = freqs
                 )
-  class(value) <- "eeg_tfr"
+  class(value) <- "eeg_psd"
   value
 }
 
@@ -87,26 +83,6 @@ eeg_GA <- function(data,
   value
 }
 
-
-
-#' Function to create an S3 object of class \code{eeg_data}
-#'
-#' @noRd
-new_eeg_data <- function(data,
-                         srate,
-                         events = NULL,
-                         chan_info = NULL,
-                         timings = NULL,
-                         continuous = NULL,
-                         reference = NULL) {
-  stopifnot(is.double(srate))
-  stopifnot(is.data.frame(events))
-  structure(signals = data,
-            srate = srate,
-            events = events)
-
-}
-
 #' Function to create an S3 object of class "eeg_data".
 #'
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
@@ -126,9 +102,14 @@ eeg_data <- function(data,
                      events = NULL,
                      chan_info = NULL,
                      timings = NULL,
-                     continuous = NULL,
+                     continuous,
                      reference = NULL,
                      epochs = NULL) {
+
+  if (!missing(continuous)) {
+    message("Continuous parameter is deprecated and ignored")
+  }
+
   if (srate < 1) {
     stop("Sampling rate must be above 0")
   }
@@ -137,11 +118,47 @@ eeg_data <- function(data,
                 events = events,
                 chan_info = chan_info,
                 timings = timings,
-                continuous = continuous,
                 reference = reference,
                 epochs = epochs)
   class(value) <- "eeg_data"
   value
+}
+
+
+#' Check eeg_data structure
+#'
+#' Check for missing fields and add them if necessary.
+#'
+#' @noRd
+validate_eeg_data <- function(.data) {
+
+
+  if (exists(.data$signals)) {
+    check_numeric <- apply(.data$signals,
+                           2,
+                           is.numeric)
+    if (!all(check_numeric)) {
+      warning(paste("Non-numeric channels: ",
+                    channel_names(.data)[!check_numeric]))
+    }
+  }
+
+  if (!exists(.data$continuous)) {
+    .data$continuous <- NULL
+  }
+
+  if (!exists(.data$reference)) {
+    .data$reference <- append(.data,
+                              list(reference = NULL))
+  }
+
+  if (!is.null(.data$epochs)) {
+    .data$epochs <- data.frame(epoch = 1,
+                              recording = NA)
+  }
+
+  class(.data) <- "eeg_data"
+  .data
 }
 
 #' Function to create an S3 object of class "eeg_epochs".
@@ -176,6 +193,10 @@ eeg_epochs <- function(data,
                 epochs = epochs)
   class(value) <- c("eeg_epochs", "eeg_data")
   value
+}
+
+validate_eeg_epochs <- function(.data) {
+
 }
 
 
@@ -252,7 +273,7 @@ is.eeg_data <- function(x) inherits(x, "eeg_data")
 
 #' Check if object is of class "eeg_epochs".
 #'
-#' @author Matt Craddock \email{matt@mattcraddock.com}
+#' @author Matt Craddock \email{matt@@mattcraddock.com}
 #' @param x Object to check.
 #' @keywords internal
 
@@ -260,7 +281,7 @@ is.eeg_epochs <- function(x) inherits(x, "eeg_epochs")
 
 #' Check if object is of class \code{eeg_evoked}
 #'
-#' @author Matt Craddock \email{matt@mattcraddock.com}
+#' @author Matt Craddock \email{matt@@mattcraddock.com}
 #' @param x Object to check.
 #' @keywords internal
 is.eeg_evoked <- function(x) inherits(x, "eeg_evoked")
@@ -273,7 +294,15 @@ is.eeg_stats <- function(x) inherits(x, "eeg_stats")
 
 #' Check if object is of class \code{eeg_ICA}
 #'
+#' @author Matt Craddock \email{matt@@mattcraddock.com}
 #' @param x Object to check.
 #' @keywords internal
 
 is.eeg_ICA <- function(x) inherits(x, "eeg_ICA")
+
+#' Check if object is of class eeg_tfr
+#'
+#' @author Matt Craddock \email{matt@@mattcraddock.com}
+#' @param x Object to check.
+#' @keywords internal
+is.eeg_tfr <- function(x) inherits(x, "eeg_tfr")

@@ -5,7 +5,7 @@
 \title{Object creator for eeg_tfr objects.}
 \usage{
 eeg_tfr(data, srate, events, chan_info = NULL, reference,
-  timings = NULL, freq_info, dimensions)
+  timings = NULL, freq_info, dimensions, epochs = NULL)
 }
 \arguments{
 \item{data}{TFR transformed data}
@@ -23,6 +23,8 @@ eeg_tfr(data, srate, events, chan_info = NULL, reference,
 \item{freq_info}{Frequencies and other useful information}
 
 \item{dimensions}{List of which dimension is which}
+
+\item{epochs}{Epoch information}
 }
 \description{
 Object creator for eeg_tfr objects.
