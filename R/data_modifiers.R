@@ -140,18 +140,12 @@ eeg_downsample.default <- function(data, ...) {
 #' @describeIn eeg_downsample Downsample eeg_data objects
 #' @export
 
-eeg_downsample.eeg_data <- function(data, q, ...) {
+eeg_downsample.eeg_data <- function(data,
+                                    q,
+                                    ...) {
 
-  q <- as.integer(q)
-
-  if (q < 2) {
-    stop("q must be 2 or more.")
-  } else if ((data$srate / q) %% 1 > 0){
-    stop("srate / q must give a round number.")
-  }
-
-  message(paste0("Downsampling from ", data$srate, "Hz to ",
-                 data$srate / q, "Hz."))
+  q <- check_q(q,
+               data$srate)
 
   data_length <- length(unique(data$timings$time)) %% q
 
@@ -176,31 +170,21 @@ eeg_downsample.eeg_data <- function(data, q, ...) {
 
   # The event table also needs to be adjusted. Note that this inevitably jitters
   # event timings by up to q/2 sampling points.
-  nearest_samps <- findInterval(data$events$event_onset,
-                                data$timings$sample)
-  data$events$event_onset <- data$timings$sample[nearest_samps]
-  data$events$event_time <- data$timings$time[nearest_samps]
+  events(data) <- downsample_events(data$timings,
+                                    data$events,
+                                    data$srate,
+                                    q)
   data
 }
 
 #' @describeIn eeg_downsample Downsample eeg_epochs objects
 #' @export
-
 eeg_downsample.eeg_epochs <- function(data,
                                       q,
                                       ...) {
 
-  q <- as.integer(q)
-
-  if (q < 2) {
-    stop("q must be 2 or more.")
-  } else if ((data$srate / q) %% 1 > 0){
-    stop("srate / q must give a round number.")
-  }
-
-  message(paste0("Downsampling from ",
-                 data$srate, "Hz to ",
-                 data$srate / q, "Hz."))
+  q <- check_q(q,
+               data$srate)
 
   epo_length <- length(unique(data$timings$time)) %% q
 
@@ -223,12 +207,12 @@ eeg_downsample.eeg_epochs <- function(data,
                          `[`,
                          1:new_length,
                          )
-  data$signals <- purrr::map_df(data$signals,
-                             ~purrr::map_df(as.list(.),
-                                            ~signal::decimate(., q)))
   # step through each column and decimate each channel
-  # data$signals <- purrr::map_df(as.list(data$signals),
-  #                               ~signal::decimate(., q))
+  data$signals <-
+    purrr::map_df(data$signals,
+                  ~purrr::map_df(as.list(.),
+                                 ~signal::decimate(., q)))
+
 
   # select every qth timing point, and divide srate by q
   data$srate <- data$srate / q
@@ -238,13 +222,54 @@ eeg_downsample.eeg_epochs <- function(data,
 
   # The event table also needs to be adjusted. Note that this inevitably jitters
   # event timings by up to q/2 sampling points.
-  data_samps <- sort(unique(data$timings$sample))
-  #samp_times <-
-  nearest_samps <- findInterval(data$events$event_onset,
-                                data_samps)
-  data$events$event_onset <- data_samps[nearest_samps]
-  data$events$event_time <- 1 / (data$srate * q) * data$events$event_onset
+  events(data) <- downsample_events(data$timings,
+                                    data$events,
+                                    data$srate,
+                                    q)
   data
+}
+
+
+#' Downsample the events table
+#'
+#' @author Matt Craddock \email{matt@@craddock.com}
+#' @param timings the timings from the data
+#' @param events the events table to downsample
+#' @param srate sampling rate
+#' @param q downsampling factor
+#' @keywords internal
+downsample_events <- function(timings,
+                              events,
+                              srate,
+                              q) {
+
+  data_samps <- sort(unique(timings$sample))
+  nearest_samps <- findInterval(events$event_onset,
+                                data_samps)
+  events$event_onset <- data_samps[nearest_samps]
+  events$event_time <- 1 / (srate * q) * (events$event_onset - 1)
+  events
+}
+
+#' Validate the q factor for downsampling
+#'
+#' @param q Q factor
+#' @param srate Sampling rate
+#' @keywords internal
+check_q <- function(q,
+                    srate) {
+  q <- as.integer(q)
+
+  if (q < 2) {
+    stop("q must be 2 or more.")
+    } else if ((srate / q) %% 1 > 0){
+      stop("srate / q must give a round number.")
+      }
+
+  message(paste0("Downsampling from ",
+                 srate, "Hz to ",
+                 srate / q, "Hz."))
+  q
 }
 
 #' Combine EEG objects
@@ -276,7 +301,8 @@ eeg_combine.default <- function(data, ...) {
 #' @describeIn eeg_combine Method for combining \code{eeg_data} objects.
 #' @export
 
-eeg_combine.eeg_data <- function(data, ...){
+eeg_combine.eeg_data <- function(data,
+                                 ...){
 
   args <- list(...)
   if (length(args) == 0) {
@@ -292,6 +318,8 @@ eeg_combine.eeg_data <- function(data, ...){
                                       purrr::map_df(args, ~.$events))
       data$timings <- dplyr::bind_rows(data$timings,
                                        purrr::map_df(args, ~.$timings))
+      data$epochs <- dplyr::bind_rows(data$epochs,
+                                      purrr::map_df(args, ~.$epochs))
     }
   }
   data
@@ -331,7 +359,6 @@ check_timings <- function(data) {
 
   n_rows <- nrow(data$timings)
   epochs <- unique(data$timings$epoch)
-  duplicated()
 
   # if the epoch numbers are not ascending, fix them...
   while (any(diff(data$timings$epoch) < 0)) {
