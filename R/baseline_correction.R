@@ -51,6 +51,9 @@ rm_baseline.eeg_epochs <- function(data,
   n_chans <- ncol(data$signals)
   elecs <- names(data$signals)
 
+
+  # I calculate the baseline for each epoch and subtract it; this makes no
+  # difference to ERP later, but centres each epoch appropriately
   if (is.null(time_lim)) {
     # reshape to 3D matrix
     data$signals <- as.matrix(data$signals)

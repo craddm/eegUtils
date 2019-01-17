@@ -325,19 +325,19 @@ faster_epo_stat <- function(data, chan_means) {
 #' @param ... Other arguments passed to eeg_ar_thresh
 #' @export
 
-eeg_ar_thresh <- function(data,
-                          threshold,
-                          reject = FALSE,
-                          ...) {
-  UseMethod("eeg_ar_thresh", data)
+ar_thresh <- function(data,
+                      threshold,
+                      reject = FALSE,
+                      ...) {
+  UseMethod("ar_thresh", data)
 }
 
-#' @describeIn eeg_ar_thresh Reject data using a simple threshold.
+#' @describeIn ar_thresh Reject data using a simple threshold.
 #' @export
-eeg_ar_thresh.eeg_data <- function(data,
-                                   threshold,
-                                   reject = FALSE,
-                                   ...) {
+ar_thresh.eeg_data <- function(data,
+                               threshold,
+                               reject = FALSE,
+                               ...) {
 
   if (length(threshold) == 1) {
     threshold <- c(threshold, -threshold)
@@ -358,9 +358,11 @@ eeg_ar_thresh.eeg_data <- function(data,
   data
 }
 
-#' @describeIn eeg_ar_thresh Reject data using a simple threshold.
+#' @describeIn ar_thresh Reject data using a simple threshold.
 #' @export
-eeg_ar_thresh.eeg_epochs <- function(data, threshold, reject = FALSE, ...) {
+ar_thresh.eeg_epochs <- function(data,
+                                 threshold,
+                                 reject = FALSE, ...) {
 
   if (length(threshold) == 1) {
     threshold <- c(threshold, -threshold)
@@ -372,7 +374,9 @@ eeg_ar_thresh.eeg_epochs <- function(data, threshold, reject = FALSE, ...) {
   crossed_thresh <- rowSums(crossed_thresh) == 1
   rej_epochs <- unique(data$timings$epoch[crossed_thresh])
   if (reject) {
-    data <- select_epochs(data, rej_epochs, keep = FALSE)
+    data <- select_epochs(data,
+                          rej_epochs,
+                          keep = FALSE)
     # consider creating select_timerange vs select_timepoints
   } else {
     data$reject <- rej_epochs
@@ -470,7 +474,7 @@ ar_eogreg <- function(.data,
                           heog,
                           veog,
                           bipolarize = TRUE) {
-  UseMethod("eeg_ar_eogreg", .data)
+  UseMethod("ar_eogreg", .data)
 
 }
 
@@ -508,8 +512,6 @@ eogreg <- function(.data,
                    bipolarize) {
 
   if (bipolarize) {
-    # HEOG <- .data$signals[, heog[1]] - .data$signals[, heog[2]]
-    # VEOG <- .data$signals[, veog[1]] - .data$signals[, veog[2]]
     EOG <- bip_EOG(.data$signals, heog, veog)
   } else {
     HEOG <- .data$signals[, heog, drop = TRUE]

@@ -51,7 +51,9 @@ interp_elecs.eeg_data <- function(data,
 
   data$chan_info <- validate_channels(data$chan_info,
                                       channel_names(data))
-  missing_coords <- apply(is.na(data$chan_info), 1, any)
+  missing_coords <- apply(is.na(data$chan_info),
+                          1,
+                          any)
   missing_chans <- names(data$signals)[missing_coords]
 
   if (any(missing_coords)) {
@@ -68,10 +70,7 @@ interp_elecs.eeg_data <- function(data,
 
   if (all(c("cart_x", "cart_y", "cart_z") %in% names(chan_info))) {
     xyz_coords <- chan_info[, c("cart_x", "cart_y", "cart_z")]
-
     #normalise to unit sphere
-    #rads <- sqrt(rowSums(xyz_coords ^ 2))
-    #xyz_coords <- xyz_coords / rads
     xyz_coords <- norm_sphere(xyz_coords)
   } else {
     xyz_coords <- sph_to_cart(chan_info$theta,
@@ -200,7 +199,10 @@ compute_csd.eeg_data <- function(data,
                                  smoothing = 1e-05,
                                  scaling = 1,
                                  ...) {
-  convert_to_csd(data, m, smoothing, scaling)
+  convert_to_csd(data,
+                 m,
+                 smoothing,
+                 scaling)
 }
 
 #' @describeIn compute_csd Transform eeg_data to CSD
@@ -210,7 +212,10 @@ compute_csd.eeg_epochs <- function(data,
                                  smoothing = 1e-05,
                                  scaling = 1,
                                  ...) {
-  convert_to_csd(data, m, smoothing, scaling)
+  convert_to_csd(data,
+                 m,
+                 smoothing,
+                 scaling)
 }
 
 #' Calculate current source densities
