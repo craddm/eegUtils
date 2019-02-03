@@ -41,15 +41,14 @@ eeg_combine.eeg_data <- function(data,
       data$signals <- dplyr::bind_rows(data$signals,
                                        purrr::map_df(args, ~.$signals))
       data$events  <- dplyr::bind_rows(data$events,
-                                       purrr::map_df(args, ~.$events),
-                                       .id = "recording")
+                                       purrr::map_df(args, ~.$events))
       data$timings <- dplyr::bind_rows(data$timings,
-                                       purrr::map_df(args, ~.$timings),
-                                       .id = "recording")
+                                       purrr::map_df(args, ~.$timings))
       data$epochs  <- dplyr::bind_rows(data$epochs,
                                        purrr::map_df(args, ~.$epochs))
     }
   }
+  data <- check_timings(data)
   data
 }
 
@@ -82,10 +81,25 @@ eeg_combine.eeg_epochs <- function(data, ...) {
 
 #' Check consistency of event and timing tables
 #'
-#' @param data \code{eeg_epochs} object
+#' @param data \code{eeg_data} or \code{eeg_epochs} object
 #' @keywords internal
 
-check_timings <- function(data) {
+check_timings <- function(.data) {
+  UseMethod("check_timings", .data)
+}
+
+
+#' @rdname check_timings
+#' @keywords internal
+check_timings.eeg_data <- function(.data) {
+  .data$timings$sample <- 1:nrow(.data$timings)
+  .data$timings$time <- (.data$timings$sample - 1) / .data$srate
+  .data
+}
+
+#' @rdname check_timings
+#' @keywords internal
+check_timings.eeg_epochs <- function(data) {
 
   n_rows <- nrow(data$timings)
   epochs <- unique(data$timings$epoch)
