@@ -14,6 +14,7 @@ reference:
     desc: >
       Functions for pre-processing and processing data
     contents:
+      - eeg_filter
       - iir_filt
       - reref_eeg
       - rm_baseline

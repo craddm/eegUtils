@@ -16,7 +16,7 @@ eeg_data(data, srate, events = NULL, chan_info = NULL,
 
 \item{chan_info}{String of character names for electrodes.}
 
-\item{timings}{Timing information - samples and sample /samplirng rate.}
+\item{timings}{Timing information - samples and sample /sampling rate.}
 
 \item{continuous}{Whether the data is continuous or epoched.}
 
@@ -31,3 +31,4 @@ Function to create an S3 object of class "eeg_data".
 \author{
 Matt Craddock \email{matt@mattcraddock.com}
 }
+\keyword{internal}

@@ -1,3 +1,80 @@
+#' Function to create an S3 object of class "eeg_data".
+#'
+#' @author Matt Craddock \email{matt@@mattcraddock.com}
+#' @param data Raw data - signals from electrodes/channels.
+#' @param srate Sampling rate in Hz.
+#' @param chan_info String of character names for electrodes.
+#' @param timings Timing information - samples and sample /sampling rate.
+#' @param continuous Whether the data is continuous or epoched.
+#' @param reference Reference channel information, including names of reference
+#'   channels, excluded channels etc.
+#' @param events Event table
+#' @param epochs Information about the epochs contained in the data.
+#' @keywords internal
+
+eeg_data <- function(data,
+                     srate,
+                     events = NULL,
+                     chan_info = NULL,
+                     timings = NULL,
+                     continuous,
+                     reference = NULL,
+                     epochs = NULL) {
+
+  if (!missing(continuous)) {
+    message("Continuous parameter is deprecated and ignored")
+  }
+
+  if (srate < 1) {
+    stop("Sampling rate must be above 0")
+  }
+  value <- list(signals = data,
+                srate = srate,
+                events = events,
+                chan_info = chan_info,
+                timings = timings,
+                reference = reference,
+                epochs = epochs)
+  class(value) <- "eeg_data"
+  value
+}
+
+
+#' Check eeg_data structure
+#'
+#' Check for missing fields and add them if necessary.
+#'
+#' @keywords internal
+validate_eeg_data <- function(.data) {
+
+  if (exists(.data$signals)) {
+    check_numeric <- apply(.data$signals,
+                           2,
+                           is.numeric)
+    if (!all(check_numeric)) {
+      warning(paste("Non-numeric channels: ",
+                    channel_names(.data)[!check_numeric]))
+    }
+  }
+
+  if (!exists(.data$continuous)) {
+    .data$continuous <- NULL
+  }
+
+  if (!exists(.data$reference)) {
+    .data$reference <- append(.data,
+                              list(reference = NULL))
+  }
+
+  if (!is.null(.data$epochs)) {
+    .data$epochs <- tibble::tibble(epoch = 1,
+                                   recording = NA)
+  }
+
+  class(.data) <- "eeg_data"
+  .data
+}
+
 #' Object creator for eeg_tfr objects.
 #'
 #' @param data TFR transformed data
@@ -83,83 +160,6 @@ eeg_GA <- function(data,
   value
 }
 
-#' Function to create an S3 object of class "eeg_data".
-#'
-#' @author Matt Craddock \email{matt@@mattcraddock.com}
-#' @param data Raw data - signals from electrodes/channels.
-#' @param srate Sampling rate in Hz.
-#' @param chan_info String of character names for electrodes.
-#' @param timings Timing information - samples and sample /samplirng rate.
-#' @param continuous Whether the data is continuous or epoched.
-#' @param reference Reference channel information, including names of reference
-#'   channels, excluded channels etc.
-#' @param events Event table
-#' @param epochs Information about the epochs contained in the data.
-#' @export
-
-eeg_data <- function(data,
-                     srate,
-                     events = NULL,
-                     chan_info = NULL,
-                     timings = NULL,
-                     continuous,
-                     reference = NULL,
-                     epochs = NULL) {
-
-  if (!missing(continuous)) {
-    message("Continuous parameter is deprecated and ignored")
-  }
-
-  if (srate < 1) {
-    stop("Sampling rate must be above 0")
-  }
-  value <- list(signals = data,
-                srate = srate,
-                events = events,
-                chan_info = chan_info,
-                timings = timings,
-                reference = reference,
-                epochs = epochs)
-  class(value) <- "eeg_data"
-  value
-}
-
-
-#' Check eeg_data structure
-#'
-#' Check for missing fields and add them if necessary.
-#'
-#' @noRd
-validate_eeg_data <- function(.data) {
-
-
-  if (exists(.data$signals)) {
-    check_numeric <- apply(.data$signals,
-                           2,
-                           is.numeric)
-    if (!all(check_numeric)) {
-      warning(paste("Non-numeric channels: ",
-                    channel_names(.data)[!check_numeric]))
-    }
-  }
-
-  if (!exists(.data$continuous)) {
-    .data$continuous <- NULL
-  }
-
-  if (!exists(.data$reference)) {
-    .data$reference <- append(.data,
-                              list(reference = NULL))
-  }
-
-  if (!is.null(.data$epochs)) {
-    .data$epochs <- data.frame(epoch = 1,
-                              recording = NA)
-  }
-
-  class(.data) <- "eeg_data"
-  .data
-}
 
 #' Function to create an S3 object of class "eeg_epochs".
 #'
@@ -196,6 +196,31 @@ eeg_epochs <- function(data,
 }
 
 validate_eeg_epochs <- function(.data) {
+
+  if (exists(.data$signals)) {
+    check_numeric <- apply(.data$signals,
+                           2,
+                           is.numeric)
+    if (!all(check_numeric)) {
+      warning(paste("Non-numeric channels: ",
+                    channel_names(.data)[!check_numeric]))
+    }
+  }
+
+  if (!exists(.data$reference)) {
+    .data$reference <- append(.data,
+                              list(reference = NULL))
+  }
+
+  if (is.null(.data$epochs)) {
+    .data$epochs <- tibble::tibble(epoch = unique(.data$events$epoch),
+                                   recording = NA)
+  }
+
+  class(.data) <- c("eeg_epochs",
+                    "eeg_data")
+  .data
+
 
 }
 
@@ -241,6 +266,18 @@ eeg_stats <- function(statistic,
 }
 
 
+#' Function to create an S3 object of class "eeg_ICA".
+#'
+#' @author Matt Craddock \email{matt@@mattcraddock.com}
+#' @param mixing_matrix ICA mixing matrix
+#' @param unmixing_matrix ICA unmixing matrix
+#' @param signals ICA components
+#' @param timings Unique timepoints remaining in the data.
+#' @param events event table
+#' @param chan_info String of character names for electrodes.
+#' @param srate Sampling rate
+#' @param continuous Flag for whether data is continuous
+#' @keywords internal
 eeg_ICA <- function(mixing_matrix,
                     unmixing_matrix,
                     signals,
@@ -258,9 +295,8 @@ eeg_ICA <- function(mixing_matrix,
                 chan_info = chan_info,
                 srate = srate,
                 continuous = continuous)
-  class(value) <- c("eeg_ICA", "eeg_epochs")#
+  class(value) <- c("eeg_ICA", "eeg_epochs")
   value
-
 }
 
 #' Check if object is of class "eeg_data".

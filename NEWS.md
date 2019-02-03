@@ -25,6 +25,7 @@
 - New field `epochs` added to `eeg_data` and `eeg_epochs` objects.
 - `chan_info` changes to make chan_info consistent across systems. 
 - Corrected scaling factor for PSD
+- `eeg_combine` now checks and fixes `eeg_data` timing consistency
 
 # eegUtils 0.3.0
 

@@ -26,7 +26,7 @@ An introduction to its use can be found at the *eegUtils* website [https://cradd
 * `erp_scalp()` - plotting ERP plots for individual electrodes in a topographical layout - thanks to Matti Vuorre!
 * `interactive_scalp()` - a Shiny version of erp_scalp() that allows you to zoom in on specific electrodes.
 * `browse_data()` - a Shiny gadget for interactively scrolling through EEG data (continous or epoched).
-* `erp_raster()` - plot an ERP raster, showin the ERP for every channel as a single image.
+* `erp_raster()` - plot an ERP raster, showing the ERP for every channel as a single image.
 * `erp_image()` - plot an ERP image from a single electrode.
 * `plot_psd()` - plot the Power Spectral Density of an `eeg_data` or `eeg_epochs` object.
 

@@ -39,6 +39,7 @@ test_that("Topoplots", {
                                        method = "gam"))
 })
 
+
 test_that("erp_raster and erp_image function", {
   test_epo <- epoch_data(test_data, 255)
   expect_s3_class(erp_image(demo_epochs,
