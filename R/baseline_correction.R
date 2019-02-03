@@ -7,26 +7,33 @@
 #'
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #' @param data Data to be baseline corrected.
+#' @param time_lim Numeric character vector (e.g. time_lim <- c(-.1, 0)). If
+#'   none given, defaults to mean of the whole of each epoch if the data is
+#'   epoched, or the channel mean if the data is continuous.
+#' @param verbose Defaults to TRUE. Output messages to console.
 #' @param ... other parameters to be passed to functions
 #' @export
 
-rm_baseline <- function(data, ...) {
+rm_baseline <- function(data,
+                        time_lim = NULL,
+                        ...) {
   UseMethod("rm_baseline", data)
 }
 
-#' @param time_lim Numeric character vector (e.g. time_lim <- c(-.1, 0)). If
-#'   none given, defaults to mean of the whole of each epoch if the data is epoched, or the
-#'   channel mean if the data is continuous.
+
 #' @describeIn rm_baseline remove baseline from continuous \code{eeg_data}
 #' @export
 
 rm_baseline.eeg_data <- function(data,
                                  time_lim = NULL,
+                                 verbose = TRUE,
                                  ...) {
 
   if (is.null(time_lim)) {
     baseline_dat <- colMeans(data$signals)
-    message("Removing channel means...")
+    if (verbose) {
+      message("Removing channel means...")
+    }
   } else {
     base_times <- select_times(data,
                                time_lim = time_lim)
@@ -44,6 +51,7 @@ rm_baseline.eeg_data <- function(data,
 
 rm_baseline.eeg_epochs <- function(data,
                                    time_lim = NULL,
+                                   verbose = TRUE,
                                    ...) {
 
   n_epochs <- length(unique(data$timings$epoch))
@@ -51,10 +59,13 @@ rm_baseline.eeg_epochs <- function(data,
   n_chans <- ncol(data$signals)
   elecs <- names(data$signals)
 
-
   # I calculate the baseline for each epoch and subtract it; this makes no
-  # difference to ERP later, but centres each epoch appropriately
+  # difference to ERP later, but centres each epoch on zero.
   if (is.null(time_lim)) {
+
+    if (verbose) {
+      message("Removing channel means per epoch...")
+    }
     # reshape to 3D matrix
     data$signals <- as.matrix(data$signals)
     dim(data$signals) <- c(n_times, n_epochs, n_chans)
@@ -92,7 +103,10 @@ rm_baseline.eeg_epochs <- function(data,
 #' @export
 rm_baseline.data.frame <- function(data,
                                    time_lim = NULL,
+                                   verbose = TRUE,
                                    ...) {
+
+  warning("rm_baseline.data.frame will be deprecated.")
 
   if (!("time" %in% colnames(data))) {
     stop("Time dimension is required.")
@@ -147,6 +161,7 @@ rm_baseline.data.frame <- function(data,
 rm_baseline.eeg_tfr <- function(data,
                                 time_lim = NULL,
                                 type = "divide",
+                                verbose = TRUE,
                                 ...) {
 
   valid_types <- c("absolute",
@@ -202,6 +217,7 @@ rm_baseline.eeg_tfr <- function(data,
 #' @export
 rm_baseline.eeg_evoked <- function(data,
                                    time_lim = NULL,
+                                   verbose = TRUE,
                                    ...) {
 
   if (is.null(time_lim)) {

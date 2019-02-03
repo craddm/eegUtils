@@ -94,21 +94,23 @@ browse_data.eeg_data <- function(data,
                                  downsample = FALSE,
                                  ...) {
 
-  continuous <- data$continuous
   srate <- data$srate
 
   if (downsample) {
-    data <- eeg_downsample(data, q = 4)
+    data <- eeg_downsample(data,
+                           q = 4)
   }
 
   ui <- miniPage(
       gadgetTitleBar("Continous data browser"),
       miniTabstripPanel(
-        miniTabPanel(title = "Butterfly", icon = icon("line-chart"),
+        miniTabPanel(title = "Butterfly",
+                     icon = icon("line-chart"),
                      miniContentPanel(
                        fillCol(
                          flex = c(4, NA, 1),
-                         plotOutput("butterfly", height = "100%"),
+                         plotOutput("butterfly",
+                                    height = "100%"),
                          sliderInput("time_range",
                                      label = "Display start time",
                                      step = 1,
@@ -120,7 +122,8 @@ browse_data.eeg_data <- function(data,
                            numericInput("sig_time",
                                         "Display length",
                                         value = sig_length,
-                                        min = 1, max = 60),
+                                        min = 1,
+                                        max = 60),
                            #numericInput("uV_scale", "Scale (microvolts)", value
                            #= 50, min = 1),
                            checkboxInput("dc_offset",
@@ -175,7 +178,8 @@ browse_data.eeg_data <- function(data,
                                               input$time_range + input$sig_time))
 
         if (input$dc_offset) {
-          tmp_data <- rm_baseline(tmp_data)
+          tmp_data <- rm_baseline(tmp_data,
+                                  verbose = FALSE)
         }
 
         zz <- plot_butterfly(tmp_data,
@@ -190,10 +194,12 @@ browse_data.eeg_data <- function(data,
                                               input$time_range_ind + input$sig_time_ind))
 
         if (input$dc_offset_ind) {
-          tmp_data <- rm_baseline(tmp_data)
+          tmp_data <- rm_baseline(tmp_data,
+                                  verbose = FALSE)
         }
 
-        tmp_data <- as.data.frame(tmp_data, long = TRUE)
+        tmp_data <- as.data.frame(tmp_data,
+                                  long = TRUE)
 
         init_plot <- ggplot2::ggplot(tmp_data,
                                      aes(x = time,
@@ -321,7 +327,7 @@ browse_data.eeg_epochs <- function(data,
       output$butterfly <- renderPlot({
 
         if (input$dc_offset) {
-          tmp_data <- rm_baseline(tmp_data())
+          tmp_data <- rm_baseline(tmp_data(), verbose = FALSE)
         } else {
           tmp_data <- tmp_data()
         }
@@ -354,7 +360,8 @@ browse_data.eeg_epochs <- function(data,
       output$time_plot <- renderPlot({
 
         if (input$dc_offset_ind) {
-          tmp_data_ind <- rm_baseline(tmp_data_ind())
+          tmp_data_ind <- rm_baseline(tmp_data_ind(),
+                                      verbose = FALSE)
         } else {
           tmp_data_ind <- tmp_data_ind()
         }
