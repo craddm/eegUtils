@@ -10,6 +10,9 @@
     <loc>http://craddm.github.io/eegUtils/reference/ar_eogreg.html</loc>
   </url>
   <url>
+    <loc>http://craddm.github.io/eegUtils/reference/ar_thresh.html</loc>
+  </url>
+  <url>
     <loc>http://craddm.github.io/eegUtils/reference/as.data.frame.eeg_data.html</loc>
   </url>
   <url>
@@ -50,6 +53,9 @@
   </url>
   <url>
     <loc>http://craddm.github.io/eegUtils/reference/check_ci_str.html</loc>
+  </url>
+  <url>
+    <loc>http://craddm.github.io/eegUtils/reference/check_q.html</loc>
   </url>
   <url>
     <loc>http://craddm.github.io/eegUtils/reference/check_timings.html</loc>
@@ -112,7 +118,7 @@
     <loc>http://craddm.github.io/eegUtils/reference/demo_epochs.html</loc>
   </url>
   <url>
-    <loc>http://craddm.github.io/eegUtils/reference/eeg_ar_thresh.html</loc>
+    <loc>http://craddm.github.io/eegUtils/reference/downsample_events.html</loc>
   </url>
   <url>
     <loc>http://craddm.github.io/eegUtils/reference/eeg_average.html</loc>
@@ -140,6 +146,12 @@
   </url>
   <url>
     <loc>http://craddm.github.io/eegUtils/reference/eeg_filter.html</loc>
+  </url>
+  <url>
+    <loc>http://craddm.github.io/eegUtils/reference/eeg_ICA.html</loc>
+  </url>
+  <url>
+    <loc>http://craddm.github.io/eegUtils/reference/eeg_psd.html</loc>
   </url>
   <url>
     <loc>http://craddm.github.io/eegUtils/reference/eeg_stats.html</loc>
@@ -209,6 +221,9 @@
   </url>
   <url>
     <loc>http://craddm.github.io/eegUtils/reference/gam_topo.html</loc>
+  </url>
+  <url>
+    <loc>http://craddm.github.io/eegUtils/reference/gauss_filter.html</loc>
   </url>
   <url>
     <loc>http://craddm.github.io/eegUtils/reference/iir_filt.html</loc>
@@ -385,6 +400,9 @@
     <loc>http://craddm.github.io/eegUtils/reference/run_SSD.html</loc>
   </url>
   <url>
+    <loc>http://craddm.github.io/eegUtils/reference/samples.html</loc>
+  </url>
+  <url>
     <loc>http://craddm.github.io/eegUtils/reference/select_elecs.html</loc>
   </url>
   <url>
@@ -440,6 +458,9 @@
   </url>
   <url>
     <loc>http://craddm.github.io/eegUtils/reference/validate_channels.html</loc>
+  </url>
+  <url>
+    <loc>http://craddm.github.io/eegUtils/reference/validate_eeg_data.html</loc>
   </url>
   <url>
     <loc>http://craddm.github.io/eegUtils/reference/view_artefacts.html</loc>

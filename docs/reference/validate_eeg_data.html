@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Function to create an S3 object of class "eeg_data". — eeg_data • eegUtils</title>
+<title>Check eeg_data structure — validate_eeg_data • eegUtils</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,9 +30,9 @@
 
 
 
-<meta property="og:title" content="Function to create an S3 object of class "eeg_data". — eeg_data" />
+<meta property="og:title" content="Check eeg_data structure — validate_eeg_data" />
 
-<meta property="og:description" content="Function to create an S3 object of class &quot;eeg_data&quot;." />
+<meta property="og:description" content="Check for missing fields and add them if necessary." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -120,68 +120,26 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Function to create an S3 object of class "eeg_data".</h1>
+    <h1>Check eeg_data structure</h1>
     <small class="dont-index">Source: <a href='https://github.com/craddm/eegUtils/blob/master/R/class_handling.R'><code>R/class_handling.R</code></a></small>
-    <div class="hidden name"><code>eeg_data.Rd</code></div>
+    <div class="hidden name"><code>validate_eeg_data.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Function to create an S3 object of class "eeg_data".</p>
+    <p>Check for missing fields and add them if necessary.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>eeg_data</span>(<span class='no'>data</span>, <span class='no'>srate</span>, <span class='kw'>events</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>chan_info</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>timings</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>continuous</span>, <span class='kw'>reference</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>epochs</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
-    
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
-    <table class="ref-arguments">
-    <colgroup><col class="name" /><col class="desc" /></colgroup>
-    <tr>
-      <th>data</th>
-      <td><p>Raw data - signals from electrodes/channels.</p></td>
-    </tr>
-    <tr>
-      <th>srate</th>
-      <td><p>Sampling rate in Hz.</p></td>
-    </tr>
-    <tr>
-      <th>events</th>
-      <td><p>Event table</p></td>
-    </tr>
-    <tr>
-      <th>chan_info</th>
-      <td><p>String of character names for electrodes.</p></td>
-    </tr>
-    <tr>
-      <th>timings</th>
-      <td><p>Timing information - samples and sample /sampling rate.</p></td>
-    </tr>
-    <tr>
-      <th>continuous</th>
-      <td><p>Whether the data is continuous or epoched.</p></td>
-    </tr>
-    <tr>
-      <th>reference</th>
-      <td><p>Reference channel information, including names of reference
-channels, excluded channels etc.</p></td>
-    </tr>
-    <tr>
-      <th>epochs</th>
-      <td><p>Information about the epochs contained in the data.</p></td>
-    </tr>
-    </table>
-    
+    <pre class="usage"><span class='fu'>validate_eeg_data</span>(<span class='no'>.data</span>)</pre>
+        
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
-      <li><a href="#arguments">Arguments</a></li>
                 </ul>
 
-    <h2>Author</h2>
-    <p>Matt Craddock <a href='mailto:matt@mattcraddock.com'>matt@mattcraddock.com</a></p>
   </div>
 </div>
 

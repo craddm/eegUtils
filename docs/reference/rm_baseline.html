@@ -137,23 +137,27 @@ column is always required; an epoch column is not.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>rm_baseline</span>(<span class='no'>data</span>, <span class='no'>...</span>)
+    <pre class="usage"><span class='fu'>rm_baseline</span>(<span class='no'>data</span>, <span class='kw'>time_lim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for eeg_data</span>
-<span class='fu'>rm_baseline</span>(<span class='no'>data</span>, <span class='kw'>time_lim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)
+<span class='fu'>rm_baseline</span>(<span class='no'>data</span>, <span class='kw'>time_lim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='no'>...</span>)
 
 <span class='co'># S3 method for eeg_epochs</span>
-<span class='fu'>rm_baseline</span>(<span class='no'>data</span>, <span class='kw'>time_lim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)
+<span class='fu'>rm_baseline</span>(<span class='no'>data</span>, <span class='kw'>time_lim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='no'>...</span>)
 
 <span class='co'># S3 method for data.frame</span>
-<span class='fu'>rm_baseline</span>(<span class='no'>data</span>, <span class='kw'>time_lim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)
+<span class='fu'>rm_baseline</span>(<span class='no'>data</span>, <span class='kw'>time_lim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='no'>...</span>)
 
 <span class='co'># S3 method for eeg_tfr</span>
 <span class='fu'>rm_baseline</span>(<span class='no'>data</span>, <span class='kw'>time_lim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"divide"</span>,
-  <span class='no'>...</span>)
+  <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for eeg_evoked</span>
-<span class='fu'>rm_baseline</span>(<span class='no'>data</span>, <span class='kw'>time_lim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
+<span class='fu'>rm_baseline</span>(<span class='no'>data</span>, <span class='kw'>time_lim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -163,14 +167,18 @@ column is always required; an epoch column is not.</p>
       <td><p>Data to be baseline corrected.</p></td>
     </tr>
     <tr>
+      <th>time_lim</th>
+      <td><p>Numeric character vector (e.g. time_lim &lt;- c(-.1, 0)). If
+none given, defaults to mean of the whole of each epoch if the data is
+epoched, or the channel mean if the data is continuous.</p></td>
+    </tr>
+    <tr>
       <th>...</th>
       <td><p>other parameters to be passed to functions</p></td>
     </tr>
     <tr>
-      <th>time_lim</th>
-      <td><p>Numeric character vector (e.g. time_lim &lt;- c(-.1, 0)). If
-none given, defaults to mean of the whole of each epoch if the data is epoched, or the
-channel mean if the data is continuous.</p></td>
+      <th>verbose</th>
+      <td><p>Defaults to TRUE. Output descriptive messages to console.</p></td>
     </tr>
     <tr>
       <th>type</th>

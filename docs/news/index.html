@@ -179,6 +179,8 @@
 <li>
 <code>chan_info</code> changes to make chan_info consistent across systems.</li>
 <li>Corrected scaling factor for PSD</li>
+<li>
+<code>eeg_combine</code> now checks and fixes <code>eeg_data</code> timing consistency</li>
 </ul>
 </div>
 </div>
@@ -361,7 +363,7 @@
 <li>
 <code><a href="../reference/eeg_evoked.html">eeg_evoked()</a></code> class introduced to hold ERPS</li>
 <li>
-<code>eeg_ICA()</code> class introduced to hold ICA decompositions</li>
+<code><a href="../reference/eeg_ICA.html">eeg_ICA()</a></code> class introduced to hold ICA decompositions</li>
 <li>
 <code><a href="../reference/eeg_average.html">eeg_average()</a></code> function to calculate averages (e.g. ERPs) from <code>eeg_epochs</code> objects</li>
 <li>
@@ -439,7 +441,7 @@
 <li>
 <code><a href="../reference/interp_elecs.html">interp_elecs()</a></code> function to perform spherical spline interpolation of individual electrodes</li>
 <li>
-<code><a href="../reference/eeg_ar_thresh.html">eeg_ar_thresh()</a></code> simple absolute value thresholding added</li>
+<code>eeg_ar_thresh()</code> simple absolute value thresholding added</li>
 <li>
 <code><a href="../reference/plot_electrodes.html">plot_electrodes()</a></code> Produces a 2D or interactive 3D plot of electrode locations</li>
 </ul>
