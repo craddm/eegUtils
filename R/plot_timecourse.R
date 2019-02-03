@@ -53,6 +53,7 @@ plot_timecourse.data.frame <- function(data,
                                color = NULL,
                                ...) {
 
+  warning("Methods for data.frames will be deprecated soon.")
   if (!is.null(electrode)) {
     data <- select_elecs(data,
                          electrode)
@@ -79,7 +80,7 @@ plot_timecourse.data.frame <- function(data,
   tc_plot <- create_tc(data,
                        add_CI = FALSE,
                        colour = colour)
-
+  tc_plot
 }
 
 #' @describeIn plot_timecourse plot \code{eeg_evoked} timecourses
@@ -467,7 +468,6 @@ plot_butterfly.eeg_stats <- function(data,
                  browse_mode)
 
 }
-
 
 #' @describeIn plot_butterfly Create butterfly plot for \code{eeg_data} objects
 #' @export

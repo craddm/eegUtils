@@ -10,7 +10,7 @@
 #' @param time_lim Numeric character vector (e.g. time_lim <- c(-.1, 0)). If
 #'   none given, defaults to mean of the whole of each epoch if the data is
 #'   epoched, or the channel mean if the data is continuous.
-#' @param verbose Defaults to TRUE. Output messages to console.
+#' @param verbose Defaults to TRUE. Output descriptive messages to console.
 #' @param ... other parameters to be passed to functions
 #' @export
 
@@ -38,6 +38,9 @@ rm_baseline.eeg_data <- function(data,
     base_times <- select_times(data,
                                time_lim = time_lim)
     baseline_dat <- colMeans(base_times$signals)
+    if (verbose) {
+      message(paste("Baseline:", time_lim, "s"))
+    }
   }
   data$signals <- sweep(data$signals,
                         2,

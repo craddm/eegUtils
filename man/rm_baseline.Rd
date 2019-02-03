@@ -35,7 +35,7 @@ epoched, or the channel mean if the data is continuous.}
 
 \item{...}{other parameters to be passed to functions}
 
-\item{verbose}{Defaults to TRUE. Output messages to console.}
+\item{verbose}{Defaults to TRUE. Output descriptive messages to console.}
 
 \item{type}{Type of baseline correction to apply. Options are ("divide",
 "ratio", "absolute", "db")}

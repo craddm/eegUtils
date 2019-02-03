@@ -76,15 +76,15 @@ import_raw <- function(file_name,
     sigs <- tibble::as_tibble(sigs[, chan_nos])
 
     # The events are often recorded over a number of samples, but should
-    # typically be point events; this finds
+    # typically be point events; this finds the time at which the events start
     events_diff <- diff(events)
     event_table <-
       tibble::tibble(event_onset = which(events_diff > 0) + 1,
                      event_time = which(events_diff > 0) / srate,
                      event_type = events[which(events_diff > 0) + 1])
 
-    epochs <- data.frame(epoch = 1,
-                         recording = recording)
+    epochs <- tibble::tibble(epoch = 1,
+                             recording = recording)
     data <- eeg_data(data = sigs,
                      srate = srate,
                      events = event_table,
@@ -103,8 +103,8 @@ import_raw <- function(file_name,
       tibble::tibble(event_onset = data$event_list$offset + 1,
                      event_time = (data$event_list$offset + 1) / srate,
                      event_type = data$event_list$event_type)
-    epochs <- data.frame(epoch = 1,
-                         recording = recording)
+    epochs <- tibble::tibble(epoch = 1,
+                             recording = recording)
     data <- eeg_data(data = sigs,
                      srate = srate,
                      chan_info = validate_channels(data$chan_info),
@@ -113,7 +113,8 @@ import_raw <- function(file_name,
                      epochs = epochs)
     } else if (file_type == "vhdr") {
       message(paste("Importing Brain Vision Analyzer file", file_name))
-      data <- import_vhdr(file_name, recording = recording)
+      data <- import_vhdr(file_name,
+                          recording = recording)
     } else {
       stop("Unsupported filetype")
     }
