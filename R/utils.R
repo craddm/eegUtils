@@ -314,10 +314,6 @@ label_check <- function(cond_labs,
       }
 }
 
-
-
-
-
 #' Convert to 3d matrix
 #'
 #' @param data data to be converted
@@ -363,7 +359,6 @@ zero_vec <- function(vec_length) {
 #' @param x vector to pad
 #' @param n number of zeros to pad
 #' @keywords internal
-
 pad <- function(x, n) {x <- c(rep(0, n), x, rep(0, n))}
 
 #' Unpad a vector
@@ -378,7 +373,6 @@ unpad <- function(x, n) {
   x <- x[start:end]
   x
 }
-
 
 #' Fix group delay
 #'

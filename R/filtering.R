@@ -667,7 +667,7 @@ run_iir <- function(data,
 #' @param srate Sampling rate of the data
 #' @param freq Peak frequency of the filter
 #' @param fwhm Standard deviation of the filter
-#' @noRd
+#' @keywords internal
 
 gauss_filter <- function(data,
                          srate,

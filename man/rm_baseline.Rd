@@ -9,27 +9,33 @@
 \alias{rm_baseline.eeg_evoked}
 \title{Baseline correction}
 \usage{
-rm_baseline(data, ...)
+rm_baseline(data, time_lim = NULL, ...)
 
-\method{rm_baseline}{eeg_data}(data, time_lim = NULL, ...)
-
-\method{rm_baseline}{eeg_epochs}(data, time_lim = NULL, ...)
-
-\method{rm_baseline}{data.frame}(data, time_lim = NULL, ...)
-
-\method{rm_baseline}{eeg_tfr}(data, time_lim = NULL, type = "divide",
+\method{rm_baseline}{eeg_data}(data, time_lim = NULL, verbose = TRUE,
   ...)
 
-\method{rm_baseline}{eeg_evoked}(data, time_lim = NULL, ...)
+\method{rm_baseline}{eeg_epochs}(data, time_lim = NULL, verbose = TRUE,
+  ...)
+
+\method{rm_baseline}{data.frame}(data, time_lim = NULL, verbose = TRUE,
+  ...)
+
+\method{rm_baseline}{eeg_tfr}(data, time_lim = NULL, type = "divide",
+  verbose = TRUE, ...)
+
+\method{rm_baseline}{eeg_evoked}(data, time_lim = NULL, verbose = TRUE,
+  ...)
 }
 \arguments{
 \item{data}{Data to be baseline corrected.}
 
+\item{time_lim}{Numeric character vector (e.g. time_lim <- c(-.1, 0)). If
+none given, defaults to mean of the whole of each epoch if the data is
+epoched, or the channel mean if the data is continuous.}
+
 \item{...}{other parameters to be passed to functions}
 
-\item{time_lim}{Numeric character vector (e.g. time_lim <- c(-.1, 0)). If
-none given, defaults to mean of the whole of each epoch if the data is epoched, or the
-channel mean if the data is continuous.}
+\item{verbose}{Defaults to TRUE. Output messages to console.}
 
 \item{type}{Type of baseline correction to apply. Options are ("divide",
 "ratio", "absolute", "db")}
