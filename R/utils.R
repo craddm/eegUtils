@@ -385,3 +385,10 @@ fix_grpdelay <- function(x, n, grp_delay) {
   x <- x[start:end]
   x
 }
+
+#' Get number of samples
+#' @param .data Object to get total number of sampling points from
+#' @keywords internal
+samples <- function(.data) {
+  nrow(.data$signals)
+}

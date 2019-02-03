@@ -8,15 +8,19 @@
 #' @param data An \code{eeg_data} or \code{eeg_epochs} object
 #' @param ... additional \code{eeg_data} or \code{eeg_epochs} objects
 #' @author Matt Craddock, \email{matt@@mattcraddock.com}
+#' @importFrom dplyr mutate bind_rows
+#' @importFrom purrr map_df
 #' @export
 #'
 
-eeg_combine <- function(data, ...) {
+eeg_combine <- function(data,
+                        ...) {
   UseMethod("eeg_combine", data)
 }
 
 #'@export
-eeg_combine.default <- function(data, ...) {
+eeg_combine.default <- function(data,
+                                ...) {
   stop(
     "Don't know how to combine objects of class",
     class(data)[[1]],
@@ -34,18 +38,38 @@ eeg_combine.eeg_data <- function(data,
   if (length(args) == 0) {
     stop("Nothing to combine.")
   }
-  if (all(sapply(args, is.eeg_data))) {
+  if (all(vapply(args, is.eeg_data, logical(1)))) {
     if (any(sapply(args, is.eeg_epochs))) {
       stop("All objects must be unepoched eeg_data objects.")
     } else {
+
+      nsamps <- samples(data)
+
+      if (length(args) > 1) {
+
+        nsamps <- c(nsamps,
+                    vapply(args,
+                           samples,
+                           numeric(1)))
+      }
+
       data$signals <- dplyr::bind_rows(data$signals,
-                                       purrr::map_df(args, ~.$signals))
+                                       purrr::map_df(args,
+                                                     ~.$signals))
+      for (i in 1:length(args)) {
+        events(args[[i]]) <-
+          dplyr::mutate(events(args[[i]]),
+                        event_onset = event_onset + nsamps[[i]],
+                        event_time = (event_onset - 1) / data$srate)
+        }
+
       data$events  <- dplyr::bind_rows(data$events,
-                                       purrr::map_df(args, ~.$events))
+                                       purrr::map_df(args,
+                                                     ~.$events))
       data$timings <- dplyr::bind_rows(data$timings,
-                                       purrr::map_df(args, ~.$timings))
-      data$epochs  <- dplyr::bind_rows(data$epochs,
-                                       purrr::map_df(args, ~.$epochs))
+                                       purrr::map_df(args,
+                                                     ~.$timings))
+      message("Taking first dataset's recording name.")
     }
   }
   data <- check_timings(data)
@@ -63,13 +87,17 @@ eeg_combine.eeg_epochs <- function(data, ...) {
   }
   if (all(sapply(args, is.eeg_epochs))) {
     data$signals <- dplyr::bind_rows(data$signals,
-                                     purrr::map_df(args, ~.$signals))
-    data$events <- dplyr::bind_rows(data$events,
-                                    purrr::map_df(args, ~.$events))
+                                     purrr::map_df(args,
+                                                   ~.$signals))
+    data$events  <- dplyr::bind_rows(data$events,
+                                     purrr::map_df(args,
+                                                   ~.$events))
     data$timings <- dplyr::bind_rows(data$timings,
-                                     purrr::map_df(args, ~.$timings))
-    data$epochs <- dplyr::bind_rows(data$epochs,
-                                    purrr::map_df(args, ~.$epochs))
+                                     purrr::map_df(args,
+                                                   ~.$timings))
+    data$epochs  <- dplyr::bind_rows(data$epochs,
+                                     purrr::map_df(args,
+                                                   ~.$epochs))
   } else {
     stop("All inputs must be eeg_epochs objects.")
   }
