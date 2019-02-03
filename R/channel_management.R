@@ -349,8 +349,7 @@ plot_electrodes.eeg_data <- function(data,
                                      interact = FALSE) {
 
   if (is.null(data$chan_info)) {
-    warning("Adding standard locations...")
-    data <- electrode_locations(data)
+    stop("No channel locations found.")
   }
 
   if (interact) {
