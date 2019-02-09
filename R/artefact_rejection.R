@@ -471,11 +471,10 @@ kurtosis <- function(data) {
 #' @export
 
 ar_eogreg <- function(.data,
-                          heog,
-                          veog,
-                          bipolarize = TRUE) {
+                      heog,
+                      veog,
+                      bipolarize = TRUE) {
   UseMethod("ar_eogreg", .data)
-
 }
 
 #' @rdname ar_eogreg
