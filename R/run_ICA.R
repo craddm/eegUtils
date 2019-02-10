@@ -85,6 +85,8 @@ run_ICA.eeg_epochs <- function(data,
 #' Internal function for running SOBI ICA on an \code{eeg_epochs} object
 #'
 #' @param data Data to be ICAed.
+#' @author A. Belouchrani and A. Cichocki. Adapted to R by Matt Craddock
+#'   \email{matt@@mattcraddock.com}
 #' @keywords internal
 
 sobi_ICA <- function(data) {
@@ -187,6 +189,8 @@ sobi_ICA <- function(data) {
 #' @param eps Convergence tolerance
 #' @param pm number of channels * number of timepoints
 #' @param n_channels number of channels
+#' @author A. Belouchrani and A. Cichocki. Adapted to R by Matt Craddock
+#'   \email{matt@@mattcraddock.com}
 #' @keywords internal
 
 joint_diag <- function(M,
@@ -274,7 +278,7 @@ apply_ica.eeg_epochs <- function(data, decomp, comps, ...) {
   } else {
     ncomps <- ncol(decomp$mixing_matrix) - 1
     new_mixmat <- decomp$mixing_matrix[1:(ncomps)]
-    new_mixmat[ , comps] <- 0
+    new_mixmat[, comps] <- 0
     source_sigs <- as.matrix(data$signals) %*%
       as.matrix(decomp$unmixing_matrix[, 1:ncomps])
 

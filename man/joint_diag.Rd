@@ -18,4 +18,8 @@ joint_diag(M, eps, n_channels, pm)
 \description{
 Drop-in replacement for JADE::rjd, which often fails to converge
 }
+\author{
+A. Belouchrani and A. Cichocki. Adapted to R by Matt Craddock
+  \email{matt@mattcraddock.com}
+}
 \keyword{internal}

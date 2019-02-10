@@ -12,4 +12,8 @@ sobi_ICA(data)
 \description{
 Internal function for running SOBI ICA on an \code{eeg_epochs} object
 }
+\author{
+A. Belouchrani and A. Cichocki. Adapted to R by Matt Craddock
+  \email{matt@mattcraddock.com}
+}
 \keyword{internal}
