@@ -6,7 +6,7 @@
 \usage{
 \method{as.data.frame}{eeg_epochs}(x, row.names = NULL,
   optional = FALSE, long = FALSE, events = FALSE,
-  conditions = NULL, cond_labels = NULL, ...)
+  cond_labels = NULL, coords = TRUE, ...)
 }
 \arguments{
 \item{x}{Object of class \code{eeg_epochs}}
@@ -19,10 +19,10 @@
 
 \item{events}{Include events in output. Defaults to FALSE.}
 
-\item{conditions}{Names of columns from the events table to include in output}
-
 \item{cond_labels}{Add column tagging epochs with events that have matching
 labels.}
+
+\item{coords}{Include electrode coordinates in output.}
 
 \item{...}{arguments for other as.data.frame commands}
 }

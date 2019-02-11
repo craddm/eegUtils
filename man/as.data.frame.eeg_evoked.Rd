@@ -5,7 +5,7 @@
 \title{Convert \code{eeg_evoked} object to data frame}
 \usage{
 \method{as.data.frame}{eeg_evoked}(x, row.names = NULL,
-  optional = FALSE, long = FALSE, ...)
+  optional = FALSE, long = FALSE, coords = TRUE, ...)
 }
 \arguments{
 \item{x}{Object of class \code{eeg_evoked}}
@@ -15,6 +15,8 @@
 \item{optional}{Kept for compatability with S3 generic, ignored.}
 
 \item{long}{Convert to long format. Defaults to FALSE}
+
+\item{coords}{include electrode coordinates in output}
 
 \item{...}{arguments for other as.data.frame commands}
 }

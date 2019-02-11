@@ -4,12 +4,10 @@
 \alias{create_head}
 \title{Create head shape for plotting}
 \usage{
-create_head(r, circ_rads)
+create_head(r)
 }
 \arguments{
 \item{r}{Radius of head}
-
-\item{circ_rads}{Circle outline in radians}
 }
 \description{
 Creates data frames for plotting a head with ears and nose.

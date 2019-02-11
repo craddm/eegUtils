@@ -48,7 +48,6 @@ import_elc <- function(file_name) {
   pos <- lapply(pos,
                 function(x) as.numeric(x[!x == ""]))
   pos <- as.data.frame(do.call("rbind", pos))
-  #names(pos) <- c("x", "y", "z")
 
   sph_pos <- cart_to_spherical(norm_sphere(pos))
 
@@ -665,7 +664,9 @@ check_ci_str <- function(chan_info) {
   orig_names <- c("chanNo",
                   "theta",
                   "radius",
-                  "electrode", "radianTheta", "x",
+                  "electrode",
+                  "radianTheta",
+                  "x",
                   "y")
   if (identical(orig_names, names(chan_info))) {
     stop("New channel locations required - see ?electrode_locations()")
