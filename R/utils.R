@@ -48,9 +48,9 @@ as.data.frame.eeg_data <- function(x,
 #' @param optional Kept for compatability with S3 generic, ignored.
 #' @param long Convert to long format. Defaults to FALSE.
 #' @param events Include events in output. Defaults to FALSE.
-#' @param conditions Names of columns from the events table to include in output
 #' @param cond_labels Add column tagging epochs with events that have matching
 #'   labels.
+#' @param coords Include electrode coordinates in output.
 #' @param ... arguments for other as.data.frame commands
 #'
 #' @importFrom tidyr gather
@@ -60,22 +60,8 @@ as.data.frame.eeg_epochs <- function(x, row.names = NULL,
                                      optional = FALSE,
                                      long = FALSE,
                                      events = FALSE,
-                                     conditions = NULL,
-                                     cond_labels = NULL, ...) {
-
-  if (!is.null(conditions)) {
-    cond_cols <- names(events(x)) %in% c("epoch", conditions)
-    if (!any(cond_cols)) {
-      message("Columns not found.")
-    }
-
-    missing_rows <- apply(events(x)[, conditions],
-                          2,
-                          is.na)
-    missing_rows <- apply(missing_rows, 1, any)
-
-    events(x) <- events(x)[!missing_rows, cond_cols]
-  }
+                                     cond_labels = NULL,
+                                     coords = TRUE, ...) {
 
   if (!is.null(cond_labels)) {
     lab_check <- label_check(cond_labels,
@@ -91,17 +77,8 @@ as.data.frame.eeg_epochs <- function(x, row.names = NULL,
                    out_df$conditions <- cond_labels[[ix]]
                    out_df})
 
-    df <- do.call("rbind", df)
-
-    if (long) {
-      df <- tidyr::gather(df,
-                          electrode,
-                          amplitude,
-                          -time,
-                          -epoch,
-                          -conditions,
-                          factor_key = TRUE)
-    }
+    df <- do.call("rbind",
+                  df)
 
   } else {
     df <- data.frame(x$signals,
@@ -115,12 +92,19 @@ as.data.frame.eeg_epochs <- function(x, row.names = NULL,
       names(df)[which(names(df) == "event_label")] <- "conditions"
     }
 
-    if (long) {
-      df <- tidyr::gather(df,
-                          electrode,
-                          amplitude,
-                          names(x$signals),
-                          factor_key = TRUE)
+  }
+
+  if (long) {
+    df <- tidyr::gather(df,
+                        electrode,
+                        amplitude,
+                        channel_names(x),
+                        factor_key = TRUE)
+
+    if (coords && !is.null(channels(x))) {
+      df <- left_join(df,
+                      channels(x)[, c("electrode", "x", "y")],
+                      by = "electrode")
     }
   }
 
@@ -128,6 +112,12 @@ as.data.frame.eeg_epochs <- function(x, row.names = NULL,
     df <- dplyr::left_join(df,
                            x$events,
                            by = c("sample" = "event_onset"))
+  }
+
+  if (!is.null(x$epochs)) {
+    df <- dplyr::left_join(df,
+                           x$epochs,
+                           by = "epoch")
   }
 
   df
@@ -140,13 +130,18 @@ as.data.frame.eeg_epochs <- function(x, row.names = NULL,
 #' @param row.names Kept for compatability with S3 generic, ignored.
 #' @param optional Kept for compatability with S3 generic, ignored.
 #' @param long Convert to long format. Defaults to FALSE
+#' @param coords include electrode coordinates in output
 #' @param ... arguments for other as.data.frame commands
 #'
 #' @importFrom tidyr gather
 #' @export
 
-as.data.frame.eeg_evoked <- function(x, row.names = NULL,
-                                     optional = FALSE, long = FALSE, ...) {
+as.data.frame.eeg_evoked <- function(x,
+                                     row.names = NULL,
+                                     optional = FALSE,
+                                     long = FALSE,
+                                     coords = TRUE,
+                                     ...) {
   if (class(x$signals) == "list") {
     cond_labels <- names(x$signals)
     df <- lapply(seq_along(cond_labels), function(ix) {
@@ -156,24 +151,23 @@ as.data.frame.eeg_evoked <- function(x, row.names = NULL,
       out_df
     })
     df <- do.call("rbind", df)
-    if (long) {
-      df <- tidyr::gather(df,
-                          "electrode",
-                          "amplitude",
-                          -time,
-                          -conditions,
-                          factor_key = T)
-    }
   } else {
     df <- data.frame(x$signals, time = x$timings$time)
-    if (long) {
-      df <- tidyr::gather(df,
-                          "electrode",
-                          "amplitude",
-                          -time,
-                          factor_key = T)
+  }
+
+  if (long) {
+    df <- tidyr::gather(df,
+                        "electrode",
+                        "amplitude",
+                        channel_names(x),
+                        factor_key = TRUE)
+    if (coords && !is.null(channels(x))) {
+      df <- left_join(df,
+                      channels(x)[, c("electrode", "x", "y")],
+                      by = "electrode")
     }
   }
+
   df
 }
 
@@ -359,7 +353,7 @@ zero_vec <- function(vec_length) {
 #' @param x vector to pad
 #' @param n number of zeros to pad
 #' @keywords internal
-pad <- function(x, n) {x <- c(rep(0, n), x, rep(0, n))}
+pad <- function(x, n) {c(rep(0, n), x, rep(0, n))}
 
 #' Unpad a vector
 #'
@@ -391,4 +385,12 @@ fix_grpdelay <- function(x, n, grp_delay) {
 #' @keywords internal
 samples <- function(.data) {
   nrow(.data$signals)
+}
+
+#' Generate circle as radians
+#' @keywords internal
+circ_rad_fun <- function() {
+  seq(0,
+      2 * pi,
+      length.out = 101)
 }
