@@ -144,11 +144,12 @@ StatScalpmap <- ggplot2::ggproto("StatScalpmap",
                                              data = data,
                                              FUN = mean)
 
-                           x_min <- floor(min(data$x)) * 2
-                           x_max <- ceiling(max(data$x)) * 2
-                           y_min <- floor(min(data$y)) * 2
-                           y_max <- ceiling(max(data$y)) * 2
+                           x_min <- min(data$x, na.rm = TRUE) * 2
+                           x_max <- max(data$x, na.rm = TRUE) * 2
+                           y_min <- min(data$y, na.rm = TRUE) * 2
+                           y_max <- max(data$y, na.rm = TRUE) * 2
 
+                           #print(c(x_min, x_max, y_min, y_max))
                            xo <- seq(x_min,
                                      x_max,
                                      length = 80)
@@ -238,6 +239,7 @@ geom_topo <- function(mapping = NULL,
                       chan_markers = "point",
                       fill = NA,
                       size = NA,
+                      head_size = rel(1.5),
                       ...) {
 
   list(ggplot2::layer(geom = GeomRaster,
@@ -261,6 +263,40 @@ geom_topo <- function(mapping = NULL,
                                     colour = "white",
                                     size = rel(6.5),
                                     ...)),
+       list(ggplot2::layer(geom = GeomHead,
+                           data = data,
+                           mapping = mapping,
+                           stat = StatHead,
+                           position = PositionIdentity,
+                           inherit.aes = inherit.aes,
+                           params = list(na.rm = na.rm,
+                                         size = head_size,
+                                         ...)),
+            ggplot2::layer(data = data,
+                           mapping = mapping,
+                           stat = StatREar,
+                           geom = GeomEars,
+                           position = PositionIdentity,
+                           show.legend = show.legend,
+                           inherit.aes = TRUE,
+                           params = list(na.rm = na.rm,
+                                         curvature = -.5,
+                                         angle = 60,
+                                         size = head_size,
+                                         ...)),
+            ggplot2::layer(data = data,
+                           mapping = mapping,
+                           stat = StatLEar,
+                           geom = GeomEars,
+                           position = PositionIdentity,
+                           show.legend = show.legend,
+                           inherit.aes = TRUE,
+                           params = list(na.rm = na.rm,
+                                         curvature = .5,
+                                         angle = 120,
+                                         size = head_size,
+                                         ...))
+       ),
        if (chan_markers == "point") {
          ggplot2::layer(geom = GeomPoint,
                         data = data,
@@ -270,7 +306,7 @@ geom_topo <- function(mapping = NULL,
                         show.legend = show.legend,
                         inherit.aes = inherit.aes,
                         params = list(na.rm = na.rm,
-                                      fill = fill,
+                                      fill = NA,
                                       size = size,
                                       ...))}
   )
@@ -284,9 +320,11 @@ StatHead <- ggplot2::ggproto("StatHead",
                              compute_group = function(data,
                                                       scales) {
 
-                               y_lim <- max(data$y) * 1.1
-                               make_head(r = y_lim)
-                             }
+                               y_lim <- max(data$y,
+                                            na.rm = TRUE) * 1.1
+                               heads <- make_head(r = y_lim)
+                               heads
+                               }
                              )
 
 GeomHead <- ggplot2::ggproto("GeomHead",
@@ -299,40 +337,38 @@ geom_head <- function(mapping = NULL,
                       inherit.aes = TRUE,
                       ...) {
 
-  ggplot2::layer(geom = GeomHead,
-                 data = data,
-                 mapping = mapping,
-                 stat = StatHead,
-                 position = PositionIdentity,
-                 inherit.aes = inherit.aes,
-                 params = list(na.rm = na.rm,
-                               ...))
+  list(ggplot2::layer(geom = GeomHead,
+                      data = data,
+                      mapping = mapping,
+                      stat = StatHead,
+                      position = PositionIdentity,
+                      inherit.aes = inherit.aes,
+                      params = list(na.rm = na.rm,
+                                    ...)),
+       ggplot2::layer(data = data,
+                      mapping = mapping,
+                      stat = StatREar,
+                      geom = GeomEars,
+                      position = PositionIdentity,
+                      show.legend = show.legend,
+                      inherit.aes = TRUE,
+                      params = list(na.rm = na.rm,
+                                    curvature = -.5,
+                                    angle = 60,
+                                    ...)),
+       ggplot2::layer(data = data,
+                      mapping = mapping,
+                      stat = StatLEar,
+                      geom = GeomEars,
+                      position = PositionIdentity,
+                      show.legend = show.legend,
+                      inherit.aes = TRUE,
+                      params = list(na.rm = na.rm,
+                                    curvature = .5,
+                                    angle = 120,
+                                    ...))
+  )
 }
-
-
-
-# stat_mask <- function(mapping = NULL,
-#                       data = NULL,
-#                       stat = "identity",
-#                       position = "identity",
-#                       show.legend = NA,
-#                       na.rm = TRUE,
-#                       inherit.aes = TRUE,
-#                       geom = "mask",
-#                       ...) {
-#
-#   ggplot2::layer(stat = StatMask,
-#                  data = data,
-#                  mapping = mapping,
-#                  geom = geom,
-#                  position = position,
-#                  show.legend = show.legend,
-#                  inherit.aes = inherit.aes,
-#                  params = list(na.rm = na.rm,
-#                                ...)
-#                  )
-#
-# }
 
 StatMask <-
   ggplot2::ggproto("StatMask",
@@ -340,7 +376,8 @@ StatMask <-
                    compute_group = function(data,
                                             scales) {
 
-                     scale_fac <- 1.4 * max(data$y)
+                     scale_fac <- 1.35 * max(data$y,
+                                             na.rm = TRUE)
                      data <- data.frame(x = scale_fac * cos(circ_rad_fun()),
                                         y = scale_fac * sin(circ_rad_fun()))
                      data
@@ -374,11 +411,56 @@ geom_mask <- function(mapping = NULL,
 GeomEars <- ggplot2::ggproto("GeomEars",
                              GeomCurve)
 
-StatEars <- ggplot2::ggproto("StatEars",
+StatREar <- ggplot2::ggproto("StatREar",
                              Stat,
                              compute_group = function(data, scales) {
 
+                               y_lim <- max(data$y, na.rm = TRUE) * 1.1
+                               make_r_ear(y_lim)
                              })
+
+StatLEar <- ggplot2::ggproto("StatLEar",
+                             Stat,
+                             compute_group = function(data, scales) {
+
+                               y_lim <- max(data$y, na.rm = TRUE) * 1.1
+                               make_l_ear(y_lim)
+                             })
+
+geom_ears <- function(mapping = NULL,
+                      data = NULL,
+                      stat = "identity",
+                      position = "identity",
+                      show.legend = NA,
+                      na.rm = FALSE,
+                      ...) {
+
+  list(
+    ggplot2::layer(data = data,
+                 mapping = mapping,
+                 stat = StatREar,
+                 geom = GeomEars,
+                 position = PositionIdentity,
+                 show.legend = show.legend,
+                 inherit.aes = TRUE,
+                 params = list(na.rm = na.rm,
+                               curvature = -.5,
+                               angle = 60,
+                               ...)),
+    ggplot2::layer(data = data,
+                   mapping = mapping,
+                   stat = StatLEar,
+                   geom = GeomEars,
+                   position = PositionIdentity,
+                   show.legend = show.legend,
+                   inherit.aes = TRUE,
+                   params = list(na.rm = na.rm,
+                                 curvature = .5,
+                                 angle = 120,
+                                 ...))
+  )
+
+}
 
 make_head <- function(r) {
 
@@ -394,27 +476,27 @@ make_head <- function(r) {
                            head_shape$y[[29]]),
                      group = 2)
 
-  # head_out <- list("head_shape" = head_shape,
-  #                  "nose" = nose,
-  #                  "ears" = ears)
   head_out <- rbind(head_shape, nose)
   head_out
 }
 
-make_l_ear <- function(r) {
+make_r_ear <- function(r) {
 
   head_shape <- data.frame(x = r * cos(circ_rad_fun()),
                            y = r * sin(circ_rad_fun()))
-  left_ear <- data.frame(x = head_shape$x[[4]],
-                         xend = head_shape$x[[97]],
-                         y = head_shape$y[[4]],
-                         yend = head_shape$y[[97]])
-  left_ear
+  right_ear <- data.frame(x = head_shape$x[[4]],
+                          xend = head_shape$x[[97]],
+                          y = head_shape$y[[4]],
+                          yend = head_shape$y[[97]])
+  right_ear
 }
 
-make_r_ear <- function(r) {
-  right_ear <- data.frame(x = c(head_shape$x[[48]],
-                                head_shape$x[[55]]),
-                          y = c(head_shape$y[[48]],
-                                head_shape$y[[55]]))
+make_l_ear <- function(r) {
+  head_shape <- data.frame(x = r * cos(circ_rad_fun()),
+                           y = r * sin(circ_rad_fun()))
+  left_ear <- data.frame(x = head_shape$x[[48]],
+                         xend = head_shape$x[[55]],
+                         y = head_shape$y[[48]],
+                         yend = head_shape$y[[55]])
+  left_ear
 }
