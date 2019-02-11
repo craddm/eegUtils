@@ -18,14 +18,16 @@
 #'   high-frequency variation will tend to be smoothed out. Thus, the method
 #'   should be used with caution.
 
-topoplot <- function(data, ...) {
+topoplot <- function(data,
+                     ...) {
   UseMethod("topoplot", data)
 }
 
 #' @describeIn topoplot Default method for data frames.
 #' @export
 
-topoplot.default <- function(data, ...) {
+topoplot.default <- function(data,
+                             ...) {
   stop("This function requires a data frame or an eeg_data/eeg_epochs object")
 }
 
@@ -101,10 +103,8 @@ topoplot.data.frame <- function(data,
   # --------------
 
    if (!is.null(time_lim)) {
-  #   if (length(time_lim) == 1) {
-  #     time_lim <- c(time_lim, time_lim)
-  #   }
-    data <- select_times(data, time_lim)
+    data <- select_times(data,
+                         time_lim)
    }
 
   # Check for x and y co-ordinates, try to add if not found --------------
@@ -154,7 +154,8 @@ topoplot.data.frame <- function(data,
                                                          rlang::current_env()),
                                       na.rm = TRUE))
     data <- dplyr::ungroup(data)
-    data <- tidyr::nest(data, -!!groups)
+    data <- tidyr::nest(data,
+                        -!!groups)
     # Rescale electrode co-ordinates to be from -1 to 1 for plotting
     # Selects largest absolute value from x or y
     max_dim <- max(abs(data$data[[1]]$x),
@@ -162,13 +163,14 @@ topoplot.data.frame <- function(data,
     scaled_x <- data$data[[1]]$x / max_dim
     scaled_y <- data$data[[1]]$y / max_dim
   } else {
-    data <- dplyr::summarise(dplyr::group_by(data,
-                                             x,
-                                             y,
-                                             electrode),
-                             z = mean(!!rlang::parse_quo(quantity,
-                                                         rlang::current_env()),
-                                      na.rm = TRUE))
+    data <-
+      dplyr::summarise(dplyr::group_by(data,
+                                       x,
+                                       y,
+                                       electrode),
+                       z = mean(!!rlang::parse_quo(quantity,
+                                                   rlang::current_env()),
+                                na.rm = TRUE))
     # Cut the data frame down to only the necessary columns, and make sure it has
     # the right names
     data <- data.frame(x = data$x,
@@ -176,7 +178,8 @@ topoplot.data.frame <- function(data,
                        z = data$z,
                        electrode = data$electrode)
     # Rescale electrode co-ordinates to be from -1 to 1 for plotting
-    # Selects largest absolute value from x or y
+    # Selects largest absolute value from x or y.
+    # NOTE: this may be less necessary now with now channel location formats.
     max_dim <- max(abs(data$x),
                    abs(data$y))
     scaled_x <- data$x / max_dim
@@ -220,29 +223,26 @@ topoplot.data.frame <- function(data,
     r <- max(scaled_y) * 1.1
   }
 
-  circ_rads <- seq(0, 2 * pi, length.out = 101)
-
-  head_df <- create_head(r, circ_rads)
-  head_shape <- head_df$head_shape
-  nose <- head_df$nose
-  ears <- head_df$ears
+  circ_rads <- seq(0,
+                   2 * pi,
+                   length.out = 101)
 
   # Check if should interp/extrap beyond head_shape, and set up ring to mask
   # edges for smoothness
 
   out_df <- round_topo(out_df,
                        r = r,
-                       interp_limit = interp_limit,
-                       circ_rads = circ_rads)
+                       interp_limit = interp_limit)
   mask_ring <- out_df$mask_ring
   out_df <- out_df$out_df
 
   # Create the actual plot -------------------------------
 
-  topo <- ggplot2::ggplot(out_df,
-                          aes(x,
-                              y,
-                              fill = amplitude)) +
+  topo <-
+    ggplot2::ggplot(out_df,
+                    aes(x,
+                        y,
+                        fill = amplitude)) +
     geom_raster(interpolate = TRUE, na.rm = TRUE)
 
   if (contour) {
@@ -259,35 +259,12 @@ topoplot.data.frame <- function(data,
 
   # Add head and mask to topoplot
   topo <- topo +
-     annotate("path",
+    annotate("path",
               x = mask_ring$x,
               y = mask_ring$y,
               colour = "white",
               size = rel(6.5)) +
-    annotate("path",
-             x = head_shape$x,
-             y = head_shape$y,
-             size = rel(1.5 * scaling)) +
-    annotate("path",
-             x = nose$x,
-             y = nose$y,
-             size = rel(1.5 * scaling)) +
-    annotate("curve",
-             x = ears$x[[1]],
-             y = ears$y[[1]],
-             xend = ears$x[[2]],
-             yend = ears$y[[2]],
-             curvature = -.5,
-             angle = 60,
-             size = rel(1.5 * scaling)) +
-    annotate("curve",
-             x = ears$x[[3]],
-             y = ears$y[[3]],
-             xend = ears$x[[4]],
-             yend = ears$y[[4]],
-             curvature = .5,
-             angle = 120,
-             size = rel(1.5 * scaling)) +
+    add_head(r, scaling) +
     coord_equal() +
     theme_bw() +
     theme(rect = element_blank(),
@@ -523,6 +500,7 @@ topoplot.eeg_tfr <- function(data,
 
   data <- as.data.frame(data,
                         long = TRUE)
+
   topoplot(data,
            time_lim = time_lim,
            limits = limits,
@@ -665,8 +643,8 @@ biharm_topo <- function(data,
   outmat <-
     purrr::map(xo + sqrt(as.complex(-1)) * yo,
                function (x) (abs(x - xy) ^ 2) *
-                 (log(abs(x - xy)) - 1) ) %>%
-    rapply(function (x) ifelse(is.nan(x),
+                 (log(abs(x - xy)) - 1)) %>%
+    rapply(function(x) ifelse(is.nan(x),
                                0,
                                x),
            how = "replace") %>%
@@ -677,6 +655,7 @@ biharm_topo <- function(data,
   out_df <- data.frame(x = xo[, 1],
                        outmat)
   names(out_df)[1:length(yo[1, ]) + 1] <- yo[1, ]
+
   out_df <- tidyr::gather(out_df,
                           key = y,
                           value = amplitude,
@@ -689,13 +668,12 @@ biharm_topo <- function(data,
 #' Creates data frames for plotting a head with ears and nose.
 #'
 #' @param r Radius of head
-#' @param circ_rads Circle outline in radians
 #' @keywords internal
 
-create_head <- function(r, circ_rads) {
+create_head <- function(r) {
 
-  head_shape <- data.frame(x = r * cos(circ_rads),
-                           y = r * sin(circ_rads))
+  head_shape <- data.frame(x = r * cos(circ_rad_fun()),
+                           y = r * sin(circ_rad_fun()))
   #define nose position relative to head_shape
   nose <- data.frame(x = c(head_shape$x[[23]],
                            head_shape$x[[26]],
@@ -719,17 +697,62 @@ create_head <- function(r, circ_rads) {
   head_out
 }
 
+#' Add a cartoon head to a topographical plot
+#'
+#' @author Matt Craddock \email{matt@@mattcraddock.com}
+#' @param r Radius of head
+#' @param colour Colour of lines
+#' @param scaling Scaling factor for line width
+#' @keywords internal
+add_head <- function(r = 1,
+                     colour = "black",
+                     scaling = 1) {
+
+  head_df <- create_head(r)
+
+  head_shape <- head_df$head_shape
+  nose <- head_df$nose
+  ears <- head_df$ears
+
+  list(ggplot2::annotate("path",
+                         x = head_shape$x,
+                         y = head_shape$y,
+                         size = rel(1.5 * scaling)),
+       ggplot2::annotate("path",
+                         x = nose$x,
+                         y = nose$y,
+                         size = rel(1.5 * scaling)),
+       ggplot2::annotate("curve",
+                         x = ears$x[[1]],
+                         y = ears$y[[1]],
+                         xend = ears$x[[2]],
+                         yend = ears$y[[2]],
+                         curvature = -.5,
+                         angle = 60,
+                         size = rel(1.5 * scaling)),
+       ggplot2::annotate("curve",
+                         x = ears$x[[3]],
+                         y = ears$y[[3]],
+                         xend = ears$x[[4]],
+                         yend = ears$y[[4]],
+                         curvature = .5,
+                         angle = 120,
+                         size = rel(1.5 * scaling)))
+}
+
 #' @noRd
-round_topo <- function(.data, interp_limit, r, circ_rads) {
+round_topo <- function(.data,
+                       interp_limit,
+                       r) {
 
   if (identical(interp_limit, "skirt")) {
     .data$incircle <- sqrt(.data$x ^ 2 + .data$y ^ 2) < 1.125
-    mask_ring <- data.frame(x = 1.126 * cos(circ_rads),
-                            y = 1.126 * sin(circ_rads))
+    mask_ring <- data.frame(x = 1.126 * cos(circ_rad_fun()),
+                            y = 1.126 * sin(circ_rad_fun()))
     } else {
       .data$incircle <- sqrt(.data$x ^ 2 + .data$y ^ 2) < (r * 1.02)
-      mask_ring <- data.frame(x = r * 1.03 * cos(circ_rads),
-                              y = r * 1.03 * sin(circ_rads))
+      mask_ring <- data.frame(x = r * 1.03 * cos(circ_rad_fun()),
+                              y = r * 1.03 * sin(circ_rad_fun()))
     }
   topo_out <- list("out_df" = .data[.data$incircle, ],
                    "mask_ring" = mask_ring)
@@ -741,7 +764,8 @@ parse_for_topo <- function(.data,
                            time_lim) {
 
   if (!is.null(time_lim)) {
-    .data <- select_times(.data, time_lim)
+    .data <- select_times(.data,
+                          time_lim)
   }
   .data
 }
