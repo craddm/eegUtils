@@ -47,7 +47,8 @@ EEGLAB can be loaded using the `import_set()` command. The command detects wheth
 Filtering can be performed using the `iir_filt()` command. This use a Butterworth filter to perform low-, high-, or band-pass or band-stop filtering of user-specified frequencies. Filtering is run twice (once forwards, once in reverse) to achieve zero-phase. (FIR filtering is currently in development, but could be performed using the `signal` package).
 
 ```{r filt-butter}
-eeg_example <- iir_filt(eeg_example,
+eeg_example <- eeg_filter(eeg_example,
+                        method = "iir",
                         low_freq = .1,
                         high_freq = 40,
                         filter_order = 3) #specify a bandpass filter

@@ -18,3 +18,14 @@ test_that("Label checking", {
   expect_true(all(label_check(cond_labs_sf, orig_labs)))
   expect_error(label_check(cond_labs_mix, orig_labs))
 })
+
+test_that("Padding and unpadding are functional", {
+  x <- rnorm(10)
+  expect_equal(length(pad(x, 10)), length(x) + 20)
+  expect_equal(unpad(pad(x, 10), 10), x)
+})
+
+test_that("Sample n calculated correctly", {
+  expect_equal(samples(demo_epochs),
+               nrow(demo_epochs$signals))
+})
