@@ -14,6 +14,7 @@
 - `eeg_filter()` function added for a unified method of filtering using either FIR or IIR
     - `eeg_filter()` supports use of multiple threads/cores through the `future` package.
     - `iir_filt()` will be deprecated
+- `geom_topo()` extension for `ggplot2` added. Allows plotting of a topographical scalp maps using standard `ggplot2` functions.
 
 ### Internal changes / bug fixes
 - `data.table` now used in the following functions internally:
