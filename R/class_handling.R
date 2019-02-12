@@ -236,11 +236,17 @@ validate_eeg_epochs <- function(.data) {
 
 eeg_evoked <- function(data,
                        chan_info,
-                       timings, ...) {
+                       timings,
+                       srate,
+                       epochs,
+                       ...) {
   value <- list(signals = data,
                 chan_info = chan_info,
-                timings = timings)
+                timings = timings,
+                srate = srate,
+                epochs = epochs)
   class(value) <- c("eeg_evoked")
+  value
 }
 
 #' Function to create an S3 object of class "eeg_stats".
@@ -276,7 +282,7 @@ eeg_stats <- function(statistic,
 #' @param events event table
 #' @param chan_info String of character names for electrodes.
 #' @param srate Sampling rate
-#' @param continuous Flag for whether data is continuous
+#' @param epochs Epoch information
 #' @keywords internal
 eeg_ICA <- function(mixing_matrix,
                     unmixing_matrix,
@@ -285,7 +291,7 @@ eeg_ICA <- function(mixing_matrix,
                     events,
                     chan_info,
                     srate,
-                    continuous) {
+                    epochs) {
 
   value <- list(mixing_matrix = mixing_matrix,
                 unmixing_matrix = unmixing_matrix,
@@ -294,10 +300,39 @@ eeg_ICA <- function(mixing_matrix,
                 events = events,
                 chan_info = chan_info,
                 srate = srate,
-                continuous = continuous)
+                epochs = epochs)
   class(value) <- c("eeg_ICA", "eeg_epochs")
   value
 }
+
+#' Function to create an S3 object of class \code{epochs_tbl}.
+#'
+#' @author Matt Craddock \email{matt@@mattcraddock.com}
+#' @param epochs
+#' @param recording
+#' @param epoch_labels NULL
+#' @param ...
+#' @keywords internal
+
+epochs_tbl <- function(epochs,
+                       recording,
+                       epoch_labels,
+                       ...) {
+
+  attr(epochs, "type") <- "misc"
+  attr(recording, "type") <- "misc"
+  attr(epoch_labels, "type") <- "misc"
+  epochs <- tibble::tibble(epochs = epochs,
+                           recording = recording,
+                           epoch_labels = )
+
+
+
+  class(epochs) <- c("epochs_tbl", class(epochs))
+  epochs
+}
+
+set_type <- function(x, label) attr(x, "type") <- label
 
 #' Check if object is of class "eeg_data".
 #'
