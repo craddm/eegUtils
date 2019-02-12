@@ -519,28 +519,6 @@ topoplot.eeg_tfr <- function(data,
            passed = TRUE)
 }
 
-#' Create topoplot
-#'
-#' @noRd
-
-make_topo <- function(data,
-                      time_lim,
-                      limits,
-                      chanLocs,
-                      method,
-                      r,
-                      grid_res,
-                      palette,
-                      interp_limit,
-                      contour,
-                      chan_marker,
-                      quantity,
-                      montage,
-                      highlights) {
-
-
-}
-
 #' Set palette and limits for topoplot
 #'
 #' @param topo ggplot2 object produced by topoplot command
@@ -661,6 +639,7 @@ biharm_topo <- function(data,
                           value = amplitude,
                           -x,
                           convert = TRUE)
+  out_df
 }
 
 #' Create head shape for plotting
