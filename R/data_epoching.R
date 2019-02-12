@@ -27,7 +27,10 @@ epoch_data.default <- function(data, ...) {
 #' @param events Character vector of events to epoch around.
 #' @param time_lim Time in seconds to form epoch around the events. Defaults to
 #'   one second either side.
-#' @param baseline Baseline times to subtract. Defaults to NULL (mean centres epochs). Set to "none" to perform no corrections.
+#' @param baseline Baseline times to subtract. Defaults to NULL (mean centres
+#'   epochs). Set to "none" to perform no corrections.
+#' @param epoch_labels Character vector of same length as events which'll be
+#'   used to label the epochs.
 #' @importFrom dplyr left_join
 #' @importFrom purrr map map_df
 #'
@@ -41,6 +44,7 @@ epoch_data.eeg_data <- function(data,
                                 events,
                                 time_lim = c(-1, 1),
                                 baseline = NULL,
+                                epoch_labels = NULL,
                                 ...) {
 
   if (!any(events %in% unique(data$events$event_type))) {
@@ -50,6 +54,14 @@ epoch_data.eeg_data <- function(data,
   if (!all(events %in% unique(data$events$event_type))) {
     warning("Some events not found - check event codes.")
   }
+
+  event_tags <- NULL
+  if (!is.null(epoch_labels) && length(events) != length(epoch_labels)) {
+    stop("event_labels must be the same length as events.")
+    } else if (!is.null(epoch_labels)) {
+      event_tags <- tibble::tibble(event_type = events,
+                                   epoch_labels = epoch_labels)
+   }
 
   # If the data has been downsampled, sample spacing will be greater than 1.
   # Subsequent steps need to account for this when selecting based on sample number.
@@ -107,7 +119,8 @@ epoch_data.eeg_data <- function(data,
                       function(x) any(is.na(x)),
                       FUN.VALUE = logical(1))
   epoched_data <- epoched_data[!na_epochs]
-  epoched_data <- do.call("rbind", epoched_data)
+  epoched_data <- do.call("rbind",
+                          epoched_data)
 
   event_table <- event_table[event_table$epoch %in% names(na_epochs[!na_epochs]), ]
 
@@ -125,6 +138,12 @@ epoch_data.eeg_data <- function(data,
 
   epoch_trigs <- event_table[event_table$event_type %in% events,
                              c("event_type", "epoch")]
+
+  if (!is.null(event_tags)) {
+    epoch_trigs <- dplyr::left_join(epoch_trigs,
+                                    event_tags, by = "event_type")
+  }
+
   epochs <- tibble::tibble(epoch = unique(epoched_data$epoch),
                            recording = as.character(data$epochs$recording))
   epochs <- dplyr::left_join(epochs,
@@ -154,4 +173,38 @@ epoch_data.eeg_data <- function(data,
 
 epoch_data.eeg_epochs <- function(data, ...) {
   stop("Data is already epoched, cannot currently re-epoch.")
+}
+
+
+#' Modify the epochs structure
+#'
+#' Get or set the epochs structure of an \code{eegUtils} object
+#' @author Matt Craddock \email{matt@@mattcraddock.com}
+#' @param .data \code{eegUtils} object to view
+#' @export
+epochs <- function(.data) {
+  if (any(class(.data) %in% c("eeg_data",
+                              "eeg_epochs",
+                              "eeg_ICA",
+                              "eeg_tfr",
+                              "eeg_evoked"))) {
+    .data$epochs
+  }
+}
+
+
+#' @param value Structure to replace `epochs` structure with.
+#' @rdname epochs
+#' @export
+`epochs<-` <- function(.data,
+                       value) {
+
+  if (any(class(.data) %in% c("eeg_data",
+                              "eeg_epochs",
+                              "eeg_ICA",
+                              "eeg_tfr",
+                              "eeg_evoked"))) {
+    .data$epochs <- value
+  }
+  .data
 }
