@@ -1,4 +1,14 @@
-#' @method fortify eeg_epochs
+#' ggplot2
+#'
+#'
+
+
+#' @importFrom ggplot2 fortify
+#' @export
+ggplot2::fortify
+
+#' @importFrom tibble as_tibble
+#' @export
 fortify.eeg_epochs <- function(model,
                                data,
                                ...) {
@@ -7,7 +17,7 @@ fortify.eeg_epochs <- function(model,
                                   stringsAsFactors = FALSE))
 }
 
-
+#' @export
 fortify.eeg_data <- function(model,
                                data,
                                ...) {
@@ -16,6 +26,7 @@ fortify.eeg_data <- function(model,
                 stringsAsFactors = FALSE)
 }
 
+#'@export
 fortify.eeg_ICA <- function(model,
                             data,
                             ...) {
@@ -24,7 +35,7 @@ fortify.eeg_ICA <- function(model,
                 stringsAsFactors = FALSE)
 }
 
-
+#' @export
 fortify.eeg_tfr <- function(model,
                             data,
                             ...) {
@@ -33,6 +44,7 @@ fortify.eeg_tfr <- function(model,
                 stringsAsFactors = FALSE)
 }
 
+#' @export
 fortify.eeg_evoked <- function(model,
                                data,
                                ...) {
@@ -129,7 +141,9 @@ stat_biharmonic <- function(mapping = NULL,
 
 
 #' StatScalpmap
-#' @noRd
+#'
+#' @export
+#' @keywords internal
 
 StatScalpmap <- ggplot2::ggproto("StatScalpmap",
                                  Stat,
@@ -138,7 +152,8 @@ StatScalpmap <- ggplot2::ggproto("StatScalpmap",
                                                   "fill"),
 
                         compute_group = function(data,
-                                                 scales) {
+                                                 scales,
+                                                 grid_res) {
 
                            data <- aggregate(fill ~ x + y,
                                              data = data,
@@ -152,45 +167,40 @@ StatScalpmap <- ggplot2::ggproto("StatScalpmap",
                            #print(c(x_min, x_max, y_min, y_max))
                            xo <- seq(x_min,
                                      x_max,
-                                     length = 80)
+                                     length = grid_res)
                            yo <- seq(y_min,
                                      y_max,
-                                     length = 80)
+                                     length = grid_res)
                            xo <- matrix(rep(xo,
-                                            80),
-                                        nrow = 80,
-                                        ncol = 80)
+                                            grid_res),
+                                        nrow = grid_res,
+                                        ncol = grid_res)
 
-                           yo <- t(matrix(rep(yo, 80),
-                                          nrow = 80,
-                                          ncol = 80))
+                           yo <- t(matrix(rep(yo, grid_res),
+                                          nrow = grid_res,
+                                          ncol = grid_res))
 
-                          xy_coords <- unique(data[, c("x", "y")])
-
-                          xy <- xy_coords[, 1] + xy_coords[, 2] * sqrt(as.complex(-1))
-
-                          d <- matrix(rep(xy,
-                                          length(xy)),
-                                      nrow = length(xy),
-                                      ncol = length(xy))
-
-                          d <- abs(d - t(d))
-                          diag(d) <- 1
-                          g <- (d ^ 2) * (log(d) - 1) #Green's function
-                          diag(g) <- 0
-                          weights <- qr.solve(g, data$fill)
-                          xy <- t(xy)
-
-                          # Remind me to make this code readable at some point.
-                          outmat <-
-                            purrr::map(xo + sqrt(as.complex(-1)) * yo,
-                                       function(x) (abs(x - xy) ^ 2) *
-                                         (log(abs(x - xy)) - 1)) %>%
-                            rapply(function(x) ifelse(is.nan(x), 0, x),
-                                   how = "replace") %>%
-                            purrr::map_dbl(function(x) x %*% weights)
-
-                          dim(outmat) <- c(80, 80)
+                           xy_coords <- unique(data[, c("x", "y")])
+                           xy <- xy_coords[, 1] + xy_coords[, 2] * sqrt(as.complex(-1))
+                           d <- matrix(rep(xy,
+                                           length(xy)),
+                                       nrow = length(xy),
+                                       ncol = length(xy))
+                           d <- abs(d - t(d))
+                           diag(d) <- 1
+                           g <- (d ^ 2) * (log(d) - 1) #Green's function
+                           diag(g) <- 0
+                           weights <- qr.solve(g, data$fill)
+                           xy <- t(xy)
+                           # Remind me to make this code readable at some point.
+                           outmat <-
+                             purrr::map(xo + sqrt(as.complex(-1)) * yo,
+                                        function(x) (abs(x - xy) ^ 2) *
+                                          (log(abs(x - xy)) - 1)) %>%
+                             rapply(function(x) ifelse(is.nan(x), 0, x),
+                                    how = "replace") %>%
+                             purrr::map_dbl(function(x) x %*% weights)
+                           dim(outmat) <- c(grid_res, grid_res)
                           data <- data.frame(x = xo[, 1],
                                              outmat)
                           names(data)[1:length(yo[1, ]) + 1] <- yo[1, ]
@@ -206,28 +216,64 @@ StatScalpmap <- ggplot2::ggproto("StatScalpmap",
                         }
 )
 
-#' @inheritParams geom_raster
+#' Create an interpolated scalp surface
+#'
+#' \code{stat_scalpmap} creates an interpolated surface for an irregular set of
+#' x-y coordinates, as is typically required for a topographical EEG plot. Since
+#' the surface should be approximately round, the function attempts to blank out
+#' portions of the surface that lay outside the area within the electrodes.
+#'
+#' @inheritParams ggplot2::geom_raster
+#' @author Matt Craddock \email{matt@@mattcraddock.com}
+#' @param grid_res Resolution of the interpolation grid. (Defaults to 70
+#'   points).
+#' @family topoplot functions
+#' @export
 stat_scalpmap <- function(mapping = NULL,
                           data = NULL,
-                          geom = "raster",
                           position = "identity",
                           na.rm = FALSE,
                           show.legend = NA,
                           inherit.aes = TRUE,
+                          grid_res = 70,
+                          interpolate = TRUE,
                           ...) {
   ggplot2::layer(
     stat = StatScalpmap,
     data = data,
     mapping = mapping,
-    geom = geom,
+    geom = GeomRaster,
     position = position,
     show.legend = show.legend,
     inherit.aes = inherit.aes,
     params = list(na.rm = na.rm,
-                  ...)
+                   interpolate = interpolate,
+                   grid_res = grid_res,
+                   ...)
   )
 }
 
+#' Create a topographical plot
+#'
+#' \code{geom_topo()} creates a topographical plot as a \code{ggplot2} object.
+#' This function automatically combines a number of distinct geom_* and stat_*
+#' functions to create a default topographical scalp map. Since geom_raster does
+#' not allow unevenly spaced grids, the function creates an interpolated surface.
+#'
+#' @examples
+#' library(ggplot2)
+#' ggplot(demo_epochs, aes(x = x, y = y, fill = amplitude)) + geom_topo()
+#' @inheritParams ggplot2::geom_raster
+#' @param chan_markers Defaults to "point". Mark electrode positions with points
+#'   or text.
+#' @param chan_size Size for channel markers, if any.
+#' @param head_size Size of the head shape.
+#' @param mask_size Size of the masking ring (defaults = rel(6.5))
+#' @param grid_res Smoothness of the interpolation grid.
+#' @param scale_fac The radius of the ring is determined from the front-most
+#'   electrode's location by a scaling factor.
+#' @family topoplot functions
+#' @export
 geom_topo <- function(mapping = NULL,
                       data = NULL,
                       stat = "identity",
@@ -237,9 +283,11 @@ geom_topo <- function(mapping = NULL,
                       inherit.aes = TRUE,
                       interpolate = TRUE,
                       chan_markers = "point",
-                      fill = NA,
-                      size = NA,
+                      chan_size = rel(2),
                       head_size = rel(1.5),
+                      mask_size = rel(6.5),
+                      grid_res = 70,
+                      scale_fac = 1.32,
                       ...) {
 
   list(ggplot2::layer(geom = GeomRaster,
@@ -251,6 +299,7 @@ geom_topo <- function(mapping = NULL,
                       inherit.aes = inherit.aes,
                       params = list(na.rm = na.rm,
                                     interpolate = interpolate,
+                                    grid_res = grid_res,
                                     ...)
                       ),
        ggplot2::layer(geom = GeomPath,
@@ -261,75 +310,86 @@ geom_topo <- function(mapping = NULL,
                       inherit.aes = inherit.aes,
                       params = list(na.rm = na.rm,
                                     colour = "white",
-                                    size = rel(6.5),
-                                    ...)),
-       list(ggplot2::layer(geom = GeomHead,
-                           data = data,
-                           mapping = mapping,
-                           stat = StatHead,
-                           position = PositionIdentity,
-                           inherit.aes = inherit.aes,
-                           params = list(na.rm = na.rm,
-                                         size = head_size,
-                                         ...)),
-            ggplot2::layer(data = data,
-                           mapping = mapping,
-                           stat = StatREar,
-                           geom = GeomEars,
-                           position = PositionIdentity,
-                           show.legend = show.legend,
-                           inherit.aes = TRUE,
-                           params = list(na.rm = na.rm,
-                                         curvature = -.5,
-                                         angle = 60,
-                                         size = head_size,
-                                         ...)),
-            ggplot2::layer(data = data,
-                           mapping = mapping,
-                           stat = StatLEar,
-                           geom = GeomEars,
-                           position = PositionIdentity,
-                           show.legend = show.legend,
-                           inherit.aes = TRUE,
-                           params = list(na.rm = na.rm,
-                                         curvature = .5,
-                                         angle = 120,
-                                         size = head_size,
-                                         ...))
-       ),
+                                    size = mask_size,
+                                    scale_fac = scale_fac,
+                                    ...)
+                      ),
+       ggplot2::layer(geom = GeomHead,
+                      data = data,
+                      mapping = mapping,
+                      stat = StatHead,
+                      position = PositionIdentity,
+                      inherit.aes = inherit.aes,
+                      params = list(na.rm = na.rm,
+                                    size = head_size,
+                                    ...)
+                      ),
+       ggplot2::layer(data = data,
+                      mapping = mapping,
+                      stat = StatREar,
+                      geom = GeomEars,
+                      position = PositionIdentity,
+                      show.legend = show.legend,
+                      inherit.aes = TRUE,
+                      params = list(na.rm = na.rm,
+                                    curvature = -.5,
+                                    angle = 60,
+                                    size = head_size,
+                                    ...)
+                      ),
+       ggplot2::layer(data = data,
+                      mapping = mapping,
+                      stat = StatLEar,
+                      geom = GeomEars,
+                      position = PositionIdentity,
+                      show.legend = show.legend,
+                      inherit.aes = TRUE,
+                      params = list(na.rm = na.rm,
+                                    curvature = .5,
+                                    angle = 120,
+                                    size = head_size,
+                                    ...)
+                      ),
        if (chan_markers == "point") {
-         ggplot2::layer(geom = GeomPoint,
-                        data = data,
-                        stat = stat,
+         ggplot2::layer(data = data,
                         mapping = mapping,
-                        position = position,
+                        stat = StatChannels,
+                        geom = GeomPoint,
+                        position = PositionIdentity,
                         show.legend = show.legend,
                         inherit.aes = inherit.aes,
                         params = list(na.rm = na.rm,
                                       fill = NA,
-                                      size = size,
-                                      ...))}
-  )
+                                      size = chan_size,
+                                      ...))
+         } else if (chan_markers == "text") {
+           ggplot2::layer(data = data,
+                          mapping = mapping,
+                          stat = StatChannels,
+                          geom = GeomText,
+                          position = PositionIdentity,
+                          show.legend = show.legend,
+                          inherit.aes = inherit.aes,
+                          params = list(na.rm = na.rm,
+                                        size = chan_size,
+                                        ...))
+           }
+       )
 }
 
+#' @keywords internal
+#' @export
 GeomTopo <- ggplot2::ggproto("GeomTopo",
                              GeomRaster)
 
-StatHead <- ggplot2::ggproto("StatHead",
-                             Stat,
-                             compute_group = function(data,
-                                                      scales) {
 
-                               y_lim <- max(data$y,
-                                            na.rm = TRUE) * 1.1
-                               heads <- make_head(r = y_lim)
-                               heads
-                               }
-                             )
-
-GeomHead <- ggplot2::ggproto("GeomHead",
-                              GeomPath)
-
+#' Add head shape
+#'
+#' \code{geom_head()} adds a headshape to a plot.
+#' @rdname stat_scalpmap
+#' @inheritParams ggplot2::geom_path
+#' @family topoplot functions
+#' @export
 geom_head <- function(mapping = NULL,
                       data = NULL,
                       show.legend = NA,
@@ -370,29 +430,43 @@ geom_head <- function(mapping = NULL,
   )
 }
 
-StatMask <-
-  ggplot2::ggproto("StatMask",
-                   Stat,
-                   compute_group = function(data,
-                                            scales) {
+#'@export
+StatHead <- ggplot2::ggproto("StatHead",
+                             Stat,
+                             compute_group = function(data,
+                                                      scales) {
 
-                     scale_fac <- 1.35 * max(data$y,
-                                             na.rm = TRUE)
-                     data <- data.frame(x = scale_fac * cos(circ_rad_fun()),
-                                        y = scale_fac * sin(circ_rad_fun()))
-                     data
-
-                   }
+                               y_lim <- max(data$y,
+                                            na.rm = TRUE) * 1.1
+                               heads <- make_head(r = y_lim)
+                               heads
+                             }
 )
+#'@export
+GeomHead <- ggplot2::ggproto("GeomHead",
+                             GeomPath)
 
+
+#' Mask ring
+#'
+#' \code{geom_mask()} adds a masking ring to smooth the edges of a scalp map
+#' generated by \code{stat_scalpmap()}, to give it a circular appearance.
+#'
+#' @inheritParams ggplot2::geom_path
+#' @param colour For \code{geom_mask}, colour of the masking ring.
+#' @param size For \code{geom_mask}, width of the masking ring.
+#' @param scale_fac The radius of the ring is determined from the front-most
+#'   electrode's location by a scaling factor. Defaults to 1.32 * max(y).
+#' @rdname stat_scalpmap
+#' @family topoplot functions
+#' @export
 geom_mask <- function(mapping = NULL,
                       data = NULL,
-                      stat = "identity",
-                      position = "identity",
                       show.legend = NA,
                       na.rm = FALSE,
                       colour = "white",
                       size = rel(6.5),
+                      scale_fac = 1.32,
                       ...) {
 
   ggplot2::layer(data = data,
@@ -405,32 +479,35 @@ geom_mask <- function(mapping = NULL,
                  params = list(na.rm = na.rm,
                                colour = colour,
                                size = size,
+                               scale_fac = scale_fac,
                                ...))
 }
 
-GeomEars <- ggplot2::ggproto("GeomEars",
-                             GeomCurve)
+StatMask <-
+  ggplot2::ggproto("StatMask",
+                   Stat,
+                   compute_group = function(data,
+                                            scales,
+                                            scale_fac = 1.32) {
 
-StatREar <- ggplot2::ggproto("StatREar",
-                             Stat,
-                             compute_group = function(data, scales) {
+                     scale_fac <- scale_fac * max(data$y,
+                                                  na.rm = TRUE)
+                     data <- data.frame(x = scale_fac * cos(circ_rad_fun()),
+                                        y = scale_fac * sin(circ_rad_fun()))
+                     data
 
-                               y_lim <- max(data$y, na.rm = TRUE) * 1.1
-                               make_r_ear(y_lim)
-                             })
+                   }
+  )
 
-StatLEar <- ggplot2::ggproto("StatLEar",
-                             Stat,
-                             compute_group = function(data, scales) {
 
-                               y_lim <- max(data$y, na.rm = TRUE) * 1.1
-                               make_l_ear(y_lim)
-                             })
-
+#' Add ears to head
+#'
+#' \code{geom_ears} simply draws a pair of ears attached to the head shape.
+#' @inheritParams ggplot2::geom_curve
+#' @rdname stat_scalpmap
+#' @export
 geom_ears <- function(mapping = NULL,
                       data = NULL,
-                      stat = "identity",
-                      position = "identity",
                       show.legend = NA,
                       na.rm = FALSE,
                       ...) {
@@ -462,6 +539,30 @@ geom_ears <- function(mapping = NULL,
 
 }
 
+
+GeomEars <- ggplot2::ggproto("GeomEars",
+                             GeomCurve)
+
+StatREar <- ggplot2::ggproto("StatREar",
+                             Stat,
+                             compute_group = function(data, scales) {
+
+                               y_lim <- max(data$y, na.rm = TRUE) * 1.1
+                               make_r_ear(y_lim)
+                             })
+
+StatLEar <- ggplot2::ggproto("StatLEar",
+                             Stat,
+                             compute_group = function(data, scales) {
+
+                               y_lim <- max(data$y, na.rm = TRUE) * 1.1
+                               make_l_ear(y_lim)
+                             })
+
+
+#' Create a headshape
+#'
+#' @keywords internal
 make_head <- function(r) {
 
   head_shape <- data.frame(x = r * cos(circ_rad_fun()),
@@ -480,6 +581,8 @@ make_head <- function(r) {
   head_out
 }
 
+#' Make right ear
+#' @keywords internal
 make_r_ear <- function(r) {
 
   head_shape <- data.frame(x = r * cos(circ_rad_fun()),
@@ -491,6 +594,8 @@ make_r_ear <- function(r) {
   right_ear
 }
 
+#' Make left ear
+#' @keywords internal
 make_l_ear <- function(r) {
   head_shape <- data.frame(x = r * cos(circ_rad_fun()),
                            y = r * sin(circ_rad_fun()))
@@ -499,4 +604,51 @@ make_l_ear <- function(r) {
                          y = head_shape$y[[48]],
                          yend = head_shape$y[[55]])
   left_ear
+}
+
+StatChannels <-
+  ggplot2::ggproto("StatChannels",
+                   Stat,
+                   required_aes = c("x", "y"),
+                   compute_group = function(data, scales) {
+
+                     if ("label" %in% names(data)) {
+                     data <- aggregate(data[, c("x", "y")],
+                                       by = list(label = data$label),
+                                       FUN = mean)
+                     } else {
+                       data <- data[!duplicated(data[, c("x", "y")]),
+                                    c("x", "y")]
+                     }
+                     })
+
+
+#' Add channel indicators
+#'
+#' \code{geom_channels} adds either points or text labels at channel locations.
+#' This is a convenience function to prevent overplotting when the input data
+#' contains many rows of data.
+#'
+#' @inheritParams ggplot2::geom_point
+#' @inheritParams ggplot2::geom_text
+#' @rdname stat_scalpmap
+#' @param geom "point" for points or "text" for labels. Default is "point".
+#' @export
+geom_channels <- function(mapping = NULL,
+                          data = NULL,
+                          geom = "point",
+                          show.legend = NA,
+                          inherit.aes = TRUE,
+                          na.rm = TRUE,
+                          ...) {
+
+  ggplot2::layer(data = data,
+                 mapping = mapping,
+                 stat = StatChannels,
+                 geom = geom,
+                 position = PositionIdentity,
+                 show.legend = show.legend,
+                 inherit.aes = inherit.aes,
+                 params = list(na.rm = na.rm,
+                               ...))
 }
