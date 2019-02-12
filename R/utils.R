@@ -142,18 +142,9 @@ as.data.frame.eeg_evoked <- function(x,
                                      long = FALSE,
                                      coords = TRUE,
                                      ...) {
-  if (class(x$signals) == "list") {
-    cond_labels <- names(x$signals)
-    df <- lapply(seq_along(cond_labels), function(ix) {
-      out_df <- data.frame(x$signals[[ix]],
-                           time = x$timings$time,
-                           conditions = cond_labels[[ix]])
-      out_df
-    })
-    df <- do.call("rbind", df)
-  } else {
-    df <- data.frame(x$signals, time = x$timings$time)
-  }
+
+  df <- cbind(x$signals,
+              x$timings)
 
   if (long) {
     df <- tidyr::gather(df,
@@ -173,7 +164,7 @@ as.data.frame.eeg_evoked <- function(x,
 
 #' Convert \code{eeg_ICA} object to data frame
 #
-#' @author Matt Craddock \email{matt@mattcraddock.com}
+#' @author Matt Craddock \email{matt@@mattcraddock.com}
 #' @param x Object of class \code{eeg_ICA}
 #' @param row.names Kept for compatability with S3 generic, ignored.
 #' @param optional Kept for compatability with S3 generic, ignored.
