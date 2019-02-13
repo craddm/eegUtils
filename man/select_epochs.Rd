@@ -3,7 +3,6 @@
 \name{select_epochs}
 \alias{select_epochs}
 \alias{select_epochs.default}
-\alias{select_epochs.eeg_data}
 \alias{select_epochs.eeg_epochs}
 \alias{select_epochs.eeg_ICA}
 \title{Select epochs}
@@ -11,8 +10,6 @@
 select_epochs(data, ...)
 
 \method{select_epochs}{default}(data, ...)
-
-\method{select_epochs}{eeg_data}(data, ...)
 
 \method{select_epochs}{eeg_epochs}(data, epoch_events = NULL,
   epoch_no = NULL, keep = TRUE, df_out = FALSE, ...)
@@ -41,8 +38,6 @@ This is a generic function for selecting epochs from an epoched data set.
 \section{Methods (by class)}{
 \itemize{
 \item \code{default}: Select from generic object
-
-\item \code{eeg_data}: Select epochs from \code{eeg_data} objects.
 
 \item \code{eeg_epochs}: Selection of epochs from \code{eeg_epochs} objects.
 

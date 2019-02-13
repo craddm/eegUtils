@@ -5,7 +5,7 @@
 \title{Function to create an object of class eeg_psd}
 \usage{
 eeg_psd(data, srate, events, chan_info = NULL, timings = NULL, freqs,
-  dimensions)
+  dimensions, epochs)
 }
 \arguments{
 \item{data}{PSD transformed data}

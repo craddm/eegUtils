@@ -11,23 +11,23 @@
 \usage{
 plot_butterfly(data, ...)
 
-\method{plot_butterfly}{default}(data, time_lim = NULL, group = NULL,
-  facet = NULL, baseline = NULL, colourmap = NULL, legend = TRUE,
-  continuous = FALSE, browse_mode = FALSE, ...)
+\method{plot_butterfly}{default}(data, time_lim = NULL,
+  baseline = NULL, colourmap = NULL, legend = TRUE,
+  continuous = FALSE, browse_mode = FALSE, facet, ...)
 
 \method{plot_butterfly}{eeg_evoked}(data, time_lim = NULL,
-  group = NULL, facet = NULL, baseline = NULL, colourmap = NULL,
-  legend = TRUE, continuous = FALSE, browse_mode = FALSE, ...)
+  baseline = NULL, colourmap = NULL, legend = TRUE,
+  continuous = FALSE, browse_mode = FALSE, facet, ...)
 
-\method{plot_butterfly}{eeg_stats}(data, time_lim = NULL, group = NULL,
-  facet = NULL, baseline = NULL, colourmap = NULL, legend = TRUE,
+\method{plot_butterfly}{eeg_stats}(data, time_lim = NULL,
+  baseline = NULL, colourmap = NULL, legend = TRUE,
   continuous = FALSE, browse_mode = FALSE, ...)
 
 \method{plot_butterfly}{eeg_data}(data, time_lim = NULL,
-  baseline = NULL, legend = TRUE, browse_mode = FALSE, ...)
+  baseline = NULL, legend = TRUE, facet, browse_mode = FALSE, ...)
 
 \method{plot_butterfly}{eeg_epochs}(data, time_lim = NULL,
-  baseline = NULL, legend = TRUE, browse_mode = FALSE, ...)
+  baseline = NULL, legend = TRUE, facet, browse_mode = FALSE, ...)
 }
 \arguments{
 \item{data}{EEG dataset. Should have multiple timepoints.}
@@ -36,10 +36,6 @@ plot_butterfly(data, ...)
 
 \item{time_lim}{Character vector. Numbers in whatever time unit is used
 specifying beginning and end of time-range to plot. e.g. c(-.1,.3)}
-
-\item{group}{Group lines by a specificed grouping variable.}
-
-\item{facet}{Create multiple plots for a specified grouping variable.}
 
 \item{baseline}{Character vector. Times to use as a baseline. Takes the mean
 over the specified period and subtracts. e.g. c(-.1, 0)}

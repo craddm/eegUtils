@@ -4,7 +4,7 @@
 \alias{eeg_evoked}
 \title{Function to create an S3 object of class "eeg_evoked"}
 \usage{
-eeg_evoked(data, chan_info, timings, ...)
+eeg_evoked(data, chan_info, timings, srate, epochs, ...)
 }
 \arguments{
 \item{data}{evoked data}

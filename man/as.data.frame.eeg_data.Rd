@@ -5,23 +5,26 @@
 \title{Convert eeg_data to data.frame}
 \usage{
 \method{as.data.frame}{eeg_data}(x, row.names = NULL, optional = FALSE,
-  long = FALSE, events = FALSE, ...)
+  long = FALSE, events = FALSE, coords = FALSE, ...)
 }
 \arguments{
 \item{x}{Object of class \code{eeg_data}}
 
-\item{row.names}{Kept for compatability with S3 generic, ignored.}
+\item{row.names}{Kept for compatibility with S3 generic, ignored.}
 
-\item{optional}{Kept for compatability with S3 generic, ignored.}
+\item{optional}{Kept for compatibility with S3 generic, ignored.}
 
 \item{long}{Convert to long format. Defaults to FALSE}
 
 \item{events}{Include events in output.}
 
+\item{coords}{Include electrode coordinates in output. Only possible when
+long = TRUE.}
+
 \item{...}{arguments for other as.data.frame commands}
 }
 \description{
-Convert an object of class \code{eeg_data} into a standard data.frame / tibble
+Convert an object of class \code{eeg_data} into a standard data.frame.
 }
 \author{
 Matt Craddock \email{matt@mattcraddock.com}

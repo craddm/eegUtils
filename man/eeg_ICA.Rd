@@ -5,7 +5,7 @@
 \title{Function to create an S3 object of class "eeg_ICA".}
 \usage{
 eeg_ICA(mixing_matrix, unmixing_matrix, signals, timings, events,
-  chan_info, srate, continuous)
+  chan_info, srate, epochs)
 }
 \arguments{
 \item{mixing_matrix}{ICA mixing matrix}
@@ -22,7 +22,7 @@ eeg_ICA(mixing_matrix, unmixing_matrix, signals, timings, events,
 
 \item{srate}{Sampling rate}
 
-\item{continuous}{Flag for whether data is continuous}
+\item{epochs}{Epoch information}
 }
 \description{
 Function to create an S3 object of class "eeg_ICA".

@@ -11,20 +11,20 @@
 plot_timecourse(data, ...)
 
 \method{plot_timecourse}{data.frame}(data, electrode = NULL,
-  time_lim = NULL, group = NULL, facet = NULL, add_CI = FALSE,
-  baseline = NULL, colour = NULL, color = NULL, ...)
+  time_lim = NULL, facet, add_CI = FALSE, baseline = NULL,
+  colour = NULL, color = NULL, ...)
 
 \method{plot_timecourse}{eeg_evoked}(data, electrode = NULL,
-  time_lim = NULL, group = NULL, facet = NULL, add_CI = FALSE,
-  baseline = NULL, colour = NULL, color = NULL, ...)
+  time_lim = NULL, facet, add_CI = FALSE, baseline = NULL,
+  colour = NULL, color = NULL, ...)
 
 \method{plot_timecourse}{eeg_ICA}(data, component = NULL,
-  time_lim = NULL, group = NULL, facet = NULL, add_CI = FALSE,
-  baseline = NULL, colour = NULL, color = NULL, ...)
+  time_lim = NULL, facet, add_CI = FALSE, baseline = NULL,
+  colour = NULL, color = NULL, ...)
 
 \method{plot_timecourse}{eeg_epochs}(data, electrode = NULL,
-  time_lim = NULL, group = NULL, facet = NULL, add_CI = FALSE,
-  baseline = NULL, colour = NULL, color = NULL, ...)
+  time_lim = NULL, facet, add_CI = FALSE, baseline = NULL,
+  colour = NULL, color = NULL, ...)
 }
 \arguments{
 \item{data}{EEG dataset. Should have multiple timepoints.}
@@ -35,10 +35,6 @@ plot_timecourse(data, ...)
 
 \item{time_lim}{Character vector. Numbers in whatever time unit is used
 specifying beginning and end of time-range to plot. e.g. c(-.1, .3)}
-
-\item{group}{(not yet implemented)}
-
-\item{facet}{Create multiple plots for a specified grouping variable.}
 
 \item{add_CI}{Add confidence intervals to the graph. Defaults to 95 percent
 between-subject CIs.}

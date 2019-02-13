@@ -11,8 +11,7 @@ eeg_average(data, ...)
 
 \method{eeg_average}{default}(data, ...)
 
-\method{eeg_average}{eeg_epochs}(data, cond_label = NULL,
-  calc_var = NULL, ...)
+\method{eeg_average}{eeg_epochs}(data, ...)
 
 \method{eeg_average}{eeg_tfr}(data, cond_label = NULL, calc_var = NULL,
   ...)
@@ -24,9 +23,6 @@ eeg_average(data, ...)
 
 \item{cond_label}{Only pick events that include a given label. Character
 vector.}
-
-\item{calc_var}{Can be used to calculate measures of variability around the
-average.}
 }
 \description{
 This function is used to create an \code{eeg_evoked} object from \code{eeg_epochs}.
