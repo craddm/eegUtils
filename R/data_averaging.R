@@ -23,28 +23,37 @@ eeg_average.default <- function(data,
 #' @param cond_label Only pick events that include a given label. Character
 #'   vector.
 #' @describeIn eeg_average Create evoked data from \code{eeg_epochs}
+#' @importFrom tibble tibble
+#' @importFrom dplyr left_join group_by_at summarise_at ungroup
 #' @export
 eeg_average.eeg_epochs <- function(data,
                                    ...) {
 
   elecs <- channel_names(data)
-  new_dat <- merge(cbind(data$signals, data$timings),
-                   data$epochs)
+
+  if (is.null(data$epochs)) {
+    data$epochs <- tibble::tibble(epoch = unique(data$timings$epoch),
+                                  recording = NA)
+  }
+
+  data$signals <- dplyr::left_join(cbind(data$signals,
+                                         data$timings),
+                                   data$epochs, by = "epoch")
   col_names <- names(data$epochs)
   col_names <- col_names[!(col_names %in% c("epoch", "recording"))]
 
-  new_dat <-
-    dplyr::group_by_at(new_dat,
+  data$signals <-
+    dplyr::group_by_at(data$signals,
                        .vars = vars(time, col_names)) %>%
     dplyr::summarise_at(.vars = vars(elecs),
                         mean) %>%
     dplyr::ungroup()
 
   data <-
-    eeg_evoked(data = new_dat[, elecs],
+    eeg_evoked(data = data$signals[, elecs],
                chan_info = data$chan_info,
                srate = data$srate,
-               timings = new_dat[, c("time", col_names)],
+               timings = data$signals[, c("time", col_names)],
                epochs = NULL)
   data
 }
