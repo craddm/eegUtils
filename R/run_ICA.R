@@ -69,14 +69,14 @@ run_ICA.eeg_epochs <- function(data,
     unmixing_matrix$electrode <- names(data$signals)
 
     ica_obj <- eeg_ICA(mixing_matrix = mixing_matrix,
-                    unmixing_matrix = unmixing_matrix,
-                    signals = ICA_out$S,
-                    timings = data$timings,
-                    events = data$events,
-                    chan_info = data$chan_info,
-                    srate = data$srate,
-                    continuous = FALSE)
-  }
+                       unmixing_matrix = unmixing_matrix,
+                       signals = ICA_out$S,
+                       timings = data$timings,
+                       events = data$events,
+                       chan_info = data$chan_info,
+                       srate = data$srate,
+                       epochs = data$epochs)
+    }
   ica_obj
 }
 
@@ -169,16 +169,15 @@ sobi_ICA <- function(data) {
   names(unmixing_matrix) <- paste0("Comp", 1:ncol(S))
   unmixing_matrix$electrode <- names(data$signals)
 
-  ica_obj <- list("mixing_matrix" = mixing_matrix,
-                  "unmixing_matrix" = unmixing_matrix,
-                  "signals" = S,
-                  "timings" = data$timings,
-                  "events" = data$events,
-                  "chan_info" = data$chan_info,
-                  "srate" = data$srate,
-                  "continuous" = FALSE)
-  class(ica_obj) <- c("eeg_ICA", "eeg_epochs")
-  return(ica_obj)
+  ica_obj <- eeg_ICA(mixing_matrix = mixing_matrix,
+                     unmixing_matrix = unmixing_matrix,
+                     signals = S,
+                     timings = data$timings,
+                     events = data$events,
+                     chan_info = data$chan_info,
+                     srate = data$srate,
+                     epochs = data$epochs)
+  ica_obj
 }
 
 #' Joint diagonalization for SOBI
