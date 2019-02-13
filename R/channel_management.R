@@ -453,8 +453,6 @@ validate_channels <- function(chan_info,
 #'
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #' @param .data \code{eegUtils} object to view
-#'
-#'
 #' @export
 channels <- function(.data) {
   UseMethod("channels", .data)
