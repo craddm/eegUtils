@@ -101,8 +101,6 @@ select_times.eeg_evoked <- function(data,
                                     df_out = FALSE,
                                     ...) {
 
-  #data$signals <- as.data.frame(data)
-
   keep_rows <- find_times(data$timings,
                           time_lim)
 
@@ -112,7 +110,6 @@ select_times.eeg_evoked <- function(data,
   if (df_out) {
     return(data$signals)
   }
-  #data$signals$time <- NULL
   data
 }
 
@@ -384,17 +381,6 @@ select_epochs.default <- function(data, ...) {
   warning(paste("select_epochs does not know how to handle object of class",
                 class(data),
                 "and can only be used on eeg_epochs objects."))
-}
-
-#' @describeIn select_epochs Select epochs from \code{eeg_data} objects.
-#' @export
-
-select_epochs.eeg_data <- function(data, ...) {
-  if (data$continuous) {
-    stop("Data is not epoched.")
-  } else {
-    warning("oops, shouldn't end up here.")
-  }
 }
 
 #' @param epoch_events Select epochs containing any of the specified events. Can
