@@ -22,7 +22,7 @@ eeg_data <- function(data,
                      epochs = NULL) {
 
   if (!missing(continuous)) {
-    message("Continuous parameter is deprecated and ignored")
+    message("Continuous parameter is deprecated and ignored. It will be removed in eegUtils 0.5.")
   }
 
   if (srate < 1) {
@@ -47,6 +47,14 @@ eeg_data <- function(data,
 #' @keywords internal
 validate_eeg_data <- function(.data) {
 
+  nrow_sig <- nrow(.data$signals)
+  nrow_time <- nrow(.data$timings)
+
+  if (!identical(nrow_sig, nrow_time)) {
+    stop("nrow for signals and time must be identical",
+         call. = FALSE)
+  }
+
   if (exists(.data$signals)) {
     check_numeric <- apply(.data$signals,
                            2,
@@ -55,10 +63,6 @@ validate_eeg_data <- function(.data) {
       warning(paste("Non-numeric channels: ",
                     channel_names(.data)[!check_numeric]))
     }
-  }
-
-  if (!exists(.data$continuous)) {
-    .data$continuous <- NULL
   }
 
   if (!exists(.data$reference)) {
@@ -128,7 +132,8 @@ eeg_psd <- function(data,
                     chan_info = NULL,
                     timings = NULL,
                     freqs,
-                    dimensions) {
+                    dimensions,
+                    epochs) {
 
   value <- list(signals = data,
                 srate = srate,
@@ -197,30 +202,45 @@ eeg_epochs <- function(data,
 
 validate_eeg_epochs <- function(.data) {
 
-  if (exists(.data$signals)) {
-    check_numeric <- apply(.data$signals,
+  nrow_sig <- nrow(.data$signals)
+  nrow_time <- nrow(.data$timings)
+
+  if (!identical(nrow_sig, nrow_time)) {
+    stop("nrow for signals and time must be identical",
+         call. = FALSE)
+  }
+
+  if (exists("signals", data)) {
+    check_numeric <- apply(data$signals,
                            2,
                            is.numeric)
     if (!all(check_numeric)) {
       warning(paste("Non-numeric channels: ",
-                    channel_names(.data)[!check_numeric]))
+                    channel_names(data)[!check_numeric]))
     }
   }
 
-  if (!exists(.data$reference)) {
-    .data$reference <- append(.data,
+  if (!exists("reference", data)) {
+    .data$reference <- append(data,
                               list(reference = NULL))
   }
 
   if (is.null(.data$epochs)) {
-    .data$epochs <- tibble::tibble(epoch = unique(.data$events$epoch),
-                                   recording = NA)
+    data$epochs <- tibble::tibble(epoch = unique(data$events$epoch),
+                                  recording = NA,
+                                  epoch_label = NA)
   }
 
-  class(.data) <- c("eeg_epochs",
+  class(data) <- c("eeg_epochs",
                     "eeg_data")
-  .data
+  data
+}
 
+
+#'
+update_eeg_epochs <- function(.data) {
+
+  validate_eeg_epochs(.data)
 
 }
 
@@ -308,10 +328,10 @@ eeg_ICA <- function(mixing_matrix,
 #' Function to create an S3 object of class \code{epochs_tbl}.
 #'
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
-#' @param epochs
-#' @param recording
+#' @param epochs epoch column
+#' @param recording recording name
 #' @param epoch_labels NULL
-#' @param ...
+#' @param ... any other parameters to be added
 #' @keywords internal
 
 epochs_tbl <- function(epochs,
