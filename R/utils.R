@@ -1,14 +1,18 @@
 #' Convert eeg_data to data.frame
 #'
-#' Convert an object of class \code{eeg_data} into a standard data.frame / tibble
+#' Convert an object of class \code{eeg_data} into a standard data.frame.
+#'
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #' @param x Object of class \code{eeg_data}
-#' @param row.names Kept for compatability with S3 generic, ignored.
-#' @param optional Kept for compatability with S3 generic, ignored.
+#' @param row.names Kept for compatibility with S3 generic, ignored.
+#' @param optional Kept for compatibility with S3 generic, ignored.
 #' @param long Convert to long format. Defaults to FALSE
 #' @param events Include events in output.
+#' @param coords Include electrode coordinates in output. Only possible when
+#'   long = TRUE.
 #' @param ... arguments for other as.data.frame commands
 #' @importFrom tidyr gather
+#' @importFrom dplyr left_join
 #' @export
 
 as.data.frame.eeg_data <- function(x,
@@ -16,6 +20,7 @@ as.data.frame.eeg_data <- function(x,
                                    optional = FALSE,
                                    long = FALSE,
                                    events = FALSE,
+                                   coords = FALSE,
                                    ...) {
   df <- data.frame(x$signals,
                    x$timings)
@@ -34,6 +39,7 @@ as.data.frame.eeg_data <- function(x,
                            x$events,
                            by = c("sample" = "event_onset"))
   }
+
   df
 }
 
@@ -54,6 +60,7 @@ as.data.frame.eeg_data <- function(x,
 #' @param ... arguments for other as.data.frame commands
 #'
 #' @importFrom tidyr gather
+#' @importFrom dplyr left_join
 #' @export
 
 as.data.frame.eeg_epochs <- function(x, row.names = NULL,
@@ -83,7 +90,8 @@ as.data.frame.eeg_epochs <- function(x, row.names = NULL,
   } else {
     df <- data.frame(x$signals,
                      time = x$timings$time,
-                     epoch = x$timings$epoch)
+                     epoch = x$timings$epoch,
+                     stringsAsFactors = FALSE)
     # combine the new data frame with any condition labels from the events table
     if ("event_label" %in% names(x$events)) {
       df <- merge(df,
@@ -102,9 +110,9 @@ as.data.frame.eeg_epochs <- function(x, row.names = NULL,
                         factor_key = TRUE)
 
     if (coords && !is.null(channels(x))) {
-      df <- left_join(df,
-                      channels(x)[, c("electrode", "x", "y")],
-                      by = "electrode")
+      df <- dplyr::left_join(df,
+                             channels(x)[, c("electrode", "x", "y")],
+                             by = "electrode")
     }
   }
 
