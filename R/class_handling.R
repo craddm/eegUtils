@@ -236,8 +236,6 @@ validate_eeg_epochs <- function(.data) {
   data
 }
 
-
-#'
 update_eeg_epochs <- function(.data) {
 
   validate_eeg_epochs(.data)

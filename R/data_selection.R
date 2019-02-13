@@ -410,6 +410,7 @@ select_epochs.eeg_epochs <- function(data,
                             event_labels = data$events$event_label,
                             keep = keep)
   }
+
   if (is.numeric(epoch_no)) {
     if (keep == FALSE) {
       orig_epo_no <- unique(data$timings$epoch)
@@ -419,6 +420,11 @@ select_epochs.eeg_epochs <- function(data,
     data$signals <- data$signals[keep_rows, ]
     data$timings <- data$timings[keep_rows, ]
     data$events <- data$events[data$events$epoch %in% epoch_no, ]
+    if (!is.null(data$epochs)) {
+      data$epochs <- data$epochs[data$epochs$epoch %in% epoch_no, ]
+    } else {
+      warning("Epoch structure missing; update your eeg_epochs object using update_eeg_epochs.")
+    }
   }
   if (df_out) {
     return(as.data.frame(data))
@@ -456,6 +462,11 @@ select_epochs.eeg_ICA <- function(data,
     data$comp_activations <- data$comp_activations[keep_rows, ]
     data$timings <- data$timings[keep_rows, ]
     data$events <- data$events[data$events$epoch %in% epoch_no, ]
+    if (!is.null(data$epochs)) {
+      data$epochs <- data$epochs[data$epochs$epoch %in% epoch_no, ]
+    } else {
+      warning("Epoch structure missing; update your eeg_ICA object using update_eeg_epochs.")
+    }
   }
   if (df_out) {
     return(as.data.frame(data))
