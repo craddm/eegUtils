@@ -38,13 +38,11 @@ plot_timecourse.default <- function(data,
 #'@param colour Variable to colour lines by. If no variable is passed, only one
 #'  line is drawn.
 #'@param color Alias for colour.
-#'@param group (not yet implemented)
 #'@describeIn plot_timecourse Plot a data.frame timecourse
 #'@export
 plot_timecourse.data.frame <- function(data,
                                electrode = NULL,
                                time_lim = NULL,
-                               group = NULL,
                                facet,
                                add_CI = FALSE,
                                baseline = NULL,
@@ -91,7 +89,6 @@ plot_timecourse.data.frame <- function(data,
 plot_timecourse.eeg_evoked <- function(data,
                                electrode = NULL,
                                time_lim = NULL,
-                               group = NULL,
                                facet,
                                add_CI = FALSE,
                                baseline = NULL,
@@ -136,7 +133,6 @@ plot_timecourse.eeg_evoked <- function(data,
 plot_timecourse.eeg_ICA <- function(data,
                             component = NULL,
                             time_lim = NULL,
-                            group = NULL,
                             facet,
                             add_CI = FALSE,
                             baseline = NULL,
@@ -195,7 +191,6 @@ plot_timecourse.eeg_ICA <- function(data,
 plot_timecourse.eeg_epochs <- function(data,
                                electrode = NULL,
                                time_lim = NULL,
-                               group = NULL,
                                facet,
                                add_CI = FALSE,
                                baseline = NULL,
@@ -366,7 +361,6 @@ plot_butterfly <- function(data, ...) {
 
 #' @param time_lim Character vector. Numbers in whatever time unit is used
 #'   specifying beginning and end of time-range to plot. e.g. c(-.1,.3)
-#' @param group Group lines by a specificed grouping variable.
 #' @param baseline  Character vector. Times to use as a baseline. Takes the mean
 #'   over the specified period and subtracts. e.g. c(-.1, 0)
 #' @param colourmap Attempt to plot using a different colourmap (from
@@ -384,7 +378,6 @@ plot_butterfly <- function(data, ...) {
 
 plot_butterfly.default <- function(data,
                            time_lim = NULL,
-                           group = NULL,
                            baseline = NULL,
                            colourmap = NULL,
                            legend = TRUE,
@@ -430,7 +423,6 @@ plot_butterfly.default <- function(data,
 #' @export
 plot_butterfly.eeg_evoked <- function(data,
                                       time_lim = NULL,
-                                      group = NULL,
                                       baseline = NULL,
                                       colourmap = NULL,
                                       legend = TRUE,
@@ -449,7 +441,6 @@ plot_butterfly.eeg_evoked <- function(data,
 
   plot_butterfly(data,
                  time_lim,
-                 group,
                  baseline,
                  colourmap,
                  legend,
@@ -461,7 +452,6 @@ plot_butterfly.eeg_evoked <- function(data,
 
 plot_butterfly.eeg_stats <- function(data,
                                      time_lim = NULL,
-                                     group = NULL,
                                      baseline = NULL,
                                      colourmap = NULL,
                                      legend = TRUE,
@@ -471,10 +461,13 @@ plot_butterfly.eeg_stats <- function(data,
 
   data <- data.frame(data$statistic,
                      time = data$timings)
-  data <- tidyr::gather(data, key = "electrode", value = "amplitude", -time)
+  data <- tidyr::gather(data,
+                        key = "electrode",
+                        value = "amplitude",
+                        -time)
 
-  plot_butterfly(data, time_lim,
-                 group,
+  plot_butterfly(data,
+                 time_lim,
                  baseline,
                  colourmap,
                  legend,
