@@ -32,12 +32,13 @@ reference:
     desc: >
       Functions for plotting data
     contents:
+      - browse_data
+      - erp_image
+      - erp_raster
+      - erp_scalp
+      - geom_topo()
       - starts_with("plot_")
       - topoplot
-      - erp_raster
-      - erp_image
-      - browse_data
-      - erp_scalp
       - interactive_scalp
   - title: Frequency analysis
     desc: Functions related to (time-)frequency analysis
