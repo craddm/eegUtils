@@ -53,10 +53,11 @@ as.data.frame.eeg_data <- function(x,
 #' @param row.names Kept for compatability with S3 generic, ignored.
 #' @param optional Kept for compatability with S3 generic, ignored.
 #' @param long Convert to long format. Defaults to FALSE.
-#' @param events Include events in output. Defaults to FALSE.
+#' @param events Include events in output. Defaults to FALSE. Currently ignored.
 #' @param cond_labels Add column tagging epochs with events that have matching
-#'   labels.
-#' @param coords Include electrode coordinates in output.
+#'   labels. Deprecated. Metainfo from the epochs structure is now added
+#'   automatically.
+#' @param coords Include electrode coordinates in output. Ignored if long == FALSE.
 #' @param ... arguments for other as.data.frame commands
 #'
 #' @importFrom tidyr gather
@@ -67,41 +68,20 @@ as.data.frame.eeg_epochs <- function(x, row.names = NULL,
                                      optional = FALSE,
                                      long = FALSE,
                                      events = FALSE,
-                                     cond_labels = NULL,
-                                     coords = TRUE, ...) {
+                                     cond_labels,
+                                     coords = TRUE,
+                                     ...) {
 
-  if (!is.null(cond_labels)) {
-    lab_check <- label_check(cond_labels,
-                             unique(list_epochs(x))$event_label)
-    if (!all(lab_check)) {
-      stop("Not all labels found. Use list_events to check labels.")
-    }
-
-    df <- lapply(seq_along(cond_labels),
-                 function(ix) {
-                   out_df <- as.data.frame(select_epochs(x,
-                                                         cond_labels[[ix]]))
-                   out_df$conditions <- cond_labels[[ix]]
-                   out_df})
-
-    df <- do.call("rbind",
-                  df)
-
-  } else {
-    df <- data.frame(x$signals,
-                     time = x$timings$time,
-                     epoch = x$timings$epoch,
-                     stringsAsFactors = FALSE)
-    # combine the new data frame with any condition labels from the events table
-    if ("event_label" %in% names(x$events)) {
-      df <- merge(df,
-                  x$events[c("epoch", "event_label")],
-                  by = "epoch")
-      names(df)[which(names(df) == "event_label")] <- "conditions"
-    }
-
+  if (!missing(cond_labels)) {
+    stop("The cond_labels argument is deprecated.")
   }
 
+  df <- data.frame(x$signals,
+                   time = x$timings$time,
+                   epoch = x$timings$epoch,
+                   stringsAsFactors = FALSE)
+
+  # combine the new data frame with any condition labels from the events table
   if (long) {
     df <- tidyr::gather(df,
                         electrode,
@@ -116,11 +96,11 @@ as.data.frame.eeg_epochs <- function(x, row.names = NULL,
     }
   }
 
-  if (events) {
-    df <- dplyr::left_join(df,
-                           x$events,
-                           by = c("sample" = "event_onset"))
-  }
+  # if (events) {
+  #   df <- dplyr::left_join(df,
+  #                          x$events,
+  #                          by = c("sample" = "event_onset"))
+  # }
 
   if (!is.null(x$epochs)) {
     df <- dplyr::left_join(df,
