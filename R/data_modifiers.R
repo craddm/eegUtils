@@ -1,3 +1,12 @@
+#'@rdname eeg_reference
+#'@export
+reref_eeg <- function(data, ...) {
+  .Deprecated("eeg_reference",
+              msg = "reref_eeg has been renamed eeg_reference, and will be removed in a future version of eegUtils.")
+  eeg_reference(data, ...)
+}
+
+
 #' Referencing
 #'
 #' Used to reference the EEG data to a specified electrode or electrodes.
@@ -9,24 +18,24 @@
 #' # demo_epochs is average referenced by default
 #' demo_epochs
 #' # Rereference it but exclude B5 from calculation of the average
-#' reref_eeg(demo_epochs, exclude = "B5")
+#' eeg_reference(demo_epochs, exclude = "B5")
 #' # Reference data using the median of the reference channels rather than the mean
-#' reref_eeg(demo_epochs, robust = TRUE)
+#' eeg_reference(demo_epochs, robust = TRUE)
 #'
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #' @param data Data to re-reference. Primarily meant for use with data of class
 #'   \code{eeg_data}.
-#' @param ... Further parameters to be passed to reref_eeg
+#' @param ... Further parameters to be passed to eeg_reference
 #' @export
 
-reref_eeg <- function(data, ...) {
-  UseMethod("reref_eeg", data)
-}
+eeg_reference <- function(data, ...) {
+  UseMethod("eeg_reference", data)
+  }
 
 #' @export
-#' @describeIn reref_eeg Default method
-reref_eeg.default <- function(data, ...) {
-  stop(paste("reref_eeg does not know how to handle data of class", class(data)))
+#' @describeIn eeg_reference Default method
+eeg_reference.default <- function(data, ...) {
+  stop(paste("eeg_reference does not know how to handle data of class", class(data)))
 }
 
 #' @param ref_chans Channels to reference data to. Defaults to "average" i.e.
@@ -36,10 +45,10 @@ reref_eeg.default <- function(data, ...) {
 #' @importFrom matrixStats rowMedians
 #' @import data.table
 #' @return object of class \code{eeg_data}, re-referenced as requested.
-#' @describeIn reref_eeg Rereference objects of class \code{eeg_data}
+#' @describeIn eeg_reference Rereference objects of class \code{eeg_data}
 #' @export
 
-reref_eeg.eeg_data <- function(data,
+eeg_reference.eeg_data <- function(data,
                                ref_chans = "average",
                                exclude = NULL,
                                robust = FALSE,
@@ -154,7 +163,7 @@ eeg_downsample.eeg_data <- function(data,
             data_length,
             " time points to make n of samples a multiple of q.")
     new_times <- utils::head(unique(data$timings$time),
-                      -data_length)
+                             -data_length)
     data <- select_times(data,
                          time_lim = c(min(new_times),
                                       max(new_times)))
@@ -262,9 +271,9 @@ check_q <- function(q,
 
   if (q < 2) {
     stop("q must be 2 or more.")
-    } else if ((srate / q) %% 1 > 0){
+  } else if ((srate / q) %% 1 > 0){
       stop("srate / q must give a round number.")
-      }
+  }
 
   message(paste0("Downsampling from ",
                  srate, "Hz to ",
