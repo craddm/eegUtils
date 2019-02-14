@@ -8,10 +8,11 @@
 print.eeg_data <- function(x, ...) {
   elec_names <- names(x$signals)
   n_chan <- length(elec_names)
-  cat("Epoched EEG data\n\n")
-  cat("Number of channels\t:\t", n_chan, "\n")
-  cat("Electrode names\t:", elec_names, "\n")
-  cat("Sampling rate\t:", x$srate, "Hz\n")
+  cat("EEG data\n\n")
+  cat("Number of channels\t:", n_chan, "\n")
+  cat("Electrode names\t\t:", elec_names, "\n")
+  cat("Sampling rate\t\t:", x$srate, "Hz\n")
+  cat("Reference\t\t:", x$reference$ref_chans, "\n")
 }
 
 #' Print eeg_epochs summary
@@ -26,11 +27,12 @@ print.eeg_epochs <- function(x, ...) {
   n_chan <- length(elec_names)
   n_epochs <- length(unique(x$timings$epoch))
   cat("Epoched EEG data\n\n")
-  cat("Number of channels\t:\t", n_chan, "\n")
-  cat("Number of epochs\t:\t", n_epochs, "\n")
-  cat("Epoch limits\t\t:\t", min(unique(x$timings$time)), "-", max(unique(x$timings$time)), "seconds\n")
-  cat("Electrode names\t\t:\t", elec_names, "\n")
-  cat("Sampling rate\t\t:\t", x$srate, " Hz\n")
+  cat("Number of channels\t:", n_chan, "\n")
+  cat("Number of epochs\t\t:", n_epochs, "\n")
+  cat("Epoch limits\t\t:", min(unique(x$timings$time)), "-", max(unique(x$timings$time)), "seconds\n")
+  cat("Electrode names\t\t:", elec_names, "\n")
+  cat("Sampling rate\t\t:", x$srate, " Hz\n")
+  cat("Reference\t\t:", x$reference$ref_chans, "\n")
 }
 
 #' Print Values
