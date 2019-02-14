@@ -1,8 +1,3 @@
-#' ggplot2
-#'
-#'
-
-
 #' @importFrom ggplot2 fortify
 #' @export
 ggplot2::fortify
@@ -53,167 +48,86 @@ fortify.eeg_evoked <- function(model,
                 stringsAsFactors = FALSE)
 }
 
-
-#' StatBiharmonic
-#' @noRd
-
-StatBiharmonic <- ggproto("StatBiharmonic",
-                          Stat,
-                          required_aes = c("x", "y", "fill"),
-
-                          compute_group = function(data,
-                                                   scales) {
-                            data <- aggregate(fill ~ x + y,
-                                              data = data,
-                                              FUN = mean)
-
-                            x_min <- min(data$x)
-                            x_max <- max(data$x)
-                            y_min <- min(data$y)
-                            y_max <- max(data$y)
-
-                            xo <- seq(x_min, x_max, length = 80)
-                            yo <- seq(y_min, y_max, length = 80)
-
-                            xo <- matrix(rep(xo, 80),
-                                         nrow = 80,
-                                         ncol = 80)
-
-                            yo <- t(matrix(rep(yo, 80),
-                                           nrow = 80,
-                                           ncol = 80))
-
-                            xy_coords <- unique(data[, c("x", "y")])
-
-                            xy <- xy_coords[, 1] + xy_coords[, 2] * sqrt(as.complex(-1))
-
-                            d <- matrix(rep(xy, length(xy)),
-                                        nrow = length(xy),
-                                        ncol = length(xy))
-
-                            d <- abs(d - t(d))
-                            diag(d) <- 1
-                            g <- (d ^ 2) * (log(d) - 1) #Green's function
-                            diag(g) <- 0
-                            weights <- qr.solve(g, data$fill)
-                            xy <- t(xy)
-
-                            outmat <-
-                              purrr::map(xo + sqrt(as.complex(-1)) * yo,
-                                         function (x) (abs(x - xy) ^ 2) *
-                                           (log(abs(x - xy)) - 1) ) %>%
-                              rapply(function (x) ifelse(is.nan(x), 0, x), how = "replace") %>%
-                              purrr::map_dbl(function (x) x %*% weights)
-
-                            dim(outmat) <- c(80, 80)
-                            out_df <- data.frame(x = xo[, 1], outmat)
-                            names(out_df)[1:length(yo[1, ]) + 1] <- yo[1, ]
-                            data <- tidyr::gather(out_df,
-                                                  key = y,
-                                                  value = fill,
-                                                  -x,
-                                                  convert = TRUE)
-                            data
-                          }
-)
-
-#' @inheritParams geom_raster
-stat_biharmonic <- function(mapping = NULL,
-                            data = NULL,
-                            geom = "raster",
-                            position = "identity",
-                            na.rm = FALSE,
-                            show.legend = NA,
-                            inherit.aes = TRUE,
-                            ...) {
-  ggplot2::layer(
-    stat = StatBiharmonic,
-    data = data,
-    mapping = mapping,
-    geom = geom,
-    position = position,
-    show.legend = show.legend,
-    inherit.aes = inherit.aes,
-    params = list(na.rm = na.rm, ...)
-  )
-}
-
-
-
 #' StatScalpmap
 #'
 #' @export
 #' @keywords internal
 
-StatScalpmap <- ggplot2::ggproto("StatScalpmap",
-                                 Stat,
-                                 required_aes = c("x",
-                                                  "y",
-                                                  "fill"),
+StatScalpmap <-
+  ggplot2::ggproto("StatScalpmap",
+                   Stat,
+                   required_aes = c("x",
+                                    "y",
+                                    "fill"),
+                   compute_group = function(data,
+                                            scales,
+                                            grid_res,
+                                            interp_limit) {
 
-                        compute_group = function(data,
-                                                 scales,
-                                                 grid_res) {
+                     data <- aggregate(fill ~ x + y,
+                                       data = data,
+                                       FUN = mean)
 
-                           data <- aggregate(fill ~ x + y,
-                                             data = data,
-                                             FUN = mean)
+                     x_min <- min(data$x, na.rm = TRUE) * 2.5
+                     x_max <- max(data$x, na.rm = TRUE) * 2.5
+                     y_min <- min(data$y, na.rm = TRUE) * 2.5
+                     y_max <- max(data$y, na.rm = TRUE) * 2.5
+                     abs_y_max <- max(abs(data$y), na.rm = TRUE)
 
-                           x_min <- min(data$x, na.rm = TRUE) * 2
-                           x_max <- max(data$x, na.rm = TRUE) * 2
-                           y_min <- min(data$y, na.rm = TRUE) * 2
-                           y_max <- max(data$y, na.rm = TRUE) * 2
+                     xo <- seq(x_min,
+                               x_max,
+                               length = grid_res)
+                     yo <- seq(y_min,
+                               y_max,
+                               length = grid_res)
+                     xo <- matrix(rep(xo,
+                                      grid_res),
+                                  nrow = grid_res,
+                                  ncol = grid_res)
+                     yo <- t(matrix(rep(yo, grid_res),
+                                    nrow = grid_res,
+                                    ncol = grid_res))
 
-                           #print(c(x_min, x_max, y_min, y_max))
-                           xo <- seq(x_min,
-                                     x_max,
-                                     length = grid_res)
-                           yo <- seq(y_min,
-                                     y_max,
-                                     length = grid_res)
-                           xo <- matrix(rep(xo,
-                                            grid_res),
-                                        nrow = grid_res,
-                                        ncol = grid_res)
+                     xy_coords <- unique(data[, c("x", "y")])
+                     xy <- xy_coords[, 1] + xy_coords[, 2] * sqrt(as.complex(-1))
+                     d <- matrix(rep(xy,
+                                     length(xy)),
+                                 nrow = length(xy),
+                                 ncol = length(xy))
+                     d <- abs(d - t(d))
+                     diag(d) <- 1
+                     g <- (d ^ 2) * (log(d) - 1) #Green's function
+                     diag(g) <- 0
+                     weights <- qr.solve(g, data$fill)
+                     xy <- t(xy)
+                     # Remind me to make this code readable at some point.
+                     outmat <-
+                       purrr::map(xo + sqrt(as.complex(-1)) * yo,
+                                  function(x) (abs(x - xy) ^ 2) *
+                                    (log(abs(x - xy)) - 1)) %>%
+                       rapply(function(x) ifelse(is.nan(x), 0, x),
+                              how = "replace") %>%
+                       purrr::map_dbl(function(x) x %*% weights)
 
-                           yo <- t(matrix(rep(yo, grid_res),
-                                          nrow = grid_res,
-                                          ncol = grid_res))
+                     dim(outmat) <- c(grid_res, grid_res)
+                     data <- data.frame(x = xo[, 1],
+                                        outmat)
+                     names(data)[1:length(yo[1, ]) + 1] <- yo[1, ]
+                     data <- tidyr::gather(data,
+                                           key = y,
+                                           value = fill,
+                                           -x,
+                                           convert = TRUE)
 
-                           xy_coords <- unique(data[, c("x", "y")])
-                           xy <- xy_coords[, 1] + xy_coords[, 2] * sqrt(as.complex(-1))
-                           d <- matrix(rep(xy,
-                                           length(xy)),
-                                       nrow = length(xy),
-                                       ncol = length(xy))
-                           d <- abs(d - t(d))
-                           diag(d) <- 1
-                           g <- (d ^ 2) * (log(d) - 1) #Green's function
-                           diag(g) <- 0
-                           weights <- qr.solve(g, data$fill)
-                           xy <- t(xy)
-                           # Remind me to make this code readable at some point.
-                           outmat <-
-                             purrr::map(xo + sqrt(as.complex(-1)) * yo,
-                                        function(x) (abs(x - xy) ^ 2) *
-                                          (log(abs(x - xy)) - 1)) %>%
-                             rapply(function(x) ifelse(is.nan(x), 0, x),
-                                    how = "replace") %>%
-                             purrr::map_dbl(function(x) x %*% weights)
-                           dim(outmat) <- c(grid_res, grid_res)
-                          data <- data.frame(x = xo[, 1],
-                                             outmat)
-                          names(data)[1:length(yo[1, ]) + 1] <- yo[1, ]
-                          data <- tidyr::gather(data,
-                                                key = y,
-                                                value = fill,
-                                                -x,
-                                                convert = TRUE)
+                     if (identical(interp_limit, "head")) {
+                       circ_scale <- abs_y_max * 1.1
+                     } else {
+                       circ_scale <- y_max / 1.8
+                     }
 
-                          circ_scale <- y_max / 1.5
-                          data$incircle <- sqrt(data$x ^ 2 + data$y ^ 2) < circ_scale
-                          data[data$incircle, ]
-                        }
+                     data$incircle <- sqrt(data$x ^ 2 + data$y ^ 2) < circ_scale
+                     data[data$incircle, ]
+                     }
 )
 
 #' Create an interpolated scalp surface
@@ -225,8 +139,9 @@ StatScalpmap <- ggplot2::ggproto("StatScalpmap",
 #'
 #' @inheritParams ggplot2::geom_raster
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
-#' @param grid_res Resolution of the interpolation grid. (Defaults to 70
+#' @param grid_res Resolution of the interpolation grid. (Defaults to 100
 #'   points).
+#' @param interp_limit Topoplot with a "skirt" or inside the "head".
 #' @family topoplot functions
 #' @export
 stat_scalpmap <- function(mapping = NULL,
@@ -235,8 +150,9 @@ stat_scalpmap <- function(mapping = NULL,
                           na.rm = FALSE,
                           show.legend = NA,
                           inherit.aes = TRUE,
-                          grid_res = 70,
-                          interpolate = TRUE,
+                          grid_res = 300,
+                          interpolate = FALSE,
+                          interp_limit = "skirt",
                           ...) {
   ggplot2::layer(
     stat = StatScalpmap,
@@ -247,9 +163,10 @@ stat_scalpmap <- function(mapping = NULL,
     show.legend = show.legend,
     inherit.aes = inherit.aes,
     params = list(na.rm = na.rm,
-                   interpolate = interpolate,
-                   grid_res = grid_res,
-                   ...)
+                  interpolate = interpolate,
+                  grid_res = grid_res,
+                  interp_limit = interp_limit,
+                  ...)
   )
 }
 
@@ -264,14 +181,13 @@ stat_scalpmap <- function(mapping = NULL,
 #' library(ggplot2)
 #' ggplot(demo_epochs, aes(x = x, y = y, fill = amplitude)) + geom_topo()
 #' @inheritParams ggplot2::geom_raster
+#' @param interp_limit Topoplot with a "skirt" or inside the "head".
 #' @param chan_markers Defaults to "point". Mark electrode positions with points
 #'   or text.
 #' @param chan_size Size for channel markers, if any.
 #' @param head_size Size of the head shape.
-#' @param mask_size Size of the masking ring (defaults = rel(6.5))
 #' @param grid_res Smoothness of the interpolation grid.
-#' @param scale_fac The radius of the ring is determined from the front-most
-#'   electrode's location by a scaling factor.
+#'
 #' @family topoplot functions
 #' @export
 geom_topo <- function(mapping = NULL,
@@ -281,13 +197,12 @@ geom_topo <- function(mapping = NULL,
                       show.legend = NA,
                       na.rm = TRUE,
                       inherit.aes = TRUE,
-                      interpolate = TRUE,
+                      interpolate = FALSE,
+                      interp_limit = "skirt",
                       chan_markers = "point",
                       chan_size = rel(2),
                       head_size = rel(1.5),
-                      mask_size = rel(6.5),
-                      grid_res = 70,
-                      scale_fac = 1.32,
+                      grid_res = 300,
                       ...) {
 
   list(ggplot2::layer(geom = GeomRaster,
@@ -300,18 +215,7 @@ geom_topo <- function(mapping = NULL,
                       params = list(na.rm = na.rm,
                                     interpolate = interpolate,
                                     grid_res = grid_res,
-                                    ...)
-                      ),
-       ggplot2::layer(geom = GeomPath,
-                      stat = StatMask,
-                      data = data,
-                      mapping = mapping,
-                      position = position,
-                      inherit.aes = inherit.aes,
-                      params = list(na.rm = na.rm,
-                                    colour = "white",
-                                    size = mask_size,
-                                    scale_fac = scale_fac,
+                                    interp_limit = interp_limit,
                                     ...)
                       ),
        ggplot2::layer(geom = GeomHead,
@@ -322,6 +226,7 @@ geom_topo <- function(mapping = NULL,
                       inherit.aes = inherit.aes,
                       params = list(na.rm = na.rm,
                                     size = head_size,
+                                    interp_limit = interp_limit,
                                     ...)
                       ),
        ggplot2::layer(data = data,
@@ -335,6 +240,7 @@ geom_topo <- function(mapping = NULL,
                                     curvature = -.5,
                                     angle = 60,
                                     size = head_size,
+                                    interp_limit = interp_limit,
                                     ...)
                       ),
        ggplot2::layer(data = data,
@@ -348,6 +254,7 @@ geom_topo <- function(mapping = NULL,
                                     curvature = .5,
                                     angle = 120,
                                     size = head_size,
+                                    interp_limit = interp_limit,
                                     ...)
                       ),
        if (chan_markers == "point") {
@@ -395,6 +302,7 @@ geom_head <- function(mapping = NULL,
                       show.legend = NA,
                       na.rm = TRUE,
                       inherit.aes = TRUE,
+                      interp_limit = "skirt",
                       ...) {
 
   list(ggplot2::layer(geom = GeomHead,
@@ -404,6 +312,7 @@ geom_head <- function(mapping = NULL,
                       position = PositionIdentity,
                       inherit.aes = inherit.aes,
                       params = list(na.rm = na.rm,
+                                    interp_limit = interp_limit,
                                     ...)),
        ggplot2::layer(data = data,
                       mapping = mapping,
@@ -415,6 +324,7 @@ geom_head <- function(mapping = NULL,
                       params = list(na.rm = na.rm,
                                     curvature = -.5,
                                     angle = 60,
+                                    interp_limit = interp_limit,
                                     ...)),
        ggplot2::layer(data = data,
                       mapping = mapping,
@@ -426,6 +336,7 @@ geom_head <- function(mapping = NULL,
                       params = list(na.rm = na.rm,
                                     curvature = .5,
                                     angle = 120,
+                                    interp_limit = interp_limit,
                                     ...))
   )
 }
@@ -434,10 +345,16 @@ geom_head <- function(mapping = NULL,
 StatHead <- ggplot2::ggproto("StatHead",
                              Stat,
                              compute_group = function(data,
-                                                      scales) {
+                                                      scales,
+                                                      interp_limit) {
 
-                               y_lim <- max(data$y,
-                                            na.rm = TRUE) * 1.1
+                               if (identical(interp_limit, "head")) {
+                                 y_lim <- max(abs(data$y),
+                                              na.rm = TRUE) * 1.1
+                               } else {
+                                 y_lim <- max(data$y,
+                                              na.rm = TRUE) * 1.1
+                               }
                                heads <- make_head(r = y_lim)
                                heads
                              }
@@ -545,20 +462,35 @@ GeomEars <- ggplot2::ggproto("GeomEars",
 
 StatREar <- ggplot2::ggproto("StatREar",
                              Stat,
-                             compute_group = function(data, scales) {
+                             compute_group = function(data,
+                                                      scales,
+                                                      interp_limit) {
 
-                               y_lim <- max(data$y, na.rm = TRUE) * 1.1
+                               if (identical(interp_limit, "head")) {
+                                 y_lim <- max(abs(data$y),
+                                              na.rm = TRUE) * 1.1
+                               } else {
+                                 y_lim <- max(data$y,
+                                              na.rm = TRUE) * 1.1
+                               }
                                make_r_ear(y_lim)
                              })
 
 StatLEar <- ggplot2::ggproto("StatLEar",
                              Stat,
-                             compute_group = function(data, scales) {
+                             compute_group = function(data,
+                                                      scales,
+                                                      interp_limit) {
 
-                               y_lim <- max(data$y, na.rm = TRUE) * 1.1
+                               if (identical(interp_limit, "head")) {
+                                 y_lim <- max(abs(data$y),
+                                              na.rm = TRUE) * 1.1
+                               } else {
+                                 y_lim <- max(data$y,
+                                              na.rm = TRUE) * 1.1
+                               }
                                make_l_ear(y_lim)
                              })
-
 
 #' Create a headshape
 #'
