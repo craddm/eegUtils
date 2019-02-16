@@ -35,9 +35,11 @@ fit_glm.eeg_epochs <- function(formula,
                                            coords = FALSE))
   .data <- tidyr::nest(.data,
                        -time,
-                       -electrode)
+                       -electrode,
+                       key = "signals"
+                       )
   .data <- dplyr::mutate(.data,
-                         fit = purrr::map(data,
+                         fit = purrr::map(signals,
                                           ~lm(formula,
                                               data = .)))
   .data
