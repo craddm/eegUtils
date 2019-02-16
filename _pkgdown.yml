@@ -24,6 +24,11 @@ reference:
       - epoch_data
       - interp_elecs
       - tag_events
+  - title: Artefact rejection
+    desc: >
+      Functions for artefact rejection.
+    contents:
+      - starts_with("ar")
   - title: Selection
     desc: Functions for selecting subsets of data
     contents:
@@ -36,7 +41,7 @@ reference:
       - erp_image
       - erp_raster
       - erp_scalp
-      - geom_topo()
+      - geom_topo
       - starts_with("plot_")
       - topoplot
       - interactive_scalp
