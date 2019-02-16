@@ -3,8 +3,9 @@
 #' Currently only ASA .elc format with Cartesian x-y-z coordinates is supported.
 #'
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
-#' @param file_name name and full path of file to be loaded
-#' @param format If the file is not .elc format, "spherical", "geographic". Default is NULL.
+#' @param file_name Name and full path of file to be loaded.
+#' @param format If the file is not .elc format, "spherical", "geographic".
+#'   Default is "spherical".
 #' @export
 
 import_chans <- function(file_name,
@@ -201,9 +202,9 @@ electrode_locations.data.frame <- function(data,
       dplyr::pull(electrodeLocs[, electrode])
 
     if (!all(elecs)) {
-      message("Electrodes not found: ",
-              paste(unique(data[, electrode])[!elecs, ],
-                    sep = ","))
+      message(paste("Electrodes not found: ",
+                    paste(unique(data[, electrode])[!elecs, ],
+                          sep = ",")))
     } else if (!any(elecs)) {
       stop("No matching electrodes found.")
     }
@@ -213,7 +214,7 @@ electrode_locations.data.frame <- function(data,
                                                    drop = TRUE]
     if (!all(elecs)) {
       message("Electrodes not found: ",
-              paste(unique(data[, electrode])[!elecs], sep = ","))
+              paste(unique(data[, electrode])[!elecs], collapse = " "))
     } else if (!any(elecs)) {
       stop("No matching electrodes found.")
     }
@@ -221,18 +222,25 @@ electrode_locations.data.frame <- function(data,
   }
 
   if (drop) {
-    data <- dplyr::inner_join(data, electrodeLocs, by = electrode)
+    data <- dplyr::inner_join(data,
+                              electrodeLocs,
+                              by = electrode)
   } else {
-    data <- dplyr::left_join(data, electrodeLocs, by = electrode)
+    data <- dplyr::left_join(data,
+                             electrodeLocs,
+                             by = electrode)
   }
 
   if (plot) {
-    plotdata <- dplyr::distinct(data, x, y, electrode)
-    p <- ggplot2::ggplot(plotdata, aes(x, y)) +
+    plotdata <- dplyr::distinct(data,
+                                x, y,
+                                electrode)
+    p <- ggplot2::ggplot(plotdata, aes(x,
+                                       y)) +
       geom_label(aes(label = electrode))
     return(p)
   } else {
-    return(data)
+    data
   }
 }
 
@@ -264,8 +272,9 @@ electrode_locations.eeg_data <- function(data,
   if (!any(matched_els)) {
     stop("No matching electrodes found.")
   } else if (any(missing_els)) {
-    message(paste("Electrodes not found:",
-                  names(data$signals)[missing_els]))
+    message("Electrodes not found: ",
+            paste(names(data$signals)[missing_els],
+                  collapse = " "))
   }
 
   data$chan_info <- electrodeLocs[matched_els, ]
@@ -347,7 +356,7 @@ plot_electrodes.default <- function(data,
 plot_electrodes.eeg_data <- function(data,
                                      interact = FALSE) {
 
-  if (is.null(data$chan_info)) {
+  if (is.null(channels(data))) {
     stop("No channel locations found.")
   }
 
