@@ -48,6 +48,8 @@ RColorBrewer). (Not yet implemented)}
 \item{continuous}{Is the data continuous or not (I.e. epoched)}
 
 \item{browse_mode}{Custom theme for use with browse_data.}
+
+\item{facet}{Deprecated. Please use standard ggplot2 facetting functions.}
 }
 \value{
 ggplot2 object showing ERPs for all electrodes overlaid on a single

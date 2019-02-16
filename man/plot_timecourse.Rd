@@ -36,6 +36,8 @@ plot_timecourse(data, ...)
 \item{time_lim}{Character vector. Numbers in whatever time unit is used
 specifying beginning and end of time-range to plot. e.g. c(-.1, .3)}
 
+\item{facet}{Deprecated. Please use standard ggplot2 facetting functions.}
+
 \item{add_CI}{Add confidence intervals to the graph. Defaults to 95 percent
 between-subject CIs.}
 

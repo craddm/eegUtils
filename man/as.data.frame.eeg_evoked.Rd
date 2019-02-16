@@ -16,7 +16,7 @@
 
 \item{long}{Convert to long format. Defaults to FALSE}
 
-\item{coords}{include electrode coordinates in output}
+\item{coords}{include electrode coordinates in output. Ignored if long = FALSE.}
 
 \item{...}{arguments for other as.data.frame commands}
 }

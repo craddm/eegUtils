@@ -13,16 +13,12 @@ eeg_average(data, ...)
 
 \method{eeg_average}{eeg_epochs}(data, ...)
 
-\method{eeg_average}{eeg_tfr}(data, cond_label = NULL, calc_var = NULL,
-  ...)
+\method{eeg_average}{eeg_tfr}(data, ...)
 }
 \arguments{
 \item{data}{An \code{eeg_epochs} object.}
 
 \item{...}{Other arguments passed to the averaging functions}
-
-\item{cond_label}{Only pick events that include a given label. Character
-vector.}
 }
 \description{
 This function is used to create an \code{eeg_evoked} object from \code{eeg_epochs}.

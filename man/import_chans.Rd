@@ -7,9 +7,10 @@
 import_chans(file_name, format = "spherical")
 }
 \arguments{
-\item{file_name}{name and full path of file to be loaded}
+\item{file_name}{Name and full path of file to be loaded.}
 
-\item{format}{If the file is not .elc format, "spherical", "geographic". Default is NULL.}
+\item{format}{If the file is not .elc format, "spherical", "geographic".
+Default is "spherical".}
 }
 \description{
 Currently only ASA .elc format with Cartesian x-y-z coordinates is supported.
