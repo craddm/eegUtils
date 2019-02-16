@@ -210,30 +210,31 @@ validate_eeg_epochs <- function(.data) {
          call. = FALSE)
   }
 
-  if (exists("signals", data)) {
-    check_numeric <- apply(data$signals,
+  if (exists("signals", .data)) {
+    check_numeric <- apply(.data$signals,
                            2,
                            is.numeric)
     if (!all(check_numeric)) {
       warning(paste("Non-numeric channels: ",
-                    channel_names(data)[!check_numeric]))
+                    channel_names(.data)[!check_numeric]))
     }
   }
 
-  if (!exists("reference", data)) {
-    .data$reference <- append(data,
+  if (!exists("reference", .data)) {
+    .data$reference <- append(.data,
                               list(reference = NULL))
   }
 
   if (is.null(.data$epochs)) {
-    data$epochs <- tibble::tibble(epoch = unique(data$events$epoch),
-                                  recording = NA,
-                                  epoch_label = NA)
+    epochs <- unique(.data$events$epoch)
+    .data$epochs <- tibble::tibble(epoch = epochs,
+                                   recording = NA,
+                                   epoch_label = NA)
   }
 
-  class(data) <- c("eeg_epochs",
+  class(.data) <- c("eeg_epochs",
                     "eeg_data")
-  data
+  .data
 }
 
 update_eeg_epochs <- function(.data) {

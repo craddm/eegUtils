@@ -20,8 +20,6 @@ eeg_average.default <- function(data,
   stop("eeg_epochs or eeg_tfr object required as input.")
 }
 
-#' @param cond_label Only pick events that include a given label. Character
-#'   vector.
 #' @describeIn eeg_average Create evoked data from \code{eeg_epochs}
 #' @importFrom tibble tibble
 #' @importFrom dplyr left_join group_by_at summarise_at ungroup
@@ -61,8 +59,7 @@ eeg_average.eeg_epochs <- function(data,
 #' @describeIn eeg_average average an eeg_tfr objects over epochs.
 #' @export
 eeg_average.eeg_tfr <- function(data,
-                                cond_label = NULL,
-                                calc_var = NULL, ...) {
+                                ...) {
   if (!"epoch" %in% data$dimensions) {
     #message("Data is already averaged.")
   } else {

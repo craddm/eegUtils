@@ -19,7 +19,8 @@ browse_data <- function(data, ...) {
 
 #' @export
 #' @describeIn browse_data View \code{eeg_ICA} component properties
-browse_data.eeg_ICA <- function(data, ...) {
+browse_data.eeg_ICA <- function(data,
+                                ...) {
 
   ui <- miniPage(
     gadgetTitleBar("ICA dashboard"),
@@ -63,7 +64,7 @@ browse_data.eeg_ICA <- function(data, ...) {
     cacheKeyExpr = {input$icomp})
 
     observeEvent(input$done, {
-      returnValue <- "hilol"
+      returnValue <- ""
       stopApp(returnValue)
     })
     session$onSessionEnded(stopApp)
