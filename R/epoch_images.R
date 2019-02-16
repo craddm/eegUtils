@@ -116,6 +116,10 @@ create_erpimage <- function(data,
   n_times <- length(unique(data$time))
   n_epochs <- length(unique(data$epoch))
   sel_rows <- data$electrode %in% electrode
+
+  if (rlang::is_empty(sel_rows)){
+    sel_rows <- data$component %in% electrode
+  }
   data <- data[sel_rows, ]
   data$smooth_time <- rep(seq(min(data$time),
                               max(data$time),
