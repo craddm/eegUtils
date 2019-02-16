@@ -4,7 +4,7 @@ author: "Matt Craddock"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{TFA}
+  %\VignetteIndexEntry{Frequency analysis}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

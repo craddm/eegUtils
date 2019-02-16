@@ -9,7 +9,6 @@ compare_epochs <- function(data, ...) {
 }
 
 #' @importFrom tibble as_tibble
-#' @param cond_label Conditions to test. A character vector of max length 2.
 #' @param type Type of test to use. "1samp", "2samp"
 #' @describeIn compare_epochs Compare differences across epochs
 

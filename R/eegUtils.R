@@ -1,0 +1,20 @@
+#' eegUtils: A collection of utilities for EEG analysis
+#'
+#' eegUtils is a package for the processing, manipulation, and plotting of EEG
+#' data. It includes functions for importing data from a variety of file formats
+#' (including Biosemi, Brain Vision Analyzer, and EEGLAB), many of the typical
+#' steps in pre-preprocessing (filtering, referencing, artefact rejection), more
+#' advanced processing techniques (time-frequency analysis, ICA), and many types
+#' of plot that are common in the field (ERP plots, time-frequency plots,
+#' topographical scalp maps). Although it uses custom object classes, it is
+#' designed such that these are always translatable to standard R data.frames,
+#' and thus can be used with any of the myriad packages and methods that support
+#' standard R formats.
+#'
+#'
+#'
+#'@author Matt Craddock \email{matt@@mattcraddock.com}
+#' with contributions from Matti Vuorre \email{mv2521@@columbia.edu}.
+#'@docType package
+#'@name eegUtils
+NULL

@@ -185,7 +185,13 @@ as.data.frame.eeg_ICA <- function(x,
                         channel_names(x),
                         factor_key = T)
     df$component <- as.character(df$component)
-    }
+  }
+
+  if (!is.null(x$epochs)) {
+    df <- dplyr::left_join(df,
+                           x$epochs,
+                           by = "epoch")
+  }
   df
 }
 
