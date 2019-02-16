@@ -209,6 +209,13 @@ tag_epochs.eeg_epochs <- function(.data,
 
   if (!is.null(event_type) && !is.null(event_label)) {
     stop("Only event_type or event_label should be supplied, not both.")
+  } else if (is.null(event_type) && is.null(event_label)) {
+   epochs(.data) <- dplyr::left_join(epochs(.data),
+                                     dplyr::select(events(.data),
+                                                   epoch,
+                                                   event_type,
+                                                   event_label),
+                                     by = "epoch")
   }
 
   if (!is.null(event_type)) {
@@ -217,6 +224,7 @@ tag_epochs.eeg_epochs <- function(.data,
                                                   epoch,
                                                   event_type),
                                     by = "epoch")
+    return(.data)
   }
 
   if (!is.null(event_label)) {
@@ -225,6 +233,7 @@ tag_epochs.eeg_epochs <- function(.data,
                                                     epoch,
                                                     event_label),
                                       by = "epoch")
+    return(.data)
   }
   .data
 }
