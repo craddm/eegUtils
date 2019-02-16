@@ -169,3 +169,62 @@ events.eeg_epochs <- function(.data) {
   .data
 }
 
+
+
+#' Tag epochs with labels
+#'
+#' Tag epochs with labels indicating details such as experimental condition,
+#' based on the occurrence of event triggers from the events() structure. This
+#' adds a new column to the epochs structure in an \code{eeg_epochs} object.
+#'
+#' @param .data An \code{eegUtils} object
+#' @param ... Additional arguments.
+#' @export
+tag_epochs <- function(.data,
+                       ...) {
+  UseMethod("tag_epochs", .data)
+}
+
+#'@rdname tag_epochs
+#'@export
+tag_epochs.default <- function(.data,
+                               ...) {
+
+}
+
+#'@describeIn tag_epochs Tag epochs in an \code{eeg_epochs} object.
+#'@param event_type Label epochs according to specific event_types (typically a
+#'  trigger)
+#'@param event_label Label epochs according to specific event_labels
+#'@export
+tag_epochs.eeg_epochs <- function(.data,
+                                  event_type = NULL,
+                                  event_label = NULL,
+                                  ...) {
+
+  # need to work out how to deal with multiple labels in single epochs.
+  # 1) error and demand the labels be specified?
+  # 2) request specific event_types?
+  # 3) allow specification of new column name in the epochs structure?
+
+  if (!is.null(event_type) && !is.null(event_label)) {
+    stop("Only event_type or event_label should be supplied, not both.")
+  }
+
+  if (!is.null(event_type)) {
+    epochs(.data) <- dplyr::left_join(epochs(.data),
+                                    dplyr::select(events(.data),
+                                                  epoch,
+                                                  event_type),
+                                    by = "epoch")
+  }
+
+  if (!is.null(event_label)) {
+    epochs(.data) <- dplyr::left_join(epochs(.data),
+                                      dplyr::select(events(.data),
+                                                    epoch,
+                                                    event_label),
+                                      by = "epoch")
+  }
+  .data
+}
