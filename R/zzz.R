@@ -34,4 +34,6 @@ utils::globalVariables(c("time",
                          "var",
                          "measure",
                          "keep_rows",
-                         "xyz_coords"))
+                         "xyz_coords",
+                         "component",
+                         "signals"))
