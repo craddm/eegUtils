@@ -1,12 +1,3 @@
-#'@rdname eeg_reference
-#'@export
-reref_eeg <- function(data, ...) {
-  .Deprecated("eeg_reference",
-              msg = "reref_eeg has been renamed eeg_reference, and will be removed in a future version of eegUtils.")
-  eeg_reference(data, ...)
-}
-
-
 #' Referencing
 #'
 #' Used to reference the EEG data to a specified electrode or electrodes.
