@@ -290,6 +290,7 @@ convert_to_csd <- function(data,
                 function(x) colSums(x * h_mat)) / scaling)
   data$signals[, data_chans] <- as.data.frame(be)
   names(data$signals) <- orig_elecs
+  data$reference <- "CSD"
   data
 }
 
