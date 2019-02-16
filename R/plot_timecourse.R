@@ -33,6 +33,7 @@ plot_timecourse.default <- function(data,
 #'  between-subject CIs.
 #'@param time_lim Character vector. Numbers in whatever time unit is used
 #'  specifying beginning and end of time-range to plot. e.g. c(-.1, .3)
+#'@param facet Deprecated. Please use standard ggplot2 facetting functions.
 #'@param baseline Character vector. Times to use as a baseline. Takes the mean
 #'  over the specified period and subtracts. e.g. c(-.1,0)
 #'@param colour Variable to colour lines by. If no variable is passed, only one
@@ -366,32 +367,33 @@ plot_butterfly <- function(data, ...) {
 #' @param colourmap Attempt to plot using a different colourmap (from
 #'   RColorBrewer). (Not yet implemented)
 #' @param legend Plot legend or not.
+#' @param facet Deprecated. Please use standard ggplot2 facetting functions.
 #' @param continuous Is the data continuous or not (I.e. epoched)
 #' @param browse_mode Custom theme for use with browse_data.
 #' @return ggplot2 object showing ERPs for all electrodes overlaid on a single
 #'   plot.
 #' @import ggplot2
 #' @importFrom dplyr group_by ungroup summarise
-#' @import tidyr
+#' @importFrom tidyr gather
 #' @describeIn plot_butterfly Default `plot_butterfly` method for data.frames, \code{eeg_data}
 #' @export
 
 plot_butterfly.default <- function(data,
-                           time_lim = NULL,
-                           baseline = NULL,
-                           colourmap = NULL,
-                           legend = TRUE,
-                           continuous = FALSE,
-                           browse_mode = FALSE,
-                           facet,
-                           ...) {
+                                   time_lim = NULL,
+                                   baseline = NULL,
+                                   colourmap = NULL,
+                                   legend = TRUE,
+                                   continuous = FALSE,
+                                   browse_mode = FALSE,
+                                   facet,
+                                   ...) {
 
   if (!missing(facet)) {
     warning("The facet parameter is deprecated. Please use facet_wrap/facet_grid")
     facet <- NULL
   }
 
-  if (browse_mode == FALSE && is.null(facet)) {
+  if (browse_mode == FALSE) {
     data <- dplyr::group_by(data,
                             time,
                             electrode)

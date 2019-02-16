@@ -285,7 +285,6 @@ geom_topo <- function(mapping = NULL,
 }
 
 #' @keywords internal
-#' @export
 GeomTopo <- ggplot2::ggproto("GeomTopo",
                              GeomRaster)
 
@@ -341,7 +340,6 @@ geom_head <- function(mapping = NULL,
   )
 }
 
-#'@export
 StatHead <- ggplot2::ggproto("StatHead",
                              Stat,
                              compute_group = function(data,
@@ -359,7 +357,7 @@ StatHead <- ggplot2::ggproto("StatHead",
                                heads
                              }
 )
-#'@export
+
 GeomHead <- ggplot2::ggproto("GeomHead",
                              GeomPath)
 
