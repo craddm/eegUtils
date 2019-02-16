@@ -5,8 +5,9 @@
 #' @param x \code{eeg_data} object to be printed
 #' @param ... Further arguments passed
 #' @export
-print.eeg_data <- function(x, ...) {
-  elec_names <- names(x$signals)
+print.eeg_data <- function(x,
+                           ...) {
+  elec_names <-channel_names(x)
   n_chan <- length(elec_names)
   cat("EEG data\n\n")
   cat("Number of channels\t:", n_chan, "\n")

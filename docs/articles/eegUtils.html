@@ -30,7 +30,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">eegUtils</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0.9000</span>
       </span>
     </div>
 
@@ -89,7 +89,7 @@
       <h1>EEG Utils</h1>
                         <h4 class="author">Matt Craddock</h4>
             
-            <h4 class="date">2019-02-14</h4>
+            <h4 class="date">2019-02-16</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/craddm/eegUtils/blob/master/vignettes/eegUtils.Rmd"><code>vignettes/eegUtils.Rmd</code></a></small>
       <div class="hidden name"><code>eegUtils.Rmd</code></div>
@@ -209,12 +209,10 @@
 <a class="sourceLine" id="cb10-3" data-line-number="3"><span class="co">#&gt; Coords missing for electrodes EXG1 EXG2 EXG3 EXG4 EXG5 EXG6 EXG7 EXG8</span></a>
 <a class="sourceLine" id="cb10-4" data-line-number="4"><span class="kw"><a href="../reference/topoplot.html">topoplot</a></span>(eeg_example,</a>
 <a class="sourceLine" id="cb10-5" data-line-number="5">         <span class="dt">time_lim =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(.<span class="dv">1</span>, <span class="fl">.2</span>))</a>
-<a class="sourceLine" id="cb10-6" data-line-number="6"><span class="co">#&gt; Warning: attributes are not identical across measure variables;</span></a>
-<a class="sourceLine" id="cb10-7" data-line-number="7"><span class="co">#&gt; they will be dropped</span></a>
-<a class="sourceLine" id="cb10-8" data-line-number="8"><span class="co">#&gt; Warning: Column `electrode` joining factor and character vector, coercing</span></a>
-<a class="sourceLine" id="cb10-9" data-line-number="9"><span class="co">#&gt; into character vector</span></a>
-<a class="sourceLine" id="cb10-10" data-line-number="10"><span class="co">#&gt; Warning in topoplot.data.frame(data, time_lim = time_lim, limits =</span></a>
-<a class="sourceLine" id="cb10-11" data-line-number="11"><span class="co">#&gt; limits, : Removing channels with no location.</span></a></code></pre></div>
+<a class="sourceLine" id="cb10-6" data-line-number="6"><span class="co">#&gt; Warning: Column `electrode` joining factor and character vector, coercing</span></a>
+<a class="sourceLine" id="cb10-7" data-line-number="7"><span class="co">#&gt; into character vector</span></a>
+<a class="sourceLine" id="cb10-8" data-line-number="8"><span class="co">#&gt; Warning in topoplot.data.frame(data, time_lim = time_lim, limits =</span></a>
+<a class="sourceLine" id="cb10-9" data-line-number="9"><span class="co">#&gt; limits, : Removing channels with no location.</span></a></code></pre></div>
 <p><img src="eegUtils_files/figure-html/inter-1.png" width="700"></p>
 <p>At any point, <code>eegUtils</code> objects can be transformed into data frames for use with functions that don’t natively support them.</p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(ggplot2)</a>

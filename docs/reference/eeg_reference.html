@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Referencing — reref_eeg • eegUtils</title>
+<title>Referencing — eeg_reference • eegUtils</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,7 +30,7 @@
 
 
 
-<meta property="og:title" content="Referencing — reref_eeg" />
+<meta property="og:title" content="Referencing — eeg_reference" />
 
 <meta property="og:description" content="Used to reference the EEG data to a specified electrode or electrodes.
 Defaults to average reference. When specific electrodes are used, they are
@@ -66,7 +66,7 @@ eeg_data structure." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">eegUtils</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0.9000</span>
       </span>
     </div>
 
@@ -124,7 +124,7 @@ eeg_data structure." />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Referencing</h1>
-    <small class="dont-index">Source: <a href='https://github.com/craddm/eegUtils/blob/master/R/data_modifiers.R'><code>R/data_modifiers.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/craddm/eegUtils/blob/master/R/data_modifiers.R'><code>R/data_modifiers.R</code></a>, <a href='https://github.com/craddm/eegUtils/blob/master/R/deprecated.R'><code>R/deprecated.R</code></a></small>
     <div class="hidden name"><code>eeg_reference.Rd</code></div>
     </div>
 
@@ -137,16 +137,16 @@ removed from the data. Meta-data about the referencing scheme is held in the
     
     </div>
 
-    <pre class="usage"><span class='fu'>reref_eeg</span>(<span class='no'>data</span>, <span class='no'>...</span>)
-
-<span class='fu'>eeg_reference</span>(<span class='no'>data</span>, <span class='no'>...</span>)
+    <pre class="usage"><span class='fu'>eeg_reference</span>(<span class='no'>data</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for default</span>
 <span class='fu'>eeg_reference</span>(<span class='no'>data</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for eeg_data</span>
 <span class='fu'>eeg_reference</span>(<span class='no'>data</span>, <span class='kw'>ref_chans</span> <span class='kw'>=</span> <span class='st'>"average"</span>,
-  <span class='kw'>exclude</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>robust</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)</pre>
+  <span class='kw'>exclude</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>robust</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)
+
+<span class='fu'>reref_eeg</span>(<span class='no'>data</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">

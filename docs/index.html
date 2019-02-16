@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">eegUtils</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0.9000</span>
       </span>
     </div>
 
@@ -94,19 +94,18 @@
 <div id="overview" class="section level2">
 <h2 class="hasAnchor">
 <a href="#overview" class="anchor"></a>Overview</h2>
-<p><em>eegUtils</em> is a package for the processing, manipulation, and plotting of EEG data. It includes functions for importing data from a variety of file formats (including Biosemi, Brain Vision Analyzer, and EEGLAB), many of the typical steps in pre-preprocessing (filtering, referencing, artefact rejection), more advanced processing techniques (time-frequency analysis, ICA), and many types of plot that are common in the field (ERP plots, time-frequency plots, topographical scalp maps). Although it uses custom object classes, it is designed such that these are always translatable to standard R <em>data.frames</em>, and thus can be used with any of the myriad packages and methods that supports standard R formats.</p>
-</div>
-<div id="installation" class="section level2">
-<h2 class="hasAnchor">
-<a href="#installation" class="anchor"></a>Installation</h2>
+<p><em>eegUtils</em> is a package for the processing, manipulation, and plotting of EEG data. It includes functions for importing data from a variety of file formats (including Biosemi, Brain Vision Analyzer, and EEGLAB), many of the typical steps in pre-preprocessing (filtering, referencing, artefact rejection), more advanced processing techniques (time-frequency analysis, ICA), and many types of plot that are common in the field (ERP plots, time-frequency plots, topographical scalp maps). Although it uses custom object classes, it is designed such that these are always translatable to standard R <em>data.frames</em>, and thus can be used with any of the myriad packages and methods that support standard R formats.</p>
+<div id="installation" class="section level3">
+<h3 class="hasAnchor">
+<a href="#installation" class="anchor"></a>Installation</h3>
 <p>The package is very much under active development and is subject to a lot of changes. As such, it is not currently available on CRAN. Install the latest version from Github as below.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="co">#install.packages("devtools")</span></a>
 <a class="sourceLine" id="cb1-2" data-line-number="2">devtools<span class="op">::</span><span class="kw">install_packages</span>(<span class="st">"craddm/eegUtils"</span>)</a></code></pre></div>
 <p>Note that most development is on the <strong>master</strong> branch. There are occasional Github releases that freeze functionality at particular moments in development.</p>
 </div>
-<div id="usage" class="section level2">
-<h2 class="hasAnchor">
-<a href="#usage" class="anchor"></a>Usage</h2>
+<div id="usage" class="section level3">
+<h3 class="hasAnchor">
+<a href="#usage" class="anchor"></a>Usage</h3>
 <p>In this simple example, we load a Biosemi .BDF file. This data is from an experiment in which participants were cued with a word and then shown a picture of an object that was either a semantic match or a semantic mismatch for the word.</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(eegUtils)</a>
 <a class="sourceLine" id="cb2-2" data-line-number="2"><span class="co">#&gt; Make sure to check for the latest development version at https://github.com/craddm/eegUtils!</span></a>
@@ -194,7 +193,7 @@
 <p>We can plot ERPs of all the channels using <em>plot_butterfly()</em>. This can be quite slow at high sampling rates, with many electrodes, and long epochs. Here we’ll specify that we want the plot to be from .1s before to .5s after stimulus onset.</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1"><span class="kw"><a href="reference/plot_butterfly.html">plot_butterfly</a></span>(example_epochs,</a>
 <a class="sourceLine" id="cb8-2" data-line-number="2">               <span class="dt">time_lim =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="op">-</span>.<span class="dv">1</span>, <span class="fl">.5</span>))</a></code></pre></div>
-<p><img src="index_files/figure-html/unnamed-chunk-5-1.png" width="700"> This outputs a <em>ggplot</em> object with some default styling already set.</p>
+<p><img src="index_files/figure-html/unnamed-chunk-4-1.png" width="700"> This outputs a <em>ggplot</em> object with some default styling already set.</p>
 <p>Now we might want a topographical plot. But BioSemi data files do not include channel locations, so we need to add them ourselves.</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1">example_epochs &lt;-<span class="st"> </span><span class="kw"><a href="reference/electrode_locations.html">electrode_locations</a></span>(example_epochs,</a>
 <a class="sourceLine" id="cb9-2" data-line-number="2">                                      <span class="dt">montage =</span> <span class="st">"biosemi64alpha"</span>)</a>
@@ -220,7 +219,7 @@
 <a class="sourceLine" id="cb10-3" data-line-number="3"><span class="co">#&gt; into character vector</span></a>
 <a class="sourceLine" id="cb10-4" data-line-number="4"><span class="co">#&gt; Warning in topoplot.data.frame(data, time_lim = time_lim, limits =</span></a>
 <a class="sourceLine" id="cb10-5" data-line-number="5"><span class="co">#&gt; limits, : Removing channels with no location.</span></a></code></pre></div>
-<p><img src="index_files/figure-html/unnamed-chunk-7-1.png" width="700"></p>
+<p><img src="index_files/figure-html/unnamed-chunk-6-1.png" width="700"></p>
 <p>Since this is a <em>ggplot</em>, styling can be changed easily. For example, we could use a different colour scale, such as <em>viridis</em>.</p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1"><span class="kw"><a href="reference/topoplot.html">topoplot</a></span>(example_epochs,</a>
 <a class="sourceLine" id="cb11-2" data-line-number="2">         <span class="dt">time_lim =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(.<span class="dv">25</span>, <span class="fl">.35</span>)) <span class="op">+</span></a>
@@ -231,7 +230,7 @@
 <a class="sourceLine" id="cb11-7" data-line-number="7"><span class="co">#&gt; limits, : Removing channels with no location.</span></a>
 <a class="sourceLine" id="cb11-8" data-line-number="8"><span class="co">#&gt; Scale for 'fill' is already present. Adding another scale for 'fill',</span></a>
 <a class="sourceLine" id="cb11-9" data-line-number="9"><span class="co">#&gt; which will replace the existing scale.</span></a></code></pre></div>
-<p><img src="index_files/figure-html/unnamed-chunk-8-1.png" width="700"></p>
+<p><img src="index_files/figure-html/unnamed-chunk-7-1.png" width="700"></p>
 <p>At any point, <code>eegUtils</code> objects can be transformed into data frames for use with functions that don’t natively support them.</p>
 <div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" data-line-number="1">example_epochs <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb12-2" data-line-number="2"><span class="st">  </span><span class="kw"><a href="reference/select_epochs.html">select_epochs</a></span>(<span class="dt">epoch_no =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">30</span>) <span class="op">%&gt;%</span></a>
@@ -251,7 +250,7 @@
 <a class="sourceLine" id="cb12-16" data-line-number="16"><span class="st">  </span><span class="kw">theme_classic</span>()</a>
 <a class="sourceLine" id="cb12-17" data-line-number="17"><span class="co">#&gt; Warning: Column `electrode` joining factor and character vector, coercing</span></a>
 <a class="sourceLine" id="cb12-18" data-line-number="18"><span class="co">#&gt; into character vector</span></a></code></pre></div>
-<p><img src="index_files/figure-html/unnamed-chunk-9-1.png" width="700"></p>
+<p><img src="index_files/figure-html/unnamed-chunk-8-1.png" width="700"></p>
 <p>In addition, there are overloaded versions of some <code>dplyr</code> functions that operate on the <code>signals</code> element of <code>eeg_data</code> and <code>eeg_epochs</code> objects. For example, <code><a href="https://dplyr.tidyverse.org/reference/select.html">select()</a></code> can be used to choose particular electrodes, and <code><a href="https://dplyr.tidyverse.org/reference/filter.html">filter()</a></code> can be used to filter out epochs or timepoints. <code><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate()</a></code> can be used to add new columns (e.g. creating ROIs from multiple electrodes). Note that the objects can also be passed directly to <em>ggplot()</em>.</p>
 <div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" data-line-number="1">example_epochs <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb13-2" data-line-number="2"><span class="st">  </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(<span class="dt">occipital =</span> (A29 <span class="op">+</span><span class="st"> </span>A27 <span class="op">+</span><span class="st"> </span>B32) <span class="op">/</span><span class="st"> </span><span class="dv">3</span>) <span class="op">%&gt;%</span></a>
@@ -270,7 +269,8 @@
 <a class="sourceLine" id="cb13-15" data-line-number="15"><span class="st">  </span><span class="kw">theme_classic</span>()</a>
 <a class="sourceLine" id="cb13-16" data-line-number="16"><span class="co">#&gt; Warning: Column `electrode` joining factor and character vector, coercing</span></a>
 <a class="sourceLine" id="cb13-17" data-line-number="17"><span class="co">#&gt; into character vector</span></a></code></pre></div>
-<p><img src="index_files/figure-html/unnamed-chunk-10-1.png" width="700"></p>
+<p><img src="index_files/figure-html/unnamed-chunk-9-1.png" width="700"></p>
+</div>
 </div>
   </div>
 

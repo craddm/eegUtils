@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Quickly calculate simple Hurst exponent for a matrix — quick_hurst • eegUtils</title>
+<title>Tag epochs with labels — tag_epochs • eegUtils</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,9 +30,11 @@
 
 
 
-<meta property="og:title" content="Quickly calculate simple Hurst exponent for a matrix — quick_hurst" />
+<meta property="og:title" content="Tag epochs with labels — tag_epochs" />
 
-<meta property="og:description" content="Quickly calculate simple Hurst exponent for a matrix" />
+<meta property="og:description" content="Tag epochs with labels indicating details such as experimental condition,
+based on the occurrence of event triggers from the events() structure. This
+adds a new column to the epochs structure in an eeg_epochs object." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -120,27 +122,55 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Quickly calculate simple Hurst exponent for a matrix</h1>
-    <small class="dont-index">Source: <a href='https://github.com/craddm/eegUtils/blob/master/R/artefact_rejection.R'><code>R/artefact_rejection.R</code></a></small>
-    <div class="hidden name"><code>quick_hurst.Rd</code></div>
+    <h1>Tag epochs with labels</h1>
+    <small class="dont-index">Source: <a href='https://github.com/craddm/eegUtils/blob/master/R/event_codes.R'><code>R/event_codes.R</code></a></small>
+    <div class="hidden name"><code>tag_epochs.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Quickly calculate simple Hurst exponent for a matrix</p>
+    <p>Tag epochs with labels indicating details such as experimental condition,
+based on the occurrence of event triggers from the events() structure. This
+adds a new column to the epochs structure in an <code>eeg_epochs</code> object.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>quick_hurst</span>(<span class='no'>.data</span>)</pre>
+    <pre class="usage"><span class='fu'>tag_epochs</span>(<span class='no'>.data</span>, <span class='no'>...</span>)
+
+<span class='co'># S3 method for default</span>
+<span class='fu'>tag_epochs</span>(<span class='no'>.data</span>, <span class='no'>...</span>)
+
+<span class='co'># S3 method for eeg_epochs</span>
+<span class='fu'>tag_epochs</span>(<span class='no'>.data</span>, <span class='kw'>event_type</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>event_label</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>data</th>
-      <td><p>matrix of EEG signals</p></td>
+      <th>.data</th>
+      <td><p>An <code>eegUtils</code> object</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>Additional arguments.</p></td>
+    </tr>
+    <tr>
+      <th>event_type</th>
+      <td><p>Label epochs according to specific event_types (typically a
+trigger)</p></td>
+    </tr>
+    <tr>
+      <th>event_label</th>
+      <td><p>Label epochs according to specific event_labels</p></td>
     </tr>
     </table>
+    
+    <h2 class="hasAnchor" id="methods-by-class-"><a class="anchor" href="#methods-by-class-"></a>Methods (by class)</h2>
+
+    <ul>
+<li><p><code>eeg_epochs</code>: Tag epochs in an <code>eeg_epochs</code> object.</p></li>
+</ul>
     
 
   </div>
@@ -148,7 +178,9 @@
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-                </ul>
+      
+      <li><a href="#methods-by-class-">Methods (by class)</a></li>
+          </ul>
 
   </div>
 </div>

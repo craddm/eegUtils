@@ -22,9 +22,9 @@ analysis, ICA), and many types of plot that are common in the field (ERP
 plots, time-frequency plots, topographical scalp maps). Although it uses
 custom object classes, it is designed such that these are always
 translatable to standard R *data.frames*, and thus can be used with any
-of the myriad packages and methods that supports standard R formats.
+of the myriad packages and methods that support standard R formats.
 
-## Installation
+### Installation
 
 The package is very much under active development and is subject to a
 lot of changes. As such, it is not currently available on CRAN. Install
@@ -39,7 +39,7 @@ Note that most development is on the **master** branch. There are
 occasional Github releases that freeze functionality at particular
 moments in development.
 
-## Usage
+### Usage
 
 In this simple example, we load a Biosemi .BDF file. This data is from
 an experiment in which participants were cued with a word and then shown
@@ -179,7 +179,7 @@ plot_butterfly(example_epochs,
                time_lim = c(-.1, .5))
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-5-1.png)<!-- --> This outputs
+![](README_files/figure-gfm/unnamed-chunk-4-1.png)<!-- --> This outputs
 a *ggplot* object with some default styling already set.
 
 Now we might want a topographical plot. But BioSemi data files do not
@@ -188,7 +188,7 @@ include channel locations, so we need to add them ourselves.
 ``` r
 example_epochs <- electrode_locations(example_epochs,
                                       montage = "biosemi64alpha")
-#> Electrodes not found: EXG1Electrodes not found: EXG2Electrodes not found: EXG3Electrodes not found: EXG4Electrodes not found: EXG5Electrodes not found: EXG6
+#> Electrodes not found: EXG1 EXG2 EXG3 EXG4 EXG5 EXG6
 channels(example_epochs)
 #> # A tibble: 70 x 9
 #>    electrode radius theta   phi cart_x cart_y cart_z     x     y
@@ -211,13 +211,11 @@ colour schemes.
 
 ``` r
 topoplot(example_epochs, time_lim = c(.25, .35))
-#> Warning: Column `electrode` joining factor and character vector, coercing
-#> into character vector
 #> Warning in topoplot.data.frame(data, time_lim = time_lim, limits =
 #> limits, : Removing channels with no location.
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
 
 Since this is a *ggplot*, styling can be changed easily. For example, we
 could use a different colour scale, such as *viridis*.
@@ -226,15 +224,13 @@ could use a different colour scale, such as *viridis*.
 topoplot(example_epochs,
          time_lim = c(.25, .35)) +
   scale_fill_viridis_c()
-#> Warning: Column `electrode` joining factor and character vector, coercing
-#> into character vector
 #> Warning in topoplot.data.frame(data, time_lim = time_lim, limits =
 #> limits, : Removing channels with no location.
 #> Scale for 'fill' is already present. Adding another scale for 'fill',
 #> which will replace the existing scale.
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
 
 At any point, `eegUtils` objects can be transformed into data frames for
 use with functions that don’t natively support them.
@@ -256,11 +252,9 @@ example_epochs %>%
   geom_hline(yintercept = 0) +
   facet_wrap(~electrode) + 
   theme_classic()
-#> Warning: Column `electrode` joining factor and character vector, coercing
-#> into character vector
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
 
 In addition, there are overloaded versions of some `dplyr` functions
 that operate on the `signals` element of `eeg_data` and `eeg_epochs`
@@ -286,8 +280,6 @@ example_epochs %>%
   geom_vline(xintercept = 0) +
   geom_hline(yintercept = 0) +
   theme_classic()
-#> Warning: Column `electrode` joining factor and character vector, coercing
-#> into character vector
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
