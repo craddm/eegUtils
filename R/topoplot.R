@@ -80,7 +80,7 @@ topoplot.data.frame <- function(data,
                                 chanLocs = NULL,
                                 method = "Biharmonic",
                                 r = NULL,
-                                grid_res = 67,
+                                grid_res = 100,
                                 palette = "RdBu",
                                 interp_limit = "skirt",
                                 contour = TRUE,
@@ -264,6 +264,7 @@ topoplot.data.frame <- function(data,
               y = mask_ring$y,
               colour = "white",
               size = rel(6.5)) +
+    #geom_head() +
     add_head(r, scaling) +
     coord_equal() +
     theme_bw() +
@@ -580,7 +581,6 @@ gam_topo <- function(data,
                                       out_df,
                                       type = "response")
   out_df
-
 }
 
 #' Create a biharmonic smooth across the scalp
@@ -747,4 +747,25 @@ parse_for_topo <- function(.data,
                           time_lim)
   }
   .data
+}
+
+
+new_topo <- function(.data,
+                     time_lim) {
+
+  .data <- select_times(.data, time_lim)
+  .data <- as.data.frame(.data, long = TRUE)
+  ggplot(.data,
+         aes(x = x, y = y, fill = amplitude)) +
+    geom_topo() +
+    scale_fill_distiller(palette = "RdBu") +
+    theme_void() +
+    coord_equal() +
+    guides(fill = guide_colorbar(title = expression(paste("Amplitude (",
+                                                          mu, "V)")),
+                                 title.position = "right",
+                                 barwidth = rel(1),
+                                 barheight = rel(6),
+                                 title.theme = element_text(angle = 270)))
+
 }

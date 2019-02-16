@@ -10,10 +10,10 @@
 \usage{
 stat_scalpmap(mapping = NULL, data = NULL, position = "identity",
   na.rm = FALSE, show.legend = NA, inherit.aes = TRUE,
-  grid_res = 70, interpolate = TRUE, ...)
+  grid_res = 300, interpolate = FALSE, interp_limit = "skirt", ...)
 
 geom_head(mapping = NULL, data = NULL, show.legend = NA,
-  na.rm = TRUE, inherit.aes = TRUE, ...)
+  na.rm = TRUE, inherit.aes = TRUE, interp_limit = "skirt", ...)
 
 geom_mask(mapping = NULL, data = NULL, show.legend = NA,
   na.rm = FALSE, colour = "white", size = rel(6.5),
@@ -62,11 +62,13 @@ rather than combining with them. This is most useful for helper functions
 that define both data and aesthetics and shouldn't inherit behaviour from
 the default plot specification, e.g. \code{\link[=borders]{borders()}}.}
 
-\item{grid_res}{Resolution of the interpolation grid. (Defaults to 70
+\item{grid_res}{Resolution of the interpolation grid. (Defaults to 100
 points).}
 
 \item{interpolate}{If \code{TRUE} interpolate linearly, if \code{FALSE}
 (the default) don't interpolate.}
+
+\item{interp_limit}{Topoplot with a "skirt" or inside the "head".}
 
 \item{...}{Other arguments passed on to \code{\link[=layer]{layer()}}. These are
 often aesthetics, used to set an aesthetic to a fixed value, like

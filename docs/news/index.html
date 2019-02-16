@@ -60,7 +60,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">eegUtils</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
       </span>
     </div>
 
@@ -128,6 +128,16 @@
 <h3 class="hasAnchor">
 <a href="#function-changes" class="anchor"></a>Function changes</h3>
 <ul>
+<li>Behaviour of <code>as.data.frame</code> methods changed.
+<ul>
+<li>
+<code>cond_label</code> parameter is deprecated</li>
+<li>Information from the new <code>epochs</code> structure is now automatically added to the data.frame</li>
+<li>
+</li>
+</ul>
+</li>
+<li><code>tag_epochs</code></li>
 <li>Behaviour of <code><a href="../reference/select_times.html">select_times()</a></code> changed to use exact supplied times rather than finding nearest times in the data.</li>
 <li>Some wrappers around <code>dplyr</code> functions added:
 <ul>
@@ -157,6 +167,9 @@
 <code><a href="../reference/iir_filt.html">iir_filt()</a></code> will be deprecated</li>
 </ul>
 </li>
+<li>
+<code><a href="../reference/geom_topo.html">geom_topo()</a></code> extension for <code>ggplot2</code> added. Allows plotting of a topographical scalp maps using standard <code>ggplot2</code> functions.</li>
+<li>Default <code>grid_res</code> for topography related plots increased to 300.</li>
 </ul>
 </div>
 <div id="internal-changes-bug-fixes" class="section level3">
@@ -166,13 +179,13 @@
 <li>
 <code>data.table</code> now used in the following functions internally:
 <ul>
-<li><code><a href="../reference/reref_eeg.html">reref_eeg()</a></code></li>
+<li><code><a href="../reference/eeg_reference.html">reref_eeg()</a></code></li>
 <li><code><a href="../reference/iir_filt.html">iir_filt()</a></code></li>
-<li><code><a href="../reference/eeg_FASTER.html">eeg_FASTER()</a></code></li>
+<li><code><a href="../reference/ar_FASTER.html">eeg_FASTER()</a></code></li>
 </ul>
 </li>
 <li>
-<code><a href="../reference/reref_eeg.html">reref_eeg()</a></code> now correctly excludes electrodes as requested.</li>
+<code><a href="../reference/eeg_reference.html">reref_eeg()</a></code> now correctly excludes electrodes as requested.</li>
 <li>
 <code><a href="../reference/iir_filt.html">iir_filt()</a></code> now correctly respects epoch boundaries.</li>
 <li>New field <code>epochs</code> added to <code>eeg_data</code> and <code>eeg_epochs</code> objects.</li>
@@ -260,7 +273,7 @@
 <a href="#internal-changes-bug-fixes-2" class="anchor"></a>Internal changes/ bug fixes</h3>
 <ul>
 <li>
-<code><a href="../reference/reref_eeg.html">reref_eeg()</a></code>
+<code><a href="../reference/eeg_reference.html">reref_eeg()</a></code>
 <ul>
 <li>correctly excludes multiple named electrodes (i.e. passed as characters rather than numbers), where it previously silently failed.</li>
 <li>no longer records the reference data in the <code>ref_data</code> field</li>
@@ -302,7 +315,7 @@
 </ul>
 </li>
 <li>
-<code><a href="../reference/eeg_FASTER.html">eeg_FASTER()</a></code> now properly selects electrodes and epochs for removal</li>
+<code><a href="../reference/ar_FASTER.html">eeg_FASTER()</a></code> now properly selects electrodes and epochs for removal</li>
 </ul>
 </div>
 </div>
@@ -320,9 +333,9 @@
 <li>
 <code><a href="../reference/as.data.frame.eeg_ICA.html">as.data.frame.eeg_ICA()</a></code> now has a <code>cond_labels</code> parameter to select epochs with specific events and add the event label as an additional column.</li>
 <li>
-<code><a href="../reference/reref_eeg.html">reref_eeg()</a></code> now removes reference channels from the data.</li>
+<code><a href="../reference/eeg_reference.html">reref_eeg()</a></code> now removes reference channels from the data.</li>
 <li>
-<code><a href="../reference/eeg_FASTER.html">eeg_FASTER()</a></code> - FASTER artefact rejection method now (mostly) implemented (<em>experimental</em>).</li>
+<code><a href="../reference/ar_FASTER.html">eeg_FASTER()</a></code> - FASTER artefact rejection method now (mostly) implemented (<em>experimental</em>).</li>
 </ul>
 </div>
 <div id="internal-changes-bug-fixes-3" class="section level3">

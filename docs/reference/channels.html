@@ -63,7 +63,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">eegUtils</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
       </span>
     </div>
 
@@ -150,31 +150,21 @@
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>channels</span>(<span class='no'>demo_epochs</span>)</div><div class='output co'>#&gt;    electrode   cart_x    cart_y  cart_z sph_radius   sph_phi   sph_theta
-#&gt; 5         A5 -50.2438   53.1112  42.192   84.41211 29.988986  133.410838
-#&gt; 13       A13 -65.3581  -11.6317  64.358   92.46042 44.111744 -169.908795
-#&gt; 21       A21 -53.0073  -78.7878  55.940  110.21150 30.502073 -123.932099
-#&gt; 29       A29   0.1076 -114.8920  14.657  115.82319  7.270063  -89.946341
-#&gt; 31       A31   0.3247  -81.1150  82.615  115.77991 45.524667  -89.770649
-#&gt; 37        B5   0.2313   80.7710  35.417   88.19508 23.676720   89.835925
-#&gt; 38        B6   0.3122   58.5120  66.462   88.54913 48.639461   89.694292
-#&gt; 40        B8  51.8362   54.3048  40.814   85.45049 28.530945   46.332330
-#&gt; 48       B16   0.4009   -9.1670 100.244  100.66307 84.770046  -87.495882
-#&gt; 50       B18  67.1179  -10.9003  63.580   93.09160 43.077206   -9.224598
-#&gt; 58       B26  55.6667  -78.5602  56.561  111.66751 30.431813  -54.679127
-#&gt;      pol_theta pol_radius       angle    radius             x           y
-#&gt; 5   133.410838  73.111141 -133.410838 0.3333945 -0.2291170322  0.24219268
-#&gt; 13 -169.908795  66.385071  169.908795 0.2549348 -0.2509909374 -0.04466855
-#&gt; 21 -123.932099  94.959419  123.932099 0.3305440 -0.1845129978 -0.27425229
-#&gt; 29  -89.946341 114.892050   89.946341 0.4596108  0.0004304399 -0.45961056
-#&gt; 31  -89.770649  81.115650   89.770649 0.2470852  0.0009890639 -0.24708320
-#&gt; 37   89.835925  80.771331  -89.835925 0.3684627  0.0010551444  0.36846116
-#&gt; 38   89.694292  58.512833  -89.694292 0.2297808  0.0012260141  0.22977750
-#&gt; 40   46.332330  75.073317  -46.332330 0.3414948  0.2357933675  0.24702258
-#&gt; 48  -87.495882   9.175762   87.495882 0.0290553  0.0012694607 -0.02902755
-#&gt; 50   -9.224598  67.997272    9.224598 0.2606822  0.2573109279 -0.04178865
-#&gt; 58  -54.679127  96.283366   54.679127 0.3309344  0.1913313313 -0.27001830</div><div class='input'>
-</div></pre>
+    <pre class="examples"><div class='input'><span class='fu'>channels</span>(<span class='no'>demo_epochs</span>)</div><div class='output co'>#&gt; <span style='color: #555555;'># A tibble: 11 x 9</span><span>
+#&gt;    electrode radius theta   phi cart_x cart_y cart_z     x     y
+#&gt;    </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>      </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>  </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>  </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>  </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
+#&gt; </span><span style='color: #555555;'> 1</span><span> A5             1   -</span><span style='color: #BB0000;'>60</span><span>   -</span><span style='color: #BB0000;'>51</span><span>  -</span><span style='color: #BB0000;'>46.3</span><span>   57.2  42.5  -</span><span style='color: #BB0000;'>37.8</span><span>  46.6
+#&gt; </span><span style='color: #555555;'> 2</span><span> A13            1   -</span><span style='color: #BB0000;'>46</span><span>     0  -</span><span style='color: #BB0000;'>61.1</span><span>    0    59.0  -</span><span style='color: #BB0000;'>46</span><span>     0  
+#&gt; </span><span style='color: #555555;'> 3</span><span> A21            1   -</span><span style='color: #BB0000;'>60</span><span>    51  -</span><span style='color: #BB0000;'>46.3</span><span>  -</span><span style='color: #BB0000;'>57.2</span><span>  42.5  -</span><span style='color: #BB0000;'>37.8</span><span> -</span><span style='color: #BB0000;'>46.6</span><span>
+#&gt; </span><span style='color: #555555;'> 4</span><span> A29            1    92   -</span><span style='color: #BB0000;'>90</span><span>    0    -</span><span style='color: #BB0000;'>85.0</span><span>  -</span><span style='color: #BB0000;'>2.97</span><span>   0   -</span><span style='color: #BB0000;'>92</span><span>  
+#&gt; </span><span style='color: #555555;'> 5</span><span> A31            1    46   -</span><span style='color: #BB0000;'>90</span><span>    0    -</span><span style='color: #BB0000;'>61.1</span><span>  59.0    0   -</span><span style='color: #BB0000;'>46</span><span>  
+#&gt; </span><span style='color: #555555;'> 6</span><span> B5             1    69    90    0     79.4  30.5    0    69  
+#&gt; </span><span style='color: #555555;'> 7</span><span> B6             1    46    90    0     61.1  59.0    0    46  
+#&gt; </span><span style='color: #555555;'> 8</span><span> B8             1    60    51   46.3   57.2  42.5   37.8  46.6
+#&gt; </span><span style='color: #555555;'> 9</span><span> B16            1     0     0    0      0    85      0     0  
+#&gt; </span><span style='color: #555555;'>10</span><span> B18            1    46     0   61.1    0    59.0   46     0  
+#&gt; </span><span style='color: #555555;'>11</span><span> B26            1    60   -</span><span style='color: #BB0000;'>51</span><span>   46.3  -</span><span style='color: #BB0000;'>57.2</span><span>  42.5   37.8 -</span><span style='color: #BB0000;'>46.6</span><span></div><div class='input'>
+</div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

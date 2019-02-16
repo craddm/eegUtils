@@ -60,7 +60,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">eegUtils</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
       </span>
     </div>
 
@@ -176,7 +176,7 @@
       </tr><tr>
         
         <td>
-          <p><code><a href="reref_eeg.html">reref_eeg()</a></code> </p>
+          <p><code><a href="eeg_reference.html">reref_eeg()</a></code> <code><a href="eeg_reference.html">eeg_reference()</a></code> </p>
         </td>
         <td><p>Referencing</p></td>
       </tr><tr>
@@ -225,6 +225,32 @@
     </tbody><tbody>
       <tr>
         <th colspan="2">
+          <h2 id="section-artefact-rejection" class="hasAnchor"><a href="#section-artefact-rejection" class="anchor"></a>Artefact rejection</h2>
+          <p class="section-desc"><p>Functions for artefact rejection.</p></p>
+        </th>
+      </tr>
+      <tr>
+        
+        <td>
+          <p><code><a href="ar_eogreg.html">ar_eogreg()</a></code> </p>
+        </td>
+        <td><p>Remove EOG using regression</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="ar_FASTER.html">eeg_FASTER()</a></code> <code><a href="ar_FASTER.html">ar_FASTER()</a></code> </p>
+        </td>
+        <td><p>FASTER EEG artefact rejection</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="ar_thresh.html">ar_thresh()</a></code> </p>
+        </td>
+        <td><p>Simple absolute value thresholding</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
           <h2 id="section-selection" class="hasAnchor"><a href="#section-selection" class="anchor"></a>Selection</h2>
           <p class="section-desc"><p>Functions for selecting subsets of data</p></p>
         </th>
@@ -264,6 +290,36 @@
       <tr>
         
         <td>
+          <p><code><a href="browse_data.html">browse_data()</a></code> </p>
+        </td>
+        <td><p>Browse EEG data.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="erp_image.html">erp_image()</a></code> </p>
+        </td>
+        <td><p>Plot ERP images</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="erp_raster.html">erp_raster()</a></code> </p>
+        </td>
+        <td><p>ERP raster plot</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="erp_scalp.html">erp_scalp()</a></code> </p>
+        </td>
+        <td><p>Plot ERPs on the scalp</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="geom_topo.html">geom_topo()</a></code> </p>
+        </td>
+        <td><p>Create a topographical plot</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="plot_butterfly.html">plot_butterfly()</a></code> </p>
         </td>
         <td><p>Create a butterfly plot from timecourse data</p></td>
@@ -297,30 +353,6 @@
           <p><code><a href="topoplot.html">topoplot()</a></code> </p>
         </td>
         <td><p>Topographical Plotting Function for EEG</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="erp_raster.html">erp_raster()</a></code> </p>
-        </td>
-        <td><p>ERP raster plot</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="erp_image.html">erp_image()</a></code> </p>
-        </td>
-        <td><p>Plot ERP images</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="browse_data.html">browse_data()</a></code> </p>
-        </td>
-        <td><p>Browse EEG data.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="erp_scalp.html">erp_scalp()</a></code> </p>
-        </td>
-        <td><p>Plot ERPs on the scalp</p></td>
       </tr><tr>
         
         <td>
@@ -395,6 +427,7 @@
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#section-io">IO</a></li>
       <li><a href="#section-processing">Processing</a></li>
+      <li><a href="#section-artefact-rejection">Artefact rejection</a></li>
       <li><a href="#section-selection">Selection</a></li>
       <li><a href="#section-plotting">Plotting</a></li>
       <li><a href="#section-frequency-analysis">Frequency analysis</a></li>

@@ -2,22 +2,25 @@
 % Please edit documentation in R/data_modifiers.R
 \name{reref_eeg}
 \alias{reref_eeg}
-\alias{reref_eeg.default}
-\alias{reref_eeg.eeg_data}
+\alias{eeg_reference}
+\alias{eeg_reference.default}
+\alias{eeg_reference.eeg_data}
 \title{Referencing}
 \usage{
 reref_eeg(data, ...)
 
-\method{reref_eeg}{default}(data, ...)
+eeg_reference(data, ...)
 
-\method{reref_eeg}{eeg_data}(data, ref_chans = "average",
+\method{eeg_reference}{default}(data, ...)
+
+\method{eeg_reference}{eeg_data}(data, ref_chans = "average",
   exclude = NULL, robust = FALSE, ...)
 }
 \arguments{
 \item{data}{Data to re-reference. Primarily meant for use with data of class
 \code{eeg_data}.}
 
-\item{...}{Further parameters to be passed to reref_eeg}
+\item{...}{Further parameters to be passed to eeg_reference}
 
 \item{ref_chans}{Channels to reference data to. Defaults to "average" i.e.
 average of all electrodes in data. Character vector of channel names or numbers.}
@@ -46,9 +49,9 @@ removed from the data. Meta-data about the referencing scheme is held in the
 # demo_epochs is average referenced by default
 demo_epochs
 # Rereference it but exclude B5 from calculation of the average
-reref_eeg(demo_epochs, exclude = "B5")
+eeg_reference(demo_epochs, exclude = "B5")
 # Reference data using the median of the reference channels rather than the mean
-reref_eeg(demo_epochs, robust = TRUE)
+eeg_reference(demo_epochs, robust = TRUE)
 
 }
 \author{

@@ -33,3 +33,12 @@ load_set <- function(file_name, df_out = FALSE) {
   file_out <- import_set(file_name, df_out = FALSE)
   file_out
 }
+
+
+#'@rdname eeg_reference
+#'@export
+reref_eeg <- function(data, ...) {
+  .Deprecated("eeg_reference",
+              msg = "reref_eeg has been renamed eeg_reference, and will be removed in a future version of eegUtils.")
+  eeg_reference(data, ...)
+}

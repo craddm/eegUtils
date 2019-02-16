@@ -22,7 +22,7 @@ eeg_data <- function(data,
                      epochs = NULL) {
 
   if (!missing(continuous)) {
-    message("Continuous parameter is deprecated and ignored. It will be removed in eegUtils 0.5.")
+    message("Continuous parameter is deprecated and ignored.")
   }
 
   if (srate < 1) {
@@ -342,7 +342,7 @@ epochs_tbl <- function(epochs,
   attr(epoch_labels, "type") <- "misc"
   epochs <- tibble::tibble(epochs = epochs,
                            recording = recording,
-                           epoch_labels = )
+                           epoch_labels = epoch_labels)
 
 
 

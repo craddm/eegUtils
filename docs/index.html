@@ -10,7 +10,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
 <script src="pkgdown.js"></script><meta property="og:title" content="A collection of utilities for EEG analysis ">
-<meta property="og:description" content="A collection of functions for basic EEG processing. Includes import
+<meta property="og:description" content="A collection of functions for EEG processing. Includes import
   functions for Biosemi (BDF) and Neuroscan (CNT), topographical plotting, referencing, and epoching.">
 <meta name="twitter:card" content="summary">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
@@ -19,7 +19,7 @@
 <![endif]-->
 </head>
 <body>
-    <div class="container template-home">
+    <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">eegUtils</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
       </span>
     </div>
 
@@ -85,63 +85,192 @@
 
       
       </header><div class="row">
-  <div class="contents col-md-9">
-<div id="eegutils-0-3-0" class="section level1">
-<div class="page-header"><h1 class="hasAnchor">
-<a href="#eegutils-0-3-0" class="anchor"></a>eegUtils 0.3.0</h1></div>
+  <div class="col-md-9 contents">
+    
 
-<p>Some utilities for plotting and processing of EEG data in R. The package is in the early stages of development, and may be subject to a lot of changes.</p>
-<p>Use devtools::install_github(‘craddm/eegUtils’) to install it.</p>
-<p>An introduction to its use can be found at the <em>eegUtils</em> website <a href="https://craddm.github.io/eegUtils/">https://craddm.github.io/eegUtils/</a>.</p>
-<div id="pre-processing-functions" class="section level2">
+    
+    
+
+<div id="overview" class="section level2">
 <h2 class="hasAnchor">
-<a href="#pre-processing-functions" class="anchor"></a>Pre-processing functions</h2>
-<ul>
-<li>
-<code><a href="reference/import_raw.html">import_raw()</a></code> - for import of BDF/EDF (BioSemi/European Data Format) and .CNT (Neuroscan) EEG files</li>
-<li>
-<code><a href="reference/import_set.html">import_set()</a></code> - for import of EEGLAB .set files.</li>
-<li>
-<code><a href="reference/eeg_filter.html">eeg_filter()</a></code> - for performing IIR or FIR filtering on data</li>
-<li>
-<code><a href="reference/reref_eeg.html">reref_eeg()</a></code> - for re-referencing data</li>
-<li>
-<code><a href="reference/epoch_data.html">epoch_data()</a></code> - for creating epochs around trigger events</li>
-<li>
-<code><a href="reference/tag_events.html">tag_events()</a></code> - for labelling events</li>
-<li>
-<code><a href="reference/interp_elecs.html">interp_elecs()</a></code> - spherical spline interpolation of EEG channels</li>
-<li>
-<code><a href="reference/eeg_downsample.html">eeg_downsample()</a></code> - filter and downsample data to a lower sampling rate.</li>
-<li>
-<code><a href="reference/eeg_FASTER.html">eeg_FASTER()</a></code> - automatic artefact rejection algorithm for epoched data</li>
-<li>
-<code><a href="reference/run_ICA.html">run_ICA()</a></code> - decompose your data using an ICA algorithm such as SOBI or Infomax</li>
-</ul>
+<a href="#overview" class="anchor"></a>Overview</h2>
+<p><em>eegUtils</em> is a package for the processing, manipulation, and plotting of EEG data. It includes functions for importing data from a variety of file formats (including Biosemi, Brain Vision Analyzer, and EEGLAB), many of the typical steps in pre-preprocessing (filtering, referencing, artefact rejection), more advanced processing techniques (time-frequency analysis, ICA), and many types of plot that are common in the field (ERP plots, time-frequency plots, topographical scalp maps). Although it uses custom object classes, it is designed such that these are always translatable to standard R <em>data.frames</em>, and thus can be used with any of the myriad packages and methods that supports standard R formats.</p>
 </div>
-<div id="plotting-functions" class="section level2">
+<div id="installation" class="section level2">
 <h2 class="hasAnchor">
-<a href="#plotting-functions" class="anchor"></a>Plotting functions</h2>
-<ul>
-<li>
-<code><a href="reference/topoplot.html">topoplot()</a></code> - plotting of topographies</li>
-<li>
-<code><a href="reference/plot_timecourse.html">plot_timecourse()</a></code>/<code><a href="reference/plot_butterfly.html">plot_butterfly()</a></code> - plotting individual timecourses from electrodes or plotting all electrodes at once</li>
-<li>
-<code><a href="reference/erp_scalp.html">erp_scalp()</a></code> - plotting ERP plots for individual electrodes in a topographical layout - thanks to Matti Vuorre!</li>
-<li>
-<code><a href="reference/interactive_scalp.html">interactive_scalp()</a></code> - a Shiny version of erp_scalp() that allows you to zoom in on specific electrodes.</li>
-<li>
-<code><a href="reference/browse_data.html">browse_data()</a></code> - a Shiny gadget for interactively scrolling through EEG data (continous or epoched).</li>
-<li>
-<code><a href="reference/erp_raster.html">erp_raster()</a></code> - plot an ERP raster, showing the ERP for every channel as a single image.</li>
-<li>
-<code><a href="reference/erp_image.html">erp_image()</a></code> - plot an ERP image from a single electrode.</li>
-<li>
-<code><a href="reference/plot_psd.html">plot_psd()</a></code> - plot the Power Spectral Density of an <code>eeg_data</code> or <code>eeg_epochs</code> object.</li>
-</ul>
-<p><code><a href="https://www.rdocumentation.org/packages/base/topics/as.data.frame">as.data.frame()</a></code> methods exist for <code>eeg_data</code> and <code>eeg_epochs</code> objects, so you can convert your data to a data frame for use with whatever analysis method you like.</p>
+<a href="#installation" class="anchor"></a>Installation</h2>
+<p>The package is very much under active development and is subject to a lot of changes. As such, it is not currently available on CRAN. Install the latest version from Github as below.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="co">#install.packages("devtools")</span></a>
+<a class="sourceLine" id="cb1-2" data-line-number="2">devtools<span class="op">::</span><span class="kw">install_packages</span>(<span class="st">"craddm/eegUtils"</span>)</a></code></pre></div>
+<p>Note that most development is on the <strong>master</strong> branch. There are occasional Github releases that freeze functionality at particular moments in development.</p>
 </div>
+<div id="usage" class="section level2">
+<h2 class="hasAnchor">
+<a href="#usage" class="anchor"></a>Usage</h2>
+<p>In this simple example, we load a Biosemi .BDF file. This data is from an experiment in which participants were cued with a word and then shown a picture of an object that was either a semantic match or a semantic mismatch for the word.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(eegUtils)</a>
+<a class="sourceLine" id="cb2-2" data-line-number="2"><span class="co">#&gt; Make sure to check for the latest development version at https://github.com/craddm/eegUtils!</span></a>
+<a class="sourceLine" id="cb2-3" data-line-number="3"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb2-4" data-line-number="4"><span class="co">#&gt; Attaching package: 'eegUtils'</span></a>
+<a class="sourceLine" id="cb2-5" data-line-number="5"><span class="co">#&gt; The following object is masked from 'package:stats':</span></a>
+<a class="sourceLine" id="cb2-6" data-line-number="6"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb2-7" data-line-number="7"><span class="co">#&gt;     filter</span></a>
+<a class="sourceLine" id="cb2-8" data-line-number="8"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(dplyr)</a>
+<a class="sourceLine" id="cb2-9" data-line-number="9"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb2-10" data-line-number="10"><span class="co">#&gt; Attaching package: 'dplyr'</span></a>
+<a class="sourceLine" id="cb2-11" data-line-number="11"><span class="co">#&gt; The following objects are masked from 'package:stats':</span></a>
+<a class="sourceLine" id="cb2-12" data-line-number="12"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb2-13" data-line-number="13"><span class="co">#&gt;     filter, lag</span></a>
+<a class="sourceLine" id="cb2-14" data-line-number="14"><span class="co">#&gt; The following objects are masked from 'package:base':</span></a>
+<a class="sourceLine" id="cb2-15" data-line-number="15"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb2-16" data-line-number="16"><span class="co">#&gt;     intersect, setdiff, setequal, union</span></a>
+<a class="sourceLine" id="cb2-17" data-line-number="17"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(ggplot2)</a>
+<a class="sourceLine" id="cb2-18" data-line-number="18">eeg_example &lt;-<span class="st"> </span><span class="kw"><a href="reference/import_raw.html">import_raw</a></span>(<span class="st">"F:</span><span class="ch">\\</span><span class="st">Dropbox</span><span class="ch">\\</span><span class="st">EEGData</span><span class="ch">\\</span><span class="st">RawEEGData</span><span class="ch">\\</span><span class="st">BasicCat</span><span class="ch">\\</span><span class="st">S2B1.bdf"</span>)</a>
+<a class="sourceLine" id="cb2-19" data-line-number="19"><span class="co">#&gt; Importing F:\Dropbox\EEGData\RawEEGData\BasicCat\S2B1.bdf as BDF</span></a>
+<a class="sourceLine" id="cb2-20" data-line-number="20">eeg_example</a>
+<a class="sourceLine" id="cb2-21" data-line-number="21"><span class="co">#&gt; EEG data</span></a>
+<a class="sourceLine" id="cb2-22" data-line-number="22"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb2-23" data-line-number="23"><span class="co">#&gt; Number of channels   : 72 </span></a>
+<a class="sourceLine" id="cb2-24" data-line-number="24"><span class="co">#&gt; Electrode names      : A1 A2 A3 A4 A5 A6 A7 A8 A9 A10 A11 A12 A13 A14 A15 A16 A17 A18 A19 A20 A21 A22 A23 A24 A25 A26 A27 A28 A29 A30 A31 A32 B1 B2 B3 B4 B5 B6 B7 B8 B9 B10 B11 B12 B13 B14 B15 B16 B17 B18 B19 B20 B21 B22 B23 B24 B25 B26 B27 B28 B29 B30 B31 B32 EXG1 EXG2 EXG3 EXG4 EXG5 EXG6 EXG7 EXG8 </span></a>
+<a class="sourceLine" id="cb2-25" data-line-number="25"><span class="co">#&gt; Sampling rate        : 512 Hz</span></a>
+<a class="sourceLine" id="cb2-26" data-line-number="26"><span class="co">#&gt; Reference        :</span></a></code></pre></div>
+<p>This data was recorded at 512 Hz. There were 72 channels named using the BioSemi alpha-numeric format. EXG1-EXG4 were electrodes placed around the eyes to record eye movements. EXG5 and EXG6 were reference electrodes placed on the participant’s earlobes. EXG7 and EXG8 are empty channels; no electrodes were attached.</p>
+<p>We can use the <em>select_elecs()</em> function to select specific channels to keep or remove. Here we’ll remove the empty channels EXG7 and EXG8.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1">eeg_example <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb3-2" data-line-number="2"><span class="st">  </span><span class="kw"><a href="reference/select_elecs.html">select_elecs</a></span>(<span class="dt">electrode =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"EXG7"</span>, <span class="st">"EXG8"</span>),</a>
+<a class="sourceLine" id="cb3-3" data-line-number="3">               <span class="dt">keep =</span> <span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb3-4" data-line-number="4"><span class="co">#&gt; EEG data</span></a>
+<a class="sourceLine" id="cb3-5" data-line-number="5"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb3-6" data-line-number="6"><span class="co">#&gt; Number of channels   : 70 </span></a>
+<a class="sourceLine" id="cb3-7" data-line-number="7"><span class="co">#&gt; Electrode names      : A1 A2 A3 A4 A5 A6 A7 A8 A9 A10 A11 A12 A13 A14 A15 A16 A17 A18 A19 A20 A21 A22 A23 A24 A25 A26 A27 A28 A29 A30 A31 A32 B1 B2 B3 B4 B5 B6 B7 B8 B9 B10 B11 B12 B13 B14 B15 B16 B17 B18 B19 B20 B21 B22 B23 B24 B25 B26 B27 B28 B29 B30 B31 B32 EXG1 EXG2 EXG3 EXG4 EXG5 EXG6 </span></a>
+<a class="sourceLine" id="cb3-8" data-line-number="8"><span class="co">#&gt; Sampling rate        : 512 Hz</span></a>
+<a class="sourceLine" id="cb3-9" data-line-number="9"><span class="co">#&gt; Reference        :</span></a></code></pre></div>
+<p>Note that we could also use the <em>select()</em> function from the <em>dplyr</em> package, as <em>eegUtils</em> has wrapper functions around several <em>dplyr</em> functions. Here we’ll use it in a chain of pipes leading to the <em>eeg_reference()</em> function, which references or rereferences our EEG data. It defaults to average reference.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1">eeg_example &lt;-<span class="st"> </span>eeg_example <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb4-2" data-line-number="2"><span class="st">  </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(<span class="op">-</span>EXG7, <span class="op">-</span>EXG8) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb4-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="reference/eeg_reference.html">eeg_reference</a></span>()</a>
+<a class="sourceLine" id="cb4-4" data-line-number="4">eeg_example</a>
+<a class="sourceLine" id="cb4-5" data-line-number="5"><span class="co">#&gt; EEG data</span></a>
+<a class="sourceLine" id="cb4-6" data-line-number="6"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb4-7" data-line-number="7"><span class="co">#&gt; Number of channels   : 70 </span></a>
+<a class="sourceLine" id="cb4-8" data-line-number="8"><span class="co">#&gt; Electrode names      : A1 A2 A3 A4 A5 A6 A7 A8 A9 A10 A11 A12 A13 A14 A15 A16 A17 A18 A19 A20 A21 A22 A23 A24 A25 A26 A27 A28 A29 A30 A31 A32 B1 B2 B3 B4 B5 B6 B7 B8 B9 B10 B11 B12 B13 B14 B15 B16 B17 B18 B19 B20 B21 B22 B23 B24 B25 B26 B27 B28 B29 B30 B31 B32 EXG1 EXG2 EXG3 EXG4 EXG5 EXG6 </span></a>
+<a class="sourceLine" id="cb4-9" data-line-number="9"><span class="co">#&gt; Sampling rate        : 512 Hz</span></a>
+<a class="sourceLine" id="cb4-10" data-line-number="10"><span class="co">#&gt; Reference        : average</span></a></code></pre></div>
+<p>A typical step at this stage is to filter the continuous data before epoching. We’ll quickly inspect the power spectral density, calculated using Welch’s method, of our data using <em>plot_psd()</em>. We then perform a bandpass filter from .1 Hz to 40 Hz using FIR filtering, using <em>eeg_filter()</em>. Note that this function can be made to use multiple cores or processes through the <em>future</em> package.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(future)</a>
+<a class="sourceLine" id="cb5-2" data-line-number="2"><span class="kw">plan</span>(multiprocess)</a>
+<a class="sourceLine" id="cb5-3" data-line-number="3"><span class="kw"><a href="reference/plot_psd.html">plot_psd</a></span>(eeg_example, </a>
+<a class="sourceLine" id="cb5-4" data-line-number="4">         <span class="dt">freq_range =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">0</span>, <span class="dv">60</span>),</a>
+<a class="sourceLine" id="cb5-5" data-line-number="5">         <span class="dt">legend =</span> <span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb5-6" data-line-number="6"><span class="co">#&gt; Removing channel means...</span></a></code></pre></div>
+<p><img src="index_files/figure-html/do_filt-1.png" width="700"></p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1">eeg_example &lt;-<span class="st"> </span><span class="kw"><a href="reference/eeg_filter.html">eeg_filter</a></span>(eeg_example,</a>
+<a class="sourceLine" id="cb6-2" data-line-number="2">                          <span class="dt">low_freq =</span> <span class="fl">.1</span>,</a>
+<a class="sourceLine" id="cb6-3" data-line-number="3">                          <span class="dt">high_freq =</span> <span class="dv">40</span>,</a>
+<a class="sourceLine" id="cb6-4" data-line-number="4">                          <span class="dt">method =</span> <span class="st">"fir"</span>)</a>
+<a class="sourceLine" id="cb6-5" data-line-number="5"><span class="co">#&gt; Band-pass FIR filter from 0.1 - 40 Hz</span></a>
+<a class="sourceLine" id="cb6-6" data-line-number="6"><span class="co">#&gt; Transition bandwidth: 0.1 Hz</span></a>
+<a class="sourceLine" id="cb6-7" data-line-number="7"><span class="co">#&gt; Filter order: 16896</span></a>
+<a class="sourceLine" id="cb6-8" data-line-number="8"><span class="co">#&gt; Removing channel means...</span></a>
+<a class="sourceLine" id="cb6-9" data-line-number="9"><span class="kw"><a href="reference/plot_psd.html">plot_psd</a></span>(eeg_example, </a>
+<a class="sourceLine" id="cb6-10" data-line-number="10">         <span class="dt">freq_range =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">0</span>, <span class="dv">60</span>),</a>
+<a class="sourceLine" id="cb6-11" data-line-number="11">         <span class="dt">legend =</span> <span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb6-12" data-line-number="12"><span class="co">#&gt; Removing channel means...</span></a></code></pre></div>
+<p><img src="index_files/figure-html/do_filt-2.png" width="700"></p>
+<p>The next step is to epoch our filtered data. The trigger <em>201</em> marks stimulus onset.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1">example_epochs &lt;-<span class="st"> </span><span class="kw"><a href="reference/epoch_data.html">epoch_data</a></span>(eeg_example,</a>
+<a class="sourceLine" id="cb7-2" data-line-number="2">                             <span class="dt">events =</span> <span class="dv">201</span>)</a>
+<a class="sourceLine" id="cb7-3" data-line-number="3"><span class="co">#&gt; Removing channel means per epoch...</span></a>
+<a class="sourceLine" id="cb7-4" data-line-number="4"><span class="co">#&gt; Creating 78 epochs.</span></a>
+<a class="sourceLine" id="cb7-5" data-line-number="5">example_epochs</a>
+<a class="sourceLine" id="cb7-6" data-line-number="6"><span class="co">#&gt; Epoched EEG data</span></a>
+<a class="sourceLine" id="cb7-7" data-line-number="7"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb7-8" data-line-number="8"><span class="co">#&gt; Number of channels   : 70 </span></a>
+<a class="sourceLine" id="cb7-9" data-line-number="9"><span class="co">#&gt; Number of epochs     : 78 </span></a>
+<a class="sourceLine" id="cb7-10" data-line-number="10"><span class="co">#&gt; Epoch limits     : -1 - 0.9980469 seconds</span></a>
+<a class="sourceLine" id="cb7-11" data-line-number="11"><span class="co">#&gt; Electrode names      : A1 A2 A3 A4 A5 A6 A7 A8 A9 A10 A11 A12 A13 A14 A15 A16 A17 A18 A19 A20 A21 A22 A23 A24 A25 A26 A27 A28 A29 A30 A31 A32 B1 B2 B3 B4 B5 B6 B7 B8 B9 B10 B11 B12 B13 B14 B15 B16 B17 B18 B19 B20 B21 B22 B23 B24 B25 B26 B27 B28 B29 B30 B31 B32 EXG1 EXG2 EXG3 EXG4 EXG5 EXG6 </span></a>
+<a class="sourceLine" id="cb7-12" data-line-number="12"><span class="co">#&gt; Sampling rate        : 512  Hz</span></a>
+<a class="sourceLine" id="cb7-13" data-line-number="13"><span class="co">#&gt; Reference        : average</span></a></code></pre></div>
+<p>We can plot ERPs of all the channels using <em>plot_butterfly()</em>. This can be quite slow at high sampling rates, with many electrodes, and long epochs. Here we’ll specify that we want the plot to be from .1s before to .5s after stimulus onset.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1"><span class="kw"><a href="reference/plot_butterfly.html">plot_butterfly</a></span>(example_epochs,</a>
+<a class="sourceLine" id="cb8-2" data-line-number="2">               <span class="dt">time_lim =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="op">-</span>.<span class="dv">1</span>, <span class="fl">.5</span>))</a></code></pre></div>
+<p><img src="index_files/figure-html/unnamed-chunk-5-1.png" width="700"> This outputs a <em>ggplot</em> object with some default styling already set.</p>
+<p>Now we might want a topographical plot. But BioSemi data files do not include channel locations, so we need to add them ourselves.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1">example_epochs &lt;-<span class="st"> </span><span class="kw"><a href="reference/electrode_locations.html">electrode_locations</a></span>(example_epochs,</a>
+<a class="sourceLine" id="cb9-2" data-line-number="2">                                      <span class="dt">montage =</span> <span class="st">"biosemi64alpha"</span>)</a>
+<a class="sourceLine" id="cb9-3" data-line-number="3"><span class="co">#&gt; Electrodes not found: EXG1Electrodes not found: EXG2Electrodes not found: EXG3Electrodes not found: EXG4Electrodes not found: EXG5Electrodes not found: EXG6</span></a>
+<a class="sourceLine" id="cb9-4" data-line-number="4"><span class="kw"><a href="reference/channels.html">channels</a></span>(example_epochs)</a>
+<a class="sourceLine" id="cb9-5" data-line-number="5"><span class="co">#&gt; # A tibble: 70 x 9</span></a>
+<a class="sourceLine" id="cb9-6" data-line-number="6"><span class="co">#&gt;    electrode radius theta   phi cart_x cart_y cart_z     x     y</span></a>
+<a class="sourceLine" id="cb9-7" data-line-number="7"><span class="co">#&gt;    &lt;chr&gt;      &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;</span></a>
+<a class="sourceLine" id="cb9-8" data-line-number="8"><span class="co">#&gt;  1 A1             1   -92   -72  -26.2   80.8  -2.97 -28.4  87.5</span></a>
+<a class="sourceLine" id="cb9-9" data-line-number="9"><span class="co">#&gt;  2 A2             1   -92   -54  -49.9   68.7  -2.97 -54.1  74.4</span></a>
+<a class="sourceLine" id="cb9-10" data-line-number="10"><span class="co">#&gt;  3 A3             1   -74   -65  -34.5   74.0  23.4  -31.3  67.1</span></a>
+<a class="sourceLine" id="cb9-11" data-line-number="11"><span class="co">#&gt;  4 A4             1   -50   -68  -24.4   60.4  54.6  -18.7  46.4</span></a>
+<a class="sourceLine" id="cb9-12" data-line-number="12"><span class="co">#&gt;  5 A5             1   -60   -51  -46.3   57.2  42.5  -37.8  46.6</span></a>
+<a class="sourceLine" id="cb9-13" data-line-number="13"><span class="co">#&gt;  6 A6             1   -75   -41  -62.0   53.9  22    -56.6  49.2</span></a>
+<a class="sourceLine" id="cb9-14" data-line-number="14"><span class="co">#&gt;  7 A7             1   -92   -36  -68.7   49.9  -2.97 -74.4  54.1</span></a>
+<a class="sourceLine" id="cb9-15" data-line-number="15"><span class="co">#&gt;  8 A8             1   -92   -18  -80.8   26.2  -2.97 -87.5  28.4</span></a>
+<a class="sourceLine" id="cb9-16" data-line-number="16"><span class="co">#&gt;  9 A9             1   -72   -21  -75.5   29.0  26.3  -67.2  25.8</span></a>
+<a class="sourceLine" id="cb9-17" data-line-number="17"><span class="co">#&gt; 10 A10            1   -50   -28  -57.5   30.6  54.6  -44.2  23.5</span></a>
+<a class="sourceLine" id="cb9-18" data-line-number="18"><span class="co">#&gt; # ... with 60 more rows</span></a></code></pre></div>
+<p>Now we can create a topopgraphical plot, again with default stylings and colour schemes.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1"><span class="kw"><a href="reference/topoplot.html">topoplot</a></span>(example_epochs, <span class="dt">time_lim =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(.<span class="dv">25</span>, <span class="fl">.35</span>))</a>
+<a class="sourceLine" id="cb10-2" data-line-number="2"><span class="co">#&gt; Warning: Column `electrode` joining factor and character vector, coercing</span></a>
+<a class="sourceLine" id="cb10-3" data-line-number="3"><span class="co">#&gt; into character vector</span></a>
+<a class="sourceLine" id="cb10-4" data-line-number="4"><span class="co">#&gt; Warning in topoplot.data.frame(data, time_lim = time_lim, limits =</span></a>
+<a class="sourceLine" id="cb10-5" data-line-number="5"><span class="co">#&gt; limits, : Removing channels with no location.</span></a></code></pre></div>
+<p><img src="index_files/figure-html/unnamed-chunk-7-1.png" width="700"></p>
+<p>Since this is a <em>ggplot</em>, styling can be changed easily. For example, we could use a different colour scale, such as <em>viridis</em>.</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1"><span class="kw"><a href="reference/topoplot.html">topoplot</a></span>(example_epochs,</a>
+<a class="sourceLine" id="cb11-2" data-line-number="2">         <span class="dt">time_lim =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(.<span class="dv">25</span>, <span class="fl">.35</span>)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb11-3" data-line-number="3"><span class="st">  </span><span class="kw">scale_fill_viridis_c</span>()</a>
+<a class="sourceLine" id="cb11-4" data-line-number="4"><span class="co">#&gt; Warning: Column `electrode` joining factor and character vector, coercing</span></a>
+<a class="sourceLine" id="cb11-5" data-line-number="5"><span class="co">#&gt; into character vector</span></a>
+<a class="sourceLine" id="cb11-6" data-line-number="6"><span class="co">#&gt; Warning in topoplot.data.frame(data, time_lim = time_lim, limits =</span></a>
+<a class="sourceLine" id="cb11-7" data-line-number="7"><span class="co">#&gt; limits, : Removing channels with no location.</span></a>
+<a class="sourceLine" id="cb11-8" data-line-number="8"><span class="co">#&gt; Scale for 'fill' is already present. Adding another scale for 'fill',</span></a>
+<a class="sourceLine" id="cb11-9" data-line-number="9"><span class="co">#&gt; which will replace the existing scale.</span></a></code></pre></div>
+<p><img src="index_files/figure-html/unnamed-chunk-8-1.png" width="700"></p>
+<p>At any point, <code>eegUtils</code> objects can be transformed into data frames for use with functions that don’t natively support them.</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" data-line-number="1">example_epochs <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb12-2" data-line-number="2"><span class="st">  </span><span class="kw"><a href="reference/select_epochs.html">select_epochs</a></span>(<span class="dt">epoch_no =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">30</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb12-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="reference/select_elecs.html">select_elecs</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"A29"</span>, <span class="st">"B6"</span>)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb12-4" data-line-number="4"><span class="st">  </span><span class="kw"><a href="reference/select_times.html">select_times</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="op">-</span>.<span class="dv">1</span>, <span class="fl">.4</span>)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb12-5" data-line-number="5"><span class="st">  </span><span class="kw"><a href="reference/rm_baseline.html">rm_baseline</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="op">-</span>.<span class="dv">1</span>, <span class="dv">0</span>)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb12-6" data-line-number="6"><span class="st">  </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/as.data.frame">as.data.frame</a></span>(<span class="dt">long =</span> <span class="ot">TRUE</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb12-7" data-line-number="7"><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> time, <span class="dt">y =</span> amplitude)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb12-8" data-line-number="8"><span class="st">  </span><span class="kw">geom_line</span>(<span class="kw">aes</span>(<span class="dt">group =</span> epoch), <span class="dt">alpha =</span> <span class="fl">0.2</span>) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb12-9" data-line-number="9"><span class="st">  </span><span class="kw">stat_summary</span>(<span class="dt">fun.y =</span> mean,</a>
+<a class="sourceLine" id="cb12-10" data-line-number="10">               <span class="dt">geom =</span> <span class="st">"line"</span>,</a>
+<a class="sourceLine" id="cb12-11" data-line-number="11">               <span class="dt">size =</span> <span class="dv">2</span>,</a>
+<a class="sourceLine" id="cb12-12" data-line-number="12">               <span class="kw">aes</span>(<span class="dt">colour =</span> electrode)) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb12-13" data-line-number="13"><span class="st">  </span><span class="kw">geom_vline</span>(<span class="dt">xintercept =</span> <span class="dv">0</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb12-14" data-line-number="14"><span class="st">  </span><span class="kw">geom_hline</span>(<span class="dt">yintercept =</span> <span class="dv">0</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb12-15" data-line-number="15"><span class="st">  </span><span class="kw">facet_wrap</span>(<span class="op">~</span>electrode) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb12-16" data-line-number="16"><span class="st">  </span><span class="kw">theme_classic</span>()</a>
+<a class="sourceLine" id="cb12-17" data-line-number="17"><span class="co">#&gt; Warning: Column `electrode` joining factor and character vector, coercing</span></a>
+<a class="sourceLine" id="cb12-18" data-line-number="18"><span class="co">#&gt; into character vector</span></a></code></pre></div>
+<p><img src="index_files/figure-html/unnamed-chunk-9-1.png" width="700"></p>
+<p>In addition, there are overloaded versions of some <code>dplyr</code> functions that operate on the <code>signals</code> element of <code>eeg_data</code> and <code>eeg_epochs</code> objects. For example, <code><a href="https://dplyr.tidyverse.org/reference/select.html">select()</a></code> can be used to choose particular electrodes, and <code><a href="https://dplyr.tidyverse.org/reference/filter.html">filter()</a></code> can be used to filter out epochs or timepoints. <code><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate()</a></code> can be used to add new columns (e.g. creating ROIs from multiple electrodes). Note that the objects can also be passed directly to <em>ggplot()</em>.</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" data-line-number="1">example_epochs <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb13-2" data-line-number="2"><span class="st">  </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(<span class="dt">occipital =</span> (A29 <span class="op">+</span><span class="st"> </span>A27 <span class="op">+</span><span class="st"> </span>B32) <span class="op">/</span><span class="st"> </span><span class="dv">3</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb13-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(A29, B6, occipital) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb13-4" data-line-number="4"><span class="st">  </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(epoch <span class="op">&lt;=</span><span class="st"> </span><span class="dv">60</span>, time <span class="op">&gt;</span><span class="st"> </span><span class="fl">-.1</span>, time <span class="op">&lt;</span><span class="st"> </span><span class="fl">.5</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb13-5" data-line-number="5"><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> time, <span class="dt">y =</span> amplitude)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb13-6" data-line-number="6"><span class="st">  </span><span class="kw">geom_line</span>(<span class="kw">aes</span>(<span class="dt">group =</span> epoch), <span class="dt">alpha =</span> <span class="fl">0.2</span>) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb13-7" data-line-number="7"><span class="st">  </span><span class="kw">stat_summary</span>(<span class="dt">fun.y =</span> mean,</a>
+<a class="sourceLine" id="cb13-8" data-line-number="8">               <span class="dt">geom =</span> <span class="st">"line"</span>,</a>
+<a class="sourceLine" id="cb13-9" data-line-number="9">               <span class="dt">size =</span> <span class="dv">2</span>,</a>
+<a class="sourceLine" id="cb13-10" data-line-number="10">               <span class="kw">aes</span>(<span class="dt">colour =</span> electrode)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb13-11" data-line-number="11"><span class="st">  </span><span class="kw">facet_wrap</span>(<span class="op">~</span>electrode) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb13-12" data-line-number="12"><span class="st">  </span><span class="kw">scale_colour_viridis_d</span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb13-13" data-line-number="13"><span class="st">  </span><span class="kw">geom_vline</span>(<span class="dt">xintercept =</span> <span class="dv">0</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb13-14" data-line-number="14"><span class="st">  </span><span class="kw">geom_hline</span>(<span class="dt">yintercept =</span> <span class="dv">0</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb13-15" data-line-number="15"><span class="st">  </span><span class="kw">theme_classic</span>()</a>
+<a class="sourceLine" id="cb13-16" data-line-number="16"><span class="co">#&gt; Warning: Column `electrode` joining factor and character vector, coercing</span></a>
+<a class="sourceLine" id="cb13-17" data-line-number="17"><span class="co">#&gt; into character vector</span></a></code></pre></div>
+<p><img src="index_files/figure-html/unnamed-chunk-10-1.png" width="700"></p>
 </div>
   </div>
 
@@ -171,18 +300,20 @@
 </ul>
 </div>
 
-  <div class="dev-status">
+      <div class="dev-status">
 <h2>Dev status</h2>
 <ul class="list-unstyled">
-<li><a href="http://www.repostatus.org/#wip"><img src="http://www.repostatus.org/badges/latest/wip.svg" alt="Project Status: WIP – Initial development is in progress, but there has not yet been a stable, usable release suitable for the public."></a></li>
+<li><a href="http://www.repostatus.org/#wip"><img src="http://www.repostatus.org/badges/latest/wip.svg" alt="Repo Status"></a></li>
 <li><a href="https://codecov.io/github/craddm/eegUtils?branch=master"><img src="https://img.shields.io/codecov/c/github/craddm/eegUtils/master.svg" alt="Coverage Status"></a></li>
-<li><a href="https://travis-ci.org/craddm/eegUtils"><img src="https://travis-ci.org/craddm/eegUtils.svg?branch=master" alt="Build Status"></a></li>
+<li><a href="https://travis-ci.org/craddm/eegUtils"><img src="https://travis-ci.org/craddm/eegUtils.svg?branch=master" alt="Travis Build Status"></a></li>
 <li><a href="https://ci.appveyor.com/project/craddm/eegUtils"><img src="https://ci.appveyor.com/api/projects/status/github/craddm/eegUtils?branch=master&amp;svg=true" alt="AppVeyor build status"></a></li>
 <li><a href="https://zenodo.org/badge/latestdoi/85406871"><img src="https://zenodo.org/badge/85406871.svg" alt="DOI"></a></li>
 </ul>
 </div>
 </div>
+
 </div>
+
 
       <footer><div class="copyright">
   <p>Developed by Matt Craddock.</p>

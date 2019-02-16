@@ -6,9 +6,9 @@
 \usage{
 geom_topo(mapping = NULL, data = NULL, stat = "identity",
   position = "identity", show.legend = NA, na.rm = TRUE,
-  inherit.aes = TRUE, interpolate = TRUE, chan_markers = "point",
-  chan_size = rel(2), head_size = rel(1.5), mask_size = rel(6.5),
-  grid_res = 70, scale_fac = 1.32, ...)
+  inherit.aes = TRUE, interpolate = FALSE, interp_limit = "skirt",
+  chan_markers = "point", chan_size = rel(2), head_size = rel(1.5),
+  grid_res = 300, ...)
 }
 \arguments{
 \item{mapping}{Set of aesthetic mappings created by \code{\link[=aes]{aes()}} or
@@ -53,6 +53,8 @@ the default plot specification, e.g. \code{\link[=borders]{borders()}}.}
 \item{interpolate}{If \code{TRUE} interpolate linearly, if \code{FALSE}
 (the default) don't interpolate.}
 
+\item{interp_limit}{Topoplot with a "skirt" or inside the "head".}
+
 \item{chan_markers}{Defaults to "point". Mark electrode positions with points
 or text.}
 
@@ -60,12 +62,7 @@ or text.}
 
 \item{head_size}{Size of the head shape.}
 
-\item{mask_size}{Size of the masking ring (defaults = rel(6.5))}
-
 \item{grid_res}{Smoothness of the interpolation grid.}
-
-\item{scale_fac}{The radius of the ring is determined from the front-most
-electrode's location by a scaling factor.}
 
 \item{...}{Other arguments passed on to \code{\link[=layer]{layer()}}. These are
 often aesthetics, used to set an aesthetic to a fixed value, like

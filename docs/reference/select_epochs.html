@@ -63,7 +63,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">eegUtils</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
       </span>
     </div>
 
@@ -136,9 +136,6 @@
 <span class='co'># S3 method for default</span>
 <span class='fu'>select_epochs</span>(<span class='no'>data</span>, <span class='no'>...</span>)
 
-<span class='co'># S3 method for eeg_data</span>
-<span class='fu'>select_epochs</span>(<span class='no'>data</span>, <span class='no'>...</span>)
-
 <span class='co'># S3 method for eeg_epochs</span>
 <span class='fu'>select_epochs</span>(<span class='no'>data</span>, <span class='kw'>epoch_events</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>epoch_no</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>keep</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>df_out</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)
@@ -182,7 +179,6 @@ FALSE to remove specified epochs.</p></td>
 
     <ul>
 <li><p><code>default</code>: Select from generic object</p></li>
-<li><p><code>eeg_data</code>: Select epochs from <code>eeg_data</code> objects.</p></li>
 <li><p><code>eeg_epochs</code>: Selection of epochs from <code>eeg_epochs</code> objects.</p></li>
 <li><p><code>eeg_ICA</code>: Selection of epochs from <code>eeg_ICA</code> objects.</p></li>
 </ul>
@@ -193,25 +189,28 @@ FALSE to remove specified epochs.</p></td>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>select_epochs</span>(<span class='no'>demo_epochs</span>, <span class='kw'>epoch_no</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>5</span>)</div><div class='output co'>#&gt; Epoched EEG data
+    <pre class="examples"><div class='input'><span class='fu'>select_epochs</span>(<span class='no'>demo_epochs</span>, <span class='kw'>epoch_no</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>5</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: Epoch structure missing; update your eeg_epochs object using update_eeg_epochs.</span></div><div class='output co'>#&gt; Epoched EEG data
 #&gt; 
-#&gt; Number of channels	:	 11 
-#&gt; Number of epochs	:	 5 
-#&gt; Epoch limits		:	 -0.1972656 - 0.4511719 seconds
-#&gt; Electrode names		:	 A5 A13 A21 A29 A31 B5 B6 B8 B16 B18 B26 
-#&gt; Sampling rate		:	 128  Hz</div><div class='input'>(<span class='no'>demo_ica</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='run_ICA.html'>run_ICA</a></span>(<span class='no'>demo_epochs</span>))</div><div class='output co'>#&gt; <span class='message'>Iteration = 1</span></div><div class='output co'>#&gt; <span class='message'>Iteration = 2</span></div><div class='output co'>#&gt; <span class='message'>Iteration = 3</span></div><div class='output co'>#&gt; <span class='message'>Iteration = 4</span></div><div class='output co'>#&gt; <span class='message'>Iteration = 5</span></div><div class='output co'>#&gt; <span class='message'>Iteration = 6</span></div><div class='output co'>#&gt; <span class='message'>Iteration = 7</span></div><div class='output co'>#&gt; <span class='message'>Iteration = 8</span></div><div class='output co'>#&gt; Epoched EEG data
+#&gt; Number of channels	: 11 
+#&gt; Number of epochs		: 5 
+#&gt; Epoch limits		: -0.1972656 - 0.4511719 seconds
+#&gt; Electrode names		: A5 A13 A21 A29 A31 B5 B6 B8 B16 B18 B26 
+#&gt; Sampling rate		: 128  Hz
+#&gt; Reference		: average </div><div class='input'>(<span class='no'>demo_ica</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='run_ICA.html'>run_ICA</a></span>(<span class='no'>demo_epochs</span>))</div><div class='output co'>#&gt; <span class='message'>Iteration = 1</span></div><div class='output co'>#&gt; <span class='message'>Iteration = 2</span></div><div class='output co'>#&gt; <span class='message'>Iteration = 3</span></div><div class='output co'>#&gt; <span class='message'>Iteration = 4</span></div><div class='output co'>#&gt; <span class='message'>Iteration = 5</span></div><div class='output co'>#&gt; <span class='message'>Iteration = 6</span></div><div class='output co'>#&gt; <span class='message'>Iteration = 7</span></div><div class='output co'>#&gt; <span class='message'>Iteration = 8</span></div><div class='output co'>#&gt; Epoched EEG data
 #&gt; 
-#&gt; Number of channels	:	 11 
-#&gt; Number of epochs	:	 80 
-#&gt; Epoch limits		:	 -0.1972656 - 0.4511719 seconds
-#&gt; Electrode names		:	 Comp1 Comp2 Comp3 Comp4 Comp5 Comp6 Comp7 Comp8 Comp9 Comp10 Comp11 
-#&gt; Sampling rate		:	 128  Hz</div><div class='input'><span class='fu'>select_epochs</span>(<span class='no'>demo_ica</span>, <span class='kw'>epoch_no</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>5</span>)</div><div class='output co'>#&gt; Epoched EEG data
+#&gt; Number of channels	: 11 
+#&gt; Number of epochs		: 80 
+#&gt; Epoch limits		: -0.1972656 - 0.4511719 seconds
+#&gt; Electrode names		: Comp1 Comp2 Comp3 Comp4 Comp5 Comp6 Comp7 Comp8 Comp9 Comp10 Comp11 
+#&gt; Sampling rate		: 128  Hz
+#&gt; Reference		: </div><div class='input'><span class='fu'>select_epochs</span>(<span class='no'>demo_ica</span>, <span class='kw'>epoch_no</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>5</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: Epoch structure missing; update your eeg_ICA object using update_eeg_epochs.</span></div><div class='output co'>#&gt; Epoched EEG data
 #&gt; 
-#&gt; Number of channels	:	 11 
-#&gt; Number of epochs	:	 5 
-#&gt; Epoch limits		:	 -0.1972656 - 0.4511719 seconds
-#&gt; Electrode names		:	 Comp1 Comp2 Comp3 Comp4 Comp5 Comp6 Comp7 Comp8 Comp9 Comp10 Comp11 
-#&gt; Sampling rate		:	 128  Hz</div><div class='input'>
+#&gt; Number of channels	: 11 
+#&gt; Number of epochs		: 5 
+#&gt; Epoch limits		: -0.1972656 - 0.4511719 seconds
+#&gt; Electrode names		: Comp1 Comp2 Comp3 Comp4 Comp5 Comp6 Comp7 Comp8 Comp9 Comp10 Comp11 
+#&gt; Sampling rate		: 128  Hz
+#&gt; Reference		: </div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

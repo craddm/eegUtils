@@ -20,7 +20,7 @@ knitr::opts_chunk$set(echo = TRUE,
 
 *eegUtils* is a package for the processing, manipulation, and plotting of EEG data. It includes functions for importing data from a variety of file formats (including Biosemi, Brain Vision Analyzer, and EEGLAB), many of the typical steps in pre-preprocessing (filtering, referencing, artefact rejection), more advanced processing techniques (time-frequency analysis, ICA), and many types of plot that are common in the field (ERP plots, time-frequency plots, topographical scalp maps). Although it uses custom object classes, it is designed such that these are always translatable to standard R *data.frames*, and thus can be used with any of the myriad packages and methods that supports standard R formats.
 
-## Installation
+### Installation
 
 The package is very much under active development and is subject to a lot of changes. As such, it is not currently available on CRAN. Install the latest version from Github as below.
 
@@ -31,11 +31,11 @@ devtools::install_packages("craddm/eegUtils")
 
 Note that most development is on the **master** branch. There are occasional Github releases that freeze functionality at particular moments in development.
 
-## Usage
+### Usage
 
 In this simple example, we load a Biosemi .BDF file. This data is from an experiment in which participants were cued with a word and then shown a picture of an object that was either a semantic match or a semantic mismatch for the word.
 
-```{r}
+```{r load-data}
 library(eegUtils)
 library(dplyr)
 library(ggplot2)

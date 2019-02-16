@@ -7,3 +7,5 @@
 ^appveyor\.yml$
 ^data-raw$
 ^codemeta\.json$
+^README\.rmd$
+^README_files$

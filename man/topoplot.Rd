@@ -15,7 +15,7 @@ topoplot(data, ...)
 \method{topoplot}{default}(data, ...)
 
 \method{topoplot}{data.frame}(data, time_lim = NULL, limits = NULL,
-  chanLocs = NULL, method = "Biharmonic", r = NULL, grid_res = 67,
+  chanLocs = NULL, method = "Biharmonic", r = NULL, grid_res = 100,
   palette = "RdBu", interp_limit = "skirt", contour = TRUE,
   chan_marker = "point", quantity = "amplitude", montage = NULL,
   colourmap, highlights = NULL, scaling = 1, groups = NULL, ...)
