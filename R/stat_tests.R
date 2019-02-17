@@ -9,10 +9,13 @@ compare_epochs <- function(data, ...) {
 }
 
 #' @importFrom tibble as_tibble
+#' @param cond_label condition(s) to test.
 #' @param type Type of test to use. "1samp", "2samp"
 #' @describeIn compare_epochs Compare differences across epochs
 
-compare_epochs.eeg_epochs <- function(data, cond_label = NULL, type, ...) {
+compare_epochs.eeg_epochs <- function(data,
+                                      cond_label = NULL,
+                                      type, ...) {
 
   if (identical(type, "1samp")) {
     #select only data specified in cond_label, if it exists
