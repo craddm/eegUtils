@@ -14,15 +14,15 @@ reference:
     desc: >
       Functions for pre-processing and processing data
     contents:
-      - eeg_filter
-      - iir_filt
-      - reref_eeg
-      - rm_baseline
-      - run_ICA
       - compute_csd
+      - eeg_filter
+      - eeg_reference
       - eeg_downsample
+      - electrode_locations
       - epoch_data
       - interp_elecs
+      - rm_baseline
+      - run_ICA
       - tag_events
   - title: Artefact rejection
     desc: >
@@ -42,9 +42,9 @@ reference:
       - erp_raster
       - erp_scalp
       - geom_topo
+      - interactive_scalp
       - starts_with("plot_")
       - topoplot
-      - interactive_scalp
   - title: Frequency analysis
     desc: Functions related to (time-)frequency analysis
     contents:
@@ -54,3 +54,9 @@ reference:
     desc: Functions for converting objects to data.frames
     contents:
       - starts_with("as.")
+  - title: Accessors
+    desc: Functions for accessing and modifying specific elements of an object
+    contents:
+      - channels
+      - epochs
+      - events

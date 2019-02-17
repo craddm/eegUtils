@@ -91,6 +91,9 @@
     <li>
       <a href="../articles/time-frequency-analysis.html">Frequency analysis</a>
     </li>
+    <li>
+      <a href="../articles/topoplot.html">Building a topographical plot</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -164,15 +167,15 @@
       <tr>
         
         <td>
-          <p><code><a href="eeg_filter.html">eeg_filter()</a></code> </p>
+          <p><code><a href="compute_csd.html">compute_csd()</a></code> </p>
         </td>
-        <td><p>Filter EEG data</p></td>
+        <td><p>Convert to Current Source Density</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="iir_filt.html">iir_filt()</a></code> </p>
+          <p><code><a href="eeg_filter.html">eeg_filter()</a></code> </p>
         </td>
-        <td><p>Butterworth IIR filter</p></td>
+        <td><p>Filter EEG data</p></td>
       </tr><tr>
         
         <td>
@@ -182,27 +185,15 @@
       </tr><tr>
         
         <td>
-          <p><code><a href="rm_baseline.html">rm_baseline()</a></code> </p>
-        </td>
-        <td><p>Baseline correction</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="run_ICA.html">run_ICA()</a></code> </p>
-        </td>
-        <td><p>Independent Component Analysis for EEG data</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="compute_csd.html">compute_csd()</a></code> </p>
-        </td>
-        <td><p>Convert to Current Source Density</p></td>
-      </tr><tr>
-        
-        <td>
           <p><code><a href="eeg_downsample.html">eeg_downsample()</a></code> </p>
         </td>
         <td><p>Downsampling EEG data</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="electrode_locations.html">electrode_locations()</a></code> </p>
+        </td>
+        <td><p>Get standard electrode locations</p></td>
       </tr><tr>
         
         <td>
@@ -215,6 +206,18 @@
           <p><code><a href="interp_elecs.html">interp_elecs()</a></code> </p>
         </td>
         <td><p>Channel interpolation</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="rm_baseline.html">rm_baseline()</a></code> </p>
+        </td>
+        <td><p>Baseline correction</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="run_ICA.html">run_ICA()</a></code> </p>
+        </td>
+        <td><p>Independent Component Analysis for EEG data</p></td>
       </tr><tr>
         
         <td>
@@ -320,6 +323,12 @@
       </tr><tr>
         
         <td>
+          <p><code><a href="interactive_scalp.html">interactive_scalp()</a></code> </p>
+        </td>
+        <td><p>Interactive scalp maps</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="plot_butterfly.html">plot_butterfly()</a></code> </p>
         </td>
         <td><p>Create a butterfly plot from timecourse data</p></td>
@@ -353,12 +362,6 @@
           <p><code><a href="topoplot.html">topoplot()</a></code> </p>
         </td>
         <td><p>Topographical Plotting Function for EEG</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="interactive_scalp.html">interactive_scalp()</a></code> </p>
-        </td>
-        <td><p>Interactive scalp maps</p></td>
       </tr>
     </tbody><tbody>
       <tr>
@@ -418,6 +421,32 @@
         </td>
         <td><p>Convert <code>eeg_tfr</code> objects to data frames</p></td>
       </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-accessors" class="hasAnchor"><a href="#section-accessors" class="anchor"></a>Accessors</h2>
+          <p class="section-desc"><p>Functions for accessing and modifying specific elements of an object</p></p>
+        </th>
+      </tr>
+      <tr>
+        
+        <td>
+          <p><code><a href="channels.html">channels()</a></code> <code><a href="channels.html">`channels<-`()</a></code> </p>
+        </td>
+        <td><p>Modify channel information</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="epochs.html">epochs()</a></code> <code><a href="epochs.html">`epochs<-`()</a></code> </p>
+        </td>
+        <td><p>Modify the epochs structure</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="events.html">events()</a></code> <code><a href="events.html">`events<-`()</a></code> </p>
+        </td>
+        <td><p>Modify events structure</p></td>
+      </tr>
     </tbody>
     </table>
   </div>
@@ -432,6 +461,7 @@
       <li><a href="#section-plotting">Plotting</a></li>
       <li><a href="#section-frequency-analysis">Frequency analysis</a></li>
       <li><a href="#section-converters">Converters</a></li>
+      <li><a href="#section-accessors">Accessors</a></li>
     </ul>
   </div>
 </div>

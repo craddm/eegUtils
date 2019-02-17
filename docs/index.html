@@ -62,6 +62,9 @@
     <li>
       <a href="articles/time-frequency-analysis.html">Frequency analysis</a>
     </li>
+    <li>
+      <a href="articles/topoplot.html">Building a topographical plot</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -197,7 +200,7 @@
 <p>Now we might want a topographical plot. But BioSemi data files do not include channel locations, so we need to add them ourselves.</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1">example_epochs &lt;-<span class="st"> </span><span class="kw"><a href="reference/electrode_locations.html">electrode_locations</a></span>(example_epochs,</a>
 <a class="sourceLine" id="cb9-2" data-line-number="2">                                      <span class="dt">montage =</span> <span class="st">"biosemi64alpha"</span>)</a>
-<a class="sourceLine" id="cb9-3" data-line-number="3"><span class="co">#&gt; Electrodes not found: EXG1Electrodes not found: EXG2Electrodes not found: EXG3Electrodes not found: EXG4Electrodes not found: EXG5Electrodes not found: EXG6</span></a>
+<a class="sourceLine" id="cb9-3" data-line-number="3"><span class="co">#&gt; Electrodes not found: EXG1 EXG2 EXG3 EXG4 EXG5 EXG6</span></a>
 <a class="sourceLine" id="cb9-4" data-line-number="4"><span class="kw"><a href="reference/channels.html">channels</a></span>(example_epochs)</a>
 <a class="sourceLine" id="cb9-5" data-line-number="5"><span class="co">#&gt; # A tibble: 70 x 9</span></a>
 <a class="sourceLine" id="cb9-6" data-line-number="6"><span class="co">#&gt;    electrode radius theta   phi cart_x cart_y cart_z     x     y</span></a>
@@ -215,21 +218,17 @@
 <a class="sourceLine" id="cb9-18" data-line-number="18"><span class="co">#&gt; # ... with 60 more rows</span></a></code></pre></div>
 <p>Now we can create a topopgraphical plot, again with default stylings and colour schemes.</p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1"><span class="kw"><a href="reference/topoplot.html">topoplot</a></span>(example_epochs, <span class="dt">time_lim =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(.<span class="dv">25</span>, <span class="fl">.35</span>))</a>
-<a class="sourceLine" id="cb10-2" data-line-number="2"><span class="co">#&gt; Warning: Column `electrode` joining factor and character vector, coercing</span></a>
-<a class="sourceLine" id="cb10-3" data-line-number="3"><span class="co">#&gt; into character vector</span></a>
-<a class="sourceLine" id="cb10-4" data-line-number="4"><span class="co">#&gt; Warning in topoplot.data.frame(data, time_lim = time_lim, limits =</span></a>
-<a class="sourceLine" id="cb10-5" data-line-number="5"><span class="co">#&gt; limits, : Removing channels with no location.</span></a></code></pre></div>
+<a class="sourceLine" id="cb10-2" data-line-number="2"><span class="co">#&gt; Warning in topoplot.data.frame(data, time_lim = time_lim, limits =</span></a>
+<a class="sourceLine" id="cb10-3" data-line-number="3"><span class="co">#&gt; limits, : Removing channels with no location.</span></a></code></pre></div>
 <p><img src="index_files/figure-html/unnamed-chunk-6-1.png" width="700"></p>
 <p>Since this is a <em>ggplot</em>, styling can be changed easily. For example, we could use a different colour scale, such as <em>viridis</em>.</p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1"><span class="kw"><a href="reference/topoplot.html">topoplot</a></span>(example_epochs,</a>
 <a class="sourceLine" id="cb11-2" data-line-number="2">         <span class="dt">time_lim =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(.<span class="dv">25</span>, <span class="fl">.35</span>)) <span class="op">+</span></a>
 <a class="sourceLine" id="cb11-3" data-line-number="3"><span class="st">  </span><span class="kw">scale_fill_viridis_c</span>()</a>
-<a class="sourceLine" id="cb11-4" data-line-number="4"><span class="co">#&gt; Warning: Column `electrode` joining factor and character vector, coercing</span></a>
-<a class="sourceLine" id="cb11-5" data-line-number="5"><span class="co">#&gt; into character vector</span></a>
-<a class="sourceLine" id="cb11-6" data-line-number="6"><span class="co">#&gt; Warning in topoplot.data.frame(data, time_lim = time_lim, limits =</span></a>
-<a class="sourceLine" id="cb11-7" data-line-number="7"><span class="co">#&gt; limits, : Removing channels with no location.</span></a>
-<a class="sourceLine" id="cb11-8" data-line-number="8"><span class="co">#&gt; Scale for 'fill' is already present. Adding another scale for 'fill',</span></a>
-<a class="sourceLine" id="cb11-9" data-line-number="9"><span class="co">#&gt; which will replace the existing scale.</span></a></code></pre></div>
+<a class="sourceLine" id="cb11-4" data-line-number="4"><span class="co">#&gt; Warning in topoplot.data.frame(data, time_lim = time_lim, limits =</span></a>
+<a class="sourceLine" id="cb11-5" data-line-number="5"><span class="co">#&gt; limits, : Removing channels with no location.</span></a>
+<a class="sourceLine" id="cb11-6" data-line-number="6"><span class="co">#&gt; Scale for 'fill' is already present. Adding another scale for 'fill',</span></a>
+<a class="sourceLine" id="cb11-7" data-line-number="7"><span class="co">#&gt; which will replace the existing scale.</span></a></code></pre></div>
 <p><img src="index_files/figure-html/unnamed-chunk-7-1.png" width="700"></p>
 <p>At any point, <code>eegUtils</code> objects can be transformed into data frames for use with functions that don’t natively support them.</p>
 <div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" data-line-number="1">example_epochs <span class="op">%&gt;%</span></a>
@@ -247,9 +246,7 @@
 <a class="sourceLine" id="cb12-13" data-line-number="13"><span class="st">  </span><span class="kw">geom_vline</span>(<span class="dt">xintercept =</span> <span class="dv">0</span>) <span class="op">+</span></a>
 <a class="sourceLine" id="cb12-14" data-line-number="14"><span class="st">  </span><span class="kw">geom_hline</span>(<span class="dt">yintercept =</span> <span class="dv">0</span>) <span class="op">+</span></a>
 <a class="sourceLine" id="cb12-15" data-line-number="15"><span class="st">  </span><span class="kw">facet_wrap</span>(<span class="op">~</span>electrode) <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb12-16" data-line-number="16"><span class="st">  </span><span class="kw">theme_classic</span>()</a>
-<a class="sourceLine" id="cb12-17" data-line-number="17"><span class="co">#&gt; Warning: Column `electrode` joining factor and character vector, coercing</span></a>
-<a class="sourceLine" id="cb12-18" data-line-number="18"><span class="co">#&gt; into character vector</span></a></code></pre></div>
+<a class="sourceLine" id="cb12-16" data-line-number="16"><span class="st">  </span><span class="kw">theme_classic</span>()</a></code></pre></div>
 <p><img src="index_files/figure-html/unnamed-chunk-8-1.png" width="700"></p>
 <p>In addition, there are overloaded versions of some <code>dplyr</code> functions that operate on the <code>signals</code> element of <code>eeg_data</code> and <code>eeg_epochs</code> objects. For example, <code><a href="https://dplyr.tidyverse.org/reference/select.html">select()</a></code> can be used to choose particular electrodes, and <code><a href="https://dplyr.tidyverse.org/reference/filter.html">filter()</a></code> can be used to filter out epochs or timepoints. <code><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate()</a></code> can be used to add new columns (e.g. creating ROIs from multiple electrodes). Note that the objects can also be passed directly to <em>ggplot()</em>.</p>
 <div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" data-line-number="1">example_epochs <span class="op">%&gt;%</span></a>
@@ -266,9 +263,7 @@
 <a class="sourceLine" id="cb13-12" data-line-number="12"><span class="st">  </span><span class="kw">scale_colour_viridis_d</span>() <span class="op">+</span></a>
 <a class="sourceLine" id="cb13-13" data-line-number="13"><span class="st">  </span><span class="kw">geom_vline</span>(<span class="dt">xintercept =</span> <span class="dv">0</span>) <span class="op">+</span></a>
 <a class="sourceLine" id="cb13-14" data-line-number="14"><span class="st">  </span><span class="kw">geom_hline</span>(<span class="dt">yintercept =</span> <span class="dv">0</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb13-15" data-line-number="15"><span class="st">  </span><span class="kw">theme_classic</span>()</a>
-<a class="sourceLine" id="cb13-16" data-line-number="16"><span class="co">#&gt; Warning: Column `electrode` joining factor and character vector, coercing</span></a>
-<a class="sourceLine" id="cb13-17" data-line-number="17"><span class="co">#&gt; into character vector</span></a></code></pre></div>
+<a class="sourceLine" id="cb13-15" data-line-number="15"><span class="st">  </span><span class="kw">theme_classic</span>()</a></code></pre></div>
 <p><img src="index_files/figure-html/unnamed-chunk-9-1.png" width="700"></p>
 </div>
 </div>

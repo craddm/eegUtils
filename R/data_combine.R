@@ -184,5 +184,6 @@ check_timings.eeg_epochs <- function(data) {
     data$events$event_onset <- data$events$sample
     data$events$sample <- NULL
   }
+  data$epochs$epoch <- unique(data$events$epoch)
   data
 }

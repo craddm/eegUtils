@@ -61,7 +61,7 @@ topoplot.default <- function(data,
 #' @param montage Name of an existing montage set. Defaults to NULL; (currently
 #'   only 'biosemi64alpha' available other than default 10/20 system)
 #' @param colourmap Deprecated, use palette instead.
-#' @param highlights Electrodes to highlight (in white)
+#' @param highlights Electrodes to highlight (in white).
 #' @param scaling Scaling multiplication factor for labels and any plot lines. Defaults to 1.
 #' @param groups Column name for groups to retain.
 #' @import ggplot2
@@ -80,7 +80,7 @@ topoplot.data.frame <- function(data,
                                 chanLocs = NULL,
                                 method = "Biharmonic",
                                 r = NULL,
-                                grid_res = 100,
+                                grid_res = 300,
                                 palette = "RdBu",
                                 interp_limit = "skirt",
                                 contour = TRUE,
@@ -324,7 +324,7 @@ topoplot.eeg_data <- function(data, time_lim = NULL,
                               chanLocs = NULL,
                               method = "Biharmonic",
                               r = NULL,
-                              grid_res = 67,
+                              grid_res = 300,
                               palette = "RdBu",
                               interp_limit = "skirt",
                               contour = TRUE,
@@ -381,7 +381,7 @@ topoplot.eeg_epochs <- function(data,
                                 chanLocs = NULL,
                                 method = "Biharmonic",
                                 r = NULL,
-                                grid_res = 67,
+                                grid_res = 300,
                                 palette = "RdBu",
                                 interp_limit = "skirt",
                                 contour = TRUE,
@@ -438,7 +438,7 @@ topoplot.eeg_ICA <- function(data,
                              chanLocs = NULL,
                              method = "Biharmonic",
                              r = NULL,
-                             grid_res = 67,
+                             grid_res = 300,
                              palette = "RdBu",
                              interp_limit = "skirt",
                              contour = TRUE,
@@ -472,7 +472,7 @@ topoplot.eeg_tfr <- function(data,
                              chanLocs = NULL,
                              method = "Biharmonic",
                              r = NULL,
-                             grid_res = 67,
+                             grid_res = 300,
                              palette = "RdBu",
                              interp_limit = "skirt",
                              contour = TRUE,
@@ -751,12 +751,21 @@ parse_for_topo <- function(.data,
 
 
 new_topo <- function(.data,
-                     time_lim) {
+                     time_lim = NULL,
+                     ...) {
 
-  .data <- select_times(.data, time_lim)
-  .data <- as.data.frame(.data, long = TRUE)
+  if (!is.null(time_lim)) {
+    .data <- select_times(.data,
+                          time_lim)
+  }
+
+  .data <- as.data.frame(.data,
+                         long = TRUE)
+
   ggplot(.data,
-         aes(x = x, y = y, fill = amplitude)) +
+         aes(x = x,
+             y = y,
+             fill = amplitude)) +
     geom_topo() +
     scale_fill_distiller(palette = "RdBu") +
     theme_void() +

@@ -20,6 +20,8 @@ knitr::opts_chunk$set(
 
 Periodicity is commonly observed in EEG signals. For example, oscillations in the alpha frequency range (approximately 8-13 Hz) were one of the first signals observed in the human EEG. One method of analysing this periodicity is to calculate the Power Spectral Density using a method such as Welch's FFT.
 
+## Frequency analysis
+
 In `eegUtils`, this can be achieved using `compute_psd()` and `plot_psd()`. With epoched data, `compute_psd()` calculates the PSD for each trial separately. `compute_psd()` returns a data.frame with spectral power at each resolved frequency and for each electrode. Note that `plot_psd()` can be called directly on `eeg_data` or `eeg_epochs` objects without first having to `compute_psd()`. With epoched data, it will average over epochs before plotting.
 
 ```{r create-psd}

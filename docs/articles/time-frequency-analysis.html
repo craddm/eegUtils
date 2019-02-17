@@ -61,6 +61,9 @@
     <li>
       <a href="../articles/time-frequency-analysis.html">Frequency analysis</a>
     </li>
+    <li>
+      <a href="../articles/topoplot.html">Building a topographical plot</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -89,7 +92,7 @@
       <h1>Frequency analysis</h1>
                         <h4 class="author">Matt Craddock</h4>
             
-            <h4 class="date">2019-02-16</h4>
+            <h4 class="date">2019-02-17</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/craddm/eegUtils/blob/master/vignettes/time-frequency-analysis.Rmd"><code>vignettes/time-frequency-analysis.Rmd</code></a></small>
       <div class="hidden name"><code>time-frequency-analysis.Rmd</code></div>
@@ -99,6 +102,9 @@
     
     
 <p>Periodicity is commonly observed in EEG signals. For example, oscillations in the alpha frequency range (approximately 8-13 Hz) were one of the first signals observed in the human EEG. One method of analysing this periodicity is to calculate the Power Spectral Density using a method such as Welch’s FFT.</p>
+<div id="frequency-analysis" class="section level2">
+<h2 class="hasAnchor">
+<a href="#frequency-analysis" class="anchor"></a>Frequency analysis</h2>
 <p>In <code>eegUtils</code>, this can be achieved using <code><a href="../reference/compute_psd.html">compute_psd()</a></code> and <code><a href="../reference/plot_psd.html">plot_psd()</a></code>. With epoched data, <code><a href="../reference/compute_psd.html">compute_psd()</a></code> calculates the PSD for each trial separately. <code><a href="../reference/compute_psd.html">compute_psd()</a></code> returns a data.frame with spectral power at each resolved frequency and for each electrode. Note that <code><a href="../reference/plot_psd.html">plot_psd()</a></code> can be called directly on <code>eeg_data</code> or <code>eeg_epochs</code> objects without first having to <code><a href="../reference/compute_psd.html">compute_psd()</a></code>. With epoched data, it will average over epochs before plotting.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(eegUtils)</a>
 <a class="sourceLine" id="cb1-2" data-line-number="2"><span class="co">#&gt; Make sure to check for the latest development version at https://github.com/craddm/eegUtils!</span></a>
@@ -112,6 +118,7 @@
 <a class="sourceLine" id="cb1-10" data-line-number="10"><span class="kw"><a href="../reference/plot_psd.html">plot_psd</a></span>(demo_epochs)</a>
 <a class="sourceLine" id="cb1-11" data-line-number="11"><span class="co">#&gt; Removing channel means per epoch...</span></a></code></pre></div>
 <p><img src="time-frequency-analysis_files/figure-html/create-psd-1.png" width="700"></p>
+</div>
 <div id="time-frequency-analysis" class="section level2">
 <h2 class="hasAnchor">
 <a href="#time-frequency-analysis" class="anchor"></a>Time-frequency analysis</h2>
@@ -163,7 +170,8 @@
       <h2 class="hasAnchor">
 <a href="#tocnav" class="anchor"></a>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
-<li><a href="#time-frequency-analysis">Time-frequency analysis</a></li>
+<li><a href="#frequency-analysis">Frequency analysis</a></li>
+      <li><a href="#time-frequency-analysis">Time-frequency analysis</a></li>
       </ul>
 </div>
       </div>

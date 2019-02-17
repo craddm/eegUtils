@@ -7,7 +7,7 @@
 #' @export
 print.eeg_data <- function(x,
                            ...) {
-  elec_names <-channel_names(x)
+  elec_names <- channel_names(x)
   n_chan <- length(elec_names)
   cat("EEG data\n\n")
   cat("Number of channels\t:", n_chan, "\n")

@@ -159,6 +159,8 @@ as.data.frame.eeg_evoked <- function(x,
 #' @param optional Kept for compatability with S3 generic, ignored.
 #' @param long Convert to long format. Defaults to FALSE
 #' @param cond_labels add condition labels to data frame. Deprecated.
+#' @param mixing If TRUE, outputs the mixing matrix. If FALSE, outputs source activations.
+#' @param coords Adds electrode coordinates if TRUE; only if long data and the mixing matrix are requested.
 #' @param ... arguments for other as.data.frame commands
 #'
 #' @importFrom tidyr gather
@@ -169,14 +171,33 @@ as.data.frame.eeg_ICA <- function(x,
                                   optional = FALSE,
                                   long = FALSE,
                                   cond_labels,
+                                  mixing = FALSE,
+                                  coords = TRUE,
                                   ...) {
 
   if (!missing(cond_labels)) {
     stop("The cond_labels argument is deprecated.")
   }
 
-  df <- data.frame(x$signals,
-                   x$timings)
+  if (mixing) {
+    df <- x$mixing_matrix
+
+    if (coords) {
+      df <- dplyr::left_join(df,
+                             channels(x)[, c("electrode", "x", "y")],
+                             by = "electrode")
+    }
+
+  } else {
+    df <- data.frame(x$signals,
+                     x$timings)
+
+    if (!is.null(x$epochs)) {
+      df <- dplyr::left_join(df,
+                             x$epochs,
+                             by = "epoch")
+    }
+  }
 
   if (long) {
     df <- tidyr::gather(df,
@@ -187,11 +208,7 @@ as.data.frame.eeg_ICA <- function(x,
     df$component <- as.character(df$component)
   }
 
-  if (!is.null(x$epochs)) {
-    df <- dplyr::left_join(df,
-                           x$epochs,
-                           by = "epoch")
-  }
+
   df
 }
 

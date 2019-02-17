@@ -5,7 +5,7 @@
 \title{Convert \code{eeg_ICA} object to data frame}
 \usage{
 \method{as.data.frame}{eeg_ICA}(x, row.names = NULL, optional = FALSE,
-  long = FALSE, cond_labels, ...)
+  long = FALSE, cond_labels, mixing = FALSE, coords = TRUE, ...)
 }
 \arguments{
 \item{x}{Object of class \code{eeg_ICA}}
@@ -17,6 +17,10 @@
 \item{long}{Convert to long format. Defaults to FALSE}
 
 \item{cond_labels}{add condition labels to data frame. Deprecated.}
+
+\item{mixing}{If TRUE, outputs the mixing matrix. If FALSE, outputs source activations.}
+
+\item{coords}{Adds electrode coordinates if TRUE; only if long data and the mixing matrix are requested.}
 
 \item{...}{arguments for other as.data.frame commands}
 }

@@ -18,7 +18,7 @@ eeg_data(data, srate, events = NULL, chan_info = NULL,
 
 \item{timings}{Timing information - samples and sample /sampling rate.}
 
-\item{continuous}{Whether the data is continuous or epoched.}
+\item{continuous}{Whether the data is continuous or epoched. (Deprecated.)}
 
 \item{reference}{Reference channel information, including names of reference
 channels, excluded channels etc.}

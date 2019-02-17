@@ -5,6 +5,7 @@ articles:
   data_structures: data_structures.html
   eegUtils: eegUtils.html
   time-frequency-analysis: time-frequency-analysis.html
+  topoplot: topoplot.html
 urls:
   reference: http://craddm.github.io/eegUtils/reference
   article: http://craddm.github.io/eegUtils/articles

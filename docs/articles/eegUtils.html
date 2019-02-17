@@ -61,6 +61,9 @@
     <li>
       <a href="../articles/time-frequency-analysis.html">Frequency analysis</a>
     </li>
+    <li>
+      <a href="../articles/topoplot.html">Building a topographical plot</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -89,7 +92,7 @@
       <h1>EEG Utils</h1>
                         <h4 class="author">Matt Craddock</h4>
             
-            <h4 class="date">2019-02-16</h4>
+            <h4 class="date">2019-02-17</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/craddm/eegUtils/blob/master/vignettes/eegUtils.Rmd"><code>vignettes/eegUtils.Rmd</code></a></small>
       <div class="hidden name"><code>eegUtils.Rmd</code></div>
@@ -195,13 +198,11 @@
 <p>Standard channel locations can be added using the <code><a href="../reference/electrode_locations.html">electrode_locations()</a></code> command. This function supplies default locations for over 300 typical locations accroding to the 10-05 system. There are several specific montages provided, and can be specified using the <code>montage</code> parameter. In this case, the data was recorded using Biosemi with alpha-numeric channel labels (e.g. A1 rather than Fp1), which are built-in with <code>biosemi64alpha</code>. <code><a href="../reference/topoplot.html">topoplot()</a></code> can then be used to plot topographical representation of selected data. Note that it is not compulsory to use locations from electrode_locations(); if the data has x and y columns when it is a data frame, or added to <code>chan_info</code> element of the <code>eeg_data</code>/<code>eeg_epochs</code> object, then those will be used.</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1">eeg_example &lt;-<span class="st"> </span><span class="kw"><a href="../reference/electrode_locations.html">electrode_locations</a></span>(eeg_example,</a>
 <a class="sourceLine" id="cb9-2" data-line-number="2">                                   <span class="dt">montage =</span> <span class="st">"biosemi64alpha"</span>)</a>
-<a class="sourceLine" id="cb9-3" data-line-number="3"><span class="co">#&gt; Electrodes not found: EXG1Electrodes not found: EXG2Electrodes not found: EXG3Electrodes not found: EXG4Electrodes not found: EXG5Electrodes not found: EXG6Electrodes not found: EXG7Electrodes not found: EXG8</span></a>
+<a class="sourceLine" id="cb9-3" data-line-number="3"><span class="co">#&gt; Electrodes not found: EXG1 EXG2 EXG3 EXG4 EXG5 EXG6 EXG7 EXG8</span></a>
 <a class="sourceLine" id="cb9-4" data-line-number="4"><span class="kw"><a href="../reference/topoplot.html">topoplot</a></span>(eeg_example,</a>
 <a class="sourceLine" id="cb9-5" data-line-number="5">         <span class="dt">time_lim =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(.<span class="dv">1</span>, <span class="fl">.2</span>))</a>
-<a class="sourceLine" id="cb9-6" data-line-number="6"><span class="co">#&gt; Warning: Column `electrode` joining factor and character vector, coercing</span></a>
-<a class="sourceLine" id="cb9-7" data-line-number="7"><span class="co">#&gt; into character vector</span></a>
-<a class="sourceLine" id="cb9-8" data-line-number="8"><span class="co">#&gt; Warning in topoplot.data.frame(data, time_lim = time_lim, limits =</span></a>
-<a class="sourceLine" id="cb9-9" data-line-number="9"><span class="co">#&gt; limits, : Removing channels with no location.</span></a></code></pre></div>
+<a class="sourceLine" id="cb9-6" data-line-number="6"><span class="co">#&gt; Warning in topoplot.data.frame(data, time_lim = time_lim, limits =</span></a>
+<a class="sourceLine" id="cb9-7" data-line-number="7"><span class="co">#&gt; limits, : Removing channels with no location.</span></a></code></pre></div>
 <p><img src="eegUtils_files/figure-html/do-topo-1.png" width="700"></p>
 <p>Note that one electrode (Fp1/A1) was malunctioning during the the recording. We can interpolate that using spherical spline interpolation (<code><a href="../reference/interp_elecs.html">interp_elecs()</a></code>).</p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1">eeg_example &lt;-<span class="st"> </span><span class="kw"><a href="../reference/interp_elecs.html">interp_elecs</a></span>(eeg_example,</a>
@@ -209,10 +210,8 @@
 <a class="sourceLine" id="cb10-3" data-line-number="3"><span class="co">#&gt; Coords missing for electrodes EXG1 EXG2 EXG3 EXG4 EXG5 EXG6 EXG7 EXG8</span></a>
 <a class="sourceLine" id="cb10-4" data-line-number="4"><span class="kw"><a href="../reference/topoplot.html">topoplot</a></span>(eeg_example,</a>
 <a class="sourceLine" id="cb10-5" data-line-number="5">         <span class="dt">time_lim =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(.<span class="dv">1</span>, <span class="fl">.2</span>))</a>
-<a class="sourceLine" id="cb10-6" data-line-number="6"><span class="co">#&gt; Warning: Column `electrode` joining factor and character vector, coercing</span></a>
-<a class="sourceLine" id="cb10-7" data-line-number="7"><span class="co">#&gt; into character vector</span></a>
-<a class="sourceLine" id="cb10-8" data-line-number="8"><span class="co">#&gt; Warning in topoplot.data.frame(data, time_lim = time_lim, limits =</span></a>
-<a class="sourceLine" id="cb10-9" data-line-number="9"><span class="co">#&gt; limits, : Removing channels with no location.</span></a></code></pre></div>
+<a class="sourceLine" id="cb10-6" data-line-number="6"><span class="co">#&gt; Warning in topoplot.data.frame(data, time_lim = time_lim, limits =</span></a>
+<a class="sourceLine" id="cb10-7" data-line-number="7"><span class="co">#&gt; limits, : Removing channels with no location.</span></a></code></pre></div>
 <p><img src="eegUtils_files/figure-html/inter-1.png" width="700"></p>
 <p>At any point, <code>eegUtils</code> objects can be transformed into data frames for use with functions that don’t natively support them.</p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(ggplot2)</a>
@@ -236,9 +235,7 @@
 <a class="sourceLine" id="cb11-19" data-line-number="19">               <span class="dt">size =</span> <span class="dv">2</span>,</a>
 <a class="sourceLine" id="cb11-20" data-line-number="20">               <span class="kw">aes</span>(<span class="dt">colour =</span> electrode)) <span class="op">+</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb11-21" data-line-number="21"><span class="st">  </span><span class="kw">facet_wrap</span>(<span class="op">~</span>electrode) <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb11-22" data-line-number="22"><span class="st">  </span><span class="kw">theme_classic</span>()</a>
-<a class="sourceLine" id="cb11-23" data-line-number="23"><span class="co">#&gt; Warning: Column `electrode` joining factor and character vector, coercing</span></a>
-<a class="sourceLine" id="cb11-24" data-line-number="24"><span class="co">#&gt; into character vector</span></a></code></pre></div>
+<a class="sourceLine" id="cb11-22" data-line-number="22"><span class="st">  </span><span class="kw">theme_classic</span>()</a></code></pre></div>
 <p><img src="eegUtils_files/figure-html/unnamed-chunk-1-1.png" width="700"></p>
 </div>
 <div id="tidyverse-functions" class="section level1">
@@ -258,9 +255,7 @@
 <a class="sourceLine" id="cb12-11" data-line-number="11">               <span class="kw">aes</span>(<span class="dt">colour =</span> electrode)) <span class="op">+</span></a>
 <a class="sourceLine" id="cb12-12" data-line-number="12"><span class="st">  </span><span class="kw">facet_wrap</span>(<span class="op">~</span>electrode) <span class="op">+</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb12-13" data-line-number="13"><span class="st">  </span><span class="kw">scale_colour_viridis_d</span>() <span class="op">+</span></a>
-<a class="sourceLine" id="cb12-14" data-line-number="14"><span class="st">  </span><span class="kw">theme_classic</span>()</a>
-<a class="sourceLine" id="cb12-15" data-line-number="15"><span class="co">#&gt; Warning: Column `electrode` joining factor and character vector, coercing</span></a>
-<a class="sourceLine" id="cb12-16" data-line-number="16"><span class="co">#&gt; into character vector</span></a></code></pre></div>
+<a class="sourceLine" id="cb12-14" data-line-number="14"><span class="st">  </span><span class="kw">theme_classic</span>()</a></code></pre></div>
 <p><img src="eegUtils_files/figure-html/unnamed-chunk-2-1.png" width="700"></p>
 </div>
   </div>

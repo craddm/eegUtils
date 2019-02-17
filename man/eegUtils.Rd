@@ -17,11 +17,7 @@ designed such that these are always translatable to standard R data.frames,
 and thus can be used with any of the myriad packages and methods that support
 standard R formats.
 }
-\section{Foo functions}{
- The foo functions ...
-}
-
 \author{
 Matt Craddock \email{matt@mattcraddock.com}
-with contributions from Matti Vuorre.
+with contributions from Matti Vuorre \email{mv2521@columbia.edu}.
 }

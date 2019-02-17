@@ -15,32 +15,32 @@ topoplot(data, ...)
 \method{topoplot}{default}(data, ...)
 
 \method{topoplot}{data.frame}(data, time_lim = NULL, limits = NULL,
-  chanLocs = NULL, method = "Biharmonic", r = NULL, grid_res = 100,
+  chanLocs = NULL, method = "Biharmonic", r = NULL, grid_res = 300,
   palette = "RdBu", interp_limit = "skirt", contour = TRUE,
   chan_marker = "point", quantity = "amplitude", montage = NULL,
   colourmap, highlights = NULL, scaling = 1, groups = NULL, ...)
 
 \method{topoplot}{eeg_data}(data, time_lim = NULL, limits = NULL,
-  chanLocs = NULL, method = "Biharmonic", r = NULL, grid_res = 67,
+  chanLocs = NULL, method = "Biharmonic", r = NULL, grid_res = 300,
   palette = "RdBu", interp_limit = "skirt", contour = TRUE,
   chan_marker = "point", quantity = "amplitude", montage = NULL,
   highlights = NULL, scaling = 1, ...)
 
 \method{topoplot}{eeg_epochs}(data, time_lim = NULL, limits = NULL,
-  chanLocs = NULL, method = "Biharmonic", r = NULL, grid_res = 67,
+  chanLocs = NULL, method = "Biharmonic", r = NULL, grid_res = 300,
   palette = "RdBu", interp_limit = "skirt", contour = TRUE,
   chan_marker = "point", quantity = "amplitude", montage = NULL,
   highlights = NULL, scaling = 1, groups = NULL, ...)
 
 \method{topoplot}{eeg_ICA}(data, component, time_lim = NULL,
   limits = NULL, chanLocs = NULL, method = "Biharmonic", r = NULL,
-  grid_res = 67, palette = "RdBu", interp_limit = "skirt",
+  grid_res = 300, palette = "RdBu", interp_limit = "skirt",
   contour = TRUE, chan_marker = "point", quantity = "amplitude",
   montage = NULL, colourmap, highlights = NULL, scaling = scaling,
   ...)
 
 \method{topoplot}{eeg_tfr}(data, time_lim = NULL, limits = NULL,
-  chanLocs = NULL, method = "Biharmonic", r = NULL, grid_res = 67,
+  chanLocs = NULL, method = "Biharmonic", r = NULL, grid_res = 300,
   palette = "RdBu", interp_limit = "skirt", contour = TRUE,
   chan_marker = "point", quantity = "power", montage = NULL,
   highlights = NULL, scaling = 1, freq_range = NULL, ...)
@@ -95,7 +95,7 @@ only 'biosemi64alpha' available other than default 10/20 system)}
 
 \item{colourmap}{Deprecated, use palette instead.}
 
-\item{highlights}{Electrodes to highlight (in white)}
+\item{highlights}{Electrodes to highlight (in white).}
 
 \item{scaling}{Scaling multiplication factor for labels and any plot lines. Defaults to 1.}
 

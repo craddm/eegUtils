@@ -133,6 +133,9 @@
     <loc>http://craddm.github.io/eegUtils/reference/downsample_events.html</loc>
   </url>
   <url>
+    <loc>http://craddm.github.io/eegUtils/reference/eegUtils.html</loc>
+  </url>
+  <url>
     <loc>http://craddm.github.io/eegUtils/reference/eeg_average.html</loc>
   </url>
   <url>
@@ -176,9 +179,6 @@
   </url>
   <url>
     <loc>http://craddm.github.io/eegUtils/reference/epochs.html</loc>
-  </url>
-  <url>
-    <loc>http://craddm.github.io/eegUtils/reference/epochs_tbl.html</loc>
   </url>
   <url>
     <loc>http://craddm.github.io/eegUtils/reference/epoch_data.default.html</loc>
@@ -521,5 +521,8 @@
   </url>
   <url>
     <loc>http://craddm.github.io/eegUtils/articles/time-frequency-analysis.html</loc>
+  </url>
+  <url>
+    <loc>http://craddm.github.io/eegUtils/articles/topoplot.html</loc>
   </url>
 </urlset>

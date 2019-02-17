@@ -34,8 +34,9 @@
 
 <meta property="og:description" content="Currently BDF/EDF, 32-bit .CNT, and Brain Vision Analyzer files are
 supported. Filetype is determined by the file extension.The edfReader
-package is used to load BDF/EDF files. The function creates an
-eeg_data structure for subsequent use." />
+package is used to load BDF/EDF files, whereas custom code is used for .CNT
+and BVA files. The function creates an eeg_data structure for
+subsequent use." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -97,6 +98,9 @@ eeg_data structure for subsequent use." />
     <li>
       <a href="../articles/time-frequency-analysis.html">Frequency analysis</a>
     </li>
+    <li>
+      <a href="../articles/topoplot.html">Building a topographical plot</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -132,13 +136,14 @@ eeg_data structure for subsequent use." />
     
     <p>Currently BDF/EDF, 32-bit .CNT, and Brain Vision Analyzer files are
 supported. Filetype is determined by the file extension.The <code>edfReader</code>
-package is used to load BDF/EDF files. The function creates an
-<code>eeg_data</code> structure for subsequent use.</p>
+package is used to load BDF/EDF files, whereas custom code is used for .CNT
+and BVA files. The function creates an <code>eeg_data</code> structure for
+subsequent use.</p>
     
     </div>
 
     <pre class="usage"><span class='fu'>import_raw</span>(<span class='no'>file_name</span>, <span class='kw'>file_path</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>chan_nos</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>recording</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+  <span class='kw'>recording</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>participant_id</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/character'>character</a></span>())</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -157,7 +162,12 @@ package is used to load BDF/EDF files. The function creates an
     </tr>
     <tr>
       <th>recording</th>
-      <td><p>Name of the recording. By default, the filename will be used.</p></td>
+      <td><p>Name of the recording. By default, the filename will be
+used.</p></td>
+    </tr>
+    <tr>
+      <th>participant_id</th>
+      <td><p>Identifier for the participant.</p></td>
     </tr>
     </table>
     
