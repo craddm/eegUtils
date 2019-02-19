@@ -2,14 +2,17 @@
 #'
 #' Currently BDF/EDF, 32-bit .CNT, and Brain Vision Analyzer files are
 #' supported. Filetype is determined by the file extension.The \code{edfReader}
-#' package is used to load BDF/EDF files. The function creates an
-#' \code{eeg_data} structure for subsequent use.
+#' package is used to load BDF/EDF files, whereas custom code is used for .CNT
+#' and BVA files. The function creates an \code{eeg_data} structure for
+#' subsequent use.
 #'
 #' @author Matt Craddock, \email{matt@@mattcraddock.com}
 #' @param file_name File to import. Should include file extension.
 #' @param file_path Path to file name, if not included in filename.
 #' @param chan_nos Channels to import. All channels are included by default.
-#' @param recording Name of the recording. By default, the filename will be used.
+#' @param recording Name of the recording. By default, the filename will be
+#'   used.
+#' @param participant_id Identifier for the participant.
 #' @import edfReader
 #' @import tools
 #' @importFrom purrr map_df is_empty
@@ -19,7 +22,8 @@
 import_raw <- function(file_name,
                        file_path = NULL,
                        chan_nos = NULL,
-                       recording = NULL) {
+                       recording = NULL,
+                       participant_id = character(1)) {
 
   file_type <- tools::file_ext(file_name)
 
@@ -43,7 +47,7 @@ import_raw <- function(file_name,
     #remove annotations if present - could put in separate list...
     if (length(anno_chan) > 0) {
       data <- data[-anno_chan]
-      message("Annotations are currently discarded. File an issue if you'd like
+      message("Annotations are currently discarded. File an issue on Github if you'd like
  this to change.")
     }
 
@@ -83,8 +87,13 @@ import_raw <- function(file_name,
                      event_time = which(events_diff > 0) / srate,
                      event_type = events[which(events_diff > 0) + 1])
 
-    epochs <- tibble::tibble(epoch = 1,
-                             recording = recording)
+    epochs <- tibble::new_tibble(list(epoch = 1,
+                                      participant_id = participant_id,
+                                      recording = recording),
+                                 nrow = 1,
+                                 class = "epoch_info")
+
+
     data <- eeg_data(data = sigs,
                      srate = srate,
                      events = event_table,
@@ -94,27 +103,35 @@ import_raw <- function(file_name,
   } else if (file_type == "cnt") {
     message(paste("Importing Neuroscan", toupper(file_type), file_name))
     data <- import_cnt(file_name)
-    sigs <- tibble::as.tibble(t(data$chan_data))
+    sigs <- tibble::as_tibble(t(data$chan_data))
     names(sigs) <- data$chan_info$electrode
     srate <- data$head_info$samp_rate
     timings <- tibble::tibble(sample = 1:dim(sigs)[[1]])
     timings$time <- (timings$sample - 1) / srate
+
     event_table <-
       tibble::tibble(event_onset = data$event_list$offset + 1,
                      event_time = (data$event_list$offset + 1) / srate,
                      event_type = data$event_list$event_type)
-    epochs <- tibble::tibble(epoch = 1,
-                             recording = recording)
+
+    epochs <- tibble::new_tibble(list(epoch = 1,
+                                      participant_id = participant_id,
+                                      recording = recording),
+                                 nrow = 1,
+                                 class = "epoch_info")
+
     data <- eeg_data(data = sigs,
                      srate = srate,
                      chan_info = validate_channels(data$chan_info),
                      events = event_table,
                      timings = timings,
                      epochs = epochs)
+
     } else if (file_type == "vhdr") {
       message(paste("Importing Brain Vision Analyzer file", file_name))
       data <- import_vhdr(file_name,
-                          recording = recording)
+                          recording = recording,
+                          participant_id = participant_id)
     } else {
       stop("Unsupported filetype")
     }
@@ -346,11 +363,15 @@ import_cnt <- function(file_name) {
 #' @param file_name file name of the header file.
 #' @keywords internal
 import_vhdr <- function(file_name,
+                        participant_id,
                         recording) {
 
   .data <- read_vhdr(file_name)
-  epochs <- data.frame(epoch = 1,
-                       recording = recording)
+  epochs <- tibble::new_tibble(list(epoch = 1,
+                                    participant_id = participant_id,
+                                    recording = recording),
+                               nrow = 1,
+                               class = "epoch_info")
   .data$epochs <- epochs
   .data
 }
@@ -400,9 +421,11 @@ read_vhdr <- function(file_name) {
   .data <- matrix(.data,
                   ncol = n_chan,
                   byrow = multiplexed)
-  .data <- tibble::as.tibble(.data)
+
+  .data <- tibble::as_tibble(.data)
   names(.data) <- chan_labels
   n_points <- nrow(.data)
+
   timings <- tibble::tibble(sample = 1:n_points,
                             time = (sample - 1) / srate)
 
@@ -463,6 +486,7 @@ read_dat <- function(file_name,
 #' @param file_name File name of the .vmrk markers file.
 #' @keywords internal
 read_vmrk <- function(file_name) {
+
   vmrks <- ini::read.ini(file_name)
   marker_id <- names(vmrks$`Marker Infos`)
 
@@ -476,7 +500,7 @@ read_vmrk <- function(file_name) {
     date <- NA
   }
 
-  markers <- tibble::as.tibble(do.call(rbind, markers))
+  markers <- tibble::as_tibble(do.call(rbind, markers))
   names(markers) <- c("BVA_type",
                       "event_type",
                       "event_onset",
@@ -602,7 +626,6 @@ import_set <- function(file_name, df_out = FALSE) {
     out_data <- eeg_data(signals[, 1:n_chans],
                          srate = srate,
                          timings = timings,
-                         continuous = continuous,
                          chan_info = chan_info,
                          events = event_table)
     if (!continuous) {
@@ -685,7 +708,7 @@ parse_vhdr_chans <- function(chan_labels,
   new_coords[new_coords$radius == 0, 2:4] <- NA
 
   chan_info <- bva_elecs(new_coords)
-  tibble::as.tibble(chan_info)
+  tibble::as_tibble(chan_info)
 }
 
 #' Convert BVA spherical locations
@@ -808,8 +831,10 @@ write_dat <- function(.data,
 
 write_vmrk <- function(.data,
                        filename) {
-  vmrk_file <- paste0(filename, ".vmrk")
-  con <- file(vmrk_file, open = "w")
+  vmrk_file <- paste0(filename,
+                      ".vmrk")
+  con <- file(vmrk_file,
+              open = "w")
   on.exit(close(con))
   writeLines("Brain Vision Data Exchange Header File Version 2.0", con)
   writeLines(paste0("; Created using eegUtils http://craddm.github.io/eegUtils/"),

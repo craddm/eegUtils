@@ -133,7 +133,12 @@ epoch_data.eeg_data <- function(data,
   names(epoched_data)[[3]] <- "time"
 
   if (is.null(data$epochs)) {
-    data$epochs$recording <- NA
+    data$epochs <-
+      tibble::new_tibble(list(epoch = 1,
+                              participant_id = character(1),
+                              recording = character(1)),
+                         nrow = 1,
+                         class = "epoch_info")
   }
 
   epoch_trigs <- event_table[event_table$event_type %in% events,
@@ -144,11 +149,18 @@ epoch_data.eeg_data <- function(data,
                                     event_tags, by = "event_type")
   }
 
-  epochs <- tibble::tibble(epoch = unique(epoched_data$epoch),
-                           recording = as.character(data$epochs$recording))
+  n_epochs <- length(unique(epoched_data$epoch))
+
+  epochs <-
+    tibble::new_tibble(list(epoch = 1:n_epochs,
+                            participant_id = rep(data$epochs$participant_id, n_epochs),
+                            recording = rep(data$epochs$recording, n_epochs)),
+                            nrow = n_epochs,
+                            class = "epoch_info")
+
   epochs <- dplyr::left_join(epochs,
-                             epoch_trigs,
-                             by = "epoch")
+                            as_tibble(epoch_trigs),
+                              by = "epoch")
 
   data <- eeg_epochs(data = epoched_data[, -1:-3],
                      srate = data$srate,

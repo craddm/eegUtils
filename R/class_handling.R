@@ -5,7 +5,7 @@
 #' @param srate Sampling rate in Hz.
 #' @param chan_info String of character names for electrodes.
 #' @param timings Timing information - samples and sample /sampling rate.
-#' @param continuous Whether the data is continuous or epoched.
+#' @param continuous Whether the data is continuous or epoched. (Deprecated.)
 #' @param reference Reference channel information, including names of reference
 #'   channels, excluded channels etc.
 #' @param events Event table
@@ -71,8 +71,12 @@ validate_eeg_data <- function(.data) {
   }
 
   if (!is.null(.data$epochs)) {
-    .data$epochs <- tibble::tibble(epoch = 1,
-                                   recording = NA)
+    .data$epochs <-
+      tibble::new_tibble(list(epoch = 1,
+                              participant_id = character(1),
+                              recording = character(1)),
+                         nrow = 1,
+                         class = "epoch_info")
   }
 
   class(.data) <- "eeg_data"
@@ -227,9 +231,12 @@ validate_eeg_epochs <- function(.data) {
 
   if (is.null(.data$epochs)) {
     epochs <- unique(.data$events$epoch)
-    .data$epochs <- tibble::tibble(epoch = epochs,
-                                   recording = NA,
-                                   epoch_label = NA)
+    .data$epochs <- tibble::new_tibble(list(epoch = 1,
+                                            participant_id = character(),
+                                            recording = character(),
+                                            epoch_label = character()),
+                                       nrow = 1,
+                                       class = "epoch_info")
   }
 
   class(.data) <- c("eeg_epochs",
@@ -322,33 +329,6 @@ eeg_ICA <- function(mixing_matrix,
                 epochs = epochs)
   class(value) <- c("eeg_ICA", "eeg_epochs")
   value
-}
-
-#' Function to create an S3 object of class \code{epochs_tbl}.
-#'
-#' @author Matt Craddock \email{matt@@mattcraddock.com}
-#' @param epochs epoch column
-#' @param recording recording name
-#' @param epoch_labels NULL
-#' @param ... any other parameters to be added
-#' @keywords internal
-
-epochs_tbl <- function(epochs,
-                       recording,
-                       epoch_labels,
-                       ...) {
-
-  attr(epochs, "type") <- "misc"
-  attr(recording, "type") <- "misc"
-  attr(epoch_labels, "type") <- "misc"
-  epochs <- tibble::tibble(epochs = epochs,
-                           recording = recording,
-                           epoch_labels = epoch_labels)
-
-
-
-  class(epochs) <- c("epochs_tbl", class(epochs))
-  epochs
 }
 
 set_type <- function(x, label) attr(x, "type") <- label
