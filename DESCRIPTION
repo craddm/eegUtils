@@ -46,6 +46,7 @@ Suggests: testthat,
     covr,
     knitr,
     rmarkdown,
+    JADE,
     ica,
     geigen
 URL: https://github.com/craddm/eegUtils
