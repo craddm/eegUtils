@@ -34,6 +34,10 @@ run_ICA.eeg_epochs <- function(data,
   #}
 
   if (method == "sobi") {
+    if (!requireNamespace("JADE", quietly = TRUE)) {
+      stop("Package \"JADE\" needed to use SOBI. Please install it.",
+           call. = FALSE)
+    }
     ica_obj <- sobi_ICA(data,
                         maxiter = maxit)
   } else {
