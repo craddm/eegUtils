@@ -30,10 +30,30 @@ print.eeg_epochs <- function(x, ...) {
   cat("Epoched EEG data\n\n")
   cat("Number of channels\t:", n_chan, "\n")
   cat("Number of epochs\t\t:", n_epochs, "\n")
-  cat("Epoch limits\t\t:", min(unique(x$timings$time)), "-", max(unique(x$timings$time)), "seconds\n")
+  cat("Epoch limits\t\t:", round(min(unique(x$timings$time)), 3),
+      "-", round(max(unique(x$timings$time)), 3), "seconds\n")
   cat("Electrode names\t\t:", elec_names, "\n")
   cat("Sampling rate\t\t:", x$srate, " Hz\n")
   cat("Reference\t\t:", x$reference$ref_chans, "\n")
+}
+
+#' Print eeg_epochs summary
+#'
+#' Print a basic summary of the contents of an \code{eeg_epochs} object
+#'
+#' @param x \code{eeg_epochs} object to be printed
+#' @param ... Further arguments passed
+#' @export
+print.eeg_ICA <- function(x, ...) {
+  elec_names <- names(x$signals)
+  n_chan <- length(elec_names)
+  n_epochs <- length(unique(x$timings$epoch))
+  cat("Epoched ICA decomposition\n\n")
+  cat("Number of components\t:", n_chan, "\n")
+  cat("Number of epochs\t:", n_epochs, "\n")
+  cat("Epoch limits\t\t:", round(min(unique(x$timings$time)), 3),
+      "-", round(max(unique(x$timings$time)), 3), "seconds\n")
+  cat("Sampling rate\t\t:", x$srate, " Hz\n")
 }
 
 #' Print Values
@@ -56,10 +76,10 @@ print.eeg_tfr <- function(x, ...) {
   cat("Number of channels\t:\t", n_chan, "\n")
   cat("Electrode names\t\t:\t", elec_names, "\n")
   cat("Number of epochs\t:\t", n_epochs, "\n")
-  cat("Epoch limits\t\t:\t",
-      min(unique(x$timings$time)),
+  cat("Epoch limits\t\t:",
+      round(min(unique(x$timings$time)), 3),
       "-",
-      max(unique(x$timings$time)),
+      round(max(unique(x$timings$time)), 3),
       "seconds\n")
   cat("Sampling rate\t\t:\t", x$srate, " Hz\n")
 }
@@ -76,7 +96,11 @@ print.eeg_evoked <- function(x, ...) {
   n_chan <- length(elec_names)
   cat("Evoked EEG data\n\n")
   cat("Number of channels\t:\t", n_chan, "\n")
-  cat("Epoch limits\t\t:\t", min(unique(x$timings$time)), "-", max(unique(x$timings$time)), "seconds\n")
+  cat("Epoch limits\t\t:",
+      round(min(unique(x$timings$time)), 3),
+      "-",
+      round(max(unique(x$timings$time)), 3),
+      "seconds\n")
   cat("Electrode names\t\t:\t", elec_names, "\n")
   cat("Sampling rate\t\t:\t", x$srate, " Hz\n")
 }
