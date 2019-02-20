@@ -4,10 +4,12 @@
 \alias{sobi_ICA}
 \title{SOBI ICA}
 \usage{
-sobi_ICA(data)
+sobi_ICA(data, maxiter)
 }
 \arguments{
 \item{data}{Data to be ICAed.}
+
+\item{maxiter}{Maximum number of iterations of the joint diagonalization}
 }
 \description{
 Internal function for running SOBI ICA on an \code{eeg_epochs} object
