@@ -80,7 +80,7 @@ topoplot.data.frame <- function(data,
                                 chanLocs = NULL,
                                 method = "Biharmonic",
                                 r = NULL,
-                                grid_res = 300,
+                                grid_res = 200,
                                 palette = "RdBu",
                                 interp_limit = "skirt",
                                 contour = TRUE,
@@ -264,8 +264,9 @@ topoplot.data.frame <- function(data,
               y = mask_ring$y,
               colour = "white",
               size = rel(6.5)) +
-    #geom_head() +
-    add_head(r, scaling) +
+    geom_head(r = r,
+              size = rel(1.5) * scaling) +
+    #add_head(r, scaling) +
     coord_equal() +
     theme_bw() +
     theme(rect = element_blank(),
@@ -324,7 +325,7 @@ topoplot.eeg_data <- function(data, time_lim = NULL,
                               chanLocs = NULL,
                               method = "Biharmonic",
                               r = NULL,
-                              grid_res = 300,
+                              grid_res = 200,
                               palette = "RdBu",
                               interp_limit = "skirt",
                               contour = TRUE,
@@ -381,7 +382,7 @@ topoplot.eeg_epochs <- function(data,
                                 chanLocs = NULL,
                                 method = "Biharmonic",
                                 r = NULL,
-                                grid_res = 300,
+                                grid_res = 200,
                                 palette = "RdBu",
                                 interp_limit = "skirt",
                                 contour = TRUE,
@@ -438,7 +439,7 @@ topoplot.eeg_ICA <- function(data,
                              chanLocs = NULL,
                              method = "Biharmonic",
                              r = NULL,
-                             grid_res = 300,
+                             grid_res = 200,
                              palette = "RdBu",
                              interp_limit = "skirt",
                              contour = TRUE,
@@ -454,10 +455,15 @@ topoplot.eeg_ICA <- function(data,
   }
 
   chan_info <- data$chan_info
+  #data <- select_elecs(data, component = channel_names(data)[component])
+  #data <- as.data.frame(data, mixing = TRUE)
   data <- data.frame(amplitude = data$mixing_matrix[, component],
-                     electrode = data$mixing_matrix$electrode)
+                      electrode = data$mixing_matrix$electrode)
   topoplot(data,
            chanLocs = chan_info,
+           interp_limit = interp_limit,
+           #scaling = scaling,
+           chan_marker = chan_marker,
            time_lim = NULL)
 
 }
@@ -472,7 +478,7 @@ topoplot.eeg_tfr <- function(data,
                              chanLocs = NULL,
                              method = "Biharmonic",
                              r = NULL,
-                             grid_res = 300,
+                             grid_res = 200,
                              palette = "RdBu",
                              interp_limit = "skirt",
                              contour = TRUE,
@@ -738,36 +744,93 @@ round_topo <- function(.data,
   topo_out
 }
 
-
-parse_for_topo <- function(.data,
-                           time_lim) {
-
-  if (!is.null(time_lim)) {
-    .data <- select_times(.data,
-                          time_lim)
-  }
-  .data
+new_topo <- function(.data,
+                     ...) {
+  UseMethod("new_topo", .data)
 }
 
+new_topo.eeg_epochs <- function(.data,
+                                time_lim = NULL,
+                                limits = NULL,
+                                grid_res = 200,
+                                palette = "RdBu",
+                                chan_markers = "point",
+                                interpolate = TRUE,
+                                interp_limit = "skirt",
+                                keep_epochs = FALSE,
+                                ...) {
 
-new_topo <- function(.data,
-                     time_lim = NULL,
-                     ...) {
+  if (!keep_epochs) {
+    .data <- eeg_average(.data)
+  }
 
   if (!is.null(time_lim)) {
-    .data <- select_times(.data,
-                          time_lim)
+    .data <- select_times(.data, time_lim)
   }
 
   .data <- as.data.frame(.data,
-                         long = TRUE)
+                         long = TRUE,
+                         coords = TRUE)
 
-  ggplot(.data,
-         aes(x = x,
-             y = y,
-             fill = amplitude)) +
-    geom_topo() +
-    scale_fill_distiller(palette = "RdBu") +
+  make_new_topo(.data,
+                time_lim = time_lim,
+                limits = limits,
+                grid_res = grid_res,
+                palette = palette,
+                chan_markers = chan_markers,
+                interpolate = interpolate,
+                interp_limit = interp_limit,
+                keep_epochs = keep_epochs,
+                ...)
+}
+
+new_topo.eeg_ICA <- function(.data,
+                             time_lim = NULL,
+                             limits = NULL,
+                             grid_res = 200,
+                             palette = "RdBu",
+                             chan_markers = "point",
+                             interpolate = TRUE,
+                             interp_limit = "skirt",
+                             keep_epochs = FALSE,
+                             ...) {
+
+  .data <- as.data.frame(.data,
+                         long = TRUE,
+                         mixing = TRUE)
+
+  make_new_topo(.data,
+                time_lim = time_lim,
+                limits = limits,
+                grid_res = grid_res,
+                palette = palette,
+                chan_markers = chan_markers,
+                interpolate = interpolate,
+                interp_limit = interp_limit,
+                keep_epochs = keep_epochs,
+                ...)
+}
+
+
+make_new_topo <- function(.data,
+                          time_lim,
+                          limits,
+                          grid_res,
+                          palette,
+                          chan_markers,
+                          interpolate,
+                          interp_limit,
+                          keep_epochs,
+                          ...) {
+
+  plot_out <-
+    ggplot(.data,
+           aes(x = x,
+               y = y,
+               fill = amplitude)) +
+    geom_topo(grid_res = grid_res,
+              chan_markers = chan_markers,
+              interp_limit = interp_limit) +
     theme_void() +
     coord_equal() +
     guides(fill = guide_colorbar(title = expression(paste("Amplitude (",
@@ -777,4 +840,8 @@ new_topo <- function(.data,
                                  barheight = rel(6),
                                  title.theme = element_text(angle = 270)))
 
+  plot_out <- set_palette(plot_out,
+                          palette,
+                          limits = NULL)
+  plot_out
 }

@@ -6,6 +6,9 @@
 \usage{
 make_l_ear(r)
 }
+\arguments{
+\item{r}{Radius of head}
+}
 \description{
 Make left ear
 }

@@ -13,7 +13,8 @@ stat_scalpmap(mapping = NULL, data = NULL, position = "identity",
   grid_res = 300, interpolate = FALSE, interp_limit = "skirt", ...)
 
 geom_head(mapping = NULL, data = NULL, show.legend = NA,
-  na.rm = TRUE, inherit.aes = TRUE, interp_limit = "skirt", ...)
+  na.rm = TRUE, inherit.aes = TRUE, interp_limit = "skirt",
+  r = NULL, ...)
 
 geom_mask(mapping = NULL, data = NULL, show.legend = NA,
   na.rm = FALSE, colour = "white", size = rel(6.5),
