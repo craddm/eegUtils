@@ -30,29 +30,42 @@ eeg_average.eeg_epochs <- function(data,
   elecs <- channel_names(data)
 
   if (is.null(data$epochs)) {
-    data$epochs <- tibble::tibble(epoch = unique(data$timings$epoch),
-                                  recording = NA)
+    tibble::new_tibble(list(epoch = 1,
+                            participant_id = character(1),
+                            recording = character(1)),
+                       nrow = 1,
+                       class = "epoch_info")
   }
 
   data$signals <- dplyr::left_join(cbind(data$signals,
                                          data$timings),
                                    data$epochs, by = "epoch")
   col_names <- names(data$epochs)
-  col_names <- col_names[!(col_names %in% c("epoch", "recording"))]
+  col_names <- col_names[!(col_names %in% c("epoch"))]
 
   data$signals <-
     dplyr::group_by_at(data$signals,
                        .vars = vars(time, col_names)) %>%
     dplyr::summarise_at(.vars = vars(elecs),
                         mean) %>%
+    dplyr::group_by_at(.vars = col_names) %>%
+    dplyr::mutate(epoch = dplyr::group_indices()) %>%
     dplyr::ungroup()
 
+  timings <- data$signals[, c("time", "epoch", col_names)]
+
+  epochs <- dplyr::select(timings,
+                          epoch,
+                          !!col_names) %>%
+    dplyr::distinct()
+
+  class(epochs) <- c("epoch_info", "tbl_df", "tbl", "data.frame")
   data <-
     eeg_evoked(data = data$signals[, elecs],
                chan_info = data$chan_info,
                srate = data$srate,
-               timings = data$signals[, c("time", col_names)],
-               epochs = NULL)
+               timings = timings,
+               epochs = epochs)
   data
 }
 
