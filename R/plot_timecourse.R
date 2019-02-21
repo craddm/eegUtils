@@ -565,12 +565,14 @@ create_bf <- function(data,
                       continuous) {
 
   #Set up basic plot -----------
-  butterfly_plot <- ggplot2::ggplot(data,
-                                    aes(x = time,
-                                        y = amplitude))
+  butterfly_plot <-
+    ggplot2::ggplot(data,
+                    aes(x = time,
+                        y = amplitude))
 
   if (browse_mode) {
-    butterfly_plot <- butterfly_plot +
+    butterfly_plot <-
+      butterfly_plot +
       stat_summary(geom = "line",
                    fun.y = mean,
                    aes(group = electrode),
