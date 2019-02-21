@@ -309,6 +309,7 @@ eeg_stats <- function(statistic,
 #' @param chan_info String of character names for electrodes.
 #' @param srate Sampling rate
 #' @param epochs Epoch information
+#' @param algorithm The method used to calculate the ICA decomposition.
 #' @keywords internal
 eeg_ICA <- function(mixing_matrix,
                     unmixing_matrix,
@@ -317,7 +318,8 @@ eeg_ICA <- function(mixing_matrix,
                     events,
                     chan_info,
                     srate,
-                    epochs) {
+                    epochs,
+                    algorithm) {
 
   value <- list(mixing_matrix = mixing_matrix,
                 unmixing_matrix = unmixing_matrix,
@@ -326,7 +328,8 @@ eeg_ICA <- function(mixing_matrix,
                 events = events,
                 chan_info = chan_info,
                 srate = srate,
-                epochs = epochs)
+                epochs = epochs,
+                algorithm = algorithm)
   class(value) <- c("eeg_ICA", "eeg_epochs")
   value
 }

@@ -7,7 +7,8 @@
 \usage{
 run_ICA(data, ...)
 
-\method{run_ICA}{eeg_epochs}(data, method = "sobi", maxit = 500, ...)
+\method{run_ICA}{eeg_epochs}(data, method = "sobi", maxit = 500,
+  tol = 1e-06, ...)
 }
 \arguments{
 \item{data}{Data to be ICAed.}
@@ -18,6 +19,8 @@ run_ICA(data, ...)
 
 \item{maxit}{Maximum number of iterations of the Infomax and Fastica ICA
 algorithms.}
+
+\item{tol}{Convergence tolerance for fastica and infomax. Defaults to 1e-06.}
 }
 \value{
 An \code{eeg_ICA} object containing an ICA decomposition

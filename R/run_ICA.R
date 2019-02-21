@@ -18,12 +18,14 @@ run_ICA <- function(data, ...) {
 #' @param method "sobi" (default), "fastica", or "infomax".
 #' @param maxit Maximum number of iterations of the Infomax and Fastica ICA
 #'   algorithms.
+#' @param tol Convergence tolerance for fastica and infomax. Defaults to 1e-06.
 #' @describeIn run_ICA Run ICA on an \code{eeg_epochs} object
 #' @export
 
 run_ICA.eeg_epochs <- function(data,
                                method = "sobi",
                                maxit = 500,
+                               tol = 1e-6,
                                ...) {
 
   rank_check <- Matrix::rankMatrix(as.matrix(data$signals))
@@ -54,12 +56,14 @@ run_ICA.eeg_epochs <- function(data,
     if (method == "fastica") {
       ICA_out <- ica::icafast(data$signals,
                               rank_check,
-                              maxit = maxit)
+                              maxit = maxit,
+                              tol = tol)
     } else if (method == "infomax") {
       ICA_out <- ica::icaimax(data$signals,
                               rank_check,
                               maxit = maxit,
-                              fun = "ext")
+                              fun = "ext",
+                              tol = tol)
     } else {
       stop("Unknown method; available methods are sobi, fastica, and infomax.")
     }
@@ -80,7 +84,8 @@ run_ICA.eeg_epochs <- function(data,
                        events = data$events,
                        chan_info = data$chan_info,
                        srate = data$srate,
-                       epochs = data$epochs)
+                       epochs = data$epochs,
+                       algorithm = method)
     }
   ica_obj
 }
@@ -203,7 +208,8 @@ sobi_ICA <- function(data,
                      events = data$events,
                      chan_info = data$chan_info,
                      srate = data$srate,
-                     epochs = data$epochs)
+                     epochs = data$epochs,
+                     algorithm = "sobi")
   ica_obj
 }
 
