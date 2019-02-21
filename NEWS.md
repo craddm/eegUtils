@@ -14,12 +14,13 @@
 - more Biosemi montages added
 - `events()` function added to easily access and modify the events structure of all `eegUtils` objects.
 - `channels()` function added to easily access and modify the chan_info structure of all `eegUtils` objects.
+- `epochs()` function added to access and modify epochs structure.
 - `ar_eogreg()` function added for removing eye movement activity using regression.
 - `eeg_filter()` function added for a unified method of filtering using either FIR or IIR
     - `eeg_filter()` supports use of multiple threads/cores through the `future` package.
     - `iir_filt()` will be deprecated
 - `geom_topo()` extension for `ggplot2` added. Allows plotting of a topographical scalp maps using standard `ggplot2` functions.
-- Default `grid_res` for topography related plots increased to 300.
+- Default `grid_res` for topography related plots increased to 200.
 
 ### Internal changes / bug fixes
 - `data.table` now used in the following functions internally:
