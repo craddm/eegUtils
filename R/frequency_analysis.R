@@ -102,6 +102,7 @@ compute_psd.eeg_epochs <- function(data,
   if (is.null(seg_length)) {
     seg_length <- n_fft
   }
+
   if (seg_length > n_fft) {
     stop("seg_length cannot be greater than n_fft")
   }
@@ -147,9 +148,11 @@ compute_psd.eeg_evoked <- function(data,
                                    ...) {
   data <- rm_baseline(data)
   srate <- data$srate
+
   if (is.null(seg_length)) {
     seg_length <- n_fft
   }
+
   if (seg_length > n_fft) {
     stop("seg_length cannot be greater than n_fft")
   }
@@ -158,7 +161,8 @@ compute_psd.eeg_evoked <- function(data,
   if (n_times < seg_length) {
     seg_length <- n_times
   }
-  if (noverlap == 0) {
+
+  if (is.null(noverlap)) {
     noverlap <- seg_length %/% 8
   } else if (noverlap >= seg_length) {
     stop("noverlap should not be larger than seg_length.")
