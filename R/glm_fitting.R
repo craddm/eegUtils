@@ -38,6 +38,8 @@ fit_glm.eeg_epochs <- function(formula,
                        -electrode,
                        key = "signals"
                        )
+
+  #one day I will make this much more computationally efficient, but hey, this works.
   .data <- dplyr::mutate(.data,
                          fit = purrr::map(signals,
                                           ~lm(formula,

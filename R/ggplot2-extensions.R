@@ -17,7 +17,7 @@ fortify.eeg_data <- function(model,
                                data,
                                ...) {
   as.data.frame(model,
-                long = TRUE ,
+                long = TRUE,
                 stringsAsFactors = FALSE)
 }
 
@@ -67,57 +67,6 @@ StatScalpmap <-
                      data <- aggregate(fill ~ x + y,
                                        data = data,
                                        FUN = mean)
-
-                     # x_min <- min(data$x, na.rm = TRUE) * 2.5
-                     # x_max <- max(data$x, na.rm = TRUE) * 2.5
-                     # y_min <- min(data$y, na.rm = TRUE) * 2.5
-                     # y_max <- max(data$y, na.rm = TRUE) * 2.5
-                     # abs_y_max <- max(abs(data$y), na.rm = TRUE)
-                     #
-                     # xo <- seq(x_min,
-                     #           x_max,
-                     #           length = grid_res)
-                     # yo <- seq(y_min,
-                     #           y_max,
-                     #           length = grid_res)
-                     # xo <- matrix(rep(xo,
-                     #                  grid_res),
-                     #              nrow = grid_res,
-                     #              ncol = grid_res)
-                     # yo <- t(matrix(rep(yo, grid_res),
-                     #                nrow = grid_res,
-                     #                ncol = grid_res))
-                     #
-                     # xy_coords <- unique(data[, c("x", "y")])
-                     # xy <- xy_coords[, 1] + xy_coords[, 2] * sqrt(as.complex(-1))
-                     # d <- matrix(rep(xy,
-                     #                 length(xy)),
-                     #             nrow = length(xy),
-                     #             ncol = length(xy))
-                     # d <- abs(d - t(d))
-                     # diag(d) <- 1
-                     # g <- (d ^ 2) * (log(d) - 1) #Green's function
-                     # diag(g) <- 0
-                     # weights <- qr.solve(g, data$fill)
-                     # xy <- t(xy)
-                     # # Remind me to make this code readable at some point.
-                     # outmat <-
-                     #   purrr::map(xo + sqrt(as.complex(-1)) * yo,
-                     #              function(x) (abs(x - xy) ^ 2) *
-                     #                (log(abs(x - xy)) - 1)) %>%
-                     #   rapply(function(x) ifelse(is.nan(x), 0, x),
-                     #          how = "replace") %>%
-                     #   purrr::map_dbl(function(x) x %*% weights)
-                     #
-                     # dim(outmat) <- c(grid_res, grid_res)
-                     # data <- data.frame(x = xo[, 1],
-                     #                    outmat)
-                     # names(data)[1:length(yo[1, ]) + 1] <- yo[1, ]
-                     # data <- tidyr::gather(data,
-                     #                       key = y,
-                     #                       value = fill,
-                     #                       -x,
-                     #                       convert = TRUE)
 
                      data <- biharmonic(data,
                                         grid_res = grid_res,
@@ -199,7 +148,7 @@ geom_topo <- function(mapping = NULL,
                       chan_markers = "point",
                       chan_size = rel(2),
                       head_size = rel(1.5),
-                      grid_res = 300,
+                      grid_res = 200,
                       ...) {
 
   list(ggplot2::layer(geom = GeomRaster,

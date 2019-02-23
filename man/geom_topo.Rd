@@ -8,7 +8,7 @@ geom_topo(mapping = NULL, data = NULL, stat = "identity",
   position = "identity", show.legend = NA, na.rm = TRUE,
   inherit.aes = TRUE, interpolate = FALSE, interp_limit = "skirt",
   chan_markers = "point", chan_size = rel(2), head_size = rel(1.5),
-  grid_res = 300, ...)
+  grid_res = 200, ...)
 }
 \arguments{
 \item{mapping}{Set of aesthetic mappings created by \code{\link[=aes]{aes()}} or
