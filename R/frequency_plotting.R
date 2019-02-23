@@ -122,6 +122,24 @@ plot_psd.data.frame <- function(data,
     xlab("Frequency (Hz)")
 }
 
+
+plot_psd.eeg_evoked <- function(data,
+                                freq_range = NULL,
+                                n_fft = 256,
+                                seg_length = NULL,
+                                noverlap = NULL,
+                                ...) {
+
+  psd_out <- compute_psd(data,
+                         keep_trials = FALSE,
+                         n_fft = n_fft,
+                         seg_length = seg_length,
+                         noverlap = noverlap)
+
+  create_psd_plot(psd_out,
+                  freq_range)
+}
+
 #' Create a PSD plot
 #'
 #' @param psd_out PSD to plot.
