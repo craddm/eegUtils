@@ -6,6 +6,7 @@
 \alias{plot_psd.eeg_data}
 \alias{plot_psd.eeg_ICA}
 \alias{plot_psd.data.frame}
+\alias{plot_psd.eeg_evoked}
 \title{Plot Power Spectral Density}
 \usage{
 plot_psd(data, freq_range = NULL, ...)
@@ -20,6 +21,9 @@ plot_psd(data, freq_range = NULL, ...)
   seg_length = NULL, noverlap = NULL, n_fft = 256, ...)
 
 \method{plot_psd}{data.frame}(data, freq_range = NULL, ...)
+
+\method{plot_psd}{eeg_evoked}(data, freq_range = NULL, n_fft = 256,
+  seg_length = NULL, noverlap = NULL, ...)
 }
 \arguments{
 \item{data}{Object of class \code{eeg_epochs}, \code{eeg_data}, or \code{eeg_ICA}.}
@@ -61,6 +65,8 @@ overlap between segments can be passed to Welch's FFT
 \item \code{eeg_ICA}: Plot PSD for \code{eeg_ICA} objects
 
 \item \code{data.frame}: Plot PSD for \code{data.frame}s.
+
+\item \code{eeg_evoked}: Plot PSD for \code{eeg_evoked} objects
 }}
 
 \examples{

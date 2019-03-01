@@ -82,6 +82,30 @@ eeg_average.eeg_tfr <- function(data,
   data
 }
 
+
+#' Internal function for averaging over epochs for eeg_tfr objects.
+#' @param data data to average over
+#' @keywords internal
+average_tf <- function(data) {
+
+  # Need to find a way to make this respect epochs structure...
+
+  if (data$freq_info$output == "phase") {
+    data$signals <- apply(data$signals,
+                          c(1, 2, 3),
+                          circ_mean)
+  } else {
+    avg_tf <- array(0, dim = dim(data$signals)[2:4])
+    for (iz in 1:dim(data$signals)[3]) {
+      for (ij in 1:dim(data$signals)[4]) {
+        avg_tf[, iz, ij] <- colMeans(data$signals[ , , iz, ij, drop = FALSE])
+      }
+    }
+    data$signals <- avg_tf
+  }
+  data
+}
+
 #' Grand average
 #'
 #' @param data A list of objects to be averaged over; currently only supports
