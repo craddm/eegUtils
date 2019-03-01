@@ -150,14 +150,16 @@ eeg_downsample.eeg_data <- function(data,
   data_length <- length(unique(data$timings$time)) %% q
 
   if (data_length > 0) {
-    message("Dropping ",
-            data_length,
-            " time points to make n of samples a multiple of q.")
-    new_times <- utils::head(unique(data$timings$time),
-                             -data_length)
-    data <- select_times(data,
-                         time_lim = c(min(new_times),
-                                      max(new_times)))
+    data <- drop_points(data, data_length)
+    # message("Dropping ",
+    #         data_length,
+    #         " time points to make n of samples a multiple of q.")
+    # new_times <- utils::head(unique(data$timings$time),
+    #                          -data_length)
+    # data <- dplyr::filter(data,
+    #                       time >= min(new_times),
+    #                       time <= max(new_times)
+    # )
   }
 
   # step through each column and decimate each channel
@@ -189,17 +191,22 @@ eeg_downsample.eeg_epochs <- function(data,
   epo_length <- length(unique(data$timings$time)) %% q
 
   if (epo_length > 0) {
-    message("Dropping ",
-            epo_length,
-            " time points to make n of samples a multiple of q.")
-    new_times <- utils::head(unique(data$timings$time),
-                             -epo_length)
-    data <- select_times(data,
-                         time_lim = c(min(new_times),
-                                      max(new_times)))
+    data <- drop_points(data, epo_length)
+    # message("Dropping ",
+    #         epo_length,
+    #         " time points to make n of samples a multiple of q.")
+    # new_times <- utils::head(unique(data$timings$time),
+    #                          -epo_length)
+    # # Use custom filter method instead of select_times.
+    # data <- dplyr::filter(data,
+    #                       time >= min(new_times),
+    #                       time <= max(new_times)
+    #                       )
+
   }
 
-  data$signals <- split(data$signals, data$timings$epoch)
+  data$signals <- split(data$signals,
+                        data$timings$epoch)
 
   new_times <- data$timings$time
   new_length <- nrow(data$signals[[1]]) #- epo_length
@@ -207,12 +214,11 @@ eeg_downsample.eeg_epochs <- function(data,
                          `[`,
                          1:new_length,
                          )
-  # step through each column and decimate each channel
+  # step through each column and decimate each channel, by epoch
   data$signals <-
     purrr::map_df(data$signals,
                   ~purrr::map_df(as.list(.),
                                  ~signal::decimate(., q)))
-
 
   # select every qth timing point, and divide srate by q
   data$srate <- data$srate / q
@@ -229,6 +235,24 @@ eeg_downsample.eeg_epochs <- function(data,
   data
 }
 
+#' Drop points before downsampling
+#'
+#' @param data data to be downsampled
+#' @param data_length number of points to drop
+#' @keywords internal
+drop_points <- function(data, data_length) {
+
+  message("Dropping ",
+          data_length,
+          " time points to make n of samples a multiple of q.")
+  new_times <- utils::head(unique(data$timings$time),
+                           -data_length)
+  # Use custom filter method instead of select_times.
+  data <- dplyr::filter(data,
+                        time >= min(new_times),
+                        time <= max(new_times))
+  data
+}
 
 #' Downsample the events table
 #'

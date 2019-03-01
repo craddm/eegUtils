@@ -36,11 +36,11 @@ The data itself is stored in the `signals` data frame within the object; the tim
 A common first step would be to rereference the data, which can be done using the `reref_eeg()` command. By default, if no electrodes are specified, the data will be referenced to a common average. The median rather than the mean can be used by specifiying `robust == TRUE`. Electrodes can also be excluded from the average reference calculation; they will nevertheless still be referenced to the same reference as the other channels.
 
 ```{r reref-dat}
-eeg_example <- reref_eeg(eeg_example, ref_chans = "average")
-eeg_example <- reref_eeg(eeg_example, ref_chans = "average", robust = TRUE)
-eeg_example <- reref_eeg(eeg_example, ref_chans = "average",
-                         exclude = c("EXG7", "EXG8"),
-                         robust = TRUE)
+eeg_example <- eeg_reference(eeg_example, ref_chans = "average")
+eeg_example <- eeg_reference(eeg_example, ref_chans = "average", robust = TRUE)
+eeg_example <- eeg_reference(eeg_example, ref_chans = "average",
+                             exclude = c("EXG7", "EXG8"),
+                             robust = TRUE)
 ```
 
 EEGLAB can be loaded using the `import_set()` command. The command detects whether the data is epoched or not and, by default, arranges the data in the `eeg_data` or `eeg_epochs` format.

@@ -240,6 +240,7 @@ GeomTopo <- ggplot2::ggproto("GeomTopo",
 #' \code{geom_head()} adds a headshape to a plot.
 #' @rdname stat_scalpmap
 #' @inheritParams ggplot2::geom_path
+#' @param r Radius of head
 #' @family topoplot functions
 #' @export
 geom_head <- function(mapping = NULL,

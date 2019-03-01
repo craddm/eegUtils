@@ -76,6 +76,8 @@ often aesthetics, used to set an aesthetic to a fixed value, like
 \code{colour = "red"} or \code{size = 3}. They may also be parameters
 to the paired geom/stat.}
 
+\item{r}{Radius of head}
+
 \item{colour}{For \code{geom_mask}, colour of the masking ring.}
 
 \item{size}{For \code{geom_mask}, width of the masking ring.}
