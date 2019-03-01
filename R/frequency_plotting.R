@@ -122,7 +122,8 @@ plot_psd.data.frame <- function(data,
     xlab("Frequency (Hz)")
 }
 
-
+#' @describeIn plot_psd Plot PSD for \code{eeg_evoked} objects
+#' @export
 plot_psd.eeg_evoked <- function(data,
                                 freq_range = NULL,
                                 n_fft = 256,
