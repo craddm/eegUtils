@@ -778,23 +778,3 @@ wavelet_norm <- function(mf_zp, n_freq) {
                     ncol = n_freq)
 }
 
-#' Internal function for averaging over epochs
-#' @param data data to average over
-#' @keywords internal
-average_tf <- function(data) {
-
-  if (data$freq_info$output == "phase") {
-    data$signals <- apply(data$signals,
-                          c(1, 2, 3),
-                          circ_mean)
-  } else {
-    avg_tf <- array(0, dim = dim(data$signals)[2:4])
-    for (iz in 1:dim(data$signals)[3]) {
-      for (ij in 1:dim(data$signals)[4]) {
-        avg_tf[, iz, ij] <- colMeans(data$signals[ , , iz, ij, drop = FALSE])
-      }
-    }
-    data$signals <- avg_tf
-  }
-  data
-}
