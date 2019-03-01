@@ -162,30 +162,21 @@ sobi_ICA <- function(data,
   }
 
   epsil <- 1 / sqrt(N) / 100
-  # V <- joint_diag(M,
-  #                 epsil,
-  #                 n_channels,
-  #                 pm) # V = sphered unmixing matrix
-
   V <- JADE::rjd(t(M),
                  eps = epsil,
                  maxiter = maxiter)$V
 
   ## create mixing matrix for output
-  mixing_matrix <- MASS::ginv(Q, tol = 0) %*% V # EEG.icawinv
+  mixing_matrix <- MASS::ginv(Q, tol = 0) %*% V
 
-  mixing_2 <- MASS::ginv(mixing_matrix, tol = 0) # EEG.icaweights
+  unmixing_matrix <- MASS::ginv(mixing_matrix, tol = 0)
   # rescale vecs
   scaling <- sqrt(colMeans(mixing_matrix^2))
 
-  weights <- sweep(mixing_2, MARGIN = 1, scaling, `*`) # scaled weights
+  unmixing_matrix <- sweep(unmixing_matrix, MARGIN = 1, scaling, `*`) # scaled weights
 
-  icawinv <- MASS::ginv(weights %*% diag(ncol(weights)), tol = 0)#scaled EEG.icawinv
-
-
-  #mixing_matrix <- MASS::ginv(mixing_matrix, tol = 0)
-  #mixing_matrix <- SVD_amp$v %*% V
-  unmixing_matrix <- weights #t(V)
+  mixing_matrix <- MASS::ginv(unmixing_matrix %*% diag(ncol(unmixing_matrix)),
+                              tol = 0)
 
   dim(amp_matrix) <- c(n_channels,
                        n_times * n_epochs)
@@ -194,7 +185,7 @@ sobi_ICA <- function(data,
   S <- as.data.frame(t(S))
   names(S) <- paste0("Comp", 1:ncol(S))
 
-  mixing_matrix <- as.data.frame(icawinv)
+  mixing_matrix <- as.data.frame(mixing_matrix)
   names(mixing_matrix) <- paste0("Comp", 1:ncol(S))
   mixing_matrix$electrode <- names(data$signals)
   unmixing_matrix <- as.data.frame(unmixing_matrix)
