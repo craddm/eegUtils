@@ -1,6 +1,7 @@
 #' Calculate averages (e.g. ERPs) for single datasets
 #'
-#' This function is used to create an \code{eeg_evoked} object from \code{eeg_epochs}.
+#' This function is used to create an \code{eeg_evoked} object from
+#' \code{eeg_epochs}.
 #'
 #' @param data An \code{eeg_epochs} object.
 #' @param ... Other arguments passed to the averaging functions
@@ -23,8 +24,12 @@ eeg_average.default <- function(data,
 #' @describeIn eeg_average Create evoked data from \code{eeg_epochs}
 #' @importFrom tibble tibble
 #' @importFrom dplyr left_join group_by_at summarise_at ungroup
+#' @param cols Columns from the \code{epochs} structure that the average should
+#'   group on. NULL, the default, uses all columns other than the \code{epoch}
+#'   column.
 #' @export
 eeg_average.eeg_epochs <- function(data,
+                                   cols = NULL,
                                    ...) {
 
   elecs <- channel_names(data)
@@ -40,8 +45,17 @@ eeg_average.eeg_epochs <- function(data,
   data$signals <- dplyr::left_join(cbind(data$signals,
                                          data$timings),
                                    data$epochs, by = "epoch")
-  col_names <- names(data$epochs)
-  col_names <- col_names[!(col_names %in% c("epoch"))]
+
+  if (!is.null(cols)) {
+    if ("participant_id" %in% cols) {
+      col_names <- cols
+    } else {
+      col_names <- c("participant_id", cols)
+    }
+  } else {
+    col_names <- names(data$epochs)
+    col_names <- col_names[!(col_names %in% c("epoch"))]
+  }
 
   data$signals <-
     dplyr::group_by_at(data$signals,
@@ -60,6 +74,7 @@ eeg_average.eeg_epochs <- function(data,
     dplyr::distinct()
 
   class(epochs) <- c("epoch_info", "tbl_df", "tbl", "data.frame")
+
   data <-
     eeg_evoked(data = data$signals[, elecs],
                chan_info = data$chan_info,
@@ -72,9 +87,10 @@ eeg_average.eeg_epochs <- function(data,
 #' @describeIn eeg_average average an eeg_tfr objects over epochs.
 #' @export
 eeg_average.eeg_tfr <- function(data,
+                                cols = NULL,
                                 ...) {
   if (!"epoch" %in% data$dimensions) {
-    #message("Data is already averaged.")
+    message("Data is already averaged.")
   } else {
     data <- average_tf(data)
     data$dimensions <- data$dimensions[-which(data$dimensions == "epoch")]
@@ -102,6 +118,8 @@ average_tf <- function(data) {
       }
     }
     data$signals <- avg_tf
+    cols <- c("epoch", "participant_id", "recording")
+    data$epochs <- data$epochs[1, colnames(data$epochs) %in% cols]
   }
   data
 }

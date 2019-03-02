@@ -740,7 +740,7 @@ circ_mean <- function(data) {
 
 #' Convert Fourier output to power or phase as requested.
 #'
-#' @param data Fourier coefficients from from eeg_tfr
+#' @param data Fourier coefficients from eeg_tfr
 #' @param output What output is desired - "power", "phase" or "fourier"
 #' @keywords internal
 convert_tfr <- function(data, output) {

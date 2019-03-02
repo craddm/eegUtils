@@ -39,8 +39,9 @@ tag_events.eeg_data <- function(data,
   data$events <- merge(data$events,
                        data.frame(event_type = trigs,
                                   event_label = as.character(event_label),
-                                  stringsAsFactors = FALSE))
-  data$events <- tibble::as.tibble(data$events)
+                                  stringsAsFactors = FALSE),
+                       all = TRUE)
+  data$events <- tibble::as_tibble(data$events)
   data
 }
 
@@ -55,11 +56,18 @@ tag_events.eeg_epochs <- function(data,
     stop("Trigs and event_label parameters must be the same length.")
   }
 
+
+
+  # dplyr::mutate(data$events,
+  #               event_label = ifelse(event_type %in% trigs,
+  #                                    event_label,
+  #                                    .data$event_label))
   data$events <- merge(data$events,
                        data.frame(event_type = trigs,
                                   event_label = as.character(event_label),
-                                  stringsAsFactors = FALSE))
-  data$events <- tibble::as.tibble(data$events)
+                                  stringsAsFactors = FALSE),
+                       all = TRUE)
+  data$events <- tibble::as_tibble(data$events)
   data
 }
 

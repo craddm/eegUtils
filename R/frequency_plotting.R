@@ -228,12 +228,12 @@ plot_tfr <- function(data,
     data$signals <- data$signals[, , data_freqs, drop = FALSE]
   }
 
-  if (length(data$dimensions) == 4) {
-    data$signals <- apply(data$signals,
-                          c(1, 2, 3),
-                          mean)
-    data$dimensions <- data$dimensions[1:3]
-  }
+  # if (length(data$dimensions) == 4) {
+  #   data$signals <- apply(data$signals,
+  #                         c(1, 2, 3),
+  #                         mean)
+  #   data$dimensions <- data$dimensions[1:3]
+  # }
 
   if (baseline_type != "none") {
     data <- rm_baseline(data,
@@ -279,7 +279,8 @@ plot_tfr <- function(data,
            "pc" = fill_dist(),
            scale_fill_viridis_c())
 
-  data <- as.data.frame(data, long = TRUE)
+  data <- as.data.frame(data,
+                        long = TRUE)
 
   tfr_plot <-
     ggplot2::ggplot(data,

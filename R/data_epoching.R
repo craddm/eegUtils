@@ -61,6 +61,11 @@ epoch_data.eeg_data <- function(data,
     } else if (!is.null(epoch_labels)) {
       event_tags <- tibble::tibble(event_type = events,
                                    epoch_labels = epoch_labels)
+      events(data) <-
+        dplyr::left_join(events(data),
+                         tibble::tibble(event_type = events,
+                                        event_label = epoch_labels),
+                         by = "event_type")
    }
 
   # If the data has been downsampled, sample spacing will be greater than 1.
@@ -115,9 +120,11 @@ epoch_data.eeg_data <- function(data,
   # Check for any epochs that contain NAs
   epoched_data <- split(epoched_data,
                         epoched_data$epoch)
+
   na_epochs <- vapply(epoched_data,
                       function(x) any(is.na(x)),
                       FUN.VALUE = logical(1))
+
   epoched_data <- epoched_data[!na_epochs]
   epoched_data <- do.call("rbind",
                           epoched_data)
@@ -159,8 +166,8 @@ epoch_data.eeg_data <- function(data,
                             class = "epoch_info")
 
   epochs <- dplyr::left_join(epochs,
-                            as_tibble(epoch_trigs),
-                              by = "epoch")
+                             as_tibble(epoch_trigs),
+                             by = "epoch")
 
   data <- eeg_epochs(data = epoched_data[, -1:-3],
                      srate = data$srate,

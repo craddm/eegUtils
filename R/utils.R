@@ -183,6 +183,11 @@ as.data.frame.eeg_ICA <- function(x,
     df <- x$mixing_matrix
 
     if (coords) {
+
+      if (is.null(channels(x))) {
+        stop("No chan_info, use electrode_locations() first.")
+      }
+
       df <- dplyr::left_join(df,
                              channels(x)[, c("electrode", "x", "y")],
                              by = "electrode")
@@ -234,11 +239,17 @@ as.data.frame.eeg_tfr <- function(x,
   names(out_df) <- c(x$dimensions, "power")
   out_df$time <- as.numeric(out_df$time)
   out_df$frequency <- as.numeric(out_df$frequency)
+  if (!is.null(x$epochs) && "epoch" %in% x$dimensions) {
+    out_df$epoch <- as.numeric(out_df$epoch)
+    out_df <- dplyr::left_join(out_df,
+                             x$epochs,
+                             by = "epoch")
+  }
   if (!long) {
     out_df <- tidyr::spread(out_df,
                             electrode,
                             power)
-    out_df$electrode <- as.character(out_df$electrode)
+    #out_df$electrode <- as.character(out_df$electrode)
     return(out_df)
   }
   out_df

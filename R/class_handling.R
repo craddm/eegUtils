@@ -231,11 +231,11 @@ validate_eeg_epochs <- function(.data) {
 
   if (is.null(.data$epochs)) {
     epochs <- unique(.data$events$epoch)
-    .data$epochs <- tibble::new_tibble(list(epoch = 1,
+    .data$epochs <- tibble::new_tibble(list(epoch = epochs,
                                             participant_id = character(),
                                             recording = character(),
                                             epoch_label = character()),
-                                       nrow = 1,
+                                       nrow = length(epochs),
                                        class = "epoch_info")
   }
 

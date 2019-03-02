@@ -157,8 +157,18 @@ flip_x <- function(chan_info) {
 
 #' Get standard electrode locations
 #'
-#' Joins standard electrode locations to EEG data from eegUtils internal data.
+#' Joins standard electrode locations to EEG data from \code{eegUtils} internal
+#' data.
 #'
+#' The standard locations are from the 10-05 system derived by Oostenveld &
+#' Praamstra (2001). In addition, there are multiple specific montages for
+#' BioSemi systems included. These can be added using the montage parameter:
+#' "biosemi16", "biosemi32", biosemi64", "biosemi64alpha", "biosemi128",
+#' "biosemi160", "biosemi256"
+#'
+#' @references Oostenveld, R. & Praamstra, P. (2001). The five percent electrode
+#'   system for high-resolution EEG and ERP measurements. Clinical
+#'   Neurophysiology, 112, 4, 713-719
 #' @param data An EEG dataset.
 #' @param ... Parameters passed to S3 methods.
 #' @export
@@ -171,9 +181,7 @@ electrode_locations <- function(data, ...) {
 #'   (Defaults to "electrode").
 #' @param drop Should electrodes in \code{data} for which default locations are
 #'   not available be dropped? (Defaults to FALSE).
-#' @param plot Plot obtained electrode locations.
-#' @param montage Name of an existing montage set. Defaults to NULL; (currently
-#'   only 'biosemi64alpha' available other than default 10/20 system)
+#' @param montage Name of an existing montage set. Defaults to NULL.
 #' @importFrom dplyr inner_join pull left_join distinct
 #' @import ggplot2
 #' @importFrom tibble is.tibble
@@ -185,7 +193,6 @@ electrode_locations <- function(data, ...) {
 electrode_locations.data.frame <- function(data,
                                            electrode = "electrode",
                                            drop = FALSE,
-                                           plot = FALSE,
                                            montage = NULL, ...) {
 
   #if a montage supplied, check if it matches known montages
@@ -231,17 +238,7 @@ electrode_locations.data.frame <- function(data,
                              by = electrode)
   }
 
-  if (plot) {
-    plotdata <- dplyr::distinct(data,
-                                x, y,
-                                electrode)
-    p <- ggplot2::ggplot(plotdata, aes(x,
-                                       y)) +
-      geom_label(aes(label = electrode))
-    return(p)
-  } else {
-    data
-  }
+  data
 }
 
 #' @param overwrite Overwrite existing channel info. Defaults to FALSE.
@@ -251,11 +248,10 @@ electrode_locations.data.frame <- function(data,
 
 electrode_locations.eeg_data <- function(data,
                                          drop = FALSE,
-                                         plot = FALSE,
                                          montage = NULL,
                                          overwrite = FALSE, ...) {
 
-  if (!is.null(data$chan_info) & !overwrite & !plot) {
+  if (!is.null(data$chan_info) & !overwrite) {
     stop("Channel info already present, set overwrite to TRUE to replace.")
   }
 
@@ -283,16 +279,53 @@ electrode_locations.eeg_data <- function(data,
     data$signals[matched_els]
   }
 
-  if (plot) {
-    p <- ggplot2::ggplot(data$chan_info,
-                         aes(x, y)) +
-      geom_label(aes(label = electrode))
-    return(p)
-  }
   channels(data) <- validate_channels(channels(data),
                                       channel_names(data))
   data
 }
+
+#' @import ggplot2
+#' @describeIn electrode_locations Adds standard locations to the chan_info field of an eeg_data object.
+#' @export
+
+electrode_locations.eeg_epochs <- function(data,
+                                           drop = FALSE,
+                                           montage = NULL,
+                                           overwrite = FALSE, ...) {
+
+  if (!is.null(data$chan_info) & !overwrite) {
+    stop("Channel info already present, set overwrite to TRUE to replace.")
+  }
+
+  if (!is.null(montage)) {
+    electrodeLocs <- montage_check(montage)
+  }
+
+  elec_names <- toupper(channel_names(data))
+  electrodeLocs$electrode <- toupper(electrodeLocs$electrode)
+
+  matched_els <- electrodeLocs$electrode %in% elec_names
+  missing_els <- !elec_names %in% electrodeLocs$electrode
+
+  if (!any(matched_els)) {
+    stop("No matching electrodes found.")
+  } else if (any(missing_els)) {
+    message("Electrodes not found: ",
+            paste(names(data$signals)[missing_els],
+                  collapse = " "))
+  }
+
+  data$chan_info <- electrodeLocs[matched_els, ]
+
+  if (drop) {
+    data$signals[matched_els]
+  }
+
+  channels(data) <- validate_channels(channels(data),
+                                      channel_names(data))
+  data
+}
+
 
 #' Plot electrode locations
 #'
