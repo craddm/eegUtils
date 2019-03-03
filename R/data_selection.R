@@ -125,7 +125,9 @@ select_times.eeg_tfr <- function(data,
   if (length(data$dimensions) == 3) {
     data$signals <- data$signals[keep_rows, , , drop = FALSE]
   } else {
-    data$signals <- data$signals[keep_rows, , , , drop = FALSE]
+
+    keep_rows <- keep_rows[1:length(dimnames(data$signals)[["time"]])]
+    data$signals <- data$signals[, keep_rows, , , drop = FALSE]
   }
   data
 }
@@ -482,6 +484,28 @@ select_epochs.eeg_tfr <- function(data,
                                   df_out = FALSE,
                                   ...) {
   if ("epoch" %in% data$dimensions) {
+
+    if (!is.null(epoch_events)) {
+      epoch_no <- proc_events(epoch_events = epoch_events,
+                              event_type = data$events$event_type,
+                              epoch_nos = data$events$epoch,
+                              event_labels = data$events$event_label,
+                              keep = keep)
+    }
+
+    if (is.numeric(epoch_no)) {
+      keep_rows <- data$timings$epoch %in% epoch_no
+      if (keep == FALSE) {
+        keep_rows <- !keep_rows
+      }
+      data$signals <- data$signals[, keep_rows[1:length(dimnames(data$signals)[["time"]])], , , drop = FALSE]
+      data$timings <- data$timings[keep_rows, ]
+      data$events <- data$events[data$events$epoch %in% epoch_no, ]
+      if (!is.null(data$epochs)) {
+        data$epochs <- data$epochs[data$epochs$epoch %in% epoch_no, ]
+      }
+
+    }
 
   } else {
     stop("Data is averaged, so no epochs present.")
