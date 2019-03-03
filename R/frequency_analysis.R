@@ -467,7 +467,6 @@ tf_morlet <- function(data,
   mf_zp <- fft_n(morlet_family,
                  n_conv)
 
-
   # Normalise wavelets for FFT (as suggested by Mike X. Cohen):
   norm_mf <- wavelet_norm(mf_zp,
                           n_freq)
@@ -486,7 +485,8 @@ tf_morlet <- function(data,
                  sigtime,
                  data$srate),
         output)
-    trial_dat[time_sel, , , drop = FALSE]
+    trial_dat <- trial_dat[time_sel, , , drop = FALSE]
+    trial_dat
   }
 
   data$signals <- lapply(data$signals,
@@ -515,15 +515,17 @@ tf_morlet <- function(data,
   edge_mat <- remove_edges(sigtime,
                            data$freq_info$morlet_resolution$sigma_t)
 
+  dimnames(data$signals) <- list(epoch = unique(data$timings$epoch),
+                                 time = sigtime,
+                                 electrode = elecs,
+                                 frequency = data$freq_info$freqs
+  )
+
   if (keep_trials) {
-    data$signals <- aperm(data$signals,
-                          c(2, 3, 4, 1))
-    dimnames(data$signals) <- list(sigtime,
-                                   elecs,
-                                   data$freq_info$freqs,
-                                   unique(data$timings$epoch))
+
+
     data$signals <- sweep(data$signals,
-                          c(1, 3),
+                          c(2, 4),
                           edge_mat,
                           "*")
     data <- eeg_tfr(data$signals,
@@ -533,10 +535,7 @@ tf_morlet <- function(data,
                     reference = data$reference,
                     timings = data$timings,
                     freq_info = data$freq_info,
-                    dimensions = c("time",
-                                   "electrode",
-                                   "frequency",
-                                   "epoch"),
+                    dimensions = names(dimnames(data$signals)),
                     epochs = data$epochs)
     return(data)
   }
@@ -544,9 +543,6 @@ tf_morlet <- function(data,
 
   data <- average_tf(data)
 
-  dimnames(data$signals) <- list(sigtime,
-                                 elecs,
-                                 data$freq_info$freqs)
   data$signals <- sweep(data$signals,
                         c(1, 3),
                         edge_mat,

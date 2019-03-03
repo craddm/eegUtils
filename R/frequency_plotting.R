@@ -223,17 +223,14 @@ plot_tfr <- function(data,
   }
 
   if (!is.null(freq_range)) {
-    data_freqs <- as.numeric(dimnames(data$signals)[[3]])
+    data_freqs <- as.numeric(dimnames(data$signals)[["frequency"]])
     data_freqs <- (data_freqs >= freq_range[1] & data_freqs <= freq_range[2])
     data$signals <- data$signals[, , data_freqs, drop = FALSE]
   }
 
-  # if (length(data$dimensions) == 4) {
-  #   data$signals <- apply(data$signals,
-  #                         c(1, 2, 3),
-  #                         mean)
-  #   data$dimensions <- data$dimensions[1:3]
-  # }
+  if (length(data$dimensions) == 4) {
+    data <- eeg_average(data)
+   }
 
   if (baseline_type != "none") {
     data <- rm_baseline(data,

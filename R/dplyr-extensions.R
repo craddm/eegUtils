@@ -25,6 +25,7 @@ filter.eeg_epochs <- function(.data,
     warning("Epochs structure missing; Update your eeg_epochs object using update_eeg_epochs.")
     return(.data)
   }
+
   epo_args <- grepl(paste(names(.data$epochs), collapse = "|"),
                     unlist(args))
   if (any(epo_args)) {
@@ -113,5 +114,3 @@ mutate.eeg_epochs <- function(.data, ...) {
   .data$signals <- dplyr::mutate(.data$signals, ...)
   .data
 }
-
-
