@@ -33,6 +33,7 @@
 - `chan_info` changes to make chan_info consistent across systems. 
 - Corrected scaling factor for PSD
 - `eeg_combine` now checks and fixes `eeg_data` timing consistency
+- `eeg_tfr` objects now use differently organised underlying matrices.
 
 # eegUtils 0.3.0
 
