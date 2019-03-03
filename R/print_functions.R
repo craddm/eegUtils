@@ -64,7 +64,7 @@ print.eeg_ICA <- function(x, ...) {
 #' @param ... Further arguments passed
 #' @export
 print.eeg_tfr <- function(x, ...) {
-  elec_names <- dimnames(x$signals)[[2]]
+  elec_names <- dimnames(x$signals)[["electrode"]]
   n_chan <- length(elec_names)
   if ("epoch" %in% names(x$timings)) {
     n_epochs <- length(unique(x$timings$epoch))
@@ -72,11 +72,11 @@ print.eeg_tfr <- function(x, ...) {
     n_epochs <- "None, averaged."
   }
   cat("Epoched EEG TFR data\n\n")
-  cat("Frequency range\t\t:\t", x$freq_info$freqs, "\n")
+  cat("Frequency range\t\t:\t", round(x$freq_info$freqs, 2), "\n")
   cat("Number of channels\t:\t", n_chan, "\n")
   cat("Electrode names\t\t:\t", elec_names, "\n")
   cat("Number of epochs\t:\t", n_epochs, "\n")
-  cat("Epoch limits\t\t:",
+  cat("Epoch limits\t\t:\t",
       round(min(unique(x$timings$time)), 3),
       "-",
       round(max(unique(x$timings$time)), 3),
