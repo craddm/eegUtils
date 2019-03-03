@@ -177,9 +177,19 @@ rm_baseline.eeg_tfr <- function(data,
     stop("Unknown baseline type ", type)
   }
 
-  bline <- select_times(data, time_lim)
-  bline <- colMeans(bline$signals, na.rm = TRUE)
+  if (length(dim(data$signals)) == 4) {
+    epoched <- TRUE
+  } else {
+    epoched <- FALSE
+  }
 
+  bline <- select_times(data, time_lim)
+  if (epoched) {
+    #bline <- colMeans(colMeans(bline$signals, na.rm = TRUE), na.rm = TRUE)
+    bline <- apply(bline$signals, c(1, 3, 4), mean, na.rm = TRUE)
+  } else {
+    bline <- colMeans(bline$signals, na.rm = TRUE)
+  }
   # This function implements the various baseline correction types
   do_corrs <- function(data,
                        type,
@@ -197,18 +207,26 @@ rm_baseline.eeg_tfr <- function(data,
 
   orig_dimnames <- dimnames(data$signals)
 
-  data$signals <- apply(data$signals,
+  if (epoched) {
+
+    data$signals <- sweep(data$signals,
+                          c(1, 3, 4),
+                          bline,
+                          do_corrs,
+                          type = type)
+
+
+    } else {
+      data$signals <- apply(data$signals,
                         1,
                         do_corrs,
                         type = type,
                         bline = bline)
+      data$signals <- aperm(data$signals,
+                            c(2, 1))
+    }
 
-  dim(data$signals) <- c(orig_dims[2],
-                         orig_dims[3],
-                         orig_dims[1])
-
-  data$signals <- aperm(data$signals,
-                        c(3, 1, 2))
+  dim(data$signals) <- orig_dims
 
   dimnames(data$signals) <- orig_dimnames
   data$freq_info$baseline <- type
