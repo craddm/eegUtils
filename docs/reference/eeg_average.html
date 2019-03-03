@@ -32,7 +32,8 @@
 
 <meta property="og:title" content="Calculate averages (e.g. ERPs) for single datasets — eeg_average" />
 
-<meta property="og:description" content="This function is used to create an eeg_evoked object from eeg_epochs." />
+<meta property="og:description" content="This function is used to create an eeg_evoked object from
+eeg_epochs." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -92,6 +93,9 @@
       <a href="../articles/data_structures.html">A guide to eegUtils data structures</a>
     </li>
     <li>
+      <a href="../articles/epoch-handling.html">Event and epoch handling</a>
+    </li>
+    <li>
       <a href="../articles/time-frequency-analysis.html">Frequency analysis</a>
     </li>
     <li>
@@ -130,7 +134,8 @@
 
     <div class="ref-description">
     
-    <p>This function is used to create an <code>eeg_evoked</code> object from <code>eeg_epochs</code>.</p>
+    <p>This function is used to create an <code>eeg_evoked</code> object from
+<code>eeg_epochs</code>.</p>
     
     </div>
 
@@ -140,10 +145,10 @@
 <span class='fu'>eeg_average</span>(<span class='no'>data</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for eeg_epochs</span>
-<span class='fu'>eeg_average</span>(<span class='no'>data</span>, <span class='no'>...</span>)
+<span class='fu'>eeg_average</span>(<span class='no'>data</span>, <span class='kw'>cols</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for eeg_tfr</span>
-<span class='fu'>eeg_average</span>(<span class='no'>data</span>, <span class='no'>...</span>)</pre>
+<span class='fu'>eeg_average</span>(<span class='no'>data</span>, <span class='kw'>cols</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -155,6 +160,12 @@
     <tr>
       <th>...</th>
       <td><p>Other arguments passed to the averaging functions</p></td>
+    </tr>
+    <tr>
+      <th>cols</th>
+      <td><p>Columns from the <code>epochs</code> structure that the average should
+group on. NULL, the default, uses all columns other than the <code>epoch</code>
+column.</p></td>
     </tr>
     </table>
     

@@ -133,6 +133,9 @@
     <loc>http://craddm.github.io/eegUtils/reference/downsample_events.html</loc>
   </url>
   <url>
+    <loc>http://craddm.github.io/eegUtils/reference/drop_points.html</loc>
+  </url>
+  <url>
     <loc>http://craddm.github.io/eegUtils/reference/eegUtils.html</loc>
   </url>
   <url>
@@ -301,9 +304,6 @@
     <loc>http://craddm.github.io/eegUtils/reference/is.eeg_tfr.html</loc>
   </url>
   <url>
-    <loc>http://craddm.github.io/eegUtils/reference/joint_diag.html</loc>
-  </url>
-  <url>
     <loc>http://craddm.github.io/eegUtils/reference/kurtosis.html</loc>
   </url>
   <url>
@@ -383,6 +383,9 @@
   </url>
   <url>
     <loc>http://craddm.github.io/eegUtils/reference/print.eeg_evoked.html</loc>
+  </url>
+  <url>
+    <loc>http://craddm.github.io/eegUtils/reference/print.eeg_ICA.html</loc>
   </url>
   <url>
     <loc>http://craddm.github.io/eegUtils/reference/print.eeg_tfr.html</loc>
@@ -518,6 +521,9 @@
   </url>
   <url>
     <loc>http://craddm.github.io/eegUtils/articles/eegUtils.html</loc>
+  </url>
+  <url>
+    <loc>http://craddm.github.io/eegUtils/articles/epoch-handling.html</loc>
   </url>
   <url>
     <loc>http://craddm.github.io/eegUtils/articles/time-frequency-analysis.html</loc>

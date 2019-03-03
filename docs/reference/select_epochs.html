@@ -92,6 +92,9 @@
       <a href="../articles/data_structures.html">A guide to eegUtils data structures</a>
     </li>
     <li>
+      <a href="../articles/epoch-handling.html">Event and epoch handling</a>
+    </li>
+    <li>
       <a href="../articles/time-frequency-analysis.html">Frequency analysis</a>
     </li>
     <li>
@@ -196,24 +199,20 @@ FALSE to remove specified epochs.</p></td>
 #&gt; 
 #&gt; Number of channels	: 11 
 #&gt; Number of epochs		: 5 
-#&gt; Epoch limits		: -0.1972656 - 0.4511719 seconds
+#&gt; Epoch limits		: -0.197 - 0.451 seconds
 #&gt; Electrode names		: A5 A13 A21 A29 A31 B5 B6 B8 B16 B18 B26 
 #&gt; Sampling rate		: 128  Hz
-#&gt; Reference		: average </div><div class='input'>(<span class='no'>demo_ica</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='run_ICA.html'>run_ICA</a></span>(<span class='no'>demo_epochs</span>))</div><div class='output co'>#&gt; <span class='message'>Iteration = 1</span></div><div class='output co'>#&gt; <span class='message'>Iteration = 2</span></div><div class='output co'>#&gt; <span class='message'>Iteration = 3</span></div><div class='output co'>#&gt; <span class='message'>Iteration = 4</span></div><div class='output co'>#&gt; <span class='message'>Iteration = 5</span></div><div class='output co'>#&gt; <span class='message'>Iteration = 6</span></div><div class='output co'>#&gt; <span class='message'>Iteration = 7</span></div><div class='output co'>#&gt; <span class='message'>Iteration = 8</span></div><div class='output co'>#&gt; Epoched EEG data
+#&gt; Reference		: average </div><div class='input'>(<span class='no'>demo_ica</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='run_ICA.html'>run_ICA</a></span>(<span class='no'>demo_epochs</span>))</div><div class='output co'>#&gt; Epoched ICA decomposition
 #&gt; 
-#&gt; Number of channels	: 11 
-#&gt; Number of epochs		: 80 
-#&gt; Epoch limits		: -0.1972656 - 0.4511719 seconds
-#&gt; Electrode names		: Comp1 Comp2 Comp3 Comp4 Comp5 Comp6 Comp7 Comp8 Comp9 Comp10 Comp11 
-#&gt; Sampling rate		: 128  Hz
-#&gt; Reference		: </div><div class='input'><span class='fu'>select_epochs</span>(<span class='no'>demo_ica</span>, <span class='kw'>epoch_no</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>5</span>)</div><div class='output co'>#&gt; Epoched EEG data
+#&gt; Number of components	: 11 
+#&gt; Number of epochs	: 80 
+#&gt; Epoch limits		: -0.197 - 0.451 seconds
+#&gt; Sampling rate		: 128  Hz</div><div class='input'><span class='fu'>select_epochs</span>(<span class='no'>demo_ica</span>, <span class='kw'>epoch_no</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>5</span>)</div><div class='output co'>#&gt; Epoched ICA decomposition
 #&gt; 
-#&gt; Number of channels	: 11 
-#&gt; Number of epochs		: 5 
-#&gt; Epoch limits		: -0.1972656 - 0.4511719 seconds
-#&gt; Electrode names		: Comp1 Comp2 Comp3 Comp4 Comp5 Comp6 Comp7 Comp8 Comp9 Comp10 Comp11 
-#&gt; Sampling rate		: 128  Hz
-#&gt; Reference		: </div><div class='input'>
+#&gt; Number of components	: 11 
+#&gt; Number of epochs	: 5 
+#&gt; Epoch limits		: -0.197 - 0.451 seconds
+#&gt; Sampling rate		: 128  Hz</div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

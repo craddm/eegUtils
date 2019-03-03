@@ -92,6 +92,9 @@
       <a href="../articles/data_structures.html">A guide to eegUtils data structures</a>
     </li>
     <li>
+      <a href="../articles/epoch-handling.html">Event and epoch handling</a>
+    </li>
+    <li>
       <a href="../articles/time-frequency-analysis.html">Frequency analysis</a>
     </li>
     <li>
@@ -135,7 +138,7 @@
     </div>
 
     <pre class="usage"><span class='fu'>eeg_ICA</span>(<span class='no'>mixing_matrix</span>, <span class='no'>unmixing_matrix</span>, <span class='no'>signals</span>, <span class='no'>timings</span>, <span class='no'>events</span>,
-  <span class='no'>chan_info</span>, <span class='no'>srate</span>, <span class='no'>epochs</span>)</pre>
+  <span class='no'>chan_info</span>, <span class='no'>srate</span>, <span class='no'>epochs</span>, <span class='no'>algorithm</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -171,6 +174,10 @@
     <tr>
       <th>epochs</th>
       <td><p>Epoch information</p></td>
+    </tr>
+    <tr>
+      <th>algorithm</th>
+      <td><p>The method used to calculate the ICA decomposition.</p></td>
     </tr>
     </table>
     

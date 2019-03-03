@@ -4,6 +4,7 @@ pkgdown_sha: ~
 articles:
   data_structures: data_structures.html
   eegUtils: eegUtils.html
+  epoch-handling: epoch-handling.html
   time-frequency-analysis: time-frequency-analysis.html
   topoplot: topoplot.html
 urls:

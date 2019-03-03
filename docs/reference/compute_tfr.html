@@ -94,6 +94,9 @@ performed using convolution in the frequency domain." />
       <a href="../articles/data_structures.html">A guide to eegUtils data structures</a>
     </li>
     <li>
+      <a href="../articles/epoch-handling.html">Event and epoch handling</a>
+    </li>
+    <li>
       <a href="../articles/time-frequency-analysis.html">Frequency analysis</a>
     </li>
     <li>
@@ -210,11 +213,11 @@ performing time-frequency analysis.</p></td>
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'>compute_tfr</span>(<span class='no'>demo_epochs</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"morlet"</span>, <span class='kw'>foi</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>4</span>, <span class='fl'>30</span>), <span class='kw'>n_freq</span> <span class='kw'>=</span> <span class='fl'>10</span>, <span class='kw'>n_cycles</span> <span class='kw'>=</span> <span class='fl'>3</span>)</div><div class='output co'>#&gt; Epoched EEG TFR data
 #&gt; 
-#&gt; Frequency range		:	 4 6.888889 9.777778 12.66667 15.55556 18.44444 21.33333 24.22222 27.11111 30 
+#&gt; Frequency range		:	 4 6.89 9.78 12.67 15.56 18.44 21.33 24.22 27.11 30 
 #&gt; Number of channels	:	 11 
 #&gt; Electrode names		:	 A5 A13 A21 A29 A31 B5 B6 B8 B16 B18 B26 
 #&gt; Number of epochs	:	 None, averaged. 
-#&gt; Epoch limits		:	 -0.1972656 - 0.4511719 seconds
+#&gt; Epoch limits		:	 -0.197 - 0.451 seconds
 #&gt; Sampling rate		:	 128  Hz</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

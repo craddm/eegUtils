@@ -7,7 +7,7 @@
 convert_tfr(data, output)
 }
 \arguments{
-\item{data}{Fourier coefficients from from eeg_tfr}
+\item{data}{Fourier coefficients from eeg_tfr}
 
 \item{output}{What output is desired - "power", "phase" or "fourier"}
 }

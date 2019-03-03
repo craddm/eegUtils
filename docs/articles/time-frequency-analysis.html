@@ -59,6 +59,9 @@
       <a href="../articles/data_structures.html">A guide to eegUtils data structures</a>
     </li>
     <li>
+      <a href="../articles/epoch-handling.html">Event and epoch handling</a>
+    </li>
+    <li>
       <a href="../articles/time-frequency-analysis.html">Frequency analysis</a>
     </li>
     <li>
@@ -92,7 +95,7 @@
       <h1>Frequency analysis</h1>
                         <h4 class="author">Matt Craddock</h4>
             
-            <h4 class="date">2019-02-17</h4>
+            <h4 class="date">2019-03-03</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/craddm/eegUtils/blob/master/vignettes/time-frequency-analysis.Rmd"><code>vignettes/time-frequency-analysis.Rmd</code></a></small>
       <div class="hidden name"><code>time-frequency-analysis.Rmd</code></div>
@@ -133,11 +136,11 @@
 <a class="sourceLine" id="cb2-6" data-line-number="6">demo_tfr</a>
 <a class="sourceLine" id="cb2-7" data-line-number="7"><span class="co">#&gt; Epoched EEG TFR data</span></a>
 <a class="sourceLine" id="cb2-8" data-line-number="8"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb2-9" data-line-number="9"><span class="co">#&gt; Frequency range      :    4 6.363636 8.727273 11.09091 13.45455 15.81818 18.18182 20.54545 22.90909 25.27273 27.63636 30 </span></a>
+<a class="sourceLine" id="cb2-9" data-line-number="9"><span class="co">#&gt; Frequency range      :    4 6.36 8.73 11.09 13.45 15.82 18.18 20.55 22.91 25.27 27.64 30 </span></a>
 <a class="sourceLine" id="cb2-10" data-line-number="10"><span class="co">#&gt; Number of channels   :    11 </span></a>
 <a class="sourceLine" id="cb2-11" data-line-number="11"><span class="co">#&gt; Electrode names      :    A5 A13 A21 A29 A31 B5 B6 B8 B16 B18 B26 </span></a>
 <a class="sourceLine" id="cb2-12" data-line-number="12"><span class="co">#&gt; Number of epochs :    None, averaged. </span></a>
-<a class="sourceLine" id="cb2-13" data-line-number="13"><span class="co">#&gt; Epoch limits     :    -0.1972656 - 0.4511719 seconds</span></a>
+<a class="sourceLine" id="cb2-13" data-line-number="13"><span class="co">#&gt; Epoch limits     :    -0.197 - 0.451 seconds</span></a>
 <a class="sourceLine" id="cb2-14" data-line-number="14"><span class="co">#&gt; Sampling rate        :    128  Hz</span></a></code></pre></div>
 <p>Note that the characteristics of the wavelets, in terms of temporal and frequency standard deviations, are stored inside the  object:</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1">demo_tfr<span class="op">$</span>freq_info<span class="op">$</span>morlet_resolution</a>

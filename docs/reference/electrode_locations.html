@@ -32,7 +32,8 @@
 
 <meta property="og:title" content="Get standard electrode locations — electrode_locations" />
 
-<meta property="og:description" content="Joins standard electrode locations to EEG data from eegUtils internal data." />
+<meta property="og:description" content="Joins standard electrode locations to EEG data from eegUtils internal
+data." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -92,6 +93,9 @@
       <a href="../articles/data_structures.html">A guide to eegUtils data structures</a>
     </li>
     <li>
+      <a href="../articles/epoch-handling.html">Event and epoch handling</a>
+    </li>
+    <li>
       <a href="../articles/time-frequency-analysis.html">Frequency analysis</a>
     </li>
     <li>
@@ -130,7 +134,8 @@
 
     <div class="ref-description">
     
-    <p>Joins standard electrode locations to EEG data from eegUtils internal data.</p>
+    <p>Joins standard electrode locations to EEG data from <code>eegUtils</code> internal
+data.</p>
     
     </div>
 
@@ -138,11 +143,15 @@
 
 <span class='co'># S3 method for data.frame</span>
 <span class='fu'>electrode_locations</span>(<span class='no'>data</span>, <span class='kw'>electrode</span> <span class='kw'>=</span> <span class='st'>"electrode"</span>,
-  <span class='kw'>drop</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>plot</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>montage</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)
+  <span class='kw'>drop</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>montage</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for eeg_data</span>
 <span class='fu'>electrode_locations</span>(<span class='no'>data</span>, <span class='kw'>drop</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>plot</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>montage</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)</pre>
+  <span class='kw'>montage</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)
+
+<span class='co'># S3 method for eeg_epochs</span>
+<span class='fu'>electrode_locations</span>(<span class='no'>data</span>, <span class='kw'>drop</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>montage</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -166,13 +175,8 @@
 not available be dropped? (Defaults to FALSE).</p></td>
     </tr>
     <tr>
-      <th>plot</th>
-      <td><p>Plot obtained electrode locations.</p></td>
-    </tr>
-    <tr>
       <th>montage</th>
-      <td><p>Name of an existing montage set. Defaults to NULL; (currently
-only 'biosemi64alpha' available other than default 10/20 system)</p></td>
+      <td><p>Name of an existing montage set. Defaults to NULL.</p></td>
     </tr>
     <tr>
       <th>overwrite</th>
@@ -184,13 +188,28 @@ only 'biosemi64alpha' available other than default 10/20 system)</p></td>
 
     <p>A tibble (or data.frame), or ggplot2 object if <code>plot = TRUE</code>.</p>
     
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>The standard locations are from the 10-05 system derived by Oostenveld &amp;
+Praamstra (2001). In addition, there are multiple specific montages for
+BioSemi systems included. These can be added using the montage parameter:
+"biosemi16", "biosemi32", biosemi64", "biosemi64alpha", "biosemi128",
+"biosemi160", "biosemi256"</p>
+    
     <h2 class="hasAnchor" id="methods-by-class-"><a class="anchor" href="#methods-by-class-"></a>Methods (by class)</h2>
 
     <ul>
 <li><p><code>data.frame</code>: Adds standard locations to a data frame in
 long format</p></li>
 <li><p><code>eeg_data</code>: Adds standard locations to the chan_info field of an eeg_data object.</p></li>
+<li><p><code>eeg_epochs</code>: Adds standard locations to the chan_info field of an eeg_data object.</p></li>
 </ul>
+    
+    <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
+
+    <p>Oostenveld, R. &amp; Praamstra, P. (2001). The five percent electrode
+  system for high-resolution EEG and ERP measurements. Clinical
+  Neurophysiology, 112, 4, 713-719</p>
     
 
   </div>
@@ -201,7 +220,11 @@ long format</p></li>
       
       <li><a href="#value">Value</a></li>
 
+      <li><a href="#details">Details</a></li>
+
       <li><a href="#methods-by-class-">Methods (by class)</a></li>
+
+      <li><a href="#references">References</a></li>
           </ul>
 
   </div>

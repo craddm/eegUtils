@@ -93,6 +93,9 @@ selecting either single frequencies or anything within a range." />
       <a href="../articles/data_structures.html">A guide to eegUtils data structures</a>
     </li>
     <li>
+      <a href="../articles/epoch-handling.html">Event and epoch handling</a>
+    </li>
+    <li>
       <a href="../articles/time-frequency-analysis.html">Frequency analysis</a>
     </li>
     <li>
@@ -166,11 +169,11 @@ lower and upper bounds. (e.g. c(5, 30))</p></td>
     <pre class="examples"><div class='input'><span class='no'>demo_tfr</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='compute_tfr.html'>compute_tfr</a></span>(<span class='no'>demo_epochs</span>, <span class='kw'>foi</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>4</span>, <span class='fl'>30</span>), <span class='kw'>n_freq</span> <span class='kw'>=</span> <span class='fl'>10</span>, <span class='kw'>n_cycles</span> <span class='kw'>=</span> <span class='fl'>5</span>)
 <span class='fu'>select_freqs</span>(<span class='no'>demo_tfr</span>, <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>8</span>, <span class='fl'>12</span>))</div><div class='output co'>#&gt; Epoched EEG TFR data
 #&gt; 
-#&gt; Frequency range		:	 9.777778 
+#&gt; Frequency range		:	 9.78 
 #&gt; Number of channels	:	 11 
 #&gt; Electrode names		:	 A5 A13 A21 A29 A31 B5 B6 B8 B16 B18 B26 
 #&gt; Number of epochs	:	 None, averaged. 
-#&gt; Epoch limits		:	 -0.1972656 - 0.4511719 seconds
+#&gt; Epoch limits		:	 -0.197 - 0.451 seconds
 #&gt; Sampling rate		:	 128  Hz</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

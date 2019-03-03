@@ -11,17 +11,22 @@ eeg_average(data, ...)
 
 \method{eeg_average}{default}(data, ...)
 
-\method{eeg_average}{eeg_epochs}(data, ...)
+\method{eeg_average}{eeg_epochs}(data, cols = NULL, ...)
 
-\method{eeg_average}{eeg_tfr}(data, ...)
+\method{eeg_average}{eeg_tfr}(data, cols = NULL, ...)
 }
 \arguments{
 \item{data}{An \code{eeg_epochs} object.}
 
 \item{...}{Other arguments passed to the averaging functions}
+
+\item{cols}{Columns from the \code{epochs} structure that the average should
+group on. NULL, the default, uses all columns other than the \code{epoch}
+column.}
 }
 \description{
-This function is used to create an \code{eeg_evoked} object from \code{eeg_epochs}.
+This function is used to create an \code{eeg_evoked} object from
+\code{eeg_epochs}.
 }
 \section{Methods (by class)}{
 \itemize{

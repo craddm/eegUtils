@@ -4,15 +4,19 @@
 \alias{electrode_locations}
 \alias{electrode_locations.data.frame}
 \alias{electrode_locations.eeg_data}
+\alias{electrode_locations.eeg_epochs}
 \title{Get standard electrode locations}
 \usage{
 electrode_locations(data, ...)
 
 \method{electrode_locations}{data.frame}(data, electrode = "electrode",
-  drop = FALSE, plot = FALSE, montage = NULL, ...)
+  drop = FALSE, montage = NULL, ...)
 
 \method{electrode_locations}{eeg_data}(data, drop = FALSE,
-  plot = FALSE, montage = NULL, overwrite = FALSE, ...)
+  montage = NULL, overwrite = FALSE, ...)
+
+\method{electrode_locations}{eeg_epochs}(data, drop = FALSE,
+  montage = NULL, overwrite = FALSE, ...)
 }
 \arguments{
 \item{data}{An EEG dataset.}
@@ -25,10 +29,7 @@ electrode_locations(data, ...)
 \item{drop}{Should electrodes in \code{data} for which default locations are
 not available be dropped? (Defaults to FALSE).}
 
-\item{plot}{Plot obtained electrode locations.}
-
-\item{montage}{Name of an existing montage set. Defaults to NULL; (currently
-only 'biosemi64alpha' available other than default 10/20 system)}
+\item{montage}{Name of an existing montage set. Defaults to NULL.}
 
 \item{overwrite}{Overwrite existing channel info. Defaults to FALSE.}
 }
@@ -36,7 +37,15 @@ only 'biosemi64alpha' available other than default 10/20 system)}
 A tibble (or data.frame), or ggplot2 object if \code{plot = TRUE}.
 }
 \description{
-Joins standard electrode locations to EEG data from eegUtils internal data.
+Joins standard electrode locations to EEG data from \code{eegUtils} internal
+data.
+}
+\details{
+The standard locations are from the 10-05 system derived by Oostenveld &
+Praamstra (2001). In addition, there are multiple specific montages for
+BioSemi systems included. These can be added using the montage parameter:
+"biosemi16", "biosemi32", biosemi64", "biosemi64alpha", "biosemi128",
+"biosemi160", "biosemi256"
 }
 \section{Methods (by class)}{
 \itemize{
@@ -44,5 +53,12 @@ Joins standard electrode locations to EEG data from eegUtils internal data.
 long format
 
 \item \code{eeg_data}: Adds standard locations to the chan_info field of an eeg_data object.
+
+\item \code{eeg_epochs}: Adds standard locations to the chan_info field of an eeg_data object.
 }}
 
+\references{
+Oostenveld, R. & Praamstra, P. (2001). The five percent electrode
+  system for high-resolution EEG and ERP measurements. Clinical
+  Neurophysiology, 112, 4, 713-719
+}

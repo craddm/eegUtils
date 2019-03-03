@@ -89,6 +89,9 @@
       <a href="../articles/data_structures.html">A guide to eegUtils data structures</a>
     </li>
     <li>
+      <a href="../articles/epoch-handling.html">Event and epoch handling</a>
+    </li>
+    <li>
       <a href="../articles/time-frequency-analysis.html">Frequency analysis</a>
     </li>
     <li>
@@ -158,6 +161,8 @@
 <li>
 <code><a href="../reference/channels.html">channels()</a></code> function added to easily access and modify the chan_info structure of all <code>eegUtils</code> objects.</li>
 <li>
+<code><a href="../reference/epochs.html">epochs()</a></code> function added to access and modify epochs structure.</li>
+<li>
 <code><a href="../reference/ar_eogreg.html">ar_eogreg()</a></code> function added for removing eye movement activity using regression.</li>
 <li>
 <code><a href="../reference/eeg_filter.html">eeg_filter()</a></code> function added for a unified method of filtering using either FIR or IIR
@@ -170,7 +175,7 @@
 </li>
 <li>
 <code><a href="../reference/geom_topo.html">geom_topo()</a></code> extension for <code>ggplot2</code> added. Allows plotting of a topographical scalp maps using standard <code>ggplot2</code> functions.</li>
-<li>Default <code>grid_res</code> for topography related plots increased to 300.</li>
+<li>Default <code>grid_res</code> for topography related plots increased to 200.</li>
 </ul>
 </div>
 <div id="internal-changes-bug-fixes" class="section level3">
@@ -195,6 +200,8 @@
 <li>Corrected scaling factor for PSD</li>
 <li>
 <code>eeg_combine</code> now checks and fixes <code>eeg_data</code> timing consistency</li>
+<li>
+<code>eeg_tfr</code> objects now use differently organised underlying matrices.</li>
 </ul>
 </div>
 </div>

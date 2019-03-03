@@ -59,6 +59,9 @@
       <a href="../articles/data_structures.html">A guide to eegUtils data structures</a>
     </li>
     <li>
+      <a href="../articles/epoch-handling.html">Event and epoch handling</a>
+    </li>
+    <li>
       <a href="../articles/time-frequency-analysis.html">Frequency analysis</a>
     </li>
     <li>
@@ -92,7 +95,7 @@
       <h1>EEG Utils</h1>
                         <h4 class="author">Matt Craddock</h4>
             
-            <h4 class="date">2019-02-17</h4>
+            <h4 class="date">2019-03-03</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/craddm/eegUtils/blob/master/vignettes/eegUtils.Rmd"><code>vignettes/eegUtils.Rmd</code></a></small>
       <div class="hidden name"><code>eegUtils.Rmd</code></div>
@@ -125,17 +128,11 @@
 <a class="sourceLine" id="cb1-16" data-line-number="16"><span class="co">#&gt; Reference        :</span></a></code></pre></div>
 <p>The data itself is stored in the <code>signals</code> data frame within the object; the timing of events is stored in the <code>events</code> data frame, and timings for each sample are stored in the <code>timings</code> data frame. Times are stored in samples and seconds.</p>
 <p>A common first step would be to rereference the data, which can be done using the <code><a href="../reference/eeg_reference.html">reref_eeg()</a></code> command. By default, if no electrodes are specified, the data will be referenced to a common average. The median rather than the mean can be used by specifiying <code>robust == TRUE</code>. Electrodes can also be excluded from the average reference calculation; they will nevertheless still be referenced to the same reference as the other channels.</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1">eeg_example &lt;-<span class="st"> </span><span class="kw"><a href="../reference/eeg_reference.html">reref_eeg</a></span>(eeg_example, <span class="dt">ref_chans =</span> <span class="st">"average"</span>)</a>
-<a class="sourceLine" id="cb2-2" data-line-number="2"><span class="co">#&gt; Warning: reref_eeg has been renamed eeg_reference, and will be removed in a</span></a>
-<a class="sourceLine" id="cb2-3" data-line-number="3"><span class="co">#&gt; future version of eegUtils.</span></a>
-<a class="sourceLine" id="cb2-4" data-line-number="4">eeg_example &lt;-<span class="st"> </span><span class="kw"><a href="../reference/eeg_reference.html">reref_eeg</a></span>(eeg_example, <span class="dt">ref_chans =</span> <span class="st">"average"</span>, <span class="dt">robust =</span> <span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb2-5" data-line-number="5"><span class="co">#&gt; Warning: reref_eeg has been renamed eeg_reference, and will be removed in a</span></a>
-<a class="sourceLine" id="cb2-6" data-line-number="6"><span class="co">#&gt; future version of eegUtils.</span></a>
-<a class="sourceLine" id="cb2-7" data-line-number="7">eeg_example &lt;-<span class="st"> </span><span class="kw"><a href="../reference/eeg_reference.html">reref_eeg</a></span>(eeg_example, <span class="dt">ref_chans =</span> <span class="st">"average"</span>,</a>
-<a class="sourceLine" id="cb2-8" data-line-number="8">                         <span class="dt">exclude =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"EXG7"</span>, <span class="st">"EXG8"</span>),</a>
-<a class="sourceLine" id="cb2-9" data-line-number="9">                         <span class="dt">robust =</span> <span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb2-10" data-line-number="10"><span class="co">#&gt; Warning: reref_eeg has been renamed eeg_reference, and will be removed in a</span></a>
-<a class="sourceLine" id="cb2-11" data-line-number="11"><span class="co">#&gt; future version of eegUtils.</span></a></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1">eeg_example &lt;-<span class="st"> </span><span class="kw"><a href="../reference/eeg_reference.html">eeg_reference</a></span>(eeg_example, <span class="dt">ref_chans =</span> <span class="st">"average"</span>)</a>
+<a class="sourceLine" id="cb2-2" data-line-number="2">eeg_example &lt;-<span class="st"> </span><span class="kw"><a href="../reference/eeg_reference.html">eeg_reference</a></span>(eeg_example, <span class="dt">ref_chans =</span> <span class="st">"average"</span>, <span class="dt">robust =</span> <span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb2-3" data-line-number="3">eeg_example &lt;-<span class="st"> </span><span class="kw"><a href="../reference/eeg_reference.html">eeg_reference</a></span>(eeg_example, <span class="dt">ref_chans =</span> <span class="st">"average"</span>,</a>
+<a class="sourceLine" id="cb2-4" data-line-number="4">                             <span class="dt">exclude =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"EXG7"</span>, <span class="st">"EXG8"</span>),</a>
+<a class="sourceLine" id="cb2-5" data-line-number="5">                             <span class="dt">robust =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
 <p>EEGLAB can be loaded using the <code><a href="../reference/import_set.html">import_set()</a></code> command. The command detects whether the data is epoched or not and, by default, arranges the data in the <code>eeg_data</code> or <code>eeg_epochs</code> format.</p>
 <p>Filtering can be performed using the <code><a href="../reference/eeg_filter.html">eeg_filter()</a></code> command. This uses IIR or FIR filters to modify the frequency response of the signal, remove low or high frequency fluctuations as requested.</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1">eeg_example &lt;-<span class="st"> </span><span class="kw"><a href="../reference/eeg_filter.html">eeg_filter</a></span>(eeg_example,</a>

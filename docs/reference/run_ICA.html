@@ -94,6 +94,9 @@ fastica, extended Infomax, and Second-Order Blind Identification (SOBI)." />
       <a href="../articles/data_structures.html">A guide to eegUtils data structures</a>
     </li>
     <li>
+      <a href="../articles/epoch-handling.html">Event and epoch handling</a>
+    </li>
+    <li>
       <a href="../articles/time-frequency-analysis.html">Frequency analysis</a>
     </li>
     <li>
@@ -141,7 +144,8 @@ fastica, extended Infomax, and Second-Order Blind Identification (SOBI).</p>
     <pre class="usage"><span class='fu'>run_ICA</span>(<span class='no'>data</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for eeg_epochs</span>
-<span class='fu'>run_ICA</span>(<span class='no'>data</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"sobi"</span>, <span class='kw'>maxit</span> <span class='kw'>=</span> <span class='fl'>500</span>, <span class='no'>...</span>)</pre>
+<span class='fu'>run_ICA</span>(<span class='no'>data</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"sobi"</span>, <span class='kw'>maxit</span> <span class='kw'>=</span> <span class='fl'>500</span>,
+  <span class='kw'>tol</span> <span class='kw'>=</span> <span class='fl'>1e-06</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -162,6 +166,10 @@ fastica, extended Infomax, and Second-Order Blind Identification (SOBI).</p>
       <th>maxit</th>
       <td><p>Maximum number of iterations of the Infomax and Fastica ICA
 algorithms.</p></td>
+    </tr>
+    <tr>
+      <th>tol</th>
+      <td><p>Convergence tolerance for fastica and infomax. Defaults to 1e-06.</p></td>
     </tr>
     </table>
     
