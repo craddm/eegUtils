@@ -92,7 +92,9 @@ eeg_average.eeg_tfr <- function(data,
   if (!"epoch" %in% data$dimensions) {
     message("Data is already averaged.")
   } else {
+    orig_names <- dimnames(data$signals)
     data <- average_tf(data)
+    #dimnames(data$signals) <- corig_names[1:3]
     data$dimensions <- data$dimensions[-which(data$dimensions == "epoch")]
   }
   data
@@ -105,11 +107,13 @@ eeg_average.eeg_tfr <- function(data,
 average_tf <- function(data) {
 
   # Need to find a way to make this respect epochs structure...
+  orig_dims <- dimnames(data$signals)
 
   if (data$freq_info$output == "phase") {
     data$signals <- apply(data$signals,
-                          c(1, 2, 3),
+                          c(2, 3, 4),
                           circ_mean)
+
   } else {
     avg_tf <- array(0, dim = dim(data$signals)[2:4])
     for (iz in 1:dim(data$signals)[3]) {
@@ -117,10 +121,13 @@ average_tf <- function(data) {
         avg_tf[, iz, ij] <- colMeans(data$signals[ , , iz, ij, drop = FALSE])
       }
     }
+
     data$signals <- avg_tf
+    dimnames(data$signals) <- orig_dims[2:4]
     cols <- c("epoch", "participant_id", "recording")
     data$epochs <- data$epochs[1, colnames(data$epochs) %in% cols]
   }
+  data$timings <- dplyr::filter(data$timings, epoch == 1)
   data
 }
 
