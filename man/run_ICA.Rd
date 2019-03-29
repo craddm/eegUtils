@@ -7,8 +7,8 @@
 \usage{
 run_ICA(data, ...)
 
-\method{run_ICA}{eeg_epochs}(data, method = "sobi", maxit = 500,
-  tol = 1e-06, ...)
+\method{run_ICA}{eeg_epochs}(data, method = "sobi", maxit = 1000,
+  tol = 1e-06, pca = NULL, ...)
 }
 \arguments{
 \item{data}{Data to be ICAed.}
@@ -21,6 +21,9 @@ run_ICA(data, ...)
 algorithms.}
 
 \item{tol}{Convergence tolerance for fastica and infomax. Defaults to 1e-06.}
+
+\item{pca}{Reduce the number of dimensions using PCA before running ICA.
+Numeric,  >1 and < number of channels}
 }
 \value{
 An \code{eeg_ICA} object containing an ICA decomposition

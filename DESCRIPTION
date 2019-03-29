@@ -48,7 +48,8 @@ Suggests: testthat,
     rmarkdown,
     JADE,
     ica,
-    geigen
+    geigen,
+    fICA
 URL: https://github.com/craddm/eegUtils
 BugReports: https://github.com/craddm/eegUtils/issues
 VignetteBuilder: knitr

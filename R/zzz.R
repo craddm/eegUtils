@@ -36,4 +36,5 @@ utils::globalVariables(c("time",
                          "keep_rows",
                          "xyz_coords",
                          "component",
-                         "signals"))
+                         "signals",
+                         "ga_sigs"))

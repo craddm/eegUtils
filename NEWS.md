@@ -4,7 +4,9 @@
 - Behaviour of `as.data.frame` methods changed.
     - `cond_label` parameter is deprecated
     - Information from the new `epochs` structure is now automatically added to the data.frame
-- `tag_epochs`
+- `tag_epochs` function added for labelling
+- `run_ICA` now includes the `fICA` package version of `fastica`, and now supports running PCA before ICA.
+- `apply_ICA` function added to remove ICA components.
 - Behaviour of `select_times()` changed to use exact supplied times rather than finding nearest times in the data.
 - Some wrappers around `dplyr` functions added:
     - `select()` now works for selecting electrodes from `eeg_data` and `eeg_epochs` objects.
@@ -34,6 +36,7 @@
 - Corrected scaling factor for PSD
 - `eeg_combine` now checks and fixes `eeg_data` timing consistency
 - `eeg_tfr` objects now use differently organised underlying matrices.
+- `eeg_ICA` fixed unmixing matrices, which were transposed. 
 
 # eegUtils 0.3.0
 

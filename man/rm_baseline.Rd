@@ -38,7 +38,7 @@ epoched, or the channel mean if the data is continuous.}
 \item{verbose}{Defaults to TRUE. Output descriptive messages to console.}
 
 \item{type}{Type of baseline correction to apply. Options are ("divide",
-"ratio", "absolute", "db")}
+"ratio", "absolute", "db", and "pc")}
 }
 \description{
 Used to remove the mean of a specified time period from the data. Currently

@@ -35,11 +35,13 @@ eeg_average.eeg_epochs <- function(data,
   elecs <- channel_names(data)
 
   if (is.null(data$epochs)) {
-    tibble::new_tibble(list(epoch = 1,
-                            participant_id = character(1),
-                            recording = character(1)),
-                       nrow = 1,
-                       class = "epoch_info")
+    n_epochs <- length(unique(data$timings$epoch))
+    data$epochs <-
+      tibble::new_tibble(list(epoch = unique(data$timings$epoch),
+                              participant_id = character(n_epochs),
+                              recording = character(n_epochs)),
+                         nrow = n_epochs,
+                         class = "epoch_info")
   }
 
   data$signals <- dplyr::left_join(cbind(data$signals,
@@ -153,27 +155,11 @@ eeg_grandaverage <- function(data,
   # Check for consistency of input
   if (check_classes(data)) {
     if (is.null(dim(data[[1]]$signals))) {
-      if (check_conds(data)) {
-        conds <- names(data[[1]]$signals)
-        ga_sigs <- lapply(seq_along(conds),
-                          function(x) create_grandavg(data,
-                                                      keep_indivs,
-                                                      x))
-        names(ga_sigs) <- conds
-        grand_avg <- eeg_GA(ga_sigs,
-                            srate = data[[1]]$srate,
-                            timings = data[[1]]$timings,
-                            chan_info = data[[1]]$chan_info,
-                            indivs = keep_indivs)
-        } else {
-          stop("Some conditions are not present in every object.")
-          }
-      } else {
-        ga_sigs <- create_grandavg(data, keep_indivs)
-        }
+
+    }
     } else {
       stop("Some objects are of different classes.")
-      }
+    }
   grand_avg <- eeg_GA(ga_sigs,
                       srate = data[[1]]$srate,
                       timings = data[[1]]$timings,

@@ -158,7 +158,7 @@ rm_baseline.data.frame <- function(data,
 }
 
 #' @param type Type of baseline correction to apply. Options are ("divide",
-#'   "ratio", "absolute", "db")
+#'   "ratio", "absolute", "db", and "pc")
 #' @describeIn rm_baseline Method for \code{eeg_tfr} objects
 #' @export
 rm_baseline.eeg_tfr <- function(data,
@@ -236,22 +236,46 @@ rm_baseline.eeg_tfr <- function(data,
 
 #' @describeIn rm_baseline Method for \code{eeg_evoked} objects
 #' @export
+# rm_baseline.eeg_evoked <- function(data,
+#                                    time_lim = NULL,
+#                                    verbose = TRUE,
+#                                    ...) {
+#
+#   # Edit to handle cases where multiple epochs/participants, now that the internal structure differs
+#   if (is.null(time_lim)) {
+#     baseline_dat <- colMeans(data$signals)
+#   } else {
+#     base_times <- select_times(data,
+#                                time_lim = time_lim)
+#
+#     baseline_dat <- colMeans(base_times$signals)
+#   }
+#   data$signals <- sweep(data$signals,
+#                         2,
+#                         baseline_dat,
+#                         "-")
+#   data
+#}
+
 rm_baseline.eeg_evoked <- function(data,
                                    time_lim = NULL,
                                    verbose = TRUE,
                                    ...) {
 
+  # Edit to handle cases where multiple epochs/participants, now that the internal structure differs
   if (is.null(time_lim)) {
-    baseline_dat <- colMeans(data$signals)
-  } else {
-    base_times <- select_times(data,
-                               time_lim = time_lim)
+    data$signals <- data.table::as.data.table(as.data.frame(data))
 
-    baseline_dat <- colMeans(base_times$signals)
+  } else {
+    orig_cols <- channel_names(data)
+    data$signals <- data.table::as.data.table(as.data.frame(data))
+    data$signals <-
+      data$signals[, c(orig_cols) := lapply(.SD,
+                                            function(x) x - mean(x[time > time_lim[1] & time < time_lim[2]])),
+       .SDcols = orig_cols,
+       by = epoch]
+    data$signals <- tibble::as_tibble(data$signals[, ..orig_cols])
+
   }
-  data$signals <- sweep(data$signals,
-                        2,
-                        baseline_dat,
-                        "-")
   data
 }

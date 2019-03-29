@@ -33,7 +33,6 @@ browse_data.eeg_ICA <- function(data,
                      height = "100%")),
         fillCol(plotOutput("comp_img",
                            height = "100%"),
-                checkboxInput("rejectButton", "Reject component"),
                 shiny::selectInput("icomp",
                                    "Component",
                                    names(data$signals)))
