@@ -346,5 +346,5 @@ mix <- function(sources,
 
 unmix <- function(data,
                   unmixing_matrix) {
-  t(tcrossprod(unmixing_matrix, as.matrix(data)))
+  t(tcrossprod(as.matrix(unmixing_matrix), as.matrix(data)))
 }
