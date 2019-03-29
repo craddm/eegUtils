@@ -60,7 +60,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">eegUtils</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
       </span>
     </div>
 
@@ -127,9 +127,9 @@
       <small>Source: <a href='https://github.com/craddm/eegUtils/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
-    <div id="eegutils-0-3-0-9000" class="section level1">
+    <div id="eegutils-0-4-0" class="section level1">
 <h1 class="page-header">
-<a href="#eegutils-0-3-0-9000" class="anchor"></a>eegUtils 0.3.0.9000</h1>
+<a href="#eegutils-0-4-0" class="anchor"></a>eegUtils 0.4.0</h1>
 <div id="function-changes" class="section level3">
 <h3 class="hasAnchor">
 <a href="#function-changes" class="anchor"></a>Function changes</h3>
@@ -141,7 +141,12 @@
 <li>Information from the new <code>epochs</code> structure is now automatically added to the data.frame</li>
 </ul>
 </li>
-<li><code>tag_epochs</code></li>
+<li>
+<code>tag_epochs</code> function added for labelling</li>
+<li>
+<code>run_ICA</code> now includes the <code>fICA</code> package version of <code>fastica</code>, and now supports running PCA before ICA.</li>
+<li>
+<code>apply_ICA</code> function added to remove ICA components.</li>
 <li>Behaviour of <code><a href="../reference/select_times.html">select_times()</a></code> changed to use exact supplied times rather than finding nearest times in the data.</li>
 <li>Some wrappers around <code>dplyr</code> functions added:
 <ul>
@@ -202,6 +207,8 @@
 <code>eeg_combine</code> now checks and fixes <code>eeg_data</code> timing consistency</li>
 <li>
 <code>eeg_tfr</code> objects now use differently organised underlying matrices.</li>
+<li>
+<code>eeg_ICA</code> fixed unmixing matrices, which were transposed.</li>
 </ul>
 </div>
 </div>
@@ -513,7 +520,7 @@
     <div id="tocnav">
       <h2>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
-        <li><a href="#eegutils-0-3-0-9000">0.3.0.9000</a></li>
+        <li><a href="#eegutils-0-4-0">0.4.0</a></li>
         <li><a href="#eegutils-0-3-0">0.3.0</a></li>
         <li><a href="#eegutils-0-2-1">0.2.1</a></li>
         <li><a href="#eegutils-0-2-0">0.2.0</a></li>

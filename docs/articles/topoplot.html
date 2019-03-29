@@ -30,7 +30,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">eegUtils</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
       </span>
     </div>
 
@@ -95,7 +95,7 @@
       <h1>Building a topographical plot</h1>
                         <h4 class="author">Matt Craddock</h4>
             
-            <h4 class="date">2019-03-03</h4>
+            <h4 class="date">2019-03-29</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/craddm/eegUtils/blob/master/vignettes/topoplot.Rmd"><code>vignettes/topoplot.Rmd</code></a></small>
       <div class="hidden name"><code>topoplot.Rmd</code></div>
@@ -118,7 +118,9 @@
 <p><img src="topoplot_files/figure-html/unnamed-chunk-1-1.png" width="384"></p>
 <p><code><a href="../reference/topoplot.html">topoplot()</a></code> operates on several different types of <code>eegUtils</code> object, and has different default settings and behaviour for those objects. For example, for ICA decompositions, it plots the mixing matrix for each component.</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1">demo_ica &lt;-<span class="st"> </span><span class="kw"><a href="../reference/run_ICA.html">run_ICA</a></span>(demo_epochs)</a>
-<a class="sourceLine" id="cb3-2" data-line-number="2"><span class="kw"><a href="../reference/topoplot.html">topoplot</a></span>(demo_ica, <span class="dt">component =</span> <span class="dv">2</span>)</a></code></pre></div>
+<a class="sourceLine" id="cb3-2" data-line-number="2"><span class="co">#&gt; Warning in run_ICA.eeg_epochs(demo_epochs): Data is rank deficient.</span></a>
+<a class="sourceLine" id="cb3-3" data-line-number="3"><span class="co">#&gt; Detected rank 10</span></a>
+<a class="sourceLine" id="cb3-4" data-line-number="4"><span class="kw"><a href="../reference/topoplot.html">topoplot</a></span>(demo_ica, <span class="dt">component =</span> <span class="dv">2</span>)</a></code></pre></div>
 <p><img src="topoplot_files/figure-html/get-ica-1.png" width="384"></p>
 <div id="ggplot2-extensions---geom_topo" class="section level2">
 <h2 class="hasAnchor">

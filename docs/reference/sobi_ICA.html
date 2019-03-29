@@ -63,7 +63,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">eegUtils</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
       </span>
     </div>
 
@@ -137,7 +137,7 @@
     
     </div>
 
-    <pre class="usage"><span class='fu'>sobi_ICA</span>(<span class='no'>data</span>, <span class='no'>maxiter</span>)</pre>
+    <pre class="usage"><span class='fu'>sobi_ICA</span>(<span class='no'>data</span>, <span class='no'>maxiter</span>, <span class='no'>tol</span>, <span class='no'>pca</span>, <span class='no'>centre</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -149,6 +149,18 @@
     <tr>
       <th>maxiter</th>
       <td><p>Maximum number of iterations of the joint diagonalization</p></td>
+    </tr>
+    <tr>
+      <th>tol</th>
+      <td><p>convergence tolerance.</p></td>
+    </tr>
+    <tr>
+      <th>pca</th>
+      <td><p>Number of PCA components.</p></td>
+    </tr>
+    <tr>
+      <th>centre</th>
+      <td><p>Mean center signals</p></td>
     </tr>
     </table>
     

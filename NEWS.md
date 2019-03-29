@@ -1,4 +1,4 @@
-# eegUtils 0.3.0.9000
+# eegUtils 0.4.0
 
 ### Function changes
 - Behaviour of `as.data.frame` methods changed.

@@ -4,7 +4,7 @@
 \alias{sobi_ICA}
 \title{SOBI ICA}
 \usage{
-sobi_ICA(data, maxiter, tol, pca)
+sobi_ICA(data, maxiter, tol, pca, centre)
 }
 \arguments{
 \item{data}{Data to be ICAed.}
@@ -14,6 +14,8 @@ sobi_ICA(data, maxiter, tol, pca)
 \item{tol}{convergence tolerance.}
 
 \item{pca}{Number of PCA components.}
+
+\item{centre}{Mean center signals}
 }
 \description{
 Internal function for running SOBI ICA on an \code{eeg_epochs} object

@@ -4,6 +4,18 @@
 #' available with on epoched data. Implements three different methods of ICA -
 #' fastica, extended Infomax, and Second-Order Blind Identification (SOBI).
 #'
+#' @section Notes on ICA usage:
+#'
+#'   It is recommended to mean-centre your data appropriately before running
+#'   ICA. The implementations of FASTICA and extended-Infomax from the `ica`
+#'   package, and of SOBI ICA have this as an option which is enabled by
+#'   default, while the implementation of FASTICA in the fICA package enforces
+#'   mean-centring of the columns of the data. With epoched data, it is
+#'   recommended to centre each epoch on zero, rather than centre on the overall
+#'   channel mean. This can be achieved with the `rm_baseline()` function. SOBI
+#'   ICA will do this automatically, whereas the other ICA implementations will
+#'   centre on the channel means, not the epoch means.
+#'
 #' @param data Data to be ICAed.
 #' @param ... Other parameters passed to function.
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
@@ -21,6 +33,7 @@ run_ICA <- function(data, ...) {
 #' @param tol Convergence tolerance for fastica and infomax. Defaults to 1e-06.
 #' @param pca Reduce the number of dimensions using PCA before running ICA.
 #'   Numeric,  >1 and < number of channels
+#' @param centre Defaults to TRUE. Centre the data on zero by subtracting the column mean. See notes on usage.
 #' @describeIn run_ICA Run ICA on an \code{eeg_epochs} object
 #' @export
 
@@ -29,6 +42,7 @@ run_ICA.eeg_epochs <- function(data,
                                maxit = 1000,
                                tol = 1e-6,
                                pca = NULL,
+                               centre = TRUE,
                                ...) {
 
   if (!is.null(pca)) {
@@ -73,10 +87,8 @@ run_ICA.eeg_epochs <- function(data,
     mixing_matrix <- pca_decomp[, 1:pca] %*% mixing_matrix
 
     unmixing_matrix <- as.data.frame(MASS::ginv(mixing_matrix, tol = 0))
-
     mixing_matrix <- as.data.frame(mixing_matrix)
     names(ICA_out$S) <- paste0("Comp", 1:pca)
-
     names(mixing_matrix) <- paste0("Comp", 1:pca)
     mixing_matrix$electrode <- orig_chans #names(data$signals)
     names(unmixing_matrix) <- orig_chans
@@ -93,7 +105,8 @@ run_ICA.eeg_epochs <- function(data,
       ICA_out <- sobi_ICA(data,
                           maxiter = maxit,
                           tol = tol,
-                          pca = pca)
+                          pca = pca,
+                          centre = centre)
     } else {
 
       if (!requireNamespace("ica", quietly = TRUE)) {
@@ -106,14 +119,16 @@ run_ICA.eeg_epochs <- function(data,
         ICA_out <- ica::icafast(data$signals,
                                 nc = rank_check,
                                 maxit = maxit,
-                                tol = tol)
+                                tol = tol,
+                                center = centre)
       } else if (method == "infomax") {
         message("Running extended-Infomax (ica).")
         ICA_out <- ica::icaimax(data$signals,
                                 nc = rank_check,
                                 maxit = maxit,
                                 fun = "ext",
-                                tol = tol)
+                                tol = tol,
+                                center = centre)
       }
     }
 
@@ -135,8 +150,6 @@ run_ICA.eeg_epochs <- function(data,
         names(unmixing_matrix) <- names(data$signals)
         unmixing_matrix$Component <- paste0("Comp", 1:ncol(ICA_out$S))
       }
-
-
   }
 
   ica_obj <- eeg_ICA(mixing_matrix = mixing_matrix,
@@ -159,6 +172,7 @@ run_ICA.eeg_epochs <- function(data,
 #' @param maxiter Maximum number of iterations of the joint diagonalization
 #' @param tol convergence tolerance.
 #' @param pca Number of PCA components.
+#' @param centre Mean center signals
 #' @author A. Belouchrani and A. Cichocki. Adapted to R by Matt Craddock
 #'   \email{matt@@mattcraddock.com}
 #' @keywords internal
@@ -166,7 +180,8 @@ run_ICA.eeg_epochs <- function(data,
 sobi_ICA <- function(data,
                      maxiter,
                      tol,
-                     pca) {
+                     pca,
+                     centre) {
 
   n_epochs <- length(unique(data$timings$epoch))
   n_channels <- ncol(data$signals)
@@ -180,8 +195,10 @@ sobi_ICA <- function(data,
   ## should probably edit this to zero mean *epochs*
   #do by epochs
 
-  # centre each epoch on zero
-  data <- rm_baseline(data, verbose = FALSE)
+  if (centre){
+    # centre the data on zero.
+    data <- rm_baseline(data, verbose = FALSE)
+  }
 
   SVD_amp <- svd(data$signals)
 
@@ -283,7 +300,7 @@ apply_ica.eeg_ICA <- function(data,
   ncomps <- ncol(data$mixing_matrix)
   new_mixmat <- data$mixing_matrix[1:(ncomps - 1)]
   new_mixmat[ , comps] <- 0
-  new_dat <- as.matrix(new_mixmat) %*% t(as.matrix(data$signals))
+  new_dat <- mix(as.matrix(new_mixmat), as.matrix(data$signals))
   new_dat <- as.data.frame(t(new_dat))
   names(new_dat) <- data$chan_info$electrode
   out <-
@@ -329,5 +346,5 @@ mix <- function(sources,
 
 unmix <- function(data,
                   unmixing_matrix) {
-  t(as.matrix(unmixing_matrix) %*% t(as.matrix(data)))
+  t(tcrossprod(unmixing_matrix, as.matrix(data)))
 }

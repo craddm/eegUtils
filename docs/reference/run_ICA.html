@@ -65,7 +65,7 @@ fastica, extended Infomax, and Second-Order Blind Identification (SOBI)." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">eegUtils</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
       </span>
     </div>
 
@@ -144,8 +144,8 @@ fastica, extended Infomax, and Second-Order Blind Identification (SOBI).</p>
     <pre class="usage"><span class='fu'>run_ICA</span>(<span class='no'>data</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for eeg_epochs</span>
-<span class='fu'>run_ICA</span>(<span class='no'>data</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"sobi"</span>, <span class='kw'>maxit</span> <span class='kw'>=</span> <span class='fl'>500</span>,
-  <span class='kw'>tol</span> <span class='kw'>=</span> <span class='fl'>1e-06</span>, <span class='no'>...</span>)</pre>
+<span class='fu'>run_ICA</span>(<span class='no'>data</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"sobi"</span>, <span class='kw'>maxit</span> <span class='kw'>=</span> <span class='fl'>1000</span>,
+  <span class='kw'>tol</span> <span class='kw'>=</span> <span class='fl'>1e-06</span>, <span class='kw'>pca</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>centre</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -171,6 +171,15 @@ algorithms.</p></td>
       <th>tol</th>
       <td><p>Convergence tolerance for fastica and infomax. Defaults to 1e-06.</p></td>
     </tr>
+    <tr>
+      <th>pca</th>
+      <td><p>Reduce the number of dimensions using PCA before running ICA.
+Numeric,  &gt;1 and &lt; number of channels</p></td>
+    </tr>
+    <tr>
+      <th>centre</th>
+      <td><p>Defaults to TRUE. Centre the data on zero by subtracting the column mean. See notes on usage.</p></td>
+    </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
@@ -183,6 +192,19 @@ algorithms.</p></td>
 <li><p><code>eeg_epochs</code>: Run ICA on an <code>eeg_epochs</code> object</p></li>
 </ul>
     
+    <h2 class="hasAnchor" id="notes-on-ica-usage"><a class="anchor" href="#notes-on-ica-usage"></a>Notes on ICA usage</h2>
+
+    
+    <p>It is recommended to mean-centre your data appropriately before running
+  ICA. The implementations of FASTICA and extended-Infomax from the `ica`
+  package, and of SOBI ICA have this as an option which is enabled by
+  default, while the implementation of FASTICA in the fICA package enforces
+  mean-centring of the columns of the data. With epoched data, it is
+  recommended to centre each epoch on zero, rather than centre on the overall
+  channel mean. This can be achieved with the `rm_baseline()` function. SOBI
+  ICA will do this automatically, whereas the other ICA implementations will
+  centre on the channel means, not the epoch means.</p>
+    
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -193,6 +215,8 @@ algorithms.</p></td>
       <li><a href="#value">Value</a></li>
 
       <li><a href="#methods-by-class-">Methods (by class)</a></li>
+
+      <li><a href="#notes-on-ica-usage">Notes on ICA usage</a></li>
           </ul>
 
     <h2>Author</h2>

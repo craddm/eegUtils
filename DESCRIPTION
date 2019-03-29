@@ -1,8 +1,8 @@
 Package: eegUtils
 Type: Package
 Title: A collection of utilities for EEG analysis 
-Version: 0.3.0.9000
-Date: 2019-02-16
+Version: 0.4.0
+Date: 2019-03-29
 Authors@R: c(
   person("Matt", "Craddock", role = c("aut", "cre"), email = "matt@mattcraddock.com"),
   person("Matti", "Vuorre", role = "ctb", email = "mv2521@columbia.edu"))

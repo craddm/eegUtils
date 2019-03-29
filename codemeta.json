@@ -1,20 +1,23 @@
 {
-  "@context": ["https://doi.org/10.5063/schema/codemeta-2.0", "http://schema.org"],
+  "@context": [
+    "https://doi.org/10.5063/schema/codemeta-2.0",
+    "http://schema.org"
+  ],
   "@type": "SoftwareSourceCode",
   "identifier": "eegUtils",
-  "description": "A collection of functions for basic EEG processing. Includes import\n  functions for Biosemi (BDF) and Neuroscan (CNT), topographical plotting, referencing, and epoching.",
+  "description": "A collection of functions for EEG processing. Includes import\n  functions for Biosemi (BDF) and Neuroscan (CNT), topographical plotting, referencing, and epoching.",
   "name": "eegUtils: A collection of utilities for EEG analysis ",
   "codeRepository": "https://github.com/craddm/eegUtils",
   "issueTracker": "https://github.com/craddm/eegUtils/issues",
   "license": "https://spdx.org/licenses/MIT",
-  "version": "0.3.0.9000",
+  "version": "0.4.0",
   "programmingLanguage": {
     "@type": "ComputerLanguage",
     "name": "R",
-    "version": "3.5.1",
+    "version": "3.5.2",
     "url": "https://r-project.org"
   },
-  "runtimePlatform": "R version 3.5.1 (2018-07-02)",
+  "runtimePlatform": "R version 3.5.2 (2018-12-20)",
   "author": [
     {
       "@type": "Person",
@@ -102,6 +105,18 @@
     },
     {
       "@type": "SoftwareApplication",
+      "identifier": "JADE",
+      "name": "JADE",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=JADE"
+    },
+    {
+      "@type": "SoftwareApplication",
       "identifier": "ica",
       "name": "ica",
       "provider": {
@@ -123,6 +138,18 @@
         "url": "https://cran.r-project.org"
       },
       "sameAs": "https://CRAN.R-project.org/package=geigen"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "identifier": "fICA",
+      "name": "fICA",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=fICA"
     }
   ],
   "softwareRequirements": [
@@ -409,6 +436,18 @@
     },
     {
       "@type": "SoftwareApplication",
+      "identifier": "future.apply",
+      "name": "future.apply",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=future.apply"
+    },
+    {
+      "@type": "SoftwareApplication",
       "identifier": "R",
       "name": "R",
       "version": ">= 2.10"
@@ -416,24 +455,14 @@
   ],
   "releaseNotes": "https://github.com/craddm/eegUtils/blob/master/NEWS.md",
   "readme": "https://github.com/craddm/eegUtils/blob/master/README.md",
-  "fileSize": "74175.078KB",
-  "contIntegration": ["https://codecov.io/github/craddm/eegUtils?branch=master", "https://travis-ci.org/craddm/eegUtils", "https://ci.appveyor.com/project/craddm/eegUtils"],
+  "fileSize": "75950.052KB",
+  "contIntegration": [
+    "https://codecov.io/github/craddm/eegUtils?branch=master",
+    "https://travis-ci.org/craddm/eegUtils",
+    "https://ci.appveyor.com/project/craddm/eegUtils"
+  ],
   "developmentStatus": "http://www.repostatus.org/#wip",
-  "citation": [
-    {
-      "@type": "SoftwareSourceCode",
-      "datePublished": "2018",
-      "author": [
-        {
-          "@type": "Person",
-          "givenName": "Matt",
-          "familyName": "Craddock",
-          "email": "matt@mattcraddock.com"
-        }
-      ],
-      "name": "eegUtils: A collection of utilities for EEG analysis",
-      "url": "https://github.com/craddm/eegUtils",
-      "description": "R package version 0.3.0.9000"
-    }
-  ]
+  "copyrightHolder": {},
+  "funder": {},
+  "keywords": ["eeg", "eeg-signals-processing", "eeg-analysis", "eeg-signals", "eeg-data", "r", "rstats"]
 }

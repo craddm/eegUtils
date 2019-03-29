@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>A demo <code>eeg_epochs</code> dataset — demo_epochs • eegUtils</title>
+<title>Recreate channel timecourses from ICA decompositions. — apply_ica • eegUtils</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,10 +30,12 @@
 
 
 
-<meta property="og:title" content="A demo <code>eeg_epochs</code> dataset — demo_epochs" />
+<meta property="og:title" content="Recreate channel timecourses from ICA decompositions. — apply_ica" />
 
-<meta property="og:description" content="This is a small dataset with 11 electrodes and 80 epochs used for
-demonstrating some features of the eegUtils package." />
+<meta property="og:description" content="This function can be used to either recreate &quot;mixed&quot; (i.e. channel level)
+timecourses from an ICA decomposition, or to apply a set of ICA weights to a
+given dataset for the purpose of removing specific ICA components from that
+dataset." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -127,33 +129,68 @@ demonstrating some features of the eegUtils package." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>A demo <code>eeg_epochs</code> dataset</h1>
-    <small class="dont-index">Source: <a href='https://github.com/craddm/eegUtils/blob/master/R/data.R'><code>R/data.R</code></a></small>
-    <div class="hidden name"><code>demo_epochs.Rd</code></div>
+    <h1>Recreate channel timecourses from ICA decompositions.</h1>
+    <small class="dont-index">Source: <a href='https://github.com/craddm/eegUtils/blob/master/R/run_ICA.R'><code>R/run_ICA.R</code></a></small>
+    <div class="hidden name"><code>apply_ica.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>This is a small dataset with 11 electrodes and 80 epochs used for
-demonstrating some features of the <code>eegUtils</code> package.</p>
+    <p>This function can be used to either recreate "mixed" (i.e. channel level)
+timecourses from an ICA decomposition, or to apply a set of ICA weights to a
+given dataset for the purpose of removing specific ICA components from that
+dataset.</p>
     
     </div>
 
-    <pre class="usage"><span class='no'>demo_epochs</span></pre>
-        
-    <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
+    <pre class="usage"><span class='fu'>apply_ica</span>(<span class='no'>data</span>, <span class='no'>...</span>)
 
-    <p>A <code>eeg_epochs</code> object</p>
+<span class='co'># S3 method for eeg_ICA</span>
+<span class='fu'>apply_ica</span>(<span class='no'>data</span>, <span class='kw'>comps</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)
+
+<span class='co'># S3 method for eeg_epochs</span>
+<span class='fu'>apply_ica</span>(<span class='no'>data</span>, <span class='no'>decomp</span>, <span class='no'>comps</span>, <span class='no'>...</span>)</pre>
+    
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>data</th>
+      <td><p>An <code>eeg_ICA</code> or <code>eeg_epochs</code> object.</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>Other parameters.</p></td>
+    </tr>
+    <tr>
+      <th>comps</th>
+      <td><p>Components to remove.</p></td>
+    </tr>
+    <tr>
+      <th>decomp</th>
+      <td><p>An <code>eeg_ICA</code> object.</p></td>
+    </tr>
+    </table>
+    
+    <h2 class="hasAnchor" id="methods-by-class-"><a class="anchor" href="#methods-by-class-"></a>Methods (by class)</h2>
+
+    <ul>
+<li><p><code>eeg_ICA</code>: From given <code>eeg_ICA</code> object, recreate channel timecourses.</p></li>
+<li><p><code>eeg_epochs</code>: Combine a specific set of ICA weights with any <code>eeg_epochs</code> object.</p></li>
+</ul>
     
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
+      <li><a href="#arguments">Arguments</a></li>
       
-      <li><a href="#format">Format</a></li>
+      <li><a href="#methods-by-class-">Methods (by class)</a></li>
           </ul>
 
+    <h2>Author</h2>
+    <p>Matt Craddock <a href='mailto:matt@mattcraddock.com'>matt@mattcraddock.com</a></p>
   </div>
 </div>
 
