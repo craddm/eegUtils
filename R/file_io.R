@@ -524,6 +524,8 @@ read_vmrk <- function(file_name) {
 #' @param file_name Filename (and path if not in present working directory)
 #' @param df_out Defaults to FALSE - outputs an object of class eeg_data. Set to
 #'   TRUE for a normal data frame.
+#' @param participant_id By default, the filename will be used as the id of the participant.
+#' @param recording By default, the filename will be used as the name of the recording.
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #' @importFrom R.matlab readMat
 #' @importFrom dplyr group_by mutate rename
@@ -531,7 +533,19 @@ read_vmrk <- function(file_name) {
 #' @importFrom purrr is_empty
 #' @export
 
-import_set <- function(file_name, df_out = FALSE) {
+import_set <- function(file_name,
+                       df_out = FALSE,
+                       participant_id = NULL,
+                       recording = NULL) {
+
+
+  if (is.null(recording)) {
+    recording <- basename(tools::file_path_sans_ext(file_name))
+  }
+
+  if (is.null(participant_id)) {
+    participant_id <- basename(tools::file_path_sans_ext(file_name))
+  }
 
   temp_dat <- R.matlab::readMat(file_name)
   var_names <- dimnames(temp_dat$EEG)[[1]]
@@ -623,11 +637,23 @@ import_set <- function(file_name, df_out = FALSE) {
                               sample = 1:length(signals$time))
     event_table$time <- timings[which(timings$sample %in% event_table$event_onset,
                                       arr.ind = TRUE), ]$time
+
+    n_epochs <- length(unique(timings$epoch))
+
+    epochs <-
+      tibble::new_tibble(list(epoch = 1:n_epochs,
+                              participant_id = rep(participant_id, n_epochs),
+                              recording = rep(recording, n_epochs)),
+                         nrow = n_epochs,
+                         class = "epoch_info")
+
     out_data <- eeg_data(signals[, 1:n_chans],
                          srate = srate,
                          timings = timings,
                          chan_info = chan_info,
-                         events = event_table)
+                         events = event_table,
+                         epochs = epochs)
+
     if (!continuous) {
       class(out_data) <- c("eeg_epochs", "eeg_data")
     }
@@ -732,5 +758,9 @@ bva_elecs <- function(chan_info, radius = 85) {
   chan_info
 }
 
+#' @author Matt Craddock \email{matt@@mattcraddock.com}
+#' @importFrom R.matlab readMat
+#' @noRd
+import_ft <- function(file_name) {
 
-
+}
