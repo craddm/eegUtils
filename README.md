@@ -28,16 +28,19 @@ of the myriad packages and methods that support standard R formats.
 
 The package is very much under active development and is subject to a
 lot of changes. As such, it is not currently available on CRAN. Install
-the latest version from Github as below.
+the latest released version from Github as below.
 
 ``` r
 #install.packages("devtools")
 devtools::install_packages("craddm/eegUtils")
 ```
 
-Note that most development is on the **master** branch. There are
-occasional Github releases that freeze functionality at particular
-moments in development.
+To install the latest development version, install from the *develop*
+branch as below.
+
+``` r
+devtools::install_packages("craddm/eegUtils@develop")
+```
 
 ### Usage
 
@@ -124,6 +127,7 @@ cores or processes through the *future* package.
 
 ``` r
 library(future)
+#> Warning: package 'future' was built under R version 3.5.3
 plan(multiprocess)
 plot_psd(eeg_example, 
          freq_range = c(0, 60),
@@ -163,7 +167,7 @@ example_epochs
 #> 
 #> Number of channels   : 70 
 #> Number of epochs     : 78 
-#> Epoch limits     : -1 - 0.9980469 seconds
+#> Epoch limits     : -1 - 0.998 seconds
 #> Electrode names      : A1 A2 A3 A4 A5 A6 A7 A8 A9 A10 A11 A12 A13 A14 A15 A16 A17 A18 A19 A20 A21 A22 A23 A24 A25 A26 A27 A28 A29 A30 A31 A32 B1 B2 B3 B4 B5 B6 B7 B8 B9 B10 B11 B12 B13 B14 B15 B16 B17 B18 B19 B20 B21 B22 B23 B24 B25 B26 B27 B28 B29 B30 B31 B32 EXG1 EXG2 EXG3 EXG4 EXG5 EXG6 
 #> Sampling rate        : 512  Hz
 #> Reference        : average
@@ -179,7 +183,7 @@ plot_butterfly(example_epochs,
                time_lim = c(-.1, .5))
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-4-1.png)<!-- --> This outputs
+![](README_files/figure-gfm/unnamed-chunk-5-1.png)<!-- --> This outputs
 a *ggplot* object with some default styling already set.
 
 Now we might want a topographical plot. But BioSemi data files do not
@@ -215,7 +219,7 @@ topoplot(example_epochs, time_lim = c(.25, .35))
 #> limits, : Removing channels with no location.
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
 
 Since this is a *ggplot*, styling can be changed easily. For example, we
 could use a different colour scale, such as *viridis*.
@@ -230,7 +234,7 @@ topoplot(example_epochs,
 #> which will replace the existing scale.
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
 
 At any point, `eegUtils` objects can be transformed into data frames for
 use with functions that don’t natively support them.
@@ -254,7 +258,7 @@ example_epochs %>%
   theme_classic()
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
 
 In addition, there are overloaded versions of some `dplyr` functions
 that operate on the `signals` element of `eeg_data` and `eeg_epochs`
@@ -282,4 +286,4 @@ example_epochs %>%
   theme_classic()
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
