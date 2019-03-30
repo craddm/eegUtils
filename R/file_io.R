@@ -763,4 +763,31 @@ bva_elecs <- function(chan_info, radius = 85) {
 #' @noRd
 import_ft <- function(file_name) {
 
+  tmp_ft <- R.matlab::readMat(file_name)
+  srate <- unlist(tmp_ft$data["fsample", ,], use.names = FALSE)
+  times <- unlist(tmp_ft$data["time", ,], use.names = FALSE)
+  sig_names <- unlist(tmp_ft$data["label", , ], use.names = FALSE)
+  n_trials <- length(tmp_ft$data["trial", , ][[1]])
+
+  signals <- tibble::as_tibble(t(as.data.frame(tmp_ft$data["trial", , ])))
+  #timings <- tibble::tibble(sample = 1:dim(sigs)[[1]])
+  #timings$time <- (timings$sample - 1) / srate
+  names(signals) <- sig_names
+  timings <- tibble::tibble(epoch = rep(seq(1, n_trials),
+                                        each = length(unique(times))),
+                            time = times)
+
+  chan_info <- unlist(tmp_ft$data["elec", ,], recursive = FALSE)
+  chan_locs <- chan_info[[1]]
+  colnames(chan_locs) <- c("cart_x",
+                           "cart_y",
+                           "cart_z")
+  chan_locs <- tibble::as_tibble(chan_locs)
+  chan_locs$electrode <- sig_names
+
+  eeg_epochs(data = signals,
+             srate = srate,
+             timings = timings,
+             chan_info = validate_channels(chan_locs))
+
 }

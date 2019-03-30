@@ -443,8 +443,8 @@ montage_check <- function(montage) {
 #'
 #' Performs several checks on the structure of channel info: 1) Checks that
 #' "electrode" is character, not factor. 2) rounds any numeric values to 2
-#' decimal places. 3) Checks for any missing channels in the chan_info if signal names are supplied; populates
-#' them with NA if it finds any
+#' decimal places. 3) Checks for any missing channels in the chan_info if signal
+#' names are supplied; populates them with NA if it finds any.
 #'
 #' @param chan_info A channel info structure
 #' @param sig_names signal names from eegUtils signals
@@ -465,7 +465,8 @@ validate_channels <- function(chan_info,
   # merge always converts strings to factors,
   # so also make sure electrode is not a factor
   chan_info$electrode <- as.character(chan_info$electrode)
-  num_chans <- sapply(chan_info, is.numeric)
+  num_chans <- sapply(chan_info,
+                      is.numeric)
   chan_info[, num_chans] <- round(chan_info[, num_chans], 2)
 
   required_cols <- c("electrode",
@@ -483,7 +484,11 @@ validate_channels <- function(chan_info,
   chan_info[missing] <- NA
   chan_info <- chan_info[required_cols]
 
-  tibble::as.tibble(chan_info)
+  sph_coords <- cart_to_spherical(chan_info[, 5:7])
+  chan_info[, 2:4] <- sph_coords
+  chan_info[, c("x", "y")] <- project_elecs(chan_info)
+
+  tibble::as_tibble(chan_info)
 }
 
 #' Modify channel information
