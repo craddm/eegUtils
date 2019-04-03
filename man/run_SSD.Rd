@@ -4,7 +4,7 @@
 \alias{run_SSD}
 \title{Internal function for running SSD algorithm}
 \usage{
-run_SSD(data, sig_range, noise_range, RESS = FALSE)
+run_SSD(data, sig_range, noise_range, RESS = FALSE, verbose = TRUE)
 }
 \arguments{
 \item{data}{\code{eeg_epochs} object to be decomposed}
@@ -12,6 +12,10 @@ run_SSD(data, sig_range, noise_range, RESS = FALSE)
 \item{sig_range}{Frequency range of the signal of interest}
 
 \item{noise_range}{Frequency range of the noise}
+
+\item{RESS}{Run RESS rather than SSD. Defaults to FALSE.}
+
+\item{verbose}{Informative messages in consoles. Defaults to TRUE.}
 }
 \description{
 Internal function for running SSD algorithm

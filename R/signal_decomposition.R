@@ -1,7 +1,7 @@
 #' Generalized eigenvalue decomposition based methods for EEG data
 #'
 #' Implements a selection of Generalized Eigenvalue based decomposition methods
-#' for EEG signals. Intended for isolating oscillations at specified frequencis,
+#' for EEG signals. Intended for isolating oscillations at specified frequencies,
 #' decomposing channel-based data into distinct components reflecting distinct
 #' or combinations of sources of oscillatory signals. Currently only the
 #' spatio-spectral decomposition method (Nikulin et al, 2011) is implemented.
@@ -32,21 +32,28 @@ eeg_decomp.default <- function(data, ...) {
 #' @param sig_range Vector with two inputs, the lower and upper bounds of the frequency range of interest
 #' @param noise_range Range of frequencies to be considered noise (e.g. bounds of flanker frequencies)
 #' @param method Type of decomposition to apply. Currently only "ssd" is supported.
+#' @param verbose Informative messages printed to console. Defaults to TRUE.
 #' @describeIn eeg_decomp method for \code{eeg_epochs} objects
 eeg_decomp.eeg_epochs <- function(data,
                                   sig_range,
                                   noise_range = NULL,
-                                  method = "ssd") {
+                                  method = "ssd",
+                                  verbose = TRUE) {
 
+  if (verbose) {
+    message("Performing ", method, "...")
+  }
 
   data <- switch(method,
                  "ssd" = run_SSD(data,
                                  sig_range,
-                                 noise_range),
+                                 noise_range,
+                                 verbose = verbose),
                  "ress" = run_SSD(data,
                                   sig_range,
                                   noise_range,
-                                  RESS = TRUE))
+                                  RESS = TRUE,
+                                  verbose = verbose))
   class(data) <- c("eeg_ICA", "eeg_epochs")
   data
 }
@@ -56,30 +63,37 @@ eeg_decomp.eeg_epochs <- function(data,
 #' @param data \code{eeg_epochs} object to be decomposed
 #' @param sig_range Frequency range of the signal of interest
 #' @param noise_range Frequency range of the noise
+#' @param RESS Run RESS rather than SSD. Defaults to FALSE.
+#' @param verbose Informative messages in consoles. Defaults to TRUE.
 #' @keywords internal
 
 run_SSD <- function(data,
                     sig_range,
                     noise_range,
-                    RESS = FALSE) {
+                    RESS = FALSE,
+                    verbose = TRUE) {
 
-  if (!requireNamespace("geigen", quietly = TRUE)) {
+  if (!requireNamespace("geigen",
+                        quietly = TRUE)) {
     stop("Package \"geigen\" needed for SSD. Please install it.",
          call. = FALSE)
   }
 
-  signal <- iir_filt(data,
-                     low_freq = sig_range[1],
-                     high_freq = sig_range[2],
-                     filter_order = 2)
-  noise <- iir_filt(data,
-                    low_freq = noise_range[1],
-                    high_freq = noise_range[2],
-                    filter_order = 2)
-  noise <- iir_filt(data,
-                    low_freq = (sig_range[2] + noise_range[2]) / 2,
-                    high_freq = (sig_range[1] + noise_range[1]) / 2,
-                    filter_order = 2)
+  signal <- eeg_filter(data,
+                       low_freq = sig_range[1],
+                       high_freq = sig_range[2],
+                       filter_order = 2,
+                       method = "iir")
+  noise <- eeg_filter(data,
+                      low_freq = noise_range[1],
+                      high_freq = noise_range[2],
+                      filter_order = 2,
+                      method = "iir")
+  noise <- eeg_filter(data,
+                      low_freq = (sig_range[2] + noise_range[2]) / 2,
+                      high_freq = (sig_range[1] + noise_range[1]) / 2,
+                      filter_order = 2,
+                      method = "iir")
   # Calculate covariance respecting the epoching structure of the data
   cov_sig <- cov_epochs(signal)
   cov_noise <- cov_epochs(noise)
@@ -89,10 +103,12 @@ run_SSD <- function(data,
   # there are ranks
   rank_sig <- Matrix::rankMatrix(cov_sig)
 
-  if (rank_sig < ncol(cov_sig)) {
-    message("Input data is not full rank; returning ",
-            rank_sig,
-            "components")
+  if (verbose) {
+    if (rank_sig < ncol(cov_sig)) {
+      message("Input data is not full rank; returning ",
+              rank_sig,
+              "components")
+    }
   }
 
   M <- eig_sigs$vectors[, 1:rank_sig] %*% (diag(eig_sigs$values[1:rank_sig] ^ -0.5))
