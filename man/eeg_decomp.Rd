@@ -8,7 +8,7 @@
 eeg_decomp(data, ...)
 
 \method{eeg_decomp}{eeg_epochs}(data, sig_range, noise_range = NULL,
-  method = "ssd")
+  method = "ssd", verbose = TRUE)
 }
 \arguments{
 \item{data}{An \code{eeg_data} object}
@@ -20,10 +20,12 @@ eeg_decomp(data, ...)
 \item{noise_range}{Range of frequencies to be considered noise (e.g. bounds of flanker frequencies)}
 
 \item{method}{Type of decomposition to apply. Currently only "ssd" is supported.}
+
+\item{verbose}{Informative messages printed to console. Defaults to TRUE.}
 }
 \description{
 Implements a selection of Generalized Eigenvalue based decomposition methods
-for EEG signals. Intended for isolating oscillations at specified frequencis,
+for EEG signals. Intended for isolating oscillations at specified frequencies,
 decomposing channel-based data into distinct components reflecting distinct
 or combinations of sources of oscillatory signals. Currently only the
 spatio-spectral decomposition method (Nikulin et al, 2011) is implemented.
