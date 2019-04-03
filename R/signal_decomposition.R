@@ -108,9 +108,9 @@ run_SSD <- function(data,
   names(data$mixing_matrix) <- paste0("Comp", 1:ncol(data$mixing_matrix))
   data$mixing_matrix$electrode <- names(data$signals)
 
-  data$unmixing_matrix <- as.data.frame(W)
-  names(data$unmixing_matrix) <- paste0("Comp", 1:ncol(W))
-  data$unmixing_matrix$electrode <- data$mixing_matrix$electrode
+  data$unmixing_matrix <- as.data.frame(t(W))
+  names(data$unmixing_matrix) <- data$mixing_matrix$electrode
+  data$unmixing_matrix$Component <- paste0("Comp", 1:ncol(W))
 
   if (RESS) {
     data$signals <- as.data.frame(as.matrix(data$signals) %*% W)
