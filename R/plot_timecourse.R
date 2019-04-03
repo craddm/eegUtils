@@ -569,6 +569,21 @@ create_bf <- function(data,
                     aes(x = time,
                         y = amplitude))
 
+  if (length(unique(data$epoch)) > 1) {
+    chan_lines <- function() {
+      stat_summary(fun.y = mean,
+                   geom = "line",
+                   aes(colour = electrode),
+                   alpha = 0.5)
+    }
+  } else {
+    chan_lines <- function() {
+      geom_line(aes(colour = electrode),
+                alpha = 0.5)
+    }
+  }
+
+
   if (browse_mode) {
     butterfly_plot <-
       butterfly_plot +
@@ -589,8 +604,9 @@ create_bf <- function(data,
   } else {
     butterfly_plot <-
       butterfly_plot +
-      geom_line(alpha = 0.5,
-                aes(colour = electrode)) +
+      # geom_line(alpha = 0.5,
+      #           aes(colour = electrode)) +
+      chan_lines() +
       labs(x = "Time (s)",
            y = expression(paste("Amplitude (", mu, "V)")),
            colour = "") +
