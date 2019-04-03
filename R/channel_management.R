@@ -484,9 +484,6 @@ validate_channels <- function(chan_info,
   chan_info[missing] <- NA
   chan_info <- chan_info[required_cols]
 
-  sph_coords <- cart_to_spherical(chan_info[, 5:7])
-  chan_info[, 2:4] <- sph_coords
-  chan_info[, c("x", "y")] <- project_elecs(chan_info)
 
   tibble::as_tibble(chan_info)
 }
