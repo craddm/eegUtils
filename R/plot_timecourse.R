@@ -572,11 +572,9 @@ create_bf <- function(data,
   if (browse_mode) {
     butterfly_plot <-
       butterfly_plot +
-      stat_summary(geom = "line",
-                   fun.y = mean,
-                   aes(group = electrode),
-                   colour = "black",
-                   alpha = 0.2) +
+      geom_line(colour = "black",
+                aes(group = electrode),
+                alpha = 0.2) +
       labs(x = "Time (s)",
            y = expression(paste("Amplitude (", mu, "V)")),
            colour = "") +
@@ -591,11 +589,8 @@ create_bf <- function(data,
   } else {
     butterfly_plot <-
       butterfly_plot +
-      stat_summary(geom = "line",
-                   fun.y = mean,
-                   aes(group = electrode,
-                       colour = electrode),
-                alpha = 0.5) +
+      geom_line(alpha = 0.5,
+                aes(colour = electrode)) +
       labs(x = "Time (s)",
            y = expression(paste("Amplitude (", mu, "V)")),
            colour = "") +
