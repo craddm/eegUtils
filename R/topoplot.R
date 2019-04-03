@@ -34,10 +34,11 @@ topoplot.default <- function(data,
 #' @param time_lim Timepoint(s) to plot. Can be one time or a range to average
 #'   over. If none is supplied, the function will average across all timepoints
 #'   in the supplied data.
-#' @param limits Limits of the fill scale - should be given as a character vector
-#'   with two values specifying the start and endpoints e.g. limits = c(-2,-2).
-#'   Will ignore anything else. Defaults to the range of the data.
-#' @param chanLocs Allows passing of channel locations (see \code{electrode_locations})
+#' @param limits Limits of the fill scale - should be given as a character
+#'   vector with two values specifying the start and endpoints e.g. limits =
+#'   c(-2,-2). Will ignore anything else. Defaults to the range of the data.
+#' @param chanLocs Allows passing of channel locations (see
+#'   \code{electrode_locations})
 #' @param method Interpolation method. "Biharmonic" or "gam". "Biharmonic"
 #'   implements the same method used in Matlab's EEGLAB. "gam" fits a
 #'   Generalized Additive Model with k = 40 knots. Defaults to biharmonic spline
@@ -62,8 +63,11 @@ topoplot.default <- function(data,
 #'   only 'biosemi64alpha' available other than default 10/20 system)
 #' @param colourmap Deprecated, use palette instead.
 #' @param highlights Electrodes to highlight (in white).
-#' @param scaling Scaling multiplication factor for labels and any plot lines. Defaults to 1.
+#' @param scaling Scaling multiplication factor for labels and any plot lines.
+#'   Defaults to 1.
 #' @param groups Column name for groups to retain.
+#' @param verbose Warning messages when electrodes do not have locations.
+#'   Defaults to TRUE.
 #' @import ggplot2
 #' @import tidyr
 #' @importFrom dplyr group_by mutate summarise ungroup
@@ -91,6 +95,7 @@ topoplot.data.frame <- function(data,
                                 highlights = NULL,
                                 scaling = 1,
                                 groups = NULL,
+                                verbose = TRUE,
                                 ...) {
 
   if (!missing(colourmap)) {
@@ -121,16 +126,22 @@ topoplot.data.frame <- function(data,
     # Remove channels with no location
     if (any(is.na(data$x))) {
       data <- data[!is.na(data$x), ]
-      warning("Removing channels with no location.")
+      if (verbose) {
+        warning("Removing channels with no location.")
+      }
     }
 
   } else if (all(c("x", "y") %in% names(data))) {
-    message("Using electrode locations from data.")
+    if (verbose) {
+      message("Using electrode locations from data.")
+    }
   } else if ("electrode" %in% names(data)) {
     data <- electrode_locations(data,
                                 drop = TRUE,
                                 montage = montage)
-    message("Attempting to add standard electrode locations...")
+    if (verbose) {
+      message("Attempting to add standard electrode locations...")
+    }
   } else {
     stop("Neither electrode locations nor labels found.")
   }

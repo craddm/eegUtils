@@ -46,7 +46,9 @@ browse_data.eeg_ICA <- function(data,
 
     output$topo_ica <- renderCachedPlot({
       comp_no <- which(names(data$signals) == input$icomp)
-      topoplot(data, component = comp_no)
+      topoplot(data,
+               component = comp_no,
+               verbose = FALSE)
       },
       cacheKeyExpr = {input$icomp})
 
