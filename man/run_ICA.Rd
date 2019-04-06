@@ -25,7 +25,8 @@ algorithms.}
 \item{pca}{Reduce the number of dimensions using PCA before running ICA.
 Numeric,  >1 and < number of channels}
 
-\item{centre}{Defaults to TRUE. Centre the data on zero by subtracting the column mean. See notes on usage.}
+\item{centre}{Defaults to TRUE. Centre the data on zero by subtracting the
+column mean. See notes on usage.}
 }
 \value{
 An \code{eeg_ICA} object containing an ICA decomposition
