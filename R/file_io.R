@@ -758,36 +758,229 @@ bva_elecs <- function(chan_info, radius = 85) {
   chan_info
 }
 
+#' Import Fieldtrip files
+#'
+#' Fieldtrip is a Matlab package for EEG/MEG processing and analysis.
+#'
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
+#' @param file_name Name of file to be imported.
+#' @param recording Name of the recording. By default, the filename will be
+#'   used.
+#' @param participant_id Identifier for the participant.
+#' @param verbose Informative messages printed to console. Defaults to TRUE.
 #' @importFrom R.matlab readMat
 #' @noRd
-import_ft <- function(file_name) {
+import_ft <- function(file_name,
+                      participant_id = NULL,
+                      recording = NULL,
+                      verbose = TRUE) {
 
   tmp_ft <- R.matlab::readMat(file_name)
-  srate <- unlist(tmp_ft$data["fsample", ,], use.names = FALSE)
-  times <- unlist(tmp_ft$data["time", ,], use.names = FALSE)
-  sig_names <- unlist(tmp_ft$data["label", , ], use.names = FALSE)
-  n_trials <- length(tmp_ft$data["trial", , ][[1]])
 
-  signals <- tibble::as_tibble(t(as.data.frame(tmp_ft$data["trial", , ])))
-  #timings <- tibble::tibble(sample = 1:dim(sigs)[[1]])
-  #timings$time <- (timings$sample - 1) / srate
+  tmp_ft <- tmp_ft[[1]]
+  struct_names <- rownames(tmp_ft)
+
+  if ("pos" %in% struct_names) {
+    stop("Import of source data is not currently supported.")
+  }
+
+  if (is.null(participant_id)) {
+    participant_id <- basename(tools::file_path_sans_ext(file_name))
+  }
+
+  if (is.null(recording)) {
+    recording <- basename(tools::file_path_sans_ext(file_name))
+  }
+
+  if ("dimord" %in% struct_names) {
+
+    dimensions <- proc_dimord(unlist(tmp_ft["dimord", ,],
+                                     use.names = FALSE))
+
+    if ("frequency" %in% dimensions) {
+      return(ft_freq(tmp_ft,
+                     dimensions,
+                     struct_names = struct_names,
+                     participant_id = participant_id,
+                     recording = recording,
+                     verbose = verbose))
+    }
+
+  } else {
+
+    # work out if the file stores components (from ICA or PCA) or "raw" data
+    if ("unmixing" %in% struct_names) {
+      return(ft_comp(tmp_ft))
+    } else {
+      return(ft_raw(tmp_ft,
+                    struct_names = struct_names,
+                    participant_id = participant_id,
+                    recording = recording,
+                    verbose = verbose))
+    }
+  }
+}
+
+ft_raw <- function(data,
+                   struct_names,
+                   participant_id,
+                   recording,
+                   verbose) {
+
+  if (verbose) message("Importing ft_raw (epoched) dataset.")
+
+  sig_names <- unlist(data["label", , ],
+                      use.names = FALSE)
+
+  times <- unlist(data["time", ,],
+                  use.names = FALSE)
+
+  if ("fsample" %in% struct_names) {
+    srate <- unlist(data["fsample", ,],
+                    use.names = FALSE)
+  } else {
+    srate <- NULL
+  }
+
+  n_trials <- length(data["trial", , ][[1]])
+  signals <- tibble::as_tibble(t(as.data.frame(data["trial", , ])))
+
   names(signals) <- sig_names
   timings <- tibble::tibble(epoch = rep(seq(1, n_trials),
                                         each = length(unique(times))),
                             time = times)
 
-  chan_info <- unlist(tmp_ft$data["elec", ,], recursive = FALSE)
-  chan_locs <- chan_info[[1]]
-  colnames(chan_locs) <- c("cart_x",
-                           "cart_y",
-                           "cart_z")
-  chan_locs <- tibble::as_tibble(chan_locs)
-  chan_locs$electrode <- sig_names
+  epochs <- tibble::tibble(epoch = 1:n_trials,
+                           participant_id = participant_id,
+                           recording = recording)
 
+  if ("elec" %in% struct_names) {
+    if (verbose) message("Importing channel information.")
+    chan_info <- ft_chan_info(data)
+    chan_info$electrode <- sig_names
+    chan_info <- validate_channels(chan_info)
+  } else {
+    if (verbose) message("No EEG channel information found.")
+    chan_info <- NULL
+  }
+
+  chan_info$electrode <- sig_names
   eeg_epochs(data = signals,
              srate = srate,
              timings = timings,
-             chan_info = validate_channels(chan_locs))
+             chan_info = chan_info,
+             epochs = epochs)
+}
 
+ft_comp <- function(data) {
+  mixing_matrix <- unlist(data["topo", , ],
+                          use.names = FALSE)
+  unmixing_matrix <- unlist(data["unmixing", , ],
+                            use.names = FALSE)
+  chan_names <- unlist(data["topolabel", , ],
+                       use.names = FALSE)
+}
+
+ft_freq <- function(data,
+                    dimensions,
+                    struct_names,
+                    participant_id,
+                    recording,
+                    verbose) {
+
+  if (verbose) message("Importing ft_freq dataset.")
+
+  frequencies <- as.vector(unlist(data["freq", , ]))
+
+  if (!("powspctrm" %in% struct_names)) {
+    stop("Only import of power data currently supported from ft_freq data.")
+  }
+
+  if ("fsample" %in% struct_names) {
+    srate <- unlist(data["fsample", ,],
+                    use.names = FALSE)
+  } else {
+    srate <- NULL
+  }
+
+  signals <- data[[which(struct_names == "powspctrm")]]
+
+  sig_names <- unlist(data["label", , ],
+                      use.names = FALSE)
+
+  if ("time" %in% dimensions) {
+    times <- unlist(data["time", ,],
+                    use.names = FALSE)
+  }
+
+  freq_info <- list(freqs = frequencies,
+                    method = "unknown",
+                    output = "power",
+                    baseline = "none")
+
+  if (all(c("epoch", "time") %in% dimensions)) {
+    n_trials <- dim(signals)[[1]]
+    dimnames(signals) <- list(epoch = 1:n_trials,
+                              electrode = sig_names,
+                              frequency = frequencies,
+                              time = times)
+  } else {
+    n_trials <- 1
+    dimnames(signals) <- list(electrode = sig_names,
+                              frequency = frequencies,
+                              time = times)
+  }
+
+  epochs <- tibble::tibble(epoch = 1:n_trials,
+                           participant_id = participant_id,
+                           recording = recording)
+
+  timings <- tibble::tibble(epoch = rep(seq(1, n_trials),
+                                        each = length(unique(times))),
+                            time = rep(times,
+                                       n_trials))
+
+  if ("elec" %in% struct_names) {
+    if (verbose) message("Importing channel information.")
+    chan_info <- ft_chan_info(data)
+    chan_info$electrode <- sig_names
+    chan_info <- validate_channels(chan_info)
+  } else {
+    if (verbose) message("No EEG channel information found.")
+    chan_info <- NULL
+  }
+
+  eeg_tfr(data = signals,
+          dimensions = dimensions,
+          srate = srate,
+          events = NULL,
+          chan_info = chan_info,
+          reference = NULL,
+          timings = timings,
+          epochs = epochs,
+          freq_info = freq_info)
+}
+
+
+ft_chan_info <- function(data) {
+  chan_info <- unlist(data["elec", ,],
+                      recursive = FALSE)
+  chan_info <- chan_info[[1]]
+  colnames(chan_info) <- c("cart_x",
+                           "cart_y",
+                           "cart_z")
+  chan_info <- tibble::as_tibble(chan_info)
+  sph_coords <- cart_to_spherical(chan_info)
+  chan_info <- cbind(chan_info,
+                     sph_coords)
+  chan_info[, c("x", "y")] <- project_elecs(chan_info)
+  chan_info
+}
+
+proc_dimord <- function(dimord) {
+  dimord <- unlist(strsplit(dimord, "_"))
+  dimord <- gsub("rpt", "epoch", dimord)
+  dimord <- gsub("chan", "electrode", dimord)
+  dimord <- gsub("freq", "frequency", dimord)
+  dimord
 }
