@@ -8,7 +8,8 @@
 run_ICA(data, ...)
 
 \method{run_ICA}{eeg_epochs}(data, method = "sobi", maxit = 1000,
-  tol = 1e-06, pca = NULL, centre = TRUE, ...)
+  tol = 1e-06, pca = NULL, centre = TRUE, alg = "gradient",
+  rateanneal = c(60, 0.9), rate = 0.1, ...)
 }
 \arguments{
 \item{data}{Data to be ICAed.}
@@ -27,6 +28,12 @@ Numeric,  >1 and < number of channels}
 
 \item{centre}{Defaults to TRUE. Centre the data on zero by subtracting the
 column mean. See notes on usage.}
+
+\item{alg}{Use gradient descent or Newton algorithm for extended infomax. Ignored if method != "infomax".}
+
+\item{rateanneal}{Annealing rate for extended infomax. Ignored if method != "infomax".}
+
+\item{rate}{Learning rate for extended infomax. Ignored if method != "infomax".}
 }
 \value{
 An \code{eeg_ICA} object containing an ICA decomposition
