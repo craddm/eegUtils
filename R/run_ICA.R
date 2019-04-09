@@ -21,6 +21,7 @@
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #' @return An \code{eeg_ICA} object containing an ICA decomposition
 #' @importFrom MASS ginv
+#' @importFrom Matrix rankMatrix
 #' @export
 
 run_ICA <- function(data, ...) {
@@ -35,6 +36,9 @@ run_ICA <- function(data, ...) {
 #'   Numeric,  >1 and < number of channels
 #' @param centre Defaults to TRUE. Centre the data on zero by subtracting the
 #'   column mean. See notes on usage.
+#' @param alg
+#' @param rateanneal Annealing rate for extended infomax. Ignored if method != "infomax".
+#' @param rate Learning rate for extended infomax. Ignored if method != "infomax".
 #' @describeIn run_ICA Run ICA on an \code{eeg_epochs} object
 #' @export
 
@@ -44,6 +48,9 @@ run_ICA.eeg_epochs <- function(data,
                                tol = 1e-6,
                                pca = NULL,
                                centre = TRUE,
+                               alg = "gradient",
+                               rateanneal = c(60, .9),
+                               rate = 0.1,
                                ...) {
 
   if (!is.null(pca)) {
@@ -130,7 +137,10 @@ run_ICA.eeg_epochs <- function(data,
                                 maxit = maxit,
                                 fun = "ext",
                                 tol = tol,
-                                center = centre)
+                                center = centre,
+                                alg = alg,
+                                rateanneal = rateanneal,
+                                rate = rate)
       }
     }
 
