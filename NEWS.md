@@ -1,3 +1,13 @@
+# eegUtils 0.4.0.9000
+
+### Function changes
+- Default settings for Infomax ICA changed to be similar to EEGLAB/Fieldtrip.
+
+### Internal changes / bug fixes
+- `plot_butterfly` should now be faster again.
+- `compute_csd` now uses `eeg_reference` rather than `reref_eeg`
+- Unmixing matrix for SSD decompositions fixed.
+
 # eegUtils 0.4.0
 
 ### Function changes

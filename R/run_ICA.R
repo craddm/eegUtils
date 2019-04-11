@@ -36,9 +36,12 @@ run_ICA <- function(data, ...) {
 #'   Numeric,  >1 and < number of channels
 #' @param centre Defaults to TRUE. Centre the data on zero by subtracting the
 #'   column mean. See notes on usage.
-#' @param alg Use gradient descent or Newton algorithm for extended infomax. Ignored if method != "infomax".
-#' @param rateanneal Annealing rate for extended infomax. Ignored if method != "infomax".
-#' @param rate Learning rate for extended infomax. Ignored if method != "infomax".
+#' @param alg Use "gradient" descent or "newton" algorithm for extended infomax.
+#'   Defaults to "gradient". Ignored if method != "infomax".
+#' @param rateanneal Annealing rate for extended infomax. Ignored if method !=
+#'   "infomax".
+#' @param rate Learning rate for extended infomax. Ignored if method !=
+#'   "infomax".
 #' @describeIn run_ICA Run ICA on an \code{eeg_epochs} object
 #' @export
 
