@@ -345,6 +345,7 @@ topoplot.eeg_data <- function(data, time_lim = NULL,
                               montage = NULL,
                               highlights = NULL,
                               scaling = 1,
+                              verbose = TRUE,
                               ...) {
 
   if (!is.null(data$chan_info)) {
@@ -380,7 +381,8 @@ topoplot.eeg_data <- function(data, time_lim = NULL,
            montage = montage,
            highlights = highlights,
            passed = TRUE,
-           scaling = scaling)
+           scaling = scaling,
+           verbose = verbose)
 }
 
 
@@ -403,6 +405,7 @@ topoplot.eeg_epochs <- function(data,
                                 highlights = NULL,
                                 scaling = 1,
                                 groups = NULL,
+                                verbose = TRUE,
                                 ...) {
 
   if (!is.null(data$chan_info)) {
@@ -435,7 +438,8 @@ topoplot.eeg_epochs <- function(data,
            montage = montage,
            highlights = highlights,
            scaling = scaling,
-           groups = groups
+           groups = groups,
+           verbose = verbose
            )
 }
 
@@ -459,7 +463,8 @@ topoplot.eeg_ICA <- function(data,
                              montage = NULL,
                              colourmap,
                              highlights = NULL,
-                             scaling = scaling,
+                             scaling = 1,
+                             verbose = TRUE,
                              ...) {
   if (missing(component)) {
     stop("Component number must be specified for eeg_ICA objects.")
@@ -475,7 +480,8 @@ topoplot.eeg_ICA <- function(data,
            interp_limit = interp_limit,
            #scaling = scaling,
            chan_marker = chan_marker,
-           time_lim = NULL)
+           time_lim = NULL,
+           verbose = verbose)
 
 }
 
@@ -499,6 +505,7 @@ topoplot.eeg_tfr <- function(data,
                              highlights = NULL,
                              scaling = 1,
                              freq_range = NULL,
+                             verbose = TRUE,
                              ...) {
 
   if (!is.null(data$chan_info)) {
@@ -534,7 +541,8 @@ topoplot.eeg_tfr <- function(data,
            montage = montage,
            highlights = highlights,
            scaling = scaling,
-           passed = TRUE)
+           passed = TRUE,
+           verbose = verbose)
 }
 
 #' Set palette and limits for topoplot
