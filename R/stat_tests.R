@@ -1,10 +1,12 @@
-#' Compare epochs using an independent t-test
+#' Compare epochs using an independent t-test.
 #'
 #' @param data \code{eeg_epochs} object.
 #' @param ... Other parameters passed to functions.
 #' @author Matt Craddock, \email{matt@@mattcraddock.com}
+#' @keywords internal
 
-compare_epochs <- function(data, ...) {
+compare_epochs <- function(data,
+                           ...) {
   UseMethod("compare_epochs", data)
 }
 
@@ -24,47 +26,44 @@ compare_epochs.eeg_epochs <- function(data,
     }
 
     #matrix_t testing
-    elecs <- colnames(data$signals)
+    elecs <- channel_names(data)
     data$signals <- as.matrix(data$signals)
     n_epochs <- length(unique(data$timings$epoch))
     n_times <- length(unique(data$timings$time))
     dim(data$signals) <- c(n_times, n_epochs, ncol(data$signals))
     data$signals <- array_t(data$signals)
     colnames(data$signals) <- elecs
+    data$pvals <- calc_pval(x,
+                            df = (n_epochs - 1))
     data$signals <- tibble::as_tibble(data$signals)
-    data$pvals <- apply(data$signals, 2,
-                        function(x) calc_pval(x, df = (n_epochs - 1)))
   } else if (identical(type, "2samp")) {
-    if (length(cond_label) != 2) {
-      stop("Two condition labels must be supplied.")
+
+    elecs <- channel_names(data)
+    n_elecs <- length(elecs)
+    n_times <- length(unique(data$timings$time))
+    n_epochs <- length(unique(data$timings$epoch))
+    deg_f <- n_epochs - 2
+
+    data$signals <- as.data.frame(data)
+    conds <- unique(data$signals[[cond_label]])
+
+    if (length(conds) != 2) {
+      stop("Condition must have two levels.")
     }
 
-    elecs <- colnames(data$signals)
+    cond1 <- data$signals[[cond_label]] == conds[1]
+    cond2 <- data$signals[[cond_label]] == conds[2]
 
-    # select epochs from data frame
+    mat1 <- as.matrix(data$signals[cond1, elecs])
+    mat2 <- as.matrix(data$signals[cond2, elecs])
+    dim(mat1) <- c(n_times, sum(cond1) / n_times, n_elecs)
+    dim(mat2) <- c(n_times, sum(cond2) / n_times, n_elecs)
 
-    # warning - this does not validate that the epochs in each condition are
-    # unique - it's possible for an epoch to contain more than one event, and
-    # this selects based on *events*
-    n_times <- length(unique(data$timings$time))
-    cond1 <- select_epochs(data, cond_label[[1]])
-    n_epochs <- length(unique(cond1$timings$epoch))
-    deg_f <- n_epochs
-
-    cond1 <- as.matrix(cond1$signals)
-    dim(cond1) <- c(n_times, n_epochs, ncol(data$signals))
-
-    cond2 <- select_epochs(data, cond_label[[2]])
-    n_epochs <- length(unique(cond2$timings$epoch))
-    deg_f <- deg_f + n_epochs
-
-    cond2 <- as.matrix(cond2$signals)
-    dim(cond2) <- c(n_times, n_epochs, ncol(data$signals))
-    data$signals <- calc_tstat_2(cond1, cond2)
+    data$signals <- calc_tstat_2(mat1,
+                                 mat2)
     colnames(data$signals) <- elecs
+    data$pvals <- calc_pval(data$signals, df = deg_f)
     data$signals <- tibble::as_tibble(data$signals)
-    data$pvals <- apply(data$signals, 2,
-                        function(x) calc_pval(x, df = (deg_f - 2)))
   }
   eeg_stats(statistic = data$signals,
             pvals = data$pvals,
@@ -85,18 +84,18 @@ array_t <- function(x, mu = 0) {
   tp_means <- colMeans(aperm(x, c(2, 1, 3)))
 
   #calculate standard deviation for each combination of timepoint and electrode
-  tp_sds <- vapply(1:dim(x)[[3]], function(i) matrixStats::rowSds(x[, , i]),
+  tp_sds <- vapply(1:dim(x)[[3]],
+                   function(i) matrixStats::rowSds(x[, , i]),
                    numeric(dim(x)[[1]]))
 
   new_t <- (tp_means - mu) / (tp_sds / sqrt(dim(x)[[2]]))
   new_t
 }
 
-
 #' Calculate two-sample independent t-statistic using Welch's formula
 #'
-#' @param x1 vector of values from one condition
-#' @param x2 vector of values from one condition
+#' @param x1 matrix of values from one condition
+#' @param x2 matrix of values from one condition
 #' @author Matt Craddock, \email{matt@@mattcraddock.com}
 #' @noRd
 
@@ -106,14 +105,19 @@ calc_tstat_2 <- function(x1, x2) {
   x1_means <- colMeans(aperm(x1, c(2, 1, 3)))
   x2_means <- colMeans(aperm(x2, c(2, 1, 3)))
 
-  x1_vars <- vapply(1:dim(x1)[[3]], function(i) matrixStats::rowVars(x1[, , i]), numeric(dim(x1)[[1]]))
-  x2_vars <- vapply(1:dim(x2)[[3]], function(i) matrixStats::rowVars(x2[, , i]), numeric(dim(x2)[[1]]))
+  x1_vars <- vapply(1:dim(x1)[[3]],
+                    function(i) matrixStats::rowVars(x1[, , i]),
+                    numeric(dim(x1)[[1]]))
+  x2_vars <- vapply(1:dim(x2)[[3]],
+                    function(i) matrixStats::rowVars(x2[, , i]),
+                    numeric(dim(x2)[[1]]))
 
   #adapt to calculate df too...
   #welch formula
-  hmmz <- (x1_means - x2_means) / sqrt(x1_vars / dim(x1)[[2]] + x2_vars / dim(x2)[[2]])
-  #hmmz <- (x1_means - x2_means) / (sqrt((x1_vars + x2_vars) / 2) * sqrt(2 / ncol(x2)))
-  hmmz
+  t_stats <- (x1_means - x2_means) /
+    sqrt(x1_vars / dim(x1)[[2]] +
+           x2_vars / dim(x2)[[2]])
+  t_stats
 }
 
 #' Calculate p-value
