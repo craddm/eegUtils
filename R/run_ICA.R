@@ -100,11 +100,11 @@ run_ICA.eeg_epochs <- function(data,
 
     unmixing_matrix <- as.data.frame(MASS::ginv(mixing_matrix, tol = 0))
     mixing_matrix <- as.data.frame(mixing_matrix)
-    names(ICA_out$S) <- paste0("Comp", 1:pca)
-    names(mixing_matrix) <- paste0("Comp", 1:pca)
+    names(ICA_out$S) <- sprintf("Comp%03d", 1:pca)
+    names(mixing_matrix) <- sprintf("Comp%03d", 1:pca)
     mixing_matrix$electrode <- orig_chans #names(data$signals)
     names(unmixing_matrix) <- orig_chans
-    unmixing_matrix$Component <- paste0("Comp", 1:pca) # names(data$signals)
+    unmixing_matrix$Component <- sprintf("Comp%03d", 1:pca) # names(data$signals)
   } else {
 
     if (method == "sobi") {
@@ -148,22 +148,22 @@ run_ICA.eeg_epochs <- function(data,
     }
 
       ICA_out$S <- as.data.frame(ICA_out$S)
-      names(ICA_out$S) <- paste0("Comp", 1:ncol(ICA_out$S))
+      names(ICA_out$S) <- sprintf("Comp%03d", 1:ncol(ICA_out$S))
 
       if (pca_flag) {
         mixing_matrix <- as.data.frame(pca_decomp[, 1:pca] %*% ICA_out$M)
         unmixing_matrix <- as.data.frame(MASS::ginv(as.matrix(mixing_matrix), tol = 0))
-        names(mixing_matrix) <- paste0("Comp", 1:pca)
+        names(mixing_matrix) <- sprintf("Comp%03d", 1:pca)
         names(unmixing_matrix) <- orig_chans
         mixing_matrix$electrode <- orig_chans
-        unmixing_matrix$Component <- paste0("Comp", 1:pca)
+        unmixing_matrix$Component <- sprintf("Comp%03d", 1:pca)
       } else {
         mixing_matrix <- as.data.frame(ICA_out$M)
-        names(mixing_matrix) <- paste0("Comp", 1:ncol(ICA_out$M))
+        names(mixing_matrix) <- sprintf("Comp%03d", 1:ncol(ICA_out$M))
         mixing_matrix$electrode <- names(data$signals)
         unmixing_matrix <- as.data.frame(ICA_out$W)
         names(unmixing_matrix) <- names(data$signals)
-        unmixing_matrix$Component <- paste0("Comp", 1:ncol(ICA_out$S))
+        unmixing_matrix$Component <- sprintf("Comp%03d", 1:ncol(ICA_out$S))
       }
   }
 
@@ -282,7 +282,7 @@ sobi_ICA <- function(data,
 
   S <- tcrossprod(unmixing_matrix, as.matrix(data$signals))
   S <- as.data.frame(t(S))
-  names(S) <- paste0("Comp", 1:ncol(S))
+  names(S) <- sprintf("Comp%03d", 1:ncol(S))
 
 
   list(M = mixing_matrix,
