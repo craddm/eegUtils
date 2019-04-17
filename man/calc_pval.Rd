@@ -7,9 +7,9 @@
 calc_pval(x, df, tails = 2)
 }
 \arguments{
-\item{x}{t-stat}
+\item{x}{Vector/matrix of t-stats}
 
-\item{df}{Degrees of freedom}
+\item{df}{Degrees of freedom.}
 
 \item{tails}{1 or 2 for one- or two-tailed p-value.}
 }
