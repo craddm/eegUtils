@@ -193,7 +193,8 @@ electrode_locations <- function(data, ...) {
 electrode_locations.data.frame <- function(data,
                                            electrode = "electrode",
                                            drop = FALSE,
-                                           montage = NULL, ...) {
+                                           montage = NULL,
+                                           ...) {
 
   #if a montage supplied, check if it matches known montages
   if (!is.null(montage)) {
@@ -453,10 +454,10 @@ validate_channels <- function(chan_info,
                               sig_names = NULL) {
 
   if (!is.null(sig_names)) {
-    missing_sigs <- !(sig_names %in% chan_info$electrode)
+    missing_sigs <- !(toupper(sig_names) %in% toupper(chan_info$electrode))
 
     if (any(missing_sigs)) {
-      chan_info <- merge(data.frame(electrode = sig_names),
+      chan_info <- merge(data.frame(electrode = toupper(sig_names)),
                          chan_info,
                          all.x = TRUE,
                          sort = FALSE)
@@ -464,7 +465,7 @@ validate_channels <- function(chan_info,
   }
   # merge always converts strings to factors,
   # so also make sure electrode is not a factor
-  chan_info$electrode <- as.character(chan_info$electrode)
+  chan_info$electrode <- as.character(sig_names)
   num_chans <- sapply(chan_info,
                       is.numeric)
   chan_info[, num_chans] <- round(chan_info[, num_chans], 2)
