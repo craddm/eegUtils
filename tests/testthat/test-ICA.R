@@ -13,22 +13,22 @@ test_that("topoplots for ICA work", {
   skip_on_appveyor()
   vdiffr::expect_doppelganger("topographical plot for SOBI",
                               topoplot(demo_SOBI,
-                                       component = "Comp1"))
+                                       component = "Comp001"))
   vdiffr::expect_doppelganger("topographical plot for fastica",
                               topoplot(demo_fastic,
-                                       component = "Comp1"))
+                                       component = "Comp001"))
   vdiffr::expect_doppelganger("topographical plot for fica",
                               topoplot(demo_fica,
-                                       component = "Comp1"))
+                                       component = "Comp001"))
 })
 
 test_that("ICA timecourses work", {
   vdiffr::expect_doppelganger("timecourse over one component",
                               plot_timecourse(demo_SOBI,
-                                              component = "Comp1"))
+                                              component = "Comp001"))
   vdiffr::expect_doppelganger("fastica timecourse",
                               plot_timecourse(demo_fastic,
-                                              component = "Comp2"))
+                                              component = "Comp002"))
   vdiffr::expect_doppelganger("fastica psd",
                               plot_psd(demo_fastic))
 })
