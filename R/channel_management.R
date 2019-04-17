@@ -65,7 +65,7 @@ import_elc <- function(file_name) {
   final_locs <- cbind(final_locs,
                       xy)
 
-  tibble::as.tibble(final_locs)
+  tibble::as_tibble(final_locs)
 }
 
 #' Import electrode locations from text
@@ -462,10 +462,11 @@ validate_channels <- function(chan_info,
                          all.x = TRUE,
                          sort = FALSE)
     }
+    chan_info$electrode <- sig_names
   }
   # merge always converts strings to factors,
   # so also make sure electrode is not a factor
-  chan_info$electrode <- as.character(sig_names)
+  chan_info$electrode <- as.character(chan_info$electrode)
   num_chans <- sapply(chan_info,
                       is.numeric)
   chan_info[, num_chans] <- round(chan_info[, num_chans], 2)
