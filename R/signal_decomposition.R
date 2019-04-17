@@ -1,10 +1,11 @@
 #' Generalized eigenvalue decomposition based methods for EEG data
 #'
 #' Implements a selection of Generalized Eigenvalue based decomposition methods
-#' for EEG signals. Intended for isolating oscillations at specified frequencies,
-#' decomposing channel-based data into distinct components reflecting distinct
-#' or combinations of sources of oscillatory signals. Currently only the
-#' spatio-spectral decomposition method (Nikulin et al, 2011) is implemented.
+#' for EEG signals. Intended for isolating oscillations at specified
+#' frequencies, decomposing channel-based data into distinct components
+#' reflecting distinct or combinations of sources of oscillatory signals.
+#' Currently only the spatio-spectral decomposition method (Nikulin et al, 2011)
+#' is implemented.
 #'
 #' @param data An \code{eeg_data} object
 #' @param ... Additional parameters
@@ -12,9 +13,9 @@
 #'   identifying oscillatory activity in multichannel data. BioRxiv, 097402.
 #'   https://doi.org/10.1101/097402
 #'
-#'   Haufe, S., Dähne, S., & Nikulin, V. V.
-#'   (2014). Dimensionality reduction for the analysis of brain oscillations.
-#'   NeuroImage, 101, 583–597. https://doi.org/10.1016/j.neuroimage.2014.06.073
+#'   Haufe, S., Dähne, S., & Nikulin, V. V. (2014). Dimensionality reduction for
+#'   the analysis of brain oscillations. NeuroImage, 101, 583–597.
+#'   https://doi.org/10.1016/j.neuroimage.2014.06.073
 #'
 #'   Nikulin, V. V., Nolte, G., & Curio, G. (2011). A novel method for reliable
 #'   and fast extraction of neuronal EEG/MEG oscillations on the basis of
@@ -121,20 +122,20 @@ run_SSD <- function(data,
   W <- M %*% W
   data$mixing_matrix <- (cov_sig %*% W) %*% solve(t(W) %*% cov_sig %*% W)
   data$mixing_matrix <- as.data.frame(data$mixing_matrix)
-  names(data$mixing_matrix) <- paste0("Comp", 1:ncol(data$mixing_matrix))
+  names(data$mixing_matrix) <- sprintf("Comp%03d", 1:ncol(data$mixing_matrix))
   data$mixing_matrix$electrode <- names(data$signals)
 
   data$unmixing_matrix <- as.data.frame(t(W))
   names(data$unmixing_matrix) <- data$mixing_matrix$electrode
-  data$unmixing_matrix$Component <- paste0("Comp", 1:ncol(W))
+  data$unmixing_matrix$Component <- sprintf("Comp%03d", 1:ncol(W))
 
   if (RESS) {
     data$signals <- as.data.frame(as.matrix(data$signals) %*% W)
-    names(data$signals) <- paste0("Comp", 1:ncol(W))
+    names(data$signals) <- sprintf("Comp%03d", 1:ncol(W))
     return(data)
   }
   data$signals <- as.data.frame(as.matrix(signal$signals) %*% W)
-  names(data$signals) <- paste0("Comp", 1:ncol(W))
+  names(data$signals) <- sprintf("Comp%03d", 1:ncol(W))
   data
 
 }
