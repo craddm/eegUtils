@@ -34,7 +34,7 @@ compare_epochs.eeg_epochs <- function(data,
     dim(data$signals) <- c(n_times, n_epochs, ncol(data$signals))
     data$signals <- array_t(data$signals)
     colnames(data$signals) <- elecs
-    data$pvals <- calc_pval(x,
+    data$pvals <- calc_pval(data$signals,
                             df = (n_epochs - 1))
     data$signals <- tibble::as_tibble(data$signals)
   } else if (identical(type, "2samp")) {
@@ -123,8 +123,8 @@ calc_tstat_2 <- function(x1, x2) {
 
 #' Calculate p-value
 #'
-#' @param x t-stat
-#' @param df Degrees of freedom
+#' @param x Vector/matrix of t-stats
+#' @param df Degrees of freedom.
 #' @param tails 1 or 2 for one- or two-tailed p-value.
 #' @author Matt Craddock, \email{matt@@mattcraddock.com}
 #' @keywords internal
