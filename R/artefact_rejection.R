@@ -19,12 +19,17 @@ ar_FASTER <- function(.data, ...) {
 
 #' @describeIn ar_FASTER Run FASTER on \code{eeg_epochs}
 #' @export
-ar_FASTER.eeg_epochs <- function(.data, ...) {
+ar_FASTER.eeg_epochs <- function(.data,
+                                 ...) {
 
   check_ci_str(.data$chan_info)
 
-  channels(.data) <- validate_channels(channels(.data),
-                                       channel_names(.data))
+  if (is.null(channels(.data))) {
+    stop("No channel information found, ar_FASTER() requires (at least some) channel locations.")
+  } else {
+    channels(.data) <- validate_channels(channels(.data),
+                                         channel_names(.data))
+  }
 
   # TODO - keep a record of which trials/channels etc are removed/interpolated
   # and allow marking for inspection rather than outright rejection.
@@ -159,9 +164,6 @@ faster_epochs <- function(.data, ...) {
   chans <- channel_names(.data)
   .data <- data.table::as.data.table(.data)
   chan_means <- .data[, lapply(.SD, mean), .SDcols = chans]
-  #colMeans(data$signals)
-  #data$signals <- split(data$signals,
-  #                      data$timings$epoch)
   epoch_range <- .data[, lapply(.SD, function(x) max(x) - min(x)),
                           .SDcols = chans,
                           by = epoch]
@@ -226,12 +228,6 @@ faster_cine <- function(.data, ...) {
   bad_coords <- lapply(bad_chans,
                        function(x) interp_weights(xyz_coords,
                                                   x))
-
-  # Work out which epochs have no transfer matrix (either all good or no bad
-  # chans with locations)
-  # good_epochs <- vapply(bad_coords,
-  #                       is.null,
-  #                       FUN.VALUE = logical(1))
 
   bad_coords <- bad_coords[lapply(bad_coords, length) > 0]
 
@@ -309,8 +305,8 @@ faster_epo_stat <- function(data, chan_means) {
 
 #' Simple absolute value thresholding
 #'
-#' Reject data based on a simple absolute threshold. This marks any
-#' timepoint from any electrode.
+#' Reject data based on a simple absolute threshold. This marks any timepoint
+#' from any electrode.
 #'
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #'
