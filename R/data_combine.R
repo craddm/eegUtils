@@ -107,6 +107,31 @@ eeg_combine.eeg_epochs <- function(data, ...) {
 }
 
 
+eeg_combine.eeg_evoked <- function(data,
+                                   ...) {
+  args <- list(...)
+  if (length(args) == 0) {
+    stop("Nothing to combine.")
+  }
+
+  if (check_classes(args)) {
+
+    data$signals <- dplyr::bind_rows(data$signals,
+                                     purrr::map_df(args,
+                                                   ~.$signals))
+    data$timings <- dplyr::bind_rows(data$timings,
+                                     purrr::map_df(args,
+                                                   ~.$timings))
+    data$epochs  <- dplyr::bind_rows(data$epochs,
+                                     purrr::map_df(args,
+                                                   ~.$epochs))
+  } else {
+    stop("All inputs must be eeg_evoked objects.")
+  }
+  class(data) <- c("eeg_GA", "eeg_evoked")
+  data
+}
+
 #' Check consistency of event and timing tables
 #'
 #' @param data \code{eeg_data} or \code{eeg_epochs} object

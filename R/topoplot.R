@@ -470,15 +470,17 @@ topoplot.eeg_ICA <- function(data,
     stop("Component number must be specified for eeg_ICA objects.")
   }
 
+  if (!is.null(time_lim) && verbose) {
+    warning("time_lim is ignored for ICA components.")
+  }
+
   chan_info <- data$chan_info
-  #data <- select_elecs(data, component = channel_names(data)[component])
-  #data <- as.data.frame(data, mixing = TRUE)
   data <- data.frame(amplitude = data$mixing_matrix[, component],
                       electrode = data$mixing_matrix$electrode)
   topoplot(data,
            chanLocs = chan_info,
            interp_limit = interp_limit,
-           #scaling = scaling,
+           scaling = scaling,
            chan_marker = chan_marker,
            time_lim = NULL,
            verbose = verbose)
@@ -763,12 +765,14 @@ round_topo <- function(.data,
   topo_out
 }
 
-new_topo <- function(.data,
+new_topo <- function(data,
                      ...) {
-  UseMethod("new_topo", .data)
+  UseMethod("new_topo", data)
 }
 
-new_topo.eeg_epochs <- function(.data,
+#' @param keep_epochs Average over epochs if FALSE. Defaults to FALSE.
+#' @noRd
+new_topo.eeg_epochs <- function(data,
                                 time_lim = NULL,
                                 limits = NULL,
                                 grid_res = 200,
@@ -780,18 +784,21 @@ new_topo.eeg_epochs <- function(.data,
                                 ...) {
 
   if (!keep_epochs) {
-    .data <- eeg_average(.data)
+    data <- eeg_average(data)
   }
 
   if (!is.null(time_lim)) {
-    .data <- select_times(.data, time_lim)
+    if (length(time_lim) == 1) {
+      time_lim <- rep(time_lim, 2)
+    }
+    data <- select_times(data, time_lim)
   }
 
-  .data <- as.data.frame(.data,
-                         long = TRUE,
-                         coords = TRUE)
+  data <- as.data.frame(data,
+                        long = TRUE,
+                        coords = TRUE)
 
-  make_new_topo(.data,
+  make_new_topo(data,
                 time_lim = time_lim,
                 limits = limits,
                 grid_res = grid_res,
@@ -803,7 +810,7 @@ new_topo.eeg_epochs <- function(.data,
                 ...)
 }
 
-new_topo.eeg_ICA <- function(.data,
+new_topo.eeg_ICA <- function(data,
                              time_lim = NULL,
                              limits = NULL,
                              grid_res = 200,
@@ -814,11 +821,11 @@ new_topo.eeg_ICA <- function(.data,
                              keep_epochs = FALSE,
                              ...) {
 
-  .data <- as.data.frame(.data,
+  data <- as.data.frame(data,
                          long = TRUE,
                          mixing = TRUE)
 
-  make_new_topo(.data,
+  make_new_topo(data,
                 time_lim = time_lim,
                 limits = limits,
                 grid_res = grid_res,
@@ -831,7 +838,7 @@ new_topo.eeg_ICA <- function(.data,
 }
 
 
-make_new_topo <- function(.data,
+make_new_topo <- function(data,
                           time_lim,
                           limits,
                           grid_res,
@@ -843,7 +850,7 @@ make_new_topo <- function(.data,
                           ...) {
 
   plot_out <-
-    ggplot(.data,
+    ggplot(data,
            aes(x = x,
                y = y,
                fill = amplitude)) +

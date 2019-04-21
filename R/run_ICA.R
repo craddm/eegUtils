@@ -102,9 +102,9 @@ run_ICA.eeg_epochs <- function(data,
     mixing_matrix <- as.data.frame(mixing_matrix)
     names(ICA_out$S) <- sprintf("Comp%03d", 1:pca)
     names(mixing_matrix) <- sprintf("Comp%03d", 1:pca)
-    mixing_matrix$electrode <- orig_chans #names(data$signals)
+    mixing_matrix$electrode <- orig_chans
     names(unmixing_matrix) <- orig_chans
-    unmixing_matrix$Component <- sprintf("Comp%03d", 1:pca) # names(data$signals)
+    unmixing_matrix$Component <- sprintf("Comp%03d", 1:pca)
   } else {
 
     if (method == "sobi") {
@@ -204,7 +204,8 @@ sobi_ICA <- function(data,
 
   ##number of lags at which to assess autocovariance matrices
   ## 100 is the default; only switches to smaller n if epochs are too short
-  n_lags <- min(100, ceiling(n_times / 3))
+  n_lags <- min(100,
+                ceiling(n_times / 3))
 
   ## Pre-whiten the data using the SVD. zero-mean columns and get SVD. NB:
   ## should probably edit this to zero mean *epochs*
@@ -212,15 +213,19 @@ sobi_ICA <- function(data,
 
   if (centre){
     # centre the data on zero.
-    data <- rm_baseline(data, verbose = FALSE)
+    data <- rm_baseline(data,
+                        verbose = FALSE)
   }
 
   SVD_amp <- svd(data$signals)
 
   ## get the psuedo-inverse of the diagonal matrix, multiply by singular
   ## vectors
-  Q <- tcrossprod(MASS::ginv(diag(SVD_amp$d), tol = 0), SVD_amp$v) # whitening matrix
-  amp_matrix <- tcrossprod(Q, as.matrix(data$signals))
+  Q <- tcrossprod(MASS::ginv(diag(SVD_amp$d),
+                             tol = 0),
+                  SVD_amp$v) # whitening matrix
+  amp_matrix <- tcrossprod(Q,
+                           as.matrix(data$signals))
 
   ## reshape to reflect epoching structure
   dim(amp_matrix) <- c(n_channels,
@@ -231,7 +236,9 @@ sobi_ICA <- function(data,
   k <- 1
   pm <- n_channels * n_lags
   N <- n_times
-  M <- matrix(NA, nrow = n_channels, ncol = pm)
+  M <- matrix(NA,
+              nrow = n_channels,
+              ncol = pm)
 
   tmp_fun <- function(amps,
                       k,
@@ -280,7 +287,8 @@ sobi_ICA <- function(data,
   dim(amp_matrix) <- c(n_channels,
                        n_times * n_epochs)
 
-  S <- tcrossprod(unmixing_matrix, as.matrix(data$signals))
+  S <- tcrossprod(unmixing_matrix,
+                  as.matrix(data$signals))
   S <- as.data.frame(t(S))
   names(S) <- sprintf("Comp%03d", 1:ncol(S))
 

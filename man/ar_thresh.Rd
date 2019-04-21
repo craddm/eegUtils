@@ -24,8 +24,8 @@ inspection/rejection. Defaults to FALSE.}
 \item{...}{Other arguments passed to eeg_ar_thresh}
 }
 \description{
-Reject data based on a simple absolute threshold. This marks any
-timepoint from any electrode.
+Reject data based on a simple absolute threshold. This marks any timepoint
+from any electrode.
 }
 \section{Methods (by class)}{
 \itemize{
