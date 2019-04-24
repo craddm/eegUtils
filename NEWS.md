@@ -7,6 +7,7 @@
 - `plot_butterfly` should now be faster again.
 - `compute_csd` now uses `eeg_reference` rather than `reref_eeg`
 - Unmixing matrix for SSD decompositions fixed.
+- Padding now used during `compute_tfr`, which greatly improves speed/accuracy; units may change but this is a change in scaling factor.
 
 # eegUtils 0.4.0
 

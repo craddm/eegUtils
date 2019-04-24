@@ -92,6 +92,7 @@ run_ICA.eeg_epochs <- function(data,
                           maxiter = maxit,
                           method = "sym2")
 
+    colnames(ICA_out$S) <- sprintf("Comp%03d", 1:pca)
     ICA_out$S <- tibble::as_tibble(ICA_out$S[, 1:pca])
 
     ICA_out$W <- ICA_out$W[, 1:pca]
@@ -100,7 +101,7 @@ run_ICA.eeg_epochs <- function(data,
 
     unmixing_matrix <- as.data.frame(MASS::ginv(mixing_matrix, tol = 0))
     mixing_matrix <- as.data.frame(mixing_matrix)
-    names(ICA_out$S) <- sprintf("Comp%03d", 1:pca)
+
     names(mixing_matrix) <- sprintf("Comp%03d", 1:pca)
     mixing_matrix$electrode <- orig_chans
     names(unmixing_matrix) <- orig_chans
