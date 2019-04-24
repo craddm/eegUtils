@@ -13,11 +13,11 @@ compute_tfr(data, ...)
 
 \method{compute_tfr}{eeg_epochs}(data, method = "morlet", foi, n_freq,
   n_cycles = 7, keep_trials = FALSE, output = "power",
-  downsample = 1, ...)
+  downsample = 1, verbose = TRUE, ...)
 
 \method{compute_tfr}{eeg_evoked}(data, method = "morlet", foi, n_freq,
   n_cycles = 7, keep_trials = FALSE, output = "power",
-  downsample = 1, ...)
+  downsample = 1, verbose = TRUE, ...)
 }
 \arguments{
 \item{data}{An object of class \code{eeg_epochs}.}
@@ -41,6 +41,8 @@ Defaults to FALSE.}
 
 \item{downsample}{Downsampling factor. Integer. Selects every n samples after
 performing time-frequency analysis.}
+
+\item{verbose}{Print informative messages in console.}
 }
 \description{
 This function creates a time frequency represention of EEG time series data.

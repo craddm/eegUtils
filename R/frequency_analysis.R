@@ -49,7 +49,6 @@ compute_psd.eeg_data <- function(data,
                                  method = "Welch",
                                  ...) {
 
-
   data <- rm_baseline(data)
   srate <- data$srate
 
@@ -344,6 +343,7 @@ compute_tfr.default <- function(data, ...) {
 #' @param output Sets whether output is power, phase, or fourier coefficients.
 #' @param downsample Downsampling factor. Integer. Selects every n samples after
 #'   performing time-frequency analysis.
+#' @param verbose Print informative messages in console.
 #' @describeIn compute_tfr Default method for compute_tfr
 #' @export
 
@@ -355,17 +355,19 @@ compute_tfr.eeg_epochs <- function(data,
                                    keep_trials = FALSE,
                                    output = "power",
                                    downsample = 1,
+                                   verbose = TRUE,
                                    ...) {
 
 
   tfr_obj <- switch(method,
-                   "morlet" = tf_morlet(data,
-                                        foi,
-                                        n_freq,
-                                        n_cycles,
-                                        keep_trials,
+                   "morlet" = tf_morlet(data = data,
+                                        foi = foi,
+                                        n_freq = n_freq,
+                                        n_cycles = n_cycles,
+                                        keep_trials = keep_trials,
                                         output = output,
-                                        downsample),
+                                        downsample = downsample,
+                                        verbose = verbose),
                    warning("Unknown method supplied. Currently supported method is 'morlet'"))
   tfr_obj
 }
@@ -379,6 +381,7 @@ compute_tfr.eeg_evoked <- function(data,
                                    keep_trials = FALSE,
                                    output = "power",
                                    downsample = 1,
+                                   verbose = TRUE,
                                    ...) {
   switch(method,
          "morlet" = tf_morlet(data,
@@ -387,7 +390,8 @@ compute_tfr.eeg_evoked <- function(data,
                               n_cycles,
                               keep_trials,
                               output,
-                              downsample),
+                              downsample,
+                              verbose),
          warning("Unknown method supplied. Currently supported method is 'morlet'"))
 }
 
@@ -404,7 +408,8 @@ compute_tfr.eeg_evoked <- function(data,
 #' @param n_cycles Number of cycles at each frequency.
 #' @param keep_trials Keep single trials or average over them before returning.
 #' @param output Sets whether output is power, phase, or fourier coefficients.
-#' @param downsample Downsampling factor (integer)
+#' @param downsample Downsampling factor (integer).
+#' @param demean Remove mean before transforming.
 #' @importFrom abind abind
 #' @keywords internal
 
@@ -414,22 +419,15 @@ tf_morlet <- function(data,
                       n_cycles,
                       keep_trials,
                       output,
-                      downsample) {
+                      downsample,
+                      demean = TRUE,
+                      verbose) {
 
-  if (length(foi) > 2) {
-    stop("No more than two frequencies should be specified.")
-  } else if (length(foi) == 2) {
-    foi <- c(min(foi),
-             max(foi))
-  } else {
-    foi <- c(foi, foi)
-    n_freq <- 1
-  }
+  frex <- parse_frex(foi,
+                     n_freq,
+                     verbose)
 
-  frex <- seq(foi[1],
-              foi[2],
-              length.out = n_freq)
-
+  n_freq <- length(unique(frex))
   # if a min and max n_cycles is specified, expand out to cycles per n_freq
   if (length(n_cycles) == 2) {
     n_cycles <- seq(n_cycles[1],
@@ -440,9 +438,11 @@ tf_morlet <- function(data,
   }
 
   #de-mean each epoch
-  #data <- rm_baseline(data)
+  if (demean) {
+    data <- rm_baseline(data, verbose = verbose)
+  }
   elecs <- names(data$signals)
-  fft_points <- length(unique(data$timings$time))
+  #fft_points <- length(unique(data$timings$time))
   sigtime <- unique(data$timings$time)
 
   #Create a family of morlet wavelets (unscaled)
@@ -462,6 +462,7 @@ tf_morlet <- function(data,
   max_length <- nrow(data$signals[[1]])
   n_kern <- nrow(morlet_family)
   n_conv <- max_length + n_kern - 1
+  n_conv <- nextn(n_conv, 2)
 
   # zero-pad and run FFTs on morlets
   mf_zp <- fft_n(morlet_family,
@@ -483,7 +484,8 @@ tf_morlet <- function(data,
                  trial_dat,
                  n_conv,
                  sigtime,
-                 data$srate),
+                 data$srate,
+                 n_kern),
         output)
     trial_dat <- trial_dat[time_sel, , , drop = FALSE]
     trial_dat
@@ -500,6 +502,7 @@ tf_morlet <- function(data,
   # Bind single trial matrices together into a single matrix
   # do.call method is slower than abind, but uses less memory
   data$signals <- do.call(rbind, data$signals)
+
 
   dim(data$signals) <- c(n_epochs, sig_dims)
 
@@ -659,6 +662,7 @@ fft_n <- function(signal, n) {
 #' @param n points for FFT
 #' @param wavtime time points
 #' @param srate Sampling rate of the signal
+#' @param n_kern Kernel length
 #' @importFrom stats mvfft
 #' @keywords internal
 
@@ -666,22 +670,25 @@ conv_mor <- function(morlet_fam,
                      signal,
                      n,
                      wavtime,
-                     srate) {
+                     srate,
+                     n_kern) {
 
   n_chans <- ncol(signal)
-  n_times <- nrow(signal)
+  #n_times <- nrow(signal)
   signal <- fft_n(as.matrix(signal),
                 n)
   tf_matrix <- array(1i, dim = c(nrow(signal),
                                  n_chans,
                                  ncol(morlet_fam)))
+
   for (i in 1:ncol(signal)) {
-    tf_matrix[, i, ] <- mvfft(signal[, i] * morlet_fam,
+    tf_matrix[, i, ] <- mvfft(signal[, i] * morlet_fam, #tf_mat2[, i, ],
                               inverse = TRUE) / srate
   }
 
-  nkern <- n - n_times + 1
-  nHfkn <- floor(nkern / 2) + 1
+  #nkern <- n - n_times + 1
+  nHfkn <- floor(n_kern / 2) + 1
+  #nHfkn <- floor(nkern / 4) + 1
   tf_matrix <- tf_matrix[nHfkn:(nrow(tf_matrix) - nHfkn + 1), , , drop = FALSE]
   tf_matrix
 }
@@ -772,5 +779,45 @@ wavelet_norm <- function(mf_zp, n_freq) {
                     function(x) mf_zp[, x] / mf_zp_maxes[[x]])
   norm_mf <- matrix(unlist(norm_mf),
                     ncol = n_freq)
+  norm_mf
 }
 
+parse_frex <- function(foi,
+                       n_freq,
+                       verbose) {
+
+  if (length(foi) > 2) {
+    stop("No more than two frequencies should be specified.")
+  } else if (length(foi) == 2) {
+    foi <- c(min(foi),
+             max(foi))
+  } else {
+    foi <- c(foi, foi)
+    n_freq <- 1
+  }
+
+  frex <- seq(foi[1],
+              foi[2],
+              length.out = n_freq)
+
+  if (verbose){
+    message("Output frequencies: ", paste(round(frex, 2), collapse = " "))
+  }
+  frex
+}
+
+tf_hanning <- function(data,
+                       foi,
+                       n_freq,
+                       n_cycles,
+                       keep_trials,
+                       output,
+                       downsample,
+                       verbose) {
+
+  frex <- parse_frex(foi = foi,
+                     n_freq = n_freq,
+                     verbose = verbose)
+
+  frex
+}

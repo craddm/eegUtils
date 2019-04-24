@@ -4,7 +4,8 @@
 \alias{tf_morlet}
 \title{Perform Morlet time-frequency analysis}
 \usage{
-tf_morlet(data, foi, n_freq, n_cycles, keep_trials, output, downsample)
+tf_morlet(data, foi, n_freq, n_cycles, keep_trials, output, downsample,
+  demean = TRUE, verbose)
 }
 \arguments{
 \item{data}{Data in \code{eeg_epochs} format.}
@@ -20,7 +21,9 @@ and highest frequency to resolve.}
 
 \item{output}{Sets whether output is power, phase, or fourier coefficients.}
 
-\item{downsample}{Downsampling factor (integer)}
+\item{downsample}{Downsampling factor (integer).}
+
+\item{demean}{Remove mean before transforming.}
 }
 \description{
 Internal function for performing Morlet wavelet transforms using convolution

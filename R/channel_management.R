@@ -98,7 +98,7 @@ import_txt <- function(file_name) {
   final_locs <- cbind(final_locs,
                       cart_xyz,
                       xy)
-  tibble::as.tibble(final_locs)
+  tibble::as_tibble(final_locs)
 }
 
 #' Convert topographical 2d to cartesian 2d
@@ -204,7 +204,7 @@ electrode_locations.data.frame <- function(data,
   data[, electrode] <- toupper(data[[electrode]])
   electrodeLocs[, electrode] <- toupper(electrodeLocs[[electrode]])
 
-  if (tibble::is.tibble(data)) {
+  if (tibble::is_tibble(data)) {
     elecs <-
       dplyr::pull(unique(data[, electrode])) %in%
       dplyr::pull(electrodeLocs[, electrode])
