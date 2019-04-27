@@ -11,6 +11,7 @@ demo_fica <- run_ICA(demo_epochs, method = "fica", pca = 10)
 test_that("topoplots for ICA work", {
 
   skip_on_appveyor()
+  skip_on_travis()
   vdiffr::expect_doppelganger("topographical plot for SOBI",
                               topoplot(demo_SOBI,
                                        component = "Comp1"))
@@ -23,6 +24,7 @@ test_that("topoplots for ICA work", {
 })
 
 test_that("ICA timecourses work", {
+  skip_on_travis()
   vdiffr::expect_doppelganger("timecourse over one component",
                               plot_timecourse(demo_SOBI,
                                               component = "Comp1"))
@@ -34,6 +36,7 @@ test_that("ICA timecourses work", {
 })
 
 test_that("component removal works", {
+  skip_on_travis()
   demo_rm <- apply_ica(demo_epochs, demo_SOBI, 1)
   demo_re <- apply_ica(demo_SOBI)
   vdiffr::expect_doppelganger("removed one component",
