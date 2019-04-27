@@ -3,10 +3,6 @@
 language: R
 sudo: true
 cache: packages
-addons:
-  apt:
-    packages:
-      - libfreetype6
 os:
   - linux
   - osx
