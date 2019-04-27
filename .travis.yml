@@ -7,7 +7,6 @@ addons:
   apt:
     packages:
       - libfreetype6
-r_github_packages: lionel-/vdiffr
 os:
   - linux
   - osx
