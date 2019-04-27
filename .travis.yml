@@ -8,6 +8,9 @@ addons:
     packages:
       - libfreetype6
 r_github_packages: lionel-/vdiffr
+os:
+  - linux
+  - osx
 after_success:
   - Rscript -e 'covr::codecov(type = "all")'
 warnings_are_errors: true
