@@ -9,26 +9,6 @@ baseline_epo <- function(x, x_m) {
     .Call(`_eegUtils_baseline_epo`, x, x_m)
 }
 
-get_listtestl <- function(x, mors, n_kern, output) {
-    .Call(`_eegUtils_get_listtestl`, x, mors, n_kern, output)
-}
-
-rcpparma_hello_world <- function() {
-    .Call(`_eegUtils_rcpparma_hello_world`)
-}
-
-rcpparma_outerproduct <- function(x) {
-    .Call(`_eegUtils_rcpparma_outerproduct`, x)
-}
-
-rcpparma_innerproduct <- function(x) {
-    .Call(`_eegUtils_rcpparma_innerproduct`, x)
-}
-
-rcpparma_bothproducts <- function(x) {
-    .Call(`_eegUtils_rcpparma_bothproducts`, x)
-}
-
 get_list <- function(x, mors, n_kern, output) {
     .Call(`_eegUtils_get_list`, x, mors, n_kern, output)
 }

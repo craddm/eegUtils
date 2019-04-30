@@ -30,63 +30,6 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// get_listtestl
-Rcpp::List get_listtestl(const Rcpp::List& x, const arma::cx_mat& mors, const double n_kern, const std::string output);
-RcppExport SEXP _eegUtils_get_listtestl(SEXP xSEXP, SEXP morsSEXP, SEXP n_kernSEXP, SEXP outputSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const Rcpp::List& >::type x(xSEXP);
-    Rcpp::traits::input_parameter< const arma::cx_mat& >::type mors(morsSEXP);
-    Rcpp::traits::input_parameter< const double >::type n_kern(n_kernSEXP);
-    Rcpp::traits::input_parameter< const std::string >::type output(outputSEXP);
-    rcpp_result_gen = Rcpp::wrap(get_listtestl(x, mors, n_kern, output));
-    return rcpp_result_gen;
-END_RCPP
-}
-// rcpparma_hello_world
-arma::mat rcpparma_hello_world();
-RcppExport SEXP _eegUtils_rcpparma_hello_world() {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    rcpp_result_gen = Rcpp::wrap(rcpparma_hello_world());
-    return rcpp_result_gen;
-END_RCPP
-}
-// rcpparma_outerproduct
-arma::mat rcpparma_outerproduct(const arma::colvec& x);
-RcppExport SEXP _eegUtils_rcpparma_outerproduct(SEXP xSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::colvec& >::type x(xSEXP);
-    rcpp_result_gen = Rcpp::wrap(rcpparma_outerproduct(x));
-    return rcpp_result_gen;
-END_RCPP
-}
-// rcpparma_innerproduct
-double rcpparma_innerproduct(const arma::colvec& x);
-RcppExport SEXP _eegUtils_rcpparma_innerproduct(SEXP xSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::colvec& >::type x(xSEXP);
-    rcpp_result_gen = Rcpp::wrap(rcpparma_innerproduct(x));
-    return rcpp_result_gen;
-END_RCPP
-}
-// rcpparma_bothproducts
-Rcpp::List rcpparma_bothproducts(const arma::colvec& x);
-RcppExport SEXP _eegUtils_rcpparma_bothproducts(SEXP xSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::colvec& >::type x(xSEXP);
-    rcpp_result_gen = Rcpp::wrap(rcpparma_bothproducts(x));
-    return rcpp_result_gen;
-END_RCPP
-}
 // get_list
 Rcpp::List get_list(const Rcpp::List& x, const arma::cx_mat& mors, const double n_kern, const std::string output);
 RcppExport SEXP _eegUtils_get_list(SEXP xSEXP, SEXP morsSEXP, SEXP n_kernSEXP, SEXP outputSEXP) {
@@ -133,11 +76,6 @@ END_RCPP
 static const R_CallMethodDef CallEntries[] = {
     {"_eegUtils_baseline_cont", (DL_FUNC) &_eegUtils_baseline_cont, 2},
     {"_eegUtils_baseline_epo", (DL_FUNC) &_eegUtils_baseline_epo, 2},
-    {"_eegUtils_get_listtestl", (DL_FUNC) &_eegUtils_get_listtestl, 4},
-    {"_eegUtils_rcpparma_hello_world", (DL_FUNC) &_eegUtils_rcpparma_hello_world, 0},
-    {"_eegUtils_rcpparma_outerproduct", (DL_FUNC) &_eegUtils_rcpparma_outerproduct, 1},
-    {"_eegUtils_rcpparma_innerproduct", (DL_FUNC) &_eegUtils_rcpparma_innerproduct, 1},
-    {"_eegUtils_rcpparma_bothproducts", (DL_FUNC) &_eegUtils_rcpparma_bothproducts, 1},
     {"_eegUtils_get_list", (DL_FUNC) &_eegUtils_get_list, 4},
     {"_eegUtils_get_listal", (DL_FUNC) &_eegUtils_get_listal, 4},
     {"_eegUtils_get_list2", (DL_FUNC) &_eegUtils_get_list2, 4},
