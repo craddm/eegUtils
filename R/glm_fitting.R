@@ -28,6 +28,7 @@ fit_glm.default <- function(formula,
 #' @export
 fit_glm.eeg_epochs <- function(formula,
                                data,
+                               family = NULL,
                                ...) {
 
   data <- tibble::as_tibble(as.data.frame(data,
@@ -39,20 +40,23 @@ fit_glm.eeg_epochs <- function(formula,
                        .key = "signals"
                        )
 
-  #one day I will make this much more computationally efficient, but hey, this
-  #works.
-   # data$fit <- purrr::map(data$signals,
-   #                        ~lm(formula,
-   #                            data = .))
-
-  mdf <- model.matrix(formula, data$signals[[1]])
+  mdf <- stats::model.matrix(formula,
+                             data$signals[[1]])
   lm_test <- function(mdf, x) {
     qr.coef(qr(mdf), x)
   }
-  data$fit <- lapply(data$signals,
-                    # function(x) lm_test(mdf, x$amplitude))
-                     function(x) lm.fit(mdf,
-                                        x$amplitude)$coefficients)
+
+  if (is.null(family)) {
+    data$fit <-
+    lapply(data$signals,
+           function(x) stats::lm.fit(mdf,
+                                     x$amplitude)$coefficients)
+  } else {
+    data$fit <-
+      lapply(data$signals,
+             function(x) stats::glm.fit(mdf,
+                                       x$amplitude, family = family)$coefficients)
+  }
 
 
   data$signals <- NULL

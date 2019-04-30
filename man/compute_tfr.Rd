@@ -13,7 +13,7 @@ compute_tfr(data, ...)
 
 \method{compute_tfr}{eeg_epochs}(data, method = "morlet", foi, n_freq,
   n_cycles = 7, keep_trials = FALSE, output = "power",
-  downsample = 1, verbose = TRUE, ...)
+  downsample = 1, verbose = TRUE, lang = "R", ...)
 
 \method{compute_tfr}{eeg_evoked}(data, method = "morlet", foi, n_freq,
   n_cycles = 7, keep_trials = FALSE, output = "power",
@@ -43,6 +43,8 @@ Defaults to FALSE.}
 performing time-frequency analysis.}
 
 \item{verbose}{Print informative messages in console.}
+
+\item{lang}{= "C" or "R"}
 }
 \description{
 This function creates a time frequency represention of EEG time series data.

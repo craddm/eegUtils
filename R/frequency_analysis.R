@@ -343,6 +343,7 @@ compute_tfr.default <- function(data, ...) {
 #' @param output Sets whether output is power, phase, or fourier coefficients.
 #' @param downsample Downsampling factor. Integer. Selects every n samples after
 #'   performing time-frequency analysis.
+#' @param lang = "C" or "R"
 #' @param verbose Print informative messages in console.
 #' @describeIn compute_tfr Default method for compute_tfr
 #' @export
@@ -356,6 +357,7 @@ compute_tfr.eeg_epochs <- function(data,
                                    output = "power",
                                    downsample = 1,
                                    verbose = TRUE,
+                                   lang = "R",
                                    ...) {
 
 
@@ -367,7 +369,8 @@ compute_tfr.eeg_epochs <- function(data,
                                         keep_trials = keep_trials,
                                         output = output,
                                         downsample = downsample,
-                                        verbose = verbose),
+                                        verbose = verbose,
+                                        lang = lang),
                    warning("Unknown method supplied. Currently supported method is 'morlet'"))
   tfr_obj
 }
@@ -410,6 +413,8 @@ compute_tfr.eeg_evoked <- function(data,
 #' @param output Sets whether output is power, phase, or fourier coefficients.
 #' @param downsample Downsampling factor (integer).
 #' @param demean Remove mean before transforming.
+#' @param lang defaults to R
+#' @param verbose Print informative messages in console.
 #' @importFrom abind abind
 #' @keywords internal
 
@@ -421,6 +426,7 @@ tf_morlet <- function(data,
                       output,
                       downsample,
                       demean = TRUE,
+                      lang = "R",
                       verbose) {
 
   frex <- parse_frex(foi,
@@ -476,24 +482,29 @@ tf_morlet <- function(data,
 
   # generate a vector for selection of specific timepoints
   time_sel <- seq(1, max_length, by = downsample)
+  if (lang == "R") {
+
 
   trial_conv <- function(trial_dat) {
     trial_dat <-
       convert_tfr(
-        conv_mor(norm_mf,
-                 trial_dat,
-                 n_conv,
-                 sigtime,
-                 data$srate,
-                 n_kern),
+           conv_mor(norm_mf,
+                     trial_dat,
+                     n_conv,
+                     sigtime,
+                     data$srate,
+                     n_kern),
+        #conv_cpp(as.matrix(trial_dat), norm_mf, n_kern),
         output)
     trial_dat <- trial_dat[time_sel, , , drop = FALSE]
     trial_dat
   }
 
-  data$signals <- lapply(data$signals,
+   data$signals <- lapply(data$signals,
                          trial_conv)
-
+  } else {
+    data$signals <- get_listal(data$signals, norm_mf, n_kern, output)
+  }
   sigtime <- sigtime[time_sel]
   data$timings <- data$timings[data$timings$time %in% sigtime, ]
   n_epochs <- length(data$signals)
@@ -674,23 +685,24 @@ conv_mor <- function(morlet_fam,
                      n_kern) {
 
   n_chans <- ncol(signal)
-  #n_times <- nrow(signal)
+
   signal <- fft_n(as.matrix(signal),
-                n)
-  tf_matrix <- array(1i, dim = c(nrow(signal),
-                                 n_chans,
-                                 ncol(morlet_fam)))
+                  n)
 
-  for (i in 1:ncol(signal)) {
-    tf_matrix[, i, ] <- mvfft(signal[, i] * morlet_fam, #tf_mat2[, i, ],
-                              inverse = TRUE) / srate
-  }
+  #tf_matrix <- do_allfft(signal, morlet_fam)
+    tf_matrix <- array(1i, dim = c(nrow(signal),
+                                   n_chans,
+                                   ncol(morlet_fam)))
 
-  #nkern <- n - n_times + 1
+    for (i in 1:ncol(signal)) {
+      tf_matrix[, i, ] <- mvfft(signal[, i] * morlet_fam, #tf_mat2[, i, ],
+                                inverse = TRUE) / n
+    }
+  #tf_matrix <- aperm(tf_matrix, c(1, 3, 2))
+
   nHfkn <- floor(n_kern / 2) + 1
-  #nHfkn <- floor(nkern / 4) + 1
   tf_matrix <- tf_matrix[nHfkn:(nrow(tf_matrix) - nHfkn + 1), , , drop = FALSE]
-  tf_matrix
+  tf_matrix * 2
 }
 
 

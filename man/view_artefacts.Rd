@@ -7,6 +7,7 @@
 view_artefacts(data)
 }
 \description{
-An interactive Shiny app that allows exploration of channel and epoch statistics.
+An interactive Shiny app that allows exploration of channel and epoch
+statistics.
 }
 \keyword{internal}
