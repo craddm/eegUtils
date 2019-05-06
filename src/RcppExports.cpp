@@ -7,12 +7,12 @@
 using namespace Rcpp;
 
 // baseline_cont
-NumericMatrix baseline_cont(NumericMatrix x, const NumericVector& y);
+NumericMatrix baseline_cont(NumericMatrix& x, const NumericVector& y);
 RcppExport SEXP _eegUtils_baseline_cont(SEXP xSEXP, SEXP ySEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< NumericMatrix >::type x(xSEXP);
+    Rcpp::traits::input_parameter< NumericMatrix& >::type x(xSEXP);
     Rcpp::traits::input_parameter< const NumericVector& >::type y(ySEXP);
     rcpp_result_gen = Rcpp::wrap(baseline_cont(x, y));
     return rcpp_result_gen;

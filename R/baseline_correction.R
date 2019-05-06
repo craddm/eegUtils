@@ -83,7 +83,7 @@ rm_baseline.eeg_epochs <- function(data,
     baseline_dat <- colMeans(data$signals)
     # now we go through each timepoint subtracting the baseline values
     #data$signals <- baseline_void(data$signals)
-    data$signals <- baseline_epo(data$signals, baseline_dat)
+     data$signals <- baseline_epo(data$signals, baseline_dat)
      # data$signals <- sweep(data$signals,
      #                       c(2, 3),
      #                       baseline_dat)
@@ -98,16 +98,13 @@ rm_baseline.eeg_epochs <- function(data,
     data$signals <- as.matrix(data$signals)
     dim(data$signals) <- c(n_times, n_epochs, n_chans)
     data$signals <- baseline_epo(data$signals, base_times)
-      # data$signals <- sweep(data$signals,
-      #                       c(2, 3),
-      #                       base_times,
-      #                       "-")
+
   }
-   #Reshape and turn back into data frame
-   data$signals <- array(data$signals,
-                      dim = c(n_epochs * n_times, n_chans))
+ #Reshape and turn back into data frame
+ data$signals <- array(data$signals,
+                       dim = c(n_epochs * n_times, n_chans))
   data$signals <- tibble::as_tibble(data$signals)
-  #data$signals <- tibble::as_tibble(data$signals[, ..orig_chans])
+
   names(data$signals) <- elecs
   data
 }

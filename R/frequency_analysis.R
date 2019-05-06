@@ -458,65 +458,6 @@ tf_morlet <- function(data,
                           n_cycles = n_cycles
                           )
 
-  # This is a total hack to make the rest of the code behave with eeg_evoked data
-  if (is.eeg_evoked(data)) {
-    data$timings$epoch <- 1
-  }
-
-  data$signals <- split(data$signals,
-                        data$timings$epoch)
-  max_length <- nrow(data$signals[[1]])
-  n_kern <- nrow(morlet_family)
-  n_conv <- max_length + n_kern - 1
-  n_conv <- nextn(n_conv, 2)
-
-  # zero-pad and run FFTs on morlets
-  mf_zp <- fft_n(morlet_family,
-                 n_conv)
-
-  # Normalise wavelets for FFT (as suggested by Mike X. Cohen):
-  norm_mf <- wavelet_norm(mf_zp,
-                          n_freq)
-
-  # Run the FFT convolutions on each individual trial
-
-  # generate a vector for selection of specific timepoints
-  time_sel <- seq(1, max_length, by = downsample)
-  if (lang == "R") {
-
-
-  trial_conv <- function(trial_dat) {
-    trial_dat <-
-      convert_tfr(
-           conv_mor(norm_mf,
-                     trial_dat,
-                     n_conv,
-                     sigtime,
-                     data$srate,
-                     n_kern),
-        #conv_cpp(as.matrix(trial_dat), norm_mf, n_kern),
-        output)
-    trial_dat <- trial_dat[time_sel, , , drop = FALSE]
-    trial_dat
-  }
-
-   data$signals <- lapply(data$signals,
-                         trial_conv)
-  } else {
-    data$signals <- get_listal(data$signals, norm_mf, n_kern, output)
-  }
-  sigtime <- sigtime[time_sel]
-  data$timings <- data$timings[data$timings$time %in% sigtime, ]
-  n_epochs <- length(data$signals)
-  sig_dims <- dim(data$signals[[1]])
-
-  # Bind single trial matrices together into a single matrix
-  # do.call method is slower than abind, but uses less memory
-  data$signals <- do.call(rbind, data$signals)
-
-
-  dim(data$signals) <- c(n_epochs, sig_dims)
-
   # Create a list of metadata about the TFR
   data$freq_info <- list(freqs = frex,
                          morlet_resolution = morlet_res(frex,
@@ -525,21 +466,80 @@ tf_morlet <- function(data,
                          output = output,
                          baseline = "none")
 
+  # This is a total hack to make the rest of the code behave with eeg_evoked data
+  if (is.eeg_evoked(data)) {
+    data$timings$epoch <- 1
+  }
+
+   n_kern <- nrow(morlet_family)
+  #
+
+     data$signals <- split(data$signals,
+                           data$timings$epoch)
+     max_length <- nrow(data$signals[[1]])
+     n_conv <- max_length + n_kern - 1
+     n_conv <- nextn(n_conv, 2)
+  #   # zero-pad and run FFTs on morlets
+     mf_zp <- fft_n(morlet_family,
+                    n_conv)
+     # Normalise wavelets for FFT (as suggested by Mike X. Cohen):
+     norm_mf <- wavelet_norm(mf_zp,
+                             n_freq)
+
+   # Run the FFT convolutions on each individual trial
+
+   # generate a vector for selection of specific timepoints
+      time_sel <- seq(1, length(unique(data$timings$time)), by = downsample)
+    if (lang == "R") {
+      trial_conv <- function(trial_dat) {
+        trial_dat <-
+          convert_tfr(
+            conv_mor(norm_mf,
+                     trial_dat,
+                     n_conv,
+                     sigtime,
+                     data$srate,
+                     n_kern),
+            output)
+        trial_dat <- trial_dat[time_sel, , , drop = FALSE]
+        trial_dat
+        }
+      data$signals <- future.apply::future_lapply(data$signals,
+                             trial_conv)
+      } else {
+        data$signals <- get_listal(data$signals,
+                                   norm_mf,
+                                   n_kern,
+                                   output)
+      }
+   # data$signals <- s3tomat(data, morlet_family)
+    sigtime <- sigtime[time_sel]
+    data$timings <- data$timings[data$timings$time %in% sigtime, ]
+    n_epochs <- length(data$signals)
+    sig_dims <- dim(data$signals[[1]])
+    data$signals <- do.call(rbind, data$signals)
+  # Bind single trial matrices together into a single matrix
+  # do.call method is slower than abind, but uses less memory
+    dim(data$signals) <- c(n_epochs, sig_dims)
+    dimnames(data$signals) <- list(epoch = unique(data$timings$epoch),
+                                   time = sigtime,
+                                   electrode = elecs,
+                                   frequency = data$freq_info$freqs)
+
+
+
   # Remove edges of the TFR'd data, where edge effects would be expected.
   edge_mat <- remove_edges(sigtime,
                            data$freq_info$morlet_resolution$sigma_t)
 
-  dimnames(data$signals) <- list(epoch = unique(data$timings$epoch),
-                                 time = sigtime,
-                                 electrode = elecs,
-                                 frequency = data$freq_info$freqs
-  )
+
+
 
   if (keep_trials) {
 
-
+    dims <- which(names(dimnames(data$signals)) %in% c("time", "frequency"))
     data$signals <- sweep(data$signals,
-                          c(2, 4),
+                          dims,
                           edge_mat,
                           "*")
     data <- eeg_tfr(data$signals,
@@ -557,8 +557,9 @@ tf_morlet <- function(data,
 
   data <- average_tf(data)
 
+  dims <- which(names(dimnames(data$signals)) %in% c("time", "frequency"))
   data$signals <- sweep(data$signals,
-                        c(1, 3),
+                        dims,
                         edge_mat,
                         "*")
   data <- eeg_tfr(data$signals,
