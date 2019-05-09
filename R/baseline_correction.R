@@ -30,6 +30,7 @@ rm_baseline.eeg_data <- function(data,
                                  ...) {
 
   if (is.null(time_lim)) {
+    data$signals <- as.matrix(data$signals)
     baseline_dat <- colMeans(data$signals)
     if (verbose) {
       message("Removing channel means...")
@@ -41,9 +42,11 @@ rm_baseline.eeg_data <- function(data,
     if (verbose) {
       message(paste("Baseline:", time_lim, "s"))
     }
+    data$signals <- as.matrix(data$signals)
   }
-  #data$signals <- as.matrix(data$signals)
-  data$signals <- baseline_cont(as.matrix(data$signals), baseline_dat)
+
+  data$signals <- baseline_cont(data$signals,
+                                baseline_dat)
   data$signals <- tibble::as_tibble(data$signals)
   data
 }
@@ -70,23 +73,16 @@ rm_baseline.eeg_epochs <- function(data,
     }
     # reshape to 3D matrix
     orig_chans <- channel_names(data)
-      # data$signals <-
-      #      data.table::as.data.table(data)[, lapply(.SD,
-      #                                  function(x) x - mean(x)),
-      #                          by = epoch,
-      #                          .SDcols = orig_chans]
-    #data$signals[ channel_names(data)]
+
     data$signals <- as.matrix(data$signals)
     dim(data$signals) <- c(n_times, n_epochs, n_chans)
     # colMeans gives an n_epochs * n_channels matrix - i.e. baseline value for
     # each epoch and channel
     baseline_dat <- colMeans(data$signals)
     # now we go through each timepoint subtracting the baseline values
-    #data$signals <- baseline_void(data$signals)
-     data$signals <- baseline_epo(data$signals, baseline_dat)
-     # data$signals <- sweep(data$signals,
-     #                       c(2, 3),
-     #                       baseline_dat)
+    data$signals <- baseline_epo(data$signals,
+                                 baseline_dat)
+
   } else {
     base_times <- select_times(data,
                                time_lim = time_lim)
@@ -98,10 +94,9 @@ rm_baseline.eeg_epochs <- function(data,
     data$signals <- as.matrix(data$signals)
     dim(data$signals) <- c(n_times, n_epochs, n_chans)
     data$signals <- baseline_epo(data$signals, base_times)
-
   }
- #Reshape and turn back into data frame
- data$signals <- array(data$signals,
+  #Reshape and turn back into data frame
+  data$signals <- array(data$signals,
                        dim = c(n_epochs * n_times, n_chans))
   data$signals <- tibble::as_tibble(data$signals)
 
