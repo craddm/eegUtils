@@ -343,7 +343,6 @@ compute_tfr.default <- function(data, ...) {
 #' @param output Sets whether output is power, phase, or fourier coefficients.
 #' @param downsample Downsampling factor. Integer. Selects every n samples after
 #'   performing time-frequency analysis.
-#' @param lang = "C" or "R"
 #' @param verbose Print informative messages in console.
 #' @describeIn compute_tfr Default method for compute_tfr
 #' @export
@@ -357,7 +356,6 @@ compute_tfr.eeg_epochs <- function(data,
                                    output = "power",
                                    downsample = 1,
                                    verbose = TRUE,
-                                   lang = "R",
                                    ...) {
 
 
@@ -369,8 +367,7 @@ compute_tfr.eeg_epochs <- function(data,
                                         keep_trials = keep_trials,
                                         output = output,
                                         downsample = downsample,
-                                        verbose = verbose,
-                                        lang = lang),
+                                        verbose = verbose),
                    warning("Unknown method supplied. Currently supported method is 'morlet'"))
   tfr_obj
 }
@@ -388,13 +385,13 @@ compute_tfr.eeg_evoked <- function(data,
                                    ...) {
   switch(method,
          "morlet" = tf_morlet(data,
-                              foi,
-                              n_freq,
-                              n_cycles,
-                              keep_trials,
-                              output,
-                              downsample,
-                              verbose),
+                              foi = foi,
+                              n_freq = n_freq,
+                              n_cycles = n_cycles,
+                              keep_trials = keep_trials,
+                              output = output,
+                              downsample = downsample,
+                              verbose = verbose),
          warning("Unknown method supplied. Currently supported method is 'morlet'"))
 }
 
@@ -474,66 +471,47 @@ tf_morlet <- function(data,
    n_kern <- nrow(morlet_family)
   #
 
-     data$signals <- split(data$signals,
-                           data$timings$epoch)
-     max_length <- nrow(data$signals[[1]])
-     n_conv <- max_length + n_kern - 1
-     n_conv <- nextn(n_conv, 2)
-  #   # zero-pad and run FFTs on morlets
-     mf_zp <- fft_n(morlet_family,
-                    n_conv)
-     # Normalise wavelets for FFT (as suggested by Mike X. Cohen):
-     norm_mf <- wavelet_norm(mf_zp,
-                             n_freq)
+   max_length <- length(unique(data$timings$time))
+   n_conv <- max_length + n_kern - 1
+   n_conv <- nextn(n_conv, 2)
+   # zero-pad and run FFTs on morlets
+   mf_zp <- fft_n(morlet_family,
+                  n_conv)
+   # Normalise wavelets for FFT (as suggested by Mike X. Cohen):
+   norm_mf <- wavelet_norm(mf_zp,
+                           n_freq)
 
    # Run the FFT convolutions on each individual trial
 
    # generate a vector for selection of specific timepoints
-      time_sel <- seq(1, length(unique(data$timings$time)), by = downsample)
-    if (lang == "R") {
-      trial_conv <- function(trial_dat) {
-        trial_dat <-
-          convert_tfr(
-            conv_mor(norm_mf,
-                     trial_dat,
-                     n_conv,
-                     sigtime,
-                     data$srate,
-                     n_kern),
-            output)
-        trial_dat <- trial_dat[time_sel, , , drop = FALSE]
-        trial_dat
-        }
-      data$signals <- future.apply::future_lapply(data$signals,
-                             trial_conv)
-      } else {
-        data$signals <- get_listal(data$signals,
-                                   norm_mf,
-                                   n_kern,
-                                   output)
-      }
+   time_sel <- seq(1, length(unique(data$timings$time)), by = downsample)
+
+   data$signals <- run_tf(data,
+                          norm_mf,
+                          n_conv,
+                          n_kern,
+                          keep_trials,
+                          time_sel,
+                          output)
+   #data$signals <- data$signals[, time_sel, , , drop = FALSE]
+
    # data$signals <- s3tomat(data, morlet_family)
-    sigtime <- sigtime[time_sel]
-    data$timings <- data$timings[data$timings$time %in% sigtime, ]
-    n_epochs <- length(data$signals)
-    sig_dims <- dim(data$signals[[1]])
-    data$signals <- do.call(rbind, data$signals)
-  # Bind single trial matrices together into a single matrix
-  # do.call method is slower than abind, but uses less memory
-    dim(data$signals) <- c(n_epochs, sig_dims)
-    dimnames(data$signals) <- list(epoch = unique(data$timings$epoch),
-                                   time = sigtime,
-                                   electrode = elecs,
-                                   frequency = data$freq_info$freqs)
-
-
+   sigtime <- sigtime[time_sel]
+   data$timings <- data$timings[data$timings$time %in% sigtime, ]
+   if (keep_trials) {
+     dimnames(data$signals) <- list(epoch = unique(data$timings$epoch),
+                                    time = sigtime,
+                                    electrode = elecs,
+                                    frequency = data$freq_info$freqs)
+   } else {
+     dimnames(data$signals) <- list(time = sigtime,
+                                    electrode = elecs,
+                                    frequency = data$freq_info$freqs)
+   }
 
   # Remove edges of the TFR'd data, where edge effects would be expected.
   edge_mat <- remove_edges(sigtime,
                            data$freq_info$morlet_resolution$sigma_t)
-
-
-
 
   if (keep_trials) {
 
@@ -554,9 +532,6 @@ tf_morlet <- function(data,
     return(data)
   }
 
-
-  data <- average_tf(data)
-
   dims <- which(names(dimnames(data$signals)) %in% c("time", "frequency"))
   data$signals <- sweep(data$signals,
                         dims,
@@ -565,7 +540,7 @@ tf_morlet <- function(data,
   data <- eeg_tfr(data$signals,
                   srate = data$srate,
                   events = NULL,
-                  epochs = data$epochs,
+                  epochs = data$epochs[1, ],
                   chan_info = data$chan_info,
                   reference = data$reference,
                   timings = data$timings[1:nrow(data$signals), "time"],
@@ -672,8 +647,6 @@ fft_n <- function(signal, n) {
 #' @param morlet_fam family of morlet wavelets
 #' @param signal signal to be convolved
 #' @param n points for FFT
-#' @param wavtime time points
-#' @param srate Sampling rate of the signal
 #' @param n_kern Kernel length
 #' @importFrom stats mvfft
 #' @keywords internal
@@ -681,8 +654,6 @@ fft_n <- function(signal, n) {
 conv_mor <- function(morlet_fam,
                      signal,
                      n,
-                     wavtime,
-                     srate,
                      n_kern) {
 
   n_chans <- ncol(signal)
@@ -695,15 +666,15 @@ conv_mor <- function(morlet_fam,
                                    n_chans,
                                    ncol(morlet_fam)))
 
-    for (i in 1:ncol(signal)) {
-      tf_matrix[, i, ] <- mvfft(signal[, i] * morlet_fam, #tf_mat2[, i, ],
+    for (i in 1:ncol(morlet_fam)) {
+      tf_matrix[, , i] <- mvfft(signal * morlet_fam[, i], #tf_mat2[, i, ],
                                 inverse = TRUE) / n
     }
   #tf_matrix <- aperm(tf_matrix, c(1, 3, 2))
 
   nHfkn <- floor(n_kern / 2) + 1
   tf_matrix <- tf_matrix[nHfkn:(nrow(tf_matrix) - nHfkn + 1), , , drop = FALSE]
-  tf_matrix * 2
+  tf_matrix
 }
 
 
@@ -833,4 +804,52 @@ tf_hanning <- function(data,
                      verbose = verbose)
 
   frex
+}
+
+
+run_tf <- function(tmp,
+                   norm_mf,
+                   n_conv,
+                   n_kern,
+                   keep_trials,
+                   time_sel,
+                   output) {
+  tmp <- conv_to_mat(tmp)
+  nhfkn <- floor(n_kern / 2) + 1
+  n_chans <- dim(tmp)[3]
+  n_epochs <- dim(tmp)[2]
+  n_freq <- dim(norm_mf)[2]
+  n_times <- length(time_sel)
+  all_times <- nhfkn + (time_sel - 1)
+  orig_n <- nrow(tmp)
+  tmp_epo <- array(complex(1), dim = c(n_conv, n_epochs))
+  if (keep_trials) {
+    if (identical(output, "power")) {
+      tfr_out <- array(0, dim = c(n_epochs, n_times, n_chans, n_freq))
+      for (i in 1:n_chans) {
+        tmp_epo <- fft_n(tmp[,,i], n_conv)
+        for (ik in 1:n_epochs) {
+          tfr_out[ik,,i, ] <- abs(mvfft(norm_mf * tmp_epo[,ik], inverse = TRUE)[all_times,] / orig_n)^2
+        }
+      }
+    } else {
+      tfr_out <- array(complex(1), dim = c(n_epochs, n_times, n_chans, n_freq))
+      for (i in 1:n_chans) {
+        tmp_epo <- fft_n(tmp[,,i], n_conv)
+        for (ik in 1:n_epochs) {
+          tfr_out[ik,,i, ] <- mvfft(norm_mf * tmp_epo[,ik], inverse = TRUE)[all_times,] / orig_n
+        }
+      }
+    }
+  } else {
+    tfr_out <- array(0, dim = c(n_times, n_chans, n_freq))
+    for (i in 1:n_chans) {
+      tmp_epo <- fft_n(tmp[,,i], n_conv)
+      for (ik in 1:n_epochs) {
+        tfr_out[ ,i, ] <- tfr_out[, i, ] + abs(mvfft(norm_mf * tmp_epo[,ik], inverse = TRUE)[all_times,] / orig_n)^2
+      }
+    }
+    tfr_out <- tfr_out / n_epochs
+  }
+  tfr_out
 }

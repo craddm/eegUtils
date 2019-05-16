@@ -4,7 +4,7 @@
 \alias{conv_mor}
 \title{Convolve with morlets}
 \usage{
-conv_mor(morlet_fam, signal, n, wavtime, srate, n_kern)
+conv_mor(morlet_fam, signal, n, n_kern)
 }
 \arguments{
 \item{morlet_fam}{family of morlet wavelets}
@@ -12,10 +12,6 @@ conv_mor(morlet_fam, signal, n, wavtime, srate, n_kern)
 \item{signal}{signal to be convolved}
 
 \item{n}{points for FFT}
-
-\item{wavtime}{time points}
-
-\item{srate}{Sampling rate of the signal}
 
 \item{n_kern}{Kernel length}
 }
