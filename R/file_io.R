@@ -13,6 +13,7 @@
 #' @param recording Name of the recording. By default, the filename will be
 #'   used.
 #' @param participant_id Identifier for the participant.
+#' @param fast_bdf New, faster method for loading BDF files. Experimental.
 #' @import edfReader
 #' @import tools
 #' @importFrom purrr map_df is_empty
@@ -23,9 +24,14 @@ import_raw <- function(file_name,
                        file_path = NULL,
                        chan_nos = NULL,
                        recording = NULL,
-                       participant_id = character(1)) {
+                       participant_id = character(1),
+                       fast_bdf = FALSE) {
 
   file_type <- tools::file_ext(file_name)
+
+  if (!is.null(file_path)) {
+    file_name <- paste0(file_path, file_name)
+  }
 
   if (is.null(recording)) {
     recording <- basename(tools::file_path_sans_ext(file_name))
@@ -37,23 +43,29 @@ import_raw <- function(file_name,
                   "as",
                   toupper(file_type)))
 
-    data <- edfReader::readEdfSignals(edfReader::readEdfHeader(file_name))
+    if (fast_bdf) {
+      bdf_header <- read_bdf_header(file_name)
+      sigs <- read_bdf_data(file_name, bdf_header)
+      colnames(sigs) <- bdf_header$chan_labels
+      sigs <- tibble::as_tibble(sigs)
+      srate <- bdf_header$srate[[1]]
+    } else {
+      data <- edfReader::readEdfSignals(edfReader::readEdfHeader(file_name))
+      #check for an annotations channel
+      anno_chan <- which(vapply(data,
+                                function(x) isTRUE(x$isAnnotation),
+                                FUN.VALUE = logical(1)))
 
-    #check for an annotations channel
-    anno_chan <- which(vapply(data,
-                              function(x) isTRUE(x$isAnnotation),
-                              FUN.VALUE = logical(1)))
+      #remove annotations if present - could put in separate list...
+      if (length(anno_chan) > 0) {
+        data <- data[-anno_chan]
+        message("Annotations are currently discarded. File an issue on Github if you'd like
+  this to change.")
+      }
 
-    #remove annotations if present - could put in separate list...
-    if (length(anno_chan) > 0) {
-      data <- data[-anno_chan]
-      message("Annotations are currently discarded. File an issue on Github if you'd like
- this to change.")
+      sigs <- purrr::map_df(data, "signal")
+      srate <- data[[1]]$sRate
     }
-
-    sigs <- purrr::map_df(data, "signal")
-    srate <- data[[1]]$sRate
-
     # Biosemi triggers should be in the range 0-255, but sometimes are read from
     # the wrong "end"
     if ("Status" %in% names(sigs)) {
@@ -983,4 +995,189 @@ proc_dimord <- function(dimord) {
   dimord <- gsub("chan", "electrode", dimord)
   dimord <- gsub("freq", "frequency", dimord)
   dimord
+}
+
+read_bdf_header <- function(file_name) {
+
+  file_read <- file(file_name, "rb")
+  pos <- seek(file_read, 1)
+  sys_type <- readChar(file_read, 7)
+  if (sys_type == "BIOSEMI") {
+    samp_bits <- 24
+  } else {
+    samp_bits <- 16
+  }
+  patient_id <- readChar(file_read, 80)
+  recording_id <- readChar(file_read, 80)
+  recording_date <- readChar(file_read, 8)
+  recording_time <- readChar(file_read, 8)
+  n_bytes <- readChar(file_read, 8)
+  format_version <- readChar(file_read, 44)
+  n_records <- readChar(file_read, 8)
+  dur_records <- readChar(file_read, 8)
+  n_chan <- as.integer(readChar(file_read, 4))
+  chan_labels <- readChar(file_read, n_chan * 16)
+  chan_labels <- unlist(strsplit(chan_labels, " "))
+  chan_labels <- chan_labels[chan_labels != ""]
+
+  if (length(chan_labels) != n_chan) {
+    stop("Chan_label import went wrong!")
+  }
+
+  chan_types <- readChar(file_read, n_chan * 80)
+  chan_types <- unlist(strsplit(chan_types,  "  "))
+  chan_types <- chan_types[chan_types != ""]
+
+  chan_units <- readChar(file_read, n_chan * 8)
+  chan_units <- unlist(strsplit(chan_units, " "))
+  chan_units <- chan_units[chan_units != ""]
+
+  phys_mins <- readChar(file_read, n_chan * 8)
+  phys_mins <- as.integer(unlist(strsplit(phys_mins, " ")))
+
+  phys_max <- readChar(file_read, n_chan * 8)
+  phys_max <- as.integer(unlist(strsplit(phys_max, "  ")))
+
+  dig_mins <- readChar(file_read, n_chan * 8)
+  dig_mins <- unlist(strsplit(gsub("-", " -", dig_mins), " "))
+  dig_mins <- as.integer(dig_mins)
+  dig_mins <- dig_mins[!is.na(dig_mins)]
+
+  dig_max <- readChar(file_read, n_chan * 8)
+  dig_max <- as.integer(unlist(strsplit(gsub("-", " -", dig_max), " ")))
+
+  prefilt <- readChar(file_read, n_chan * 80)
+  prefilt <- remove_empties(prefilt, "  ")
+
+  n_samp_rec <- readChar(file_read, n_chan * 8) # sampling rate
+  n_samp_rec <- remove_empties(n_samp_rec)
+
+  reserved <- readChar(file_read, n_chan * 32)
+  close(file_read)
+
+  list(sys_type = sys_type,
+       samp_bits = samp_bits,
+       patient_id = patient_id,
+       recording_id = recording_id,
+       recording_time = recording_time,
+       n_chans = n_chan,
+       n_records = as.integer(n_records),
+       record_dur = as.integer(dur_records),
+       chan_labels = chan_labels,
+       chan_types = chan_types,
+       chan_units = chan_units,
+       phys_mins = phys_mins,
+       phys_max = phys_max,
+       dig_mins = dig_mins,
+       dig_max = dig_max,
+       prefiltering = prefilt,
+       srate = as.integer(n_samp_rec))
+}
+
+remove_empties <- function(strings, char_match = " ") {
+  strings <- unlist(strsplit(strings, char_match))
+  strings[strings != ""]
+}
+
+read_bdf_data <- function(file_name, headers) {
+  sig_file <- file(file_name,
+                   "rb")
+  #skip headers
+  start_pos <- (headers$n_chans + 1) * 256
+  pos <- seek(sig_file,
+              start_pos)
+
+  bytes_per_rec <- headers$samp_bits / 8
+  n_chans <- headers$n_chans
+
+  sig_length <- headers$srate[[1]] * bytes_per_rec * n_chans # length of one record in bytes
+  rec_length <- headers$srate[[1]]
+
+  rec_size <- sig_length / 256 # calc size in kilobytes in memory
+
+  records_per <- floor(20000 / rec_size)
+
+  gains <- (headers$phys_max - headers$phys_min) / (headers$dig_max - headers$dig_mins)
+  offsets <- headers$phys_mins - gains * headers$dig_mins
+
+  sig_out <- matrix(0,
+                    nrow = headers$srate[[1]] * headers$n_records,
+                    ncol = n_chans)
+
+  count <- 0
+  chunk_size <- rec_length * records_per
+
+  n_chunks <- floor(headers$n_records / records_per)
+
+  remaining <- headers$n_records %% records_per
+  first_record <- integer(sig_length * records_per)
+  shifted <- integer(sig_length * records_per)
+
+  for (records in 1:n_chunks) {
+    first_record <- readBin(sig_file,
+                            "integer",
+                            n = sig_length * records_per,
+                            size = 1,
+                            signed = FALSE,
+                            endian = "little")
+    shifted <- first_record * as.integer(2^c(0, 8, 16))
+    #shifted <- matrix(shifted,
+     #                 ncol = 3,
+      #                byrow = TRUE)
+    shifted  <- array(shifted,
+                      dim = c(3,
+                              headers$srate[[1]],
+                              n_chans,
+                              records_per))
+    #shifted <- rowSums(shifted)
+    shifted <- colSums(shifted)
+    shifted <- matrix(aperm(shifted, c(1,3,2)), nrow = prod(dim(shifted)[c(1, 3)]))
+    modifier <- chunk_size * (records - 1)
+    sig_out[(1:chunk_size) + modifier, ] <- shifted
+    # shifted <- matrix(shifted - bitwShiftL(bitwShiftR(shifted,
+    #                                                   23),
+    #                                        24),
+    #                   ncol = headers$n_chans)
+    # shifted <- shifted - bitwShiftL(bitwShiftR(shifted,
+    #                                            23),
+    #                                 24)
+    # shifted <- sweep(shifted,
+    #                  2,
+    #                  gains, "*")
+    #modifier <- chunk_size * (records - 1)
+    # sig_out[(1:chunk_size) + modifier, ] <- sweep(shifted,
+    #                                               2,
+    #                                               offsets,
+    #                                               "+")
+    count <- count + records_per
+  }
+
+  if (remaining > 0) {
+    final_records <- readBin(sig_file,
+                             "integer",
+                             n = sig_length * remaining,
+                             size = 1,
+                             signed = FALSE,
+                             endian = "little")
+
+    shifted <- final_records * as.integer(2^c(0, 8,16))
+
+    shifted  <- array(shifted, dim = c(3,
+                                       headers$srate[[1]],
+                                       n_chans,
+                                       remaining))
+    shifted <- colSums(shifted)
+    modifier <- nrow(sig_out) - remaining * headers$srate[[1]] + 1
+    sig_out[modifier:nrow(sig_out), ] <- matrix(aperm(shifted,
+                                                      c(1, 3, 2)),
+                                                nrow = prod(dim(shifted)[c(1, 3)]))
+  }
+
+  # Correct for sign
+  sig_out <- sig_out - bitwShiftL(bitwShiftR(sig_out,
+                                             23),
+                                  24)
+  sig_out[, 1:(n_chans - 1)] <- sig_out[, 1:(n_chans - 1)] * gains[1] + offsets[1]
+  close(sig_file)
+  sig_out
 }
