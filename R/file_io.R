@@ -781,7 +781,7 @@ bva_elecs <- function(chan_info, radius = 85) {
 #' @param participant_id Identifier for the participant.
 #' @param verbose Informative messages printed to console. Defaults to TRUE.
 #' @importFrom R.matlab readMat
-#' @noRd
+#' @export
 import_ft <- function(file_name,
                       participant_id = NULL,
                       recording = NULL,
@@ -1095,7 +1095,7 @@ read_bdf_data <- function(file_name, headers) {
 
   rec_size <- sig_length / 256 # calc size in kilobytes in memory
 
-  records_per <- floor(20000 / rec_size)
+  records_per <- floor(20000 / rec_size) # read up to 20000 kb at once
 
   gains <- (headers$phys_max - headers$phys_min) / (headers$dig_max - headers$dig_mins)
   offsets <- headers$phys_mins - gains * headers$dig_mins
@@ -1104,7 +1104,6 @@ read_bdf_data <- function(file_name, headers) {
                     nrow = headers$srate[[1]] * headers$n_records,
                     ncol = n_chans)
 
-  count <- 0
   chunk_size <- rec_length * records_per
 
   n_chunks <- floor(headers$n_records / records_per)
@@ -1115,52 +1114,31 @@ read_bdf_data <- function(file_name, headers) {
 
   for (records in 1:n_chunks) {
     first_record <- readBin(sig_file,
-                            "integer",
+                            "raw",
                             n = sig_length * records_per,
-                            size = 1,
-                            signed = FALSE,
                             endian = "little")
-    shifted <- first_record * as.integer(2^c(0, 8, 16))
-    #shifted <- matrix(shifted,
-     #                 ncol = 3,
-      #                byrow = TRUE)
+
+    shifted <- as.integer(first_record) * as.integer(2^c(0, 8, 16))
     shifted  <- array(shifted,
                       dim = c(3,
                               headers$srate[[1]],
                               n_chans,
                               records_per))
-    #shifted <- rowSums(shifted)
     shifted <- colSums(shifted)
-    shifted <- matrix(aperm(shifted, c(1,3,2)), nrow = prod(dim(shifted)[c(1, 3)]))
+    shifted <- matrix(aperm(shifted,
+                            c(1,3,2)),
+                      nrow = prod(dim(shifted)[c(1, 3)]))
     modifier <- chunk_size * (records - 1)
     sig_out[(1:chunk_size) + modifier, ] <- shifted
-    # shifted <- matrix(shifted - bitwShiftL(bitwShiftR(shifted,
-    #                                                   23),
-    #                                        24),
-    #                   ncol = headers$n_chans)
-    # shifted <- shifted - bitwShiftL(bitwShiftR(shifted,
-    #                                            23),
-    #                                 24)
-    # shifted <- sweep(shifted,
-    #                  2,
-    #                  gains, "*")
-    #modifier <- chunk_size * (records - 1)
-    # sig_out[(1:chunk_size) + modifier, ] <- sweep(shifted,
-    #                                               2,
-    #                                               offsets,
-    #                                               "+")
-    count <- count + records_per
   }
 
   if (remaining > 0) {
     final_records <- readBin(sig_file,
-                             "integer",
+                             "raw",
                              n = sig_length * remaining,
-                             size = 1,
-                             signed = FALSE,
                              endian = "little")
 
-    shifted <- final_records * as.integer(2^c(0, 8,16))
+    shifted <- as.integer(final_records) * as.integer(2^c(0, 8,16))
 
     shifted  <- array(shifted, dim = c(3,
                                        headers$srate[[1]],
