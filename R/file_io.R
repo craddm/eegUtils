@@ -25,7 +25,7 @@ import_raw <- function(file_name,
                        chan_nos = NULL,
                        recording = NULL,
                        participant_id = character(1),
-                       fast_bdf = FALSE) {
+                       fast_bdf = TRUE) {
 
   file_type <- tools::file_ext(file_name)
 
@@ -43,7 +43,7 @@ import_raw <- function(file_name,
                   "as",
                   toupper(file_type)))
 
-    if (fast_bdf) {
+    if (fast_bdf && file_type == "bdf") {
       bdf_header <- read_bdf_header(file_name)
       sigs <- read_bdf_data(file_name, bdf_header)
       colnames(sigs) <- bdf_header$chan_labels
@@ -1095,7 +1095,7 @@ read_bdf_data <- function(file_name, headers) {
 
   rec_size <- sig_length / 256 # calc size in kilobytes in memory
 
-  records_per <- floor(20000 / rec_size) # read up to 20000 kb at once
+  records_per <- min(floor(20000 / rec_size), headers$n_records) # read up to 20000 kb at once
 
   gains <- (headers$phys_max - headers$phys_min) / (headers$dig_max - headers$dig_mins)
   offsets <- headers$phys_mins - gains * headers$dig_mins
