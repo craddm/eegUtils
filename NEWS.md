@@ -2,12 +2,15 @@
 
 ### Function changes
 - Default settings for Infomax ICA changed to be similar to EEGLAB/Fieldtrip.
+- Faster reading of bdf implemented. Old behaviour can be retained using `fast_bdf = FALSE` parameter to `import_raw()`
 
 ### Internal changes / bug fixes
 - `plot_butterfly` should now be faster again.
+- Much faster reader for BDF implemented.
 - `compute_csd` now uses `eeg_reference` rather than `reref_eeg`
 - Unmixing matrix for SSD decompositions fixed.
 - `compute_tfr` reworked to be faster.
+- Faster baseline correction implemented using Rcpp.
 - Padding now used during `compute_tfr`, which greatly improves speed/accuracy; units may change but this is a change in scaling factor.
 
 # eegUtils 0.4.0
