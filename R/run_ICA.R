@@ -22,6 +22,9 @@
 #' @return An \code{eeg_ICA} object containing an ICA decomposition
 #' @importFrom MASS ginv
 #' @importFrom Matrix rankMatrix
+#' @examples
+#' run_ICA(demo_epochs)
+#' run_ICA(demo_epochs, pca = 10)
 #' @export
 
 run_ICA <- function(data, ...) {

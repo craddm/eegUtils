@@ -63,6 +63,17 @@ test_that("Selection of electrodes and times works for eeg_* objects", {
   expect_true("A5" %in% names(epo_df_A5))
   expect_false("A2" %in% names(epo_df_A5))
 
+  test_evoked <- eeg_average(test_epo)
+  evo_A5 <- select_elecs(test_evoked, electrode = "A5")
+  expect_true("A5" %in% channel_names(evo_A5))
+  expect_false("A2" %in% channel_names(evo_A5))
+
+  test_ica <- run_ICA(demo_epochs, pca = 10)
+  test_ica_comp1 <- select_elecs(test_ica, "Comp002")
+  expect_true("Comp002" %in% channel_names(test_ica_comp1))
+  expect_false("Comp001" %in% channel_names(test_ica_comp1))
+
+
 })
 
 test_that("Selection of epochs functions for eeg_epochs objects only", {

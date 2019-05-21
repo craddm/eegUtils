@@ -59,6 +59,10 @@ column is always required; an epoch column is not.
 \item \code{eeg_evoked}: Method for \code{eeg_evoked} objects
 }}
 
+\examples{
+rm_baseline(demo_epochs)
+rm_baseline(demo_epochs, c(-.1, 0))
+}
 \author{
 Matt Craddock \email{matt@mattcraddock.com}
 }

@@ -12,6 +12,9 @@
 #'   epoched, or the channel mean if the data is continuous.
 #' @param verbose Defaults to TRUE. Output descriptive messages to console.
 #' @param ... other parameters to be passed to functions
+#' @examples
+#' rm_baseline(demo_epochs)
+#' rm_baseline(demo_epochs, c(-.1, 0))
 #' @export
 
 rm_baseline <- function(data,

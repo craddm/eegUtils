@@ -65,6 +65,10 @@ fastica, extended Infomax, and Second-Order Blind Identification (SOBI).
   centre on the channel means, not the epoch means.
 }
 
+\examples{
+run_ICA(demo_epochs)
+run_ICA(demo_epochs, pca = 10)
+}
 \author{
 Matt Craddock \email{matt@mattcraddock.com}
 }

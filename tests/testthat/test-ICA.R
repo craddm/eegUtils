@@ -4,8 +4,8 @@ demo_epochs <- electrode_locations(demo_epochs,
                                    montage = "biosemi64alpha",
                                    overwrite = TRUE)
 
-demo_SOBI <- run_ICA(demo_epochs)
-demo_fastic <- run_ICA(demo_epochs, method = "fastica")
+demo_SOBI <- run_ICA(demo_epochs, pca = 10)
+demo_fastic <- run_ICA(demo_epochs, method = "fastica", pca = 10)
 demo_fica <- run_ICA(demo_epochs, method = "fica", pca = 10)
 
 test_that("topoplots for ICA work", {
