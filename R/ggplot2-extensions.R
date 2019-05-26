@@ -62,15 +62,22 @@ StatScalpmap <-
                    compute_group = function(data,
                                             scales,
                                             grid_res,
-                                            interp_limit) {
+                                            interp_limit,
+                                            method = "biharmonic") {
 
                      data <- aggregate(fill ~ x + y,
                                        data = data,
                                        FUN = mean)
 
-                     data <- biharmonic(data,
+                     if (method == "biharmonic") {
+                       data <- biharmonic(data,
+                                          grid_res = grid_res,
+                                          interp_limit = interp_limit)
+                     } else {
+                       data <- fit_gam_topo(data,
                                         grid_res = grid_res,
                                         interp_limit = interp_limit)
+                     }
                      data
 
                      }
@@ -99,6 +106,7 @@ stat_scalpmap <- function(mapping = NULL,
                           grid_res = 300,
                           interpolate = FALSE,
                           interp_limit = "skirt",
+                          method = "biharmonic",
                           ...) {
   ggplot2::layer(
     stat = StatScalpmap,
@@ -112,6 +120,7 @@ stat_scalpmap <- function(mapping = NULL,
                   interpolate = interpolate,
                   grid_res = grid_res,
                   interp_limit = interp_limit,
+                  method = method,
                   ...)
   )
 }
@@ -149,6 +158,7 @@ geom_topo <- function(mapping = NULL,
                       chan_size = rel(2),
                       head_size = rel(1.5),
                       grid_res = 200,
+                      method = "biharmonic",
                       ...) {
 
   list(ggplot2::layer(geom = GeomRaster,
@@ -162,6 +172,7 @@ geom_topo <- function(mapping = NULL,
                                     interpolate = interpolate,
                                     grid_res = grid_res,
                                     interp_limit = interp_limit,
+                                    method = method,
                                     ...)
                       ),
        ggplot2::layer(geom = GeomHead,
@@ -613,6 +624,39 @@ biharmonic <- function(data,
   } else {
     circ_scale <- y_max / 1.8
   }
+
+  data[sqrt(data$x ^ 2 + data$y ^ 2) < circ_scale, ]
+}
+
+fit_gam_topo <- function(data,
+                         grid_res,
+                         interp_limit) {
+
+  abs_y_max <- max(abs(data$y), na.rm = TRUE)
+  y_max <- max(data$y, na.rm = TRUE) * 1.5
+
+  spline_smooth <- mgcv::gam(fill ~ s(x,
+                                      y,
+                                      bs = "ts",
+                                      k = 40),
+                             data = data)
+  data <- data.frame(expand.grid(x = seq(min(data$x) * 1.5,
+                                         max(data$x) * 1.5,
+                                         length = grid_res),
+                                 y = seq(min(data$y) * 1.5,
+                                         max(data$y) * 1.5,
+                                         length = grid_res)))
+  data$fill <-  stats::predict(spline_smooth,
+                               data,
+                               type = "response")
+
+
+  if (identical(interp_limit, "head")) {
+    circ_scale <- abs_y_max * 1.1
+  } else {
+    circ_scale <- y_max / 1.8
+  }
+
 
   data$incircle <- sqrt(data$x ^ 2 + data$y ^ 2) < circ_scale
   data[data$incircle, ]
