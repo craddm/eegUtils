@@ -143,6 +143,10 @@ eeg_data objects.
   should be used with caution.
 }
 
+\examples{
+topoplot(demo_epochs)
+topoplot(demo_epochs, time_lim = c(.1, .2))
+}
 \author{
 Matt Craddock, \email{matt@mattcraddock.com}
 }

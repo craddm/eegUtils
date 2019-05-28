@@ -95,6 +95,7 @@ StatScalpmap <-
 #' @param grid_res Resolution of the interpolation grid. (Defaults to 100
 #'   points).
 #' @param interp_limit Topoplot with a "skirt" or inside the "head".
+#' @param method "biharmonic" or "gam"
 #' @family topoplot functions
 #' @export
 stat_scalpmap <- function(mapping = NULL,
@@ -142,7 +143,7 @@ stat_scalpmap <- function(mapping = NULL,
 #' @param chan_size Size for channel markers, if any.
 #' @param head_size Size of the head shape.
 #' @param grid_res Smoothness of the interpolation grid.
-#'
+#' @param method "biharmonic" or ""gam".
 #' @family topoplot functions
 #' @export
 geom_topo <- function(mapping = NULL,

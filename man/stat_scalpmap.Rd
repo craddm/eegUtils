@@ -10,7 +10,8 @@
 \usage{
 stat_scalpmap(mapping = NULL, data = NULL, position = "identity",
   na.rm = FALSE, show.legend = NA, inherit.aes = TRUE,
-  grid_res = 300, interpolate = FALSE, interp_limit = "skirt", ...)
+  grid_res = 300, interpolate = FALSE, interp_limit = "skirt",
+  method = "biharmonic", ...)
 
 geom_head(mapping = NULL, data = NULL, show.legend = NA,
   na.rm = TRUE, inherit.aes = TRUE, interp_limit = "skirt",
@@ -70,6 +71,8 @@ points).}
 (the default) don't interpolate.}
 
 \item{interp_limit}{Topoplot with a "skirt" or inside the "head".}
+
+\item{method}{"biharmonic" or "gam"}
 
 \item{...}{Other arguments passed on to \code{\link[=layer]{layer()}}. These are
 often aesthetics, used to set an aesthetic to a fixed value, like

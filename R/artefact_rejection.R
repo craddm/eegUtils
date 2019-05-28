@@ -8,6 +8,8 @@
 #'
 #' @param .data An object of class \code{eeg_epochs}
 #' @param ... Parameters passed to FASTER
+#' @examples
+#' ar_FASTER(demo_epochs)
 #' @references
 #' Nolan, Whelan & Reilly (2010). FASTER: Fully Automated Statistical Thresholding for
 #' EEG artifact Rejection. J Neurosci Methods.
@@ -305,7 +307,7 @@ faster_epo_stat <- function(data, chan_means) {
 
 #' Simple absolute value thresholding
 #'
-#' Reject data based on a simple absolute threshold. This marks any timepoint
+#' Reject data based on a simple absolute amplitude threshold. This marks any timepoint
 #' from any electrode.
 #'
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
@@ -315,13 +317,13 @@ faster_epo_stat <- function(data, chan_means) {
 #'   as a +- value.
 #' @param reject If TRUE, remove marked data immediately, otherwise mark for
 #'   inspection/rejection. Defaults to FALSE.
-#' @param ... Other arguments passed to eeg_ar_thresh
+#' @examples
+#' ar_thresh(demo_epochs, c(100))
 #' @export
 
 ar_thresh <- function(data,
                       threshold,
-                      reject = FALSE,
-                      ...) {
+                      reject = FALSE) {
   UseMethod("ar_thresh", data)
 }
 
@@ -329,24 +331,28 @@ ar_thresh <- function(data,
 #' @export
 ar_thresh.eeg_data <- function(data,
                                threshold,
-                               reject = FALSE,
-                               ...) {
+                               reject = FALSE) {
 
   if (length(threshold) == 1) {
     threshold <- c(threshold, -threshold)
   }
 
-  crossed_thresh <- data$signals > max(threshold) |
-    data$signals < min(threshold)
+  crossed_thresh <- check_thresh(data, threshold)
+  crossed_thresh <- rowSums(crossed_thresh) == 0
 
   if (reject) {
-    crossed_thresh <- rowSums(crossed_thresh) == 0
+    message("Removing ",
+            sum(!crossed_thresh), " (",
+            round(sum(!crossed_thresh) / nrow(data$signals) * 100, 2),
+            "%) timepoints.")
+    data$reject$timings <- data$timings[crossed_thresh, ]
     data$timings <- data$timings[crossed_thresh, ]
-    data$signals <- data$signals[crossed_thresh, ]
     data$events <- data$events[data$events$event_time %in% data$timings$time, ]
-    data$reference$ref_data <- data$reference$ref_data[crossed_thresh, ]
+
+    data$signals <- data$signals[crossed_thresh, ]
+
   } else {
-    data$reject <- crossed_thresh
+    data$reject$timings <- data$timings[crossed_thresh, ]
   }
   data
 }
@@ -355,26 +361,44 @@ ar_thresh.eeg_data <- function(data,
 #' @export
 ar_thresh.eeg_epochs <- function(data,
                                  threshold,
-                                 reject = FALSE, ...) {
+                                 reject = FALSE) {
 
   if (length(threshold) == 1) {
     threshold <- c(threshold, -threshold)
   }
 
-  crossed_thresh <- data$signals > max(threshold) |
-    data$signals < min(threshold)
+  crossed_thresh <- check_thresh(data, threshold)
 
   crossed_thresh <- rowSums(crossed_thresh) == 1
   rej_epochs <- unique(data$timings$epoch[crossed_thresh])
+  message(paste(length(rej_epochs), "epochs contain samples above threshold."))
   if (reject) {
+    message("Removing ", length(rej_epochs), " epochs.")
     data <- select_epochs(data,
-                          rej_epochs,
+                          epoch_no = rej_epochs,
                           keep = FALSE)
-    # consider creating select_timerange vs select_timepoints
   } else {
-    data$reject <- rej_epochs
+    data$reject$epochs <- rej_epochs
+    data$reject$timings <- data$timings[crossed_thresh,]
   }
   data
+}
+
+check_thresh <- function(data, threshold) {
+  crossed_thresh <- data$signals > max(threshold) |
+    data$signals < min(threshold)
+
+  upper_thresh <- data$signals > max(threshold)
+  lower_thresh <- data$signals < min(threshold)
+  total_data <- prod(dim(data$signals))
+
+  message(sum(upper_thresh),
+          " (", round(sum(upper_thresh)/total_data * 100, 2), "%) ",
+          "samples above ", max(threshold) , " uV threshold.")
+  message(sum(lower_thresh),
+          " (", round(sum(lower_thresh)/total_data * 100, 2), "%) ",
+          "samples below ", min(threshold) , " uV threshold.")
+  crossed_thresh
 }
 
 #' Channel statistics
@@ -455,7 +479,7 @@ kurtosis <- function(data) {
 #' Calculates and removes the contribution of eye movements to the EEG signal using
 #' least-squares regression.
 #'
-#' @param .data data to regress - \code{eeg_data} or \code{eeg_epochs}
+#' @param data data to regress - \code{eeg_data} or \code{eeg_epochs}
 #' @param heog Horizontal EOG channel labels
 #' @param veog Vertical EOG channel labels
 #' @param bipolarize Bipolarize the EOG channels. Only works when four channels
@@ -463,21 +487,21 @@ kurtosis <- function(data) {
 #' @author Matt Craddock, \email{matt@@mattcraddock.com}
 #' @export
 
-ar_eogreg <- function(.data,
+ar_eogreg <- function(data,
                       heog,
                       veog,
                       bipolarize = TRUE) {
-  UseMethod("ar_eogreg", .data)
+  UseMethod("ar_eogreg", data)
 }
 
 #' @rdname ar_eogreg
 #' @export
-ar_eogreg.eeg_data <- function(.data,
+ar_eogreg.eeg_data <- function(data,
                                heog,
                                veog,
                                bipolarize = TRUE) {
 
-  eogreg(.data,
+  eogreg(data,
          heog,
          veog,
          bipolarize)
@@ -485,12 +509,12 @@ ar_eogreg.eeg_data <- function(.data,
 
 #' @rdname ar_eogreg
 #' @export
-ar_eogreg.eeg_epochs <- function(.data,
+ar_eogreg.eeg_epochs <- function(data,
                                  heog,
                                  veog,
                                  bipolarize = TRUE) {
 
-  eogreg(.data,
+  eogreg(data,
          heog,
          veog,
          bipolarize)
@@ -498,33 +522,33 @@ ar_eogreg.eeg_epochs <- function(.data,
 }
 
 #' @noRd
-eogreg <- function(.data,
+eogreg <- function(data,
                    heog,
                    veog,
                    bipolarize) {
 
   if (bipolarize) {
-    EOG <- bip_EOG(.data$signals, heog, veog)
+    EOG <- bip_EOG(data$signals, heog, veog)
   } else {
-    HEOG <- .data$signals[, heog, drop = TRUE]
-    VEOG <- .data$signals[, veog, drop = TRUE]
+    HEOG <- data$signals[, heog, drop = TRUE]
+    VEOG <- data$signals[, veog, drop = TRUE]
     EOG <- data.frame(HEOG, VEOG)
   }
 
-  data_chans <- channel_names(.data)[!channel_names(.data) %in% c(heog, veog)]
+  data_chans <- channel_names(data)[!channel_names(data) %in% c(heog, veog)]
   hmz <- solve(crossprod(as.matrix(EOG)),
                crossprod(as.matrix(EOG),
-                         as.matrix(.data$signals[, data_chans])))
-  .data$signals[, data_chans] <- .data$signals[, data_chans] - crossprod(t(as.matrix(EOG)), hmz)
-  .data
+                         as.matrix(data$signals[, data_chans])))
+  data$signals[, data_chans] <- data$signals[, data_chans] - crossprod(t(as.matrix(EOG)), hmz)
+  data
 }
 
 #' @noRd
-bip_EOG <- function(.data,
+bip_EOG <- function(data,
                     HEOG,
                     VEOG) {
-  HEOG <- .data[, HEOG[1]] - .data[, HEOG[2]]
-  VEOG <- .data[, VEOG[1]] - .data[, VEOG[2]]
+  HEOG <- data[, HEOG[1]] - data[, HEOG[2]]
+  VEOG <- data[, VEOG[1]] - data[, VEOG[2]]
   EOG <- data.frame(HEOG, VEOG)
   EOG
 }
