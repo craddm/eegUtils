@@ -7,6 +7,9 @@
 #'   columns x, y, and amplitude at present. x and y are (Cartesian) electrode
 #'   co-ordinates), amplitude is amplitude.
 #' @param ... Various arguments passed to specific functions
+#' @examples
+#' topoplot(demo_epochs)
+#' topoplot(demo_epochs, time_lim = c(.1, .2))
 #' @export
 #'
 #' @section Notes on usage of Generalized Additive Models for interpolation: The
@@ -779,8 +782,9 @@ new_topo.eeg_epochs <- function(data,
                                 palette = "RdBu",
                                 chan_markers = "point",
                                 interpolate = TRUE,
-                                interp_limit = "skirt",
+                                interp_limit = c("skirt", "head"),
                                 keep_epochs = FALSE,
+                                method = c("biharmonic", "gam"),
                                 ...) {
 
   if (!keep_epochs) {
@@ -807,6 +811,7 @@ new_topo.eeg_epochs <- function(data,
                 interpolate = interpolate,
                 interp_limit = interp_limit,
                 keep_epochs = keep_epochs,
+                method = method,
                 ...)
 }
 
@@ -819,6 +824,7 @@ new_topo.eeg_ICA <- function(data,
                              interpolate = TRUE,
                              interp_limit = "skirt",
                              keep_epochs = FALSE,
+                             method = "biharmonic",
                              ...) {
 
   data <- as.data.frame(data,
@@ -847,6 +853,7 @@ make_new_topo <- function(data,
                           interpolate,
                           interp_limit,
                           keep_epochs,
+                          method,
                           ...) {
 
   plot_out <-
@@ -856,7 +863,8 @@ make_new_topo <- function(data,
                fill = amplitude)) +
     geom_topo(grid_res = grid_res,
               chan_markers = chan_markers,
-              interp_limit = interp_limit) +
+              interp_limit = interp_limit,
+              method = method) +
     theme_void() +
     coord_equal() +
     guides(fill = guide_colorbar(title = expression(paste("Amplitude (",

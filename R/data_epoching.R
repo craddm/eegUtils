@@ -72,12 +72,13 @@ epoch_data.eeg_data <- function(data,
   # Subsequent steps need to account for this when selecting based on sample number.
   # Multiplying srate by spacing accomplishes this.
 
-  samp_diff <- unique(diff(data$timings$sample))
-  if (length(samp_diff) > 1) {
-    stop("Sample spacing is uneven, cannot downsample.")
-  } else {
+  #samp_diff <- unique(diff(data$timings$sample))
+  samp_diff <- min(diff(data$timings$sample))
+  #if (length(samp_diff) > 1) {
+   # stop("Sample spacing is uneven, cannot downsample.")
+  #} else {
     srate <- data$srate * samp_diff
-  }
+  #}
 
   # create a vector that counts back and ahead of the timelock event in samples
   # i.e. if srate is 1000, a vector from -100 to 0 to 100 would be -.1 s before
