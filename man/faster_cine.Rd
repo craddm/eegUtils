@@ -7,9 +7,9 @@
 faster_cine(.data, ...)
 }
 \arguments{
-\item{...}{further parameters (tbd)}
+\item{.data}{\code{eeg_epochs} object.}
 
-\item{data}{\code{eeg_epochs} object.}
+\item{...}{further parameters (tbd)}
 }
 \description{
 FASTER detection of bad channels in single epochs

@@ -6,7 +6,7 @@
 #'
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #'
-#' @param .data An object of class \code{eeg_epochs}
+#' @param data An object of class \code{eeg_epochs}
 #' @param ... Parameters passed to FASTER
 #' @examples
 #' ar_FASTER(demo_epochs)
@@ -15,36 +15,36 @@
 #' EEG artifact Rejection. J Neurosci Methods.
 #' @export
 
-ar_FASTER <- function(.data, ...) {
-  UseMethod("ar_FASTER", .data)
+ar_FASTER <- function(data, ...) {
+  UseMethod("ar_FASTER", data)
 }
 
 #' @describeIn ar_FASTER Run FASTER on \code{eeg_epochs}
 #' @export
-ar_FASTER.eeg_epochs <- function(.data,
+ar_FASTER.eeg_epochs <- function(data,
                                  ...) {
 
-  check_ci_str(.data$chan_info)
+  check_ci_str(data$chan_info)
 
-  if (is.null(channels(.data))) {
+  if (is.null(channels(data))) {
     stop("No channel information found, ar_FASTER() requires (at least some) channel locations.")
   } else {
-    channels(.data) <- validate_channels(channels(.data),
-                                         channel_names(.data))
+    channels(data) <- validate_channels(channels(data),
+                                        channel_names(data))
   }
 
   # TODO - keep a record of which trials/channels etc are removed/interpolated
   # and allow marking for inspection rather than outright rejection.
 
-  if (is.null(.data$reference)) {
+  if (is.null(data$reference)) {
     orig_ref <- NULL
     excluded <- NULL
   } else {
-    orig_ref <- .data$reference$ref_chans
-    excluded <- .data$reference$excluded
+    orig_ref <- data$reference$ref_chans
+    excluded <- data$reference$excluded
   }
 
-  orig_chan_info <- channels(.data)
+  orig_chan_info <- channels(data)
   # Re-reference to single electrode, any should be fine, Fz is arbitrary default.
   # Note - should allow user to specify in case Fz is a known bad electrode.
 
@@ -54,35 +54,35 @@ ar_FASTER.eeg_epochs <- function(.data,
   #   data <- eeg_reference(data, ref_chans = names(data$signals)[14], exclude = excluded)
   # }
 
-  orig_names <- names(.data$signals)
+  orig_names <- names(data$signals)
   # Exclude ref chan from subsequent computations (may be better to alter reref_eeg...)
-  data_chans <- !(orig_names %in% .data$reference$ref_chans)
+  data_chans <- !(orig_names %in% data$reference$ref_chans)
 
   # Step 1: channel statistics
-  bad_chans <- faster_chans(.data$signals[, data_chans])
-  bad_chan_n <- names(.data$signals)[bad_chans]
+  bad_chans <- faster_chans(data$signals[, data_chans])
+  bad_chan_n <- names(data$signals)[bad_chans]
   message(paste("Globally bad channels:",
                 paste(bad_chan_n,
                       collapse = " ")))
 
   if (length(bad_chan_n) > 0) {
 
-    if (is.null(.data$chan_info)) {
+    if (is.null(data$chan_info)) {
       warning("no chan_info, removing chans.")
-      .data <- select_elecs(.data,
+      data <- select_elecs(data,
                            electrode = bad_chan_n,
                            keep = FALSE)
     } else {
 
       #Check for any bad channels that are not in the chan_info
-      check_bads <- bad_chan_n %in% .data$chan_info$electrode
+      check_bads <- bad_chan_n %in% data$chan_info$electrode
 
       # check for any bad channels that have missing coordinates
-      which_bad <- .data$chan_info$electrode %in% bad_chan_n
+      which_bad <- data$chan_info$electrode %in% bad_chan_n
       missing_coords <- FALSE
 
       if (any(which_bad)){
-        missing_coords <- apply(is.na(.data$chan_info[which_bad, ]), 1, any)
+        missing_coords <- apply(is.na(data$chan_info[which_bad, ]), 1, any)
       }
 
       missing_bads <- bad_chan_n[!check_bads | missing_coords]
@@ -92,44 +92,44 @@ ar_FASTER.eeg_epochs <- function(.data,
         warning("Missing chan_info for bad channel(s): ",
                 paste0(missing_bads,
                        collapse = " "), ". Removing channels.")
-        .data <- select_elecs(.data,
-                              electrode = missing_bads,
-                              keep = FALSE)
+        data <- select_elecs(data,
+                             electrode = missing_bads,
+                             keep = FALSE)
       }
 
       if (length(bad_chan_n) > 0) {
-        .data <- interp_elecs(.data,
-                              bad_chan_n)
+        data <- interp_elecs(data,
+                             bad_chan_n)
       }
     }
   }
 
   # Step 2: epoch statistics
-  bad_epochs <- faster_epochs(.data)
-  bad_epochs <- unique(.data$timings$epoch)[bad_epochs]
+  bad_epochs <- faster_epochs(data)
+  bad_epochs <- unique(data$timings$epoch)[bad_epochs]
   message(paste("Globally bad epochs:",
                 paste(bad_epochs,
                       collapse = " ")))
-  .data <- select_epochs(.data,
+  data <- select_epochs(data,
                         epoch_no = bad_epochs,
                         keep = FALSE)
 
   # Step 3: ICA stats (not currently implemented)
 
   # Step 4: Channels in Epochs
-  .data <- faster_cine(.data)
+  data <- faster_cine(data)
 
   # Step 5: Grand average step (not currently implemented, probably never will be!)
 
   # Return to original reference, if one existed.
   if (!is.null(orig_ref)) {
-    .data <- eeg_reference(.data,
-                           ref_chans = orig_ref,
-                           exclude = excluded)
+    data <- eeg_reference(data,
+                          ref_chans = orig_ref,
+                          exclude = excluded)
   }
 
-  .data$chan_info <- orig_chan_info
-  .data
+  data$chan_info <- orig_chan_info
+  data
 }
 
 #' Perform global bad channel detection for FASTER
@@ -158,7 +158,7 @@ faster_chans <- function(data, sds = 3, ...) {
 
 #' Perform global bad epoch detection for FASTER
 #'
-#' @param data \code{eeg_epochs} object
+#' @param .data \code{eeg_epochs} object
 #' @param ... Further parameters (tbd)
 #' @keywords internal
 
@@ -194,7 +194,7 @@ faster_epochs <- function(.data, ...) {
 
 #' FASTER detection of bad channels in single epochs
 #'
-#' @param data \code{eeg_epochs} object.
+#' @param .data \code{eeg_epochs} object.
 #' @param ... further parameters (tbd)
 #' @keywords internal
 

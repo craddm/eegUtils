@@ -6,14 +6,14 @@
 \alias{eeg_FASTER}
 \title{FASTER EEG artefact rejection}
 \usage{
-ar_FASTER(.data, ...)
+ar_FASTER(data, ...)
 
-\method{ar_FASTER}{eeg_epochs}(.data, ...)
+\method{ar_FASTER}{eeg_epochs}(data, ...)
 
-eeg_FASTER(.data, ...)
+eeg_FASTER(data, ...)
 }
 \arguments{
-\item{.data}{An object of class \code{eeg_epochs}}
+\item{data}{An object of class \code{eeg_epochs}}
 
 \item{...}{Parameters passed to FASTER}
 }
