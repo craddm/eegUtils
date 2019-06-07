@@ -37,7 +37,9 @@ utils::globalVariables(c("time",
                          "xyz_coords",
                          "component",
                          "signals",
-                         "ga_sigs"))
+                         "ga_sigs",
+                         "Component",
+                         "..orig_cols"))
 
 ## usethis namespace: start
 #' @importFrom Rcpp sourceCpp
