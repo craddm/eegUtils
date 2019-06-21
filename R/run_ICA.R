@@ -337,7 +337,7 @@ apply_ica.eeg_ICA <- function(data,
              chan_info = data$chan_info,
              timings = data$timings,
              reference = NULL,
-             epochs = NULL)
+             epochs = epochs(data))
   class(out) <- c("eeg_epochs", "eeg_data")
   out
 }
