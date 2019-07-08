@@ -577,6 +577,9 @@ channels.eeg_evoked <- function(.data) {
 #' @param .data \code{eegUtils object}
 #' @export
 channel_names <- function(.data) {
+  if (is.eeg_tfr(.data)) {
+    return(dimnames(.data$signals)$electrode)
+  }
   names(.data$signals)
 }
 

@@ -234,24 +234,46 @@ as.data.frame.eeg_tfr <- function(x,
                                   long = FALSE,
                                   ...) {
 
-  out_df <- as.data.frame.table(x$signals,
-                                stringsAsFactors = FALSE)
-  names(out_df) <- c(x$dimensions, "power")
-  out_df$time <- as.numeric(out_df$time)
-  out_df$frequency <- as.numeric(out_df$frequency)
-  if (!is.null(x$epochs) && "epoch" %in% x$dimensions) {
-    out_df$epoch <- as.numeric(out_df$epoch)
-    out_df <- dplyr::left_join(out_df,
-                             x$epochs,
-                             by = "epoch")
+  # out_df <- as.data.frame.table(x$signals,
+  #                               stringsAsFactors = FALSE)
+  if (length(dim(x$signals)) == 3) {
+    out_df <- aperm(x$signals, c("time", "frequency", "electrode"))
+    dim_size <- dim(out_df)
+    dim(out_df) <- c(dim_size[1] * dim_size[2],
+                     dim_size[3])
+    out_df <- as.data.frame(out_df)
+    names(out_df) <- dimnames(x$signals)$electrode
+    out_df$time <- rep(as.numeric(dimnames(x$signals)$time),
+                       dim_size[2])
+    out_df$frequency <- rep(as.numeric(dimnames(x$signals)$frequency),
+                            each = dim_size[1])
+    out_df$epoch <- 1
+  } else {
+    out_df <- aperm(x$signals, c("time", "frequency", "epoch", "electrode"))
+    dim_size <- dim(out_df)
+    dim(out_df) <- c(dim_size[1] * dim_size[2] * dim_size[3],
+                     dim_size[4])
+    out_df <- as.data.frame(out_df)
+    names(out_df) <- dimnames(x$signals)$electrode
+    out_df$time <- rep(as.numeric(dimnames(x$signals)$time),
+                       dim_size[3] * dim_size[2])#out_df$time)
+    out_df$frequency <- rep(as.numeric(dimnames(x$signals)$frequency),
+                            each = dim_size[1])
+    out_df$epoch <- rep(unique(x$epochs$epoch),
+                        dim_size[1] * dim_size[2])
+
+    if (!is.null(x$epochs) && "epoch" %in% x$dimensions) {
+      #out_df$epoch <- as.numeric(out_df$epoch)
+      out_df <- dplyr::left_join(out_df,
+                                 x$epochs,
+                                 by = "epoch")
+    }
   }
-  if (!long) {
-    out_df <- tidyr::spread(out_df,
-                            electrode,
-                            power)
-    #out_df$electrode <- as.character(out_df$electrode)
-    return(out_df)
+
+  if (long) {
+    return(tidyr::gather(out_df, electrode, power, channel_names(x)))
   }
+
   out_df
 }
 
