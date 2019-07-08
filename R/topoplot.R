@@ -237,6 +237,12 @@ topoplot.data.frame <- function(data,
     r <- max(scaled_y) * 1.1
   }
 
+  plot_rad <- max(scaled_x ^2 + scaled_y ^2) * 1.05
+
+  if (interp_limit == "head") {
+    r <- plot_rad
+  }
+
   circ_rads <- seq(0,
                    2 * pi,
                    length.out = 101)
@@ -245,7 +251,7 @@ topoplot.data.frame <- function(data,
   # edges for smoothness
 
   out_df <- round_topo(out_df,
-                       r = r,
+                       r = plot_rad,
                        interp_limit = interp_limit)
   mask_ring <- out_df$mask_ring
   out_df <- out_df$out_df
@@ -257,7 +263,8 @@ topoplot.data.frame <- function(data,
                     aes(x,
                         y,
                         fill = amplitude)) +
-    geom_raster(interpolate = TRUE, na.rm = TRUE)
+    geom_raster(interpolate = TRUE,
+                na.rm = TRUE)
 
   if (contour) {
     topo <- topo +
@@ -272,12 +279,13 @@ topoplot.data.frame <- function(data,
     }
 
   # Add head and mask to topoplot
-  topo <- topo +
+  topo <-
+    topo +
     annotate("path",
               x = mask_ring$x,
               y = mask_ring$y,
               colour = "white",
-              size = rel(6.5)) +
+              size = rel(6.5) * scaling) +
     geom_head(r = r,
               size = rel(1.5) * scaling) +
     #add_head(r, scaling) +
@@ -290,8 +298,8 @@ topoplot.data.frame <- function(data,
     guides(fill = guide_colorbar(title = expression(paste("Amplitude (",
                                                           mu, "V)")),
                                  title.position = "right",
-                                 barwidth = rel(1),
-                                 barheight = rel(6),
+                                 barwidth = rel(1) * scaling,
+                                 barheight = rel(6) * scaling,
                                  title.theme = element_text(angle = 270)))
 
   # Add electrode points or names -------------------
@@ -754,15 +762,15 @@ round_topo <- function(.data,
                        interp_limit,
                        r) {
 
-  if (identical(interp_limit, "skirt")) {
-    .data$incircle <- sqrt(.data$x ^ 2 + .data$y ^ 2) < 1.125
-    mask_ring <- data.frame(x = 1.126 * cos(circ_rad_fun()),
-                            y = 1.126 * sin(circ_rad_fun()))
-    } else {
+  # if (identical(interp_limit, "skirt")) {
+  #   .data$incircle <- sqrt(.data$x ^ 2 + .data$y ^ 2) < 1.125
+  #   mask_ring <- data.frame(x = 1.126 * cos(circ_rad_fun()),
+  #                           y = 1.126 * sin(circ_rad_fun()))
+    # } else {
       .data$incircle <- sqrt(.data$x ^ 2 + .data$y ^ 2) < (r * 1.02)
       mask_ring <- data.frame(x = r * 1.03 * cos(circ_rad_fun()),
                               y = r * 1.03 * sin(circ_rad_fun()))
-    }
+    # }
   topo_out <- list("out_df" = .data[.data$incircle, ],
                    "mask_ring" = mask_ring)
   topo_out
