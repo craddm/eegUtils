@@ -9,6 +9,7 @@
 #'
 #' @param data An \code{eeg_data} object
 #' @param ... Additional parameters
+#' @export
 #' @references Cohen, M. X. (2016). Comparison of linear spatial filters for
 #'   identifying oscillatory activity in multichannel data. BioRxiv, 097402.
 #'   https://doi.org/10.1101/097402
@@ -35,6 +36,7 @@ eeg_decomp.default <- function(data, ...) {
 #' @param method Type of decomposition to apply. Currently only "ssd" is supported.
 #' @param verbose Informative messages printed to console. Defaults to TRUE.
 #' @describeIn eeg_decomp method for \code{eeg_epochs} objects
+#' @export
 eeg_decomp.eeg_epochs <- function(data,
                                   sig_range,
                                   noise_range = NULL,
