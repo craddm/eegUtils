@@ -282,17 +282,20 @@ eeg_evoked <- function(data,
 #' @param pvals calculated p-values for that statistic
 #' @param chan_info String of character names for electrodes.
 #' @param timings Unique timepoints remaining in the data.
+#' @param method Type of statistical test
 #' @keywords internal
 
 eeg_stats <- function(statistic,
                       chan_info,
                       pvals,
-                      timings) {
+                      timings,
+                      method) {
 
   value <- list(statistic = statistic,
                 pvals = pvals,
                 chan_info = chan_info,
-                timings = timings)
+                timings = timings,
+                method = method)
   class(value) <- "eeg_stats"
   value
 }
