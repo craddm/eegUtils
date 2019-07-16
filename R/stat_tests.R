@@ -70,7 +70,8 @@ compare_epochs.eeg_epochs <- function(data,
   eeg_stats(statistic = data$signals,
             pvals = data$pvals,
             chan_info = data$chan_info,
-            timings = unique(data$timings$time))
+            timings = unique(data$timings$time),
+            method = type)
 }
 
 #' Array one-sample t-statistic

@@ -4,7 +4,7 @@
 \alias{eeg_stats}
 \title{Function to create an S3 object of class "eeg_stats".}
 \usage{
-eeg_stats(statistic, chan_info, pvals, timings)
+eeg_stats(statistic, chan_info, pvals, timings, method)
 }
 \arguments{
 \item{statistic}{Calculated statistic (e.g. t-statistic)}
@@ -14,6 +14,8 @@ eeg_stats(statistic, chan_info, pvals, timings)
 \item{pvals}{calculated p-values for that statistic}
 
 \item{timings}{Unique timepoints remaining in the data.}
+
+\item{method}{Type of statistical test}
 }
 \description{
 Function to create an S3 object of class "eeg_stats".
