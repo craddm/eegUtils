@@ -107,34 +107,6 @@ plot_butterfly.eeg_evoked <- function(data,
 
 }
 
-#' @describeIn plot_butterfly Butterfly plot for EEG statistics
-
-plot_butterfly.eeg_stats <- function(data,
-                                     time_lim = NULL,
-                                     baseline = NULL,
-                                     colourmap = NULL,
-                                     legend = TRUE,
-                                     continuous = FALSE,
-                                     browse_mode = FALSE,
-                                     ...) {
-
-  data <- data.frame(data$statistic,
-                     time = data$timings)
-  data <- tidyr::gather(data,
-                        key = "electrode",
-                        value = "amplitude",
-                        -time)
-
-  plot_butterfly(data,
-                 time_lim,
-                 baseline,
-                 colourmap,
-                 legend,
-                 continuous,
-                 browse_mode)
-
-}
-
 #' @describeIn plot_butterfly Create butterfly plot for \code{eeg_data} objects
 #' @export
 plot_butterfly.eeg_data <- function(data,
@@ -184,6 +156,32 @@ plot_butterfly.eeg_epochs <- function(data,
             continuous = FALSE)
 }
 
+#' @describeIn plot_butterfly Create butterfly plot for \code{eeg_stats} objects
+#' @export
+plot_butterfly.eeg_stats <- function(data,
+                                     time_lim = NULL,
+                                     baseline = NULL,
+                                     legend = TRUE,
+                                     facet,
+                                     browse_mode = FALSE,
+                                     ...) {
+
+  if (!missing(facet)) {
+    warning("The facet parameter is deprecated. Please use facet_wrap/facet_grid")
+    facet <- NULL
+  }
+
+  data <- parse_for_bf(data,
+                       time_lim,
+                       baseline = NULL)
+  create_bf(data,
+            legend = legend,
+            browse_mode = browse_mode,
+            continuous = FALSE,
+            quantity = statistic)
+}
+
+
 #' Parse data for butterfly plots
 #'
 #' Internal command for parsing various data structures into a suitable format
@@ -219,13 +217,14 @@ parse_for_bf <- function(data,
 create_bf <- function(data,
                       legend,
                       browse_mode,
-                      continuous) {
+                      continuous,
+                      quantity = amplitude) {
 
   #Set up basic plot -----------
   butterfly_plot <-
     ggplot2::ggplot(data,
                     aes(x = time,
-                        y = amplitude))
+                        y = {{quantity}}))
 
   if (length(unique(data$epoch)) > 1) {
     chan_lines <- function() {

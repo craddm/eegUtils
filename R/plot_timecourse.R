@@ -224,12 +224,33 @@ plot_timecourse.eeg_epochs <- function(data,
   tc_plot
 }
 
-
-#' @describeIn plot_tc plot_tc for eeg_stats objects.
-#' @noRd
+#' @describeIn plot_timecourse Plot timecourses from \code{eeg_epochs} objects.
 #'
-plot_timecourse.eeg_stats <- function(data, time_lim, ...) {
-  warning("Not yet implemented.")
+plot_timecourse.eeg_stats <- function(data,
+                                      time_lim = NULL,
+                                      electrode = NULL,
+                                      ...) {
+
+  data <- parse_for_tc(data,
+                       time_lim = time_lim,
+                       electrode = electrode,
+                       baseline = NULL,
+                       add_CI = FALSE)
+  ## check for US spelling of colour...
+  # if (is.null(colour)) {
+  #   if (!is.null(color)) {
+  #     colour <- as.name(color)
+  #   }
+  # } else {
+  #   colour <- as.name(colour)
+  # }
+
+  tc_plot <- create_tc(data,
+                       add_CI = FALSE,
+                       colour = NULL,
+                       quantity = statistic)
+
+  tc_plot
 }
 
 #' Parse data for timecourses
@@ -249,14 +270,17 @@ parse_for_tc <- function(data,
                          baseline,
                          add_CI) {
 
-  if (is.eeg_ICA(data) & is.null(electrode)) {
+  if (is.eeg_ICA(data) && is.null(electrode)) {
     stop("Component number must be supplied for ICA.")
   }
 
   ## Select specified electrodes -----
+  #if (is.eeg_stats(data)) {
+   # data <- select(data, electrode)
   if (!is.null(electrode)) {
-    data <- select_elecs(data,
-                         electrode)
+    data <- select(data, electrode)
+    #data <- select_elecs(data,
+     #                    electrode)
   }
 
   ## Do baseline correction
@@ -271,7 +295,7 @@ parse_for_tc <- function(data,
                          time_lim = time_lim)
   }
 
-  if (!is.eeg_evoked(data) & !add_CI) {
+  if (!is.eeg_stats(data) && !is.eeg_evoked(data) && !add_CI) {
     data <- eeg_average(data)
   }
 
@@ -287,12 +311,13 @@ parse_for_tc <- function(data,
 #' @keywords internal
 create_tc <- function(data,
                       add_CI,
-                      colour) {
+                      colour,
+                      quantity = amplitude) {
 
   if (is.null(colour)) {
     tc_plot <- ggplot2::ggplot(data,
                                aes(x = time,
-                                   y = amplitude))
+                                   y = {{quantity}}))
   } else {
     colour <- ggplot2::enquo(colour)
     tc_plot <- ggplot2::ggplot(data,
