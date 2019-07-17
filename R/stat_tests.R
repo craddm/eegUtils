@@ -37,6 +37,7 @@ compare_epochs.eeg_epochs <- function(data,
     data$pvals <- calc_pval(data$signals,
                             df = (n_epochs - 1))
     data$signals <- tibble::as_tibble(data$signals)
+    type <- "One-sample t-test"
   } else if (identical(type, "2samp")) {
 
     elecs <- channel_names(data)
@@ -63,8 +64,10 @@ compare_epochs.eeg_epochs <- function(data,
     data$signals <- calc_tstat_2(mat1,
                                  mat2)
     colnames(data$signals) <- elecs
-    data$pvals <- calc_pval(data$signals, df = deg_f)
+    data$pvals <- calc_pval(data$signals,
+                            df = deg_f)
     data$signals <- tibble::as_tibble(data$signals)
+    type <- "Welch two-sample t-test "
   }
 
   eeg_stats(statistic = data$signals,
@@ -84,7 +87,8 @@ compare_epochs.eeg_epochs <- function(data,
 
 array_t <- function(x, mu = 0) {
   #calculate means for each combination of timepoint and electrode
-  tp_means <- colMeans(aperm(x, c(2, 1, 3)))
+  tp_means <- colMeans(aperm(x,
+                             c(2, 1, 3)))
 
   #calculate standard deviation for each combination of timepoint and electrode
   tp_sds <- vapply(1:dim(x)[[3]],
@@ -142,16 +146,22 @@ calc_pval <- function(x, df, tails = 2) {
 #' @keywords internal
 
 calc_fstat <- function(x1, x2) {
-  x1_means <- colMeans(aperm(x1, c(2, 1, 3)))
-  x2_means <- colMeans(aperm(x2, c(2, 1, 3)))
+  x1_means <- colMeans(aperm(x1,
+                             c(2, 1, 3)))
+  x2_means <- colMeans(aperm(x2,
+                             c(2, 1, 3)))
 
   grand_means <- (x1_means + x2_means) / 2
 
-  x1_test <- vapply(1:dim(x1)[[3]], function(i) x1[, , i] - grand_means[, i],
-                    matrix(0, nrow = nrow(x1), ncol = ncol(x1)))
+  x1_test <- vapply(1:dim(x1)[[3]],
+                    function(i) x1[, , i] - grand_means[, i],
+                    matrix(0, nrow = nrow(x1),
+                           ncol = ncol(x1)))
 
-  x2_test <- vapply(1:dim(x2)[[3]], function(i) x2[, , i] - grand_means[, i],
-                    matrix(0, nrow = nrow(x2), ncol = ncol(x2)))
+  x2_test <- vapply(1:dim(x2)[[3]],
+                    function(i) x2[, , i] - grand_means[, i],
+                    matrix(0, nrow = nrow(x2),
+                           ncol = ncol(x2)))
 
   x3_test_sst <- vapply(1:dim(x1)[[3]],
                         function(i) cbind(x1_test[, , i],
@@ -160,7 +170,9 @@ calc_fstat <- function(x1, x2) {
                                nrow = nrow(x1_test),
                                ncol = ncol(x1_test) + ncol(x2_test)))
 
-  x3_test_sst <- apply(x3_test_sst, c(1, 3), sum)
+  x3_test_sst <- apply(x3_test_sst,
+                       c(1, 3),
+                       sum)
   x3_ssm <- ncol(x1) * (x1_means - grand_means) ^ 2 +
     ncol(x2) * (x2_means - grand_means) ^ 2
 

@@ -116,7 +116,7 @@ print.eeg_evoked <- function(x, ...) {
 print.eeg_stats <- function(x, ...) {
   elec_names <- names(x$statistic)
   n_chan <- length(elec_names)
-  cat("EEG data\n\n")
+  cat("EEG Stats\n\n")
   cat("Number of channels\t:\t", n_chan, "\n")
   cat("Epoch limits\t\t:",
       round(min(unique(x$timings)), 3),
@@ -124,6 +124,7 @@ print.eeg_stats <- function(x, ...) {
       round(max(unique(x$timings)), 3),
       "seconds\n")
   cat("Electrode names\t\t:\t", elec_names, "\n")
+  cat("Type\t\t:\t", x$method, "\n")
 }
 
 #' Print eeg_data summary
