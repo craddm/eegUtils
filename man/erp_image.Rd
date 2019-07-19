@@ -9,11 +9,11 @@
 \usage{
 erp_image(data, ...)
 
-\method{erp_image}{default}(data, electrode = "Cz", smoothing = 10,
-  clim = NULL, interpolate = FALSE, ...)
+\method{erp_image}{default}(data, electrode = "Cz", time_lim = NULL,
+  smoothing = 10, clim = NULL, interpolate = FALSE, ...)
 
-\method{erp_image}{eeg_epochs}(data, electrode = "Cz", smoothing = 10,
-  clim = NULL, interpolate = FALSE, ...)
+\method{erp_image}{eeg_epochs}(data, electrode = "Cz", time_lim = NULL,
+  smoothing = 10, clim = NULL, interpolate = FALSE, ...)
 
 \method{erp_image}{eeg_ICA}(data, component = "Comp1", smoothing = 10,
   clim = NULL, interpolate = FALSE, ...)
@@ -24,6 +24,8 @@ erp_image(data, ...)
 \item{...}{Other arguments passed to the method.}
 
 \item{electrode}{electrode at which to generate an ERP image.}
+
+\item{time_lim}{Time limits of plot}
 
 \item{smoothing}{Number of trials to smooth over when generating image}
 
