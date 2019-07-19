@@ -139,6 +139,7 @@ list_epochs.eeg_ICA <- function(data, ...) {
 #'
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #' @param .data \code{eegUtils} object to view
+#' @family event handlers
 #' @export
 events <- function(.data) {
   UseMethod("events", .data)
@@ -197,6 +198,7 @@ tag_epochs <- function(.data,
 #'@export
 tag_epochs.default <- function(.data,
                                ...) {
+  warning("Not implemented for objects of class ", class(.data))
 
 }
 

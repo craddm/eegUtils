@@ -105,6 +105,28 @@ print.eeg_evoked <- function(x, ...) {
   cat("Sampling rate\t\t:\t", x$srate, " Hz\n")
 }
 
+
+#' Print eeg_stats summary
+#'
+#' Print a basic summary of the contents of an \code{eeg_stats} object
+#'
+#' @param x \code{eeg_stats} object to be printed
+#' @param ... Further arguments passed
+#' @export
+print.eeg_stats <- function(x, ...) {
+  elec_names <- names(x$statistic)
+  n_chan <- length(elec_names)
+  cat("EEG Stats\n\n")
+  cat("Number of channels\t:\t", n_chan, "\n")
+  cat("Epoch limits\t\t:",
+      round(min(unique(x$timings)), 3),
+      "-",
+      round(max(unique(x$timings)), 3),
+      "seconds\n")
+  cat("Electrode names\t\t:\t", elec_names, "\n")
+  cat("Type\t\t:\t", x$method, "\n")
+}
+
 #' Print eeg_data summary
 #'
 #' Print a basic summary of the contents of an \code{eeg_data} object

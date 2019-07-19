@@ -136,6 +136,20 @@ select.eeg_ICA <- function(.data, ...) {
   .data
 }
 
+#' @importFrom dplyr select
+#' @export
+select.eeg_stats <- function(.data, ...) {
+  .data$statistic <- dplyr::select(.data$statistic,
+                                   ...)
+  .data$pvals <- dplyr::select(.data$pvals,
+                               ...)
+  if (!is.null(.data$chan_info)) {
+    .data$chan_info <- .data$chan_info[.data$chan_info$electrode %in% names(.data$signals), ]
+  }
+  .data
+}
+
+
 #' @importFrom dplyr mutate
 #' @export
 dplyr::mutate

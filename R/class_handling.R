@@ -126,24 +126,22 @@ eeg_tfr <- function(data,
 #' @param chan_info String of character names for electrodes.
 #' @param timings Timing information - samples and sample /samplirng rate.
 #' @param freqs vector of frequencies
-#' @param dimensions List of which dimension is which
 #' @param epochs Epoch information
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #' @keywords internal
 eeg_psd <- function(data,
                     srate,
-                    events,
                     chan_info = NULL,
                     timings = NULL,
                     freqs,
-                    dimensions,
                     epochs) {
 
   value <- list(signals = data,
                 srate = srate,
                 chan_info = chan_info,
                 timings = timings,
-                freqs = freqs
+                freqs = freqs,
+                epochs = epochs
                 )
   class(value) <- "eeg_psd"
   value
@@ -282,17 +280,20 @@ eeg_evoked <- function(data,
 #' @param pvals calculated p-values for that statistic
 #' @param chan_info String of character names for electrodes.
 #' @param timings Unique timepoints remaining in the data.
+#' @param method Type of statistical test
 #' @keywords internal
 
 eeg_stats <- function(statistic,
                       chan_info,
                       pvals,
-                      timings) {
+                      timings,
+                      method) {
 
   value <- list(statistic = statistic,
-                pvals = pvals,
+                pvals = tibble::as_tibble(pvals),
                 chan_info = chan_info,
-                timings = timings)
+                timings = timings,
+                method = method)
   class(value) <- "eeg_stats"
   value
 }

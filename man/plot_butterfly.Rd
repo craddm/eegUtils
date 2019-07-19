@@ -4,9 +4,9 @@
 \alias{plot_butterfly}
 \alias{plot_butterfly.default}
 \alias{plot_butterfly.eeg_evoked}
-\alias{plot_butterfly.eeg_stats}
 \alias{plot_butterfly.eeg_data}
 \alias{plot_butterfly.eeg_epochs}
+\alias{plot_butterfly.eeg_stats}
 \title{Create a butterfly plot from timecourse data}
 \usage{
 plot_butterfly(data, ...)
@@ -19,14 +19,13 @@ plot_butterfly(data, ...)
   baseline = NULL, colourmap = NULL, legend = TRUE,
   continuous = FALSE, browse_mode = FALSE, facet, ...)
 
-\method{plot_butterfly}{eeg_stats}(data, time_lim = NULL,
-  baseline = NULL, colourmap = NULL, legend = TRUE,
-  continuous = FALSE, browse_mode = FALSE, ...)
-
 \method{plot_butterfly}{eeg_data}(data, time_lim = NULL,
   baseline = NULL, legend = TRUE, facet, browse_mode = FALSE, ...)
 
 \method{plot_butterfly}{eeg_epochs}(data, time_lim = NULL,
+  baseline = NULL, legend = TRUE, facet, browse_mode = FALSE, ...)
+
+\method{plot_butterfly}{eeg_stats}(data, time_lim = NULL,
   baseline = NULL, legend = TRUE, facet, browse_mode = FALSE, ...)
 }
 \arguments{
@@ -66,11 +65,11 @@ not possible.
 
 \item \code{eeg_evoked}: Plot butterfly for \code{eeg_evoked} objects
 
-\item \code{eeg_stats}: Butterfly plot for EEG statistics
-
 \item \code{eeg_data}: Create butterfly plot for \code{eeg_data} objects
 
 \item \code{eeg_epochs}: Create butterfly plot for \code{eeg_epochs} objects
+
+\item \code{eeg_stats}: Create butterfly plot for \code{eeg_stats} objects
 }}
 
 \examples{

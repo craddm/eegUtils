@@ -4,8 +4,7 @@
 \alias{eeg_psd}
 \title{Function to create an object of class eeg_psd}
 \usage{
-eeg_psd(data, srate, events, chan_info = NULL, timings = NULL, freqs,
-  dimensions, epochs)
+eeg_psd(data, srate, chan_info = NULL, timings = NULL, freqs, epochs)
 }
 \arguments{
 \item{data}{PSD transformed data}
@@ -17,8 +16,6 @@ eeg_psd(data, srate, events, chan_info = NULL, timings = NULL, freqs,
 \item{timings}{Timing information - samples and sample /samplirng rate.}
 
 \item{freqs}{vector of frequencies}
-
-\item{dimensions}{List of which dimension is which}
 
 \item{epochs}{Epoch information}
 }

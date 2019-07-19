@@ -6,6 +6,7 @@
 \alias{plot_timecourse.eeg_evoked}
 \alias{plot_timecourse.eeg_ICA}
 \alias{plot_timecourse.eeg_epochs}
+\alias{plot_timecourse.eeg_stats}
 \title{Plot 1-D timecourse data.}
 \usage{
 plot_timecourse(data, ...)
@@ -25,6 +26,9 @@ plot_timecourse(data, ...)
 \method{plot_timecourse}{eeg_epochs}(data, electrode = NULL,
   time_lim = NULL, facet, add_CI = FALSE, baseline = NULL,
   colour = NULL, color = NULL, ...)
+
+\method{plot_timecourse}{eeg_stats}(data, time_lim = NULL,
+  electrode = NULL, ...)
 }
 \arguments{
 \item{data}{EEG dataset. Should have multiple timepoints.}
@@ -68,6 +72,8 @@ electrodes. Output is a ggplot2 object.
 \item \code{eeg_ICA}: Plot individual components from \code{eeg_ICA} components
 
 \item \code{eeg_epochs}: Plot timecourses from \code{eeg_epochs} objects.
+
+\item \code{eeg_stats}: Plot timecourses from \code{eeg_epochs} objects.
 }}
 
 \examples{

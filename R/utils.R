@@ -277,6 +277,45 @@ as.data.frame.eeg_tfr <- function(x,
   out_df
 }
 
+#' Convert \code{eeg_stats} objects to data frames
+#'
+#' @author Matt Craddock \email{matt@@mattcraddock.com}
+#' @param x Object of class \code{eeg_stats}
+#' @param row.names Kept for compatability with S3 generic, ignored.
+#' @param optional Kept for compatability with S3 generic, ignored.
+#' @param long Convert to long format. Defaults to FALSE.
+#' @param coords Include electrode coordinates in output (ignored if long = FALSE)
+#' @param ... arguments for other as.data.frame commands
+#'
+#' @importFrom tidyr spread
+#' @export
+
+as.data.frame.eeg_stats <- function(x,
+                                   row.names = NULL,
+                                   optional = FALSE,
+                                   long = FALSE,
+                                   coords = FALSE,
+                                   ...) {
+  df <- data.frame(x$statistic,
+                   time = x$timings)
+
+  if (long) {
+    df <- tidyr::gather(df,
+                        electrode,
+                        statistic,
+                        -time,
+                        factor_key = T)
+    if (coords && !is.null(channels(x))) {
+      df <- dplyr::left_join(df,
+                             channels(x)[, c("electrode", "x", "y")],
+                             by = "electrode")
+    }
+  }
+  df
+}
+
+
+
 #' Check consistency of labels
 #'
 #' Internal function for checking 1) whether the labels submitted are a mixture
