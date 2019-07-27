@@ -117,22 +117,25 @@ compute_psd.eeg_epochs <- function(data,
     stop("noverlap should not be larger than seg_length.")
   }
   if (method == "Welch") {
-    final_output <- lapply(data$signals, function(x)
-      welch_fft(x,
-                seg_length,
-                noverlap = noverlap,
-                n_fft = n_fft,
-                srate = srate,
-                n_sig = n_times)
-    )
+    final_output <-
+      lapply(data$signals,
+             function(x) welch_fft(x,
+                                   seg_length,
+                                   noverlap = noverlap,
+                                   n_fft = n_fft,
+                                   srate = srate,
+                                   n_sig = n_times)
+             )
   }  else {
     stop("Welch is the only available method at this time.")
   }
   if (keep_trials) {
-    final_output <- dplyr::bind_rows(final_output, .id = "epoch")
+    final_output <- dplyr::bind_rows(final_output,
+                                     .id = "epoch")
     final_output$epoch <- as.numeric(final_output$epoch)
     if (!is.null(epochs(data))) {
-      final_output <- dplyr::left_join(final_output, epochs(data))
+      final_output <- dplyr::left_join(final_output,
+                                       epochs(data))
     }
   } else {
     final_output <- Reduce("+", final_output) / length(final_output)
@@ -212,7 +215,8 @@ welch_fft <- function(data,
                         split_vec,
                         seg_length,
                         noverlap)
-    n_segs <- length(data_segs)
+    n_segs <- length(data_segs[[1]])
+    #n_segs <- length(data_segs)
     # this splits the data into a list of ncol elements; each list element is
     # also a list containing n_segs elements - consider recoding this to combine
     # segments into
