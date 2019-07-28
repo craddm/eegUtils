@@ -41,7 +41,8 @@ eeg_decomp.eeg_epochs <- function(data,
                                   sig_range,
                                   noise_range = NULL,
                                   method = "ssd",
-                                  verbose = TRUE) {
+                                  verbose = TRUE,
+                                  ...) {
 
   if (verbose) {
     message("Performing ", method, "...")
