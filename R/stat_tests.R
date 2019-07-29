@@ -15,6 +15,7 @@ compare_epochs <- function(data,
 #' @param type Type of test to use. "1samp", "2samp"
 #' @author Matt Craddock, \email{matt@@mattcraddock.com}
 #' @describeIn compare_epochs Compare differences across epochs
+#' @keywords internal
 
 compare_epochs.eeg_epochs <- function(data,
                                       cond_label = NULL,
