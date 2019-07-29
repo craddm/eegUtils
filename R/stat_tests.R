@@ -57,13 +57,15 @@ compare_epochs.eeg_epochs <- function(data,
     cond1 <- data$signals[[cond_label]] == conds[1]
     cond2 <- data$signals[[cond_label]] == conds[2]
 
-    mat1 <- as.matrix(data$signals[cond1, elecs])
-    mat2 <- as.matrix(data$signals[cond2, elecs])
-    dim(mat1) <- c(n_times, sum(cond1) / n_times, n_elecs)
-    dim(mat2) <- c(n_times, sum(cond2) / n_times, n_elecs)
+    #mat1 <- as.matrix(data$signals[cond1, elecs])
+    #mat2 <- as.matrix(data$signals[cond2, elecs])
+    #dim(mat1) <- c(n_times, sum(cond1) / n_times, n_elecs)
+    #dim(mat2) <- c(n_times, sum(cond2) / n_times, n_elecs)
 
-    data$signals <- calc_tstat_2(mat1,
-                                 mat2)
+    data$signals <- calc_tstat_2(array(as.matrix(data$signals[cond1, elecs]),
+                                       dim = c(n_times, sum(cond1) / n_times, n_elecs)),
+                                 array(as.matrix(data$signals[!cond1, elecs]),
+                                       dim = c(n_times, sum(cond1) / n_times, n_elecs)))
     colnames(data$signals) <- elecs
     data$pvals <- calc_pval(data$signals,
                             df = deg_f)
@@ -183,4 +185,17 @@ calc_fstat <- function(x1, x2) {
   x4_msr <- x3_ssr / (ncol(x1) + ncol(x2) - 2)
   x4_f <- x4_msm / x4_msr
   x4_f
+}
+
+
+
+permute_two <- function(data,
+                        cond1,
+                        n_times,
+                        n_elecs) {
+  perms <- sample(cond1)
+  calc_tstat_2(array(data[perms, ],
+                     dim = c(n_times, sum(perms)/n_times, n_elecs)),
+               array(data[!perms, ],
+                     dim = c(n_times, sum(perms)/n_times, n_elecs)))
 }

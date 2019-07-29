@@ -8,7 +8,7 @@
 \usage{
 ar_FASTER(data, ...)
 
-\method{ar_FASTER}{eeg_epochs}(data, ...)
+\method{ar_FASTER}{eeg_epochs}(data, exclude = NULL, ...)
 
 eeg_FASTER(data, ...)
 }
@@ -16,6 +16,8 @@ eeg_FASTER(data, ...)
 \item{data}{An object of class \code{eeg_epochs}}
 
 \item{...}{Parameters passed to FASTER}
+
+\item{exclude}{Channels to be ignored by FASTER.}
 }
 \description{
 An implementation of the FASTER artefact rejection method for EEG by Nolan,

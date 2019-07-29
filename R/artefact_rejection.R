@@ -19,9 +19,11 @@ ar_FASTER <- function(data, ...) {
   UseMethod("ar_FASTER", data)
 }
 
+#' @param exclude Channels to be ignored by FASTER.
 #' @describeIn ar_FASTER Run FASTER on \code{eeg_epochs}
 #' @export
 ar_FASTER.eeg_epochs <- function(data,
+                                 exclude = NULL,
                                  ...) {
 
   check_ci_str(data$chan_info)
@@ -54,13 +56,21 @@ ar_FASTER.eeg_epochs <- function(data,
   #   data <- eeg_reference(data, ref_chans = names(data$signals)[14], exclude = excluded)
   # }
 
-  orig_names <- names(data$signals)
+  orig_names <- channel_names(data)
   # Exclude ref chan from subsequent computations (may be better to alter reref_eeg...)
-  data_chans <- !(orig_names %in% data$reference$ref_chans)
+  data_chans <- orig_names[!(orig_names %in% data$reference$ref_chans)]
+  if (!is.null(exclude)) {
+    if (is.numeric(exclude)) {
+      exclude <- orig_names[exclude]
+    }
+    message("Excluding channel(s):",
+            paste(exclude, ""))
+    data_chans <- data_chans[!(data_chans %in% exclude)]
+  }
 
   # Step 1: channel statistics
   bad_chans <- faster_chans(data$signals[, data_chans])
-  bad_chan_n <- names(data$signals)[bad_chans]
+  bad_chan_n <- data_chans[bad_chans]
   message(paste("Globally bad channels:",
                 paste(bad_chan_n,
                       collapse = " ")))
@@ -81,7 +91,7 @@ ar_FASTER.eeg_epochs <- function(data,
       which_bad <- data$chan_info$electrode %in% bad_chan_n
       missing_coords <- FALSE
 
-      if (any(which_bad)){
+      if (any(which_bad)) {
         missing_coords <- apply(is.na(data$chan_info[which_bad, ]), 1, any)
       }
 
@@ -110,6 +120,7 @@ ar_FASTER.eeg_epochs <- function(data,
   message(paste("Globally bad epochs:",
                 paste(bad_epochs,
                       collapse = " ")))
+  data$reject$bad_epochs <- bad_epochs
   data <- select_epochs(data,
                         epoch_no = bad_epochs,
                         keep = FALSE)
@@ -117,7 +128,8 @@ ar_FASTER.eeg_epochs <- function(data,
   # Step 3: ICA stats (not currently implemented)
 
   # Step 4: Channels in Epochs
-  data <- faster_cine(data)
+  data <- faster_cine(data,
+                      exclude)
 
   # Step 5: Grand average step (not currently implemented, probably never will be!)
 
@@ -128,7 +140,7 @@ ar_FASTER.eeg_epochs <- function(data,
                           exclude = excluded)
   }
 
-  data$chan_info <- orig_chan_info
+  #data$chan_info <- orig_chan_info
   data
 }
 
@@ -158,28 +170,28 @@ faster_chans <- function(data, sds = 3, ...) {
 
 #' Perform global bad epoch detection for FASTER
 #'
-#' @param .data \code{eeg_epochs} object
+#' @param data \code{eeg_epochs} object
 #' @param ... Further parameters (tbd)
 #' @keywords internal
 
-faster_epochs <- function(.data, ...) {
-  chans <- channel_names(.data)
-  .data <- data.table::as.data.table(.data)
-  chan_means <- .data[, lapply(.SD, mean), .SDcols = chans]
-  epoch_range <- .data[, lapply(.SD, function(x) max(x) - min(x)),
+faster_epochs <- function(data, ...) {
+  chans <- channel_names(data)
+  data <- data.table::as.data.table(data)
+  chan_means <- data[, lapply(.SD, mean), .SDcols = chans]
+  epoch_range <- data[, lapply(.SD, function(x) max(x) - min(x)),
                           .SDcols = chans,
                           by = epoch]
   epoch_range <- epoch_range[, .(Mean = rowMeans(.SD)), by = epoch]
   epoch_range <- abs(scale(epoch_range$Mean)) > 3
 
-  epoch_diffs <- .data[, lapply(.SD, mean),
+  epoch_diffs <- data[, lapply(.SD, mean),
                        .SDcols = chans,
                        by = epoch][, lapply(.SD, function(x) x - mean(x)),
                                    .SDcols = chans][ ,
                                                      .(Mean = rowMeans(.SD))]
   epoch_diffs <- abs(scale(epoch_diffs$Mean)) > 3
 
-  epoch_vars <- .data[, lapply(.SD, var), .SDcols = chans,
+  epoch_vars <- data[, lapply(.SD, var), .SDcols = chans,
                       by = epoch][, apply(.SD, 1, mean),
                                   .SDcols = chans]
   epoch_vars <- abs(scale(epoch_vars)) > 3
@@ -194,14 +206,17 @@ faster_epochs <- function(.data, ...) {
 
 #' FASTER detection of bad channels in single epochs
 #'
-#' @param .data \code{eeg_epochs} object.
+#' @param data \code{eeg_epochs} object.
+#' @param exclude Channels to be ignored.
 #' @param ... further parameters (tbd)
 #' @keywords internal
 
-faster_cine <- function(.data, ...) {
+faster_cine <- function(data,
+                        exclude = NULL,
+                        ...) {
 
   # get xyz coords only
-  xyz_coords <- .data$chan_info[, c("electrode",
+  xyz_coords <- data$chan_info[, c("electrode",
                                     "cart_x",
                                     "cart_y",
                                     "cart_z")]
@@ -210,14 +225,17 @@ faster_cine <- function(.data, ...) {
   #remove any rows with missing values
   xyz_coords <- xyz_coords[!missing_values, ]
 
-  keep_chans <- names(.data$signals) %in% xyz_coords$electrode
+  keep_chans <- names(data$signals) %in% xyz_coords$electrode
 
-  epochs <- split(.data$signals,
-                  .data$timings$epoch)
+
+  epochs <- split(data$signals,
+                  data$timings$epoch)
+
 
   # Work out which chans are bad according to FASTER in each epoch
   bad_chans <- lapply(epochs,
-                      faster_epo_stat)
+                      faster_epo_stat,
+                      exclude)
 
   # remove channel names that are for channels we have no locations for
   bad_chans <- lapply(bad_chans,
@@ -235,7 +253,7 @@ faster_cine <- function(.data, ...) {
 
   # If there's nothing bad in any epoch, return the data
   if (length(bad_coords) == 0) {
-    return(.data)
+    return(data)
   }
 
   bad_epochs <- names(bad_coords)
@@ -248,8 +266,8 @@ faster_cine <- function(.data, ...) {
 
   epochs <- replace(epochs, bad_epochs, new_epochs)
   epochs <- data.table::rbindlist(epochs)
-  .data$signals <- as.data.frame(epochs)
-  .data
+  data$signals <- as.data.frame(epochs)
+  data
 }
 
 #' @noRd
@@ -278,12 +296,12 @@ interp_weights <- function(xyz_coords, x) {
 #' @importFrom data.table data.table
 #' @keywords internal
 
-quick_hurst <- function(.data) {
-  n <- nrow(.data)
-  .data <- data.table::data.table(.data)
-  dat_cumsum <- .data[, lapply(.SD, cumsum)]
+quick_hurst <- function(data) {
+  n <- nrow(data)
+  data <- data.table::data.table(data)
+  dat_cumsum <- data[, lapply(.SD, cumsum)]
   rs <- dat_cumsum[, lapply(.SD, max)] - dat_cumsum[, lapply(.SD, min)]
-  rs <- rs / .data[, lapply(.SD, stats::sd)]#column_sd
+  rs <- rs / data[, lapply(.SD, stats::sd)]#column_sd
   as.numeric(log(rs) / log(n))
 }
 
@@ -292,8 +310,12 @@ quick_hurst <- function(.data) {
 #' @param data a matrix of signals from a single epoch
 #' @keywords internal
 
-faster_epo_stat <- function(data, chan_means) {
+faster_epo_stat <- function(data,
+                            exclude = NULL) {
 
+  if (!is.null(exclude)) {
+    data <- select(data, -exclude)
+  }
   measures <- data.frame(vars = matrixStats::colVars(as.matrix(data)),
                          medgrad = matrixStats::colMedians(diff(as.matrix(data))),
                          range_diff = t(diff(t(matrixStats::colRanges(as.matrix(data)))))
@@ -551,4 +573,37 @@ bip_EOG <- function(data,
   VEOG <- data[, VEOG[1]] - data[, VEOG[2]]
   EOG <- data.frame(HEOG, VEOG)
   EOG
+}
+
+ar_eogcor <- function(data, ...) {
+  UseMethod("ar_eogcor", data)
+}
+
+#' @param ica ICA decomposition.
+#' @param data Original data
+#' @param HEOG Horizontal eye channels
+#' @param VEOG Vertical eye channels
+#' @noRd
+ar_eogcor.eeg_ICA <- function(ica,
+                              data,
+                              HEOG,
+                              VEOG,
+                              thresh = .75,
+                              plot = TRUE) {
+
+  if (thresh > 1 | thresh < 0) {
+    stop("Threshold must be between 0 and 1.")
+  }
+
+  EOG_corrs <- abs(cor(ica$signals, bip_EOG(data$signals,
+                                            HEOG,
+                                            VEOG)))
+  if (plot) {
+    par(mfrow = c(1, 2))
+    plot(EOG_corrs[, 1])
+    plot(EOG_corrs[, 2])
+  }
+  above_thresh <- EOG_corrs > thresh
+  above_thresh <- channel_names(ica)[above_thresh]
+  above_thresh
 }
