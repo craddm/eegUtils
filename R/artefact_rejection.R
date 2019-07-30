@@ -575,29 +575,39 @@ bip_EOG <- function(data,
   EOG
 }
 
-ar_eogcor <- function(data, ...) {
-  UseMethod("ar_eogcor", data)
+#' Detect high correlation with EOG channels
+#'
+#' @author Matt Craddock, \email{matt@@mattcraddock.com}
+#' @param decomp ICA decomposition
+#' @param ... Other parameters
+
+ar_eogcor <- function(decomp, ...) {
+  UseMethod("ar_eogcor", decomp)
 }
 
-#' @param ica ICA decomposition.
+#' @param decomp ICA decomposition.
 #' @param data Original data
 #' @param HEOG Horizontal eye channels
 #' @param VEOG Vertical eye channels
-#' @noRd
-ar_eogcor.eeg_ICA <- function(ica,
+#' @param threshold Threshold for correlation (r). Defaults to .75.
+#' @param plot Plot correlation coefficient for all components
+#' @describeIn ar_eogcor Method for eeg_ICA objects.
+ar_eogcor.eeg_ICA <- function(decomp,
                               data,
                               HEOG,
                               VEOG,
-                              thresh = .75,
-                              plot = TRUE) {
+                              threshold = .75,
+                              plot = TRUE,
+                              ...) {
 
   if (thresh > 1 | thresh < 0) {
     stop("Threshold must be between 0 and 1.")
   }
 
-  EOG_corrs <- abs(cor(ica$signals, bip_EOG(data$signals,
-                                            HEOG,
-                                            VEOG)))
+  EOG_corrs <- abs(cor(ica$signals,
+                       bip_EOG(data$signals,
+                               HEOG,
+                               VEOG)))
   if (plot) {
     par(mfrow = c(1, 2))
     plot(EOG_corrs[, 1])
@@ -606,4 +616,62 @@ ar_eogcor.eeg_ICA <- function(ica,
   above_thresh <- EOG_corrs > thresh
   above_thresh <- channel_names(ica)[above_thresh]
   above_thresh
+}
+
+#' Detect low autocorrelation of ICA components
+#'
+#' @param data \code{eeg_ICA} object
+#' @param ... additional parameters
+#' @noRd
+ar_acf <- function(data, ...) {
+  UseMethod("ar_acf", data)
+}
+
+#' @param ms Time lag to check ACF function, in milliseconds.
+#' @param plot Produce plot showing ACF and threshold for all EEG components.
+#' @param verbose Print informative messages. Defaults to TRUE.
+#' @param threshold Specify a threshold for low ACF. NULL estimates the threshold automatically.
+#' @noRd
+ar_acf.eeg_ICA <- function(data,
+                           ms = 20,
+                           plot = TRUE,
+                           verbose = TRUE,
+                           threshold = NULL,
+                           ...) {
+
+  time_lag <- round(data$srate * (ms/1000))
+  low_acf <- apply(data$signals, 2,
+                   function(x) acf(x, time_lag, plot = FALSE)$acf[time_lag + 1, 1, 1])
+  if (is.null(threshold)) {
+    acf_thresh <- mean(low_acf) - 2 * sd(low_acf)
+  }
+  if (verbose) {
+    message("Estimating autocorrelation at ", ms, "ms lag.")
+    message("Estimated ACF threshold: ", round(acf_thresh, 2))
+  }
+  if (plot) {
+    plot(low_acf)
+    abline(h = acf_thresh)
+  }
+  low_acf <- channel_names(data)[low_acf < acf_thresh]
+  message("Subthreshold components: ", paste0(low_acf, sep = " "))
+  low_acf
+}
+
+
+ar_chanfoc <- function(data,
+                       plot = TRUE,
+                       threshold = NULL,
+                       ...) {
+  n_comps <- length(channel_names(data))
+  zmat <- apply(data$mixing_matrix[, 1:n_comps], 1, scale)
+  max_weights <- apply(zmat, 1, function(x) max(abs(x)))
+  threshold <- mean(max_weights) + 2 * sd(max_weights)
+  if (plot) {
+    plot(max_weights)
+    abline(h = threshold)
+  }
+  chan_foc <- channel_names(data)[max_weights > threshold]
+  message("Components with high channel focality: ", paste0(chan_foc, sep = " "))
+  chan_foc
 }

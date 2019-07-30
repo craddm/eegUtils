@@ -46,3 +46,11 @@ test_that("component removal works", {
   vdiffr::expect_doppelganger("reconstruct all",
                               plot_butterfly(demo_re))
 })
+
+test_that("artefact detect works", {
+  skip_on_appveyor()
+  skip_on_travis()
+  expect_equal(ar_acf(demo_SOBI), character(0))
+  expect_equal(ar_chanfoc(demo_fastic), character(0))
+
+})
