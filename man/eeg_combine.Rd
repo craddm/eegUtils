@@ -2,18 +2,22 @@
 % Please edit documentation in R/data_combine.R
 \name{eeg_combine}
 \alias{eeg_combine}
+\alias{eeg_combine.list}
 \alias{eeg_combine.eeg_data}
 \alias{eeg_combine.eeg_epochs}
 \title{Combine EEG objects}
 \usage{
 eeg_combine(data, ...)
 
+\method{eeg_combine}{list}(data, ...)
+
 \method{eeg_combine}{eeg_data}(data, ...)
 
 \method{eeg_combine}{eeg_epochs}(data, ...)
 }
 \arguments{
-\item{data}{An \code{eeg_data} or \code{eeg_epochs} object}
+\item{data}{An \code{eeg_data} or \code{eeg_epochs} object, or a list of such
+objects.}
 
 \item{...}{additional \code{eeg_data} or \code{eeg_epochs} objects}
 }
@@ -25,6 +29,9 @@ order they are passed.
 }
 \section{Methods (by class)}{
 \itemize{
+\item \code{list}: Method for combining lists of \code{eeg_data} and
+\code{eeg_epochs} objects.
+
 \item \code{eeg_data}: Method for combining \code{eeg_data} objects.
 
 \item \code{eeg_epochs}: Method for combining \code{eeg_epochs} objects

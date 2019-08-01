@@ -68,6 +68,24 @@ epoch_data.eeg_data <- function(data,
                          by = "event_type")
    }
 
+  # generate time vector
+  init_times <- seq(time_lim[1], time_lim[2], 1/data$srate)
+  #check if times need adjusting.
+  # min(abs(times)) should be zero, otherwise the times don't fit the samp. rate
+  time_check <- min(abs(init_times))
+  if (time_check != 0) {
+    time_offset <- init_times[which.min(abs(init_times))]
+    #if (sign(time_offset) == -1) {
+      init_times <- init_times - time_offset
+    #} else {
+     # init_times <- init_times - time_offset
+    #}
+    message("Adjusting output limits to match sampling rate.")
+    time_lim[1] <- min(init_times)
+    time_lim[2] <- max(init_times)
+  }
+  message(paste("Output limits: ", time_lim[1], time_lim[2]))
+
   # If the data has been downsampled, sample spacing will be greater than 1.
   # Subsequent steps need to account for this when selecting based on sample number.
   # Multiplying srate by spacing accomplishes this.
@@ -77,7 +95,7 @@ epoch_data.eeg_data <- function(data,
   #if (length(samp_diff) > 1) {
    # stop("Sample spacing is uneven, cannot downsample.")
   #} else {
-    srate <- data$srate * samp_diff
+  srate <- data$srate * samp_diff
   #}
 
   # create a vector that counts back and ahead of the timelock event in samples

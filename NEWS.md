@@ -3,6 +3,7 @@
 ### Function changes
 - Default settings for Infomax ICA changed to be similar to EEGLAB/Fieldtrip.
 - Faster reading of bdf implemented. Old behaviour can be retained using `fast_bdf = FALSE` parameter to `import_raw()`
+- `eeg_combine` now supports combining lists.
 
 ### Internal changes / bug fixes
 - `plot_butterfly` should now be faster again.
@@ -13,6 +14,8 @@
 - `compute_tfr` reworked to be faster.
 - Faster baseline correction implemented using Rcpp.
 - Padding now used during `compute_tfr`, which greatly improves speed/accuracy; units may change but this is a change in scaling factor.
+- `epoch_data` now uses a more robust way of determing time limits/samples to include in each epoch that no longer fails at some combinations of time limit and sampling rate
+- `eeg_average` returns objects of class(`eeg_evoked`, `eeg_epochs`)
 
 # eegUtils 0.4.0
 
