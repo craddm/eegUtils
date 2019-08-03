@@ -24,8 +24,6 @@ ar_eogcor(decomp, ...)
 \item{threshold}{Threshold for correlation (r). Defaults to .75.}
 
 \item{plot}{Plot correlation coefficient for all components}
-
-\item{decomp}{ICA decomposition.}
 }
 \description{
 Detect high correlation with EOG channels

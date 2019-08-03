@@ -4,7 +4,7 @@
 \alias{ar_chanfoc}
 \title{Detect high channel focality of ICA components}
 \usage{
-ar_chanfoc(data, plot = TRUE, threshold = NULL, ...)
+ar_chanfoc(data, plot = TRUE, threshold = NULL, verbose = TRUE, ...)
 }
 \arguments{
 \item{data}{\code{eeg_ICA} object}
@@ -14,6 +14,8 @@ components.}
 
 \item{threshold}{Specify a threshold for high focality. NULL estimates the
 threshold automatically.}
+
+\item{verbose}{Print informative messages.}
 
 \item{...}{additional parameters}
 }

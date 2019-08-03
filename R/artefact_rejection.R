@@ -586,7 +586,6 @@ ar_eogcor <- function(decomp, ...) {
   UseMethod("ar_eogcor", decomp)
 }
 
-#' @param decomp ICA decomposition.
 #' @param data Original data
 #' @param HEOG Horizontal eye channels
 #' @param VEOG Vertical eye channels
