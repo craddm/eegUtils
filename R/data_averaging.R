@@ -75,7 +75,10 @@ eeg_average.eeg_epochs <- function(data,
                           !!col_names) %>%
     dplyr::distinct()
 
-  class(epochs) <- c("epoch_info", "tbl_df", "tbl", "data.frame")
+  class(epochs) <- c("epoch_info",
+                     "tbl_df",
+                     "tbl",
+                     "data.frame")
 
   data <-
     eeg_evoked(data = data$signals[, elecs],
@@ -83,6 +86,15 @@ eeg_average.eeg_epochs <- function(data,
                srate = data$srate,
                timings = timings,
                epochs = epochs)
+  data
+}
+
+#' @describeIn eeg_average average an eeg_tfr objects over epochs.
+#' @export
+eeg_average.eeg_evoked <- function(data,
+                                   cols = NULL,
+                                   ...) {
+  message("Data is already averaged.")
   data
 }
 

@@ -269,7 +269,7 @@ eeg_evoked <- function(data,
                 timings = timings,
                 srate = srate,
                 epochs = epochs)
-  class(value) <- c("eeg_evoked")
+  class(value) <- c("eeg_evoked", "eeg_epochs")
   value
 }
 

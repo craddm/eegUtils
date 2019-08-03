@@ -575,29 +575,40 @@ bip_EOG <- function(data,
   EOG
 }
 
-ar_eogcor <- function(data, ...) {
-  UseMethod("ar_eogcor", data)
+#' Detect high correlation with EOG channels
+#'
+#' @author Matt Craddock, \email{matt@@mattcraddock.com}
+#' @param decomp ICA decomposition
+#' @param ... Other parameters
+#' @export
+
+ar_eogcor <- function(decomp, ...) {
+  UseMethod("ar_eogcor", decomp)
 }
 
-#' @param ica ICA decomposition.
 #' @param data Original data
 #' @param HEOG Horizontal eye channels
 #' @param VEOG Vertical eye channels
-#' @noRd
-ar_eogcor.eeg_ICA <- function(ica,
+#' @param threshold Threshold for correlation (r). Defaults to .75.
+#' @param plot Plot correlation coefficient for all components
+#' @describeIn ar_eogcor Method for eeg_ICA objects.
+#' @export
+ar_eogcor.eeg_ICA <- function(decomp,
                               data,
                               HEOG,
                               VEOG,
-                              thresh = .75,
-                              plot = TRUE) {
+                              threshold = .75,
+                              plot = TRUE,
+                              ...) {
 
   if (thresh > 1 | thresh < 0) {
     stop("Threshold must be between 0 and 1.")
   }
 
-  EOG_corrs <- abs(cor(ica$signals, bip_EOG(data$signals,
-                                            HEOG,
-                                            VEOG)))
+  EOG_corrs <- abs(cor(ica$signals,
+                       bip_EOG(data$signals,
+                               HEOG,
+                               VEOG)))
   if (plot) {
     par(mfrow = c(1, 2))
     plot(EOG_corrs[, 1])
@@ -606,4 +617,94 @@ ar_eogcor.eeg_ICA <- function(ica,
   above_thresh <- EOG_corrs > thresh
   above_thresh <- channel_names(ica)[above_thresh]
   above_thresh
+}
+
+#' Detect low autocorrelation of ICA components
+#'
+#' Low autocorrelation can be a sign of a poor quality channel or component.
+#' Often these are noisy, poor contact, or heavily contaminated with muscle
+#' noise. Low autocorrelation at a lag of 20ms is often associated with muscle
+#' noise.
+#'
+#' @param data \code{eeg_ICA} object
+#' @param ... additional parameters
+#' @author Matt Craddock \email{matt@@mattcraddock.com}
+#' @references Chaumon, M., Bishop, D.V., Busch, N.A. (2015). A practical guide
+#'   to the selection of independent components of the electroencephalogram for
+#'   artifact correction. J Neurosci Methods. Jul 30;250:47-63. doi:
+#'   10.1016/j.jneumeth.2015.02.025
+#' @export
+ar_acf <- function(data, ...) {
+  UseMethod("ar_acf", data)
+}
+
+#' @param ms Time lag to check ACF, in milliseconds. Defaults to 20 ms.
+#' @param plot Produce plot showing ACF and threshold for all EEG components.
+#' @param verbose Print informative messages. Defaults to TRUE.
+#' @param threshold Specify a threshold for low ACF. NULL estimates the threshold automatically.
+#' @describeIn ar_acf Autocorrelation checker for \code{eeg_ICA} objects
+#' @export
+ar_acf.eeg_ICA <- function(data,
+                           ms = 20,
+                           plot = TRUE,
+                           verbose = TRUE,
+                           threshold = NULL,
+                           ...) {
+
+  time_lag <- round(data$srate * (ms/1000))
+  low_acf <- apply(data$signals, 2,
+                   function(x) stats::acf(x, time_lag, plot = FALSE)$acf[time_lag + 1, 1, 1])
+  if (is.null(threshold)) {
+    acf_thresh <- mean(low_acf) - 2 * sd(low_acf)
+  }
+  if (verbose) {
+    message("Estimating autocorrelation at ", ms, "ms lag.")
+    message("Estimated ACF threshold: ", round(acf_thresh, 2))
+  }
+  if (plot) {
+    plot(low_acf)
+    abline(h = acf_thresh)
+  }
+  low_acf <- channel_names(data)[low_acf < acf_thresh]
+  message("Subthreshold components: ", paste0(low_acf, sep = " "))
+  low_acf
+}
+
+
+#' Detect high channel focality of ICA components
+#'
+#' Detect components that load heavily on a single channel. Looks for components
+#' that have one particular channel that has a particularly high z-score.
+#'
+#' @author Matt Craddock \email{matt@@mattcraddock.com}
+#' @param data \code{eeg_ICA} object
+#' @param plot Produce plot showing max z-scores and threshold for all ICA
+#'   components.
+#' @param threshold Specify a threshold for high focality. NULL estimates the
+#'   threshold automatically.
+#' @param verbose Print informative messages.
+#' @param ...  additional parameters
+#' @references Chaumon, M., Bishop, D.V., Busch, N.A. (2015). A practical guide
+#'   to the selection of independent components of the electroencephalogram for
+#'   artifact correction. J Neurosci Methods. Jul 30;250:47-63. doi:
+#'   10.1016/j.jneumeth.2015.02.025
+#' @export
+ar_chanfoc <- function(data,
+                       plot = TRUE,
+                       threshold = NULL,
+                       verbose = TRUE,
+                       ...) {
+  n_comps <- length(channel_names(data))
+  zmat <- apply(data$mixing_matrix[, 1:n_comps], 1, scale)
+  max_weights <- apply(zmat, 1, function(x) max(abs(x)))
+  threshold <- mean(max_weights) + 2 * stats::sd(max_weights)
+  if (plot) {
+    graphics::plot(max_weights)
+    graphics::abline(h = threshold)
+  }
+  chan_foc <- channel_names(data)[max_weights > threshold]
+  if (verbose) {
+    message("Components with high channel focality: ", paste0(chan_foc, sep = " "))
+  }
+  chan_foc
 }

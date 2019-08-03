@@ -5,14 +5,14 @@
 #' internal consistency or duplication. It simply combines the objects in the
 #' order they are passed.
 #'
-#' @param data An \code{eeg_data} or \code{eeg_epochs} object
+#' @param data An \code{eeg_data} or \code{eeg_epochs} object, or a list of such
+#'   objects.
 #' @param ... additional \code{eeg_data} or \code{eeg_epochs} objects
 #' @author Matt Craddock, \email{matt@@mattcraddock.com}
 #' @importFrom dplyr mutate bind_rows
 #' @importFrom purrr map_df
 #' @export
 #'
-
 eeg_combine <- function(data,
                         ...) {
   UseMethod("eeg_combine", data)
@@ -26,6 +26,24 @@ eeg_combine.default <- function(data,
     class(data)[[1]],
     call. = FALSE
   )
+}
+
+#' @describeIn eeg_combine Method for combining lists of \code{eeg_data} and
+#'   \code{eeg_epochs} objects.
+#' @export
+eeg_combine.list <- function(data,
+                             ...) {
+
+  out_dat <- data[[1]]
+  out_dat$signals <- purrr::map_df(data,
+                                   ~.$signals)
+  out_dat$events  <- purrr::map_df(data,
+                                   ~.$events)
+  out_dat$timings <- purrr::map_df(data,
+                                   ~.$timings)
+  out_dat$epochs <- purrr::map_df(data,
+                                  ~.$epochs)
+  out_dat
 }
 
 #' @describeIn eeg_combine Method for combining \code{eeg_data} objects.
@@ -128,7 +146,7 @@ eeg_combine.eeg_evoked <- function(data,
   } else {
     stop("All inputs must be eeg_evoked objects.")
   }
-  class(data) <- c("eeg_GA", "eeg_evoked")
+  class(data) <- c("eeg_GA", "eeg_evoked", "eeg_epochs")
   data
 }
 
