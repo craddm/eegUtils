@@ -662,3 +662,38 @@ fit_gam_topo <- function(data,
   data$incircle <- sqrt(data$x ^ 2 + data$y ^ 2) < circ_scale
   data[data$incircle, ]
 }
+
+
+get_scalpmap <- function(data,
+                         grid_res = 100,
+                         interp_limit = "head",
+                         method = "biharmonic") {
+  tmp <- as.data.frame(data)
+  tmp <- dplyr::summarise_at(tmp,
+                             channel_names(data),
+                             .funs = mean)
+  tmp <- tidyr::gather(tmp,
+                       electrode,
+                       amplitude)
+  tmp <- dplyr::left_join(tmp,
+                          channels(data))
+  smooth <-
+    switch(method,
+           biharmonic = biharmonic(dplyr::rename(tmp,
+                                                 fill = "amplitude"),
+                                   grid_res = grid_res,
+                                   interp_limit = "head"),
+           gam = fit_gam_topo(dplyr::rename(tmp,
+                                            fill = "amplitude"),
+                              grid_res = grid_res,
+                              interp_limit = "head"))
+  # smooth <- biharmonic(dplyr::rename(tmp,
+  #                                    fill = "amplitude"),
+  #                      grid_res = grid_res,
+  #                      interp_limit = "head")
+  # smooth <- fit_gam_topo(dplyr::rename(tmp,
+  #                                      fill = "amplitude"),
+  #                        grid_res = grid_res,
+  #                        interp_limit = "head")
+  smooth
+}
