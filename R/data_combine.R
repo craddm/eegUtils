@@ -35,6 +35,7 @@ eeg_combine.list <- function(data,
                              ...) {
 
   out_dat <- data[[1]]
+  out_class <- class(data[[1]])
   out_dat$signals <- purrr::map_df(data,
                                    ~.$signals)
   out_dat$events  <- purrr::map_df(data,
@@ -43,6 +44,9 @@ eeg_combine.list <- function(data,
                                    ~.$timings)
   out_dat$epochs <- purrr::map_df(data,
                                   ~.$epochs)
+  if (length(unique(epochs(out_dat)$participant_id)) > 1) {
+    class(out_dat) <- c("eeg_group", out_class)
+  }
   out_dat
 }
 
@@ -121,6 +125,9 @@ eeg_combine.eeg_epochs <- function(data, ...) {
   }
   #fix epoch numbering for combined objects
   data <- check_timings(data)
+  if (length(unique(epochs(data)$participant_id)) > 1) {
+    class(data) <- c("eeg_group", class(data))
+  }
   data
 }
 

@@ -15,7 +15,7 @@ sobi_ICA(data, maxiter, tol, pca, centre)
 
 \item{pca}{Number of PCA components.}
 
-\item{centre}{Mean center signals}
+\item{centre}{Mean centre signals}
 }
 \description{
 Internal function for running SOBI ICA on an \code{eeg_epochs} object

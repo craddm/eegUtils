@@ -4,6 +4,7 @@
 \alias{eeg_reference}
 \alias{eeg_reference.default}
 \alias{eeg_reference.eeg_data}
+\alias{eeg_reference.eeg_epochs}
 \alias{reref_eeg}
 \title{Referencing}
 \usage{
@@ -12,6 +13,9 @@ eeg_reference(data, ...)
 \method{eeg_reference}{default}(data, ...)
 
 \method{eeg_reference}{eeg_data}(data, ref_chans = "average",
+  exclude = NULL, robust = FALSE, ...)
+
+\method{eeg_reference}{eeg_epochs}(data, ref_chans = "average",
   exclude = NULL, robust = FALSE, ...)
 
 reref_eeg(data, ...)
@@ -23,7 +27,8 @@ reref_eeg(data, ...)
 \item{...}{Further parameters to be passed to eeg_reference}
 
 \item{ref_chans}{Channels to reference data to. Defaults to "average" i.e.
-average of all electrodes in data. Character vector of channel names or numbers.}
+average of all electrodes in data. Character vector of channel names or
+numbers.}
 
 \item{exclude}{Electrodes to exclude from average reference calculation.}
 
@@ -43,6 +48,8 @@ removed from the data. Meta-data about the referencing scheme is held in the
 \item \code{default}: Default method
 
 \item \code{eeg_data}: Rereference objects of class \code{eeg_data}
+
+\item \code{eeg_epochs}: Rereference objects of class \code{eeg_data}
 }}
 
 \examples{

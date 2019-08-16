@@ -167,7 +167,6 @@ eeg_GA <- function(data,
   value
 }
 
-
 #' Function to create an S3 object of class "eeg_epochs".
 #'
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
@@ -380,3 +379,7 @@ is.eeg_ICA <- function(x) inherits(x, "eeg_ICA")
 #' @param x Object to check.
 #' @keywords internal
 is.eeg_tfr <- function(x) inherits(x, "eeg_tfr")
+
+#' Check if object is of class eeg_group
+#' @noRd
+is.eeg_group <- function(x) inherits(x, "eeg_group")
