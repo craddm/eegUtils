@@ -221,7 +221,7 @@ welch_fft <- function(data,
     # also a list containing n_segs elements - consider recoding this to combine
     # segments into
   } else {
-    data_segs <- data
+    data_segs <- as.matrix(data)
     n_segs <- 1
   }
 
@@ -233,7 +233,9 @@ welch_fft <- function(data,
 
   #do windowing and zero padding if necessary, then FFT
   if (n_segs == 1) {
-    data_segs <- sweep(data_segs, 1, win, "*")
+    data_segs <- sweep(data_segs,
+                       1,
+                       win, "*")
 
     if (n_fft > seg_length) {
        data_segs <- apply(data_segs, 2,
@@ -241,7 +243,7 @@ welch_fft <- function(data,
                                         numeric(n_fft - seg_length)))
     }
 
-    data_fft <- mvfft(data_segs)
+    data_fft <- fft(data_segs)
     final_out <- apply(data_fft,
                        2,
                        function(x) abs(x * Conj(x)) / U)
