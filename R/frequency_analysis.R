@@ -243,7 +243,7 @@ welch_fft <- function(data,
                                         numeric(n_fft - seg_length)))
     }
 
-    data_fft <- fft(data_segs)
+    data_fft <- mvfft(data_segs)
     final_out <- apply(data_fft,
                        2,
                        function(x) abs(x * Conj(x)) / U)

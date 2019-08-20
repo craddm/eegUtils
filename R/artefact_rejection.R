@@ -676,17 +676,17 @@ ar_acf.eeg_ICA <- function(data,
   low_acf <- apply(data$signals, 2,
                    function(x) stats::acf(x, time_lag, plot = FALSE)$acf[time_lag + 1, 1, 1])
   if (is.null(threshold)) {
-    acf_thresh <- mean(low_acf) - 2 * sd(low_acf)
+    threshold <- mean(low_acf) - 2 * sd(low_acf)
   }
   if (verbose) {
     message("Estimating autocorrelation at ", ms, "ms lag.")
-    message("Estimated ACF threshold: ", round(acf_thresh, 2))
+    message("Estimated ACF threshold: ", round(threshold, 2))
   }
   if (plot) {
     plot(low_acf)
-    abline(h = acf_thresh)
+    abline(h = threshold)
   }
-  low_acf <- channel_names(data)[low_acf < acf_thresh]
+  low_acf <- channel_names(data)[low_acf < threshold]
   message("Subthreshold components: ", paste0(low_acf, sep = " "))
   low_acf
 }
@@ -778,7 +778,8 @@ ar_trialfoc <- function(data,
   if (is.null(threshold)) {
     threshold <- mean(matrixStats::colMaxs(zmat)) + 2 * sd(matrixStats::colMaxs(zmat))
     if (verbose) {
-      message("Estimated trial focality threshold (z):", threshold)
+      message("Estimated trial focality threshold (z): ",
+              round(threshold, 2))
     }
   }
 

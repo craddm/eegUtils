@@ -69,7 +69,7 @@ StatScalpmap <-
                                        data = data,
                                        FUN = mean)
 
-                     if (method == "biharmonic") {
+                     if (identical(method, "biharmonic")) {
                        data <- biharmonic(data,
                                           grid_res = grid_res,
                                           interp_limit = interp_limit)
@@ -125,6 +125,37 @@ stat_scalpmap <- function(mapping = NULL,
                   ...)
   )
 }
+
+StatConts <-
+  ggplot2::ggproto("StatConts",
+                   Stat,
+                   required_aes = c("x",
+                                    "y",
+                                    "z"),
+                   compute_group = function(data,
+                                            scales,
+                                            grid_res,
+                                            interp_limit,
+                                            method = "biharmonic") {
+
+                     data <- aggregate(z ~ x + y,
+                                       data = data,
+                                       FUN = mean)
+                     data <- rename(data, fill = "z")
+
+                     if (identical(method, "biharmonic")) {
+                       data <- biharmonic(data,
+                                          grid_res = grid_res,
+                                          interp_limit = interp_limit)
+                     } else {
+                       data <- fit_gam_topo(data,
+                                            grid_res = grid_res,
+                                            interp_limit = interp_limit)
+                     }
+                     data <- rename(data, z = "fill")
+                     data
+                   }
+  )
 
 #' Create a topographical plot
 #'
@@ -590,7 +621,7 @@ biharmonic <- function(data,
                  ncol = grid_res))
 
   xy_coords <- unique(data[, c("x", "y")])
-  xy <- xy_coords[, 1] + xy_coords[, 2] * sqrt(as.complex(-1))
+  xy <- xy_coords[, 1, drop = TRUE] + xy_coords[, 2, drop = TRUE] * sqrt(as.complex(-1))
   d <- matrix(rep(xy,
                   length(xy)),
               nrow = length(xy),
@@ -666,8 +697,58 @@ fit_gam_topo <- function(data,
 
 get_scalpmap <- function(data,
                          grid_res = 100,
-                         interp_limit = "head",
+                         interp_limit = "skirt",
                          method = "biharmonic") {
+
+  # only useful if passed eeg objects
+  # check_locs <- no_loc_chans(channels(data))
+  # if (!is.null(check_locs)) {
+  #   data <- select(data, -check_locs)
+  # }
+  # tmp <- as.data.frame(data)
+  # tmp <- dplyr::summarise_at(tmp,
+  #                            channel_names(data),
+  #                            .funs = mean)
+  # tmp <- tidyr::gather(tmp,
+  #                      electrode,
+  #                      amplitude)
+  # tmp <- dplyr::left_join(tmp,
+  #                         channels(data))
+  tmp <- dplyr::filter(data, !is.na(x))
+  tmp <- group_by(tmp,
+                  electrode) %>%
+    summarise(amplitude = mean(amplitude),
+              x = mean(x), y= mean(y))
+  smooth <-
+    switch(method,
+           biharmonic = biharmonic(dplyr::rename(tmp,
+                                                 fill = "amplitude"),
+                                   grid_res = grid_res,
+                                   interp_limit = interp_limit),
+           gam = fit_gam_topo(dplyr::rename(tmp,
+                                            fill = "amplitude"),
+                              grid_res = grid_res,
+                              interp_limit = interp_limit))
+
+  smooth
+}
+
+
+get_scalpmapn <- function(data, ...) {
+  UseMethod("getscalpmapn", data)
+}
+
+get_scalpmapn.data.frame <- function(data, ...) {
+
+}
+
+
+get_scalpmapn.eeg_epochs <- function(data, ...) {
+  # only useful if passed eeg objects
+   check_locs <- no_loc_chans(channels(data))
+   if (!is.null(check_locs)) {
+     data <- select(data, -check_locs)
+   }
   tmp <- as.data.frame(data)
   tmp <- dplyr::summarise_at(tmp,
                              channel_names(data),
@@ -677,23 +758,11 @@ get_scalpmap <- function(data,
                        amplitude)
   tmp <- dplyr::left_join(tmp,
                           channels(data))
-  smooth <-
-    switch(method,
-           biharmonic = biharmonic(dplyr::rename(tmp,
-                                                 fill = "amplitude"),
-                                   grid_res = grid_res,
-                                   interp_limit = "head"),
-           gam = fit_gam_topo(dplyr::rename(tmp,
-                                            fill = "amplitude"),
-                              grid_res = grid_res,
-                              interp_limit = "head"))
-  # smooth <- biharmonic(dplyr::rename(tmp,
-  #                                    fill = "amplitude"),
-  #                      grid_res = grid_res,
-  #                      interp_limit = "head")
-  # smooth <- fit_gam_topo(dplyr::rename(tmp,
-  #                                      fill = "amplitude"),
-  #                        grid_res = grid_res,
-  #                        interp_limit = "head")
-  smooth
+}
+no_loc_chans <- function(chaninfo) {
+
+  if (any(is.na(chaninfo$x))) {
+    return(chaninfo$electrode[is.na(chaninfo$x)])
+  }
+  NULL
 }

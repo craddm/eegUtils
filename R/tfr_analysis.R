@@ -508,6 +508,7 @@ run_tf <- function(tmp,
       for (i in 1:n_chans) {
         tmp_epo <- fft_n(tmp[, , i],
                          n_conv)
+
         for (ik in 1:n_epochs) {
           tfr_out[ik, , i, ] <-
             abs(mvfft(norm_mf * tmp_epo[,ik],
