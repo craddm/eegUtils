@@ -31,7 +31,7 @@ topoplot <- function(data,
 
 topoplot.default <- function(data,
                              ...) {
-  stop("This function requires a data frame or an eeg_data/eeg_epochs object")
+  stop("Not implemented for objects of class ", class(data))
 }
 
 #' @param time_lim Timepoint(s) to plot. Can be one time or a range to average
