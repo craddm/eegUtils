@@ -116,7 +116,11 @@ topoplot.data.frame <- function(data,
    }
 
   # Check for x and y co-ordinates, try to add if not found --------------
-  if (!is.null(chanLocs)) {
+  if (all(c("x", "y") %in% names(data))) {
+    if (verbose) {
+      message("Using electrode locations from data.")
+    }
+  } else if (!is.null(chanLocs)) {
 
     if (!all(c("x", "y") %in% names(chanLocs))) {
       stop("No channel locations found in chanLocs.")
@@ -126,18 +130,6 @@ topoplot.data.frame <- function(data,
     chanLocs$electrode <- toupper(chanLocs$electrode)
     data <- merge(data, chanLocs)
 
-    # Remove channels with no location
-    if (any(is.na(data$x))) {
-      data <- data[!is.na(data$x), ]
-      if (verbose) {
-        warning("Removing channels with no location.")
-      }
-    }
-
-  } else if (all(c("x", "y") %in% names(data))) {
-    if (verbose) {
-      message("Using electrode locations from data.")
-    }
   } else if ("electrode" %in% names(data)) {
     data <- electrode_locations(data,
                                 drop = TRUE,
@@ -149,6 +141,13 @@ topoplot.data.frame <- function(data,
     stop("Neither electrode locations nor labels found.")
   }
 
+  # Remove channels with no location
+  if (any(is.na(data$x))) {
+    data <- data[!is.na(data$x), ]
+    if (verbose) {
+      warning("Removing channels with no location.")
+    }
+  }
 
   # Average over all timepoints ----------------------------
 
@@ -177,14 +176,19 @@ topoplot.data.frame <- function(data,
     scaled_x <- data$data[[1]]$x / max_dim
     scaled_y <- data$data[[1]]$y / max_dim
   } else {
+    if (is.character(quantity)) {
+      quantity <- as.name(quantity)
+    }
     data <-
       dplyr::summarise(dplyr::group_by(data,
                                        x,
                                        y,
                                        electrode),
-                       z = mean(!!rlang::parse_quo(quantity,
-                                                   rlang::current_env()),
+                       z = mean({{quantity}},
                                 na.rm = TRUE))
+                       # z = mean(!!rlang::parse_quo(quantity,
+                       #                             rlang::current_env()),
+
     # Cut the data frame down to only the necessary columns, and make sure it has
     # the right names
     data <- data.frame(x = data$x,
@@ -193,7 +197,7 @@ topoplot.data.frame <- function(data,
                        electrode = data$electrode)
     # Rescale electrode co-ordinates to be from -1 to 1 for plotting
     # Selects largest absolute value from x or y.
-    # NOTE: this may be less necessary now with now channel location formats.
+    # NOTE: this may be less necessary now with new channel location formats.
     max_dim <- max(abs(data$x),
                    abs(data$y))
     scaled_x <- data$x / max_dim
@@ -790,9 +794,11 @@ new_topo.eeg_epochs <- function(data,
                                 palette = "RdBu",
                                 chan_markers = "point",
                                 interpolate = TRUE,
-                                interp_limit = c("skirt", "head"),
+                                interp_limit = c("skirt",
+                                                 "head"),
                                 keep_epochs = FALSE,
-                                method = c("biharmonic", "gam"),
+                                method = c("biharmonic",
+                                           "gam"),
                                 ...) {
 
   if (!keep_epochs) {
@@ -803,7 +809,8 @@ new_topo.eeg_epochs <- function(data,
     if (length(time_lim) == 1) {
       time_lim <- rep(time_lim, 2)
     }
-    data <- select_times(data, time_lim)
+    data <- select_times(data,
+                         time_lim)
   }
 
   data <- as.data.frame(data,
@@ -836,8 +843,8 @@ new_topo.eeg_ICA <- function(data,
                              ...) {
 
   data <- as.data.frame(data,
-                         long = TRUE,
-                         mixing = TRUE)
+                        long = TRUE,
+                        mixing = TRUE)
 
   make_new_topo(data,
                 time_lim = time_lim,

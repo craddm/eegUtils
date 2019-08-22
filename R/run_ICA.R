@@ -191,7 +191,7 @@ run_ICA.eeg_epochs <- function(data,
 #' @param maxiter Maximum number of iterations of the joint diagonalization
 #' @param tol convergence tolerance.
 #' @param pca Number of PCA components.
-#' @param centre Mean center signals
+#' @param centre Mean centre signals
 #' @author A. Belouchrani and A. Cichocki. Adapted to R by Matt Craddock
 #'   \email{matt@@mattcraddock.com}
 #' @keywords internal
@@ -202,7 +202,8 @@ sobi_ICA <- function(data,
                      pca,
                      centre) {
 
-  n_epochs <- length(unique(data$timings$epoch))
+  #n_epochs <- length(unique(data$timings$epoch))
+  n_epochs <- nrow(epochs(data))
   n_channels <- ncol(data$signals)
   n_times <- length(unique(data$timings$time))
 

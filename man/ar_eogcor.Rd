@@ -7,7 +7,7 @@
 \usage{
 ar_eogcor(decomp, ...)
 
-\method{ar_eogcor}{eeg_ICA}(decomp, data, HEOG, VEOG, threshold = 0.75,
+\method{ar_eogcor}{eeg_ICA}(decomp, data, HEOG, VEOG, threshold = NULL,
   plot = TRUE, ...)
 }
 \arguments{
@@ -21,7 +21,8 @@ ar_eogcor(decomp, ...)
 
 \item{VEOG}{Vertical eye channels}
 
-\item{threshold}{Threshold for correlation (r). Defaults to .75.}
+\item{threshold}{Threshold for correlation (r). Defaults to NULL,
+automatically determining a threshold.}
 
 \item{plot}{Plot correlation coefficient for all components}
 }

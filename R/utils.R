@@ -259,7 +259,7 @@ as.data.frame.eeg_tfr <- function(x,
                        dim_size[3] * dim_size[2])#out_df$time)
     out_df$frequency <- rep(as.numeric(dimnames(x$signals)$frequency),
                             each = dim_size[1])
-    out_df$epoch <- rep(unique(x$epochs$epoch),
+    out_df$epoch <- rep(unique(x$epochs$epoch), each =
                         dim_size[1] * dim_size[2])
 
     if (!is.null(x$epochs) && "epoch" %in% x$dimensions) {
