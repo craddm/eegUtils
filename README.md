@@ -32,14 +32,14 @@ the latest released version from Github as below.
 
 ``` r
 #install.packages("devtools")
-devtools::install_packages("craddm/eegUtils")
+devtools::install_github("craddm/eegUtils")
 ```
 
 To install the latest development version, install from the *develop*
 branch as below.
 
 ``` r
-devtools::install_packages("craddm/eegUtils@develop")
+devtools::install_github("craddm/eegUtils@develop")
 ```
 
 ### Usage
