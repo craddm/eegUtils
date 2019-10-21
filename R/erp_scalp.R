@@ -108,7 +108,7 @@ erp_scalp <- function(data,
   }
 
   data$electrodefacet <- data[, electrode]
-  data <- tidyr::nest(tibble::as.tibble(data), -electrode)
+  data <- tidyr::nest(tibble::as_tibble(data), -electrode)
   data <- dplyr::mutate(data, plot = map(data, plotfun))
   data <- dplyr::select(data, -data)
 

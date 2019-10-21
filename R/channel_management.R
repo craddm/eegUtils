@@ -65,7 +65,7 @@ import_elc <- function(file_name) {
   final_locs <- cbind(final_locs,
                       xy)
 
-  tibble::as.tibble(final_locs)
+  tibble::as_tibble(final_locs)
 }
 
 #' Import electrode locations from text
@@ -98,7 +98,7 @@ import_txt <- function(file_name) {
   final_locs <- cbind(final_locs,
                       cart_xyz,
                       xy)
-  tibble::as.tibble(final_locs)
+  tibble::as_tibble(final_locs)
 }
 
 #' Convert topographical 2d to cartesian 2d
@@ -184,7 +184,7 @@ electrode_locations <- function(data, ...) {
 #' @param montage Name of an existing montage set. Defaults to NULL.
 #' @importFrom dplyr inner_join pull left_join distinct
 #' @import ggplot2
-#' @importFrom tibble is.tibble
+#' @importFrom tibble is_tibble
 #' @describeIn electrode_locations Adds standard locations to a data frame in
 #'   long format
 #' @return A tibble (or data.frame), or ggplot2 object if \code{plot = TRUE}.
@@ -203,7 +203,7 @@ electrode_locations.data.frame <- function(data,
   data[, electrode] <- toupper(data[[electrode]])
   electrodeLocs[, electrode] <- toupper(electrodeLocs[[electrode]])
 
-  if (tibble::is.tibble(data)) {
+  if (tibble::is_tibble(data)) {
     elecs <-
       dplyr::pull(unique(data[, electrode])) %in%
       dplyr::pull(electrodeLocs[, electrode])
@@ -483,7 +483,7 @@ validate_channels <- function(chan_info,
   chan_info[missing] <- NA
   chan_info <- chan_info[required_cols]
 
-  tibble::as.tibble(chan_info)
+  tibble::as_tibble(chan_info)
 }
 
 #' Modify channel information

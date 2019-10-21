@@ -35,6 +35,7 @@ run_ICA <- function(data, ...) {
 #'   Numeric,  >1 and < number of channels
 #' @param centre Defaults to TRUE. Centre the data on zero by subtracting the column mean. See notes on usage.
 #' @describeIn run_ICA Run ICA on an \code{eeg_epochs} object
+#' @importFrom stats cov
 #' @export
 
 run_ICA.eeg_epochs <- function(data,
@@ -48,7 +49,7 @@ run_ICA.eeg_epochs <- function(data,
   if (!is.null(pca)) {
     message("Reducing data to ", pca, " dimensions using PCA.")
     orig_chans <- channel_names(data)
-    pca_decomp <- eigen(cov(data$signals))$vectors #prcomp(data$signals, scale = FALSE)
+    pca_decomp <- eigen(stats::cov(data$signals))$vectors #prcomp(data$signals, scale = FALSE)
     data$signals <- as.data.frame(as.matrix(data$signals) %*% pca_decomp[, 1:pca])
     pca_flag <- TRUE
   } else {
