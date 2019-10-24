@@ -664,6 +664,8 @@ ar_acf <- function(data, ...) {
 #' @param verbose Print informative messages. Defaults to TRUE.
 #' @param threshold Specify a threshold for low ACF. NULL estimates the threshold automatically.
 #' @describeIn ar_acf Autocorrelation checker for \code{eeg_ICA} objects
+#' @importFrom stats sd cor
+#' @importFrom graphics abline par
 #' @export
 ar_acf.eeg_ICA <- function(data,
                            ms = 20,

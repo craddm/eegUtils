@@ -165,6 +165,7 @@ plot_butterfly.eeg_stats <- function(data,
                                      facet,
                                      browse_mode = FALSE,
                                      ...) {
+  statistic = NULL; rm(list = "statistic")
 
   if (!missing(facet)) {
     warning("The facet parameter is deprecated. Please use facet_wrap/facet_grid")

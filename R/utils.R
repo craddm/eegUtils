@@ -296,6 +296,7 @@ as.data.frame.eeg_stats <- function(x,
                                    long = FALSE,
                                    coords = FALSE,
                                    ...) {
+  statistic = NULL; rm(list = "statistic")
   df <- data.frame(x$statistic,
                    time = x$timings)
 
