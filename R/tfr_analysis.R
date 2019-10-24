@@ -103,6 +103,7 @@ compute_tfr.eeg_evoked <- function(data,
 #' @param verbose Print informative messages in console.
 #' @importFrom abind abind
 #' @keywords internal
+#' @importFrom stats nextn
 
 tf_morlet <- function(data,
                       foi,
@@ -162,7 +163,7 @@ tf_morlet <- function(data,
 
   max_length <- length(unique(data$timings$time))
   n_conv <- max_length + n_kern - 1
-  n_conv <- nextn(n_conv, 2)
+  n_conv <- stats::nextn(n_conv, 2)
   # zero-pad and run FFTs on morlets
   mf_zp <- fft_n(morlet_family,
                  n_conv)
