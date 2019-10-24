@@ -10,3 +10,8 @@ addons:
 after_success:
   - Rscript -e 'covr::codecov(type = "all")'
 warnings_are_errors: true
+
+os:
+  - linux
+  - osx
+  
