@@ -3,9 +3,10 @@
 language: R
 sudo: true
 cache: packages
-os:
-  - linux
-  - osx
+addons:
+  apt:
+    packages:
+      - libfreetype6
 after_success:
   - Rscript -e 'covr::codecov(type = "all")'
 warnings_are_errors: true

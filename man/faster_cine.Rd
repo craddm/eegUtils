@@ -4,12 +4,14 @@
 \alias{faster_cine}
 \title{FASTER detection of bad channels in single epochs}
 \usage{
-faster_cine(.data, ...)
+faster_cine(data, exclude = NULL, ...)
 }
 \arguments{
-\item{...}{further parameters (tbd)}
-
 \item{data}{\code{eeg_epochs} object.}
+
+\item{exclude}{Channels to be ignored.}
+
+\item{...}{further parameters (tbd)}
 }
 \description{
 FASTER detection of bad channels in single epochs

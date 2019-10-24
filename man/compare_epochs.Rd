@@ -3,7 +3,7 @@
 \name{compare_epochs}
 \alias{compare_epochs}
 \alias{compare_epochs.eeg_epochs}
-\title{Compare epochs using an independent t-test}
+\title{Compare epochs using an independent t-test.}
 \usage{
 compare_epochs(data, ...)
 
@@ -19,7 +19,7 @@ compare_epochs(data, ...)
 \item{type}{Type of test to use. "1samp", "2samp"}
 }
 \description{
-Compare epochs using an independent t-test
+Compare epochs using an independent t-test.
 }
 \section{Methods (by class)}{
 \itemize{
@@ -28,4 +28,7 @@ Compare epochs using an independent t-test
 
 \author{
 Matt Craddock, \email{matt@mattcraddock.com}
+
+Matt Craddock, \email{matt@mattcraddock.com}
 }
+\keyword{internal}

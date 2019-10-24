@@ -18,32 +18,35 @@ topoplot(data, ...)
   chanLocs = NULL, method = "Biharmonic", r = NULL, grid_res = 200,
   palette = "RdBu", interp_limit = "skirt", contour = TRUE,
   chan_marker = "point", quantity = "amplitude", montage = NULL,
-  colourmap, highlights = NULL, scaling = 1, groups = NULL, ...)
+  colourmap, highlights = NULL, scaling = 1, groups = NULL,
+  verbose = TRUE, ...)
 
 \method{topoplot}{eeg_data}(data, time_lim = NULL, limits = NULL,
   chanLocs = NULL, method = "Biharmonic", r = NULL, grid_res = 200,
   palette = "RdBu", interp_limit = "skirt", contour = TRUE,
   chan_marker = "point", quantity = "amplitude", montage = NULL,
-  highlights = NULL, scaling = 1, ...)
+  highlights = NULL, scaling = 1, verbose = TRUE, ...)
 
 \method{topoplot}{eeg_epochs}(data, time_lim = NULL, limits = NULL,
   chanLocs = NULL, method = "Biharmonic", r = NULL, grid_res = 200,
   palette = "RdBu", interp_limit = "skirt", contour = TRUE,
   chan_marker = "point", quantity = "amplitude", montage = NULL,
-  highlights = NULL, scaling = 1, groups = NULL, ...)
+  highlights = NULL, scaling = 1, groups = NULL, verbose = TRUE,
+  ...)
 
 \method{topoplot}{eeg_ICA}(data, component, time_lim = NULL,
   limits = NULL, chanLocs = NULL, method = "Biharmonic", r = NULL,
   grid_res = 200, palette = "RdBu", interp_limit = "skirt",
   contour = TRUE, chan_marker = "point", quantity = "amplitude",
-  montage = NULL, colourmap, highlights = NULL, scaling = scaling,
-  ...)
+  montage = NULL, colourmap, highlights = NULL, scaling = 1,
+  verbose = TRUE, ...)
 
 \method{topoplot}{eeg_tfr}(data, time_lim = NULL, limits = NULL,
   chanLocs = NULL, method = "Biharmonic", r = NULL, grid_res = 200,
   palette = "RdBu", interp_limit = "skirt", contour = TRUE,
   chan_marker = "point", quantity = "power", montage = NULL,
-  highlights = NULL, scaling = 1, freq_range = NULL, ...)
+  highlights = NULL, scaling = 1, freq_range = NULL,
+  verbose = TRUE, ...)
 }
 \arguments{
 \item{data}{An EEG dataset. If the input is a data.frame, then it must have
@@ -56,11 +59,12 @@ co-ordinates), amplitude is amplitude.}
 over. If none is supplied, the function will average across all timepoints
 in the supplied data.}
 
-\item{limits}{Limits of the fill scale - should be given as a character vector
-with two values specifying the start and endpoints e.g. limits = c(-2,-2).
-Will ignore anything else. Defaults to the range of the data.}
+\item{limits}{Limits of the fill scale - should be given as a character
+vector with two values specifying the start and endpoints e.g. limits =
+c(-2,-2). Will ignore anything else. Defaults to the range of the data.}
 
-\item{chanLocs}{Allows passing of channel locations (see \code{electrode_locations})}
+\item{chanLocs}{Allows passing of channel locations (see
+\code{electrode_locations})}
 
 \item{method}{Interpolation method. "Biharmonic" or "gam". "Biharmonic"
 implements the same method used in Matlab's EEGLAB. "gam" fits a
@@ -97,9 +101,13 @@ only 'biosemi64alpha' available other than default 10/20 system)}
 
 \item{highlights}{Electrodes to highlight (in white).}
 
-\item{scaling}{Scaling multiplication factor for labels and any plot lines. Defaults to 1.}
+\item{scaling}{Scaling multiplication factor for labels and any plot lines.
+Defaults to 1.}
 
 \item{groups}{Column name for groups to retain.}
+
+\item{verbose}{Warning messages when electrodes do not have locations.
+Defaults to TRUE.}
 
 \item{component}{Component to plot (numeric)}
 
@@ -135,6 +143,10 @@ eeg_data objects.
   should be used with caution.
 }
 
+\examples{
+topoplot(demo_epochs)
+topoplot(demo_epochs, time_lim = c(.1, .2))
+}
 \author{
 Matt Craddock, \email{matt@mattcraddock.com}
 }

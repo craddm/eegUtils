@@ -21,6 +21,10 @@
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #' @return An \code{eeg_ICA} object containing an ICA decomposition
 #' @importFrom MASS ginv
+#' @importFrom Matrix rankMatrix
+#' @examples
+#' run_ICA(demo_epochs)
+#' run_ICA(demo_epochs, pca = 10)
 #' @export
 
 run_ICA <- function(data, ...) {
@@ -33,7 +37,14 @@ run_ICA <- function(data, ...) {
 #' @param tol Convergence tolerance for fastica and infomax. Defaults to 1e-06.
 #' @param pca Reduce the number of dimensions using PCA before running ICA.
 #'   Numeric,  >1 and < number of channels
-#' @param centre Defaults to TRUE. Centre the data on zero by subtracting the column mean. See notes on usage.
+#' @param centre Defaults to TRUE. Centre the data on zero by subtracting the
+#'   column mean. See notes on usage.
+#' @param alg Use "gradient" descent or "newton" algorithm for extended infomax.
+#'   Defaults to "gradient". Ignored if method != "infomax".
+#' @param rateanneal Annealing rate for extended infomax. Ignored if method !=
+#'   "infomax".
+#' @param rate Learning rate for extended infomax. Ignored if method !=
+#'   "infomax".
 #' @describeIn run_ICA Run ICA on an \code{eeg_epochs} object
 #' @importFrom stats cov
 #' @export
@@ -44,12 +55,16 @@ run_ICA.eeg_epochs <- function(data,
                                tol = 1e-6,
                                pca = NULL,
                                centre = TRUE,
+                               alg = "gradient",
+                               rateanneal = c(60, .9),
+                               rate = 0.1,
                                ...) {
 
   if (!is.null(pca)) {
-    message("Reducing data to ", pca, " dimensions using PCA.")
+    message("Reducing data to ", pca,
+            " dimensions using PCA.")
     orig_chans <- channel_names(data)
-    pca_decomp <- eigen(stats::cov(data$signals))$vectors #prcomp(data$signals, scale = FALSE)
+    pca_decomp <- eigen(cov(data$signals))$vectors
     data$signals <- as.data.frame(as.matrix(data$signals) %*% pca_decomp[, 1:pca])
     pca_flag <- TRUE
   } else {
@@ -81,6 +96,7 @@ run_ICA.eeg_epochs <- function(data,
                           maxiter = maxit,
                           method = "sym2")
 
+    colnames(ICA_out$S) <- sprintf("Comp%03d", 1:pca)
     ICA_out$S <- tibble::as_tibble(ICA_out$S[, 1:pca])
 
     ICA_out$W <- ICA_out$W[, 1:pca]
@@ -89,11 +105,11 @@ run_ICA.eeg_epochs <- function(data,
 
     unmixing_matrix <- as.data.frame(MASS::ginv(mixing_matrix, tol = 0))
     mixing_matrix <- as.data.frame(mixing_matrix)
-    names(ICA_out$S) <- paste0("Comp", 1:pca)
-    names(mixing_matrix) <- paste0("Comp", 1:pca)
-    mixing_matrix$electrode <- orig_chans #names(data$signals)
+
+    names(mixing_matrix) <- sprintf("Comp%03d", 1:pca)
+    mixing_matrix$electrode <- orig_chans
     names(unmixing_matrix) <- orig_chans
-    unmixing_matrix$Component <- paste0("Comp", 1:pca) # names(data$signals)
+    unmixing_matrix$Component <- sprintf("Comp%03d", 1:pca)
   } else {
 
     if (method == "sobi") {
@@ -129,27 +145,30 @@ run_ICA.eeg_epochs <- function(data,
                                 maxit = maxit,
                                 fun = "ext",
                                 tol = tol,
-                                center = centre)
+                                center = centre,
+                                alg = alg,
+                                rateanneal = rateanneal,
+                                rate = rate)
       }
     }
 
       ICA_out$S <- as.data.frame(ICA_out$S)
-      names(ICA_out$S) <- paste0("Comp", 1:ncol(ICA_out$S))
+      names(ICA_out$S) <- sprintf("Comp%03d", 1:ncol(ICA_out$S))
 
       if (pca_flag) {
         mixing_matrix <- as.data.frame(pca_decomp[, 1:pca] %*% ICA_out$M)
         unmixing_matrix <- as.data.frame(MASS::ginv(as.matrix(mixing_matrix), tol = 0))
-        names(mixing_matrix) <- paste0("Comp", 1:pca)
+        names(mixing_matrix) <- sprintf("Comp%03d", 1:pca)
         names(unmixing_matrix) <- orig_chans
         mixing_matrix$electrode <- orig_chans
-        unmixing_matrix$Component <- paste0("Comp", 1:pca)
+        unmixing_matrix$Component <- sprintf("Comp%03d", 1:pca)
       } else {
         mixing_matrix <- as.data.frame(ICA_out$M)
-        names(mixing_matrix) <- paste0("Comp", 1:ncol(ICA_out$M))
+        names(mixing_matrix) <- sprintf("Comp%03d", 1:ncol(ICA_out$M))
         mixing_matrix$electrode <- names(data$signals)
         unmixing_matrix <- as.data.frame(ICA_out$W)
         names(unmixing_matrix) <- names(data$signals)
-        unmixing_matrix$Component <- paste0("Comp", 1:ncol(ICA_out$S))
+        unmixing_matrix$Component <- sprintf("Comp%03d", 1:ncol(ICA_out$S))
       }
   }
 
@@ -173,7 +192,7 @@ run_ICA.eeg_epochs <- function(data,
 #' @param maxiter Maximum number of iterations of the joint diagonalization
 #' @param tol convergence tolerance.
 #' @param pca Number of PCA components.
-#' @param centre Mean center signals
+#' @param centre Mean centre signals
 #' @author A. Belouchrani and A. Cichocki. Adapted to R by Matt Craddock
 #'   \email{matt@@mattcraddock.com}
 #' @keywords internal
@@ -184,13 +203,15 @@ sobi_ICA <- function(data,
                      pca,
                      centre) {
 
-  n_epochs <- length(unique(data$timings$epoch))
+  #n_epochs <- length(unique(data$timings$epoch))
+  n_epochs <- nrow(epochs(data))
   n_channels <- ncol(data$signals)
   n_times <- length(unique(data$timings$time))
 
   ##number of lags at which to assess autocovariance matrices
   ## 100 is the default; only switches to smaller n if epochs are too short
-  n_lags <- min(100, ceiling(n_times / 3))
+  n_lags <- min(100,
+                ceiling(n_times / 3))
 
   ## Pre-whiten the data using the SVD. zero-mean columns and get SVD. NB:
   ## should probably edit this to zero mean *epochs*
@@ -198,15 +219,19 @@ sobi_ICA <- function(data,
 
   if (centre){
     # centre the data on zero.
-    data <- rm_baseline(data, verbose = FALSE)
+    data <- rm_baseline(data,
+                        verbose = FALSE)
   }
 
   SVD_amp <- svd(data$signals)
 
   ## get the psuedo-inverse of the diagonal matrix, multiply by singular
   ## vectors
-  Q <- tcrossprod(MASS::ginv(diag(SVD_amp$d), tol = 0), SVD_amp$v) # whitening matrix
-  amp_matrix <- tcrossprod(Q, as.matrix(data$signals))
+  Q <- tcrossprod(MASS::ginv(diag(SVD_amp$d),
+                             tol = 0),
+                  SVD_amp$v) # whitening matrix
+  amp_matrix <- tcrossprod(Q,
+                           as.matrix(data$signals))
 
   ## reshape to reflect epoching structure
   dim(amp_matrix) <- c(n_channels,
@@ -217,7 +242,9 @@ sobi_ICA <- function(data,
   k <- 1
   pm <- n_channels * n_lags
   N <- n_times
-  M <- matrix(NA, nrow = n_channels, ncol = pm)
+  M <- matrix(NA,
+              nrow = n_channels,
+              ncol = pm)
 
   tmp_fun <- function(amps,
                       k,
@@ -266,9 +293,10 @@ sobi_ICA <- function(data,
   dim(amp_matrix) <- c(n_channels,
                        n_times * n_epochs)
 
-  S <- tcrossprod(unmixing_matrix, as.matrix(data$signals))
+  S <- tcrossprod(unmixing_matrix,
+                  as.matrix(data$signals))
   S <- as.data.frame(t(S))
-  names(S) <- paste0("Comp", 1:ncol(S))
+  names(S) <- sprintf("Comp%03d", 1:ncol(S))
 
 
   list(M = mixing_matrix,
@@ -311,7 +339,7 @@ apply_ica.eeg_ICA <- function(data,
              chan_info = data$chan_info,
              timings = data$timings,
              reference = NULL,
-             epochs = NULL)
+             epochs = epochs(data))
   class(out) <- c("eeg_epochs", "eeg_data")
   out
 }

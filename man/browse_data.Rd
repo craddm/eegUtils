@@ -12,13 +12,14 @@ browse_data(data, ...)
 \method{browse_data}{eeg_ICA}(data, ...)
 
 \method{browse_data}{eeg_data}(data, sig_length = 5, n_elecs = NULL,
-  downsample = FALSE, ...)
+  downsample = TRUE, ...)
 
 \method{browse_data}{eeg_epochs}(data, sig_length = 5, n_elecs = NULL,
   downsample = FALSE, ...)
 }
 \arguments{
-\item{data}{\code{eeg_data} object to be plotted.}
+\item{data}{\code{eeg_data}, \code{eeg_epochs}, or \code{eeg_ICA} object to be
+plotted.}
 
 \item{...}{Other parameters passed to browsing functions.}
 
@@ -28,14 +29,16 @@ continuous, epochs if epoched).}
 \item{n_elecs}{Number of electrodes to be plotted on a single screen. (not yet
 implemented)}
 
-\item{downsample}{Only works on \code{eeg_data} objects. Reduces size of data
-by only plotting every 4th point, speeding up plotting considerably.}
+\item{downsample}{Only works on \code{eeg_data} or \code{eeg_epochs} objects.
+Reduces size of data by only plotting every 4th point, speeding up plotting
+considerably. Defaults to TRUE for eeg_data, FALSE for eeg_epochs}
 }
 \description{
-A Shiny gadget for browsing EEG data interactively. Data can be viewed
-as a butterfly plot (all electrodes overlaid) or as individual traces
-(electrodes "stacked"). Currently, the scale cannot be manually set and is
-determined by the range of the viewable data.
+A Shiny gadget for browsing EEG data and ICA decompositions interactively.
+With EEG data (epoched or continuous), data can be viewed as a butterfly plot
+(all electrodes overlaid) or as individual traces (electrodes "stacked").
+Currently, the scale cannot be manually set and is determined by the range of
+the viewable data. With
 }
 \section{Methods (by class)}{
 \itemize{

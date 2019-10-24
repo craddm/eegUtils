@@ -4,13 +4,18 @@
 \alias{import_set}
 \title{Load EEGLAB .set files}
 \usage{
-import_set(file_name, df_out = FALSE)
+import_set(file_name, df_out = FALSE, participant_id = NULL,
+  recording = NULL)
 }
 \arguments{
 \item{file_name}{Filename (and path if not in present working directory)}
 
 \item{df_out}{Defaults to FALSE - outputs an object of class eeg_data. Set to
 TRUE for a normal data frame.}
+
+\item{participant_id}{By default, the filename will be used as the id of the participant.}
+
+\item{recording}{By default, the filename will be used as the name of the recording.}
 }
 \description{
 EEGLAB .set files are standard Matlab .mat files, but EEGLAB can be set to

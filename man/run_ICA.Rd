@@ -8,7 +8,8 @@
 run_ICA(data, ...)
 
 \method{run_ICA}{eeg_epochs}(data, method = "sobi", maxit = 1000,
-  tol = 1e-06, pca = NULL, centre = TRUE, ...)
+  tol = 1e-06, pca = NULL, centre = TRUE, alg = "gradient",
+  rateanneal = c(60, 0.9), rate = 0.1, ...)
 }
 \arguments{
 \item{data}{Data to be ICAed.}
@@ -25,7 +26,17 @@ algorithms.}
 \item{pca}{Reduce the number of dimensions using PCA before running ICA.
 Numeric,  >1 and < number of channels}
 
-\item{centre}{Defaults to TRUE. Centre the data on zero by subtracting the column mean. See notes on usage.}
+\item{centre}{Defaults to TRUE. Centre the data on zero by subtracting the
+column mean. See notes on usage.}
+
+\item{alg}{Use "gradient" descent or "newton" algorithm for extended infomax.
+Defaults to "gradient". Ignored if method != "infomax".}
+
+\item{rateanneal}{Annealing rate for extended infomax. Ignored if method !=
+"infomax".}
+
+\item{rate}{Learning rate for extended infomax. Ignored if method !=
+"infomax".}
 }
 \value{
 An \code{eeg_ICA} object containing an ICA decomposition
@@ -54,6 +65,10 @@ fastica, extended Infomax, and Second-Order Blind Identification (SOBI).
   centre on the channel means, not the epoch means.
 }
 
+\examples{
+run_ICA(demo_epochs)
+run_ICA(demo_epochs, pca = 10)
+}
 \author{
 Matt Craddock \email{matt@mattcraddock.com}
 }

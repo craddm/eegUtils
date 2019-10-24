@@ -126,24 +126,22 @@ eeg_tfr <- function(data,
 #' @param chan_info String of character names for electrodes.
 #' @param timings Timing information - samples and sample /samplirng rate.
 #' @param freqs vector of frequencies
-#' @param dimensions List of which dimension is which
 #' @param epochs Epoch information
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #' @keywords internal
 eeg_psd <- function(data,
                     srate,
-                    events,
                     chan_info = NULL,
                     timings = NULL,
                     freqs,
-                    dimensions,
                     epochs) {
 
   value <- list(signals = data,
                 srate = srate,
                 chan_info = chan_info,
                 timings = timings,
-                freqs = freqs
+                freqs = freqs,
+                epochs = epochs
                 )
   class(value) <- "eeg_psd"
   value
@@ -168,7 +166,6 @@ eeg_GA <- function(data,
   class(value) <- "eeg_GA"
   value
 }
-
 
 #' Function to create an S3 object of class "eeg_epochs".
 #'
@@ -271,7 +268,7 @@ eeg_evoked <- function(data,
                 timings = timings,
                 srate = srate,
                 epochs = epochs)
-  class(value) <- c("eeg_evoked")
+  class(value) <- c("eeg_evoked", "eeg_epochs")
   value
 }
 
@@ -282,17 +279,20 @@ eeg_evoked <- function(data,
 #' @param pvals calculated p-values for that statistic
 #' @param chan_info String of character names for electrodes.
 #' @param timings Unique timepoints remaining in the data.
+#' @param method Type of statistical test
 #' @keywords internal
 
 eeg_stats <- function(statistic,
                       chan_info,
                       pvals,
-                      timings) {
+                      timings,
+                      method) {
 
   value <- list(statistic = statistic,
-                pvals = pvals,
+                pvals = tibble::as_tibble(pvals),
                 chan_info = chan_info,
-                timings = timings)
+                timings = timings,
+                method = method)
   class(value) <- "eeg_stats"
   value
 }
@@ -379,3 +379,7 @@ is.eeg_ICA <- function(x) inherits(x, "eeg_ICA")
 #' @param x Object to check.
 #' @keywords internal
 is.eeg_tfr <- function(x) inherits(x, "eeg_tfr")
+
+#' Check if object is of class eeg_group
+#' @noRd
+is.eeg_group <- function(x) inherits(x, "eeg_group")

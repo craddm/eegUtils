@@ -193,7 +193,8 @@ electrode_locations <- function(data, ...) {
 electrode_locations.data.frame <- function(data,
                                            electrode = "electrode",
                                            drop = FALSE,
-                                           montage = NULL, ...) {
+                                           montage = NULL,
+                                           ...) {
 
   #if a montage supplied, check if it matches known montages
   if (!is.null(montage)) {
@@ -443,8 +444,8 @@ montage_check <- function(montage) {
 #'
 #' Performs several checks on the structure of channel info: 1) Checks that
 #' "electrode" is character, not factor. 2) rounds any numeric values to 2
-#' decimal places. 3) Checks for any missing channels in the chan_info if signal names are supplied; populates
-#' them with NA if it finds any
+#' decimal places. 3) Checks for any missing channels in the chan_info if signal
+#' names are supplied; populates them with NA if it finds any.
 #'
 #' @param chan_info A channel info structure
 #' @param sig_names signal names from eegUtils signals
@@ -453,19 +454,21 @@ validate_channels <- function(chan_info,
                               sig_names = NULL) {
 
   if (!is.null(sig_names)) {
-    missing_sigs <- !(sig_names %in% chan_info$electrode)
+    missing_sigs <- !(toupper(sig_names) %in% toupper(chan_info$electrode))
 
     if (any(missing_sigs)) {
-      chan_info <- merge(data.frame(electrode = sig_names),
+      chan_info <- merge(data.frame(electrode = toupper(sig_names)),
                          chan_info,
                          all.x = TRUE,
                          sort = FALSE)
     }
+    chan_info$electrode <- sig_names
   }
   # merge always converts strings to factors,
   # so also make sure electrode is not a factor
   chan_info$electrode <- as.character(chan_info$electrode)
-  num_chans <- sapply(chan_info, is.numeric)
+  num_chans <- sapply(chan_info,
+                      is.numeric)
   chan_info[, num_chans] <- round(chan_info[, num_chans], 2)
 
   required_cols <- c("electrode",
@@ -482,6 +485,7 @@ validate_channels <- function(chan_info,
                      names(chan_info))
   chan_info[missing] <- NA
   chan_info <- chan_info[required_cols]
+
 
   tibble::as_tibble(chan_info)
 }
@@ -573,6 +577,9 @@ channels.eeg_evoked <- function(.data) {
 #' @param .data \code{eegUtils object}
 #' @export
 channel_names <- function(.data) {
+  if (is.eeg_tfr(.data)) {
+    return(dimnames(.data$signals)$electrode)
+  }
   names(.data$signals)
 }
 

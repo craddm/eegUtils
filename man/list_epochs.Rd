@@ -30,8 +30,8 @@ List trigger types and any labels found in an \code{eeg_epochs} object.
 \seealso{
 \code{\link{tag_events}} and \code{\link{list_events}}
 
-Other event handlers: \code{\link{list_events}},
-  \code{\link{tag_events}}
+Other event handlers: \code{\link{events}},
+  \code{\link{list_events}}, \code{\link{tag_events}}
 }
 \author{
 Matt Craddock \email{matt@mattcraddock.com}

@@ -8,7 +8,7 @@
 eeg_decomp(data, ...)
 
 \method{eeg_decomp}{eeg_epochs}(data, sig_range, noise_range = NULL,
-  method = "ssd")
+  method = "ssd", verbose = TRUE, ...)
 }
 \arguments{
 \item{data}{An \code{eeg_data} object}
@@ -20,13 +20,16 @@ eeg_decomp(data, ...)
 \item{noise_range}{Range of frequencies to be considered noise (e.g. bounds of flanker frequencies)}
 
 \item{method}{Type of decomposition to apply. Currently only "ssd" is supported.}
+
+\item{verbose}{Informative messages printed to console. Defaults to TRUE.}
 }
 \description{
 Implements a selection of Generalized Eigenvalue based decomposition methods
-for EEG signals. Intended for isolating oscillations at specified frequencis,
-decomposing channel-based data into distinct components reflecting distinct
-or combinations of sources of oscillatory signals. Currently only the
-spatio-spectral decomposition method (Nikulin et al, 2011) is implemented.
+for EEG signals. Intended for isolating oscillations at specified
+frequencies, decomposing channel-based data into distinct components
+reflecting distinct or combinations of sources of oscillatory signals.
+Currently only the spatio-spectral decomposition method (Nikulin et al, 2011)
+is implemented.
 }
 \section{Methods (by class)}{
 \itemize{
@@ -38,9 +41,9 @@ Cohen, M. X. (2016). Comparison of linear spatial filters for
   identifying oscillatory activity in multichannel data. BioRxiv, 097402.
   https://doi.org/10.1101/097402
 
-  Haufe, S., Dähne, S., & Nikulin, V. V.
-  (2014). Dimensionality reduction for the analysis of brain oscillations.
-  NeuroImage, 101, 583–597. https://doi.org/10.1016/j.neuroimage.2014.06.073
+  Haufe, S., Dähne, S., & Nikulin, V. V. (2014). Dimensionality reduction for
+  the analysis of brain oscillations. NeuroImage, 101, 583–597.
+  https://doi.org/10.1016/j.neuroimage.2014.06.073
 
   Nikulin, V. V., Nolte, G., & Curio, G. (2011). A novel method for reliable
   and fast extraction of neuronal EEG/MEG oscillations on the basis of

@@ -26,11 +26,13 @@ eeg_reference <- function(data, ...) {
 #' @export
 #' @describeIn eeg_reference Default method
 eeg_reference.default <- function(data, ...) {
-  stop(paste("eeg_reference does not know how to handle data of class", class(data)))
+  stop("eeg_reference does not know how to handle data of class ",
+       paste0(class(data), collapse = " "))
 }
 
 #' @param ref_chans Channels to reference data to. Defaults to "average" i.e.
-#'   average of all electrodes in data. Character vector of channel names or numbers.
+#'   average of all electrodes in data. Character vector of channel names or
+#'   numbers.
 #' @param exclude Electrodes to exclude from average reference calculation.
 #' @param robust Use median instead of mean; only used for average reference.
 #' @importFrom matrixStats rowMedians
@@ -40,10 +42,10 @@ eeg_reference.default <- function(data, ...) {
 #' @export
 
 eeg_reference.eeg_data <- function(data,
-                               ref_chans = "average",
-                               exclude = NULL,
-                               robust = FALSE,
-                               ...) {
+                                   ref_chans = "average",
+                                   exclude = NULL,
+                                   robust = FALSE,
+                                   ...) {
 
   # check for existing reference. Add it back in if it exists.
   if (!is.null(data$reference)) {
@@ -105,10 +107,98 @@ eeg_reference.eeg_data <- function(data,
       data <- select_elecs(data,
                            ref_chans,
                            keep = FALSE)
-      }
+  }
   data
 }
 
+eeg_reference.eeg_ICA <- function(data,
+                                  ...) {
+  stop("Cannot rereference ICA decompositions.")
+}
+
+#' @describeIn eeg_reference Rereference objects of class \code{eeg_data}
+#' @export
+eeg_reference.eeg_epochs <- function(data,
+                                     ref_chans = "average",
+                                     exclude = NULL,
+                                     robust = FALSE,
+                                     ...) {
+  do_referencing(data,
+                 ref_chans = "average",
+                 exclude = NULL,
+                 robust = FALSE,
+                 ...)
+}
+
+do_referencing <- function(data,
+                           ref_chans = "average",
+                           exclude = NULL,
+                           robust = FALSE) {
+
+  # check for existing reference. Add it back in if it exists.
+  if (!is.null(data$reference)) {
+    if (!identical(data$reference$ref_chans, "average")) {
+      data$signals[data$reference$ref_chans] <- 0
+    }
+  }
+
+  # Convert ref_chan channel numbers into channel names
+  if (is.numeric(ref_chans)) {
+    ref_chans <- names(data$signals)[ref_chans]
+  }
+
+  # If average reference is requested, first get all channel names.
+  if (identical(ref_chans, "average")) {
+    reference <- names(data$signals)
+  }
+
+  # Get excluded channel names and/or convert to numbers if necessary
+  if (!is.null(exclude)) {
+    if (is.numeric(exclude)) {
+      exclude <- names(data$signals)[exclude]
+    } else {
+      exclude <- exclude[which(exclude %in% names(data$signals))]
+    }
+  reference <- reference[!(reference %in% exclude)]
+  }
+
+  # Calculate new reference data
+  if (identical(ref_chans, "average")) {
+    if (robust) {
+      ref_data <- matrixStats::rowMedians(as.matrix(data$signals[, reference]))
+    } else {
+      ref_data <- rowMeans(data$signals[, reference])
+    }
+  #remove reference from data
+    data$signals <- data.table(data$signals)
+    data$signals <- data$signals[, lapply(.SD, function(x) x - ref_data)]
+  } else {
+    if (any(all(ref_chans %in% colnames(data$signals)) | is.numeric(ref_chans))) {
+      if (length(ref_chans) > 1) {
+        ref_data <- rowMeans(data$signals[, ref_chans])
+      } else {
+        ref_data <- unlist(data$signals[, ref_chans])
+      }
+      data$signals <- data.table(data$signals)
+      data$signals <- data$signals[, lapply(.SD, function(x) x - ref_data)]
+    } else {
+      stop("Electrode(s) not found.")
+    }
+  }
+
+  data$signals <- tibble::as_tibble(data$signals)
+  if (identical(ref_chans, "average")) {
+    data$reference <- list(ref_chans = ref_chans,
+                           excluded = exclude)
+    } else {
+      data$reference <- list(ref_chans = ref_chans,
+                             excluded = exclude)
+      data <- select_elecs(data,
+                           ref_chans,
+                           keep = FALSE)
+    }
+  data
+}
 
 #' Downsampling EEG data
 #'
@@ -151,15 +241,6 @@ eeg_downsample.eeg_data <- function(data,
 
   if (data_length > 0) {
     data <- drop_points(data, data_length)
-    # message("Dropping ",
-    #         data_length,
-    #         " time points to make n of samples a multiple of q.")
-    # new_times <- utils::head(unique(data$timings$time),
-    #                          -data_length)
-    # data <- dplyr::filter(data,
-    #                       time >= min(new_times),
-    #                       time <= max(new_times)
-    # )
   }
 
   # step through each column and decimate each channel
@@ -192,17 +273,6 @@ eeg_downsample.eeg_epochs <- function(data,
 
   if (epo_length > 0) {
     data <- drop_points(data, epo_length)
-    # message("Dropping ",
-    #         epo_length,
-    #         " time points to make n of samples a multiple of q.")
-    # new_times <- utils::head(unique(data$timings$time),
-    #                          -epo_length)
-    # # Use custom filter method instead of select_times.
-    # data <- dplyr::filter(data,
-    #                       time >= min(new_times),
-    #                       time <= max(new_times)
-    #                       )
-
   }
 
   data$signals <- split(data$signals,
