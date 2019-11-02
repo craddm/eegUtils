@@ -227,10 +227,11 @@ topoplot.data.frame <- function(data,
                                                        scaled_y = scaled_y)))
          })
 
-  out_df <- tidyr::unnest(out_df,
-                          topos)
+  out_df <- tidyr::unnest(out_df["topos"],
+                          cols = topos)
 
-  data <- tidyr::unnest(data)
+  data <- tidyr::unnest(data,
+                        cols = c(data))
 
   # Create the head_shape -----------------
 
