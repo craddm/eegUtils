@@ -13,7 +13,6 @@
 #' @param ... Other arguments passed to methods.
 #' @importFrom dplyr summarise group_by ungroup
 #' @import ggplot2
-#' @importFrom rlang parse_quo
 #' @return Returns a ggplot2 plot object
 #' @export
 plot_timecourse <- function(data,
