@@ -203,7 +203,8 @@ topoplot.data.frame <- function(data,
     scaled_x <- data$x / max_dim
     scaled_y <- data$y / max_dim
     data <- dplyr::ungroup(data)
-    data <- tidyr::nest(tibble::as_tibble(data))
+    data <- tidyr::nest(tibble::as_tibble(data),
+                        data = everything())
   }
 
   # Do the interpolation! ------------------------
