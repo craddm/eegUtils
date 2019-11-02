@@ -46,6 +46,7 @@ eeg_filter <- function(.data, ...) {
 #'   Response). Defaults to "fir".
 #' @param window Windowing function to use (FIR filtering only). Defaults to
 #'   "hamming"; currently only "hamming" available.
+#' @param demean Remove DC component (i.e. channel/epoch mean) before filtering. Defaults to TRUE.
 #' @rdname eeg_filter
 #' @export
 eeg_filter.eeg_data <- function(.data,
@@ -55,6 +56,7 @@ eeg_filter.eeg_data <- function(.data,
                                 trans_bw = "auto",
                                 method = "fir",
                                 window = "hamming",
+                                demean = TRUE,
                                 ...) {
 
   filt_pars <- parse_filt_freqs(low_freq,
@@ -98,7 +100,10 @@ eeg_filter.eeg_data <- function(.data,
                             filter_order,
                             window)
 
-  .data <- rm_baseline(.data) # remove DC component
+  if (demean) {
+    .data <- rm_baseline(.data) # remove DC component
+  }
+
   if (identical(method, "iir")) {
     .data <- run_iir_n(.data,
                        filt_coef)
@@ -121,6 +126,7 @@ eeg_filter.eeg_epochs <- function(.data,
                                   trans_bw = "auto",
                                   method = "fir",
                                   window = "hamming",
+                                  demean = TRUE,
                                   ...) {
 
   filt_pars <- parse_filt_freqs(low_freq,
@@ -164,7 +170,9 @@ eeg_filter.eeg_epochs <- function(.data,
                             filter_order,
                             window)
 
-  .data <- rm_baseline(.data) # remove DC component
+  if (demean) {
+    .data <- rm_baseline(.data) # remove DC component
+  }
   if (identical(method, "iir")) {
     .data <- run_iir_n(.data,
                        filt_coef)
@@ -405,7 +413,7 @@ select_window <- function(type,
                           m,
                           a = NULL) {
 
-    m <- m + 1
+  m <- m + 1
   w <- switch(type,
               "bartlett" = signal::bartlett(m),
               "hann" = signal::hanning(m),

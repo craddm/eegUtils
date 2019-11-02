@@ -5,6 +5,7 @@
 - Faster reading of bdf implemented. Old behaviour can be retained using `fast_bdf = FALSE` parameter to `import_raw()`
 - `eeg_combine` now supports combining lists.
 - `eeg_reference` now supports `eeg_epochs` and `eeg_evoked` objects.
+- `eeg_filter` added `demean` parameter so that removing channel/epoch means during filtering is now optional. Defaults to TRUE.
 
 ### Internal changes / bug fixes
 - `plot_butterfly` should now be faster again.
@@ -20,6 +21,7 @@
 - Updated R requirement to >= 3.2.0
 - Updated rlang requirement to >= 0.4.0
 - `compute_psd` fix for single segment data
+- updated use of `nest` and `unnest` in keeping with `tidyr 1.0.0`
 
 # eegUtils 0.4.0
 

@@ -10,11 +10,11 @@ eeg_filter(.data, ...)
 
 \method{eeg_filter}{eeg_data}(.data, low_freq = NULL, high_freq = NULL,
   filter_order = "auto", trans_bw = "auto", method = "fir",
-  window = "hamming", ...)
+  window = "hamming", demean = TRUE, ...)
 
 \method{eeg_filter}{eeg_epochs}(.data, low_freq = NULL,
   high_freq = NULL, filter_order = "auto", trans_bw = "auto",
-  method = "fir", window = "hamming", ...)
+  method = "fir", window = "hamming", demean = TRUE, ...)
 }
 \arguments{
 \item{.data}{An \code{eeg_data} or \code{eeg_epochs} object to be filtered}
@@ -36,6 +36,8 @@ Response). Defaults to "fir".}
 
 \item{window}{Windowing function to use (FIR filtering only). Defaults to
 "hamming"; currently only "hamming" available.}
+
+\item{demean}{Remove DC component (i.e. channel/epoch mean) before filtering. Defaults to TRUE.}
 }
 \description{
 Perform IIR or FIR filtering on input EEG data of class \code{eeg_data} or
