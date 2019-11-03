@@ -82,7 +82,7 @@ browse_data.eeg_ICA <- function(data,
                      alpha = 0.5) +
         stat_summary(geom = "line",
                      fun.y = mean) +
-        coord_cartesian(xlim = c(2, 60)) +
+        coord_cartesian(xlim = c(2, 50)) +
         theme_classic() +
         labs(x = "Frequency (Hz)", y = "Power (dB)")
         },
