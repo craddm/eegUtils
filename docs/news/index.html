@@ -150,6 +150,18 @@
 <code>eeg_reference</code> now supports <code>eeg_epochs</code> and <code>eeg_evoked</code> objects.</li>
 <li>
 <code>eeg_filter</code> added <code>demean</code> parameter so that removing channel/epoch means during filtering is now optional. Defaults to TRUE.</li>
+<li>Added artefact detection options for ICA objects
+<ul>
+<li>
+<code><a href="../reference/ar_acf.html">ar_acf()</a></code> checks for low autocorrelation</li>
+<li>
+<code><a href="../reference/ar_chanfoc.html">ar_chanfoc()</a></code> checks for excessive channel focality (e.g. components that load mostly on one channel)</li>
+<li>
+<code><a href="../reference/ar_trialfoc.html">ar_trialfoc()</a></code> checks for trial focality (components that load mostly on a few trials)</li>
+<li>
+<code><a href="../reference/ar_eogcor.html">ar_eogcor()</a></code> checks for correlation with EOG channels</li>
+</ul>
+</li>
 </ul>
 </div>
 <div id="internal-changes--bug-fixes" class="section level3">

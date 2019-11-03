@@ -6,6 +6,11 @@
 - `eeg_combine` now supports combining lists.
 - `eeg_reference` now supports `eeg_epochs` and `eeg_evoked` objects.
 - `eeg_filter` added `demean` parameter so that removing channel/epoch means during filtering is now optional. Defaults to TRUE.
+- Added artefact detection options for ICA objects
+    - `ar_acf()` checks for low autocorrelation
+    - `ar_chanfoc()` checks for excessive channel focality (e.g. components that load mostly on one channel)
+    - `ar_trialfoc()` checks for trial focality (components that load mostly on a few trials)
+    - `ar_eogcor()` checks for correlation with EOG channels
 
 ### Internal changes / bug fixes
 - `plot_butterfly` should now be faster again.
