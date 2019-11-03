@@ -9,6 +9,10 @@ baseline_epo <- function(x, x_m) {
     .Call(`_eegUtils_baseline_epo`, x, x_m)
 }
 
+do_iter <- function(amps, k, N) {
+    .Call(`_eegUtils_do_iter`, amps, k, N)
+}
+
 get_list <- function(x, mors, n_kern, output) {
     .Call(`_eegUtils_get_list`, x, mors, n_kern, output)
 }

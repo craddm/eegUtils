@@ -23,13 +23,13 @@ Rcpp::List get_list(const Rcpp::List& x,
 
     NumericMatrix y(no_rows, no_chans);
 
-    for (int j = 0; j < no_chans ; j++) {
+    for (unsigned int j = 0; j < no_chans ; j++) {
       y(_,j) = NumericVector(df[j]);
     }
 
     NumericMatrix yj(no_points, no_chans);
 
-    for (int pj = 0; pj < no_rows ; pj++) {
+    for (unsigned int pj = 0; pj < no_rows ; pj++) {
         yj(pj,_) = y(pj,_);
     }
 
@@ -44,13 +44,13 @@ Rcpp::List get_list(const Rcpp::List& x,
     for (arma::uword k = 0; k < no_chans ; k++) {
       Rcpp::ComplexMatrix cg = rfft(mors.each_col() % yx.col(k), true);
       arma::cx_mat yf(reinterpret_cast<std::complex<double>*>(cg.begin()), cg.nrow(), cg.ncol());
-      yz.col(k) = yf.rows(start, final_time) / no_points;
+      yz.col(k) = yf.rows(start, final_time);
     }
 
     if (output == "power") {
-      jj[i] = arma::square(arma::abs(yz));
+      jj[i] = arma::square(arma::abs(yz / no_points));
     } else {
-      jj[i] = yz;
+      jj[i] = yz / no_points;
     }
   }
   return(jj);
@@ -83,17 +83,16 @@ Rcpp::List get_listal(const Rcpp::List& x,
     }
 
     arma::mat epoch_mat(y.begin(), no_rows, no_chans, false);
+    epoch_mat.reshape(no_points, no_chans);
 
-    arma::cx_mat epoch_fft(arma::fft(epoch_mat, no_points));
+    arma::cx_mat epoch_fft(arma::fft(epoch_mat));
 
     arma::cx_cube yz(no_rows, no_chans,
                      no_freqs);
     arma::cx_mat cg(no_points, no_chans);
 
     for (arma::uword k = 0; k < no_freqs; k++) {
-      for (arma::uword lk = 0; lk < no_chans; lk++) {
-        cg.col(lk) =  epoch_fft.col(lk) % mors.col(k);
-      }
+      cg = epoch_fft.each_col() % mors.col(k);
       cg = arma::ifft(cg);
       yz.slice(k) = cg.rows(hmz, timez);
     }

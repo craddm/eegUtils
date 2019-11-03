@@ -71,7 +71,8 @@ browse_data.eeg_ICA <- function(data,
     output$comp_psd <- renderCachedPlot({
       tmp_psd <-
         compute_psd(select(data, input$icomp),
-                    n_fft = data$srate)
+                    n_fft = data$srate,
+                    verbose = FALSE)
       tmp_psd <- dplyr::rename(tmp_psd,
                                power = 2)
       ggplot(tmp_psd,
