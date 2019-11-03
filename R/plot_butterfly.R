@@ -4,6 +4,15 @@
 #' frequency analyses for single frequencies. Output is a ggplot2 object. CIs
 #' not possible.
 #'
+#' @section Notes on ggplot2 facetting:
+#'
+#'   In order for ggplot2 facetting to work, the data has to be plotted using
+#'   `stat_summary()` rather than `geom_line()`, so that the plots can still be
+#'   made when not all categorical variables are reflected in the facets. e.g.
+#'   if there are two variables with two levels each, but you want to average
+#'   over one of those variables, `stat_summary()` is required. However,
+#'   `stat_summary()` is extremely slow.
+#'
 #' @author Matt Craddock, \email{matt@@mattcraddock.com}
 #' @param data EEG dataset. Should have multiple timepoints.
 #' @param ... Other parameters passed to plot_butterfly
@@ -24,8 +33,9 @@ plot_butterfly <- function(data, ...) {
 #'   over the specified period and subtracts. e.g. c(-.1, 0)
 #' @param colourmap Attempt to plot using a different colourmap (from
 #'   RColorBrewer). (Not yet implemented)
-#' @param legend Plot legend or not.
-#' @param facet Deprecated. Please use standard ggplot2 facetting functions.
+#' @param legend Include plot legend. Defaults to TRUE.
+#' @param allow_facets Allow use of ggplot2 facetting. See note below. Defaults
+#'   to FALSE.
 #' @param continuous Is the data continuous or not (I.e. epoched)
 #' @param browse_mode Custom theme for use with browse_data.
 #' @return ggplot2 object showing ERPs for all electrodes overlaid on a single
@@ -33,7 +43,8 @@ plot_butterfly <- function(data, ...) {
 #' @import ggplot2
 #' @importFrom dplyr group_by ungroup summarise
 #' @importFrom tidyr gather
-#' @describeIn plot_butterfly Default `plot_butterfly` method for data.frames, \code{eeg_data}
+#' @describeIn plot_butterfly Default `plot_butterfly` method for data.frames,
+#'   \code{eeg_data}
 #' @export
 
 plot_butterfly.default <- function(data,
@@ -43,13 +54,8 @@ plot_butterfly.default <- function(data,
                                    legend = TRUE,
                                    continuous = FALSE,
                                    browse_mode = FALSE,
-                                   facet,
+                                   allow_facets = FALSE,
                                    ...) {
-
-  if (!missing(facet)) {
-    warning("The facet parameter is deprecated. Please use facet_wrap/facet_grid")
-    facet <- NULL
-  }
 
   if (browse_mode == FALSE) {
     data <- dplyr::group_by(data,
@@ -76,7 +82,8 @@ plot_butterfly.default <- function(data,
   create_bf(data,
             legend = legend,
             browse_mode = browse_mode,
-            continuous = FALSE)
+            continuous = FALSE,
+            allow_facets = allow_facets)
 }
 
 #' @describeIn plot_butterfly Plot butterfly for \code{eeg_evoked} objects
@@ -88,13 +95,8 @@ plot_butterfly.eeg_evoked <- function(data,
                                       legend = TRUE,
                                       continuous = FALSE,
                                       browse_mode = FALSE,
-                                      facet,
+                                      allow_facets = FALSE,
                                       ...) {
-
-  if (!missing(facet)) {
-    warning("The facet parameter is deprecated. Please use facet_wrap/facet_grid")
-    facet <- NULL
-  }
 
   data <- parse_for_bf(data,
                        time_lim,
@@ -103,8 +105,8 @@ plot_butterfly.eeg_evoked <- function(data,
   create_bf(data,
             legend = legend,
             browse_mode = browse_mode,
-            continuous = FALSE)
-
+            continuous = FALSE,
+            allow_facets = allow_facets)
 }
 
 #' @describeIn plot_butterfly Create butterfly plot for \code{eeg_data} objects
@@ -113,14 +115,9 @@ plot_butterfly.eeg_data <- function(data,
                                     time_lim = NULL,
                                     baseline = NULL,
                                     legend = TRUE,
-                                    facet,
+                                    allow_facets = FALSE,
                                     browse_mode = FALSE,
                                     ...) {
-
-  if (!missing(facet)) {
-    warning("The facet parameter is deprecated. Please use facet_wrap/facet_grid")
-    facet <- NULL
-  }
 
   data <- parse_for_bf(data,
                        time_lim,
@@ -128,7 +125,8 @@ plot_butterfly.eeg_data <- function(data,
   create_bf(data,
             legend = legend,
             browse_mode = browse_mode,
-            continuous = TRUE)
+            continuous = TRUE,
+            allow_facets = allow_facets)
 }
 
 #' @describeIn plot_butterfly Create butterfly plot for \code{eeg_epochs} objects
@@ -137,14 +135,10 @@ plot_butterfly.eeg_epochs <- function(data,
                                       time_lim = NULL,
                                       baseline = NULL,
                                       legend = TRUE,
-                                      facet,
+                                      allow_facets = FALSE,
                                       browse_mode = FALSE,
                                       ...) {
 
-  if (!missing(facet)) {
-    warning("The facet parameter is deprecated. Please use facet_wrap/facet_grid")
-    facet <- NULL
-  }
 
   data <- eeg_average(data)
   data <- parse_for_bf(data,
@@ -153,7 +147,8 @@ plot_butterfly.eeg_epochs <- function(data,
   create_bf(data,
             legend = legend,
             browse_mode = browse_mode,
-            continuous = FALSE)
+            continuous = FALSE,
+            allow_facets = allow_facets)
 }
 
 #' @describeIn plot_butterfly Create butterfly plot for \code{eeg_stats} objects
@@ -162,14 +157,9 @@ plot_butterfly.eeg_stats <- function(data,
                                      time_lim = NULL,
                                      baseline = NULL,
                                      legend = TRUE,
-                                     facet,
+                                     allow_facets = FALSE,
                                      browse_mode = FALSE,
                                      ...) {
-
-  if (!missing(facet)) {
-    warning("The facet parameter is deprecated. Please use facet_wrap/facet_grid")
-    facet <- NULL
-  }
 
   data <- parse_for_bf(data,
                        time_lim,
@@ -178,7 +168,8 @@ plot_butterfly.eeg_stats <- function(data,
             legend = legend,
             browse_mode = browse_mode,
             continuous = FALSE,
-            quantity = statistic)
+            quantity = statistic,
+            allow_facets = allow_facets)
 }
 
 
@@ -218,7 +209,19 @@ create_bf <- function(data,
                       legend,
                       browse_mode,
                       continuous,
-                      quantity = amplitude) {
+                      quantity = amplitude,
+                      allow_facets) {
+
+  if (browse_mode) {
+    allow_facets <- TRUE
+  }
+
+  if (!allow_facets) {
+    data <- dplyr::group_by(data, time, electrode)
+    data <- dplyr::summarise(data,
+                             amplitude = mean({{quantity}}))
+    data$epoch <- 1
+  }
 
   #Set up basic plot -----------
   butterfly_plot <-

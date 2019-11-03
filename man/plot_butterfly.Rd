@@ -13,20 +13,23 @@ plot_butterfly(data, ...)
 
 \method{plot_butterfly}{default}(data, time_lim = NULL,
   baseline = NULL, colourmap = NULL, legend = TRUE,
-  continuous = FALSE, browse_mode = FALSE, facet, ...)
+  continuous = FALSE, browse_mode = FALSE, allow_facets = FALSE, ...)
 
 \method{plot_butterfly}{eeg_evoked}(data, time_lim = NULL,
   baseline = NULL, colourmap = NULL, legend = TRUE,
-  continuous = FALSE, browse_mode = FALSE, facet, ...)
+  continuous = FALSE, browse_mode = FALSE, allow_facets = FALSE, ...)
 
 \method{plot_butterfly}{eeg_data}(data, time_lim = NULL,
-  baseline = NULL, legend = TRUE, facet, browse_mode = FALSE, ...)
+  baseline = NULL, legend = TRUE, allow_facets = FALSE,
+  browse_mode = FALSE, ...)
 
 \method{plot_butterfly}{eeg_epochs}(data, time_lim = NULL,
-  baseline = NULL, legend = TRUE, facet, browse_mode = FALSE, ...)
+  baseline = NULL, legend = TRUE, allow_facets = FALSE,
+  browse_mode = FALSE, ...)
 
 \method{plot_butterfly}{eeg_stats}(data, time_lim = NULL,
-  baseline = NULL, legend = TRUE, facet, browse_mode = FALSE, ...)
+  baseline = NULL, legend = TRUE, allow_facets = FALSE,
+  browse_mode = FALSE, ...)
 }
 \arguments{
 \item{data}{EEG dataset. Should have multiple timepoints.}
@@ -42,13 +45,14 @@ over the specified period and subtracts. e.g. c(-.1, 0)}
 \item{colourmap}{Attempt to plot using a different colourmap (from
 RColorBrewer). (Not yet implemented)}
 
-\item{legend}{Plot legend or not.}
+\item{legend}{Include plot legend. Defaults to TRUE.}
 
 \item{continuous}{Is the data continuous or not (I.e. epoched)}
 
 \item{browse_mode}{Custom theme for use with browse_data.}
 
-\item{facet}{Deprecated. Please use standard ggplot2 facetting functions.}
+\item{allow_facets}{Allow use of ggplot2 facetting. See note below. Defaults
+to FALSE.}
 }
 \value{
 ggplot2 object showing ERPs for all electrodes overlaid on a single
@@ -61,7 +65,8 @@ not possible.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{default}: Default `plot_butterfly` method for data.frames, \code{eeg_data}
+\item \code{default}: Default `plot_butterfly` method for data.frames,
+\code{eeg_data}
 
 \item \code{eeg_evoked}: Plot butterfly for \code{eeg_evoked} objects
 
@@ -71,6 +76,17 @@ not possible.
 
 \item \code{eeg_stats}: Create butterfly plot for \code{eeg_stats} objects
 }}
+
+\section{Notes on ggplot2 facetting}{
+
+
+  In order for ggplot2 facetting to work, the data has to be plotted using
+  `stat_summary()` rather than `geom_line()`, so that the plots can still be
+  made when not all categorical variables are reflected in the facets. e.g.
+  if there are two variables with two levels each, but you want to average
+  over one of those variables, `stat_summary()` is required. However,
+  `stat_summary()` is extremely slow.
+}
 
 \examples{
 plot_butterfly(demo_epochs)
