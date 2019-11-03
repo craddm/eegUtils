@@ -7,6 +7,9 @@ addons:
   apt:
     packages:
       - libfreetype6
+os:
+  - linux
+  - osx
 after_success:
   - Rscript -e 'covr::codecov(type = "all")'
 warnings_are_errors: true
