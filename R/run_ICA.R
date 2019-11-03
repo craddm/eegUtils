@@ -63,7 +63,7 @@ run_ICA.eeg_epochs <- function(data,
     message("Reducing data to ", pca,
             " dimensions using PCA.")
     orig_chans <- channel_names(data)
-    pca_decomp <- eigen(cov(data$signals))$vectors
+    pca_decomp <- eigen(stats::cov(data$signals))$vectors
     data$signals <- as.data.frame(as.matrix(data$signals) %*% pca_decomp[, 1:pca])
     pca_flag <- TRUE
   } else {

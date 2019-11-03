@@ -4,8 +4,7 @@
 \alias{sobi_ICA}
 \title{SOBI ICA}
 \usage{
-sobi_ICA(data, maxiter, tol, pca, centre, verbose = TRUE,
-  jdiag = c("rjd", "jedi"))
+sobi_ICA(data, maxiter, tol, pca, centre, verbose = TRUE)
 }
 \arguments{
 \item{data}{Data to be ICAed.}
