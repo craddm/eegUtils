@@ -8,21 +8,25 @@
 
 <title>Topographical Plotting Function for EEG — topoplot • eegUtils</title>
 
+
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
 <link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.7/flatly/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
 
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
 
 <!-- Font Awesome icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous" />
 
 <!-- clipboard.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script>
 
-<!-- sticky kit -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script>
+<!-- headroom.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
@@ -30,10 +34,11 @@
 
 
 
-<meta property="og:title" content="Topographical Plotting Function for EEG — topoplot" />
 
+<meta property="og:title" content="Topographical Plotting Function for EEG — topoplot" />
 <meta property="og:description" content="Allows topographical plotting of functional data. Output is a ggplot2 object." />
 <meta name="twitter:card" content="summary" />
+
 
 
 
@@ -45,6 +50,7 @@
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
+
 
 
   </head>
@@ -63,7 +69,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">eegUtils</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0.9000</span>
       </span>
     </div>
 
@@ -71,7 +77,7 @@
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fa fa-home fa-lg"></span>
+    <span class="fas fa fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -106,11 +112,10 @@
   <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
-      
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/craddm/eegUtils">
-    <span class="fa fa-github fa-lg"></span>
+    <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -121,6 +126,7 @@
 </div><!--/.navbar -->
 
       
+
       </header>
 
 <div class="row">
@@ -132,9 +138,7 @@
     </div>
 
     <div class="ref-description">
-    
     <p>Allows topographical plotting of functional data. Output is a ggplot2 object.</p>
-    
     </div>
 
     <pre class="usage"><span class='fu'>topoplot</span>(<span class='no'>data</span>, <span class='no'>...</span>)
@@ -147,37 +151,40 @@
   <span class='kw'>chanLocs</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"Biharmonic"</span>, <span class='kw'>r</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>grid_res</span> <span class='kw'>=</span> <span class='fl'>200</span>,
   <span class='kw'>palette</span> <span class='kw'>=</span> <span class='st'>"RdBu"</span>, <span class='kw'>interp_limit</span> <span class='kw'>=</span> <span class='st'>"skirt"</span>, <span class='kw'>contour</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
   <span class='kw'>chan_marker</span> <span class='kw'>=</span> <span class='st'>"point"</span>, <span class='kw'>quantity</span> <span class='kw'>=</span> <span class='st'>"amplitude"</span>, <span class='kw'>montage</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='no'>colourmap</span>, <span class='kw'>highlights</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>scaling</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>groups</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)
+  <span class='no'>colourmap</span>, <span class='kw'>highlights</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>scaling</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>groups</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for eeg_data</span>
 <span class='fu'>topoplot</span>(<span class='no'>data</span>, <span class='kw'>time_lim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>limits</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>chanLocs</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"Biharmonic"</span>, <span class='kw'>r</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>grid_res</span> <span class='kw'>=</span> <span class='fl'>200</span>,
   <span class='kw'>palette</span> <span class='kw'>=</span> <span class='st'>"RdBu"</span>, <span class='kw'>interp_limit</span> <span class='kw'>=</span> <span class='st'>"skirt"</span>, <span class='kw'>contour</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
   <span class='kw'>chan_marker</span> <span class='kw'>=</span> <span class='st'>"point"</span>, <span class='kw'>quantity</span> <span class='kw'>=</span> <span class='st'>"amplitude"</span>, <span class='kw'>montage</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>highlights</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>scaling</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='no'>...</span>)
+  <span class='kw'>highlights</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>scaling</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for eeg_epochs</span>
 <span class='fu'>topoplot</span>(<span class='no'>data</span>, <span class='kw'>time_lim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>limits</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>chanLocs</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"Biharmonic"</span>, <span class='kw'>r</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>grid_res</span> <span class='kw'>=</span> <span class='fl'>200</span>,
   <span class='kw'>palette</span> <span class='kw'>=</span> <span class='st'>"RdBu"</span>, <span class='kw'>interp_limit</span> <span class='kw'>=</span> <span class='st'>"skirt"</span>, <span class='kw'>contour</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
   <span class='kw'>chan_marker</span> <span class='kw'>=</span> <span class='st'>"point"</span>, <span class='kw'>quantity</span> <span class='kw'>=</span> <span class='st'>"amplitude"</span>, <span class='kw'>montage</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>highlights</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>scaling</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>groups</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)
+  <span class='kw'>highlights</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>scaling</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>groups</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='no'>...</span>)
 
 <span class='co'># S3 method for eeg_ICA</span>
 <span class='fu'>topoplot</span>(<span class='no'>data</span>, <span class='no'>component</span>, <span class='kw'>time_lim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>limits</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>chanLocs</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"Biharmonic"</span>, <span class='kw'>r</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>grid_res</span> <span class='kw'>=</span> <span class='fl'>200</span>, <span class='kw'>palette</span> <span class='kw'>=</span> <span class='st'>"RdBu"</span>, <span class='kw'>interp_limit</span> <span class='kw'>=</span> <span class='st'>"skirt"</span>,
   <span class='kw'>contour</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>chan_marker</span> <span class='kw'>=</span> <span class='st'>"point"</span>, <span class='kw'>quantity</span> <span class='kw'>=</span> <span class='st'>"amplitude"</span>,
-  <span class='kw'>montage</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>colourmap</span>, <span class='kw'>highlights</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>scaling</span> <span class='kw'>=</span> <span class='no'>scaling</span>,
-  <span class='no'>...</span>)
+  <span class='kw'>montage</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>colourmap</span>, <span class='kw'>highlights</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>scaling</span> <span class='kw'>=</span> <span class='fl'>1</span>,
+  <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for eeg_tfr</span>
 <span class='fu'>topoplot</span>(<span class='no'>data</span>, <span class='kw'>time_lim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>limits</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>chanLocs</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"Biharmonic"</span>, <span class='kw'>r</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>grid_res</span> <span class='kw'>=</span> <span class='fl'>200</span>,
   <span class='kw'>palette</span> <span class='kw'>=</span> <span class='st'>"RdBu"</span>, <span class='kw'>interp_limit</span> <span class='kw'>=</span> <span class='st'>"skirt"</span>, <span class='kw'>contour</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
   <span class='kw'>chan_marker</span> <span class='kw'>=</span> <span class='st'>"point"</span>, <span class='kw'>quantity</span> <span class='kw'>=</span> <span class='st'>"power"</span>, <span class='kw'>montage</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>highlights</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>scaling</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>freq_range</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
-    
+  <span class='kw'>highlights</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>scaling</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>freq_range</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>...</span>)</pre>
+
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
@@ -199,13 +206,14 @@ in the supplied data.</p></td>
     </tr>
     <tr>
       <th>limits</th>
-      <td><p>Limits of the fill scale - should be given as a character vector
-with two values specifying the start and endpoints e.g. limits = c(-2,-2).
-Will ignore anything else. Defaults to the range of the data.</p></td>
+      <td><p>Limits of the fill scale - should be given as a character
+vector with two values specifying the start and endpoints e.g. limits =
+c(-2,-2). Will ignore anything else. Defaults to the range of the data.</p></td>
     </tr>
     <tr>
       <th>chanLocs</th>
-      <td><p>Allows passing of channel locations (see <code>electrode_locations</code>)</p></td>
+      <td><p>Allows passing of channel locations (see
+<code>electrode_locations</code>)</p></td>
     </tr>
     <tr>
       <th>method</th>
@@ -266,11 +274,17 @@ only 'biosemi64alpha' available other than default 10/20 system)</p></td>
     </tr>
     <tr>
       <th>scaling</th>
-      <td><p>Scaling multiplication factor for labels and any plot lines. Defaults to 1.</p></td>
+      <td><p>Scaling multiplication factor for labels and any plot lines.
+Defaults to 1.</p></td>
     </tr>
     <tr>
       <th>groups</th>
       <td><p>Column name for groups to retain.</p></td>
+    </tr>
+    <tr>
+      <th>verbose</th>
+      <td><p>Warning messages when electrodes do not have locations.
+Defaults to TRUE.</p></td>
     </tr>
     <tr>
       <th>component</th>
@@ -281,10 +295,11 @@ only 'biosemi64alpha' available other than default 10/20 system)</p></td>
       <td><p>Range of frequencies to average over.</p></td>
     </tr>
     </table>
-    
+
     <h2 class="hasAnchor" id="methods-by-class-"><a class="anchor" href="#methods-by-class-"></a>Methods (by class)</h2>
 
-    <ul>
+    
+<ul>
 <li><p><code>default</code>: Default method for data frames.</p></li>
 <li><p><code>data.frame</code>: Topographical plotting of data.frames and other non
 eeg_data objects.</p></li>
@@ -293,7 +308,6 @@ eeg_data objects.</p></li>
 <li><p><code>eeg_ICA</code>: Topographical plot for <code>eeg_ICA</code> objects</p></li>
 <li><p><code>eeg_tfr</code>: Topographical plotting of <code>eeg_tfr</code> objects.</p></li>
 </ul>
-    
     <h2 class="hasAnchor" id="notes-on-usage-of-generalized-additive-models-for-interpolation"><a class="anchor" href="#notes-on-usage-of-generalized-additive-models-for-interpolation"></a>Notes on usage of Generalized Additive Models for interpolation</h2>
 
     <p>The
@@ -304,23 +318,24 @@ eeg_data objects.</p></li>
   each electrode do not necessarily match actual values in the data:
   high-frequency variation will tend to be smoothed out. Thus, the method
   should be used with caution.</p>
-    
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='fu'>topoplot</span>(<span class='no'>demo_epochs</span>)</div><div class='output co'>#&gt; <span class='message'>Using electrode locations from data.</span></div><div class='img'><img src='topoplot-1.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'>topoplot</span>(<span class='no'>demo_epochs</span>, <span class='kw'>time_lim</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>.1</span>, <span class='fl'>.2</span>))</div><div class='output co'>#&gt; <span class='message'>Using electrode locations from data.</span></div><div class='img'><img src='topoplot-2.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-      
       <li><a href="#methods-by-class-">Methods (by class)</a></li>
-
       <li><a href="#notes-on-usage-of-generalized-additive-models-for-interpolation">Notes on usage of Generalized Additive Models for interpolation</a></li>
-          </ul>
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
     <h2>Author</h2>
     <p>Matt Craddock, <a href='mailto:matt@mattcraddock.com'>matt@mattcraddock.com</a></p>
   </div>
 </div>
+
 
       <footer>
       <div class="copyright">
@@ -328,13 +343,16 @@ eeg_data objects.</p></li>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
 </div>
+
       </footer>
    </div>
 
   
 
+
   </body>
 </html>
+
 

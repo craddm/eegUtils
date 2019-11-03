@@ -8,21 +8,25 @@
 
 <title>Independent Component Analysis for EEG data — run_ICA • eegUtils</title>
 
+
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
 <link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.7/flatly/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
 
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
 
 <!-- Font Awesome icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous" />
 
 <!-- clipboard.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script>
 
-<!-- sticky kit -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script>
+<!-- headroom.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
@@ -30,12 +34,13 @@
 
 
 
-<meta property="og:title" content="Independent Component Analysis for EEG data — run_ICA" />
 
+<meta property="og:title" content="Independent Component Analysis for EEG data — run_ICA" />
 <meta property="og:description" content="Performs Independent Component Analysis for EEG data. Currently only
 available with on epoched data. Implements three different methods of ICA -
 fastica, extended Infomax, and Second-Order Blind Identification (SOBI)." />
 <meta name="twitter:card" content="summary" />
+
 
 
 
@@ -47,6 +52,7 @@ fastica, extended Infomax, and Second-Order Blind Identification (SOBI)." />
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
+
 
 
   </head>
@@ -65,7 +71,7 @@ fastica, extended Infomax, and Second-Order Blind Identification (SOBI)." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">eegUtils</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0.9000</span>
       </span>
     </div>
 
@@ -73,7 +79,7 @@ fastica, extended Infomax, and Second-Order Blind Identification (SOBI)." />
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fa fa-home fa-lg"></span>
+    <span class="fas fa fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -108,11 +114,10 @@ fastica, extended Infomax, and Second-Order Blind Identification (SOBI)." />
   <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
-      
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/craddm/eegUtils">
-    <span class="fa fa-github fa-lg"></span>
+    <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -123,6 +128,7 @@ fastica, extended Infomax, and Second-Order Blind Identification (SOBI)." />
 </div><!--/.navbar -->
 
       
+
       </header>
 
 <div class="row">
@@ -134,19 +140,18 @@ fastica, extended Infomax, and Second-Order Blind Identification (SOBI)." />
     </div>
 
     <div class="ref-description">
-    
     <p>Performs Independent Component Analysis for EEG data. Currently only
 available with on epoched data. Implements three different methods of ICA -
 fastica, extended Infomax, and Second-Order Blind Identification (SOBI).</p>
-    
     </div>
 
     <pre class="usage"><span class='fu'>run_ICA</span>(<span class='no'>data</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for eeg_epochs</span>
 <span class='fu'>run_ICA</span>(<span class='no'>data</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"sobi"</span>, <span class='kw'>maxit</span> <span class='kw'>=</span> <span class='fl'>1000</span>,
-  <span class='kw'>tol</span> <span class='kw'>=</span> <span class='fl'>1e-06</span>, <span class='kw'>pca</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>centre</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>...</span>)</pre>
-    
+  <span class='kw'>tol</span> <span class='kw'>=</span> <span class='fl'>1e-06</span>, <span class='kw'>pca</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>centre</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>alg</span> <span class='kw'>=</span> <span class='st'>"gradient"</span>,
+  <span class='kw'>rateanneal</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>60</span>, <span class='fl'>0.9</span>), <span class='kw'>rate</span> <span class='kw'>=</span> <span class='fl'>0.1</span>, <span class='no'>...</span>)</pre>
+
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
@@ -178,24 +183,41 @@ Numeric,  &gt;1 and &lt; number of channels</p></td>
     </tr>
     <tr>
       <th>centre</th>
-      <td><p>Defaults to TRUE. Centre the data on zero by subtracting the column mean. See notes on usage.</p></td>
+      <td><p>Defaults to TRUE. Centre the data on zero by subtracting the
+column mean. See notes on usage.</p></td>
+    </tr>
+    <tr>
+      <th>alg</th>
+      <td><p>Use "gradient" descent or "newton" algorithm for extended infomax.
+Defaults to "gradient". Ignored if method != "infomax".</p></td>
+    </tr>
+    <tr>
+      <th>rateanneal</th>
+      <td><p>Annealing rate for extended infomax. Ignored if method !=
+"infomax".</p></td>
+    </tr>
+    <tr>
+      <th>rate</th>
+      <td><p>Learning rate for extended infomax. Ignored if method !=
+"infomax".</p></td>
     </tr>
     </table>
-    
+
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>An <code>eeg_ICA</code> object containing an ICA decomposition</p>
-    
     <h2 class="hasAnchor" id="methods-by-class-"><a class="anchor" href="#methods-by-class-"></a>Methods (by class)</h2>
 
-    <ul>
+    
+<ul>
 <li><p><code>eeg_epochs</code>: Run ICA on an <code>eeg_epochs</code> object</p></li>
 </ul>
-    
     <h2 class="hasAnchor" id="notes-on-ica-usage"><a class="anchor" href="#notes-on-ica-usage"></a>Notes on ICA usage</h2>
 
     
-    <p>It is recommended to mean-centre your data appropriately before running
+
+
+<p>It is recommended to mean-centre your data appropriately before running
   ICA. The implementations of FASTICA and extended-Infomax from the `ica`
   package, and of SOBI ICA have this as an option which is enabled by
   default, while the implementation of FASTICA in the fICA package enforces
@@ -204,25 +226,35 @@ Numeric,  &gt;1 and &lt; number of channels</p></td>
   channel mean. This can be achieved with the `rm_baseline()` function. SOBI
   ICA will do this automatically, whereas the other ICA implementations will
   centre on the channel means, not the epoch means.</p>
-    
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='fu'>run_ICA</span>(<span class='no'>demo_epochs</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: Data is rank deficient. Detected rank 10</span></div><div class='output co'>#&gt; <span class='message'>Running SOBI ICA.</span></div><div class='output co'>#&gt; <span class='message'>Setting tolerance to 0.0011</span></div><div class='output co'>#&gt; Epoched ICA decomposition
+#&gt; 
+#&gt; Number of components	: 11 
+#&gt; Number of epochs	: 80 
+#&gt; Epoch limits		: -0.197 - 0.451 seconds
+#&gt; Sampling rate		: 128  Hz</div><div class='input'><span class='fu'>run_ICA</span>(<span class='no'>demo_epochs</span>, <span class='kw'>pca</span> <span class='kw'>=</span> <span class='fl'>10</span>)</div><div class='output co'>#&gt; <span class='message'>Reducing data to 10 dimensions using PCA.</span></div><div class='output co'>#&gt; <span class='message'>Running SOBI ICA.</span></div><div class='output co'>#&gt; <span class='message'>Setting tolerance to 0.0011</span></div><div class='output co'>#&gt; Epoched ICA decomposition
+#&gt; 
+#&gt; Number of components	: 10 
+#&gt; Number of epochs	: 80 
+#&gt; Epoch limits		: -0.197 - 0.451 seconds
+#&gt; Sampling rate		: 128  Hz</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-      
       <li><a href="#value">Value</a></li>
-
       <li><a href="#methods-by-class-">Methods (by class)</a></li>
-
       <li><a href="#notes-on-ica-usage">Notes on ICA usage</a></li>
-          </ul>
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
     <h2>Author</h2>
     <p>Matt Craddock <a href='mailto:matt@mattcraddock.com'>matt@mattcraddock.com</a></p>
   </div>
 </div>
+
 
       <footer>
       <div class="copyright">
@@ -230,13 +262,16 @@ Numeric,  &gt;1 and &lt; number of channels</p></td>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
 </div>
+
       </footer>
    </div>
 
   
 
+
   </body>
 </html>
+
 

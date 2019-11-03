@@ -7,8 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Frequency analysis • eegUtils</title>
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.7/flatly/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous">
+<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
 <script src="../pkgdown.js"></script><meta property="og:title" content="Frequency analysis">
 <meta property="og:description" content="">
 <meta name="twitter:card" content="summary">
@@ -30,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">eegUtils</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0.9000</span>
       </span>
     </div>
 
@@ -38,7 +39,7 @@
       <ul class="nav navbar-nav">
 <li>
   <a href="../index.html">
-    <span class="fa fa-home fa-lg"></span>
+    <span class="fas fa fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -76,7 +77,7 @@
 <ul class="nav navbar-nav navbar-right">
 <li>
   <a href="https://github.com/craddm/eegUtils">
-    <span class="fa fa-github fa-lg"></span>
+    <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -89,13 +90,14 @@
 <!--/.navbar -->
 
       
+
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1>Frequency analysis</h1>
                         <h4 class="author">Matt Craddock</h4>
             
-            <h4 class="date">2019-03-29</h4>
+            <h4 class="date">2019-11-03</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/craddm/eegUtils/blob/master/vignettes/time-frequency-analysis.Rmd"><code>vignettes/time-frequency-analysis.Rmd</code></a></small>
       <div class="hidden name"><code>time-frequency-analysis.Rmd</code></div>
@@ -109,17 +111,21 @@
 <h2 class="hasAnchor">
 <a href="#frequency-analysis" class="anchor"></a>Frequency analysis</h2>
 <p>In <code>eegUtils</code>, this can be achieved using <code><a href="../reference/compute_psd.html">compute_psd()</a></code> and <code><a href="../reference/plot_psd.html">plot_psd()</a></code>. With epoched data, <code><a href="../reference/compute_psd.html">compute_psd()</a></code> calculates the PSD for each trial separately. <code><a href="../reference/compute_psd.html">compute_psd()</a></code> returns a data.frame with spectral power at each resolved frequency and for each electrode. Note that <code><a href="../reference/plot_psd.html">plot_psd()</a></code> can be called directly on <code>eeg_data</code> or <code>eeg_epochs</code> objects without first having to <code><a href="../reference/compute_psd.html">compute_psd()</a></code>. With epoched data, it will average over epochs before plotting.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(eegUtils)</a>
-<a class="sourceLine" id="cb1-2" data-line-number="2"><span class="co">#&gt; Make sure to check for the latest development version at https://github.com/craddm/eegUtils!</span></a>
-<a class="sourceLine" id="cb1-3" data-line-number="3"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb1-4" data-line-number="4"><span class="co">#&gt; Attaching package: 'eegUtils'</span></a>
-<a class="sourceLine" id="cb1-5" data-line-number="5"><span class="co">#&gt; The following object is masked from 'package:stats':</span></a>
-<a class="sourceLine" id="cb1-6" data-line-number="6"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb1-7" data-line-number="7"><span class="co">#&gt;     filter</span></a>
-<a class="sourceLine" id="cb1-8" data-line-number="8">demo_psd &lt;-<span class="st"> </span><span class="kw"><a href="../reference/compute_psd.html">compute_psd</a></span>(demo_epochs)</a>
-<a class="sourceLine" id="cb1-9" data-line-number="9"><span class="co">#&gt; Removing channel means per epoch...</span></a>
-<a class="sourceLine" id="cb1-10" data-line-number="10"><span class="kw"><a href="../reference/plot_psd.html">plot_psd</a></span>(demo_epochs)</a>
-<a class="sourceLine" id="cb1-11" data-line-number="11"><span class="co">#&gt; Removing channel means per epoch...</span></a></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(eegUtils)</a>
+<a class="sourceLine" id="cb1-2" title="2"><span class="co">#&gt; Registered S3 method overwritten by 'R.oo':</span></a>
+<a class="sourceLine" id="cb1-3" title="3"><span class="co">#&gt;   method        from       </span></a>
+<a class="sourceLine" id="cb1-4" title="4"><span class="co">#&gt;   throw.default R.methodsS3</span></a>
+<a class="sourceLine" id="cb1-5" title="5"><span class="co">#&gt; Make sure to check for the latest development version at https://github.com/craddm/eegUtils!</span></a>
+<a class="sourceLine" id="cb1-6" title="6"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb1-7" title="7"><span class="co">#&gt; Attaching package: 'eegUtils'</span></a>
+<a class="sourceLine" id="cb1-8" title="8"><span class="co">#&gt; The following object is masked from 'package:stats':</span></a>
+<a class="sourceLine" id="cb1-9" title="9"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb1-10" title="10"><span class="co">#&gt;     filter</span></a>
+<a class="sourceLine" id="cb1-11" title="11">demo_psd &lt;-<span class="st"> </span><span class="kw"><a href="../reference/compute_psd.html">compute_psd</a></span>(demo_epochs)</a>
+<a class="sourceLine" id="cb1-12" title="12"><span class="co">#&gt; Removing channel means per epoch...</span></a>
+<a class="sourceLine" id="cb1-13" title="13"><span class="co">#&gt; Joining, by = "epoch"</span></a>
+<a class="sourceLine" id="cb1-14" title="14"><span class="kw"><a href="../reference/plot_psd.html">plot_psd</a></span>(demo_epochs)</a>
+<a class="sourceLine" id="cb1-15" title="15"><span class="co">#&gt; Removing channel means per epoch...</span></a></code></pre></div>
 <p><img src="time-frequency-analysis_files/figure-html/create-psd-1.png" width="700"></p>
 </div>
 <div id="time-frequency-analysis" class="section level2">
@@ -128,47 +134,50 @@
 <p>Frequency analysis necessarily discards temporal information. One problem is that it assumes stationarity - that the signal remains stable in terms of frequency and power across the whole analysed time window. However, this is rarely the case with EEG data;</p>
 <p>Time-frequency analysis is a method of accounting for non-stationarity by decomposing the signal using a moving-window analysis, tiling the time-frequency space to resolve power over relatively shorter time-windows.</p>
 <p>In <code>eegUtils</code>, <code><a href="../reference/compute_tfr.html">compute_tfr()</a></code> can be used to calculate a time-frequency representation of <code><a href="../reference/eeg_epochs.html">eeg_epochs()</a></code>. Currently, this is achieved using Morlet wavelets. Morlet wavelets are used to window the signal, controlling spectral leakage and time-frequency specificity. Morlet wavelets have a user-defined temporal extent, which in turn determines the frequency extent. We define the temporal extent of our wavelets by <strong>cycles</strong>; we define it as an integer number of cycles at each frequency of interest.</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1">demo_tfr &lt;-<span class="st"> </span><span class="kw"><a href="../reference/compute_tfr.html">compute_tfr</a></span>(demo_epochs,</a>
-<a class="sourceLine" id="cb2-2" data-line-number="2">                        <span class="dt">method =</span> <span class="st">"morlet"</span>,</a>
-<a class="sourceLine" id="cb2-3" data-line-number="3">                        <span class="dt">foi =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">4</span>, <span class="dv">30</span>),</a>
-<a class="sourceLine" id="cb2-4" data-line-number="4">                        <span class="dt">n_freq =</span> <span class="dv">12</span>,</a>
-<a class="sourceLine" id="cb2-5" data-line-number="5">                        <span class="dt">n_cycles =</span> <span class="dv">3</span>)</a>
-<a class="sourceLine" id="cb2-6" data-line-number="6">demo_tfr</a>
-<a class="sourceLine" id="cb2-7" data-line-number="7"><span class="co">#&gt; Epoched EEG TFR data</span></a>
-<a class="sourceLine" id="cb2-8" data-line-number="8"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb2-9" data-line-number="9"><span class="co">#&gt; Frequency range      :    4 6.36 8.73 11.09 13.45 15.82 18.18 20.55 22.91 25.27 27.64 30 </span></a>
-<a class="sourceLine" id="cb2-10" data-line-number="10"><span class="co">#&gt; Number of channels   :    11 </span></a>
-<a class="sourceLine" id="cb2-11" data-line-number="11"><span class="co">#&gt; Electrode names      :    A5 A13 A21 A29 A31 B5 B6 B8 B16 B18 B26 </span></a>
-<a class="sourceLine" id="cb2-12" data-line-number="12"><span class="co">#&gt; Number of epochs :    None, averaged. </span></a>
-<a class="sourceLine" id="cb2-13" data-line-number="13"><span class="co">#&gt; Epoch limits     :    -0.197 - 0.451 seconds</span></a>
-<a class="sourceLine" id="cb2-14" data-line-number="14"><span class="co">#&gt; Sampling rate        :    128  Hz</span></a></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" title="1">demo_tfr &lt;-<span class="st"> </span><span class="kw"><a href="../reference/compute_tfr.html">compute_tfr</a></span>(demo_epochs,</a>
+<a class="sourceLine" id="cb2-2" title="2">                        <span class="dt">method =</span> <span class="st">"morlet"</span>,</a>
+<a class="sourceLine" id="cb2-3" title="3">                        <span class="dt">foi =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">4</span>, <span class="dv">30</span>),</a>
+<a class="sourceLine" id="cb2-4" title="4">                        <span class="dt">n_freq =</span> <span class="dv">12</span>,</a>
+<a class="sourceLine" id="cb2-5" title="5">                        <span class="dt">n_cycles =</span> <span class="dv">3</span>)</a>
+<a class="sourceLine" id="cb2-6" title="6"><span class="co">#&gt; Output frequencies: 4 6.36 8.73 11.09 13.45 15.82 18.18 20.55 22.91 25.27 27.64 30</span></a>
+<a class="sourceLine" id="cb2-7" title="7"><span class="co">#&gt; Removing channel means per epoch...</span></a>
+<a class="sourceLine" id="cb2-8" title="8">demo_tfr</a>
+<a class="sourceLine" id="cb2-9" title="9"><span class="co">#&gt; Epoched EEG TFR data</span></a>
+<a class="sourceLine" id="cb2-10" title="10"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb2-11" title="11"><span class="co">#&gt; Frequency range      :    4 6.36 8.73 11.09 13.45 15.82 18.18 20.55 22.91 25.27 27.64 30 </span></a>
+<a class="sourceLine" id="cb2-12" title="12"><span class="co">#&gt; Number of channels   :    11 </span></a>
+<a class="sourceLine" id="cb2-13" title="13"><span class="co">#&gt; Electrode names      :    A5 A13 A21 A29 A31 B5 B6 B8 B16 B18 B26 </span></a>
+<a class="sourceLine" id="cb2-14" title="14"><span class="co">#&gt; Number of epochs :    None, averaged. </span></a>
+<a class="sourceLine" id="cb2-15" title="15"><span class="co">#&gt; Epoch limits     :    -0.197 - 0.451 seconds</span></a>
+<a class="sourceLine" id="cb2-16" title="16"><span class="co">#&gt; Sampling rate        :    128  Hz</span></a></code></pre></div>
 <p>Note that the characteristics of the wavelets, in terms of temporal and frequency standard deviations, are stored inside the  object:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1">demo_tfr<span class="op">$</span>freq_info<span class="op">$</span>morlet_resolution</a>
-<a class="sourceLine" id="cb3-2" data-line-number="2"><span class="co">#&gt;      sigma_f    sigma_t</span></a>
-<a class="sourceLine" id="cb3-3" data-line-number="3"><span class="co">#&gt; 1   1.333333 0.11936621</span></a>
-<a class="sourceLine" id="cb3-4" data-line-number="4"><span class="co">#&gt; 2   2.121212 0.07503019</span></a>
-<a class="sourceLine" id="cb3-5" data-line-number="5"><span class="co">#&gt; 3   2.909091 0.05470951</span></a>
-<a class="sourceLine" id="cb3-6" data-line-number="6"><span class="co">#&gt; 4   3.696970 0.04305011</span></a>
-<a class="sourceLine" id="cb3-7" data-line-number="7"><span class="co">#&gt; 5   4.484848 0.03548725</span></a>
-<a class="sourceLine" id="cb3-8" data-line-number="8"><span class="co">#&gt; 6   5.272727 0.03018456</span></a>
-<a class="sourceLine" id="cb3-9" data-line-number="9"><span class="co">#&gt; 7   6.060606 0.02626057</span></a>
-<a class="sourceLine" id="cb3-10" data-line-number="10"><span class="co">#&gt; 8   6.848485 0.02323944</span></a>
-<a class="sourceLine" id="cb3-11" data-line-number="11"><span class="co">#&gt; 9   7.636364 0.02084172</span></a>
-<a class="sourceLine" id="cb3-12" data-line-number="12"><span class="co">#&gt; 10  8.424242 0.01889249</span></a>
-<a class="sourceLine" id="cb3-13" data-line-number="13"><span class="co">#&gt; 11  9.212121 0.01727669</span></a>
-<a class="sourceLine" id="cb3-14" data-line-number="14"><span class="co">#&gt; 12 10.000000 0.01591549</span></a></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" title="1">demo_tfr<span class="op">$</span>freq_info<span class="op">$</span>morlet_resolution</a>
+<a class="sourceLine" id="cb3-2" title="2"><span class="co">#&gt;      sigma_f    sigma_t</span></a>
+<a class="sourceLine" id="cb3-3" title="3"><span class="co">#&gt; 1   1.333333 0.11936621</span></a>
+<a class="sourceLine" id="cb3-4" title="4"><span class="co">#&gt; 2   2.121212 0.07503019</span></a>
+<a class="sourceLine" id="cb3-5" title="5"><span class="co">#&gt; 3   2.909091 0.05470951</span></a>
+<a class="sourceLine" id="cb3-6" title="6"><span class="co">#&gt; 4   3.696970 0.04305011</span></a>
+<a class="sourceLine" id="cb3-7" title="7"><span class="co">#&gt; 5   4.484848 0.03548725</span></a>
+<a class="sourceLine" id="cb3-8" title="8"><span class="co">#&gt; 6   5.272727 0.03018456</span></a>
+<a class="sourceLine" id="cb3-9" title="9"><span class="co">#&gt; 7   6.060606 0.02626057</span></a>
+<a class="sourceLine" id="cb3-10" title="10"><span class="co">#&gt; 8   6.848485 0.02323944</span></a>
+<a class="sourceLine" id="cb3-11" title="11"><span class="co">#&gt; 9   7.636364 0.02084172</span></a>
+<a class="sourceLine" id="cb3-12" title="12"><span class="co">#&gt; 10  8.424242 0.01889249</span></a>
+<a class="sourceLine" id="cb3-13" title="13"><span class="co">#&gt; 11  9.212121 0.01727669</span></a>
+<a class="sourceLine" id="cb3-14" title="14"><span class="co">#&gt; 12 10.000000 0.01591549</span></a></code></pre></div>
 <p>The results of the time-frequency transformation can be plotted using the <code><a href="../reference/plot_tfr.html">plot_tfr()</a></code> function.</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1"><span class="kw"><a href="../reference/plot_tfr.html">plot_tfr</a></span>(demo_tfr)</a></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" title="1"><span class="kw"><a href="../reference/plot_tfr.html">plot_tfr</a></span>(demo_tfr)</a></code></pre></div>
 <p><img src="time-frequency-analysis_files/figure-html/tfr-plot-1.png" width="700"></p>
 <p>Baseline correction is common in the literature. Several different methods are possible, both for plotting only, and as a modification to the  object using <code>rm_baseline</code>.</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="kw"><a href="../reference/plot_tfr.html">plot_tfr</a></span>(demo_tfr, <span class="dt">baseline_type =</span> <span class="st">"absolute"</span>, <span class="dt">baseline =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="op">-</span>.<span class="dv">1</span>, <span class="dv">0</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" title="1"><span class="kw"><a href="../reference/plot_tfr.html">plot_tfr</a></span>(demo_tfr, <span class="dt">baseline_type =</span> <span class="st">"absolute"</span>, <span class="dt">baseline =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="op">-</span>.<span class="dv">1</span>, <span class="dv">0</span>))</a></code></pre></div>
 <p><img src="time-frequency-analysis_files/figure-html/db-plot-1.png" width="700"></p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1"><span class="kw"><a href="../reference/plot_tfr.html">plot_tfr</a></span>(demo_tfr, <span class="dt">baseline_type =</span> <span class="st">"db"</span>, <span class="dt">baseline =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="op">-</span>.<span class="dv">1</span>, <span class="dv">0</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" title="1"><span class="kw"><a href="../reference/plot_tfr.html">plot_tfr</a></span>(demo_tfr, <span class="dt">baseline_type =</span> <span class="st">"db"</span>, <span class="dt">baseline =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="op">-</span>.<span class="dv">1</span>, <span class="dv">0</span>))</a></code></pre></div>
 <p><img src="time-frequency-analysis_files/figure-html/db-plot-2.png" width="700"></p>
 </div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
+
         <div id="tocnav">
       <h2 class="hasAnchor">
 <a href="#tocnav" class="anchor"></a>Contents</h2>
@@ -182,17 +191,20 @@
 </div>
 
 
+
       <footer><div class="copyright">
   <p>Developed by Matt Craddock.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
 </div>
+
       </footer>
 </div>
 
   
+
 
   </body>
 </html>
