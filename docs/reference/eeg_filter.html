@@ -71,7 +71,7 @@ ignored, which can result in minor edge artifacts." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">eegUtils</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
       </span>
     </div>
 
@@ -209,8 +209,10 @@ or high freq alone to perform high-pass or low-pass filtering respectively.
 For band-pass or band-stop filters, pass both low_freq and high_freq.</p>
 <p>If low_freq &lt; high_freq, bandpass filtering is performed.</p>
 <p>If low_freq &gt; high_freq, bandstop filtering is performed.</p>
-<p>Note that the signal is first zero-meaned using either channel means or
-by-channel epoch means.</p>
+<p>Note that it is recommended to first zero-mean the signal using either
+channel means or by-channel epoch means.</p>
+<p>The function allows parallelization using the `future` package, e.g. using
+`plan(multiprocess)`</p>
     <h2 class="hasAnchor" id="fir-versus-iir-filtering"><a class="anchor" href="#fir-versus-iir-filtering"></a>FIR versus IIR filtering</h2>
 
     <p>Finite Impulse Response (FIR) filtering is

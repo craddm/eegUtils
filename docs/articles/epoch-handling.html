@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">eegUtils</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
       </span>
     </div>
 
@@ -265,13 +265,14 @@
 <a class="sourceLine" id="cb5-16" title="16"><span class="co">#&gt;  9     9 S2             S2B1             222 Nonsense  LSF  </span></a>
 <a class="sourceLine" id="cb5-17" title="17"><span class="co">#&gt; 10    10 S2             S2B1             213 Mismatch  HSF  </span></a>
 <a class="sourceLine" id="cb5-18" title="18"><span class="co">#&gt; # ... with 68 more rows</span></a></code></pre></div>
-<p>Any columns in the <code>epochs</code> structure are included when converting to a data frame. This has a lot of advantages for plotting; many plotting commands now allow you to use <code>facet_wrap()</code> and <code>facet_grid()</code> from <code>ggplot2</code> to facet on any of the columns from the epoch structure.</p>
+<p>Any columns in the <code>epochs</code> structure are included when converting to a data frame. This has a lot of advantages for plotting; many plotting commands now allow you to use <code>facet_wrap()</code> and <code>facet_grid()</code> from <code>ggplot2</code> to facet on any of the columns from the epoch structure. Note that for performance reasons, facetting must be explicitly allowed using <code>allow_facets = TRUE</code>, since <code>ggplot2</code>’s <code>stat_summary()</code> function can be extremely slow.</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" title="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(ggplot2)</a>
 <a class="sourceLine" id="cb6-2" title="2"><span class="co">#&gt; Warning: package 'ggplot2' was built under R version 3.6.1</span></a>
 <a class="sourceLine" id="cb6-3" title="3"><span class="kw"><a href="../reference/plot_butterfly.html">plot_butterfly</a></span>(example_epochs,</a>
 <a class="sourceLine" id="cb6-4" title="4">               <span class="dt">legend =</span> <span class="ot">FALSE</span>,</a>
-<a class="sourceLine" id="cb6-5" title="5">               <span class="dt">baseline =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="op">-</span>.<span class="dv">1</span>, <span class="dv">0</span>)) <span class="op">+</span></a>
-<a class="sourceLine" id="cb6-6" title="6"><span class="st">  </span><span class="kw">facet_wrap</span>(<span class="op">~</span>SF)</a></code></pre></div>
+<a class="sourceLine" id="cb6-5" title="5">               <span class="dt">baseline =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="op">-</span>.<span class="dv">1</span>, <span class="dv">0</span>),</a>
+<a class="sourceLine" id="cb6-6" title="6">               <span class="dt">allow_facets =</span> <span class="ot">TRUE</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb6-7" title="7"><span class="st">  </span><span class="kw">facet_wrap</span>(<span class="op">~</span>SF)</a></code></pre></div>
 <p><img src="epoch-handling_files/figure-html/unnamed-chunk-6-1.png" width="700"></p>
   </div>
 

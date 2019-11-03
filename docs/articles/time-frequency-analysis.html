@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">eegUtils</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
       </span>
     </div>
 
@@ -112,20 +112,17 @@
 <a href="#frequency-analysis" class="anchor"></a>Frequency analysis</h2>
 <p>In <code>eegUtils</code>, this can be achieved using <code><a href="../reference/compute_psd.html">compute_psd()</a></code> and <code><a href="../reference/plot_psd.html">plot_psd()</a></code>. With epoched data, <code><a href="../reference/compute_psd.html">compute_psd()</a></code> calculates the PSD for each trial separately. <code><a href="../reference/compute_psd.html">compute_psd()</a></code> returns a data.frame with spectral power at each resolved frequency and for each electrode. Note that <code><a href="../reference/plot_psd.html">plot_psd()</a></code> can be called directly on <code>eeg_data</code> or <code>eeg_epochs</code> objects without first having to <code><a href="../reference/compute_psd.html">compute_psd()</a></code>. With epoched data, it will average over epochs before plotting.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(eegUtils)</a>
-<a class="sourceLine" id="cb1-2" title="2"><span class="co">#&gt; Registered S3 method overwritten by 'R.oo':</span></a>
-<a class="sourceLine" id="cb1-3" title="3"><span class="co">#&gt;   method        from       </span></a>
-<a class="sourceLine" id="cb1-4" title="4"><span class="co">#&gt;   throw.default R.methodsS3</span></a>
-<a class="sourceLine" id="cb1-5" title="5"><span class="co">#&gt; Make sure to check for the latest development version at https://github.com/craddm/eegUtils!</span></a>
+<a class="sourceLine" id="cb1-2" title="2"><span class="co">#&gt; Make sure to check for the latest development version at https://github.com/craddm/eegUtils!</span></a>
+<a class="sourceLine" id="cb1-3" title="3"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb1-4" title="4"><span class="co">#&gt; Attaching package: 'eegUtils'</span></a>
+<a class="sourceLine" id="cb1-5" title="5"><span class="co">#&gt; The following object is masked from 'package:stats':</span></a>
 <a class="sourceLine" id="cb1-6" title="6"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb1-7" title="7"><span class="co">#&gt; Attaching package: 'eegUtils'</span></a>
-<a class="sourceLine" id="cb1-8" title="8"><span class="co">#&gt; The following object is masked from 'package:stats':</span></a>
-<a class="sourceLine" id="cb1-9" title="9"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb1-10" title="10"><span class="co">#&gt;     filter</span></a>
-<a class="sourceLine" id="cb1-11" title="11">demo_psd &lt;-<span class="st"> </span><span class="kw"><a href="../reference/compute_psd.html">compute_psd</a></span>(demo_epochs)</a>
-<a class="sourceLine" id="cb1-12" title="12"><span class="co">#&gt; Removing channel means per epoch...</span></a>
-<a class="sourceLine" id="cb1-13" title="13"><span class="co">#&gt; Joining, by = "epoch"</span></a>
-<a class="sourceLine" id="cb1-14" title="14"><span class="kw"><a href="../reference/plot_psd.html">plot_psd</a></span>(demo_epochs)</a>
-<a class="sourceLine" id="cb1-15" title="15"><span class="co">#&gt; Removing channel means per epoch...</span></a></code></pre></div>
+<a class="sourceLine" id="cb1-7" title="7"><span class="co">#&gt;     filter</span></a>
+<a class="sourceLine" id="cb1-8" title="8">demo_psd &lt;-<span class="st"> </span><span class="kw"><a href="../reference/compute_psd.html">compute_psd</a></span>(demo_epochs)</a>
+<a class="sourceLine" id="cb1-9" title="9"><span class="co">#&gt; Removing channel means per epoch...</span></a>
+<a class="sourceLine" id="cb1-10" title="10"><span class="co">#&gt; Joining, by = "epoch"</span></a>
+<a class="sourceLine" id="cb1-11" title="11"><span class="kw"><a href="../reference/plot_psd.html">plot_psd</a></span>(demo_epochs)</a>
+<a class="sourceLine" id="cb1-12" title="12"><span class="co">#&gt; Removing channel means per epoch...</span></a></code></pre></div>
 <p><img src="time-frequency-analysis_files/figure-html/create-psd-1.png" width="700"></p>
 </div>
 <div id="time-frequency-analysis" class="section level2">

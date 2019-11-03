@@ -1,4 +1,4 @@
-# eegUtils 0.4.0.9000
+# eegUtils 0.5.0
 
 ### Function changes
 - Default settings for Infomax ICA changed to be similar to EEGLAB/Fieldtrip.
