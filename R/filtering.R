@@ -12,8 +12,11 @@
 #'
 #' If low_freq > high_freq, bandstop filtering is performed.
 #'
-#' Note that the signal is first zero-meaned using either channel means or
-#' by-channel epoch means.
+#' Note that it is recommended to first zero-mean the signal using either
+#' channel means or by-channel epoch means.
+#'
+#' The function allows parallelization using the `future` package, e.g. using
+#' `plan(multiprocess)`
 #'
 #' @section FIR versus IIR filtering: Finite Impulse Response (FIR) filtering is
 #'   performed using an overlap-add FFT method. Note that this only performs a
