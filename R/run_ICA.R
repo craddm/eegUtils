@@ -358,8 +358,9 @@ apply_ica.eeg_epochs <- function(data,
   keep_comps <- names(decomp$mixing_matrix[, 1:ncomps])[-comps]
   new_sigs <- mix(sources[, -comps],
                   decomp$mixing_matrix[, keep_comps])
+  colnames(new_sigs) <- data$chan_info$electrode
   data$signals <- tibble::as_tibble(new_sigs)
-  names(data$signals) <- data$chan_info$electrode
+#
   data
 }
 
