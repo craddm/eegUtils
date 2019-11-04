@@ -14,7 +14,6 @@
 
 ### Internal changes / bug fixes
 - `plot_butterfly` should now be faster again.
-- Much faster reader for BDF implemented.
 - `topoplot` plotting radius logic altered 
 - `compute_csd` now uses `eeg_reference` rather than `reref_eeg`
 - Unmixing matrix for SSD decompositions fixed.
@@ -27,6 +26,7 @@
 - Updated rlang requirement to >= 0.4.0
 - `compute_psd` fix for single segment data
 - updated use of `nest` and `unnest` in keeping with `tidyr 1.0.0`
+- `as.data.frame.eeg_tfr()` now fixed to output correctly
 
 # eegUtils 0.4.0
 
