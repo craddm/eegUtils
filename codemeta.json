@@ -10,14 +10,14 @@
   "codeRepository": "https://github.com/craddm/eegUtils",
   "issueTracker": "https://github.com/craddm/eegUtils/issues",
   "license": "https://spdx.org/licenses/MIT",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "programmingLanguage": {
     "@type": "ComputerLanguage",
     "name": "R",
-    "version": "3.5.2",
+    "version": "3.6.0",
     "url": "https://r-project.org"
   },
-  "runtimePlatform": "R version 3.5.2 (2018-12-20)",
+  "runtimePlatform": "R version 3.6.0 (2019-04-26)",
   "author": [
     {
       "@type": "Person",
@@ -229,6 +229,7 @@
       "@type": "SoftwareApplication",
       "identifier": "tidyr",
       "name": "tidyr",
+      "version": ">= 1.0.0",
       "provider": {
         "@id": "https://cran.r-project.org",
         "@type": "Organization",
@@ -253,6 +254,7 @@
       "@type": "SoftwareApplication",
       "identifier": "rlang",
       "name": "rlang",
+      "version": ">= 0.4.0",
       "provider": {
         "@id": "https://cran.r-project.org",
         "@type": "Organization",
@@ -448,14 +450,26 @@
     },
     {
       "@type": "SoftwareApplication",
+      "identifier": "Rcpp",
+      "name": "Rcpp",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=Rcpp"
+    },
+    {
+      "@type": "SoftwareApplication",
       "identifier": "R",
       "name": "R",
-      "version": ">= 2.10"
+      "version": ">= 3.2.0"
     }
   ],
   "releaseNotes": "https://github.com/craddm/eegUtils/blob/master/NEWS.md",
   "readme": "https://github.com/craddm/eegUtils/blob/master/README.md",
-  "fileSize": "75950.052KB",
+  "fileSize": "75965.192KB",
   "contIntegration": [
     "https://codecov.io/github/craddm/eegUtils?branch=master",
     "https://travis-ci.org/craddm/eegUtils",
@@ -464,5 +478,13 @@
   "developmentStatus": "http://www.repostatus.org/#wip",
   "copyrightHolder": {},
   "funder": {},
-  "keywords": ["eeg", "eeg-signals-processing", "eeg-analysis", "eeg-signals", "eeg-data", "r", "rstats"]
+  "keywords": [
+    "eeg",
+    "eeg-signals-processing",
+    "eeg-analysis",
+    "eeg-signals",
+    "eeg-data",
+    "r",
+    "rstats"
+  ]
 }
