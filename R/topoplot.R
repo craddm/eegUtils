@@ -31,7 +31,7 @@ topoplot <- function(data,
 
 topoplot.default <- function(data,
                              ...) {
-  stop("This function requires a data frame or an eeg_data/eeg_epochs object")
+  stop("Not implemented for objects of class ", class(data))
 }
 
 #' @param time_lim Timepoint(s) to plot. Can be one time or a range to average
@@ -154,21 +154,30 @@ topoplot.data.frame <- function(data,
   x <- NULL
   y <- NULL
   electrode <- NULL
+  if (is.character(groups)) {
+    groups <- as.name(groups)
+  }
+
+  if (is.character(quantity)) {
+    quantity <- as.name(quantity)
+  }
+
   if (!is.null(groups)) {
-    groups <- rlang::parse_quo(groups,
-                               rlang::current_env())
+
+    # groups <- rlang::parse_quo(groups,
+    #                            rlang::current_env())
+
     data <- dplyr::group_by(data,
                             x,
                             y,
                             electrode,
-                            !!groups)
+                            {{groups}})
     data <- dplyr::summarise(data,
-                             z = mean(!!rlang::parse_quo(quantity,
-                                                         rlang::current_env()),
+                             z = mean({{quantity}},
                                       na.rm = TRUE))
     data <- dplyr::ungroup(data)
     data <- tidyr::nest(data,
-                        -!!groups)
+                        data = -{{groups}})
     # Rescale electrode co-ordinates to be from -1 to 1 for plotting
     # Selects largest absolute value from x or y
     max_dim <- max(abs(data$data[[1]]$x),
@@ -186,8 +195,6 @@ topoplot.data.frame <- function(data,
                                        electrode),
                        z = mean({{quantity}},
                                 na.rm = TRUE))
-                       # z = mean(!!rlang::parse_quo(quantity,
-                       #                             rlang::current_env()),
 
     # Cut the data frame down to only the necessary columns, and make sure it has
     # the right names
@@ -203,7 +210,8 @@ topoplot.data.frame <- function(data,
     scaled_x <- data$x / max_dim
     scaled_y <- data$y / max_dim
     data <- dplyr::ungroup(data)
-    data <- tidyr::nest(tibble::as_tibble(data))
+    data <- tidyr::nest(tibble::as_tibble(data),
+                        data = everything())
   }
 
   # Do the interpolation! ------------------------
@@ -227,10 +235,11 @@ topoplot.data.frame <- function(data,
                                                        scaled_y = scaled_y)))
          })
 
-  out_df <- tidyr::unnest(out_df,
-                          topos)
+  out_df <- tidyr::unnest(out_df["topos"],
+                          cols = topos)
 
-  data <- tidyr::unnest(data)
+  data <- tidyr::unnest(data,
+                        cols = c(data))
 
   # Create the head_shape -----------------
 
@@ -274,7 +283,7 @@ topoplot.data.frame <- function(data,
     topo <- topo +
       stat_contour(
         aes(z = amplitude,
-            linetype = ..level.. < 0),
+            linetype = stat(level) < 0),
         bins = 6,
         colour = "black",
         size = rel(1.1 * scaling),

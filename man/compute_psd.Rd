@@ -10,14 +10,16 @@
 compute_psd(data, ...)
 
 \method{compute_psd}{eeg_data}(data, seg_length = NULL,
-  noverlap = NULL, n_fft = NULL, method = "Welch", ...)
+  noverlap = NULL, n_fft = NULL, method = "Welch", demean = TRUE,
+  verbose = TRUE, ...)
 
 \method{compute_psd}{eeg_epochs}(data, seg_length = NULL,
   noverlap = NULL, n_fft = 256, method = "Welch",
-  keep_trials = TRUE, ...)
+  keep_trials = TRUE, demean = TRUE, verbose = TRUE, ...)
 
 \method{compute_psd}{eeg_evoked}(data, seg_length = NULL,
-  noverlap = NULL, n_fft = 256, method = "Welch", ...)
+  noverlap = NULL, n_fft = 256, method = "Welch", demean = TRUE,
+  verbose = TRUE, ...)
 }
 \arguments{
 \item{data}{Data to be plotted. Accepts objects of class \code{eeg_data}}
@@ -33,6 +35,10 @@ be <= \code{seg_length}.}
 \item{n_fft}{Length of FFT to be calculated in sampling points. See details.}
 
 \item{method}{Defaults to "Welch". No other method currently implemented.}
+
+\item{demean}{Remove channel/epoch means. TRUE by default.}
+
+\item{verbose}{Print informative messages. TRUE by default.}
 
 \item{keep_trials}{Include FFT for every trial in output, or average over them if FALSE.}
 }

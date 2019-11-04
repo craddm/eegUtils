@@ -1,11 +1,13 @@
 #include <RcppArmadillo.h>
 using namespace Rcpp;
+
 // [[Rcpp::depends(RcppArmadillo)]]
 // [[Rcpp::export]]
 
 NumericMatrix baseline_cont(NumericMatrix& x, const NumericVector& y) {
 
-    int ncolno = x.ncol();
+  int ncolno = x.ncol();
+
 
   for(int colno = 0; colno < ncolno; colno ++) {
     x(_, colno) = x(_, colno) - y(colno);

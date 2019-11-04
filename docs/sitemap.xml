@@ -13,6 +13,18 @@
     <loc>http://craddm.github.io/eegUtils/reference/arrange_chans.html</loc>
   </url>
   <url>
+    <loc>http://craddm.github.io/eegUtils/reference/array_t.html</loc>
+  </url>
+  <url>
+    <loc>http://craddm.github.io/eegUtils/reference/ar_acf.html</loc>
+  </url>
+  <url>
+    <loc>http://craddm.github.io/eegUtils/reference/ar_chanfoc.html</loc>
+  </url>
+  <url>
+    <loc>http://craddm.github.io/eegUtils/reference/ar_eogcor.html</loc>
+  </url>
+  <url>
     <loc>http://craddm.github.io/eegUtils/reference/ar_eogreg.html</loc>
   </url>
   <url>
@@ -20,6 +32,9 @@
   </url>
   <url>
     <loc>http://craddm.github.io/eegUtils/reference/ar_thresh.html</loc>
+  </url>
+  <url>
+    <loc>http://craddm.github.io/eegUtils/reference/ar_trialfoc.html</loc>
   </url>
   <url>
     <loc>http://craddm.github.io/eegUtils/reference/as.data.frame.eeg_data.html</loc>
@@ -32,6 +47,9 @@
   </url>
   <url>
     <loc>http://craddm.github.io/eegUtils/reference/as.data.frame.eeg_ICA.html</loc>
+  </url>
+  <url>
+    <loc>http://craddm.github.io/eegUtils/reference/as.data.frame.eeg_stats.html</loc>
   </url>
   <url>
     <loc>http://craddm.github.io/eegUtils/reference/as.data.frame.eeg_tfr.html</loc>
@@ -47,6 +65,15 @@
   </url>
   <url>
     <loc>http://craddm.github.io/eegUtils/reference/bva_elecs.html</loc>
+  </url>
+  <url>
+    <loc>http://craddm.github.io/eegUtils/reference/calc_fstat.html</loc>
+  </url>
+  <url>
+    <loc>http://craddm.github.io/eegUtils/reference/calc_pval.html</loc>
+  </url>
+  <url>
+    <loc>http://craddm.github.io/eegUtils/reference/calc_tstat_2.html</loc>
   </url>
   <url>
     <loc>http://craddm.github.io/eegUtils/reference/cart_to_spherical.html</loc>
@@ -113,9 +140,6 @@
   </url>
   <url>
     <loc>http://craddm.github.io/eegUtils/reference/create_erpimage.html</loc>
-  </url>
-  <url>
-    <loc>http://craddm.github.io/eegUtils/reference/create_grandavg.html</loc>
   </url>
   <url>
     <loc>http://craddm.github.io/eegUtils/reference/create_head.html</loc>
@@ -268,6 +292,9 @@
     <loc>http://craddm.github.io/eegUtils/reference/import_elc.html</loc>
   </url>
   <url>
+    <loc>http://craddm.github.io/eegUtils/reference/import_ft.html</loc>
+  </url>
+  <url>
     <loc>http://craddm.github.io/eegUtils/reference/import_raw.html</loc>
   </url>
   <url>
@@ -389,6 +416,9 @@
   </url>
   <url>
     <loc>http://craddm.github.io/eegUtils/reference/print.eeg_ICA.html</loc>
+  </url>
+  <url>
+    <loc>http://craddm.github.io/eegUtils/reference/print.eeg_stats.html</loc>
   </url>
   <url>
     <loc>http://craddm.github.io/eegUtils/reference/print.eeg_tfr.html</loc>

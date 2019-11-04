@@ -7,20 +7,19 @@ addons:
   apt:
     packages:
       - libfreetype6
+os:
+  - linux
+  - osx
 after_success:
   - Rscript -e 'covr::codecov(type = "all")'
 warnings_are_errors: true
 
-os:
-  - linux
-  - osx
-
 before_install:
-  - export PROJ_DIR=`basename $PWD`    
+  - export PROJ_DIR=`basename $PWD`
   - fname=travis_helpers.sh
   - wget -O ${fname} http://bit.ly/travis_helpers
-  - cat ${fname}; source ${fname}; rm ${fname}  
+  - cat ${fname}; source ${fname}; rm ${fname}
   - if [ "$TRAVIS_OS_NAME" = "osx" ];
     then
-      no_open_mp ; 
+      no_open_mp ;
     fi

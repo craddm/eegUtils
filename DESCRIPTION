@@ -1,8 +1,9 @@
 Package: eegUtils
 Type: Package
 Title: A collection of utilities for EEG analysis 
-Version: 0.4.0.9000
-Date: 2019-03-29
+
+Version: 0.5.0
+Date: 2019-11-03
 Authors@R: c(
   person("Matt", "Craddock", role = c("aut", "cre"), email = "matt@mattcraddock.com"),
   person("Matti", "Vuorre", role = "ctb", email = "mv2521@columbia.edu"))
@@ -19,7 +20,7 @@ Imports:
     mgcv,
     purrr,
     shiny,
-    tidyr,
+    tidyr (>= 1.0.0),
     miniUI,
     rlang (>= 0.4.0),
     MASS,

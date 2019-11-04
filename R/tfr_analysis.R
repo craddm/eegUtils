@@ -102,8 +102,8 @@ compute_tfr.eeg_evoked <- function(data,
 #' @param lang defaults to R
 #' @param verbose Print informative messages in console.
 #' @importFrom abind abind
-#' @keywords internal
 #' @importFrom stats nextn
+#' @keywords internal
 
 tf_morlet <- function(data,
                       foi,

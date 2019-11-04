@@ -64,7 +64,7 @@ run_ICA.eeg_epochs <- function(data,
     message("Reducing data to ", pca,
             " dimensions using PCA.")
     orig_chans <- channel_names(data)
-    pca_decomp <- eigen(cov(data$signals))$vectors
+    pca_decomp <- eigen(stats::cov(data$signals))$vectors
     data$signals <- as.data.frame(as.matrix(data$signals) %*% pca_decomp[, 1:pca])
     pca_flag <- TRUE
   } else {
@@ -78,13 +78,11 @@ run_ICA.eeg_epochs <- function(data,
     warning(paste("Data is rank deficient. Detected rank", rank_check))
   }
 
-
   if (!(method %in% c("sobi", "fastica", "infomax", "fica"))) {
     stop("Unknown method; available methods are sobi, fastica, infomax, and fica.")
   }
 
   if (method == "fica") {
-
     if (!requireNamespace("fICA", quietly = TRUE)) {
       stop("Package \"fICA\" needed to use the fICA implementation of fastica. Please install it.",
            call. = FALSE)
@@ -192,7 +190,8 @@ run_ICA.eeg_epochs <- function(data,
 #' @param maxiter Maximum number of iterations of the joint diagonalization
 #' @param tol convergence tolerance.
 #' @param pca Number of PCA components.
-#' @param centre Mean centre signals
+#' @param centre Mean centre signals.
+#' @param verbose Print informative messages.
 #' @author A. Belouchrani and A. Cichocki. Adapted to R by Matt Craddock
 #'   \email{matt@@mattcraddock.com}
 #' @keywords internal
@@ -201,7 +200,8 @@ sobi_ICA <- function(data,
                      maxiter,
                      tol,
                      pca,
-                     centre) {
+                     centre,
+                     verbose = TRUE) {
 
   #n_epochs <- length(unique(data$timings$epoch))
   n_epochs <- nrow(epochs(data))
@@ -239,29 +239,24 @@ sobi_ICA <- function(data,
                        n_epochs)
 
   ## vectorise this loop if possible?
-  k <- 1
+  k <- -1
   pm <- n_channels * n_lags
   N <- n_times
   M <- matrix(NA,
               nrow = n_channels,
               ncol = pm)
 
-  tmp_fun <- function(amps,
-                      k,
-                      N) {
-    amps[, k:N] %*% t(amps[, 1:(N - k + 1)]) / (N - k + 1)
-  }
-
   for (u in seq(1, pm, n_channels)) {
     k <- k + 1
-    Rxp <- lapply(seq(1, n_epochs),
-                  function(x) tmp_fun(amp_matrix[, , x],
-                                      k,
-                                      N))
-    Rxp <- Reduce("+",
-                  Rxp)
-    Rxp <- Rxp / n_epochs
-    M[, u:(u + n_channels - 1)] <- norm(Rxp, "F") * (Rxp)
+    # Rxp <- lapply(seq(1, n_epochs),
+    #               function(x) tmp_fun(amp_matrix[, , x],
+    #                                   k,
+    #                                   N))
+    # Rxp <- Reduce("+",
+    #               Rxp)
+    # Rxp <- Rxp / n_epochs
+    # M[, u:(u + n_channels - 1)] <- norm(Rxp, "F") * (Rxp)
+    M[, u:(u + n_channels - 1)] <- do_iter(amp_matrix, k, N)
   }
 
   epsil <- 1 / sqrt(N) / 100
@@ -271,7 +266,9 @@ sobi_ICA <- function(data,
     tol <- epsil
   }
 
-  V <- JADE::rjd(t(M),
+  dim(M) <- c(n_channels, n_channels, n_lags)
+
+  V <- JADE::rjd(M,
                  eps = tol,
                  maxiter = maxiter)$V
 
@@ -362,8 +359,9 @@ apply_ica.eeg_epochs <- function(data,
   keep_comps <- names(decomp$mixing_matrix[, 1:ncomps])[-comps]
   new_sigs <- mix(sources[, -comps],
                   decomp$mixing_matrix[, keep_comps])
+  colnames(new_sigs) <- data$chan_info$electrode
   data$signals <- tibble::as_tibble(new_sigs)
-  names(data$signals) <- data$chan_info$electrode
+#
   data
 }
 

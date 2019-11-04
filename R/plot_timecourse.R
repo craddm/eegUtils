@@ -13,7 +13,6 @@
 #' @param ... Other arguments passed to methods.
 #' @importFrom dplyr summarise group_by ungroup
 #' @import ggplot2
-#' @importFrom rlang parse_quo
 #' @return Returns a ggplot2 plot object
 #' @export
 plot_timecourse <- function(data,
@@ -230,8 +229,7 @@ plot_timecourse.eeg_stats <- function(data,
                                       time_lim = NULL,
                                       electrode = NULL,
                                       ...) {
-  statistic = NULL; rm(list = "statistic")
-
+  
   data <- parse_for_tc(data,
                        time_lim = time_lim,
                        electrode = electrode,

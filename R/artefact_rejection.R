@@ -610,10 +610,12 @@ ar_eogcor.eeg_ICA <- function(decomp,
     veog_threshold <- threshold
   }
 
-  EOG_corrs <- abs(cor(decomp$signals,
-                       bip_EOG(data$signals,
-                               HEOG,
-                               VEOG)))
+
+  EOG_corrs <- abs(stats::cor(decomp$signals,
+                              bip_EOG(data$signals,
+                                      HEOG,
+                                      VEOG)))
+
 
   if (is.null(threshold)) {
     mean_corrs <- colMeans(EOG_corrs)
@@ -625,15 +627,15 @@ ar_eogcor.eeg_ICA <- function(decomp,
   }
 
   if (plot) {
-    par(mfrow = c(1, 2))
+    graphics::par(mfrow = c(1, 2))
     plot(EOG_corrs[, 1])
-    abline(h = heog_threshold)
+    graphics::abline(h = heog_threshold)
     plot(EOG_corrs[, 2])
-    abline(h = veog_threshold)
+    graphics::abline(h = veog_threshold)
   }
 
-  crossed_thresh <- cbind(EOG_corrs[, 1] > heog_threshold, EOG_corrs[, 2] > veog_threshold)
-
+  crossed_thresh <- cbind(EOG_corrs[, 1] > heog_threshold,
+                          EOG_corrs[, 2] > veog_threshold)
   above_thresh <- apply(crossed_thresh,
                         1, any)
   above_thresh <- channel_names(decomp)[above_thresh]
@@ -678,7 +680,7 @@ ar_acf.eeg_ICA <- function(data,
   low_acf <- apply(data$signals, 2,
                    function(x) stats::acf(x, time_lag, plot = FALSE)$acf[time_lag + 1, 1, 1])
   if (is.null(threshold)) {
-    threshold <- mean(low_acf) - 2 * sd(low_acf)
+    threshold <- mean(low_acf) - 2 * stats::sd(low_acf)
   }
   if (verbose) {
     message("Estimating autocorrelation at ", ms, "ms lag.")
@@ -686,7 +688,7 @@ ar_acf.eeg_ICA <- function(data,
   }
   if (plot) {
     plot(low_acf)
-    abline(h = threshold)
+    graphics::abline(h = threshold)
   }
   low_acf <- channel_names(data)[low_acf < threshold]
   message("Subthreshold components: ", paste0(low_acf, sep = " "))
@@ -778,7 +780,7 @@ ar_trialfoc <- function(data,
   zmat <- abs(apply(zmat, 2, scale))
 
   if (is.null(threshold)) {
-    threshold <- mean(matrixStats::colMaxs(zmat)) + 2 * sd(matrixStats::colMaxs(zmat))
+    threshold <- mean(matrixStats::colMaxs(zmat)) + 2 * stats::sd(matrixStats::colMaxs(zmat))
     if (verbose) {
       message("Estimated trial focality threshold (z): ",
               round(threshold, 2))
@@ -788,6 +790,7 @@ ar_trialfoc <- function(data,
   if (plot) {
     plot(matrixStats::colMaxs(zmat))
     abline(h = threshold)
+    graphics::abline(h = threshold)
   }
 
   channel_names(data)[matrixStats::colMaxs(zmat) > threshold]

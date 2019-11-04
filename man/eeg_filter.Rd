@@ -10,11 +10,11 @@ eeg_filter(.data, ...)
 
 \method{eeg_filter}{eeg_data}(.data, low_freq = NULL, high_freq = NULL,
   filter_order = "auto", trans_bw = "auto", method = "fir",
-  window = "hamming", ...)
+  window = "hamming", demean = TRUE, ...)
 
 \method{eeg_filter}{eeg_epochs}(.data, low_freq = NULL,
   high_freq = NULL, filter_order = "auto", trans_bw = "auto",
-  method = "fir", window = "hamming", ...)
+  method = "fir", window = "hamming", demean = TRUE, ...)
 }
 \arguments{
 \item{.data}{An \code{eeg_data} or \code{eeg_epochs} object to be filtered}
@@ -36,6 +36,8 @@ Response). Defaults to "fir".}
 
 \item{window}{Windowing function to use (FIR filtering only). Defaults to
 "hamming"; currently only "hamming" available.}
+
+\item{demean}{Remove DC component (i.e. channel/epoch mean) before filtering. Defaults to TRUE.}
 }
 \description{
 Perform IIR or FIR filtering on input EEG data of class \code{eeg_data} or
@@ -51,8 +53,11 @@ If low_freq < high_freq, bandpass filtering is performed.
 
 If low_freq > high_freq, bandstop filtering is performed.
 
-Note that the signal is first zero-meaned using either channel means or
-by-channel epoch means.
+Note that it is recommended to first zero-mean the signal using either
+channel means or by-channel epoch means.
+
+The function allows parallelization using the `future` package, e.g. using
+`plan(multiprocess)`
 }
 \section{FIR versus IIR filtering}{
  Finite Impulse Response (FIR) filtering is

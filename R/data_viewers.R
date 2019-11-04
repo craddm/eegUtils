@@ -71,7 +71,9 @@ browse_data.eeg_ICA <- function(data,
     output$comp_psd <- renderCachedPlot({
       tmp_psd <-
         compute_psd(select(data, input$icomp),
-                    n_fft = data$srate)
+                    n_fft = data$srate,
+                    verbose = FALSE)
+
       tmp_psd <- dplyr::rename(tmp_psd,
                                power = 2)
       ggplot(tmp_psd,
@@ -82,7 +84,7 @@ browse_data.eeg_ICA <- function(data,
                      alpha = 0.5) +
         stat_summary(geom = "line",
                      fun.y = mean) +
-        coord_cartesian(xlim = c(2, 60)) +
+        coord_cartesian(xlim = c(2, 50)) +
         theme_classic() +
         labs(x = "Frequency (Hz)", y = "Power (dB)")
         },

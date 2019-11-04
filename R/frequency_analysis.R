@@ -39,6 +39,8 @@ compute_psd <- function(data, ...) {
 #' @param noverlap Number of (sampling) points of overlap between segments. Must
 #'   be <= \code{seg_length}.
 #' @param method Defaults to "Welch". No other method currently implemented.
+#' @param demean Remove channel/epoch means. TRUE by default.
+#' @param verbose Print informative messages. TRUE by default.
 #' @describeIn compute_psd Compute PSD for an \code{eeg_data} object
 #' @export
 
@@ -47,9 +49,15 @@ compute_psd.eeg_data <- function(data,
                                  noverlap = NULL,
                                  n_fft = NULL,
                                  method = "Welch",
+                                 demean = TRUE,
+                                 verbose = TRUE,
                                  ...) {
 
-  data <- rm_baseline(data)
+  if (demean) {
+    data <- rm_baseline(data,
+                        verbose = verbose)
+  }
+
   srate <- data$srate
 
   if (is.null(n_fft)) {
@@ -94,9 +102,13 @@ compute_psd.eeg_epochs <- function(data,
                                    n_fft = 256,
                                    method = "Welch",
                                    keep_trials = TRUE,
+                                   demean = TRUE,
+                                   verbose = TRUE,
                                    ...) {
 
-  data <- rm_baseline(data)
+  if (demean) {
+    data <- rm_baseline(data, verbose = verbose)
+  }
   srate <- data$srate
   if (is.null(seg_length)) {
     seg_length <- n_fft
@@ -151,8 +163,12 @@ compute_psd.eeg_evoked <- function(data,
                                    noverlap = NULL,
                                    n_fft = 256,
                                    method = "Welch",
+                                   demean = TRUE,
+                                   verbose = TRUE,
                                    ...) {
-  data <- rm_baseline(data)
+  if (demean) {
+    data <- rm_baseline(data, verbose = verbose)
+  }
   srate <- data$srate
 
   if (is.null(seg_length)) {
