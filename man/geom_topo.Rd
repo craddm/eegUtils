@@ -8,7 +8,7 @@ geom_topo(mapping = NULL, data = NULL, stat = "identity",
   position = "identity", show.legend = NA, na.rm = TRUE,
   inherit.aes = TRUE, interpolate = FALSE, interp_limit = "skirt",
   chan_markers = "point", chan_size = rel(2), head_size = rel(1.5),
-  grid_res = 200, ...)
+  grid_res = 200, method = "biharmonic", ...)
 }
 \arguments{
 \item{mapping}{Set of aesthetic mappings created by \code{\link[=aes]{aes()}} or
@@ -28,7 +28,8 @@ data. All objects will be fortified to produce a data frame. See
 
 A \code{function} will be called with a single argument,
 the plot data. The return value must be a \code{data.frame}, and
-will be used as the layer data.}
+will be used as the layer data. A \code{function} can be created
+from a \code{formula} (e.g. \code{~ head(.x, 10)}).}
 
 \item{stat}{The statistical transformation to use on the data for this
 layer, as a string.}
@@ -63,6 +64,8 @@ or text.}
 \item{head_size}{Size of the head shape.}
 
 \item{grid_res}{Smoothness of the interpolation grid.}
+
+\item{method}{"biharmonic" or ""gam".}
 
 \item{...}{Other arguments passed on to \code{\link[=layer]{layer()}}. These are
 often aesthetics, used to set an aesthetic to a fixed value, like

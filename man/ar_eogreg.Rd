@@ -6,14 +6,14 @@
 \alias{ar_eogreg.eeg_epochs}
 \title{Remove EOG using regression}
 \usage{
-ar_eogreg(.data, heog, veog, bipolarize = TRUE)
+ar_eogreg(data, heog, veog, bipolarize = TRUE)
 
-\method{ar_eogreg}{eeg_data}(.data, heog, veog, bipolarize = TRUE)
+\method{ar_eogreg}{eeg_data}(data, heog, veog, bipolarize = TRUE)
 
-\method{ar_eogreg}{eeg_epochs}(.data, heog, veog, bipolarize = TRUE)
+\method{ar_eogreg}{eeg_epochs}(data, heog, veog, bipolarize = TRUE)
 }
 \arguments{
-\item{.data}{data to regress - \code{eeg_data} or \code{eeg_epochs}}
+\item{data}{data to regress - \code{eeg_data} or \code{eeg_epochs}}
 
 \item{heog}{Horizontal EOG channel labels}
 

@@ -22,7 +22,7 @@ knitr::opts_chunk$set(
 
 ## eeg_data objects
 
-`eeg_data` objects are the base class that all continuous data has. When raw data is imported, the output is this class. Currently, this class is a list constituting the following entries:
+`eeg_data` objects are the base class used for continuous data. When raw data is imported, the output is this class. Currently, this class is a list constituting the following entries:
 
 * `signals`
     + A data frame containing the actual EEG data in wide format. Each column is data from a single electrode, each row from a single timepoint.
@@ -52,8 +52,8 @@ knitr::opts_chunk$set(
 * `timings`
     + A data.frame containing a description of each row in time (s) and sample numbers (samples)
 
-* `continuous`
-    + A logical variable indiciating if the data is continuous or epoched. To be phased out now that multiple classes exist.
+* `epochs`
+    + A data.frame containing information about the epochs in the data, more relevant for epoched data
 
 * `reference`
     + NA on loading, in the absence of a recorded reference channel.
@@ -77,6 +77,10 @@ knitr::opts_chunk$set(
         - `sample` still uniquely identifies each datapoint
         - `time` now gives the time relative to the zero-point of the epoch, i.e. the *event* on which the epoch is centred.
     
+    
+* `epochs`
+    + A data.frame containing information about the participant, and labels applied to any epochs
+
 ## eeg_tfr
 
 `eeg_tfr` objects hold time-frequency representations of `eeg_epochs` objects.

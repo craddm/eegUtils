@@ -1,15 +1,17 @@
 #'Browse EEG data.
 #'
-#'A Shiny gadget for browsing EEG data interactively. Data can be viewed
-#'as a butterfly plot (all electrodes overlaid) or as individual traces
-#'(electrodes "stacked"). Currently, the scale cannot be manually set and is
-#'determined by the range of the viewable data.
+#'A Shiny gadget for browsing EEG data and ICA decompositions interactively.
+#'With EEG data (epoched or continuous), data can be viewed as a butterfly plot
+#'(all electrodes overlaid) or as individual traces (electrodes "stacked").
+#'Currently, the scale cannot be manually set and is determined by the range of
+#'the viewable data. With
 #'
 #'@author Matt Craddock \email{matt@@mattcraddock.com}
 #'@import ggplot2
 #'@import shiny
 #'@import miniUI
-#'@param data \code{eeg_data} object to be plotted.
+#'@param data \code{eeg_data}, \code{eeg_epochs}, or \code{eeg_ICA} object to be
+#'  plotted.
 #'@param ... Other parameters passed to browsing functions.
 #'@export
 
@@ -29,9 +31,11 @@ browse_data.eeg_ICA <- function(data,
         fillCol(
           plotOutput("topo_ica",
                      height = "100%"),
-          plotOutput("comp_tc",
+          plotOutput("comp_psd",
                      height = "100%")),
         fillCol(plotOutput("comp_img",
+                           height = "100%"),
+                plotOutput("comp_tc",
                            height = "100%"),
                 shiny::selectInput("icomp",
                                    "Component",
@@ -46,7 +50,9 @@ browse_data.eeg_ICA <- function(data,
 
     output$topo_ica <- renderCachedPlot({
       comp_no <- which(names(data$signals) == input$icomp)
-      topoplot(data, component = comp_no)
+      topoplot(data,
+               component = comp_no,
+               verbose = FALSE)
       },
       cacheKeyExpr = {input$icomp})
 
@@ -61,6 +67,27 @@ browse_data.eeg_ICA <- function(data,
                       component = input$icomp)
     },
     cacheKeyExpr = {input$icomp})
+
+    output$comp_psd <- renderCachedPlot({
+      tmp_psd <-
+        compute_psd(select(data, input$icomp),
+                    n_fft = data$srate,
+                    verbose = FALSE)
+      tmp_psd <- dplyr::rename(tmp_psd,
+                               power = 2)
+      ggplot(tmp_psd,
+             aes(x = frequency,
+                 y = 10 * log10((power)))) +
+        stat_summary(geom = "ribbon",
+                     fun.data = mean_cl_normal,
+                     alpha = 0.5) +
+        stat_summary(geom = "line",
+                     fun.y = mean) +
+        coord_cartesian(xlim = c(2, 50)) +
+        theme_classic() +
+        labs(x = "Frequency (Hz)", y = "Power (dB)")
+        },
+      cacheKeyExpr = {input$icomp})
 
     observeEvent(input$done, {
       returnValue <- ""
@@ -82,8 +109,9 @@ browse_data.eeg_stats <- function(data, ...) {
 #'  continuous, epochs if epoched).
 #'@param n_elecs Number of electrodes to be plotted on a single screen. (not yet
 #'  implemented)
-#'@param downsample Only works on \code{eeg_data} objects. Reduces size of data
-#'  by only plotting every 4th point, speeding up plotting considerably.
+#'@param downsample Only works on \code{eeg_data} or \code{eeg_epochs} objects.
+#'  Reduces size of data by only plotting every 4th point, speeding up plotting
+#'  considerably. Defaults to TRUE for eeg_data, FALSE for eeg_epochs
 #'
 #'@export
 #'@describeIn browse_data Browse continuous EEG data.
@@ -91,7 +119,7 @@ browse_data.eeg_stats <- function(data, ...) {
 browse_data.eeg_data <- function(data,
                                  sig_length = 5,
                                  n_elecs = NULL,
-                                 downsample = FALSE,
+                                 downsample = TRUE,
                                  ...) {
 
   srate <- data$srate

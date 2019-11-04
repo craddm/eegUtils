@@ -6,6 +6,7 @@
 \alias{filter}
 \alias{select}
 \alias{mutate}
+\alias{rename}
 \alias{fortify}
 \title{Objects exported from other packages}
 \keyword{internal}
@@ -14,7 +15,7 @@ These objects are imported from other packages. Follow the links
 below to see their documentation.
 
 \describe{
-  \item{dplyr}{\code{\link[dplyr]{filter}}, \code{\link[dplyr]{select}}, \code{\link[dplyr]{mutate}}}
+  \item{dplyr}{\code{\link[dplyr]{filter}}, \code{\link[dplyr]{select}}, \code{\link[dplyr]{mutate}}, \code{\link[dplyr]{rename}}}
 
   \item{ggplot2}{\code{\link[ggplot2]{fortify}}}
 }}

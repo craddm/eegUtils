@@ -291,6 +291,10 @@ select_elecs.eeg_ICA <- function(data,
                                  df_out = FALSE,
                                  ...) {
 
+  if (is.numeric(component)) {
+    component <- channel_names(data)[component]
+  }
+
   if (!all(component %in% names(data$signals))) {
     stop("Component(s) ", component, " not found.")
   }

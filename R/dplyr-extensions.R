@@ -121,22 +121,34 @@ select.eeg_data <- function(.data, ...) {
 #' @importFrom dplyr select filter
 #' @export
 select.eeg_ICA <- function(.data, ...) {
-  .data$signals <- dplyr::select(.data$signals, ...)
-  .data$mixing_matrix <- dplyr::select(.data$mixing_matrix, ..., electrode)
-  unmix <- data.table::transpose(.data$unmixing_matrix[, 1:(ncol(.data$unmixing_matrix)-1)])
-  names(unmix) <- .data$unmixing_matrix$Component
-  unmix <- dplyr::select(unmix, ...)
-  remaining_comps <- names(unmix)
-  unmix <- data.table::transpose(unmix)
-  unmix$Component <- remaining_comps
-  names(unmix) <- names(.data$unmixing_matrix)
-  .data$unmixing_matrix <- unmix
+  .data$signals <- dplyr::select(.data$signals,
+                                 ...)
+  .data$mixing_matrix <- dplyr::select(.data$mixing_matrix,
+                                       ...,
+                                       electrode)
+  keep_comps <- channel_names(.data)
+  .data$unmixing_matrix <- dplyr::filter(.data$unmixing_matrix,
+                                         Component %in% keep_comps)
 
   if (!is.null(.data$chan_info)) {
     .data$chan_info <- .data$chan_info[.data$chan_info$electrode %in% .data$mixing_matrix$electrode, ]
   }
   .data
 }
+
+#' @importFrom dplyr select
+#' @export
+select.eeg_stats <- function(.data, ...) {
+  .data$statistic <- dplyr::select(.data$statistic,
+                                   ...)
+  .data$pvals <- dplyr::select(.data$pvals,
+                               ...)
+  if (!is.null(.data$chan_info)) {
+    .data$chan_info <- .data$chan_info[.data$chan_info$electrode %in% names(.data$signals), ]
+  }
+  .data
+}
+
 
 #' @importFrom dplyr mutate
 #' @export
@@ -154,5 +166,31 @@ mutate.eeg_data <- function(.data, ...) {
 #' @export
 mutate.eeg_epochs <- function(.data, ...) {
   .data$signals <- dplyr::mutate(.data$signals, ...)
+  .data
+}
+
+#' @importFrom dplyr rename
+#' @export
+dplyr::rename
+
+#' @importFrom dplyr rename
+#' @export
+rename.eeg_ICA <- function(.data,
+                           ...) {
+  .data$signals <- dplyr::rename(.data$signals,
+                                 ...)
+  .data$mixing_matrix <- dplyr::rename(.data$mixing_matrix,
+                                       ...)
+  .data$unmixing_matrix$Component <- names(.data$signals)
+  .data
+}
+
+#' @importFrom dplyr rename
+#' @export
+rename.eeg_epochs <- function(.data,
+                           ...) {
+  .data$signals <- dplyr::rename(.data$signals,
+                                 ...)
+  .data$chan_info$electrode <- names(.data$signals)
   .data
 }

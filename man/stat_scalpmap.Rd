@@ -10,7 +10,8 @@
 \usage{
 stat_scalpmap(mapping = NULL, data = NULL, position = "identity",
   na.rm = FALSE, show.legend = NA, inherit.aes = TRUE,
-  grid_res = 300, interpolate = FALSE, interp_limit = "skirt", ...)
+  grid_res = 300, interpolate = FALSE, interp_limit = "skirt",
+  method = "biharmonic", ...)
 
 geom_head(mapping = NULL, data = NULL, show.legend = NA,
   na.rm = TRUE, inherit.aes = TRUE, interp_limit = "skirt",
@@ -44,7 +45,8 @@ data. All objects will be fortified to produce a data frame. See
 
 A \code{function} will be called with a single argument,
 the plot data. The return value must be a \code{data.frame}, and
-will be used as the layer data.}
+will be used as the layer data. A \code{function} can be created
+from a \code{formula} (e.g. \code{~ head(.x, 10)}).}
 
 \item{position}{Position adjustment, either as a string, or the result of
 a call to a position adjustment function.}
@@ -70,6 +72,8 @@ points).}
 (the default) don't interpolate.}
 
 \item{interp_limit}{Topoplot with a "skirt" or inside the "head".}
+
+\item{method}{"biharmonic" or "gam"}
 
 \item{...}{Other arguments passed on to \code{\link[=layer]{layer()}}. These are
 often aesthetics, used to set an aesthetic to a fixed value, like

@@ -13,6 +13,7 @@
 #' @param recording Name of the recording. By default, the filename will be
 #'   used.
 #' @param participant_id Identifier for the participant.
+#' @param fast_bdf New, faster method for loading BDF files. Experimental.
 #' @import edfReader
 #' @import tools
 #' @importFrom purrr map_df is_empty
@@ -23,9 +24,14 @@ import_raw <- function(file_name,
                        file_path = NULL,
                        chan_nos = NULL,
                        recording = NULL,
-                       participant_id = character(1)) {
+                       participant_id = character(1),
+                       fast_bdf = TRUE) {
 
   file_type <- tools::file_ext(file_name)
+
+  if (!is.null(file_path)) {
+    file_name <- paste0(file_path, file_name)
+  }
 
   if (is.null(recording)) {
     recording <- basename(tools::file_path_sans_ext(file_name))
@@ -37,23 +43,29 @@ import_raw <- function(file_name,
                   "as",
                   toupper(file_type)))
 
-    data <- edfReader::readEdfSignals(edfReader::readEdfHeader(file_name))
+    if (fast_bdf && file_type == "bdf") {
+      bdf_header <- read_bdf_header(file_name)
+      sigs <- read_bdf_data(file_name, bdf_header)
+      colnames(sigs) <- bdf_header$chan_labels
+      sigs <- tibble::as_tibble(sigs)
+      srate <- bdf_header$srate[[1]]
+    } else {
+      data <- edfReader::readEdfSignals(edfReader::readEdfHeader(file_name))
+      #check for an annotations channel
+      anno_chan <- which(vapply(data,
+                                function(x) isTRUE(x$isAnnotation),
+                                FUN.VALUE = logical(1)))
 
-    #check for an annotations channel
-    anno_chan <- which(vapply(data,
-                              function(x) isTRUE(x$isAnnotation),
-                              FUN.VALUE = logical(1)))
+      #remove annotations if present - could put in separate list...
+      if (length(anno_chan) > 0) {
+        data <- data[-anno_chan]
+        message("Annotations are currently discarded. File an issue on Github if you'd like
+  this to change.")
+      }
 
-    #remove annotations if present - could put in separate list...
-    if (length(anno_chan) > 0) {
-      data <- data[-anno_chan]
-      message("Annotations are currently discarded. File an issue on Github if you'd like
- this to change.")
+      sigs <- purrr::map_df(data, "signal")
+      srate <- data[[1]]$sRate
     }
-
-    sigs <- purrr::map_df(data, "signal")
-    srate <- data[[1]]$sRate
-
     # Biosemi triggers should be in the range 0-255, but sometimes are read from
     # the wrong "end"
     if ("Status" %in% names(sigs)) {
@@ -524,6 +536,8 @@ read_vmrk <- function(file_name) {
 #' @param file_name Filename (and path if not in present working directory)
 #' @param df_out Defaults to FALSE - outputs an object of class eeg_data. Set to
 #'   TRUE for a normal data frame.
+#' @param participant_id By default, the filename will be used as the id of the participant.
+#' @param recording By default, the filename will be used as the name of the recording.
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #' @importFrom R.matlab readMat
 #' @importFrom dplyr group_by mutate rename
@@ -531,7 +545,19 @@ read_vmrk <- function(file_name) {
 #' @importFrom purrr is_empty
 #' @export
 
-import_set <- function(file_name, df_out = FALSE) {
+import_set <- function(file_name,
+                       df_out = FALSE,
+                       participant_id = NULL,
+                       recording = NULL) {
+
+
+  if (is.null(recording)) {
+    recording <- basename(tools::file_path_sans_ext(file_name))
+  }
+
+  if (is.null(participant_id)) {
+    participant_id <- basename(tools::file_path_sans_ext(file_name))
+  }
 
   temp_dat <- R.matlab::readMat(file_name)
   var_names <- dimnames(temp_dat$EEG)[[1]]
@@ -623,11 +649,23 @@ import_set <- function(file_name, df_out = FALSE) {
                               sample = 1:length(signals$time))
     event_table$time <- timings[which(timings$sample %in% event_table$event_onset,
                                       arr.ind = TRUE), ]$time
+
+    n_epochs <- length(unique(timings$epoch))
+
+    epochs <-
+      tibble::new_tibble(list(epoch = 1:n_epochs,
+                              participant_id = rep(participant_id, n_epochs),
+                              recording = rep(recording, n_epochs)),
+                         nrow = n_epochs,
+                         class = "epoch_info")
+
     out_data <- eeg_data(signals[, 1:n_chans],
                          srate = srate,
                          timings = timings,
                          chan_info = chan_info,
-                         events = event_table)
+                         events = event_table,
+                         epochs = epochs)
+
     if (!continuous) {
       class(out_data) <- c("eeg_epochs", "eeg_data")
     }
@@ -732,5 +770,392 @@ bva_elecs <- function(chan_info, radius = 85) {
   chan_info
 }
 
+#' Import Fieldtrip files
+#'
+#' Fieldtrip is a Matlab package for EEG/MEG processing and analysis.
+#'
+#' @author Matt Craddock \email{matt@@mattcraddock.com}
+#' @param file_name Name of file to be imported.
+#' @param recording Name of the recording. By default, the filename will be
+#'   used.
+#' @param participant_id Identifier for the participant.
+#' @param verbose Informative messages printed to console. Defaults to TRUE.
+#' @importFrom R.matlab readMat
+#' @export
+import_ft <- function(file_name,
+                      participant_id = NULL,
+                      recording = NULL,
+                      verbose = TRUE) {
+
+  tmp_ft <- R.matlab::readMat(file_name)
+
+  tmp_ft <- tmp_ft[[1]]
+  struct_names <- rownames(tmp_ft)
+
+  if ("pos" %in% struct_names) {
+    stop("Import of source data is not currently supported.")
+  }
+
+  if (is.null(participant_id)) {
+    participant_id <- basename(tools::file_path_sans_ext(file_name))
+  }
+
+  if (is.null(recording)) {
+    recording <- basename(tools::file_path_sans_ext(file_name))
+  }
+
+  if ("dimord" %in% struct_names) {
+
+    dimensions <- proc_dimord(unlist(tmp_ft["dimord", ,],
+                                     use.names = FALSE))
+
+    if ("frequency" %in% dimensions) {
+      return(ft_freq(tmp_ft,
+                     dimensions,
+                     struct_names = struct_names,
+                     participant_id = participant_id,
+                     recording = recording,
+                     verbose = verbose))
+    }
+
+  } else {
+
+    # work out if the file stores components (from ICA or PCA) or "raw" data
+    if ("unmixing" %in% struct_names) {
+      return(ft_comp(tmp_ft))
+    } else {
+      return(ft_raw(tmp_ft,
+                    struct_names = struct_names,
+                    participant_id = participant_id,
+                    recording = recording,
+                    verbose = verbose))
+    }
+  }
+}
+
+ft_raw <- function(data,
+                   struct_names,
+                   participant_id,
+                   recording,
+                   verbose) {
+
+  if (verbose) message("Importing ft_raw (epoched) dataset.")
+
+  sig_names <- unlist(data["label", , ],
+                      use.names = FALSE)
+
+  times <- unlist(data["time", ,],
+                  use.names = FALSE)
+
+  if ("fsample" %in% struct_names) {
+    srate <- unlist(data["fsample", ,],
+                    use.names = FALSE)
+  } else {
+    srate <- NULL
+  }
+
+  n_trials <- length(data["trial", , ][[1]])
+  signals <- tibble::as_tibble(t(as.data.frame(data["trial", , ])))
+
+  names(signals) <- sig_names
+  timings <- tibble::tibble(epoch = rep(seq(1, n_trials),
+                                        each = length(unique(times))),
+                            time = times)
+
+  epochs <- tibble::tibble(epoch = 1:n_trials,
+                           participant_id = participant_id,
+                           recording = recording)
+
+  if ("elec" %in% struct_names) {
+    if (verbose) message("Importing channel information.")
+    chan_info <- ft_chan_info(data)
+    chan_info$electrode <- sig_names
+    chan_info <- validate_channels(chan_info)
+  } else {
+    if (verbose) message("No EEG channel information found.")
+    chan_info <- NULL
+  }
+
+  chan_info$electrode <- sig_names
+  eeg_epochs(data = signals,
+             srate = srate,
+             timings = timings,
+             chan_info = chan_info,
+             epochs = epochs)
+}
+
+ft_comp <- function(data) {
+  mixing_matrix <- unlist(data["topo", , ],
+                          use.names = FALSE)
+  unmixing_matrix <- unlist(data["unmixing", , ],
+                            use.names = FALSE)
+  chan_names <- unlist(data["topolabel", , ],
+                       use.names = FALSE)
+}
+
+ft_freq <- function(data,
+                    dimensions,
+                    struct_names,
+                    participant_id,
+                    recording,
+                    verbose) {
+
+  if (verbose) message("Importing ft_freq dataset.")
+
+  frequencies <- as.vector(unlist(data["freq", , ]))
+
+  if (!("powspctrm" %in% struct_names)) {
+    stop("Only import of power data currently supported from ft_freq data.")
+  }
+
+  if ("fsample" %in% struct_names) {
+    srate <- unlist(data["fsample", ,],
+                    use.names = FALSE)
+  } else {
+    srate <- NULL
+  }
+
+  signals <- data[[which(struct_names == "powspctrm")]]
+
+  sig_names <- unlist(data["label", , ],
+                      use.names = FALSE)
+
+  if ("time" %in% dimensions) {
+    times <- unlist(data["time", ,],
+                    use.names = FALSE)
+  }
+
+  freq_info <- list(freqs = frequencies,
+                    method = "unknown",
+                    output = "power",
+                    baseline = "none")
+
+  if (all(c("epoch", "time") %in% dimensions)) {
+    n_trials <- dim(signals)[[1]]
+    dimnames(signals) <- list(epoch = 1:n_trials,
+                              electrode = sig_names,
+                              frequency = frequencies,
+                              time = times)
+  } else {
+    n_trials <- 1
+    dimnames(signals) <- list(electrode = sig_names,
+                              frequency = frequencies,
+                              time = times)
+  }
+
+  epochs <- tibble::tibble(epoch = 1:n_trials,
+                           participant_id = participant_id,
+                           recording = recording)
+
+  timings <- tibble::tibble(epoch = rep(seq(1, n_trials),
+                                        each = length(unique(times))),
+                            time = rep(times,
+                                       n_trials))
+
+  if ("elec" %in% struct_names) {
+    if (verbose) message("Importing channel information.")
+    chan_info <- ft_chan_info(data)
+    chan_info$electrode <- sig_names
+    chan_info <- validate_channels(chan_info)
+  } else {
+    if (verbose) message("No EEG channel information found.")
+    chan_info <- NULL
+  }
+
+  eeg_tfr(data = signals,
+          dimensions = dimensions,
+          srate = srate,
+          events = NULL,
+          chan_info = chan_info,
+          reference = NULL,
+          timings = timings,
+          epochs = epochs,
+          freq_info = freq_info)
+}
 
 
+ft_chan_info <- function(data) {
+  chan_info <- unlist(data["elec", ,],
+                      recursive = FALSE)
+  chan_info <- chan_info[[1]]
+  colnames(chan_info) <- c("cart_x",
+                           "cart_y",
+                           "cart_z")
+  chan_info <- tibble::as_tibble(chan_info)
+  sph_coords <- cart_to_spherical(chan_info)
+  chan_info <- cbind(chan_info,
+                     sph_coords)
+  chan_info[, c("x", "y")] <- project_elecs(chan_info)
+  chan_info
+}
+
+proc_dimord <- function(dimord) {
+  dimord <- unlist(strsplit(dimord, "_"))
+  dimord <- gsub("rpt", "epoch", dimord)
+  dimord <- gsub("chan", "electrode", dimord)
+  dimord <- gsub("freq", "frequency", dimord)
+  dimord
+}
+
+read_bdf_header <- function(file_name) {
+
+  file_read <- file(file_name, "rb")
+  pos <- seek(file_read, 1)
+  sys_type <- readChar(file_read, 7)
+  if (sys_type == "BIOSEMI") {
+    samp_bits <- 24
+  } else {
+    samp_bits <- 16
+  }
+  patient_id <- readChar(file_read, 80)
+  recording_id <- readChar(file_read, 80)
+  recording_date <- readChar(file_read, 8)
+  recording_time <- readChar(file_read, 8)
+  n_bytes <- readChar(file_read, 8)
+  format_version <- readChar(file_read, 44)
+  n_records <- readChar(file_read, 8)
+  dur_records <- readChar(file_read, 8)
+  n_chan <- as.integer(readChar(file_read, 4))
+  chan_labels <- readChar(file_read, n_chan * 16)
+  chan_labels <- unlist(strsplit(chan_labels, " "))
+  chan_labels <- chan_labels[chan_labels != ""]
+
+  if (length(chan_labels) != n_chan) {
+    stop("Chan_label import went wrong!")
+  }
+
+  chan_types <- readChar(file_read, n_chan * 80)
+  chan_types <- unlist(strsplit(chan_types,  "  "))
+  chan_types <- chan_types[chan_types != ""]
+
+  chan_units <- readChar(file_read, n_chan * 8)
+  chan_units <- unlist(strsplit(chan_units, " "))
+  chan_units <- chan_units[chan_units != ""]
+
+  phys_mins <- readChar(file_read, n_chan * 8)
+  phys_mins <- as.integer(unlist(strsplit(phys_mins, " ")))
+
+  phys_max <- readChar(file_read, n_chan * 8)
+  phys_max <- as.integer(unlist(strsplit(phys_max, "  ")))
+
+  dig_mins <- readChar(file_read, n_chan * 8)
+  dig_mins <- unlist(strsplit(gsub("-", " -", dig_mins), " "))
+  dig_mins <- as.integer(dig_mins)
+  dig_mins <- dig_mins[!is.na(dig_mins)]
+
+  dig_max <- readChar(file_read, n_chan * 8)
+  dig_max <- as.integer(unlist(strsplit(gsub("-", " -", dig_max), " ")))
+
+  prefilt <- readChar(file_read, n_chan * 80)
+  prefilt <- remove_empties(prefilt, "  ")
+
+  n_samp_rec <- readChar(file_read, n_chan * 8) # sampling rate
+  n_samp_rec <- remove_empties(n_samp_rec)
+
+  reserved <- readChar(file_read, n_chan * 32)
+  close(file_read)
+
+  list(sys_type = sys_type,
+       samp_bits = samp_bits,
+       patient_id = patient_id,
+       recording_id = recording_id,
+       recording_time = recording_time,
+       n_chans = n_chan,
+       n_records = as.integer(n_records),
+       record_dur = as.integer(dur_records),
+       chan_labels = chan_labels,
+       chan_types = chan_types,
+       chan_units = chan_units,
+       phys_mins = phys_mins,
+       phys_max = phys_max,
+       dig_mins = dig_mins,
+       dig_max = dig_max,
+       prefiltering = prefilt,
+       srate = as.integer(n_samp_rec))
+}
+
+remove_empties <- function(strings, char_match = " ") {
+  strings <- unlist(strsplit(strings, char_match))
+  strings[strings != ""]
+}
+
+read_bdf_data <- function(file_name, headers) {
+  sig_file <- file(file_name,
+                   "rb")
+  #skip headers
+  start_pos <- (headers$n_chans + 1) * 256
+  pos <- seek(sig_file,
+              start_pos)
+
+  bytes_per_rec <- headers$samp_bits / 8
+  n_chans <- headers$n_chans
+
+  sig_length <- headers$srate[[1]] * bytes_per_rec * n_chans # length of one record in bytes
+  rec_length <- headers$srate[[1]]
+
+  rec_size <- sig_length / 256 # calc size in kilobytes in memory
+
+  records_per <- min(floor(20000 / rec_size), headers$n_records) # read up to 20000 kb at once
+
+  gains <- (headers$phys_max - headers$phys_min) / (headers$dig_max - headers$dig_mins)
+  offsets <- headers$phys_mins - gains * headers$dig_mins
+
+  sig_out <- matrix(0,
+                    nrow = headers$srate[[1]] * headers$n_records,
+                    ncol = n_chans)
+
+  chunk_size <- rec_length * records_per
+
+  n_chunks <- floor(headers$n_records / records_per)
+
+  remaining <- headers$n_records %% records_per
+  first_record <- integer(sig_length * records_per)
+  shifted <- integer(sig_length * records_per)
+
+  for (records in 1:n_chunks) {
+    first_record <- readBin(sig_file,
+                            "raw",
+                            n = sig_length * records_per,
+                            endian = "little")
+
+    shifted <- as.integer(first_record) * as.integer(2^c(0, 8, 16))
+    shifted  <- array(shifted,
+                      dim = c(3,
+                              headers$srate[[1]],
+                              n_chans,
+                              records_per))
+    shifted <- colSums(shifted)
+    shifted <- matrix(aperm(shifted,
+                            c(1,3,2)),
+                      nrow = prod(dim(shifted)[c(1, 3)]))
+    modifier <- chunk_size * (records - 1)
+    sig_out[(1:chunk_size) + modifier, ] <- shifted
+  }
+
+  if (remaining > 0) {
+    final_records <- readBin(sig_file,
+                             "raw",
+                             n = sig_length * remaining,
+                             endian = "little")
+
+    shifted <- as.integer(final_records) * as.integer(2^c(0, 8,16))
+
+    shifted  <- array(shifted, dim = c(3,
+                                       headers$srate[[1]],
+                                       n_chans,
+                                       remaining))
+    shifted <- colSums(shifted)
+    modifier <- nrow(sig_out) - remaining * headers$srate[[1]] + 1
+    sig_out[modifier:nrow(sig_out), ] <- matrix(aperm(shifted,
+                                                      c(1, 3, 2)),
+                                                nrow = prod(dim(shifted)[c(1, 3)]))
+  }
+
+  # Correct for sign
+  sig_out <- sig_out - bitwShiftL(bitwShiftR(sig_out,
+                                             23),
+                                  24)
+  sig_out[, 1:(n_chans - 1)] <- sig_out[, 1:(n_chans - 1)] * gains[1] + offsets[1]
+  close(sig_file)
+  sig_out
+}

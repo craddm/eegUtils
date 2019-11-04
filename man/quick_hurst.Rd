@@ -4,7 +4,7 @@
 \alias{quick_hurst}
 \title{Quickly calculate simple Hurst exponent for a matrix}
 \usage{
-quick_hurst(.data)
+quick_hurst(data)
 }
 \arguments{
 \item{data}{matrix of EEG signals}

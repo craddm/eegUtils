@@ -7,6 +7,9 @@
 #'   columns x, y, and amplitude at present. x and y are (Cartesian) electrode
 #'   co-ordinates), amplitude is amplitude.
 #' @param ... Various arguments passed to specific functions
+#' @examples
+#' topoplot(demo_epochs)
+#' topoplot(demo_epochs, time_lim = c(.1, .2))
 #' @export
 #'
 #' @section Notes on usage of Generalized Additive Models for interpolation: The
@@ -28,16 +31,17 @@ topoplot <- function(data,
 
 topoplot.default <- function(data,
                              ...) {
-  stop("This function requires a data frame or an eeg_data/eeg_epochs object")
+  stop("Not implemented for objects of class ", class(data))
 }
 
 #' @param time_lim Timepoint(s) to plot. Can be one time or a range to average
 #'   over. If none is supplied, the function will average across all timepoints
 #'   in the supplied data.
-#' @param limits Limits of the fill scale - should be given as a character vector
-#'   with two values specifying the start and endpoints e.g. limits = c(-2,-2).
-#'   Will ignore anything else. Defaults to the range of the data.
-#' @param chanLocs Allows passing of channel locations (see \code{electrode_locations})
+#' @param limits Limits of the fill scale - should be given as a character
+#'   vector with two values specifying the start and endpoints e.g. limits =
+#'   c(-2,-2). Will ignore anything else. Defaults to the range of the data.
+#' @param chanLocs Allows passing of channel locations (see
+#'   \code{electrode_locations})
 #' @param method Interpolation method. "Biharmonic" or "gam". "Biharmonic"
 #'   implements the same method used in Matlab's EEGLAB. "gam" fits a
 #'   Generalized Additive Model with k = 40 knots. Defaults to biharmonic spline
@@ -62,8 +66,11 @@ topoplot.default <- function(data,
 #'   only 'biosemi64alpha' available other than default 10/20 system)
 #' @param colourmap Deprecated, use palette instead.
 #' @param highlights Electrodes to highlight (in white).
-#' @param scaling Scaling multiplication factor for labels and any plot lines. Defaults to 1.
+#' @param scaling Scaling multiplication factor for labels and any plot lines.
+#'   Defaults to 1.
 #' @param groups Column name for groups to retain.
+#' @param verbose Warning messages when electrodes do not have locations.
+#'   Defaults to TRUE.
 #' @import ggplot2
 #' @import tidyr
 #' @importFrom dplyr group_by mutate summarise ungroup
@@ -91,6 +98,7 @@ topoplot.data.frame <- function(data,
                                 highlights = NULL,
                                 scaling = 1,
                                 groups = NULL,
+                                verbose = TRUE,
                                 ...) {
 
   if (!missing(colourmap)) {
@@ -108,7 +116,11 @@ topoplot.data.frame <- function(data,
    }
 
   # Check for x and y co-ordinates, try to add if not found --------------
-  if (!is.null(chanLocs)) {
+  if (all(c("x", "y") %in% names(data))) {
+    if (verbose) {
+      message("Using electrode locations from data.")
+    }
+  } else if (!is.null(chanLocs)) {
 
     if (!all(c("x", "y") %in% names(chanLocs))) {
       stop("No channel locations found in chanLocs.")
@@ -118,44 +130,54 @@ topoplot.data.frame <- function(data,
     chanLocs$electrode <- toupper(chanLocs$electrode)
     data <- merge(data, chanLocs)
 
-    # Remove channels with no location
-    if (any(is.na(data$x))) {
-      data <- data[!is.na(data$x), ]
-      warning("Removing channels with no location.")
-    }
-
-  } else if (all(c("x", "y") %in% names(data))) {
-    message("Using electrode locations from data.")
   } else if ("electrode" %in% names(data)) {
     data <- electrode_locations(data,
                                 drop = TRUE,
                                 montage = montage)
-    message("Attempting to add standard electrode locations...")
+    if (verbose) {
+      message("Attempting to add standard electrode locations...")
+    }
   } else {
     stop("Neither electrode locations nor labels found.")
   }
 
+  # Remove channels with no location
+  if (any(is.na(data$x))) {
+    data <- data[!is.na(data$x), ]
+    if (verbose) {
+      warning("Removing channels with no location.")
+    }
+  }
 
   # Average over all timepoints ----------------------------
 
   x <- NULL
   y <- NULL
   electrode <- NULL
+  if (is.character(groups)) {
+    groups <- as.name(groups)
+  }
+
+  if (is.character(quantity)) {
+    quantity <- as.name(quantity)
+  }
+
   if (!is.null(groups)) {
-    groups <- rlang::parse_quo(groups,
-                               rlang::current_env())
+
+    # groups <- rlang::parse_quo(groups,
+    #                            rlang::current_env())
+
     data <- dplyr::group_by(data,
                             x,
                             y,
                             electrode,
-                            !!groups)
+                            {{groups}})
     data <- dplyr::summarise(data,
-                             z = mean(!!rlang::parse_quo(quantity,
-                                                         rlang::current_env()),
+                             z = mean({{quantity}},
                                       na.rm = TRUE))
     data <- dplyr::ungroup(data)
     data <- tidyr::nest(data,
-                        -!!groups)
+                        data = -{{groups}})
     # Rescale electrode co-ordinates to be from -1 to 1 for plotting
     # Selects largest absolute value from x or y
     max_dim <- max(abs(data$data[[1]]$x),
@@ -168,9 +190,9 @@ topoplot.data.frame <- function(data,
                                        x,
                                        y,
                                        electrode),
-                       z = mean(!!rlang::parse_quo(quantity,
-                                                   rlang::current_env()),
+                       z = mean({{quantity}},
                                 na.rm = TRUE))
+
     # Cut the data frame down to only the necessary columns, and make sure it has
     # the right names
     data <- data.frame(x = data$x,
@@ -179,13 +201,14 @@ topoplot.data.frame <- function(data,
                        electrode = data$electrode)
     # Rescale electrode co-ordinates to be from -1 to 1 for plotting
     # Selects largest absolute value from x or y.
-    # NOTE: this may be less necessary now with now channel location formats.
+    # NOTE: this may be less necessary now with new channel location formats.
     max_dim <- max(abs(data$x),
                    abs(data$y))
     scaled_x <- data$x / max_dim
     scaled_y <- data$y / max_dim
     data <- dplyr::ungroup(data)
-    data <- tidyr::nest(tibble::as_tibble(data))
+    data <- tidyr::nest(tibble::as_tibble(data),
+                        data = everything())
   }
 
   # Do the interpolation! ------------------------
@@ -209,10 +232,11 @@ topoplot.data.frame <- function(data,
                                                        scaled_y = scaled_y)))
          })
 
-  out_df <- tidyr::unnest(out_df,
-                          topos)
+  out_df <- tidyr::unnest(out_df["topos"],
+                          cols = topos)
 
-  data <- tidyr::unnest(data)
+  data <- tidyr::unnest(data,
+                        cols = c(data))
 
   # Create the head_shape -----------------
 
@@ -223,6 +247,12 @@ topoplot.data.frame <- function(data,
     r <- max(scaled_y) * 1.1
   }
 
+  plot_rad <- max(scaled_x ^2 + scaled_y ^2) * 1.05
+
+  if (interp_limit == "head") {
+    r <- plot_rad
+  }
+
   circ_rads <- seq(0,
                    2 * pi,
                    length.out = 101)
@@ -231,7 +261,7 @@ topoplot.data.frame <- function(data,
   # edges for smoothness
 
   out_df <- round_topo(out_df,
-                       r = r,
+                       r = plot_rad,
                        interp_limit = interp_limit)
   mask_ring <- out_df$mask_ring
   out_df <- out_df$out_df
@@ -243,13 +273,14 @@ topoplot.data.frame <- function(data,
                     aes(x,
                         y,
                         fill = amplitude)) +
-    geom_raster(interpolate = TRUE, na.rm = TRUE)
+    geom_raster(interpolate = TRUE,
+                na.rm = TRUE)
 
   if (contour) {
     topo <- topo +
       stat_contour(
         aes(z = amplitude,
-            linetype = ..level.. < 0),
+            linetype = stat(level) < 0),
         bins = 6,
         colour = "black",
         size = rel(1.1 * scaling),
@@ -258,12 +289,13 @@ topoplot.data.frame <- function(data,
     }
 
   # Add head and mask to topoplot
-  topo <- topo +
+  topo <-
+    topo +
     annotate("path",
               x = mask_ring$x,
               y = mask_ring$y,
               colour = "white",
-              size = rel(6.5)) +
+              size = rel(6.5) * scaling) +
     geom_head(r = r,
               size = rel(1.5) * scaling) +
     #add_head(r, scaling) +
@@ -276,8 +308,8 @@ topoplot.data.frame <- function(data,
     guides(fill = guide_colorbar(title = expression(paste("Amplitude (",
                                                           mu, "V)")),
                                  title.position = "right",
-                                 barwidth = rel(1),
-                                 barheight = rel(6),
+                                 barwidth = rel(1) * scaling,
+                                 barheight = rel(6) * scaling,
                                  title.theme = element_text(angle = 270)))
 
   # Add electrode points or names -------------------
@@ -334,6 +366,7 @@ topoplot.eeg_data <- function(data, time_lim = NULL,
                               montage = NULL,
                               highlights = NULL,
                               scaling = 1,
+                              verbose = TRUE,
                               ...) {
 
   if (!is.null(data$chan_info)) {
@@ -369,7 +402,8 @@ topoplot.eeg_data <- function(data, time_lim = NULL,
            montage = montage,
            highlights = highlights,
            passed = TRUE,
-           scaling = scaling)
+           scaling = scaling,
+           verbose = verbose)
 }
 
 
@@ -392,6 +426,7 @@ topoplot.eeg_epochs <- function(data,
                                 highlights = NULL,
                                 scaling = 1,
                                 groups = NULL,
+                                verbose = TRUE,
                                 ...) {
 
   if (!is.null(data$chan_info)) {
@@ -424,7 +459,8 @@ topoplot.eeg_epochs <- function(data,
            montage = montage,
            highlights = highlights,
            scaling = scaling,
-           groups = groups
+           groups = groups,
+           verbose = verbose
            )
 }
 
@@ -448,23 +484,27 @@ topoplot.eeg_ICA <- function(data,
                              montage = NULL,
                              colourmap,
                              highlights = NULL,
-                             scaling = scaling,
+                             scaling = 1,
+                             verbose = TRUE,
                              ...) {
   if (missing(component)) {
     stop("Component number must be specified for eeg_ICA objects.")
   }
 
+  if (!is.null(time_lim) && verbose) {
+    warning("time_lim is ignored for ICA components.")
+  }
+
   chan_info <- data$chan_info
-  #data <- select_elecs(data, component = channel_names(data)[component])
-  #data <- as.data.frame(data, mixing = TRUE)
   data <- data.frame(amplitude = data$mixing_matrix[, component],
                       electrode = data$mixing_matrix$electrode)
   topoplot(data,
            chanLocs = chan_info,
            interp_limit = interp_limit,
-           #scaling = scaling,
+           scaling = scaling,
            chan_marker = chan_marker,
-           time_lim = NULL)
+           time_lim = NULL,
+           verbose = verbose)
 
 }
 
@@ -488,6 +528,7 @@ topoplot.eeg_tfr <- function(data,
                              highlights = NULL,
                              scaling = 1,
                              freq_range = NULL,
+                             verbose = TRUE,
                              ...) {
 
   if (!is.null(data$chan_info)) {
@@ -523,7 +564,8 @@ topoplot.eeg_tfr <- function(data,
            montage = montage,
            highlights = highlights,
            scaling = scaling,
-           passed = TRUE)
+           passed = TRUE,
+           verbose = verbose)
 }
 
 #' Set palette and limits for topoplot
@@ -730,49 +772,58 @@ round_topo <- function(.data,
                        interp_limit,
                        r) {
 
-  if (identical(interp_limit, "skirt")) {
-    .data$incircle <- sqrt(.data$x ^ 2 + .data$y ^ 2) < 1.125
-    mask_ring <- data.frame(x = 1.126 * cos(circ_rad_fun()),
-                            y = 1.126 * sin(circ_rad_fun()))
-    } else {
+  # if (identical(interp_limit, "skirt")) {
+  #   .data$incircle <- sqrt(.data$x ^ 2 + .data$y ^ 2) < 1.125
+  #   mask_ring <- data.frame(x = 1.126 * cos(circ_rad_fun()),
+  #                           y = 1.126 * sin(circ_rad_fun()))
+    # } else {
       .data$incircle <- sqrt(.data$x ^ 2 + .data$y ^ 2) < (r * 1.02)
       mask_ring <- data.frame(x = r * 1.03 * cos(circ_rad_fun()),
                               y = r * 1.03 * sin(circ_rad_fun()))
-    }
+    # }
   topo_out <- list("out_df" = .data[.data$incircle, ],
                    "mask_ring" = mask_ring)
   topo_out
 }
 
-new_topo <- function(.data,
+new_topo <- function(data,
                      ...) {
-  UseMethod("new_topo", .data)
+  UseMethod("new_topo", data)
 }
 
-new_topo.eeg_epochs <- function(.data,
+#' @param keep_epochs Average over epochs if FALSE. Defaults to FALSE.
+#' @noRd
+new_topo.eeg_epochs <- function(data,
                                 time_lim = NULL,
                                 limits = NULL,
                                 grid_res = 200,
                                 palette = "RdBu",
                                 chan_markers = "point",
                                 interpolate = TRUE,
-                                interp_limit = "skirt",
+                                interp_limit = c("skirt",
+                                                 "head"),
                                 keep_epochs = FALSE,
+                                method = c("biharmonic",
+                                           "gam"),
                                 ...) {
 
   if (!keep_epochs) {
-    .data <- eeg_average(.data)
+    data <- eeg_average(data)
   }
 
   if (!is.null(time_lim)) {
-    .data <- select_times(.data, time_lim)
+    if (length(time_lim) == 1) {
+      time_lim <- rep(time_lim, 2)
+    }
+    data <- select_times(data,
+                         time_lim)
   }
 
-  .data <- as.data.frame(.data,
-                         long = TRUE,
-                         coords = TRUE)
+  data <- as.data.frame(data,
+                        long = TRUE,
+                        coords = TRUE)
 
-  make_new_topo(.data,
+  make_new_topo(data,
                 time_lim = time_lim,
                 limits = limits,
                 grid_res = grid_res,
@@ -781,10 +832,11 @@ new_topo.eeg_epochs <- function(.data,
                 interpolate = interpolate,
                 interp_limit = interp_limit,
                 keep_epochs = keep_epochs,
+                method = method,
                 ...)
 }
 
-new_topo.eeg_ICA <- function(.data,
+new_topo.eeg_ICA <- function(data,
                              time_lim = NULL,
                              limits = NULL,
                              grid_res = 200,
@@ -793,13 +845,14 @@ new_topo.eeg_ICA <- function(.data,
                              interpolate = TRUE,
                              interp_limit = "skirt",
                              keep_epochs = FALSE,
+                             method = "biharmonic",
                              ...) {
 
-  .data <- as.data.frame(.data,
-                         long = TRUE,
-                         mixing = TRUE)
+  data <- as.data.frame(data,
+                        long = TRUE,
+                        mixing = TRUE)
 
-  make_new_topo(.data,
+  make_new_topo(data,
                 time_lim = time_lim,
                 limits = limits,
                 grid_res = grid_res,
@@ -812,7 +865,7 @@ new_topo.eeg_ICA <- function(.data,
 }
 
 
-make_new_topo <- function(.data,
+make_new_topo <- function(data,
                           time_lim,
                           limits,
                           grid_res,
@@ -821,16 +874,18 @@ make_new_topo <- function(.data,
                           interpolate,
                           interp_limit,
                           keep_epochs,
+                          method,
                           ...) {
 
   plot_out <-
-    ggplot(.data,
+    ggplot(data,
            aes(x = x,
                y = y,
                fill = amplitude)) +
     geom_topo(grid_res = grid_res,
               chan_markers = chan_markers,
-              interp_limit = interp_limit) +
+              interp_limit = interp_limit,
+              method = method) +
     theme_void() +
     coord_equal() +
     guides(fill = guide_colorbar(title = expression(paste("Amplitude (",

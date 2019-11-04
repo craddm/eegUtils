@@ -19,6 +19,7 @@ erp_image <- function(data,
 }
 
 #' @param electrode electrode at which to generate an ERP image.
+#' @param time_lim Time limits of plot
 #' @param smoothing Number of trials to smooth over when generating image
 #' @param clim Character vector of min and max values of plotting colour range.
 #'   e.g. c(-5,5). Defaults to min and max.
@@ -27,6 +28,7 @@ erp_image <- function(data,
 #' @export
 erp_image.default <- function(data,
                               electrode = "Cz",
+                              time_lim = NULL,
                               smoothing = 10,
                               clim = NULL,
                               interpolate = FALSE,
@@ -34,6 +36,10 @@ erp_image.default <- function(data,
 
   required_cols <- c("electrode", "time", "amplitude", "epoch")
   col_names <- names(data)
+
+  if (!is.null(time_lim)) {
+    data <- filter(data, time > time_lim[1], time < time_lim[2])
+  }
 
   if (!all(required_cols %in% col_names)) {
     stop("Required columns ",
@@ -54,15 +60,23 @@ erp_image.default <- function(data,
 #'@describeIn erp_image Create an \code{erp_image} from \code{eeg_epochs}
 #'@export
 erp_image.eeg_epochs <- function(data,
-                      electrode = "Cz",
-                      smoothing = 10,
-                      clim = NULL,
-                      interpolate = FALSE,
-                      ...) {
+                                 electrode = "Cz",
+                                 time_lim = NULL,
+                                 smoothing = 10,
+                                 clim = NULL,
+                                 interpolate = FALSE,
+                                 ...) {
 
-   if (!electrode %in% names(data$signals)) {
+  if (!electrode %in% names(data$signals)) {
     stop("Specified electrode not found.")
   }
+
+  if (!is.null(time_lim)) {
+    data <- filter(data,
+                   time > time_lim[1],
+                   time < time_lim[2])
+  }
+
   data <- select_elecs(data,
                        electrode = electrode)
   data <- as.data.frame(data,

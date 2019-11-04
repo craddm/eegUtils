@@ -12,6 +12,9 @@
 #'   epoched, or the channel mean if the data is continuous.
 #' @param verbose Defaults to TRUE. Output descriptive messages to console.
 #' @param ... other parameters to be passed to functions
+#' @examples
+#' rm_baseline(demo_epochs)
+#' rm_baseline(demo_epochs, c(-.1, 0))
 #' @export
 
 rm_baseline <- function(data,
@@ -30,6 +33,7 @@ rm_baseline.eeg_data <- function(data,
                                  ...) {
 
   if (is.null(time_lim)) {
+    data$signals <- as.matrix(data$signals)
     baseline_dat <- colMeans(data$signals)
     if (verbose) {
       message("Removing channel means...")
@@ -41,11 +45,12 @@ rm_baseline.eeg_data <- function(data,
     if (verbose) {
       message(paste("Baseline:", time_lim, "s"))
     }
+    data$signals <- as.matrix(data$signals)
   }
-  data$signals <- sweep(data$signals,
-                        2,
-                        baseline_dat,
-                        '-')
+
+  data$signals <- baseline_cont(data$signals,
+                                baseline_dat)
+  data$signals <- tibble::as_tibble(data$signals)
   data
 }
 
@@ -70,15 +75,17 @@ rm_baseline.eeg_epochs <- function(data,
       message("Removing channel means per epoch...")
     }
     # reshape to 3D matrix
+    orig_chans <- channel_names(data)
+
     data$signals <- as.matrix(data$signals)
     dim(data$signals) <- c(n_times, n_epochs, n_chans)
     # colMeans gives an n_epochs * n_channels matrix - i.e. baseline value for
     # each epoch and channel
     baseline_dat <- colMeans(data$signals)
     # now we go through each timepoint subtracting the baseline values
-    data$signals <- sweep(data$signals,
-                          c(2, 3),
-                          baseline_dat)
+    data$signals <- baseline_epo(data$signals,
+                                 baseline_dat)
+
   } else {
     base_times <- select_times(data,
                                time_lim = time_lim)
@@ -89,15 +96,13 @@ rm_baseline.eeg_epochs <- function(data,
 
     data$signals <- as.matrix(data$signals)
     dim(data$signals) <- c(n_times, n_epochs, n_chans)
-    data$signals <- sweep(data$signals,
-                          c(2, 3),
-                          base_times,
-                          "-")
+    data$signals <- baseline_epo(data$signals, base_times)
   }
-  # Reshape and turn back into data frame
+  #Reshape and turn back into data frame
   data$signals <- array(data$signals,
-                        dim = c(n_epochs * n_times, n_chans))
+                       dim = c(n_epochs * n_times, n_chans))
   data$signals <- tibble::as_tibble(data$signals)
+
   names(data$signals) <- elecs
   data
 }
@@ -236,27 +241,6 @@ rm_baseline.eeg_tfr <- function(data,
 
 #' @describeIn rm_baseline Method for \code{eeg_evoked} objects
 #' @export
-# rm_baseline.eeg_evoked <- function(data,
-#                                    time_lim = NULL,
-#                                    verbose = TRUE,
-#                                    ...) {
-#
-#   # Edit to handle cases where multiple epochs/participants, now that the internal structure differs
-#   if (is.null(time_lim)) {
-#     baseline_dat <- colMeans(data$signals)
-#   } else {
-#     base_times <- select_times(data,
-#                                time_lim = time_lim)
-#
-#     baseline_dat <- colMeans(base_times$signals)
-#   }
-#   data$signals <- sweep(data$signals,
-#                         2,
-#                         baseline_dat,
-#                         "-")
-#   data
-#}
-
 rm_baseline.eeg_evoked <- function(data,
                                    time_lim = NULL,
                                    verbose = TRUE,

@@ -4,6 +4,7 @@
 \alias{eeg_average}
 \alias{eeg_average.default}
 \alias{eeg_average.eeg_epochs}
+\alias{eeg_average.eeg_evoked}
 \alias{eeg_average.eeg_tfr}
 \title{Calculate averages (e.g. ERPs) for single datasets}
 \usage{
@@ -12,6 +13,8 @@ eeg_average(data, ...)
 \method{eeg_average}{default}(data, ...)
 
 \method{eeg_average}{eeg_epochs}(data, cols = NULL, ...)
+
+\method{eeg_average}{eeg_evoked}(data, cols = NULL, ...)
 
 \method{eeg_average}{eeg_tfr}(data, cols = NULL, ...)
 }
@@ -33,6 +36,8 @@ This function is used to create an \code{eeg_evoked} object from
 \item \code{default}: Default method for averaging EEG objects
 
 \item \code{eeg_epochs}: Create evoked data from \code{eeg_epochs}
+
+\item \code{eeg_evoked}: average an eeg_tfr objects over epochs.
 
 \item \code{eeg_tfr}: average an eeg_tfr objects over epochs.
 }}

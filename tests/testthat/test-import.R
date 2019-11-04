@@ -7,10 +7,12 @@ test_that("Import and epoching of bdf files works correctly", {
   skip_on_cran()
 
   expect_s3_class(test_data, "eeg_data")
+  expect_equal(test_data, import_raw("Newtest17-256.bdf", fast_bdf = FALSE))
   expect_true(is.eeg_data(test_data))
   expect_false(is.eeg_epochs(test_data))
   expect_true(is.data.frame(as.data.frame(test_data)))
-  expect_true(is.data.frame(as.data.frame(test_data, long = T)))
+  expect_true(is.data.frame(as.data.frame(test_data,
+                                          long = TRUE)))
   expect_identical(names(test_data$signals),
                    c("A1", "A2", "A3", "A4", "A5", "A6", "A7", "A8",
                      "A9", "A10", "A11", "A12", "A13", "A14", "A15", "A16"))

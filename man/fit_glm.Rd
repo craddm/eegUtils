@@ -4,12 +4,12 @@
 \alias{fit_glm}
 \title{Fit a GLM model to each timepoint for an individual subject.}
 \usage{
-fit_glm(formula, .data, ...)
+fit_glm(formula, data, ...)
 }
 \arguments{
 \item{formula}{A regression formula for a GLM. See ?formula}
 
-\item{.data}{An \code{eegUtils} object.}
+\item{data}{An \code{eegUtils} object.}
 
 \item{...}{Any other arguments passed to (LM/GLM)}
 }

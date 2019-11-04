@@ -37,4 +37,19 @@ utils::globalVariables(c("time",
                          "xyz_coords",
                          "component",
                          "signals",
-                         "ga_sigs"))
+                         "ga_sigs",
+                         "Component",
+                         "..orig_cols",
+                         "statistic",
+                         "level"))
+
+## usethis namespace: start
+#' @importFrom Rcpp sourceCpp
+## usethis namespace: end
+NULL
+
+
+## usethis namespace: start
+#' @useDynLib eegUtils, .registration = TRUE
+## usethis namespace: end
+NULL

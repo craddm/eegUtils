@@ -94,12 +94,13 @@ epochs(example_epochs) <- tidyr::separate(epochs(example_epochs),
 epochs(example_epochs)
 ```
 
-Any columns in the `epochs` structure are included when converting to a data frame. This has a lot of advantages for plotting; many plotting commands now allow you to use `facet_wrap()` and `facet_grid()` from `ggplot2` to facet on any of the columns from the epoch structure.
+Any columns in the `epochs` structure are included when converting to a data frame. This has a lot of advantages for plotting; many plotting commands now allow you to use `facet_wrap()` and `facet_grid()` from `ggplot2` to facet on any of the columns from the epoch structure. Note that for performance reasons, facetting must be explicitly allowed using `allow_facets = TRUE`, since `ggplot2`'s `stat_summary()`  function can be extremely slow.
 
 ```{r}
 library(ggplot2)
 plot_butterfly(example_epochs,
                legend = FALSE,
-               baseline = c(-.1, 0)) +
+               baseline = c(-.1, 0),
+               allow_facets = TRUE) +
   facet_wrap(~SF)
 ```

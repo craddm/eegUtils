@@ -1,8 +1,8 @@
 Package: eegUtils
 Type: Package
 Title: A collection of utilities for EEG analysis 
-Version: 0.4.0
-Date: 2019-03-29
+Version: 0.5.0
+Date: 2019-11-03
 Authors@R: c(
   person("Matt", "Craddock", role = c("aut", "cre"), email = "matt@mattcraddock.com"),
   person("Matti", "Vuorre", role = "ctb", email = "mv2521@columbia.edu"))
@@ -13,33 +13,34 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Imports:
-  ggplot2,
-  dplyr,
-  scales,
-  mgcv,
-  purrr,
-  shiny,
-  tidyr,
-  miniUI,
-  rlang,
-  MASS,
-  Matrix,
-  edfReader,
-  signal,
-  tibble,
-  stats,
-  matrixStats,
-  R.matlab,
-  viridis,
-  pracma,
-  abind,
-  data.table,
-  ini,
-  shinydashboard,
-  plotly,
-  future.apply
+    ggplot2,
+    dplyr,
+    scales,
+    mgcv,
+    purrr,
+    shiny,
+    tidyr (>= 1.0.0),
+    miniUI,
+    rlang (>= 0.4.0),
+    MASS,
+    Matrix,
+    edfReader,
+    signal,
+    tibble,
+    stats,
+    matrixStats,
+    R.matlab,
+    viridis,
+    pracma,
+    abind,
+    data.table,
+    ini,
+    shinydashboard,
+    plotly,
+    future.apply,
+    Rcpp
 Depends:
-  R (>= 2.10)
+  R (>= 3.2.0)
 RoxygenNote: 6.1.1
 Suggests: testthat,
     vdiffr,
@@ -53,3 +54,6 @@ Suggests: testthat,
 URL: https://github.com/craddm/eegUtils
 BugReports: https://github.com/craddm/eegUtils/issues
 VignetteBuilder: knitr
+LinkingTo: 
+    Rcpp,
+    RcppArmadillo
