@@ -29,7 +29,7 @@ Numeric,  >1 and < number of channels}
 \item{centre}{Defaults to TRUE. Centre the data on zero by subtracting the
 column mean. See notes on usage.}
 
-\item{alg}{Use "gradient" descent or "newton" algorithm for extended infomax.
+\item{alg}{Use "gradient descent" or "newton" algorithm for extended infomax.
 Defaults to "gradient". Ignored if method != "infomax".}
 
 \item{rateanneal}{Annealing rate for extended infomax. Ignored if method !=
