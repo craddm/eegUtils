@@ -1,5 +1,16 @@
-# Export continuous data in Brain Vision Analyzer format
-#' @noRd
+#' Export continuous data in Brain Vision Analyzer format
+#'
+#' Export continuous EEG data in Brain Vision Analyzer format. This is one of
+#' the recommended formats for BIDS \url{https://bids-specification.readthedocs.io/en/stable/04-modality-specific-files/03-electroencephalography.html}
+#'
+#'
+#' @param .data \code{eeg_data} object to be exported.
+#' @param filename String giving filename to export to. Do NOT include the .vhdr
+#'   file extension.
+#' @param orientation VECTORIZED or MULTIPLEXED. This relates to the way the
+#'   data is stored in the binary file. VECTORIZED is the default and
+#'   recommended.
+#' @keywords internal
 export_bva <- function(.data,
                        filename,
                        orientation) {
@@ -13,8 +24,16 @@ export_bva.default <- function(.data,
 }
 
 export_bva.eeg_epochs <- function(.data,
-                                  filename,
-                                  orientation = "VECTORIZED") {
+                                filename,
+                                orientation = "VECTORIZED") {
+  stop("export_bva() can currently only export continuous eeg_data objects.")
+}
+
+#' @describeIn export_bva Method for \code{eeg_data}
+#' @keywords internal
+export_bva.eeg_data <- function(.data,
+                                filename,
+                                orientation = "VECTORIZED") {
 
   if (!(orientation %in% c("VECTORIZED", "MULTIPLEXED"))) {
     stop("Orientation must be VECTORIZED or MULTIPLEXED.")
@@ -54,9 +73,9 @@ write_vhdr <- function(.data,
                                                  paste0(intToUtf8(0x03BC), "V"),
                                                  sep = ","))
   names(new_header[["Channel Infos"]]) <- paste0("Ch", 1:ncol(.data$signals))
-  new_header[["Coordinates"]] <- as.list(paste(.data$chan_info$sph_radius,
-                                               .data$chan_info$sph_theta,
-                                               .data$chan_info$sph_phi,
+  new_header[["Coordinates"]] <- as.list(paste(.data$chan_info$radius,
+                                               .data$chan_info$theta,
+                                               .data$chan_info$phi,
                                                sep = ","))
   names(new_header[["Coordinates"]]) <- paste0("Ch", 1:ncol(.data$signals))
   writeLines("Brain Vision Data Exchange Header File Version 2.0", con)

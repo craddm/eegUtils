@@ -26,7 +26,6 @@
 #' @return An \code{eeg_ICA} object containing an ICA decomposition
 #' @importFrom MASS ginv
 #' @importFrom Matrix rankMatrix
-#' @importFrom whitening whiten whiteningMatrix
 #' @examples
 #' run_ICA(demo_epochs, pca = 10)
 #' @export
@@ -372,7 +371,6 @@ apply_ica.eeg_epochs <- function(data,
                   decomp$mixing_matrix[, keep_comps])
   colnames(new_sigs) <- data$chan_info$electrode
   data$signals <- tibble::as_tibble(new_sigs)
-#
   data
 }
 

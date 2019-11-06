@@ -4,6 +4,7 @@ test_data <- import_raw("Newtest17-256.bdf")
 demo_epochs <- electrode_locations(demo_epochs,
                                    montage = "biosemi64alpha",
                                    overwrite = TRUE)
+demo_SOBI <- run_ICA(demo_epochs, pca = 10)
 
 test_that("Plotting of data with multiple epochs works as expected", {
   vdiffr::expect_doppelganger("epochs plot",
@@ -15,6 +16,12 @@ test_that("Plotting of data with multiple epochs works as expected", {
                               plot_timecourse(demo_epochs,
                                               baseline = c(-.2, 0),
                                               electrode = "A29"))
+  vdiffr::expect_doppelganger("Plot timecourse of component",
+                              plot_timecourse(demo_SOBI,
+                                              2))
+  vdiffr::expect_doppelganger("Plot timecourse of evoked",
+                              plot_timecourse(eeg_average(demo_epochs),
+                                              2))
 })
 
 test_that("Plotting of butterfly plots from epochs", {

@@ -5,3 +5,13 @@ test_that("FASTER runs correctly.", {
   expect_known_output(test_FASTER, "faster_t.Rdata")
   #expect_known_hash(test_FASTER, "04de56b5ba")
 })
+
+test_that("Calculate epoch stats", {
+  demo_epo <- epoch_stats(demo_epochs)
+  expect_known_output(demo_epo, "epo_stats.Rdata")
+})
+
+test_that("Calculating channel stats", {
+  chan_stats <- channel_stats(demo_epochs)
+  expect_known_output(chan_stats, "chan_stats.Rdata")
+})
