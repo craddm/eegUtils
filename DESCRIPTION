@@ -50,6 +50,7 @@ Suggests: testthat,
     JADE,
     ica,
     geigen,
+    whitening,
     fICA
 URL: https://github.com/craddm/eegUtils
 BugReports: https://github.com/craddm/eegUtils/issues

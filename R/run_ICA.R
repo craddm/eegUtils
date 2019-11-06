@@ -16,14 +16,18 @@
 #'   ICA will do this automatically, whereas the other ICA implementations will
 #'   centre on the channel means, not the epoch means.
 #'
+#'   In addition, PCA will be required if the data is not full rank. This is
+#'   typical when using average reference, when the data rank will be
+#'   n_electrodes - 1.
+#'
 #' @param data Data to be ICAed.
 #' @param ... Other parameters passed to function.
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #' @return An \code{eeg_ICA} object containing an ICA decomposition
 #' @importFrom MASS ginv
 #' @importFrom Matrix rankMatrix
+#' @importFrom whitening whiten whiteningMatrix
 #' @examples
-#' run_ICA(demo_epochs)
 #' run_ICA(demo_epochs, pca = 10)
 #' @export
 
@@ -39,7 +43,7 @@ run_ICA <- function(data, ...) {
 #'   Numeric,  >1 and < number of channels
 #' @param centre Defaults to TRUE. Centre the data on zero by subtracting the
 #'   column mean. See notes on usage.
-#' @param alg Use "gradient" descent or "newton" algorithm for extended infomax.
+#' @param alg Use "gradient descent" or "newton" algorithm for extended infomax.
 #'   Defaults to "gradient". Ignored if method != "infomax".
 #' @param rateanneal Annealing rate for extended infomax. Ignored if method !=
 #'   "infomax".
@@ -74,7 +78,7 @@ run_ICA.eeg_epochs <- function(data,
   rank_check <- Matrix::rankMatrix(as.matrix(data$signals))
 
   if (rank_check < ncol(data$signals)) {
-    warning(paste("Data is rank deficient. Detected rank", rank_check))
+    stop(paste("Data is rank deficient. PCA required. Detected rank: ", rank_check))
   }
 
   if (!(method %in% c("sobi", "fastica", "infomax", "fica"))) {
@@ -111,6 +115,10 @@ run_ICA.eeg_epochs <- function(data,
 
     if (method == "sobi") {
       if (!requireNamespace("JADE", quietly = TRUE)) {
+        if (!requireNamespace("whitening", quietly = TRUE)) {
+          stop("Packages \"JADE\" and \"whitening\" needed to use SOBI. Please install them.",
+             call. = FALSE)
+        }
         stop("Package \"JADE\" needed to use SOBI. Please install it.",
              call. = FALSE)
       }
@@ -222,16 +230,19 @@ sobi_ICA <- function(data,
                         verbose = FALSE)
   }
 
-  SVD_amp <- svd(data$signals)
-
-  ## get the psuedo-inverse of the diagonal matrix, multiply by singular
-  ## vectors
-  Q <- tcrossprod(MASS::ginv(diag(SVD_amp$d),
-                             tol = 0),
-                  SVD_amp$v) # whitening matrix
-  amp_matrix <- tcrossprod(Q,
-                           as.matrix(data$signals))
-
+   #SVD_amp <- svd(data$signals)
+  #
+  # ## get the psuedo-inverse of the diagonal matrix, multiply by singular
+  # ## vectors
+   # Q <- tcrossprod(MASS::ginv(diag(SVD_amp$d),
+   #                            tol = 0),
+   #                 SVD_amp$v) # whitening matrix
+   # amp_matrix <- tcrossprod(Q,
+   #                          as.matrix(data$signals))
+  Q <- whitening::whiteningMatrix(cov(as.matrix(data$signals)),
+                                  method = "PCA")
+  amp_matrix <- t(whitening::whiten(as.matrix(data$signals),
+                                 method = "PCA"))
   ## reshape to reflect epoching structure
   dim(amp_matrix) <- c(n_channels,
                        n_times,

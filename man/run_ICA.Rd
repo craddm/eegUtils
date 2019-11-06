@@ -63,10 +63,13 @@ fastica, extended Infomax, and Second-Order Blind Identification (SOBI).
   channel mean. This can be achieved with the `rm_baseline()` function. SOBI
   ICA will do this automatically, whereas the other ICA implementations will
   centre on the channel means, not the epoch means.
+
+  In addition, PCA will be required if the data is not full rank. This is
+  typical when using average reference, when the data rank will be
+  n_electrodes - 1.
 }
 
 \examples{
-run_ICA(demo_epochs)
 run_ICA(demo_epochs, pca = 10)
 }
 \author{
