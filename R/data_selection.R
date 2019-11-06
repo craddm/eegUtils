@@ -364,7 +364,7 @@ select_elecs.eeg_tfr <- function(data,
 #'
 #' @examples
 #' select_epochs(demo_epochs, epoch_no = 1:5)
-#' (demo_ica <- run_ICA(demo_epochs))
+#' demo_ica <- run_ICA(demo_epochs, pca = 10)
 #' select_epochs(demo_ica, epoch_no = 1:5)
 #'
 #' @author Matt Craddock, \email{matt@@mattcraddock.com}
