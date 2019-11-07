@@ -251,8 +251,6 @@ rm_baseline.eeg_evoked <- function(data,
     data$signals <- data.table::as.data.table(as.data.frame(data))
 
   } else {
-    epoch = ..orig_cols = NULL
-    rm(list = c("..orig_cols", "epoch"))
     orig_cols <- channel_names(data)
     data$signals <- data.table::as.data.table(as.data.frame(data))
     data$signals <-
