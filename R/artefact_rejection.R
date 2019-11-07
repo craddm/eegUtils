@@ -789,7 +789,6 @@ ar_trialfoc <- function(data,
 
   if (plot) {
     plot(matrixStats::colMaxs(zmat))
-    abline(h = threshold)
     graphics::abline(h = threshold)
   }
 
