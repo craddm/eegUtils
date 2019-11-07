@@ -57,6 +57,7 @@ compute_psd.eeg_data <- function(data,
     data <- rm_baseline(data,
                         verbose = verbose)
   }
+
   srate <- data$srate
 
   if (is.null(n_fft)) {

@@ -184,7 +184,7 @@ electrode_locations <- function(data, ...) {
 #' @param montage Name of an existing montage set. Defaults to NULL.
 #' @importFrom dplyr inner_join pull left_join distinct
 #' @import ggplot2
-#' @importFrom tibble is.tibble
+#' @importFrom tibble is_tibble
 #' @describeIn electrode_locations Adds standard locations to a data frame in
 #'   long format
 #' @return A tibble (or data.frame), or ggplot2 object if \code{plot = TRUE}.

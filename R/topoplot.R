@@ -185,6 +185,9 @@ topoplot.data.frame <- function(data,
     scaled_x <- data$data[[1]]$x / max_dim
     scaled_y <- data$data[[1]]$y / max_dim
   } else {
+    if (is.character(quantity)) {
+      quantity <- as.name(quantity)
+    }
     data <-
       dplyr::summarise(dplyr::group_by(data,
                                        x,

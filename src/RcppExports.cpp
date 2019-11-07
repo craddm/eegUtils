@@ -30,6 +30,7 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+
 // do_iter
 arma::mat do_iter(arma::cube amps, int k, int N);
 RcppExport SEXP _eegUtils_do_iter(SEXP ampsSEXP, SEXP kSEXP, SEXP NSEXP) {
@@ -43,6 +44,7 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+
 // get_list
 Rcpp::List get_list(const Rcpp::List& x, const arma::cx_mat& mors, const double n_kern, const std::string output);
 RcppExport SEXP _eegUtils_get_list(SEXP xSEXP, SEXP morsSEXP, SEXP n_kernSEXP, SEXP outputSEXP) {

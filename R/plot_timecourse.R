@@ -229,7 +229,7 @@ plot_timecourse.eeg_stats <- function(data,
                                       time_lim = NULL,
                                       electrode = NULL,
                                       ...) {
-
+  
   data <- parse_for_tc(data,
                        time_lim = time_lim,
                        electrode = electrode,

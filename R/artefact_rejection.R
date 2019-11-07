@@ -610,10 +610,12 @@ ar_eogcor.eeg_ICA <- function(decomp,
     veog_threshold <- threshold
   }
 
+
   EOG_corrs <- abs(stats::cor(decomp$signals,
                               bip_EOG(data$signals,
                                       HEOG,
                                       VEOG)))
+
 
   if (is.null(threshold)) {
     mean_corrs <- colMeans(EOG_corrs)
@@ -634,7 +636,6 @@ ar_eogcor.eeg_ICA <- function(decomp,
 
   crossed_thresh <- cbind(EOG_corrs[, 1] > heog_threshold,
                           EOG_corrs[, 2] > veog_threshold)
-
   above_thresh <- apply(crossed_thresh,
                         1, any)
   above_thresh <- channel_names(decomp)[above_thresh]
@@ -665,6 +666,8 @@ ar_acf <- function(data, ...) {
 #' @param verbose Print informative messages. Defaults to TRUE.
 #' @param threshold Specify a threshold for low ACF. NULL estimates the threshold automatically.
 #' @describeIn ar_acf Autocorrelation checker for \code{eeg_ICA} objects
+#' @importFrom stats sd cor
+#' @importFrom graphics abline par
 #' @export
 ar_acf.eeg_ICA <- function(data,
                            ms = 20,
