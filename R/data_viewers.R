@@ -73,6 +73,7 @@ browse_data.eeg_ICA <- function(data,
         compute_psd(select(data, input$icomp),
                     n_fft = data$srate,
                     verbose = FALSE)
+
       tmp_psd <- dplyr::rename(tmp_psd,
                                power = 2)
       ggplot(tmp_psd,

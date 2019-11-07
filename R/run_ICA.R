@@ -46,6 +46,7 @@ run_ICA <- function(data, ...) {
 #' @param rate Learning rate for extended infomax. Ignored if method !=
 #'   "infomax".
 #' @describeIn run_ICA Run ICA on an \code{eeg_epochs} object
+#' @importFrom stats cov
 #' @export
 
 run_ICA.eeg_epochs <- function(data,
