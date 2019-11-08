@@ -108,7 +108,8 @@ erp_scalp <- function(data,
   }
 
   data$electrodefacet <- data[, electrode]
-  data <- tidyr::nest(tibble::as_tibble(data), -electrode)
+  data <- tidyr::nest(tibble::as_tibble(data),
+                      data = c(time, amplitude, electrodefacet))
   data <- dplyr::mutate(data, plot = map(data, plotfun))
   data <- dplyr::select(data, -data)
 
@@ -131,8 +132,10 @@ erp_scalp <- function(data,
 
   panel_size <- floor(sqrt(plot_area / nrow(data)))
 
-  coords_space <- data.frame(x = c(-(max_x + panel_size), max_x + panel_size),
-                             y = c(-(max_y + panel_size), max_y + panel_size))
+  coords_space <- data.frame(x = c(-(max_x + panel_size),
+                                   max_x + panel_size),
+                             y = c(-(max_y + panel_size),
+                                   max_y + panel_size))
 
   p <- ggplot(coords_space,
               aes(x, y)) +

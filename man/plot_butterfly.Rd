@@ -30,7 +30,6 @@ plot_butterfly(data, ...)
 \method{plot_butterfly}{eeg_stats}(data, time_lim = NULL,
   baseline = NULL, legend = TRUE, allow_facets = FALSE,
   browse_mode = FALSE, ...)
-
 }
 \arguments{
 \item{data}{EEG dataset. Should have multiple timepoints.}

@@ -51,10 +51,33 @@ mismatch for the word.
 
 ``` r
 library(eegUtils)
+#> Make sure to check for the latest development version at https://github.com/craddm/eegUtils!
+#> 
+#> Attaching package: 'eegUtils'
+#> The following object is masked from 'package:stats':
+#> 
+#>     filter
 library(dplyr)
+#> Warning: package 'dplyr' was built under R version 3.6.1
+#> 
+#> Attaching package: 'dplyr'
+#> The following objects are masked from 'package:stats':
+#> 
+#>     filter, lag
+#> The following objects are masked from 'package:base':
+#> 
+#>     intersect, setdiff, setequal, union
 library(ggplot2)
+#> Warning: package 'ggplot2' was built under R version 3.6.1
 eeg_example <- import_raw("F:\\Dropbox\\EEGData\\RawEEGData\\BasicCat\\S2B1.bdf")
+#> Importing F:\Dropbox\EEGData\RawEEGData\BasicCat\S2B1.bdf as BDF
 eeg_example
+#> EEG data
+#> 
+#> Number of channels   : 72 
+#> Electrode names      : A1 A2 A3 A4 A5 A6 A7 A8 A9 A10 A11 A12 A13 A14 A15 A16 A17 A18 A19 A20 A21 A22 A23 A24 A25 A26 A27 A28 A29 A30 A31 A32 B1 B2 B3 B4 B5 B6 B7 B8 B9 B10 B11 B12 B13 B14 B15 B16 B17 B18 B19 B20 B21 B22 B23 B24 B25 B26 B27 B28 B29 B30 B31 B32 EXG1 EXG2 EXG3 EXG4 EXG5 EXG6 EXG7 EXG8 
+#> Sampling rate        : 512 Hz
+#> Reference        :
 ```
 
 This data was recorded at 512 Hz. There were 72 channels named using the
@@ -70,6 +93,12 @@ keep or remove. Here we’ll remove the empty channels EXG7 and EXG8.
 eeg_example %>%
   select_elecs(electrode = c("EXG7", "EXG8"),
                keep = FALSE)
+#> EEG data
+#> 
+#> Number of channels   : 70 
+#> Electrode names      : A1 A2 A3 A4 A5 A6 A7 A8 A9 A10 A11 A12 A13 A14 A15 A16 A17 A18 A19 A20 A21 A22 A23 A24 A25 A26 A27 A28 A29 A30 A31 A32 B1 B2 B3 B4 B5 B6 B7 B8 B9 B10 B11 B12 B13 B14 B15 B16 B17 B18 B19 B20 B21 B22 B23 B24 B25 B26 B27 B28 B29 B30 B31 B32 EXG1 EXG2 EXG3 EXG4 EXG5 EXG6 
+#> Sampling rate        : 512 Hz
+#> Reference        :
 ```
 
 Note that we could also use the *select()* function from the *dplyr*
@@ -83,6 +112,12 @@ eeg_example <- eeg_example %>%
   select(-EXG7, -EXG8) %>%
   eeg_reference()
 eeg_example
+#> EEG data
+#> 
+#> Number of channels   : 70 
+#> Electrode names      : A1 A2 A3 A4 A5 A6 A7 A8 A9 A10 A11 A12 A13 A14 A15 A16 A17 A18 A19 A20 A21 A22 A23 A24 A25 A26 A27 A28 A29 A30 A31 A32 B1 B2 B3 B4 B5 B6 B7 B8 B9 B10 B11 B12 B13 B14 B15 B16 B17 B18 B19 B20 B21 B22 B23 B24 B25 B26 B27 B28 B29 B30 B31 B32 EXG1 EXG2 EXG3 EXG4 EXG5 EXG6 
+#> Sampling rate        : 512 Hz
+#> Reference        : average
 ```
 
 A typical step at this stage is to filter the continuous data before
@@ -98,14 +133,27 @@ plan(multiprocess)
 plot_psd(eeg_example, 
          freq_range = c(0, 60),
          legend = FALSE)
+#> Removing channel means...
+```
+
+![](README_files/figure-gfm/do_filt-1.png)<!-- -->
+
+``` r
 eeg_example <- eeg_filter(eeg_example,
                           low_freq = .1,
                           high_freq = 40,
                           method = "fir")
+#> Band-pass FIR filter from 0.1 - 40 Hz
+#> Transition bandwidth: 0.1 Hz
+#> Filter order: 16896
+#> Removing channel means...
 plot_psd(eeg_example, 
          freq_range = c(0, 60),
          legend = FALSE)
+#> Removing channel means...
 ```
+
+![](README_files/figure-gfm/do_filt-2.png)<!-- -->
 
 The next step is to epoch our filtered data. The trigger *201* marks
 stimulus onset.
@@ -113,7 +161,18 @@ stimulus onset.
 ``` r
 example_epochs <- epoch_data(eeg_example,
                              events = 201)
+#> Output limits:  -1 1
+#> Removing channel means per epoch...
+#> Creating 78 epochs.
 example_epochs
+#> Epoched EEG data
+#> 
+#> Number of channels   : 70 
+#> Number of epochs     : 78 
+#> Epoch limits     : -1 - 0.998 seconds
+#> Electrode names      : A1 A2 A3 A4 A5 A6 A7 A8 A9 A10 A11 A12 A13 A14 A15 A16 A17 A18 A19 A20 A21 A22 A23 A24 A25 A26 A27 A28 A29 A30 A31 A32 B1 B2 B3 B4 B5 B6 B7 B8 B9 B10 B11 B12 B13 B14 B15 B16 B17 B18 B19 B20 B21 B22 B23 B24 B25 B26 B27 B28 B29 B30 B31 B32 EXG1 EXG2 EXG3 EXG4 EXG5 EXG6 
+#> Sampling rate        : 512  Hz
+#> Reference        : average
 ```
 
 We can plot ERPs of all the channels using *plot\_butterfly()*. This can
@@ -126,7 +185,8 @@ plot_butterfly(example_epochs,
                time_lim = c(-.1, .5))
 ```
 
-This outputs a *ggplot* object with some default styling already set.
+![](README_files/figure-gfm/unnamed-chunk-5-1.png)<!-- --> This outputs
+a *ggplot* object with some default styling already set.
 
 Now we might want a topographical plot. But BioSemi data files do not
 include channel locations, so we need to add them ourselves.
@@ -134,7 +194,22 @@ include channel locations, so we need to add them ourselves.
 ``` r
 example_epochs <- electrode_locations(example_epochs,
                                       montage = "biosemi64alpha")
+#> Electrodes not found: EXG1 EXG2 EXG3 EXG4 EXG5 EXG6
 channels(example_epochs)
+#> # A tibble: 70 x 9
+#>    electrode radius theta   phi cart_x cart_y cart_z     x     y
+#>    <chr>      <dbl> <dbl> <dbl>  <dbl>  <dbl>  <dbl> <dbl> <dbl>
+#>  1 A1             1   -92   -72  -26.2   80.8  -2.97 -28.4  87.5
+#>  2 A2             1   -92   -54  -49.9   68.7  -2.97 -54.1  74.4
+#>  3 A3             1   -74   -65  -34.5   74.0  23.4  -31.3  67.1
+#>  4 A4             1   -50   -68  -24.4   60.4  54.6  -18.7  46.4
+#>  5 A5             1   -60   -51  -46.3   57.2  42.5  -37.8  46.6
+#>  6 A6             1   -75   -41  -62.0   53.9  22    -56.6  49.2
+#>  7 A7             1   -92   -36  -68.7   49.9  -2.97 -74.4  54.1
+#>  8 A8             1   -92   -18  -80.8   26.2  -2.97 -87.5  28.4
+#>  9 A9             1   -72   -21  -75.5   29.0  26.3  -67.2  25.8
+#> 10 A10            1   -50   -28  -57.5   30.6  54.6  -44.2  23.5
+#> # ... with 60 more rows
 ```
 
 Now we can create a topopgraphical plot, again with default stylings and
@@ -142,7 +217,12 @@ colour schemes.
 
 ``` r
 topoplot(example_epochs, time_lim = c(.25, .35))
+#> Using electrode locations from data.
+#> Warning in topoplot.data.frame(data, time_lim = time_lim, limits =
+#> limits, : Removing channels with no location.
 ```
+
+![](README_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
 
 Since this is a *ggplot*, styling can be changed easily. For example, we
 could use a different colour scale, such as *viridis*.
@@ -151,7 +231,14 @@ could use a different colour scale, such as *viridis*.
 topoplot(example_epochs,
          time_lim = c(.25, .35)) +
   scale_fill_viridis_c()
+#> Using electrode locations from data.
+#> Warning in topoplot.data.frame(data, time_lim = time_lim, limits =
+#> limits, : Removing channels with no location.
+#> Scale for 'fill' is already present. Adding another scale for 'fill',
+#> which will replace the existing scale.
 ```
+
+![](README_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
 
 At any point, `eegUtils` objects can be transformed into data frames for
 use with functions that don’t natively support them.
@@ -174,6 +261,8 @@ example_epochs %>%
   facet_wrap(~electrode) + 
   theme_classic()
 ```
+
+![](README_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
 
 In addition, there are overloaded versions of some `dplyr` functions
 that operate on the `signals` element of `eeg_data` and `eeg_epochs`
@@ -200,3 +289,5 @@ example_epochs %>%
   geom_hline(yintercept = 0) +
   theme_classic()
 ```
+
+![](README_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
