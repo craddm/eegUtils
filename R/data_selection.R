@@ -480,7 +480,8 @@ select_epochs.eeg_ICA <- function(data,
   data
 }
 
-#'@noRd
+#' @describeIn select_epochs Selection of epochs from \code{eeg_tfr} objects.
+#' @export
 select_epochs.eeg_tfr <- function(data,
                                   epoch_events = NULL,
                                   epoch_no = NULL,

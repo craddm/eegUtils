@@ -278,7 +278,7 @@ eeg_downsample.eeg_epochs <- function(data,
   data$signals <- split(data$signals,
                         data$timings$epoch)
 
-  new_times <- data$timings$time
+  #new_times <- data$timings$time
   new_length <- nrow(data$signals[[1]]) #- epo_length
   data$signals <- lapply(data$signals,
                          `[`,
@@ -317,10 +317,12 @@ drop_points <- function(data, data_length) {
           " time points to make n of samples a multiple of q.")
   new_times <- utils::head(unique(data$timings$time),
                            -data_length)
+  min_new <- min(new_times)
+  max_new <- max(new_times)
   # Use custom filter method instead of select_times.
   data <- dplyr::filter(data,
-                        time >= min(new_times),
-                        time <= max(new_times))
+                        time >= {{min_new}},
+                        time <= {{max_new}})
   data
 }
 
