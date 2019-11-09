@@ -1,5 +1,13 @@
 # eegUtils 0.5.0.9000
 
+
+### Function changes
+- Added `filter` method for `eeg_tfr` objects
+
+
+### Internal changes / bug fixes
+- Now using `whitening` package for whitening before SOBI ICA
+
 # eegUtils 0.5.0
 
 ### Function changes
