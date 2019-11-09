@@ -8,30 +8,49 @@ filter.eeg_epochs <- function(.data,
                               ...) {
 
   orig_cols <- channel_names(.data)
-  args <- rlang::exprs(...)
+  args <- rlang::enexprs(...)
   .data$signals <- as.data.frame(.data)
   .data$signals <- dplyr::filter(.data$signals,
                                  ...)
   .data$signals <- .data$signals[, orig_cols]
-  .data$timings <- dplyr::filter(.data$timings,
-                                 ...)
-  .data$events <- dplyr::filter(.data$events,
-                                ...)
 
-  #conditionally filter the epochs structure if any of the arguments refer to
-  #its contents. also need to fix this for timings - if we filter based on the
-  #epochs structure, it may miss out the timings structure
+  lhs_args <- unlist(lapply(args,
+                            function(x) as.character(x[[2]])))
+
   if (is.null(.data$epochs)) {
     warning("Epochs structure missing; Update your eeg_epochs object using update_eeg_epochs.")
     return(.data)
   }
 
-  epo_args <- grepl(paste(names(.data$epochs), collapse = "|"),
-                    unlist(args))
-  if (any(epo_args)) {
+  in_epochs <- lhs_args %in% names(epochs(.data))
+
+  if (any(in_epochs)) {
     .data$epochs <- dplyr::filter(.data$epochs,
-                                  !!!args[epo_args])
+                                  !!!args[in_epochs])
+    keep_epochs <- unique(.data$epochs$epoch)
+    .data$timings <- dplyr::filter(.data$timings,
+                                   epoch %in% keep_epochs)
+    events(.data) <- dplyr::filter(events(.data),
+                                   epoch %in% keep_epochs)
   }
+  .data
+
+  in_timings <- lhs_args %in% names(.data$timings)
+
+  if (any(in_timings)) {
+    .data$timings <- dplyr::filter(.data$timings,
+                                   !!!args[in_timings])
+    events(.data) <- dplyr::filter(events(.data),
+                                   !!!args[in_timings])
+  }
+
+  in_events <- lhs_args %in% names(.data$events)
+
+  if (any(in_events)) {
+    .data$events <- dplyr::filter(.data$events,
+                                  !!!args[in_events])
+  }
+
   .data
 }
 
@@ -89,6 +108,80 @@ filter.eeg_evoked <- function(.data,
   .data
 }
 
+#' @keywords internal
+filter.eeg_tfr <- function(.data, ...) {
+
+  args <- rlang::enexprs(...)
+  quosures <- rlang::enquos(...)
+
+  args_done <- logical(length(args))
+
+  which_calls <- vapply(args,
+                        is.call,
+                        logical(1),
+                        USE.NAMES = FALSE)
+
+  if (!all(which_calls)) {
+     error_message <-
+       paste("Invalid call - did you use a named argument instead of a relational operator? (e.g. epoch = 10)")
+     stop(error_message,
+          call. = FALSE)
+  }
+
+  lhs_args <- unlist(lapply(args[which_calls],
+                              function(x) as.character(x[[2]])))
+  mat_dims <- names(dimnames(.data$signals)) %in% lhs_args
+  hmz <- dimnames(.data$signals)[mat_dims]
+  hmz <- lapply(hmz,
+                function(x) {
+                  if (any(grepl("[A-Z]", x))) {x}
+                  else {as.numeric(x)}
+                })
+
+  in_epochs <- lhs_args %in% names(epochs(.data))
+
+  if (any(in_epochs)) {
+    epochs(.data) <- dplyr::filter(epochs(.data),
+                            !!! quosures[in_epochs])
+    keep_epochs <- epochs(.data)$epoch
+    .data$timings <- dplyr::filter(.data$timings,
+                                   epoch %in% keep_epochs)
+    .data$signals <- abind::asub(.data$signals,
+                                 keep_epochs,
+                                 dims = which(.data$dimensions == "epoch"))
+    args_done[in_epochs] <- TRUE
+  }
+
+  in_timings <- lhs_args %in% names(.data$timings)
+
+  if (any(in_timings)) {
+    .data$timings <- dplyr::filter(.data$timings,
+                            !!! quosures[in_timings])
+    keep_times <- unique(.data$timings$time)
+    time_idx <- which(hmz$time %in% unique(keep_times))
+    .data$signals <- abind::asub(.data$signals,
+                                 time_idx,
+                                 dims = which(.data$dimensions == "time"))
+    args_done[in_timings] <- TRUE
+  }
+
+  if (any(args_done == FALSE)) {
+    warning(paste("Some arguments not used:",
+                  unname(vapply(args[!args_done],
+                                rlang::quo_text,
+                                character(1)))))
+  }
+
+  .data
+}
+
+parse_args <- function(x) {
+
+  dimnames(x$signals)
+  if ("epoch" %in% x) {
+
+  }
+}
 
 #' @importFrom dplyr select
 #' @export

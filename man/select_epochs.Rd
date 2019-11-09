@@ -5,6 +5,7 @@
 \alias{select_epochs.default}
 \alias{select_epochs.eeg_epochs}
 \alias{select_epochs.eeg_ICA}
+\alias{select_epochs.eeg_tfr}
 \title{Select epochs}
 \usage{
 select_epochs(data, ...)
@@ -15,6 +16,9 @@ select_epochs(data, ...)
   epoch_no = NULL, keep = TRUE, df_out = FALSE, ...)
 
 \method{select_epochs}{eeg_ICA}(data, epoch_events = NULL,
+  epoch_no = NULL, keep = TRUE, df_out = FALSE, ...)
+
+\method{select_epochs}{eeg_tfr}(data, epoch_events = NULL,
   epoch_no = NULL, keep = TRUE, df_out = FALSE, ...)
 }
 \arguments{
@@ -42,6 +46,8 @@ This is a generic function for selecting epochs from an epoched data set.
 \item \code{eeg_epochs}: Selection of epochs from \code{eeg_epochs} objects.
 
 \item \code{eeg_ICA}: Selection of epochs from \code{eeg_ICA} objects.
+
+\item \code{eeg_tfr}: Selection of epochs from \code{eeg_tfr} objects.
 }}
 
 \examples{

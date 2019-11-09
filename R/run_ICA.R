@@ -223,7 +223,7 @@ sobi_ICA <- function(data,
   ## should probably edit this to zero mean *epochs*
   #do by epochs
 
-  if (centre){
+  if (centre) {
     # centre the data on zero.
     data <- rm_baseline(data,
                         verbose = FALSE)
@@ -238,7 +238,7 @@ sobi_ICA <- function(data,
    #                 SVD_amp$v) # whitening matrix
    # amp_matrix <- tcrossprod(Q,
    #                          as.matrix(data$signals))
-  Q <- whitening::whiteningMatrix(cov(as.matrix(data$signals)),
+  Q <- whitening::whiteningMatrix(stats::cov(as.matrix(data$signals)),
                                   method = "PCA")
   amp_matrix <- t(whitening::whiten(as.matrix(data$signals),
                                  method = "PCA"))
@@ -257,14 +257,6 @@ sobi_ICA <- function(data,
 
   for (u in seq(1, pm, n_channels)) {
     k <- k + 1
-    # Rxp <- lapply(seq(1, n_epochs),
-    #               function(x) tmp_fun(amp_matrix[, , x],
-    #                                   k,
-    #                                   N))
-    # Rxp <- Reduce("+",
-    #               Rxp)
-    # Rxp <- Rxp / n_epochs
-    # M[, u:(u + n_channels - 1)] <- norm(Rxp, "F") * (Rxp)
     M[, u:(u + n_channels - 1)] <- do_iter(amp_matrix, k, N)
   }
 
