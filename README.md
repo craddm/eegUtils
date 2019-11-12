@@ -58,7 +58,6 @@ library(eegUtils)
 #> 
 #>     filter
 library(dplyr)
-#> Warning: package 'dplyr' was built under R version 3.6.1
 #> 
 #> Attaching package: 'dplyr'
 #> The following objects are masked from 'package:stats':
@@ -68,7 +67,6 @@ library(dplyr)
 #> 
 #>     intersect, setdiff, setequal, union
 library(ggplot2)
-#> Warning: package 'ggplot2' was built under R version 3.6.1
 eeg_example <- import_raw("F:\\Dropbox\\EEGData\\RawEEGData\\BasicCat\\S2B1.bdf")
 #> Importing F:\Dropbox\EEGData\RawEEGData\BasicCat\S2B1.bdf as BDF
 eeg_example
@@ -136,7 +134,7 @@ plot_psd(eeg_example,
 #> Removing channel means...
 ```
 
-![](README_files/figure-gfm/do_filt-1.png)<!-- -->
+![](man/figures/do_filt-1.png)<!-- -->
 
 ``` r
 eeg_example <- eeg_filter(eeg_example,
@@ -153,7 +151,7 @@ plot_psd(eeg_example,
 #> Removing channel means...
 ```
 
-![](README_files/figure-gfm/do_filt-2.png)<!-- -->
+![](man/figures/do_filt-2.png)<!-- -->
 
 The next step is to epoch our filtered data. The trigger *201* marks
 stimulus onset.
@@ -185,8 +183,8 @@ plot_butterfly(example_epochs,
                time_lim = c(-.1, .5))
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-5-1.png)<!-- --> This outputs
-a *ggplot* object with some default styling already set.
+![](man/figures/unnamed-chunk-5-1.png)<!-- --> This outputs a *ggplot*
+object with some default styling already set.
 
 Now we might want a topographical plot. But BioSemi data files do not
 include channel locations, so we need to add them ourselves.
@@ -222,7 +220,7 @@ topoplot(example_epochs, time_lim = c(.25, .35))
 #> limits, : Removing channels with no location.
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
+![](man/figures/unnamed-chunk-7-1.png)<!-- -->
 
 Since this is a *ggplot*, styling can be changed easily. For example, we
 could use a different colour scale, such as *viridis*.
@@ -238,7 +236,7 @@ topoplot(example_epochs,
 #> which will replace the existing scale.
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
+![](man/figures/unnamed-chunk-8-1.png)<!-- -->
 
 At any point, `eegUtils` objects can be transformed into data frames for
 use with functions that don’t natively support them.
@@ -262,7 +260,7 @@ example_epochs %>%
   theme_classic()
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
+![](man/figures/unnamed-chunk-9-1.png)<!-- -->
 
 In addition, there are overloaded versions of some `dplyr` functions
 that operate on the `signals` element of `eeg_data` and `eeg_epochs`
@@ -290,4 +288,4 @@ example_epochs %>%
   theme_classic()
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
+![](man/figures/unnamed-chunk-10-1.png)<!-- -->

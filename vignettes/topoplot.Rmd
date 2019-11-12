@@ -40,7 +40,7 @@ topoplot(demo_epochs,
 `topoplot()` operates on several different types of `eegUtils` object, and has different default settings and behaviour for those objects. For example, for ICA decompositions, it plots the mixing matrix for each component.
 
 ```{r get-ica, message = FALSE, fig.height = 4, fig.width = 4}
-demo_ica <- run_ICA(demo_epochs)
+demo_ica <- run_ICA(demo_epochs, pca = 10)
 topoplot(demo_ica, component = 2)
 ```
 

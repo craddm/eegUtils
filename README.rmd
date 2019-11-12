@@ -7,7 +7,8 @@ output: github_document
 knitr::opts_chunk$set(echo = TRUE,
                       collapse = TRUE,
                       comment = "#>",
-                      eval = nzchar(Sys.getenv("EVAL_EEG_VIGNETTE")))
+                      eval = nzchar(Sys.getenv("EVAL_EEG_VIGNETTE")),
+                      fig.path = "man/figures/")
 ```
 
 [![Repo Status](http://www.repostatus.org/badges/latest/wip.svg)](http://www.repostatus.org/#wip)

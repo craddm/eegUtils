@@ -18,8 +18,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
 
 <!-- Font Awesome icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.1/css/all.min.css" integrity="sha256-PbSmjxuVAzJ6FPvNYsrXygfGhNJYyZ2GktDbkMBqQZg=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.1/css/v4-shims.min.css" integrity="sha256-A6jcAdwFD48VMjlI3GDxUd+eCQa7/KWy6G9oe/ovaPA=" crossorigin="anonymous" />
 
 <!-- clipboard.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script>
@@ -141,16 +141,18 @@
 <h3 class="hasAnchor">
 <a href="#function-changes" class="anchor"></a>Function changes</h3>
 <ul>
-<li>Default settings for Infomax ICA changed to be similar to EEGLAB/Fieldtrip.</li>
-<li>Faster reading of bdf implemented. Old behaviour can be retained using <code>fast_bdf = FALSE</code> parameter to <code><a href="../reference/import_raw.html">import_raw()</a></code>
+<li><p>Default settings for Infomax ICA changed to be similar to EEGLAB/Fieldtrip.</p></li>
+<li><p>Faster reading of bdf implemented. Old behaviour can be retained using <code>fast_bdf = FALSE</code> parameter to <code><a href="../reference/import_raw.html">import_raw()</a></code></p></li>
+<li><p><code>eeg_combine</code> now supports combining lists.</p></li>
+<li>
+<p><code>eeg_reference</code> now supports <code>eeg_epochs</code> and <code>eeg_evoked</code> objects.</p>
+<h3 id="internal-changes--bug-fixes">Internal changes / bug fixes</h3>
 </li>
+<li><p><code>plot_butterfly</code> should now be faster again.</p></li>
+<li><p>Much faster reader for BDF implemented.</p></li>
+<li><p><code>eeg_filter</code> added <code>demean</code> parameter so that removing channel/epoch means during filtering is now optional. Defaults to TRUE.</p></li>
 <li>
-<code>eeg_combine</code> now supports combining lists.</li>
-<li>
-<code>eeg_reference</code> now supports <code>eeg_epochs</code> and <code>eeg_evoked</code> objects.</li>
-<li>
-<code>eeg_filter</code> added <code>demean</code> parameter so that removing channel/epoch means during filtering is now optional. Defaults to TRUE.</li>
-<li>Added artefact detection options for ICA objects
+<p>Added artefact detection options for ICA objects</p>
 <ul>
 <li>
 <code><a href="../reference/ar_acf.html">ar_acf()</a></code> checks for low autocorrelation</li>
@@ -162,35 +164,19 @@
 <code><a href="../reference/ar_eogcor.html">ar_eogcor()</a></code> checks for correlation with EOG channels</li>
 </ul>
 </li>
-</ul>
-</div>
-<div id="internal-changes--bug-fixes" class="section level3">
-<h3 class="hasAnchor">
-<a href="#internal-changes--bug-fixes" class="anchor"></a>Internal changes / bug fixes</h3>
-<ul>
-<li>
-<code>plot_butterfly</code> should now be faster again.</li>
-<li>Much faster reader for BDF implemented.</li>
-<li>
-<code>topoplot</code> plotting radius logic altered</li>
-<li>
-<code>compute_csd</code> now uses <code>eeg_reference</code> rather than <code>reref_eeg</code>
-</li>
-<li>Unmixing matrix for SSD decompositions fixed.</li>
-<li>
-<code>compute_tfr</code> reworked to be faster.</li>
-<li>Faster baseline correction implemented using Rcpp.</li>
-<li>Padding now used during <code>compute_tfr</code>, which greatly improves speed/accuracy; units may change but this is a change in scaling factor.</li>
-<li>
-<code>epoch_data</code> now uses a more robust way of determing time limits/samples to include in each epoch that no longer fails at some combinations of time limit and sampling rate</li>
-<li>
-<code>eeg_average</code> returns objects of class(<code>eeg_evoked</code>, <code>eeg_epochs</code>)</li>
-<li>Updated R requirement to &gt;= 3.2.0</li>
-<li>Updated rlang requirement to &gt;= 0.4.0</li>
-<li>
-<code>compute_psd</code> fix for single segment data</li>
-<li>updated use of <code>nest</code> and <code>unnest</code> in keeping with <code>tidyr 1.0.0</code>
-</li>
+<li><p><code>topoplot</code> plotting radius logic altered</p></li>
+<li><p><code>compute_csd</code> now uses <code>eeg_reference</code> rather than <code>reref_eeg</code></p></li>
+<li><p>Unmixing matrix for SSD decompositions fixed.</p></li>
+<li><p><code>compute_tfr</code> reworked to be faster.</p></li>
+<li><p>Faster baseline correction implemented using Rcpp.</p></li>
+<li><p>Padding now used during <code>compute_tfr</code>, which greatly improves speed/accuracy; units may change but this is a change in scaling factor.</p></li>
+<li><p><code>epoch_data</code> now uses a more robust way of determing time limits/samples to include in each epoch that no longer fails at some combinations of time limit and sampling rate</p></li>
+<li><p><code>eeg_average</code> returns objects of class(<code>eeg_evoked</code>, <code>eeg_epochs</code>)</p></li>
+<li><p>Updated R requirement to &gt;= 3.2.0</p></li>
+<li><p>Updated rlang requirement to &gt;= 0.4.0</p></li>
+<li><p><code>compute_psd</code> fix for single segment data</p></li>
+<li><p>updated use of <code>nest</code> and <code>unnest</code> in keeping with <code>tidyr 1.0.0</code></p></li>
+<li><p><code><a href="../reference/as.data.frame.eeg_tfr.html">as.data.frame.eeg_tfr()</a></code> now fixed to output correctly</p></li>
 </ul>
 </div>
 </div>
@@ -610,7 +596,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.9000.</p>
 </div>
 
       </footer>
