@@ -4,12 +4,16 @@
 \alias{pad}
 \title{Pad a vector with zeros}
 \usage{
-pad(x, n)
+pad(x, n, startval = 0, endval = 0)
 }
 \arguments{
 \item{x}{vector to pad}
 
 \item{n}{number of zeros to pad}
+
+\item{startval}{value to add at the start of the vector - defaults to zero}
+
+\item{endval}{value to add at the end of the vector - defaults to zero}
 }
 \description{
 Pads a vector with zeros at the beginning and end.
