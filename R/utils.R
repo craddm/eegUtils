@@ -402,8 +402,15 @@ zero_vec <- function(vec_length) {
 #'
 #' @param x vector to pad
 #' @param n number of zeros to pad
+#' @param startval value to add at the start of the vector - defaults to zero
+#' @param endval value to add at the end of the vector - defaults to zero
 #' @keywords internal
-pad <- function(x, n) {c(rep(0, n), x, rep(0, n))}
+pad <- function(x,
+                n,
+                startval = 0,
+                endval = 0) {c(rep(startval, n),
+                         x,
+                         rep(endval, n))}
 
 #' Unpad a vector
 #'

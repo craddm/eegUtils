@@ -243,9 +243,20 @@ eeg_downsample.eeg_data <- function(data,
     data <- drop_points(data, data_length)
   }
 
+  pad_zeros <- 25 * q
+  data$signals <- purrr::map_df(data$signals,
+                                ~pad(.,
+                                     pad_zeros,
+                                     startval = .[[1]],
+                                     endval = .[[nrow(data$signals)]]))
+
   # step through each column and decimate each channel
   data$signals <- purrr::map_df(as.list(data$signals),
                                 ~signal::decimate(., q))
+
+  data$signals <- purrr::map_df(data$signals,
+                                ~unpad(.,
+                                       pad_zeros / q))
 
   # select every qth timing point, and divide srate by q
   data$srate <- data$srate / q
@@ -284,13 +295,28 @@ eeg_downsample.eeg_epochs <- function(data,
                          `[`,
                          1:new_length,
                          )
+
+
+  pad_zeros <- 60
+
+  # pad first and last edges of each channel with the first and last values
+  # respectively, to compensate for edge effects
+  data$signals <- purrr::map(data$signals,
+                             ~purrr::map_df(., ~pad(.,
+                                                    pad_zeros,
+                                                    startval = .[[1]],
+                                                    endval = .[[new_length]])))
+
   # step through each column and decimate each channel, by epoch
   data$signals <-
-    purrr::map_df(data$signals,
+    purrr::map(data$signals,
                   ~purrr::map_df(as.list(.),
                                  ~signal::decimate(., q)))
 
-  # select every qth timing point, and divide srate by q
+   data$signals <- purrr::map_df(data$signals,
+                              ~purrr::map_df(., ~unpad(.,
+                                                       pad_zeros / q)))
+  #select every qth timing point, and divide srate by q
   data$srate <- data$srate / q
   data$timings <- data$timings[seq(1,
                                    length(data$timings[[1]]),
