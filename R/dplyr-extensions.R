@@ -112,8 +112,6 @@ filter.eeg_evoked <- function(.data,
 filter.eeg_tfr <- function(.data, ...) {
 
   args <- rlang::enexprs(...)
-  quosures <- rlang::enquos(...)
-
   args_done <- logical(length(args))
 
   which_calls <- vapply(args,
@@ -142,13 +140,15 @@ filter.eeg_tfr <- function(.data, ...) {
 
   if (any(in_epochs)) {
     epochs(.data) <- dplyr::filter(epochs(.data),
-                            !!! quosures[in_epochs])
+                                   !!!args[in_epochs])
     keep_epochs <- epochs(.data)$epoch
     .data$timings <- dplyr::filter(.data$timings,
                                    epoch %in% keep_epochs)
     .data$signals <- abind::asub(.data$signals,
                                  keep_epochs,
                                  dims = which(.data$dimensions == "epoch"))
+    .data$events <- dplyr::filter(.data$events,
+                                  epoch %in% keep_epochs)
     args_done[in_epochs] <- TRUE
   }
 
@@ -156,7 +156,7 @@ filter.eeg_tfr <- function(.data, ...) {
 
   if (any(in_timings)) {
     .data$timings <- dplyr::filter(.data$timings,
-                            !!! quosures[in_timings])
+                                   !!!args[in_timings])
     keep_times <- unique(.data$timings$time)
     time_idx <- which(hmz$time %in% unique(keep_times))
     .data$signals <- abind::asub(.data$signals,

@@ -1,5 +1,6 @@
 context("Test dplyr exports")
-
+demo_SOBI <- run_ICA(demo_epochs, pca = 10)
+demo_tfr <- compute_tfr(demo_epochs, n_freq = 2, n_cycles = 3, foi = c(8, 12), keep_trials = TRUE)
 test_that("selection of electrodes and times works as expected", {
 
   add_col <- function(.data) {
@@ -19,4 +20,8 @@ test_that("selection of electrodes and times works as expected", {
                add_col(demo_epochs))
   expect_equivalent(filter(demo_epochs, epoch <= 10, epoch >= 5),
                     select_epochs(demo_epochs, epoch_no = 5:10))
+  expect_equivalent(filter(demo_SOBI, epoch <= 20, epoch >= 15),
+                    select_epochs(demo_SOBI, epoch_no = 15:20))
+  expect_equivalent(filter(demo_tfr, epoch <= 15, epoch >= 10),
+                    select_epochs(demo_tfr, epoch_no = 10:15))
 })

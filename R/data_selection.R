@@ -465,7 +465,7 @@ select_epochs.eeg_ICA <- function(data,
     if (keep == FALSE) {
       keep_rows <- !keep_rows
     }
-    data$comp_activations <- data$comp_activations[keep_rows, ]
+    data$signals <- data$signals[keep_rows, ]
     data$timings <- data$timings[keep_rows, ]
     data$events <- data$events[data$events$epoch %in% epoch_no, ]
     if (!is.null(data$epochs)) {

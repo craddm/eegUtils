@@ -4,9 +4,10 @@
 ### Function changes
 - Added `filter` method for `eeg_tfr` objects
 
-
 ### Internal changes / bug fixes
 - Now using `whitening` package for whitening before SOBI ICA
+- `select_epochs` for `eeg_ICA` objects fixed to correctly remove epochs from `signals`
+- added tests for `filter.eeg_ICA` and `filter.eeg_tfr`
 
 # eegUtils 0.5.0
 
