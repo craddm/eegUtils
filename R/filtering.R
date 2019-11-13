@@ -203,10 +203,17 @@ run_fir <- function(.data,
                     filter_order) {
 
    fft_length <- length(filt_coef) * 2 - 1
+   fft_length <- stats::nextn(fft_length) #length(filt_coef) * 2 - 1
+   sig_length <- nrow(.data$signals)
    # pad the signals with zeros to help with edge effects
+   pad_zeros <- stats::nextn(sig_length + fft_length - 1) - sig_length
+   pad_zeros <- 2 * round(pad_zeros / 2)
    .data$signals <- purrr::map_df(.data$signals,
                                   ~pad(.,
-                                       fft_length))
+                                       pad_zeros))
+  # .data$signals <- purrr::map_df(.data$signals,
+  #                               ~pad(.,
+  #                                    fft_length))
    .data$signals <- future.apply::future_lapply(.data$signals,
                                                 signal::fftfilt,
                                                 b = filt_coef,
@@ -216,8 +223,12 @@ run_fir <- function(.data,
    # padding and the group delay
    .data$signals <- purrr::map_df(.data$signals,
                                   ~fix_grpdelay(.,
-                                                fft_length,
+                                                pad_zeros,
                                                 filter_order / 2))
+     # .data$signals <- purrr::map_df(.data$signals,
+     #                                ~fix_grpdelay(.,
+     #                                              fft_length,
+     #                                              filter_order / 2))
    .data$signals <- tibble::as_tibble(.data$signals)
    .data
 }
