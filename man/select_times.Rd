@@ -13,15 +13,13 @@ select_times(data, ...)
 
 \method{select_times}{default}(data, time_lim = NULL, ...)
 
-\method{select_times}{eeg_data}(data, time_lim = NULL, df_out = FALSE,
-  ...)
+\method{select_times}{eeg_data}(data, time_lim = NULL, df_out = FALSE, ...)
 
 \method{select_times}{eeg_epochs}(data, time_lim, df_out = FALSE, ...)
 
 \method{select_times}{eeg_evoked}(data, time_lim, df_out = FALSE, ...)
 
-\method{select_times}{eeg_tfr}(data, time_lim = NULL, df_out = FALSE,
-  ...)
+\method{select_times}{eeg_tfr}(data, time_lim = NULL, df_out = FALSE, ...)
 }
 \arguments{
 \item{data}{Data from which to select}
@@ -69,7 +67,8 @@ short_epochs
 \seealso{
 \code{\link{select_elecs}} and \code{\link{select_epochs}}
 
-Other Data selection functions: \code{\link{select_elecs}}
+Other Data selection functions: 
+\code{\link{select_elecs}()}
 }
 \author{
 Matt Craddock, \email{matt@mattcraddock.com}

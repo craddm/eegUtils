@@ -4,8 +4,7 @@
 \alias{import_set}
 \title{Load EEGLAB .set files}
 \usage{
-import_set(file_name, df_out = FALSE, participant_id = NULL,
-  recording = NULL)
+import_set(file_name, df_out = FALSE, participant_id = NULL, recording = NULL)
 }
 \arguments{
 \item{file_name}{Filename (and path if not in present working directory)}

@@ -4,10 +4,12 @@
 \alias{faster_epochs}
 \title{Perform global bad epoch detection for FASTER}
 \usage{
-faster_epochs(data, ...)
+faster_epochs(data, sds = 3, ...)
 }
 \arguments{
 \item{data}{\code{eeg_epochs} object}
+
+\item{sds}{standard deviations for threshold}
 
 \item{...}{Further parameters (tbd)}
 }
