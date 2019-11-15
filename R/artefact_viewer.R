@@ -36,7 +36,11 @@ view_artefacts <- function(data) {
         shinydashboard::tabItem(tabName = "plotly_chans",
                                 h2("Channel statistics"),
                                 channelPlotly(chan_dat),
-                                plotly::plotlyOutput("erpplot")
+                                fluidRow(
+                                  column(6,
+                                         plotly::plotlyOutput("erpplot")),
+                                  column(6,
+                                         plotly::plotlyOutput("erpimage"))),
                                 ),
         shinydashboard::tabItem(tabName = "plotly_epochs",
                                 h2("Epoch statistics"),
@@ -69,6 +73,16 @@ view_artefacts <- function(data) {
       }
     })
 
+    output$erpimage <- plotly::renderPlotly({
+      s <- plotly::event_data("plotly_click")
+
+      print(s)
+      if (length(s)) {
+        erp_image(data,
+                  electrode = s[["x"]])
+      }
+    })
+
     output$chan_plotly <- plotly::renderPlotly({
       plotly::plot_ly(chan_dat,
                       x = ~electrode,
@@ -88,7 +102,8 @@ view_artefacts <- function(data) {
                       y = ~electrode,
                       x = ~epoch,
                       z = ~max,
-                      type = "heatmap")
+                      type = "heatmap") %>%
+        plotly::layout(title = "Kurtosis")
     })
 
     output$plotly_evars <- plotly::renderPlotly({
@@ -96,7 +111,8 @@ view_artefacts <- function(data) {
                       x = ~epoch,
                       y = ~electrode,
                       z = ~variance,
-                      type = "heatmap")
+                      type = "heatmap") %>%
+        plotly::layout(title = "Variance")
     })
 
     output$plotly_kurt <- plotly::renderPlotly({
@@ -104,7 +120,8 @@ view_artefacts <- function(data) {
                       x = ~epoch,
                       y = ~electrode,
                       z = ~kurtosis,
-                      type = "heatmap")
+                      type = "heatmap") %>%
+        plotly::layout(title = "Kurtosis")
     })
 
   }
