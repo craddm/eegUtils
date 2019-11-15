@@ -7,8 +7,7 @@
 \usage{
 export_bva(.data, filename, orientation)
 
-\method{export_bva}{eeg_data}(.data, filename,
-  orientation = "VECTORIZED")
+\method{export_bva}{eeg_data}(.data, filename, orientation = "VECTORIZED")
 }
 \arguments{
 \item{.data}{\code{eeg_data} object to be exported.}

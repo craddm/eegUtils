@@ -7,8 +7,14 @@
 \usage{
 eeg_decomp(data, ...)
 
-\method{eeg_decomp}{eeg_epochs}(data, sig_range, noise_range = NULL,
-  method = "ssd", verbose = TRUE, ...)
+\method{eeg_decomp}{eeg_epochs}(
+  data,
+  sig_range,
+  noise_range = NULL,
+  method = "ssd",
+  verbose = TRUE,
+  ...
+)
 }
 \arguments{
 \item{data}{An \code{eeg_data} object}

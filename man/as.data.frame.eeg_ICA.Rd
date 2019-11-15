@@ -4,8 +4,16 @@
 \alias{as.data.frame.eeg_ICA}
 \title{Convert \code{eeg_ICA} object to data frame}
 \usage{
-\method{as.data.frame}{eeg_ICA}(x, row.names = NULL, optional = FALSE,
-  long = FALSE, cond_labels, mixing = FALSE, coords = TRUE, ...)
+\method{as.data.frame}{eeg_ICA}(
+  x,
+  row.names = NULL,
+  optional = FALSE,
+  long = FALSE,
+  cond_labels,
+  mixing = FALSE,
+  coords = TRUE,
+  ...
+)
 }
 \arguments{
 \item{x}{Object of class \code{eeg_ICA}}
