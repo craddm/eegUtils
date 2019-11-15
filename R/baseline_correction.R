@@ -246,20 +246,24 @@ rm_baseline.eeg_evoked <- function(data,
                                    verbose = TRUE,
                                    ...) {
 
+  orig_cols <- channel_names(data)
   # Edit to handle cases where multiple epochs/participants, now that the internal structure differs
   if (is.null(time_lim)) {
     data$signals <- data.table::as.data.table(as.data.frame(data))
+    data$signals <- data$signals[, c(orig_cols) := lapply(.SD,
+                                                          function(x) x - mean(x)),
+                                 by = c("participant_id", "epoch"),
+                                 .SDcols = orig_cols]
 
   } else {
-    orig_cols <- channel_names(data)
+
     data$signals <- data.table::as.data.table(as.data.frame(data))
     data$signals <-
       data$signals[, c(orig_cols) := lapply(.SD,
                                             function(x) x - mean(x[time > time_lim[1] & time < time_lim[2]])),
        .SDcols = orig_cols,
-       by = epoch]
-    data$signals <- tibble::as_tibble(data$signals[, ..orig_cols])
-
+       by = c("participant_id", "epoch")]
   }
+  data$signals <- tibble::as_tibble(data$signals[, ..orig_cols])
   data
 }
