@@ -171,10 +171,11 @@ faster_chans <- function(data, sds = 3, ...) {
 #' Perform global bad epoch detection for FASTER
 #'
 #' @param data \code{eeg_epochs} object
+#' @param sds standard deviations for threshold
 #' @param ... Further parameters (tbd)
 #' @keywords internal
 
-faster_epochs <- function(data, ...) {
+faster_epochs <- function(data, sds = 3, ...) {
   chans <- channel_names(data)
   data <- data.table::as.data.table(data)
   chan_means <- data[, lapply(.SD, mean), .SDcols = chans]
@@ -182,19 +183,19 @@ faster_epochs <- function(data, ...) {
                           .SDcols = chans,
                           by = epoch]
   epoch_range <- epoch_range[, .(Mean = rowMeans(.SD)), by = epoch]
-  epoch_range <- abs(scale(epoch_range$Mean)) > 3
+  epoch_range <- abs(scale(epoch_range$Mean)) > sds
 
   epoch_diffs <- data[, lapply(.SD, mean),
                        .SDcols = chans,
                        by = epoch][, lapply(.SD, function(x) x - mean(x)),
                                    .SDcols = chans][ ,
                                                      .(Mean = rowMeans(.SD))]
-  epoch_diffs <- abs(scale(epoch_diffs$Mean)) > 3
+  epoch_diffs <- abs(scale(epoch_diffs$Mean)) > sds
 
   epoch_vars <- data[, lapply(.SD, var), .SDcols = chans,
                       by = epoch][, apply(.SD, 1, mean),
                                   .SDcols = chans]
-  epoch_vars <- abs(scale(epoch_vars)) > 3
+  epoch_vars <- abs(scale(epoch_vars)) > sds
 
   bad_epochs <- matrix(c(rowSums(epoch_vars) > 0,
                          rowSums(epoch_range) > 0,
@@ -311,7 +312,8 @@ quick_hurst <- function(data) {
 #' @keywords internal
 
 faster_epo_stat <- function(data,
-                            exclude = NULL) {
+                            exclude = NULL,
+                            sds = 3) {
 
   if (!is.null(exclude)) {
     data <- select(data, -exclude)
@@ -321,8 +323,8 @@ faster_epo_stat <- function(data,
                          range_diff = t(diff(t(matrixStats::colRanges(as.matrix(data)))))
                          #dev = sweep(data, 2, chan_means)
                          )
-  # Check if any measure is above 3 standard deviations
-  bad_chans <- rowSums(scale(measures) > 3) > 0
+  # Check if any measure is above threshold of standard deviations
+  bad_chans <- rowSums(scale(measures) > sds) > 0
   bad_chans <- names(data)[bad_chans]
   bad_chans
 }
@@ -441,14 +443,14 @@ channel_stats <- function(data, ...) {
 channel_stats.eeg_data <- function(data, ...) {
 
   chan_means <- colMeans(data$signals)
-  #chan_means <- as.data.table(data$signals)
-  #chan_means <- chan_means[, lapply(.SD, mean)]
   chan_sds <- apply(data$signals, 2, stats::sd)
-  chan_var <- apply(data$signals, 2, stats::var)
+  chan_var <- chan_sds^2
+  #chan_kurt <- as.numeric(as.data.table(data$signals)[, lapply(.SD, kurtosis)])
   chan_kurt <- apply(data$signals, 2, kurtosis)
 
   data.frame(electrode = names(data$signals),
              means = chan_means,
+             sds = chan_sds,
              variance = chan_var,
              kurtosis = chan_kurt
              )
