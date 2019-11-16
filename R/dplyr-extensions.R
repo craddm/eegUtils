@@ -9,6 +9,11 @@ filter.eeg_epochs <- function(.data,
 
   orig_cols <- channel_names(.data)
   args <- rlang::enexprs(...)
+
+  # convert the signals to a data frame that has both the EEG data and epoch labels etc.
+  # filter out anything that matches the criteria
+  # then return to original format
+
   .data$signals <- as.data.frame(.data)
   .data$signals <- dplyr::filter(.data$signals,
                                  ...)
@@ -57,20 +62,31 @@ filter.eeg_epochs <- function(.data,
 #' @importFrom dplyr filter
 #' @export
 filter.eeg_data <- function(.data, ...) {
+
+  args <- rlang::enexprs(...)
+
+  arg_list <- parse_args(args, .data)
+
   orig_cols <- channel_names(.data)
+
   .data$signals <- as.data.frame(.data)
   .data$signals <- dplyr::filter(.data$signals, ...)
   .data$signals <- .data$signals[, orig_cols]
-  .data$timings <- dplyr::filter(.data$timings, ...)
-  .data$events <- dplyr::filter(.data$events,
-                                ...)
 
-  # ensure this also handles the epoch structure correctly
-  epo_args <- grepl(paste(names(.data$epochs), collapse = "|"),
-                    unlist(args))
-  if (any(epo_args)) {
+  if (any(arg_list$in_timings)) {
+    .data$timings <- dplyr::filter(.data$timings, ...)
+    .data$events$time <- .data$events$event_time
+    .data$events <- dplyr::filter(.data$events,
+                                  ...)
+  }
+
+  # # ensure this also handles the epoch structure correctly
+  # epo_args <- grepl(paste(names(.data$epochs), collapse = "|"),
+  #                   unlist(args))
+
+  if (any(arg_list$in_epochs)) {
     .data$epochs <- dplyr::filter(.data$epochs,
-                                  !!!args[epo_args])
+                                  !!!args[arg_list$in_epochs])
   }
   .data
 }
@@ -82,14 +98,21 @@ filter.eeg_evoked <- function(.data,
 
   orig_cols <- channel_names(.data)
   args <- rlang::exprs(...)
+  arg_list <- parse_args(args,
+                         .data)
+
   .data$signals <- as.data.frame(.data)
   .data$signals <- dplyr::filter(.data$signals,
                                  ...)
   .data$signals <- .data$signals[, orig_cols]
-  .data$timings <- dplyr::filter(.data$timings,
-                                 ...)
-  .data$events <- dplyr::filter(.data$events,
-                                ...)
+
+  if (nrow(.data$signals) == 0) {
+    warnings("All data removed!")
+  }
+
+  if (any(arg_list$in_timings)) {
+    .data$timings <- dplyr::filter(.data$timings, ...)
+  }
 
   #conditionally filter the epochs structure if any of the arguments refer to
   #its contents. also need to fix this for timings - if we filter based on the
@@ -99,16 +122,14 @@ filter.eeg_evoked <- function(.data,
     return(.data)
   }
 
-  epo_args <- grepl(paste(names(.data$epochs), collapse = "|"),
-                    unlist(args))
-  if (any(epo_args)) {
+  if (any(arg_list$in_epochs)) {
     .data$epochs <- dplyr::filter(.data$epochs,
-                                  !!!args[epo_args])
+                                  !!!args[arg_list$in_epochs])
   }
   .data
 }
 
-#' @keywords internal
+#' @export
 filter.eeg_tfr <- function(.data, ...) {
 
   args <- rlang::enexprs(...)
@@ -145,7 +166,7 @@ filter.eeg_tfr <- function(.data, ...) {
     .data$timings <- dplyr::filter(.data$timings,
                                    epoch %in% keep_epochs)
     .data$signals <- abind::asub(.data$signals,
-                                 keep_epochs,
+                                 as.character(keep_epochs),
                                  dims = which(.data$dimensions == "epoch"))
     .data$events <- dplyr::filter(.data$events,
                                   epoch %in% keep_epochs)
@@ -175,12 +196,26 @@ filter.eeg_tfr <- function(.data, ...) {
   .data
 }
 
-parse_args <- function(x) {
+#' This function checks which elements of the object need to be
+#' accessed/filtered
+#' @keywords internal
+parse_args <- function(arg_list,
+                       data) {
 
-  dimnames(x$signals)
-  if ("epoch" %in% x) {
+  which_calls <- vapply(arg_list,
+                        is.call,
+                        logical(1),
+                        USE.NAMES = FALSE)
 
-  }
+  lhs_args <- unlist(lapply(arg_list[which_calls],
+                            function(x) as.character(x[[2]])))
+
+  in_epochs <- lhs_args %in% names(epochs(data))
+  in_timings <- lhs_args %in% names(data$timings)
+
+  return(list(lhs_args = lhs_args,
+              in_epochs = in_epochs,
+              in_timings = in_timings))
 }
 
 #' @importFrom dplyr select
