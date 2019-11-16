@@ -1,6 +1,11 @@
 context("Test dplyr exports")
 demo_SOBI <- run_ICA(demo_epochs, pca = 10)
-demo_tfr <- compute_tfr(demo_epochs, n_freq = 2, n_cycles = 3, foi = c(8, 12), keep_trials = TRUE)
+demo_tfr <- compute_tfr(demo_epochs,
+                        n_freq = 2,
+                        n_cycles = 3,
+                        foi = c(8, 12),
+                        keep_trials = TRUE)
+
 test_that("selection of electrodes and times works as expected", {
 
   add_col <- function(.data) {

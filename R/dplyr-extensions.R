@@ -10,9 +10,9 @@ filter.eeg_epochs <- function(.data,
   orig_cols <- channel_names(.data)
   args <- rlang::enexprs(...)
 
-  # convert the signals to a data frame that has both the EEG data and epoch labels etc.
-  # filter out anything that matches the criteria
-  # then return to original format
+  # convert the signals to a data frame that has both the EEG data and epoch
+  # labels etc. filter out anything that matches the criteria then return to
+  # original format. May want to recode this?
 
   .data$signals <- as.data.frame(.data)
   .data$signals <- dplyr::filter(.data$signals,
