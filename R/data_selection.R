@@ -306,10 +306,9 @@ select_elecs.eeg_ICA <- function(data,
   data$mixing_matrix <- data$mixing_matrix[,
                                            c(comps, TRUE),
                                            drop = FALSE]
-  data$unmixing_matrix <- data$unmixing_matrix[,
-                                             c(comps,
-                                               TRUE),
-                                             drop = FALSE]
+  data$unmixing_matrix <- data$unmixing_matrix[comps,
+                                               ,
+                                               drop = FALSE]
   data$signals <- data$signals[,
                                comps,
                                drop = FALSE]
