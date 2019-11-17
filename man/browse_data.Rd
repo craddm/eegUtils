@@ -11,11 +11,9 @@ browse_data(data, ...)
 
 \method{browse_data}{eeg_ICA}(data, ...)
 
-\method{browse_data}{eeg_data}(data, sig_length = 5, n_elecs = NULL,
-  downsample = TRUE, ...)
+\method{browse_data}{eeg_data}(data, sig_length = 5, n_elecs = NULL, downsample = TRUE, ...)
 
-\method{browse_data}{eeg_epochs}(data, sig_length = 5, n_elecs = NULL,
-  downsample = FALSE, ...)
+\method{browse_data}{eeg_epochs}(data, sig_length = 5, n_elecs = NULL, downsample = FALSE, ...)
 }
 \arguments{
 \item{data}{\code{eeg_data}, \code{eeg_epochs}, or \code{eeg_ICA} object to be

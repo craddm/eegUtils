@@ -8,24 +8,53 @@
 \alias{geom_channels}
 \title{Create an interpolated scalp surface}
 \usage{
-stat_scalpmap(mapping = NULL, data = NULL, position = "identity",
-  na.rm = FALSE, show.legend = NA, inherit.aes = TRUE,
-  grid_res = 300, interpolate = FALSE, interp_limit = "skirt",
-  method = "biharmonic", ...)
+stat_scalpmap(
+  mapping = NULL,
+  data = NULL,
+  position = "identity",
+  na.rm = FALSE,
+  show.legend = NA,
+  inherit.aes = TRUE,
+  grid_res = 300,
+  interpolate = FALSE,
+  interp_limit = "skirt",
+  method = "biharmonic",
+  ...
+)
 
-geom_head(mapping = NULL, data = NULL, show.legend = NA,
-  na.rm = TRUE, inherit.aes = TRUE, interp_limit = "skirt",
-  r = NULL, ...)
+geom_head(
+  mapping = NULL,
+  data = NULL,
+  show.legend = NA,
+  na.rm = TRUE,
+  inherit.aes = TRUE,
+  interp_limit = "skirt",
+  r = NULL,
+  ...
+)
 
-geom_mask(mapping = NULL, data = NULL, show.legend = NA,
-  na.rm = FALSE, colour = "white", size = rel(6.5),
-  scale_fac = 1.32, ...)
+geom_mask(
+  mapping = NULL,
+  data = NULL,
+  show.legend = NA,
+  na.rm = FALSE,
+  colour = "white",
+  size = rel(6.5),
+  scale_fac = 1.32,
+  ...
+)
 
-geom_ears(mapping = NULL, data = NULL, show.legend = NA,
-  na.rm = FALSE, ...)
+geom_ears(mapping = NULL, data = NULL, show.legend = NA, na.rm = FALSE, ...)
 
-geom_channels(mapping = NULL, data = NULL, geom = "point",
-  show.legend = NA, inherit.aes = TRUE, na.rm = TRUE, ...)
+geom_channels(
+  mapping = NULL,
+  data = NULL,
+  geom = "point",
+  show.legend = NA,
+  inherit.aes = TRUE,
+  na.rm = TRUE,
+  ...
+)
 }
 \arguments{
 \item{mapping}{Set of aesthetic mappings created by \code{\link[=aes]{aes()}} or
@@ -109,11 +138,14 @@ This is a convenience function to prevent overplotting when the input data
 contains many rows of data.
 }
 \seealso{
-Other topoplot functions: \code{\link{geom_topo}}
+Other topoplot functions: 
+\code{\link{geom_topo}()}
 
-Other topoplot functions: \code{\link{geom_topo}}
+Other topoplot functions: 
+\code{\link{geom_topo}()}
 
-Other topoplot functions: \code{\link{geom_topo}}
+Other topoplot functions: 
+\code{\link{geom_topo}()}
 }
 \author{
 Matt Craddock \email{matt@mattcraddock.com}

@@ -12,11 +12,9 @@ eeg_reference(data, ...)
 
 \method{eeg_reference}{default}(data, ...)
 
-\method{eeg_reference}{eeg_data}(data, ref_chans = "average",
-  exclude = NULL, robust = FALSE, ...)
+\method{eeg_reference}{eeg_data}(data, ref_chans = "average", exclude = NULL, robust = FALSE, ...)
 
-\method{eeg_reference}{eeg_epochs}(data, ref_chans = "average",
-  exclude = NULL, robust = FALSE, ...)
+\method{eeg_reference}{eeg_epochs}(data, ref_chans = "average", exclude = NULL, robust = FALSE, ...)
 
 reref_eeg(data, ...)
 }

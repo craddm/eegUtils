@@ -4,8 +4,15 @@
 \alias{eeg_epochs}
 \title{Function to create an S3 object of class "eeg_epochs".}
 \usage{
-eeg_epochs(data, srate, events = NULL, chan_info = NULL,
-  timings = NULL, reference = NULL, epochs = NULL)
+eeg_epochs(
+  data,
+  srate,
+  events = NULL,
+  chan_info = NULL,
+  timings = NULL,
+  reference = NULL,
+  epochs = NULL
+)
 }
 \arguments{
 \item{data}{Raw data - signals from electrodes/channels.}

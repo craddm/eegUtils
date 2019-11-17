@@ -4,8 +4,17 @@
 \alias{eeg_tfr}
 \title{Object creator for eeg_tfr objects.}
 \usage{
-eeg_tfr(data, srate, events, chan_info = NULL, reference,
-  timings = NULL, freq_info, dimensions, epochs = NULL)
+eeg_tfr(
+  data,
+  srate,
+  events,
+  chan_info = NULL,
+  reference,
+  timings = NULL,
+  freq_info,
+  dimensions,
+  epochs = NULL
+)
 }
 \arguments{
 \item{data}{TFR transformed data}

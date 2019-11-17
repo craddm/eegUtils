@@ -10,8 +10,7 @@ tag_epochs(.data, ...)
 
 \method{tag_epochs}{default}(.data, ...)
 
-\method{tag_epochs}{eeg_epochs}(.data, event_type = NULL,
-  event_label = NULL, ...)
+\method{tag_epochs}{eeg_epochs}(.data, event_type = NULL, event_label = NULL, ...)
 }
 \arguments{
 \item{.data}{An \code{eegUtils} object}

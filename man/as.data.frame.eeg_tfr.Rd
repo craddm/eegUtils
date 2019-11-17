@@ -4,8 +4,7 @@
 \alias{as.data.frame.eeg_tfr}
 \title{Convert \code{eeg_tfr} objects to data frames}
 \usage{
-\method{as.data.frame}{eeg_tfr}(x, row.names = NULL, optional = FALSE,
-  long = FALSE, ...)
+\method{as.data.frame}{eeg_tfr}(x, row.names = NULL, optional = FALSE, long = FALSE, ...)
 }
 \arguments{
 \item{x}{Object of class \code{eeg_tfr}}

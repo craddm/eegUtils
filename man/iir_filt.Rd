@@ -9,14 +9,33 @@
 \usage{
 iir_filt(data, ...)
 
-\method{iir_filt}{data.frame}(data, low_freq = NULL, high_freq = NULL,
-  filter_order = 4, srate, silent = FALSE, ...)
+\method{iir_filt}{data.frame}(
+  data,
+  low_freq = NULL,
+  high_freq = NULL,
+  filter_order = 4,
+  srate,
+  silent = FALSE,
+  ...
+)
 
-\method{iir_filt}{eeg_data}(data, low_freq = NULL, high_freq = NULL,
-  filter_order = 4, silent = FALSE, ...)
+\method{iir_filt}{eeg_data}(
+  data,
+  low_freq = NULL,
+  high_freq = NULL,
+  filter_order = 4,
+  silent = FALSE,
+  ...
+)
 
-\method{iir_filt}{eeg_epochs}(data, low_freq = NULL, high_freq = NULL,
-  filter_order = 4, silent = FALSE, ...)
+\method{iir_filt}{eeg_epochs}(
+  data,
+  low_freq = NULL,
+  high_freq = NULL,
+  filter_order = 4,
+  silent = FALSE,
+  ...
+)
 }
 \arguments{
 \item{data}{Data to be filtered.}

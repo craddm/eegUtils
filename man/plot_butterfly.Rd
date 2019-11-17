@@ -11,25 +11,59 @@
 \usage{
 plot_butterfly(data, ...)
 
-\method{plot_butterfly}{default}(data, time_lim = NULL,
-  baseline = NULL, colourmap = NULL, legend = TRUE,
-  continuous = FALSE, browse_mode = FALSE, allow_facets = FALSE, ...)
+\method{plot_butterfly}{default}(
+  data,
+  time_lim = NULL,
+  baseline = NULL,
+  colourmap = NULL,
+  legend = TRUE,
+  continuous = FALSE,
+  browse_mode = FALSE,
+  allow_facets = FALSE,
+  ...
+)
 
-\method{plot_butterfly}{eeg_evoked}(data, time_lim = NULL,
-  baseline = NULL, colourmap = NULL, legend = TRUE,
-  continuous = FALSE, browse_mode = FALSE, allow_facets = FALSE, ...)
+\method{plot_butterfly}{eeg_evoked}(
+  data,
+  time_lim = NULL,
+  baseline = NULL,
+  colourmap = NULL,
+  legend = TRUE,
+  continuous = FALSE,
+  browse_mode = FALSE,
+  allow_facets = FALSE,
+  ...
+)
 
-\method{plot_butterfly}{eeg_data}(data, time_lim = NULL,
-  baseline = NULL, legend = TRUE, allow_facets = FALSE,
-  browse_mode = FALSE, ...)
+\method{plot_butterfly}{eeg_data}(
+  data,
+  time_lim = NULL,
+  baseline = NULL,
+  legend = TRUE,
+  allow_facets = FALSE,
+  browse_mode = FALSE,
+  ...
+)
 
-\method{plot_butterfly}{eeg_epochs}(data, time_lim = NULL,
-  baseline = NULL, legend = TRUE, allow_facets = FALSE,
-  browse_mode = FALSE, ...)
+\method{plot_butterfly}{eeg_epochs}(
+  data,
+  time_lim = NULL,
+  baseline = NULL,
+  legend = TRUE,
+  allow_facets = FALSE,
+  browse_mode = FALSE,
+  ...
+)
 
-\method{plot_butterfly}{eeg_stats}(data, time_lim = NULL,
-  baseline = NULL, legend = TRUE, allow_facets = FALSE,
-  browse_mode = FALSE, ...)
+\method{plot_butterfly}{eeg_stats}(
+  data,
+  time_lim = NULL,
+  baseline = NULL,
+  legend = TRUE,
+  allow_facets = FALSE,
+  browse_mode = FALSE,
+  ...
+)
 }
 \arguments{
 \item{data}{EEG dataset. Should have multiple timepoints.}

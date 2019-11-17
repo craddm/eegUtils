@@ -4,8 +4,14 @@
 \alias{as.data.frame.eeg_evoked}
 \title{Convert \code{eeg_evoked} object to data frame}
 \usage{
-\method{as.data.frame}{eeg_evoked}(x, row.names = NULL,
-  optional = FALSE, long = FALSE, coords = TRUE, ...)
+\method{as.data.frame}{eeg_evoked}(
+  x,
+  row.names = NULL,
+  optional = FALSE,
+  long = FALSE,
+  coords = TRUE,
+  ...
+)
 }
 \arguments{
 \item{x}{Object of class \code{eeg_evoked}}

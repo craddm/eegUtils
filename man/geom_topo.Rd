@@ -4,11 +4,23 @@
 \alias{geom_topo}
 \title{Create a topographical plot}
 \usage{
-geom_topo(mapping = NULL, data = NULL, stat = "identity",
-  position = "identity", show.legend = NA, na.rm = TRUE,
-  inherit.aes = TRUE, interpolate = FALSE, interp_limit = "skirt",
-  chan_markers = "point", chan_size = rel(2), head_size = rel(1.5),
-  grid_res = 200, method = "biharmonic", ...)
+geom_topo(
+  mapping = NULL,
+  data = NULL,
+  stat = "identity",
+  position = "identity",
+  show.legend = NA,
+  na.rm = TRUE,
+  inherit.aes = TRUE,
+  interpolate = FALSE,
+  interp_limit = "skirt",
+  chan_markers = "point",
+  chan_size = rel(2),
+  head_size = rel(1.5),
+  grid_res = 200,
+  method = "biharmonic",
+  ...
+)
 }
 \arguments{
 \item{mapping}{Set of aesthetic mappings created by \code{\link[=aes]{aes()}} or
@@ -83,6 +95,7 @@ library(ggplot2)
 ggplot(demo_epochs, aes(x = x, y = y, fill = amplitude)) + geom_topo()
 }
 \seealso{
-Other topoplot functions: \code{\link{stat_scalpmap}}
+Other topoplot functions: 
+\code{\link{stat_scalpmap}()}
 }
 \concept{topoplot functions}

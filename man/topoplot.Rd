@@ -14,39 +14,111 @@ topoplot(data, ...)
 
 \method{topoplot}{default}(data, ...)
 
-\method{topoplot}{data.frame}(data, time_lim = NULL, limits = NULL,
-  chanLocs = NULL, method = "Biharmonic", r = NULL, grid_res = 200,
-  palette = "RdBu", interp_limit = "skirt", contour = TRUE,
-  chan_marker = "point", quantity = "amplitude", montage = NULL,
-  colourmap, highlights = NULL, scaling = 1, groups = NULL,
-  verbose = TRUE, ...)
+\method{topoplot}{data.frame}(
+  data,
+  time_lim = NULL,
+  limits = NULL,
+  chanLocs = NULL,
+  method = "Biharmonic",
+  r = NULL,
+  grid_res = 200,
+  palette = "RdBu",
+  interp_limit = "skirt",
+  contour = TRUE,
+  chan_marker = "point",
+  quantity = "amplitude",
+  montage = NULL,
+  colourmap,
+  highlights = NULL,
+  scaling = 1,
+  groups = NULL,
+  verbose = TRUE,
+  ...
+)
 
-\method{topoplot}{eeg_data}(data, time_lim = NULL, limits = NULL,
-  chanLocs = NULL, method = "Biharmonic", r = NULL, grid_res = 200,
-  palette = "RdBu", interp_limit = "skirt", contour = TRUE,
-  chan_marker = "point", quantity = "amplitude", montage = NULL,
-  highlights = NULL, scaling = 1, verbose = TRUE, ...)
+\method{topoplot}{eeg_data}(
+  data,
+  time_lim = NULL,
+  limits = NULL,
+  chanLocs = NULL,
+  method = "Biharmonic",
+  r = NULL,
+  grid_res = 200,
+  palette = "RdBu",
+  interp_limit = "skirt",
+  contour = TRUE,
+  chan_marker = "point",
+  quantity = "amplitude",
+  montage = NULL,
+  highlights = NULL,
+  scaling = 1,
+  verbose = TRUE,
+  ...
+)
 
-\method{topoplot}{eeg_epochs}(data, time_lim = NULL, limits = NULL,
-  chanLocs = NULL, method = "Biharmonic", r = NULL, grid_res = 200,
-  palette = "RdBu", interp_limit = "skirt", contour = TRUE,
-  chan_marker = "point", quantity = "amplitude", montage = NULL,
-  highlights = NULL, scaling = 1, groups = NULL, verbose = TRUE,
-  ...)
+\method{topoplot}{eeg_epochs}(
+  data,
+  time_lim = NULL,
+  limits = NULL,
+  chanLocs = NULL,
+  method = "Biharmonic",
+  r = NULL,
+  grid_res = 200,
+  palette = "RdBu",
+  interp_limit = "skirt",
+  contour = TRUE,
+  chan_marker = "point",
+  quantity = "amplitude",
+  montage = NULL,
+  highlights = NULL,
+  scaling = 1,
+  groups = NULL,
+  verbose = TRUE,
+  ...
+)
 
-\method{topoplot}{eeg_ICA}(data, component, time_lim = NULL,
-  limits = NULL, chanLocs = NULL, method = "Biharmonic", r = NULL,
-  grid_res = 200, palette = "RdBu", interp_limit = "skirt",
-  contour = TRUE, chan_marker = "point", quantity = "amplitude",
-  montage = NULL, colourmap, highlights = NULL, scaling = 1,
-  verbose = TRUE, ...)
+\method{topoplot}{eeg_ICA}(
+  data,
+  component,
+  time_lim = NULL,
+  limits = NULL,
+  chanLocs = NULL,
+  method = "Biharmonic",
+  r = NULL,
+  grid_res = 200,
+  palette = "RdBu",
+  interp_limit = "skirt",
+  contour = TRUE,
+  chan_marker = "point",
+  quantity = "amplitude",
+  montage = NULL,
+  colourmap,
+  highlights = NULL,
+  scaling = 1,
+  verbose = TRUE,
+  ...
+)
 
-\method{topoplot}{eeg_tfr}(data, time_lim = NULL, limits = NULL,
-  chanLocs = NULL, method = "Biharmonic", r = NULL, grid_res = 200,
-  palette = "RdBu", interp_limit = "skirt", contour = TRUE,
-  chan_marker = "point", quantity = "power", montage = NULL,
-  highlights = NULL, scaling = 1, freq_range = NULL,
-  verbose = TRUE, ...)
+\method{topoplot}{eeg_tfr}(
+  data,
+  time_lim = NULL,
+  limits = NULL,
+  chanLocs = NULL,
+  method = "Biharmonic",
+  r = NULL,
+  grid_res = 200,
+  palette = "RdBu",
+  interp_limit = "skirt",
+  contour = TRUE,
+  chan_marker = "point",
+  quantity = "power",
+  montage = NULL,
+  highlights = NULL,
+  scaling = 1,
+  freq_range = NULL,
+  verbose = TRUE,
+  ...
+)
 }
 \arguments{
 \item{data}{An EEG dataset. If the input is a data.frame, then it must have

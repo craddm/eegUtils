@@ -9,14 +9,17 @@
 \usage{
 electrode_locations(data, ...)
 
-\method{electrode_locations}{data.frame}(data, electrode = "electrode",
-  drop = FALSE, montage = NULL, ...)
+\method{electrode_locations}{data.frame}(
+  data,
+  electrode = "electrode",
+  drop = FALSE,
+  montage = NULL,
+  ...
+)
 
-\method{electrode_locations}{eeg_data}(data, drop = FALSE,
-  montage = NULL, overwrite = FALSE, ...)
+\method{electrode_locations}{eeg_data}(data, drop = FALSE, montage = NULL, overwrite = FALSE, ...)
 
-\method{electrode_locations}{eeg_epochs}(data, drop = FALSE,
-  montage = NULL, overwrite = FALSE, ...)
+\method{electrode_locations}{eeg_epochs}(data, drop = FALSE, montage = NULL, overwrite = FALSE, ...)
 }
 \arguments{
 \item{data}{An EEG dataset.}
