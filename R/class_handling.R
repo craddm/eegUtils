@@ -152,18 +152,18 @@ eeg_psd <- function(data,
 #'
 #' @noRd
 
-eeg_GA <- function(data,
-                   srate,
-                   chan_info,
-                   timings,
-                   indivs) {
+eeg_group <- function(data,
+                      srate,
+                      chan_info,
+                      timings,
+                      epochs) {
 
   value <- list(signals = data,
                 srate = srate,
                 chan_info = chan_info,
                 timings = timings,
-                indivs = indivs)
-  class(value) <- "eeg_GA"
+                epochs = epochs)
+  class(value) <- "eeg_group"
   value
 }
 
