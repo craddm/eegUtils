@@ -103,7 +103,7 @@ eeg_average.eeg_evoked <- function(data,
 eeg_average.eeg_tfr <- function(data,
                                 cols = NULL,
                                 ...) {
-  if (!"epoch" %in% data$dimensions) {
+  if (!any(c("participant_id", "epoch") %in% data$dimensions)) {
     message("Data is already averaged.")
   } else {
     orig_names <- dimnames(data$signals)
@@ -121,6 +121,14 @@ average_tf <- function(data) {
 
   # Need to find a way to make this respect epochs structure...
   orig_dims <- dimnames(data$signals)
+
+  if ("participant_id" %in% names(orig_dims)) {
+    data$signals <- aperm(data$signals, c("participant_id",
+                                          "time",
+                                          "electrode",
+                                          "frequency"))
+    orig_dims <- dimnames(data$signals)
+  }
 
   if (data$freq_info$output == "phase") {
     data$signals <- apply(data$signals,
@@ -140,7 +148,7 @@ average_tf <- function(data) {
     cols <- c("epoch", "participant_id", "recording")
     data$epochs <- data$epochs[1, colnames(data$epochs) %in% cols]
   }
-  data$timings <- dplyr::filter(data$timings, epoch == 1)
+  data$timings <- tibble::tibble(time = as.numeric(dimnames(data$signals)[["time"]]))#dplyr::filter(data$timings, epoch == 1)
   data
 }
 
