@@ -249,7 +249,16 @@ as.data.frame.eeg_tfr <- function(x,
                             each = dim_size[1])
     out_df$epoch <- 1
   } else {
-    out_df <- aperm(x$signals, c("time", "frequency", "epoch", "electrode"))
+    # Check which dimenstion to average over - participant or epoch
+    if ("epoch" %in% x$dimensions) {
+      avg_dim <- "epoch"
+    } else if ("participant_id" %in% x$dimensions) {
+      avg_dim <- "participant_id"
+    }
+    out_df <- aperm(x$signals, c("time",
+                                 "frequency",
+                                 avg_dim,
+                                 "electrode"))
     dim_size <- dim(out_df)
     dim(out_df) <- c(dim_size[1] * dim_size[2] * dim_size[3],
                      dim_size[4])
@@ -259,14 +268,20 @@ as.data.frame.eeg_tfr <- function(x,
                        dim_size[3] * dim_size[2])#out_df$time)
     out_df$frequency <- rep(as.numeric(dimnames(x$signals)$frequency),
                             each = dim_size[1])
-    out_df$epoch <- rep(unique(x$epochs$epoch), each =
+    out_df$epoch <- rep(x$epochs$epoch, each =
                         dim_size[1] * dim_size[2])
+    out_df$participant_id <- rep(dimnames(x$signals)$participant_id,
+                                 each = dim_size[1])
 
     if (!is.null(x$epochs) && "epoch" %in% x$dimensions) {
       #out_df$epoch <- as.numeric(out_df$epoch)
       out_df <- dplyr::left_join(out_df,
                                  x$epochs,
                                  by = "epoch")
+    } else {
+      out_df <- dplyr::left_join(out_df,
+                                 x$epochs,
+                                 by = "participant_id")
     }
   }
 
