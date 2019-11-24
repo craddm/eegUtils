@@ -8,7 +8,10 @@ Authors@R: c(
   person("Matti", "Vuorre", role = "ctb", email = "mv2521@columbia.edu"))
 Maintainer: Matt Craddock <matt@mattcraddock.com>
 Description: A collection of functions for EEG processing. Includes import
-  functions for Biosemi (BDF) and Neuroscan (CNT), topographical plotting, referencing, and epoching.
+  functions for Biosemi (BDF), Neuroscan (CNT), Brain Vision Analyzer (VHDR),
+  EEGLAB (.set) and Fieldtrip (.mat). Many preprocessing functions such as
+  referencing, epoching, filtering, and ICA are available. There are a variety 
+  of visualizations possible, including timecourse and topographical plotting.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
