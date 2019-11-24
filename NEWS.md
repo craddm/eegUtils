@@ -1,6 +1,5 @@
 # eegUtils 0.5.0.9000
 
-
 ### Function changes
 - Added `filter` method for `eeg_tfr` objects
 
@@ -8,6 +7,8 @@
 - Now using `whitening` package for whitening before SOBI ICA
 - `select_epochs` for `eeg_ICA` objects fixed to correctly remove epochs from `signals`
 - added tests for `filter.eeg_ICA` and `filter.eeg_tfr`
+- fixed `filter.eeg_data` and `filter.eeg_evoked`
+- `select_elecs` for `eeg_ICA` now correctly removes components from the unmixing matrix
 
 # eegUtils 0.5.0
 

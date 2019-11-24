@@ -117,16 +117,23 @@ topo_norm <- function(angle, radius) {
 
 #' Rotate channel locations
 #'
+#' On import, channel locations may be rotated (e.g. Fpz pointing towards ears.)
+#' @examples
+#'
+#' plot_electrodes(demo_epochs)
+#' channels(demo_epochs) <- rotate_angle(channels(demo_epochs), 90)
+#' plot_electrodes(demo_epochs)
+#'
 #' @param chan_info channel information structure
 #' @param degrees degrees by which to rotate
-#' @keywords internal
+#' @export
 
 rotate_angle <- function(chan_info, degrees) {
 
   degrees <- degrees * pi / 180
   if ("CZ" %in% chan_info$electrode) {
-    cent_x <- chan_info[toupper(chan_info$electrode) == "Cz", ]$x
-    cent_y <- chan_info[toupper(chan_info$electrode) == "Cz", ]$y
+    cent_x <- chan_info[toupper(chan_info$electrode) == "CZ", ]$x
+    cent_y <- chan_info[toupper(chan_info$electrode) == "CZ", ]$y
   } else {
     cent_x <- 0
     cent_y <- 0

@@ -213,7 +213,7 @@ plot_tfr <- function(data,
                      fill_lims = NULL,
                      interpolate = FALSE) {
 
-  if (!class(data) == "eeg_tfr") {
+  if (!inherits(data,"eeg_tfr")) {
     stop("Object of class eeg_tfr required.")
   }
 

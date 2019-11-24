@@ -227,12 +227,13 @@ topoplot.data.frame <- function(data,
                                                     scaled_y = scaled_y)))
          },
          gam = {
-           out_df <- dplyr::mutate(data,
-                                 topos = map(data,
-                                             ~gam_topo(.x,
-                                                       grid_res = grid_res,
-                                                       scaled_x = scaled_x,
-                                                       scaled_y = scaled_y)))
+           out_df <-
+             dplyr::mutate(data,
+                           topos = map(data,
+                                       ~gam_topo(.x,
+                                                 grid_res = grid_res,
+                                                 scaled_x = scaled_x,
+                                                 scaled_y = scaled_y)))
          })
 
   out_df <- tidyr::unnest(out_df["topos"],
@@ -801,7 +802,9 @@ new_topo.eeg_epochs <- function(data,
                                 limits = NULL,
                                 grid_res = 200,
                                 palette = "RdBu",
-                                chan_markers = "point",
+                                chan_markers = c("point",
+                                                 "name",
+                                                 "none"),
                                 interpolate = TRUE,
                                 interp_limit = c("skirt",
                                                  "head"),
@@ -813,6 +816,10 @@ new_topo.eeg_epochs <- function(data,
   if (!keep_epochs) {
     data <- eeg_average(data)
   }
+
+  chan_markers <- match.arg(chan_markers)
+  method <- match.arg(method)
+  interp_limit <- match.arg(interp_limit)
 
   if (!is.null(time_lim)) {
     if (length(time_lim) == 1) {
@@ -848,12 +855,15 @@ new_topo.eeg_ICA <- function(data,
                              interpolate = TRUE,
                              interp_limit = "skirt",
                              keep_epochs = FALSE,
-                             method = "biharmonic",
+                             method = c("biharmonic",
+                                        "gam"),
                              ...) {
 
   data <- as.data.frame(data,
                         long = TRUE,
                         mixing = TRUE)
+
+  method <- match.arg(method)
 
   make_new_topo(data,
                 time_lim = time_lim,
@@ -878,6 +888,7 @@ make_new_topo <- function(data,
                           interp_limit,
                           keep_epochs,
                           method,
+                          colourlabel = NULL,
                           ...) {
 
   plot_out <-

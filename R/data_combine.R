@@ -153,7 +153,53 @@ eeg_combine.eeg_evoked <- function(data,
   } else {
     stop("All inputs must be eeg_evoked objects.")
   }
-  class(data) <- c("eeg_GA", "eeg_evoked", "eeg_epochs")
+  class(data) <- c("eeg_group", "eeg_evoked", "eeg_epochs")
+  data
+}
+
+
+eeg_combine.eeg_tfr <- function(data,
+                                ...) {
+  args <- list(...)
+  if (length(args) == 0) {
+    stop("Nothing to combine.")
+  }
+  if (check_classes(args)) {
+
+    # data$signals <- dplyr::bind_rows(data$signals,
+    #                                  purrr::map_df(args,
+    #                                                ~.$signals))
+    new_dim <- length(dim(data$signals)) + 1
+    orig_dims <- dimnames(data$signals)
+    data$signals <- abind::abind(data$signals,
+                                 do.call(abind::abind,
+                                         list(purrr::map(args, ~.$signals),
+                                              along = new_dim)),
+                                 along = new_dim,
+                                 use.first.dimnames = TRUE)
+    # data$timings <- dplyr::bind_rows(data$timings,
+    #                                  purrr::map_df(args,
+    #                                                ~.$timings))
+    data$epochs  <- dplyr::bind_rows(data$epochs,
+                                     purrr::map_df(args,
+                                                   ~.$epochs))
+    if (length(unique(data$epochs$participant_id)) > 1) {
+      dimnames(data$signals) <- c(orig_dims,
+                                  list(participant_id = data$epochs$participant_id))
+      data$dimensions <- c(data$dimensions,
+                           "participant_id")
+      class(data) <- c("eeg_group", "eeg_tfr")
+    } else {
+      dimnames(data$signals) <- c(orig_dims,
+                                  list(epoch = data$epochs$epoch))
+      data$epoch <- c(data$dimensions,
+                      "epoch")
+      class(data) <- c("eeg_tfr")
+    }
+
+  } else {
+    stop("All inputs must be eeg_tfr objects.")
+  }
   data
 }
 
@@ -180,7 +226,7 @@ check_timings.eeg_data <- function(.data) {
 check_timings.eeg_epochs <- function(data) {
 
   n_rows <- nrow(data$timings)
-  epochs <- unique(data$timings$epoch)
+  #epochs <- unique(data$timings$epoch)
 
   # if the epoch numbers are not ascending, fix them...
   while (any(diff(data$timings$epoch) < 0)) {

@@ -855,7 +855,10 @@ ft_raw <- function(data,
   }
 
   n_trials <- length(data["trial", , ][[1]])
-  signals <- tibble::as_tibble(t(as.data.frame(data["trial", , ])))
+  signals <- purrr::flatten(purrr::flatten(data["trial", ,]))
+  signals <- tibble::as_tibble(t(do.call(cbind, signals)))
+
+    #tibble::as_tibble(t(as.data.frame(data["trial", , ])))
 
   names(signals) <- sig_names
   timings <- tibble::tibble(epoch = rep(seq(1, n_trials),
