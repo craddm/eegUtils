@@ -2,7 +2,7 @@
 % Please edit documentation in R/glm_fitting.R
 \name{fit_glm}
 \alias{fit_glm}
-\title{Fit a GLM model to each timepoint for an individual subject.}
+\title{Fit a GLM model to each timepoint for an individual subject}
 \usage{
 fit_glm(formula, data, ...)
 }
@@ -14,7 +14,7 @@ fit_glm(formula, data, ...)
 \item{...}{Any other arguments passed to (LM/GLM)}
 }
 \description{
-Fits a linear model to each timepoint using lm().
+Fits a linear model to each timepoint separately for each electrode.
 }
 \author{
 Matt Craddock, \email{matt@mattcraddock.com}
