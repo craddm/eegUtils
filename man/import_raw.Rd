@@ -4,8 +4,14 @@
 \alias{import_raw}
 \title{Function for reading raw data.}
 \usage{
-import_raw(file_name, file_path = NULL, chan_nos = NULL,
-  recording = NULL, participant_id = character(1), fast_bdf = TRUE)
+import_raw(
+  file_name,
+  file_path = NULL,
+  chan_nos = NULL,
+  recording = NULL,
+  participant_id = character(1),
+  fast_bdf = TRUE
+)
 }
 \arguments{
 \item{file_name}{File to import. Should include file extension.}

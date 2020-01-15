@@ -4,8 +4,14 @@
 \alias{as.data.frame.eeg_stats}
 \title{Convert \code{eeg_stats} objects to data frames}
 \usage{
-\method{as.data.frame}{eeg_stats}(x, row.names = NULL,
-  optional = FALSE, long = FALSE, coords = FALSE, ...)
+\method{as.data.frame}{eeg_stats}(
+  x,
+  row.names = NULL,
+  optional = FALSE,
+  long = FALSE,
+  coords = FALSE,
+  ...
+)
 }
 \arguments{
 \item{x}{Object of class \code{eeg_stats}}

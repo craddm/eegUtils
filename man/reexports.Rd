@@ -15,7 +15,7 @@ These objects are imported from other packages. Follow the links
 below to see their documentation.
 
 \describe{
-  \item{dplyr}{\code{\link[dplyr]{filter}}, \code{\link[dplyr]{select}}, \code{\link[dplyr]{mutate}}, \code{\link[dplyr]{rename}}}
+  \item{dplyr}{\code{\link[dplyr]{filter}}, \code{\link[dplyr]{mutate}}, \code{\link[dplyr]{rename}}, \code{\link[dplyr]{select}}}
 
   \item{ggplot2}{\code{\link[ggplot2]{fortify}}}
 }}

@@ -4,8 +4,13 @@
 \alias{erp_raster}
 \title{ERP raster plot}
 \usage{
-erp_raster(data, anat_order = TRUE, time_lim = NULL, clim = NULL,
-  interpolate = FALSE)
+erp_raster(
+  data,
+  anat_order = TRUE,
+  time_lim = NULL,
+  clim = NULL,
+  interpolate = FALSE
+)
 }
 \arguments{
 \item{data}{An \code{eeg_epochs} object}

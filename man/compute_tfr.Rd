@@ -11,13 +11,31 @@ compute_tfr(data, ...)
 
 \method{compute_tfr}{default}(data, ...)
 
-\method{compute_tfr}{eeg_epochs}(data, method = "morlet", foi, n_freq,
-  n_cycles = 7, keep_trials = FALSE, output = "power",
-  downsample = 1, verbose = TRUE, ...)
+\method{compute_tfr}{eeg_epochs}(
+  data,
+  method = "morlet",
+  foi,
+  n_freq,
+  n_cycles = 7,
+  keep_trials = FALSE,
+  output = "power",
+  downsample = 1,
+  verbose = TRUE,
+  ...
+)
 
-\method{compute_tfr}{eeg_evoked}(data, method = "morlet", foi, n_freq,
-  n_cycles = 7, keep_trials = FALSE, output = "power",
-  downsample = 1, verbose = TRUE, ...)
+\method{compute_tfr}{eeg_evoked}(
+  data,
+  method = "morlet",
+  foi,
+  n_freq,
+  n_cycles = 7,
+  keep_trials = FALSE,
+  output = "power",
+  downsample = 1,
+  verbose = TRUE,
+  ...
+)
 }
 \arguments{
 \item{data}{An object of class \code{eeg_epochs}.}

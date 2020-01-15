@@ -11,20 +11,15 @@
 \usage{
 rm_baseline(data, time_lim = NULL, ...)
 
-\method{rm_baseline}{eeg_data}(data, time_lim = NULL, verbose = TRUE,
-  ...)
+\method{rm_baseline}{eeg_data}(data, time_lim = NULL, verbose = TRUE, ...)
 
-\method{rm_baseline}{eeg_epochs}(data, time_lim = NULL, verbose = TRUE,
-  ...)
+\method{rm_baseline}{eeg_epochs}(data, time_lim = NULL, verbose = TRUE, ...)
 
-\method{rm_baseline}{data.frame}(data, time_lim = NULL, verbose = TRUE,
-  ...)
+\method{rm_baseline}{data.frame}(data, time_lim = NULL, verbose = TRUE, ...)
 
-\method{rm_baseline}{eeg_tfr}(data, time_lim = NULL, type = "divide",
-  verbose = TRUE, ...)
+\method{rm_baseline}{eeg_tfr}(data, time_lim = NULL, type = "divide", verbose = TRUE, ...)
 
-\method{rm_baseline}{eeg_evoked}(data, time_lim = NULL, verbose = TRUE,
-  ...)
+\method{rm_baseline}{eeg_evoked}(data, time_lim = NULL, verbose = TRUE, ...)
 }
 \arguments{
 \item{data}{Data to be baseline corrected.}

@@ -4,8 +4,15 @@
 \alias{as.data.frame.eeg_data}
 \title{Convert eeg_data to data.frame}
 \usage{
-\method{as.data.frame}{eeg_data}(x, row.names = NULL, optional = FALSE,
-  long = FALSE, events = FALSE, coords = FALSE, ...)
+\method{as.data.frame}{eeg_data}(
+  x,
+  row.names = NULL,
+  optional = FALSE,
+  long = FALSE,
+  events = FALSE,
+  coords = FALSE,
+  ...
+)
 }
 \arguments{
 \item{x}{Object of class \code{eeg_data}}

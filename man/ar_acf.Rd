@@ -7,8 +7,7 @@
 \usage{
 ar_acf(data, ...)
 
-\method{ar_acf}{eeg_ICA}(data, ms = 20, plot = TRUE, verbose = TRUE,
-  threshold = NULL, ...)
+\method{ar_acf}{eeg_ICA}(data, ms = 20, plot = TRUE, verbose = TRUE, threshold = NULL, ...)
 }
 \arguments{
 \item{data}{\code{eeg_ICA} object}

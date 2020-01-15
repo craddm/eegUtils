@@ -3,7 +3,6 @@
 \docType{package}
 \name{eegUtils}
 \alias{eegUtils}
-\alias{eegUtils-package}
 \title{eegUtils: A collection of utilities for EEG analysis}
 \description{
 eegUtils is a package for the processing, manipulation, and plotting of EEG

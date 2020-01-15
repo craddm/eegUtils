@@ -4,8 +4,7 @@
 \alias{import_ft}
 \title{Import Fieldtrip files}
 \usage{
-import_ft(file_name, participant_id = NULL, recording = NULL,
-  verbose = TRUE)
+import_ft(file_name, participant_id = NULL, recording = NULL, verbose = TRUE)
 }
 \arguments{
 \item{file_name}{Name of file to be imported.}

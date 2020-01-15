@@ -36,8 +36,10 @@ condition).
 }}
 
 \seealso{
-Other event handlers: \code{\link{events}},
-  \code{\link{list_epochs}}, \code{\link{list_events}}
+Other event handlers: 
+\code{\link{events}()},
+\code{\link{list_epochs}()},
+\code{\link{list_events}()}
 }
 \author{
 Matt Craddock \email{matt@mattcraddock.com}

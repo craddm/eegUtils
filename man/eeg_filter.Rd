@@ -8,13 +8,29 @@
 \usage{
 eeg_filter(.data, ...)
 
-\method{eeg_filter}{eeg_data}(.data, low_freq = NULL, high_freq = NULL,
-  filter_order = "auto", trans_bw = "auto", method = "fir",
-  window = "hamming", demean = TRUE, ...)
+\method{eeg_filter}{eeg_data}(
+  .data,
+  low_freq = NULL,
+  high_freq = NULL,
+  filter_order = "auto",
+  trans_bw = "auto",
+  method = "fir",
+  window = "hamming",
+  demean = TRUE,
+  ...
+)
 
-\method{eeg_filter}{eeg_epochs}(.data, low_freq = NULL,
-  high_freq = NULL, filter_order = "auto", trans_bw = "auto",
-  method = "fir", window = "hamming", demean = TRUE, ...)
+\method{eeg_filter}{eeg_epochs}(
+  .data,
+  low_freq = NULL,
+  high_freq = NULL,
+  filter_order = "auto",
+  trans_bw = "auto",
+  method = "fir",
+  window = "hamming",
+  demean = TRUE,
+  ...
+)
 }
 \arguments{
 \item{.data}{An \code{eeg_data} or \code{eeg_epochs} object to be filtered}

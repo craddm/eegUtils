@@ -11,11 +11,9 @@ compute_csd(data, ...)
 
 \method{compute_csd}{default}(data, ...)
 
-\method{compute_csd}{eeg_data}(data, m = 4, smoothing = 1e-05,
-  scaling = 1, ...)
+\method{compute_csd}{eeg_data}(data, m = 4, smoothing = 1e-05, scaling = 1, ...)
 
-\method{compute_csd}{eeg_epochs}(data, m = 4, smoothing = 1e-05,
-  scaling = 1, ...)
+\method{compute_csd}{eeg_epochs}(data, m = 4, smoothing = 1e-05, scaling = 1, ...)
 }
 \arguments{
 \item{data}{\code{eeg_data} or \code{eeg_epochs} object}

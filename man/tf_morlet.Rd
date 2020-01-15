@@ -4,8 +4,18 @@
 \alias{tf_morlet}
 \title{Perform Morlet time-frequency analysis}
 \usage{
-tf_morlet(data, foi, n_freq, n_cycles, keep_trials, output, downsample,
-  demean = TRUE, lang = "R", verbose)
+tf_morlet(
+  data,
+  foi,
+  n_freq,
+  n_cycles,
+  keep_trials,
+  output,
+  downsample,
+  demean = TRUE,
+  lang = "R",
+  verbose
+)
 }
 \arguments{
 \item{data}{Data in \code{eeg_epochs} format.}

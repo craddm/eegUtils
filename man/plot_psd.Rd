@@ -11,19 +11,44 @@
 \usage{
 plot_psd(data, freq_range = NULL, ...)
 
-\method{plot_psd}{eeg_epochs}(data, freq_range = NULL, n_fft = 256,
-  seg_length = NULL, noverlap = NULL, ...)
+\method{plot_psd}{eeg_epochs}(
+  data,
+  freq_range = NULL,
+  n_fft = 256,
+  seg_length = NULL,
+  noverlap = NULL,
+  ...
+)
 
-\method{plot_psd}{eeg_data}(data, freq_range = NULL, n_fft = 2048,
-  noverlap = NULL, seg_length = NULL, ...)
+\method{plot_psd}{eeg_data}(
+  data,
+  freq_range = NULL,
+  n_fft = 2048,
+  noverlap = NULL,
+  seg_length = NULL,
+  ...
+)
 
-\method{plot_psd}{eeg_ICA}(data, freq_range = NULL, components = NULL,
-  seg_length = NULL, noverlap = NULL, n_fft = 256, ...)
+\method{plot_psd}{eeg_ICA}(
+  data,
+  freq_range = NULL,
+  components = NULL,
+  seg_length = NULL,
+  noverlap = NULL,
+  n_fft = 256,
+  ...
+)
 
 \method{plot_psd}{data.frame}(data, freq_range = NULL, ...)
 
-\method{plot_psd}{eeg_evoked}(data, freq_range = NULL, n_fft = 256,
-  seg_length = NULL, noverlap = NULL, ...)
+\method{plot_psd}{eeg_evoked}(
+  data,
+  freq_range = NULL,
+  n_fft = 256,
+  seg_length = NULL,
+  noverlap = NULL,
+  ...
+)
 }
 \arguments{
 \item{data}{Object of class \code{eeg_epochs}, \code{eeg_data}, or \code{eeg_ICA}.}

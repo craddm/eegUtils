@@ -11,11 +11,23 @@ select_epochs(data, ...)
 
 \method{select_epochs}{default}(data, ...)
 
-\method{select_epochs}{eeg_epochs}(data, epoch_events = NULL,
-  epoch_no = NULL, keep = TRUE, df_out = FALSE, ...)
+\method{select_epochs}{eeg_epochs}(
+  data,
+  epoch_events = NULL,
+  epoch_no = NULL,
+  keep = TRUE,
+  df_out = FALSE,
+  ...
+)
 
-\method{select_epochs}{eeg_ICA}(data, epoch_events = NULL,
-  epoch_no = NULL, keep = TRUE, df_out = FALSE, ...)
+\method{select_epochs}{eeg_ICA}(
+  data,
+  epoch_events = NULL,
+  epoch_no = NULL,
+  keep = TRUE,
+  df_out = FALSE,
+  ...
+)
 }
 \arguments{
 \item{data}{\code{eeg_epochs} object from which to select epochs.}
