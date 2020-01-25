@@ -164,3 +164,8 @@ example_epochs %>%
   geom_hline(yintercept = 0) +
   theme_classic()
 ```
+
+
+Please note that the 'eegUtils' project is released with a
+[Contributor Code of Conduct](CODE_OF_CONDUCT.md).
+By contributing to this project, you agree to abide by its terms.
