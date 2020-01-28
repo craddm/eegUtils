@@ -166,9 +166,6 @@ eeg_combine.eeg_tfr <- function(data,
   }
   if (check_classes(args)) {
 
-    # data$signals <- dplyr::bind_rows(data$signals,
-    #                                  purrr::map_df(args,
-    #                                                ~.$signals))
     new_dim <- length(dim(data$signals)) + 1
     orig_dims <- dimnames(data$signals)
     data$signals <- abind::abind(data$signals,
@@ -177,9 +174,6 @@ eeg_combine.eeg_tfr <- function(data,
                                               along = new_dim)),
                                  along = new_dim,
                                  use.first.dimnames = TRUE)
-    # data$timings <- dplyr::bind_rows(data$timings,
-    #                                  purrr::map_df(args,
-    #                                                ~.$timings))
     data$epochs  <- dplyr::bind_rows(data$epochs,
                                      purrr::map_df(args,
                                                    ~.$epochs))
