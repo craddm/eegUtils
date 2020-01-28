@@ -113,6 +113,7 @@ print.eeg_evoked <- function(x, ...) {
 #' @param x \code{eeg_stats} object to be printed
 #' @param ... Further arguments passed
 #' @export
+
 print.eeg_stats <- function(x, ...) {
   elec_names <- names(x$statistic)
   n_chan <- length(elec_names)
@@ -125,6 +126,27 @@ print.eeg_stats <- function(x, ...) {
       "seconds\n")
   cat("Electrode names\t\t:\t", elec_names, "\n")
   cat("Type\t\t:\t", x$method, "\n")
+}
+
+#' Print eeg_lm summary
+#'
+#' Print a basic summary of the contents of an \code{eeg_lm} object
+#'
+#' @param x \code{eeg_lm} object to be printed
+#' @param ... Further arguments passed
+#' @export
+print.eeg_lm <- function(x, ...) {
+  elec_names <- x$chan_info$electrode
+  n_chan <- length(elec_names)
+  cat("EEG Linear Model\n\n")
+  cat("Formula:", paste(x$formula), "\n\n")
+  cat("Number of fitted channels\t:\t", n_chan, "\n")
+  cat("Epoch limits\t\t\t:",
+      round(min(unique(x$coefficients$time)), 3),
+      "-",
+      round(max(unique(x$coefficients$time)), 3),
+      "seconds\n")
+  invisible(x)
 }
 
 #' Print eeg_data summary

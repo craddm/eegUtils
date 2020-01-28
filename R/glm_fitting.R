@@ -18,8 +18,7 @@
 #'   and notes on use below
 #' @param data An \code{eegUtils} object.
 #' @param ... Any other arguments passed to (LM/GLM)
-#' @importFrom purrr map
-#' @importFrom tidyr nest
+#' @importFrom tibble as_tibble
 #' @importFrom dplyr mutate
 #' @export
 
@@ -37,7 +36,7 @@ fit_glm.default <- function(formula,
 }
 
 #' @param time_lim Numeric vector of length 2 specifying time period to be used
-#'   as a baseline
+#'   as a baseline.
 #' @describeIn fit_glm GLM fitting for \code{eeg_epochs}
 #' @export
 fit_glm.eeg_epochs <- function(formula,
@@ -53,33 +52,34 @@ fit_glm.eeg_epochs <- function(formula,
 
   n_chans <- ncol(data$signals)
 
+  if (!is.null(family)) {
+    stop("Not yet implemented.")
+  }
+
   if ("baseline" %in% mod_terms) {
     if (is.null(time_lim)) {
       stop("time_lim must be specified if using baseline fitting")
     }
     n_epochs <- nrow(epochs(data))
 
-    base_times <- select_times(data,
-                               time_lim = time_lim)
-    base_times$signals <- as.matrix(base_times$signals)
-    n_bl_times <- length(unique(base_times$timings$time))
-    dim(base_times$signals) <- c(n_bl_times, n_epochs, n_chans)
-    base_times <- colMeans(base_times$signals)
+    base_times <- get_epoch_baselines(data,
+                                      time_lim)
 
     #basic design matrix with dummy baseline column
     mdf <- stats::model.matrix(formula,
-                               mutate(epochs(data),
-                                      baseline = 0))
-    n_preds <- ncol(mdf)
+                               cbind(epochs(data), baseline = 0))
+
     # create one design matrix for each channel with the appropriate baseline
     # for each epoch
     mod_mats <- lapply(seq(1, n_chans),
                        function(x) model.matrix(formula,
-                                                mutate(epochs(data),
-                                                       baseline = base_times[, x])))
+                                                cbind(epochs(data),
+                                                baseline = base_times[, x])))
+
+    n_preds <- ncol(mod_mats[[1]])
     std_errs <- lapply(mod_mats,
                        function(x) chol2inv(qr(x)$qr[1:n_preds, 1:n_preds]))
-    #chol2inv(qr(mdf2)$qr[1:3, 1:3])
+
     out <- vector(mode = "list",
                   length = length(zip))
 
@@ -187,16 +187,24 @@ fit_glm.eeg_epochs <- function(formula,
   t_stats <- std_errs
   t_stats[, 1:n_chans] <- all_coefs[, 1:n_chans] / std_errs[, 1:n_chans]
 
-  list("coefficients" = all_coefs,
-       "std_err" = std_errs,
-       "t_stats" = t_stats,
-       "chan_info" = channels(data),
-       "r_sq" = r_sq)
+  new_eeg_lm("coefficients" = all_coefs,
+             "std_err" = std_errs,
+             "t_stats" = t_stats,
+             "chan_info" = channels(data),
+             "r_sq" = r_sq,
+             "formula" = formula)
+  # list("coefficients" = all_coefs,
+  #      "std_err" = std_errs,
+  #      "t_stats" = t_stats,
+  #      "chan_info" = channels(data),
+  #      "r_sq" = r_sq,
+  #      "formula" = formula)
 }
 
 #' @param mdf model matrix
 #' @param x data to be modelled (matrix of trials x channels)
-#' @param std_errs
+#' @param std_errs inverted matrix
+#' @keywords internal
 new_t <- function(mdf,
                   x,
                   std_errs,
