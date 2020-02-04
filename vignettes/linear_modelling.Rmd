@@ -1,0 +1,114 @@
+---
+title: "Linear Modelling"
+author: "Matt Craddock"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Linear modelling}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  eval = nzchar(Sys.getenv("EVAL_EEG_VIGNETTE"))
+)
+```
+
+
+```{r}
+library(eegUtils)
+library(R.matlab)
+library(ggplot2)
+library(tidyr)
+```
+
+Here we show how to fit a linear model to single subject's data. We'll use the data from the LIMO EEG dataset. [S1](https://datashare.is.ed.ac.uk/handle/10283/2189?show=full)
+
+
+
+```{r}
+limo_test <- import_set("limo_dataset_S1.set")
+limo_cont <- R.matlab::readMat("continuous_variable.mat")
+limo_cat <- readr::read_csv("categorical_variable.txt",
+                            col_names = c("cond_lab"))
+```
+
+The linear model fitting function in `eegUtils` uses the `epochs` field of the data structures. To use these for linear modelling here, we'll add the categorical and continuous predictors to the `epochs` structure.
+
+```{r}
+epochs(limo_test) <- dplyr::mutate(epochs(limo_test),
+                            phase_coherence = unlist(limo_cont),
+                            face = factor(limo_cat$cond_lab,
+                                          levels = c(1, 2),
+                                          labels = c("Face_A",
+                                                     "Face_B")))
+epochs(limo_test)
+
+```
+
+The first argument to `fit_glm()` is a standard R formula, using Wilkinson notation. Unusually, the left hand side of the `~` is omitted, since we'll be fitting the model to every electrode at every timepoint. On the right hand side, we put our predictors. In this case, we have two: `face`, a categorical predictor; and `phase_coherence`, a continuous predictor. The appropriate formula is thus `~face + phase_coherence`. 
+
+The function fits whatever contrasts. R's default contrasts are *treatment* or *dummy* contrasts, so we' expect the model to return three coefficients: an *intercept*, which will be the amplitude when the categorical predictor is at its first level (i.e. Face A); a *face* term, which will be the *difference* in amplitude from the *intercept* when the level of Face is `Face B`; and a *phase_coherence* term, which will be the increase in amplitude when image phase coherence increases from 0 to 1.
+
+```{r}
+fitted_model <- fit_glm(~ face + phase_coherence,
+                        data = limo_test)
+as.data.frame(fitted_model,
+              long = TRUE) %>%
+  ggplot(aes(x = time,
+             y = amplitude,
+             colour = electrode)) +
+  geom_line() +
+  facet_wrap(~coefficient,
+             scales = "free") +
+  theme(legend.position = "none")
+```
+
+An alternative paramterization would be to remove the intercept term. The function would then return separate coefficients represent `Face A` and `Face B`. This would be particularly helpful if you are planning to take these coefficients forwards to a second-level analysis.
+
+```{r}
+fitted_model_no_int <- fit_glm(~0 + face + phase_coherence,
+                        data = limo_test)
+as.data.frame(fitted_model_no_int,
+              long = TRUE) %>%
+  ggplot(aes(x = time,
+             y = amplitude,
+             colour = electrode)) +
+  geom_line() +
+  facet_wrap(~coefficient,
+             scales = "free") +
+  theme(legend.position = "none")
+```
+
+Continuous predictors can be rescaled using the `scale()` function, which converts them to z-scores (i.e. standard deviation units).
+
+```{r}
+fitted_model_zscore <- fit_glm(~0 + face + scale(phase_coherence),
+                        data = limo_test)
+as.data.frame(fitted_model_zscore,
+              long = TRUE) %>%
+  ggplot(aes(x = time,
+             y = amplitude,
+             colour = electrode)) +
+  geom_line() +
+  facet_wrap(~coefficient,
+             scales = "free") +
+  theme(legend.position = "none")
+```
+
+The function also provide additional information. For example, we can get the $r^2$ value representing model fit:
+
+```{r}
+fitted_model$r_sq %>%
+  pivot_longer(cols = channel_names(limo_test),
+               names_to = "electrode",
+               values_to = "r_sq") %>%
+  ggplot(aes(x = time,
+             y = r_sq,
+             colour = electrode)) +
+  geom_line() +
+  theme(legend.position = "none")
+```

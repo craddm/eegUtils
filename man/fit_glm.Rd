@@ -3,22 +3,22 @@
 \name{fit_glm}
 \alias{fit_glm}
 \alias{fit_glm.eeg_epochs}
-\title{Fit a GLM model to each timepoint for an individual subject}
+\title{Fit a linear model to EEG data}
 \usage{
 fit_glm(formula, data, ...)
 
-\method{fit_glm}{eeg_epochs}(formula, data, family = NULL, time_lim = NULL, ...)
+\method{fit_glm}{eeg_epochs}(formula, data, time_lim = NULL, ...)
 }
 \arguments{
-\item{formula}{Right-hand side A regression formula for a GLM. See ?formula
-and notes on use below}
+\item{formula}{An object of class "\code{formula}". Right-hand side A
+regression formula for a GLM. See ?formula and notes on use below}
 
 \item{data}{An \code{eegUtils} object.}
 
 \item{...}{Any other arguments passed to (LM/GLM)}
 
 \item{time_lim}{Numeric vector of length 2 specifying time period to be used
-as a baseline}
+as a baseline.}
 }
 \description{
 Fits a linear model to each timepoint separately for each electrode.
