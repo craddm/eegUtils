@@ -310,7 +310,7 @@ new_eeg_lm <- function(coefficients,
   stopifnot(is.data.frame(std_err))
   stopifnot(is.data.frame(t_stats))
   stopifnot(is.data.frame(r_sq))
-  stopifnot(is.data.frame(chan_info))
+  #stopifnot(is.data.frame(chan_info))
   stopifnot(rlang::is_formula(formula))
 
   new_eeg_stats(

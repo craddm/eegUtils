@@ -536,6 +536,10 @@ channels.eeg_evoked <- function(.data) {
   .data$chan_info
 }
 
+#' @export
+channels.eeg_stats <- function(.data) {
+  .data$chan_info
+}
 
 #' @param value Value to replace `chan_info` structure with.
 #' @rdname channels
@@ -574,6 +578,11 @@ channels.eeg_evoked <- function(.data) {
   .data
 }
 
+#' @export
+`channels<-.eeg_stats` <- function(.data, value) {
+  .data$chan_info <- value
+  .data
+}
 #' Retrieve signal/channel names
 #'
 #' Get the names of the `signals` element of `eegUtils` objects.
@@ -615,6 +624,7 @@ cart_to_spherical <- function(xyz_coords) {
   theta <- rad2deg(acos(xyz_coords$cart_z / radius))
   theta <- ifelse(xyz_coords$cart_x >= 0, theta, -theta)
   phi <- ifelse(xyz_coords$cart_x == 0, -phi, phi)
+  phi <- ifelse(is.nan(phi), 0, phi)
   data.frame(radius = 1,
              theta = round(theta),
              phi = round(phi))

@@ -42,7 +42,11 @@ utils::globalVariables(c("time",
                          "..orig_cols",
                          "statistic",
                          "level",
-                         "electrodefacet"))
+                         "electrodefacet",
+                         "coef",
+                         "model.matrix",
+                         "resid",
+                         ".lm.fit"))
 
 ## usethis namespace: start
 #' @importFrom Rcpp sourceCpp

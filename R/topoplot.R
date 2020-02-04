@@ -31,7 +31,7 @@ topoplot <- function(data,
 
 topoplot.default <- function(data,
                              ...) {
-  stop("Not implemented for objects of class ", class(data))
+  stop("Not implemented for objects of class ", paste(class(data), collapse = "/"))
 }
 
 #' @param time_lim Timepoint(s) to plot. Can be one time or a range to average

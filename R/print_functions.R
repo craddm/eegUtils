@@ -164,12 +164,12 @@ print.eeg_lm <- function(x, ...) {
 #' @param ... Further arguments passed
 #' @export
 
-summary.eeg_data <- function(x, ...) {
-  elec_names <- names(x$signals)
+summary.eeg_data <- function(object, ...) {
+  elec_names <- names(object$signals)
   n_chan <- length(elec_names)
   cat("Epoched EEG data\n\n")
   cat("Number of channels\t:\t", n_chan, "\n")
   cat("Electrode names\t:", elec_names, "\n")
   cat("Sampling rate\t:", object$srate, "Hz\n")
-  invisible(x)
+  invisible(object)
 }
