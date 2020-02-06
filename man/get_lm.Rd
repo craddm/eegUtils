@@ -4,14 +4,18 @@
 \alias{get_lm}
 \title{Calculate coefficients and standard errors}
 \usage{
-get_lm(mdf, x, inverted_dm, resid_df)
+get_lm(mdf, x, inverted_dm, resid_df, robust = FALSE)
 }
 \arguments{
 \item{mdf}{model matrix}
 
 \item{x}{data to be modelled (matrix of trials x channels)}
 
-\item{inverted_dm}{inverted matrix}
+\item{inverted_dm}{inverted matrix - unscaled covariance}
+
+\item{resid_df}{residual degrees of freedom for the model}
+
+\item{robust}{Use heteroskedasticity-consistent covariance (HC3).}
 }
 \description{
 Calculate coefficients and standard errors
