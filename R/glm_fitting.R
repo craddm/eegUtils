@@ -53,6 +53,15 @@ fit_glm.eeg_epochs <- function(formula,
     data$timings$time
   )
 
+  tot_vars <- lapply(
+    split_data,
+    function(x) {
+      colSums(scale(x,
+                    scale = FALSE
+      )^2)
+    }
+  )
+
   n_times <- length(split_data)
 
   mod_terms <- all.vars(formula)
@@ -92,7 +101,7 @@ fit_glm.eeg_epochs <- function(formula,
 
     n_preds <- ncol(mod_mats[[1]])
 
-    # invert design matrices using qr/cholesky
+    # invert design matrices using qr/cholesky (unscaled cov matrix)
     inverted_dm <- lapply(
       mod_mats,
       function(x) chol2inv(qr(x)$qr[1:n_preds, 1:n_preds])
@@ -129,26 +138,19 @@ fit_glm.eeg_epochs <- function(formula,
 
     resid_df <- n_epochs - n_preds
 
-    tot_vars <- lapply(
-      split_data,
-      function(x) {
-        colSums(scale(x,
-          scale = FALSE
-        )^2)
-      }
-    )
+
 
     # Outer loop through timepoints, inner loop through channels
     # Try other way to see if any faster
     for (timepoint in (seq_along(split_data))) {
-      for (i in (seq_along(mod_mats))) {
+      for (chan in (seq_along(mod_mats))) {
         tmp_mod <- .lm.fit(
-          mod_mats[[i]],
-          split_data[[timepoint]][[i]]
+          mod_mats[[chan]],
+          split_data[[timepoint]][[chan]]
         )
-        tmp[[i]] <- coef(tmp_mod)
-        tmp_res[[i]] <- sum(resid(tmp_mod)^2)
-        tmp_se[[i]] <- sqrt(diag(inverted_dm[[i]] * (tmp_res[[i]] / resid_df)))
+        tmp[[chan]] <- coef(tmp_mod)
+        tmp_res[[chan]] <- sum(resid(tmp_mod)^2)
+        tmp_se[[chan]] <- sqrt(diag(inverted_dm[[chan]] * (tmp_res[[chan]] / resid_df)))
       }
 
       out[[timepoint]] <- do.call(
@@ -183,18 +185,9 @@ fit_glm.eeg_epochs <- function(formula,
     )
 
     n_preds <- ncol(design_mat)
-    # invert matrix using qr decomposition
+    # invert matrix using qr decomposition (unscaled cov)
     inverted_dm <- chol2inv(qr(design_mat)$qr[1:n_preds, 1:n_preds])
     resid_df <- nrow(design_mat) - n_preds
-
-    tot_vars <- lapply(
-      split_data,
-      function(x) {
-        colSums(scale(x,
-          scale = FALSE
-        )^2)
-      }
-    )
 
     out <- lapply(
       split_data,
@@ -271,7 +264,7 @@ fit_glm.eeg_epochs <- function(formula,
       nrow = n_preds,
       class = "epoch_info"
     )
-  # all_coefs$coef <- coef_names #rep(coef_names, length(split_data))
+
   std_errs <- tibble::as_tibble(
     do.call(
       rbind,
@@ -279,13 +272,7 @@ fit_glm.eeg_epochs <- function(formula,
     )
   )
 
-  names(std_errs) <- chan_names#channel_names(data)
-  # std_errs$time <- rep(
-  #   unique(data$timings$time),
-  #   each = ncol(mdf)
-  # )
-  #
-  # std_errs$coef <- coef_names # rep(coef_names, length(split_data))
+  names(std_errs) <- chan_names
   t_stats <- std_errs
   t_stats[, 1:n_chans] <- all_coefs[, 1:n_chans] / std_errs[, 1:n_chans]
 
@@ -305,56 +292,49 @@ fit_glm.eeg_epochs <- function(formula,
 #'
 #' @param mdf model matrix
 #' @param x data to be modelled (matrix of trials x channels)
-#' @param inverted_dm inverted matrix
+#' @param inverted_dm inverted matrix - unscaled covariance
+#' @param resid_df residual degrees of freedom for the model
+#' @param robust Use heteroskedasticity-consistent covariance (HC3).
 #' @keywords internal
 get_lm <- function(mdf,
                    x,
                    inverted_dm,
-                   resid_df) {
+                   resid_df,
+                   robust = FALSE) {
 
   tmp_mod <- .lm.fit(mdf,
                      x)
 
-  res_vars <- colSums(resid(tmp_mod)^2)
+  res_vars <- resid(tmp_mod)^2
 
-  out_se <- lapply(res_vars,
-                   function(x) sqrt(diag(inverted_dm * (x/resid_df))))
+  if (robust) {
+    out_se <- rob_se(mdf,
+                     res_vars,
+                     inverted_dm)
+  } else {
+    out_se <- lapply(colSums(res_vars),
+                     function(x) sqrt(diag(inverted_dm * (x/resid_df))))
+    out_se <- do.call(cbind, out_se)
+
+  }
   list("coefs" = coef(tmp_mod),
-       "ses" = do.call(cbind,
-                       out_se),
-       "res_vars" = res_vars)
-}
-
-# get hat values for calculating robust standard errors
-get_hat <- function(mdf,
-                    inverted_dm) {
-  diag(mdf %*% inverted_dm %*% t(mdf))
+       "ses" = out_se,
+       "res_vars" = colSums(res_vars))
 }
 
 # robust standard error calculation
 rob_se <- function(mdf,
-                   u2,
+                   squared_resids,
                    inverted_dm) {
-  ouchman <- sweep(mdf, 1, u2, "*")
-  inverted_dm %*% (t(ouchman) %*% mdf) %*% inverted_dm
+  hatvals <- stats::hat(mdf)
+  omega <- squared_resids / (1 - hatvals)^2
+  out_se <- apply(omega,
+                2,
+                function(x) diag(inverted_dm %*% crossprod(sweep(mdf,
+                                                                 1,
+                                                                 x,
+                                                                 "*"),
+                                                           mdf) %*% inverted_dm))
+  sqrt(out_se)
 }
 
-
-#
-# now_t <- function(mdf, x, std_errs) {
-#   tmp_mod <- .lm.fit(mdf, x)
-#
-#   # ses <-  apply(resid(tmp_mod),
-#   #               2,
-#   #               crossprod) #/ resid_df
-#   res_vars <- resid(tmp_mod)^2
-#
-#   XDXs <- apply(res_vars,
-#                 2,
-#                 function(x) diag(rob_sd(mdf, x, std_errs)))
-#
-#   out_se <- sqrt(XDXs)
-#   list("coefs" = coef(tmp_mod),
-#        "ses" = out_se,
-#        "res_vars" = colSums(res_vars))
-# }
