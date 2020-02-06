@@ -43,10 +43,16 @@ as.data.frame.eeg_lm <- function(x,
 
   if (long) {
 
+    val_name <- switch(values,
+                       "coefficients" = "amplitude",
+                       "t_stats" = "statistic",
+                       "std_err" = "std_err",
+                       "r_sq" = "r_sq")
+
     df <- tidyr::pivot_longer(df,
                               cols = names(x$coefficients),
                               names_to = "electrode",
-                              values_to = "amplitude")
+                              values_to = val_name)
 
 #    df$electrode <- as.character(df$electrode)
 
