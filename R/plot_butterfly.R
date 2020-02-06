@@ -159,6 +159,7 @@ plot_butterfly.eeg_stats <- function(data,
                                      legend = TRUE,
                                      allow_facets = FALSE,
                                      browse_mode = FALSE,
+                                     quantity = "statistic",
                                      ...) {
 
   data <- parse_for_bf(data,
@@ -168,10 +169,52 @@ plot_butterfly.eeg_stats <- function(data,
             legend = legend,
             browse_mode = browse_mode,
             continuous = FALSE,
-            quantity = statistic,
+            quantity = {{quantity}},
             allow_facets = allow_facets)
 }
 
+
+#' @describeIn plot_butterfly Create butterfly plot for \code{eeg_stats} objects
+#' @export
+plot_butterfly.eeg_lm <- function(data,
+                                  time_lim = NULL,
+                                  baseline = NULL,
+                                  legend = TRUE,
+                                  allow_facets = FALSE,
+                                  browse_mode = FALSE,
+                                  quantity = "coefficients",
+                                  ...) {
+
+
+  data <- parse_for_bf(data,
+                       time_lim,
+                       baseline = NULL,
+                       quantity = quantity)
+
+  if (identical(quantity, "coefficients")) {
+    quantity <- "amplitude"
+    ylab <- expression(paste("Amplitude (", mu, "V)"))
+  } else if (identical(quantity, "t_stats")) {
+    quantity <- "statistic"
+    ylab <- expression(italic("t")~"-statistic")
+  } else if (identical(quantity, "std_err")) {
+    ylab <- expression(paste("Std. error (", mu, "V)"))
+  } else if (identical(quantity, "r_sq")) {
+    ylab <- expression(paste(italic("r"), {}^2))
+  }
+
+   if (is.character(quantity)) {
+     quantity <- as.name(quantity)
+   }
+
+  create_bf(data,
+            legend = legend,
+            browse_mode = browse_mode,
+            continuous = FALSE,
+            quantity = {{quantity}},
+            allow_facets = allow_facets,
+            ylab = ylab)
+}
 
 #' Parse data for butterfly plots
 #'
@@ -184,7 +227,8 @@ plot_butterfly.eeg_stats <- function(data,
 #' @keywords internal
 parse_for_bf <- function(data,
                          time_lim = NULL,
-                         baseline = NULL) {
+                         baseline = NULL,
+                         quantity = "coefficients") {
 
   # Select specifed times
   if (!is.null(time_lim)) {
@@ -199,7 +243,8 @@ parse_for_bf <- function(data,
   }
   data <- as.data.frame(data,
                         long = TRUE,
-                        coords = FALSE)
+                        coords = FALSE,
+                        values = {{quantity}})
   data
 }
 
@@ -210,16 +255,22 @@ create_bf <- function(data,
                       browse_mode,
                       continuous,
                       quantity = amplitude,
-                      allow_facets) {
+                      allow_facets,
+                      ylab = expression(paste("Amplitude (", mu, "V)"))) {
 
   if (browse_mode) {
     allow_facets <- TRUE
   }
 
   if (!allow_facets) {
-    data <- dplyr::group_by(data, time, electrode)
-    data <- dplyr::summarise(data,
-                             amplitude = mean({{quantity}}))
+    data <- dplyr::group_by(data,
+                            time,
+                            electrode)
+    data <- dplyr::summarise_at(data,
+                                vars({{quantity}}),
+                                mean)
+    # data <- dplyr::summarise(data,
+    #                          !!quo_name(quantity) := mean({{quantity}}))
     data$epoch <- 1
   }
 
@@ -251,7 +302,7 @@ create_bf <- function(data,
                 aes(group = electrode),
                 alpha = 0.2) +
       labs(x = "Time (s)",
-           y = expression(paste("Amplitude (", mu, "V)")),
+           y = ylab,
            colour = "") +
       geom_hline(yintercept = 0,
                  size = 0.5,
@@ -264,11 +315,9 @@ create_bf <- function(data,
   } else {
     butterfly_plot <-
       butterfly_plot +
-      # geom_line(alpha = 0.5,
-      #           aes(colour = electrode)) +
       chan_lines() +
       labs(x = "Time (s)",
-           y = expression(paste("Amplitude (", mu, "V)")),
+           y = ylab,#expression(paste("Amplitude (", mu, "V)")),
            colour = "") +
       geom_hline(yintercept = 0, size = 0.5) +
       scale_x_continuous(expand = c(0, 0)) +

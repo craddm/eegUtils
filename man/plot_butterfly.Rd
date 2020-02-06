@@ -7,6 +7,7 @@
 \alias{plot_butterfly.eeg_data}
 \alias{plot_butterfly.eeg_epochs}
 \alias{plot_butterfly.eeg_stats}
+\alias{plot_butterfly.eeg_lm}
 \title{Create a butterfly plot from timecourse data}
 \usage{
 plot_butterfly(data, ...)
@@ -62,6 +63,18 @@ plot_butterfly(data, ...)
   legend = TRUE,
   allow_facets = FALSE,
   browse_mode = FALSE,
+  quantity = "statistic",
+  ...
+)
+
+\method{plot_butterfly}{eeg_lm}(
+  data,
+  time_lim = NULL,
+  baseline = NULL,
+  legend = TRUE,
+  allow_facets = FALSE,
+  browse_mode = FALSE,
+  quantity = "coefficients",
   ...
 )
 }
@@ -109,6 +122,8 @@ not possible.
 \item \code{eeg_epochs}: Create butterfly plot for \code{eeg_epochs} objects
 
 \item \code{eeg_stats}: Create butterfly plot for \code{eeg_stats} objects
+
+\item \code{eeg_lm}: Create butterfly plot for \code{eeg_stats} objects
 }}
 
 \section{Notes on ggplot2 facetting}{
