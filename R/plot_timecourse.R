@@ -223,26 +223,45 @@ plot_timecourse.eeg_epochs <- function(data,
   tc_plot
 }
 
+
+plot_timecourse.eeg_tfr <- function(data,
+                                    electrode = NULL,
+                                    time_lim = NULL,
+                                    facet,
+                                    add_CI = FALSE,
+                                    baseline = NULL,
+                                    colour = NULL,
+                                    color = NULL, ...) {
+
+
+  if (!is.null(time_lim)) {
+    data <- filter(data,
+                   time >= time_lim[[1]],
+                   time <= time_lim[[2]])
+  }
+
+  data_f <- as.data.frame(data,
+                          long = TRUE)
+
+  ggplot(data_f, aes(x = time, y = power, colour = frequency)) +
+    stat_summary(geom = "line",
+                 fun.y = mean)
+
+
+}
+
 #' @describeIn plot_timecourse Plot timecourses from \code{eeg_epochs} objects.
 #'
 plot_timecourse.eeg_stats <- function(data,
                                       time_lim = NULL,
                                       electrode = NULL,
                                       ...) {
-  
+
   data <- parse_for_tc(data,
                        time_lim = time_lim,
                        electrode = electrode,
                        baseline = NULL,
                        add_CI = FALSE)
-  ## check for US spelling of colour...
-  # if (is.null(colour)) {
-  #   if (!is.null(color)) {
-  #     colour <- as.name(color)
-  #   }
-  # } else {
-  #   colour <- as.name(colour)
-  # }
 
   tc_plot <- create_tc(data,
                        add_CI = FALSE,
@@ -274,12 +293,8 @@ parse_for_tc <- function(data,
   }
 
   ## Select specified electrodes -----
-  #if (is.eeg_stats(data)) {
-   # data <- select(data, electrode)
   if (!is.null(electrode)) {
     data <- select(data, electrode)
-    #data <- select_elecs(data,
-     #                    electrode)
   }
 
   ## Do baseline correction

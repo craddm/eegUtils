@@ -25,7 +25,7 @@ library(ggplot2)
 library(tidyr)
 ```
 
-Here we show how to fit a linear model to single subject's data. We'll use the data from the LIMO EEG dataset. [S1](https://datashare.is.ed.ac.uk/handle/10283/2189?show=full)
+Here we show how to fit a linear model to a single subject's data. We'll use the data from the LIMO EEG dataset. [S1](https://datashare.is.ed.ac.uk/handle/10283/2189?show=full)
 
 
 

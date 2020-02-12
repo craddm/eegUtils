@@ -174,7 +174,9 @@ plot_butterfly.eeg_stats <- function(data,
 }
 
 
-#' @describeIn plot_butterfly Create butterfly plot for \code{eeg_stats} objects
+#' @describeIn plot_butterfly Create butterfly plot for \code{eeg_lm} objects
+#' @param quantity Which aspect of the linear model you want to be plotted. only
+#'   applies to \code{eeg_lm} objects
 #' @export
 plot_butterfly.eeg_lm <- function(data,
                                   time_lim = NULL,
