@@ -22,7 +22,7 @@ eeg_combine <- function(data,
 eeg_combine.default <- function(data,
                                 ...) {
   stop(
-    "Don't know how to combine objects of class",
+    "Don't know how to combine objects of class ",
     class(data)[[1]],
     call. = FALSE
   )
@@ -34,20 +34,32 @@ eeg_combine.default <- function(data,
 eeg_combine.list <- function(data,
                              ...) {
 
-  out_dat <- data[[1]]
-  out_class <- class(data[[1]])
-  out_dat$signals <- purrr::map_df(data,
-                                   ~.$signals)
-  out_dat$events  <- purrr::map_df(data,
-                                   ~.$events)
-  out_dat$timings <- purrr::map_df(data,
-                                   ~.$timings)
-  out_dat$epochs <- purrr::map_df(data,
-                                  ~.$epochs)
-  if (length(unique(epochs(out_dat)$participant_id)) > 1) {
-    class(out_dat) <- c("eeg_group", out_class)
+  list_classes <- lapply(data,
+                         class)
+  if (any(is.list(unlist(list_classes)))) {
+    stop("Cannot handle list of lists. Check class of list items.")
   }
-  out_dat
+
+  if (check_classes(list_classes)) {
+
+    return(do.call(eeg_combine,
+                   data))
+    # out_dat <- data[[1]]
+    # out_class <- class(data[[1]])
+    # out_dat$signals <- purrr::map_df(data,
+    #                                  ~.$signals)
+    # out_dat$events  <- purrr::map_df(data,
+    #                                  ~.$events)
+    # out_dat$timings <- purrr::map_df(data,
+    #                                  ~.$timings)
+    # out_dat$epochs <- purrr::map_df(data,
+    #                                 ~.$epochs)
+    # if (length(unique(epochs(out_dat)$participant_id)) > 1) {
+    #   class(out_dat) <- c("eeg_group", out_class)
+    # }
+  } else {
+    stop("All list elements must be of the same class.")
+  }
 }
 
 #' @describeIn eeg_combine Method for combining \code{eeg_data} objects.
@@ -157,13 +169,15 @@ eeg_combine.eeg_evoked <- function(data,
   data
 }
 
-
+#' @export
 eeg_combine.eeg_tfr <- function(data,
                                 ...) {
   args <- list(...)
+
   if (length(args) == 0) {
     stop("Nothing to combine.")
   }
+
   if (check_classes(args)) {
 
     new_dim <- length(dim(data$signals)) + 1
