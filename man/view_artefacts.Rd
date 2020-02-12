@@ -6,8 +6,13 @@
 \usage{
 view_artefacts(data)
 }
+\arguments{
+\item{data}{Object to be explored.}
+}
 \description{
 An interactive Shiny app that allows exploration of channel and epoch
 statistics.
 }
-\keyword{internal}
+\author{
+Matt Craddock \email{matt@mattcraddock.com}
+}
