@@ -1,5 +1,8 @@
 url: http://craddm.github.io/eegUtils
 
+development:
+  mode: auto
+
 template:
   params:
     bootswatch: flatly
