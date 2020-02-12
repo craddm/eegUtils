@@ -2,6 +2,7 @@
 .Rhistory
 .RData
 .Ruserdata
+.Renviron
 inst/doc
 eegUtils.Rproj
 doc
