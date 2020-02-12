@@ -71,7 +71,7 @@ then again backwards)." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">eegUtils</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0.9000</span>
       </span>
     </div>
 
@@ -101,6 +101,9 @@ then again backwards)." />
     </li>
     <li>
       <a href="../articles/epoch-handling.html">Event and epoch handling</a>
+    </li>
+    <li>
+      <a href="../articles/linear_modelling.html">Linear Modelling</a>
     </li>
     <li>
       <a href="../articles/time-frequency-analysis.html">Frequency analysis</a>
@@ -148,16 +151,35 @@ then again backwards).</p>
     <pre class="usage"><span class='fu'>iir_filt</span>(<span class='no'>data</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for data.frame</span>
-<span class='fu'>iir_filt</span>(<span class='no'>data</span>, <span class='kw'>low_freq</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>high_freq</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>filter_order</span> <span class='kw'>=</span> <span class='fl'>4</span>, <span class='no'>srate</span>, <span class='kw'>silent</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)
+<span class='fu'>iir_filt</span>(
+  <span class='no'>data</span>,
+  <span class='kw'>low_freq</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>high_freq</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>filter_order</span> <span class='kw'>=</span> <span class='fl'>4</span>,
+  <span class='no'>srate</span>,
+  <span class='kw'>silent</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='no'>...</span>
+)
 
 <span class='co'># S3 method for eeg_data</span>
-<span class='fu'>iir_filt</span>(<span class='no'>data</span>, <span class='kw'>low_freq</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>high_freq</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>filter_order</span> <span class='kw'>=</span> <span class='fl'>4</span>, <span class='kw'>silent</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)
+<span class='fu'>iir_filt</span>(
+  <span class='no'>data</span>,
+  <span class='kw'>low_freq</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>high_freq</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>filter_order</span> <span class='kw'>=</span> <span class='fl'>4</span>,
+  <span class='kw'>silent</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='no'>...</span>
+)
 
 <span class='co'># S3 method for eeg_epochs</span>
-<span class='fu'>iir_filt</span>(<span class='no'>data</span>, <span class='kw'>low_freq</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>high_freq</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>filter_order</span> <span class='kw'>=</span> <span class='fl'>4</span>, <span class='kw'>silent</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)</pre>
+<span class='fu'>iir_filt</span>(
+  <span class='no'>data</span>,
+  <span class='kw'>low_freq</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>high_freq</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>filter_order</span> <span class='kw'>=</span> <span class='fl'>4</span>,
+  <span class='kw'>silent</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='no'>...</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">

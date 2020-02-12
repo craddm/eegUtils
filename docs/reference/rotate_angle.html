@@ -36,7 +36,7 @@
 
 
 <meta property="og:title" content="Rotate channel locations — rotate_angle" />
-<meta property="og:description" content="Rotate channel locations" />
+<meta property="og:description" content="On import, channel locations may be rotated (e.g. Fpz pointing towards ears.)" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -69,7 +69,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">eegUtils</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0.9000</span>
       </span>
     </div>
 
@@ -99,6 +99,9 @@
     </li>
     <li>
       <a href="../articles/epoch-handling.html">Event and epoch handling</a>
+    </li>
+    <li>
+      <a href="../articles/linear_modelling.html">Linear Modelling</a>
     </li>
     <li>
       <a href="../articles/time-frequency-analysis.html">Frequency analysis</a>
@@ -138,7 +141,7 @@
     </div>
 
     <div class="ref-description">
-    <p>Rotate channel locations</p>
+    <p>On import, channel locations may be rotated (e.g. Fpz pointing towards ears.)</p>
     </div>
 
     <pre class="usage"><span class='fu'>rotate_angle</span>(<span class='no'>chan_info</span>, <span class='no'>degrees</span>)</pre>
@@ -157,11 +160,17 @@
     </table>
 
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'>
+<span class='fu'><a href='plot_electrodes.html'>plot_electrodes</a></span>(<span class='no'>demo_epochs</span>)</div><div class='img'><img src='rotate_angle-1.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'><a href='channels.html'>channels</a></span>(<span class='no'>demo_epochs</span>) <span class='kw'>&lt;-</span> <span class='fu'>rotate_angle</span>(<span class='fu'><a href='channels.html'>channels</a></span>(<span class='no'>demo_epochs</span>), <span class='fl'>90</span>)
+<span class='fu'><a href='plot_electrodes.html'>plot_electrodes</a></span>(<span class='no'>demo_epochs</span>)</div><div class='img'><img src='rotate_angle-2.png' alt='' width='700' height='433' /></div><div class='input'>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
+      <li><a href="#examples">Examples</a></li>
     </ul>
 
   </div>

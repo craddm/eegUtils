@@ -69,7 +69,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">eegUtils</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0.9000</span>
       </span>
     </div>
 
@@ -99,6 +99,9 @@
     </li>
     <li>
       <a href="../articles/epoch-handling.html">Event and epoch handling</a>
+    </li>
+    <li>
+      <a href="../articles/linear_modelling.html">Linear Modelling</a>
     </li>
     <li>
       <a href="../articles/time-frequency-analysis.html">Frequency analysis</a>
@@ -133,7 +136,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Calculate statistics for each channel in an epoch and identify bad channels</h1>
-    <small class="dont-index">Source: <a href='https://github.com/craddm/eegUtils/blob/master/R/artefact_rejection.R'><code>R/artefact_rejection.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/craddm/eegUtils/blob/master/R/ar-faster.R'><code>R/ar-faster.R</code></a></small>
     <div class="hidden name"><code>faster_epo_stat.Rd</code></div>
     </div>
 
@@ -141,7 +144,7 @@
     <p>Calculate statistics for each channel in an epoch and identify bad channels</p>
     </div>
 
-    <pre class="usage"><span class='fu'>faster_epo_stat</span>(<span class='no'>data</span>, <span class='kw'>exclude</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+    <pre class="usage"><span class='fu'>faster_epo_stat</span>(<span class='no'>data</span>, <span class='kw'>exclude</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>sds</span> <span class='kw'>=</span> <span class='fl'>3</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">

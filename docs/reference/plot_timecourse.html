@@ -71,7 +71,7 @@ electrodes. Output is a ggplot2 object." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">eegUtils</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0.9000</span>
       </span>
     </div>
 
@@ -101,6 +101,9 @@ electrodes. Output is a ggplot2 object." />
     </li>
     <li>
       <a href="../articles/epoch-handling.html">Event and epoch handling</a>
+    </li>
+    <li>
+      <a href="../articles/linear_modelling.html">Linear Modelling</a>
     </li>
     <li>
       <a href="../articles/time-frequency-analysis.html">Frequency analysis</a>
@@ -148,28 +151,59 @@ electrodes. Output is a ggplot2 object.</p>
     <pre class="usage"><span class='fu'>plot_timecourse</span>(<span class='no'>data</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for data.frame</span>
-<span class='fu'>plot_timecourse</span>(<span class='no'>data</span>, <span class='kw'>electrode</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>time_lim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>facet</span>, <span class='kw'>add_CI</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>baseline</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>colour</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>color</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)
+<span class='fu'>plot_timecourse</span>(
+  <span class='no'>data</span>,
+  <span class='kw'>electrode</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>time_lim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='no'>facet</span>,
+  <span class='kw'>add_CI</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>baseline</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>colour</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>color</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='no'>...</span>
+)
 
 <span class='co'># S3 method for eeg_evoked</span>
-<span class='fu'>plot_timecourse</span>(<span class='no'>data</span>, <span class='kw'>electrode</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>time_lim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>facet</span>, <span class='kw'>add_CI</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>baseline</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>colour</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>color</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)
+<span class='fu'>plot_timecourse</span>(
+  <span class='no'>data</span>,
+  <span class='kw'>electrode</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>time_lim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='no'>facet</span>,
+  <span class='kw'>add_CI</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>baseline</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>colour</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>color</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='no'>...</span>
+)
 
 <span class='co'># S3 method for eeg_ICA</span>
-<span class='fu'>plot_timecourse</span>(<span class='no'>data</span>, <span class='kw'>component</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>time_lim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>facet</span>, <span class='kw'>add_CI</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>baseline</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>colour</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>color</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)
+<span class='fu'>plot_timecourse</span>(
+  <span class='no'>data</span>,
+  <span class='kw'>component</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>time_lim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='no'>facet</span>,
+  <span class='kw'>add_CI</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>baseline</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>colour</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>color</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='no'>...</span>
+)
 
 <span class='co'># S3 method for eeg_epochs</span>
-<span class='fu'>plot_timecourse</span>(<span class='no'>data</span>, <span class='kw'>electrode</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>time_lim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>facet</span>, <span class='kw'>add_CI</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>baseline</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>colour</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>color</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)
+<span class='fu'>plot_timecourse</span>(
+  <span class='no'>data</span>,
+  <span class='kw'>electrode</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>time_lim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='no'>facet</span>,
+  <span class='kw'>add_CI</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>baseline</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>colour</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>color</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='no'>...</span>
+)
 
 <span class='co'># S3 method for eeg_stats</span>
-<span class='fu'>plot_timecourse</span>(<span class='no'>data</span>, <span class='kw'>time_lim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>electrode</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
+<span class='fu'>plot_timecourse</span>(<span class='no'>data</span>, <span class='kw'>time_lim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>electrode</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">

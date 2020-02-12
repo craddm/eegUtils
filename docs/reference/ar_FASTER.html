@@ -71,7 +71,7 @@ EEG artifact Rejection. J Neurosci Methods. Not yet fully implemented." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">eegUtils</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0.9000</span>
       </span>
     </div>
 
@@ -101,6 +101,9 @@ EEG artifact Rejection. J Neurosci Methods. Not yet fully implemented." />
     </li>
     <li>
       <a href="../articles/epoch-handling.html">Event and epoch handling</a>
+    </li>
+    <li>
+      <a href="../articles/linear_modelling.html">Linear Modelling</a>
     </li>
     <li>
       <a href="../articles/time-frequency-analysis.html">Frequency analysis</a>
@@ -135,7 +138,7 @@ EEG artifact Rejection. J Neurosci Methods. Not yet fully implemented." />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>FASTER EEG artefact rejection</h1>
-    <small class="dont-index">Source: <a href='https://github.com/craddm/eegUtils/blob/master/R/artefact_rejection.R'><code>R/artefact_rejection.R</code></a>, <a href='https://github.com/craddm/eegUtils/blob/master/R/deprecated.R'><code>R/deprecated.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/craddm/eegUtils/blob/master/R/ar-faster.R'><code>R/ar-faster.R</code></a>, <a href='https://github.com/craddm/eegUtils/blob/master/R/deprecated.R'><code>R/deprecated.R</code></a></small>
     <div class="hidden name"><code>ar_FASTER.Rd</code></div>
     </div>
 
@@ -148,7 +151,14 @@ EEG artifact Rejection. J Neurosci Methods. Not yet fully implemented.</p>
     <pre class="usage"><span class='fu'>ar_FASTER</span>(<span class='no'>data</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for eeg_epochs</span>
-<span class='fu'>ar_FASTER</span>(<span class='no'>data</span>, <span class='kw'>exclude</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)
+<span class='fu'>ar_FASTER</span>(
+  <span class='no'>data</span>,
+  <span class='kw'>exclude</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>test_chans</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>test_epochs</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>test_cine</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='no'>...</span>
+)
 
 <span class='fu'>eeg_FASTER</span>(<span class='no'>data</span>, <span class='no'>...</span>)</pre>
 
@@ -167,6 +177,18 @@ EEG artifact Rejection. J Neurosci Methods. Not yet fully implemented.</p>
       <th>exclude</th>
       <td><p>Channels to be ignored by FASTER.</p></td>
     </tr>
+    <tr>
+      <th>test_chans</th>
+      <td><p>Logical. Run tests of global channel statistics</p></td>
+    </tr>
+    <tr>
+      <th>test_epochs</th>
+      <td><p>Logical. Run tests of globally bad epochs.</p></td>
+    </tr>
+    <tr>
+      <th>test_cine</th>
+      <td><p>Logical. Run tests for locally bad channels within epochs.</p></td>
+    </tr>
     </table>
 
     <h2 class="hasAnchor" id="methods-by-class-"><a class="anchor" href="#methods-by-class-"></a>Methods (by class)</h2>
@@ -184,7 +206,7 @@ EEG artifact Rejection. J Neurosci Methods.</p>
     <pre class="examples"><div class='input'><span class='fu'>ar_FASTER</span>(<span class='no'>demo_epochs</span>)</div><div class='output co'>#&gt; <span class='message'>Globally bad channels: </span></div><div class='output co'>#&gt; <span class='message'>Globally bad epochs: 26 65</span></div><div class='output co'>#&gt; Epoched EEG data
 #&gt; 
 #&gt; Number of channels	: 11 
-#&gt; Number of epochs		: 78 
+#&gt; Number of epochs	: 78 
 #&gt; Epoch limits		: -0.197 - 0.451 seconds
 #&gt; Electrode names		: A5 A13 A21 A29 A31 B5 B6 B8 B16 B18 B26 
 #&gt; Sampling rate		: 128  Hz

@@ -71,7 +71,7 @@ will average over all electrodes." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">eegUtils</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0.9000</span>
       </span>
     </div>
 
@@ -101,6 +101,9 @@ will average over all electrodes." />
     </li>
     <li>
       <a href="../articles/epoch-handling.html">Event and epoch handling</a>
+    </li>
+    <li>
+      <a href="../articles/linear_modelling.html">Linear Modelling</a>
     </li>
     <li>
       <a href="../articles/time-frequency-analysis.html">Frequency analysis</a>
@@ -145,9 +148,16 @@ on the x-axis and frequency on the y-axis. If no electrode is supplied, it
 will average over all electrodes.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>plot_tfr</span>(<span class='no'>data</span>, <span class='kw'>electrode</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>time_lim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>freq_range</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>baseline_type</span> <span class='kw'>=</span> <span class='st'>"none"</span>, <span class='kw'>baseline</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>fill_lims</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>interpolate</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+    <pre class="usage"><span class='fu'>plot_tfr</span>(
+  <span class='no'>data</span>,
+  <span class='kw'>electrode</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>time_lim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>freq_range</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>baseline_type</span> <span class='kw'>=</span> <span class='st'>"none"</span>,
+  <span class='kw'>baseline</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>fill_lims</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>interpolate</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">

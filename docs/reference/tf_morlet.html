@@ -70,7 +70,7 @@ in frequency domain" />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">eegUtils</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0.9000</span>
       </span>
     </div>
 
@@ -100,6 +100,9 @@ in frequency domain" />
     </li>
     <li>
       <a href="../articles/epoch-handling.html">Event and epoch handling</a>
+    </li>
+    <li>
+      <a href="../articles/linear_modelling.html">Linear Modelling</a>
     </li>
     <li>
       <a href="../articles/time-frequency-analysis.html">Frequency analysis</a>
@@ -143,8 +146,18 @@ in frequency domain" />
 in frequency domain</p>
     </div>
 
-    <pre class="usage"><span class='fu'>tf_morlet</span>(<span class='no'>data</span>, <span class='no'>foi</span>, <span class='no'>n_freq</span>, <span class='no'>n_cycles</span>, <span class='no'>keep_trials</span>, <span class='no'>output</span>, <span class='no'>downsample</span>,
-  <span class='kw'>demean</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>lang</span> <span class='kw'>=</span> <span class='st'>"R"</span>, <span class='no'>verbose</span>)</pre>
+    <pre class="usage"><span class='fu'>tf_morlet</span>(
+  <span class='no'>data</span>,
+  <span class='no'>foi</span>,
+  <span class='no'>n_freq</span>,
+  <span class='no'>n_cycles</span>,
+  <span class='no'>keep_trials</span>,
+  <span class='no'>output</span>,
+  <span class='no'>downsample</span>,
+  <span class='kw'>demean</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>lang</span> <span class='kw'>=</span> <span class='st'>"R"</span>,
+  <span class='no'>verbose</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
