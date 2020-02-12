@@ -550,7 +550,6 @@ import_set <- function(file_name,
                        participant_id = NULL,
                        recording = NULL) {
 
-
   if (is.null(recording)) {
     recording <- basename(tools::file_path_sans_ext(file_name))
   }
@@ -670,16 +669,21 @@ import_set <- function(file_name,
                               recording = rep(recording, n_epochs)),
                          nrow = n_epochs,
                          class = "epoch_info")
-
-    out_data <- eeg_data(signals[, 1:n_chans],
-                         srate = srate,
-                         timings = timings,
-                         chan_info = chan_info,
-                         events = event_table,
-                         epochs = epochs)
-
-    if (!continuous) {
-      class(out_data) <- c("eeg_epochs", "eeg_data")
+    if (continuous) {
+      out_data <- eeg_data(signals[, 1:n_chans],
+                           srate = srate,
+                           timings = timings,
+                           chan_info = chan_info,
+                           events = event_table,
+                           epochs = epochs)
+    } else {
+      out_data <- eeg_epochs(signals[, 1:n_chans],
+                             srate = srate,
+                             timings = timings,
+                             chan_info = chan_info,
+                             events = event_table,
+                             reference = NULL,
+                             epochs = epochs)
     }
     out_data
   }
