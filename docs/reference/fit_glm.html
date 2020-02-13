@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Fit a GLM model to each timepoint for an individual subject. — fit_glm • eegUtils</title>
+<title>Fit a linear model to EEG data — fit_glm • eegUtils</title>
 
 
 <!-- jquery -->
@@ -35,8 +35,8 @@
 
 
 
-<meta property="og:title" content="Fit a GLM model to each timepoint for an individual subject. — fit_glm" />
-<meta property="og:description" content="Fits a linear model to each timepoint using lm()." />
+<meta property="og:title" content="Fit a linear model to EEG data — fit_glm" />
+<meta property="og:description" content="Fits a linear model to each timepoint separately for each electrode." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -69,7 +69,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">eegUtils</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0.9000</span>
       </span>
     </div>
 
@@ -99,6 +99,9 @@
     </li>
     <li>
       <a href="../articles/epoch-handling.html">Event and epoch handling</a>
+    </li>
+    <li>
+      <a href="../articles/linear_modelling.html">Linear Modelling</a>
     </li>
     <li>
       <a href="../articles/time-frequency-analysis.html">Frequency analysis</a>
@@ -132,23 +135,27 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Fit a GLM model to each timepoint for an individual subject.</h1>
+    <h1>Fit a linear model to EEG data</h1>
     <small class="dont-index">Source: <a href='https://github.com/craddm/eegUtils/blob/master/R/glm_fitting.R'><code>R/glm_fitting.R</code></a></small>
     <div class="hidden name"><code>fit_glm.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Fits a linear model to each timepoint using lm().</p>
+    <p>Fits a linear model to each timepoint separately for each electrode.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>fit_glm</span>(<span class='no'>formula</span>, <span class='no'>data</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>fit_glm</span>(<span class='no'>formula</span>, <span class='no'>data</span>, <span class='no'>...</span>)
+
+<span class='co'># S3 method for eeg_epochs</span>
+<span class='fu'>fit_glm</span>(<span class='no'>formula</span>, <span class='no'>data</span>, <span class='kw'>time_lim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>formula</th>
-      <td><p>A regression formula for a GLM. See ?formula</p></td>
+      <td><p>An object of class "<code>formula</code>". Right-hand side A
+regression formula for a GLM. See ?formula and notes on use below</p></td>
     </tr>
     <tr>
       <th>data</th>
@@ -158,14 +165,38 @@
       <th>...</th>
       <td><p>Any other arguments passed to (LM/GLM)</p></td>
     </tr>
+    <tr>
+      <th>time_lim</th>
+      <td><p>Numeric vector of length 2 specifying time period to be used
+as a baseline.</p></td>
+    </tr>
     </table>
 
+    <h2 class="hasAnchor" id="methods-by-class-"><a class="anchor" href="#methods-by-class-"></a>Methods (by class)</h2>
+
+    
+<ul>
+<li><p><code>eeg_epochs</code>: GLM fitting for <code>eeg_epochs</code></p></li>
+</ul>
+    <h2 class="hasAnchor" id="notes-on-usage"><a class="anchor" href="#notes-on-usage"></a>Notes On Usage</h2>
+
+    
+
+
+<p>The <code>fit_glm</code> function will fit a linear model to each timepoint for
+  each electrode in the input dataset.</p>
+<p>The formula is a standard R formula. Specify only the right-hand side of
+  the formula i.e. any predictors.</p>
+<p>The function allows flexible fitting of a baseline covariate, recognising
+  the term <code>baseline</code> in the specified formula.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
+      <li><a href="#methods-by-class-">Methods (by class)</a></li>
+      <li><a href="#notes-on-usage">Notes On Usage</a></li>
     </ul>
 
     <h2>Author</h2>

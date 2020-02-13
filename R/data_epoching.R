@@ -27,8 +27,11 @@ epoch_data.default <- function(data, ...) {
 #' @param events Character vector of events to epoch around.
 #' @param time_lim Time in seconds to form epoch around the events. Defaults to
 #'   one second either side.
-#' @param baseline Baseline times to subtract. Defaults to NULL (mean centres
-#'   epochs). Set to "none" to perform no corrections.
+#' @param baseline Baseline times to subtract. Defaults to NULL which will mean
+#'   centre each epoch. Can be set to a numeric vector of length two to specify
+#'   a time window to use as a baseline in each epoch (e.g. c(-.1, 0)), or
+#'   "none", which will perform no baseline correction. As of v0.6 of eegUtils,
+#'   the default will be "none".
 #' @param epoch_labels Character vector of same length as events which'll be
 #'   used to label the epochs.
 #' @importFrom dplyr left_join
@@ -47,6 +50,11 @@ epoch_data.eeg_data <- function(data,
                                 epoch_labels = NULL,
                                 ...) {
 
+  if (is.null(baseline)) {
+    message("The current default value of baseline, NULL,
+            will change to 'none' in v0.6 of eegUtils,
+            performing no baseline correction.")
+  }
   if (!any(events %in% unique(data$events$event_type))) {
     stop("No events found - check event codes.")
   }

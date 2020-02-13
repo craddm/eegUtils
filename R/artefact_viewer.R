@@ -3,12 +3,15 @@
 #' An interactive Shiny app that allows exploration of channel and epoch
 #' statistics.
 #'
+#' @author Matt Craddock \email{matt@@mattcraddock.com}
 #' @import shiny
 #' @import shinydashboard
 #' @importFrom tidyr gather spread
 #' @import ggplot2
 #' @importFrom plotly plot_ly renderPlotly event_data
-#' @keywords internal
+#' @param data Object to be explored.
+
+#' @export
 
 view_artefacts <- function(data) {
 

@@ -2,6 +2,9 @@
 
 ### Function changes
 - Added `filter` method for `eeg_tfr` objects
+- `fit_glm()` overhauled. now far faster and allows specification of models using standard R formulae.
+- New `eeg_lm` class introduced for output of `fit_glm()`.
+- `as.data.frame()` methods have been added for `eeg_lm` objects.
 
 ### Internal changes / bug fixes
 - Now using `whitening` package for whitening before SOBI ICA
@@ -9,6 +12,7 @@
 - added tests for `filter.eeg_ICA` and `filter.eeg_tfr`
 - fixed `filter.eeg_data` and `filter.eeg_evoked`
 - `select_elecs` for `eeg_ICA` now correctly removes components from the unmixing matrix
+- switched back to using `left_join` from `dplyr` in the `tag_events` function as an easy fix for sorting of events when tagging.
 
 # eegUtils 0.5.0
 

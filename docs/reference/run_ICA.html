@@ -71,7 +71,7 @@ fastica, extended Infomax, and Second-Order Blind Identification (SOBI)." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">eegUtils</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0.9000</span>
       </span>
     </div>
 
@@ -101,6 +101,9 @@ fastica, extended Infomax, and Second-Order Blind Identification (SOBI)." />
     </li>
     <li>
       <a href="../articles/epoch-handling.html">Event and epoch handling</a>
+    </li>
+    <li>
+      <a href="../articles/linear_modelling.html">Linear Modelling</a>
     </li>
     <li>
       <a href="../articles/time-frequency-analysis.html">Frequency analysis</a>
@@ -148,9 +151,18 @@ fastica, extended Infomax, and Second-Order Blind Identification (SOBI).</p>
     <pre class="usage"><span class='fu'>run_ICA</span>(<span class='no'>data</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for eeg_epochs</span>
-<span class='fu'>run_ICA</span>(<span class='no'>data</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"sobi"</span>, <span class='kw'>maxit</span> <span class='kw'>=</span> <span class='fl'>1000</span>,
-  <span class='kw'>tol</span> <span class='kw'>=</span> <span class='fl'>1e-06</span>, <span class='kw'>pca</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>centre</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>alg</span> <span class='kw'>=</span> <span class='st'>"gradient"</span>,
-  <span class='kw'>rateanneal</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>60</span>, <span class='fl'>0.9</span>), <span class='kw'>rate</span> <span class='kw'>=</span> <span class='fl'>0.1</span>, <span class='no'>...</span>)</pre>
+<span class='fu'>run_ICA</span>(
+  <span class='no'>data</span>,
+  <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"sobi"</span>,
+  <span class='kw'>maxit</span> <span class='kw'>=</span> <span class='fl'>1000</span>,
+  <span class='kw'>tol</span> <span class='kw'>=</span> <span class='fl'>1e-06</span>,
+  <span class='kw'>pca</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>centre</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>alg</span> <span class='kw'>=</span> <span class='st'>"gradient"</span>,
+  <span class='kw'>rateanneal</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>60</span>, <span class='fl'>0.9</span>),
+  <span class='kw'>rate</span> <span class='kw'>=</span> <span class='fl'>0.1</span>,
+  <span class='no'>...</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -188,7 +200,7 @@ column mean. See notes on usage.</p></td>
     </tr>
     <tr>
       <th>alg</th>
-      <td><p>Use "gradient" descent or "newton" algorithm for extended infomax.
+      <td><p>Use "gradient descent" or "newton" algorithm for extended infomax.
 Defaults to "gradient". Ignored if method != "infomax".</p></td>
     </tr>
     <tr>
@@ -226,14 +238,12 @@ Defaults to "gradient". Ignored if method != "infomax".</p></td>
   channel mean. This can be achieved with the `rm_baseline()` function. SOBI
   ICA will do this automatically, whereas the other ICA implementations will
   centre on the channel means, not the epoch means.</p>
+<p>In addition, PCA will be required if the data is not full rank. This is
+  typical when using average reference, when the data rank will be
+  n_electrodes - 1.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>run_ICA</span>(<span class='no'>demo_epochs</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: Data is rank deficient. Detected rank 10</span></div><div class='output co'>#&gt; <span class='message'>Running SOBI ICA.</span></div><div class='output co'>#&gt; <span class='message'>Setting tolerance to 0.0011</span></div><div class='output co'>#&gt; Epoched ICA decomposition
-#&gt; 
-#&gt; Number of components	: 11 
-#&gt; Number of epochs	: 80 
-#&gt; Epoch limits		: -0.197 - 0.451 seconds
-#&gt; Sampling rate		: 128  Hz</div><div class='input'><span class='fu'>run_ICA</span>(<span class='no'>demo_epochs</span>, <span class='kw'>pca</span> <span class='kw'>=</span> <span class='fl'>10</span>)</div><div class='output co'>#&gt; <span class='message'>Reducing data to 10 dimensions using PCA.</span></div><div class='output co'>#&gt; <span class='message'>Running SOBI ICA.</span></div><div class='output co'>#&gt; <span class='message'>Setting tolerance to 0.0011</span></div><div class='output co'>#&gt; Epoched ICA decomposition
+    <pre class="examples"><div class='input'><span class='fu'>run_ICA</span>(<span class='no'>demo_epochs</span>, <span class='kw'>pca</span> <span class='kw'>=</span> <span class='fl'>10</span>)</div><div class='output co'>#&gt; <span class='message'>Reducing data to 10 dimensions using PCA.</span></div><div class='output co'>#&gt; <span class='message'>Running SOBI ICA.</span></div><div class='output co'>#&gt; <span class='message'>Setting tolerance to 0.0011</span></div><div class='output co'>#&gt; Epoched ICA decomposition
 #&gt; 
 #&gt; Number of components	: 10 
 #&gt; Number of epochs	: 80 

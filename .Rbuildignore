@@ -9,3 +9,6 @@
 ^codemeta\.json$
 ^README\.rmd$
 ^README_files$
+^CODE_OF_CONDUCT\.md$
+^doc$
+^Meta$

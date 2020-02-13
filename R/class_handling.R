@@ -297,6 +297,44 @@ eeg_stats <- function(statistic,
   value
 }
 
+new_eeg_lm <- function(coefficients,
+                       std_err,
+                       t_stats,
+                       r_sq,
+                       chan_info,
+                       epochs,
+                       timings,
+                       formula) {
+
+  stopifnot(is.data.frame(coefficients))
+  stopifnot(is.data.frame(std_err))
+  stopifnot(is.data.frame(t_stats))
+  stopifnot(is.data.frame(r_sq))
+  #stopifnot(is.data.frame(chan_info))
+  stopifnot(rlang::is_formula(formula))
+
+  new_eeg_stats(
+    coefficients = coefficients,
+    std_err = std_err,
+    t_stats = t_stats,
+    r_sq = r_sq,
+    timings = timings,
+    epochs = epochs,
+    chan_info = chan_info,
+    formula = formula,
+    class = "eeg_lm"
+  )
+}
+
+new_eeg_stats <- function(...,
+                          class = character()) {
+
+  new_obj <- list(...)
+  structure(
+    new_obj,
+    class = c(class, "eeg_stats")
+  )
+}
 
 #' Function to create an S3 object of class "eeg_ICA".
 #'

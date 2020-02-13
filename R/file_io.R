@@ -37,7 +37,7 @@ import_raw <- function(file_name,
     recording <- basename(tools::file_path_sans_ext(file_name))
   }
 
-  if (file_type == "bdf" | file_type == "edf") {
+  if (file_type %in% c("bdf","edf")) {
     message(paste("Importing",
                   file_name,
                   "as",
@@ -112,7 +112,7 @@ import_raw <- function(file_name,
                      timings = timings,
                      epochs = epochs)
     data
-  } else if (file_type == "cnt") {
+  } else if (identical(file_type,"cnt")) {
     message(paste("Importing Neuroscan", toupper(file_type), file_name))
     data <- import_cnt(file_name)
     sigs <- tibble::as_tibble(t(data$chan_data))
@@ -550,7 +550,6 @@ import_set <- function(file_name,
                        participant_id = NULL,
                        recording = NULL) {
 
-
   if (is.null(recording)) {
     recording <- basename(tools::file_path_sans_ext(file_name))
   }
@@ -567,12 +566,12 @@ import_set <- function(file_name,
   times <- temp_dat$EEG[[which(var_names == "times")]]
 
   chan_info <- temp_dat$EEG[[which(var_names == "chanlocs")]]
-  col_names <- dimnames(chan_info)[1]
+  row_names <- dimnames(chan_info)[[1]]
   size_chans <- dim(chan_info)
   chan_info <- lapply(chan_info,
                       function(x) ifelse(purrr::is_empty(x), NA, x))
   dim(chan_info) <- size_chans
-  dimnames(chan_info) <- col_names
+  rownames(chan_info) <- row_names
   chan_info <- parse_chaninfo(chan_info)
 
   # check if the data is stored in the set or in a separate .fdt
@@ -615,10 +614,14 @@ import_set <- function(file_name,
     }
   }
 
-  signals <- data.frame(cbind(t(signals),
-                              times))
-  srate <- c(temp_dat$EEG[[which(var_names == "srate")]])
-  names(signals) <- c(unique(chan_info$electrode), "time")
+  signals <- t(signals)
+  colnames(signals) <- unique(chan_info$electrode)
+  signals <- as.data.frame(signals)
+  signals$time <- times
+    # data.frame(cbind(t(signals),
+    #                           times))
+  srate <- temp_dat$EEG[[which(var_names == "srate")]][[1]]
+  #names(signals) <- c(unique(chan_info$electrode), "time")
   signals <- dplyr::group_by(signals,
                              time)
   signals <- dplyr::mutate(signals,
@@ -627,13 +630,21 @@ import_set <- function(file_name,
 
   event_info <- temp_dat$EEG[[which(var_names == "event")]]
 
-  event_table <- tibble::as_tibble(t(matrix(as.integer(event_info),
-                               nrow = dim(event_info)[1],
-                               ncol = dim(event_info)[3])))
+  event_table <- as.integer(event_info)
+  event_table <- matrix(event_table,
+                        nrow = dim(event_info)[[1]],
+                        ncol = dim(event_info)[[3]])
+  event_table <- t(event_table)
 
-  names(event_table) <- unlist(dimnames(event_info)[1])
+    # t(matrix(as.integer(event_info),
+    #                       nrow = dim(event_info)[1],
+    #                       ncol = dim(event_info)[3]))
+  colnames(event_table) <- dimnames(event_info)[[1]]
+
+  event_table <- tibble::as_tibble(event_table)
+
   event_table$event_time <- (event_table$latency - 1) / srate
-  event_table <- event_table[c("latency", "event_time", "type", "epoch")]
+  event_table <- event_table[, c("latency", "event_time", "type", "epoch")]
   event_table <- dplyr::rename(event_table,
                                event_type = "type",
                                event_onset = "latency")
@@ -658,16 +669,21 @@ import_set <- function(file_name,
                               recording = rep(recording, n_epochs)),
                          nrow = n_epochs,
                          class = "epoch_info")
-
-    out_data <- eeg_data(signals[, 1:n_chans],
-                         srate = srate,
-                         timings = timings,
-                         chan_info = chan_info,
-                         events = event_table,
-                         epochs = epochs)
-
-    if (!continuous) {
-      class(out_data) <- c("eeg_epochs", "eeg_data")
+    if (continuous) {
+      out_data <- eeg_data(signals[, 1:n_chans],
+                           srate = srate,
+                           timings = timings,
+                           chan_info = chan_info,
+                           events = event_table,
+                           epochs = epochs)
+    } else {
+      out_data <- eeg_epochs(signals[, 1:n_chans],
+                             srate = srate,
+                             timings = timings,
+                             chan_info = chan_info,
+                             events = event_table,
+                             reference = NULL,
+                             epochs = epochs)
     }
     out_data
   }

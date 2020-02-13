@@ -69,7 +69,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">eegUtils</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0.9000</span>
       </span>
     </div>
 
@@ -99,6 +99,9 @@
     </li>
     <li>
       <a href="../articles/epoch-handling.html">Event and epoch handling</a>
+    </li>
+    <li>
+      <a href="../articles/linear_modelling.html">Linear Modelling</a>
     </li>
     <li>
       <a href="../articles/time-frequency-analysis.html">Frequency analysis</a>
@@ -144,24 +147,19 @@
     <pre class="usage"><span class='fu'>select_elecs</span>(<span class='no'>data</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for default</span>
-<span class='fu'>select_elecs</span>(<span class='no'>data</span>, <span class='kw'>electrode</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>keep</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='no'>...</span>)
+<span class='fu'>select_elecs</span>(<span class='no'>data</span>, <span class='kw'>electrode</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>keep</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for eeg_data</span>
-<span class='fu'>select_elecs</span>(<span class='no'>data</span>, <span class='no'>electrode</span>, <span class='kw'>keep</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>df_out</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)
+<span class='fu'>select_elecs</span>(<span class='no'>data</span>, <span class='no'>electrode</span>, <span class='kw'>keep</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>df_out</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for eeg_evoked</span>
-<span class='fu'>select_elecs</span>(<span class='no'>data</span>, <span class='kw'>electrode</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>keep</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>df_out</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)
+<span class='fu'>select_elecs</span>(<span class='no'>data</span>, <span class='kw'>electrode</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>keep</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>df_out</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for eeg_ICA</span>
-<span class='fu'>select_elecs</span>(<span class='no'>data</span>, <span class='no'>component</span>, <span class='kw'>keep</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>df_out</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)
+<span class='fu'>select_elecs</span>(<span class='no'>data</span>, <span class='no'>component</span>, <span class='kw'>keep</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>df_out</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for eeg_tfr</span>
-<span class='fu'>select_elecs</span>(<span class='no'>data</span>, <span class='no'>electrode</span>, <span class='kw'>keep</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>df_out</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)</pre>
+<span class='fu'>select_elecs</span>(<span class='no'>data</span>, <span class='no'>electrode</span>, <span class='kw'>keep</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>df_out</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -212,7 +210,8 @@ than an <code>eeg_data</code> object.</p></td>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p><code><a href='select_times.html'>select_times</a></code> and <code><a href='select_epochs.html'>select_epochs</a></code></p>
-<p>Other Data selection functions: <code><a href='select_times.html'>select_times</a></code></p></div>
+<p>Other Data selection functions: 
+<code><a href='select_times.html'>select_times</a>()</code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span>(<span class='no'>demo_epochs</span>$<span class='no'>signals</span>)</div><div class='output co'>#&gt;  [1] "A5"  "A13" "A21" "A29" "A31" "B5"  "B6"  "B8"  "B16" "B18" "B26"</div><div class='input'><span class='no'>keep_A5</span> <span class='kw'>&lt;-</span> <span class='fu'>select_elecs</span>(<span class='no'>demo_epochs</span>, <span class='kw'>electrode</span> <span class='kw'>=</span> <span class='st'>"A5"</span>)

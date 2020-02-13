@@ -71,7 +71,7 @@ around each event." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">eegUtils</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0.9000</span>
       </span>
     </div>
 
@@ -101,6 +101,9 @@ around each event." />
     </li>
     <li>
       <a href="../articles/epoch-handling.html">Event and epoch handling</a>
+    </li>
+    <li>
+      <a href="../articles/linear_modelling.html">Linear Modelling</a>
     </li>
     <li>
       <a href="../articles/time-frequency-analysis.html">Frequency analysis</a>
@@ -148,8 +151,14 @@ around each event.</p>
     <pre class="usage"><span class='fu'>epoch_data</span>(<span class='no'>data</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for eeg_data</span>
-<span class='fu'>epoch_data</span>(<span class='no'>data</span>, <span class='no'>events</span>, <span class='kw'>time_lim</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(-<span class='fl'>1</span>, <span class='fl'>1</span>),
-  <span class='kw'>baseline</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>epoch_labels</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
+<span class='fu'>epoch_data</span>(
+  <span class='no'>data</span>,
+  <span class='no'>events</span>,
+  <span class='kw'>time_lim</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(-<span class='fl'>1</span>, <span class='fl'>1</span>),
+  <span class='kw'>baseline</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>epoch_labels</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='no'>...</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -173,8 +182,11 @@ one second either side.</p></td>
     </tr>
     <tr>
       <th>baseline</th>
-      <td><p>Baseline times to subtract. Defaults to NULL (mean centres
-epochs). Set to "none" to perform no corrections.</p></td>
+      <td><p>Baseline times to subtract. Defaults to NULL which will mean
+centre each epoch. Can be set to a numeric vector of length two to specify
+a time window to use as a baseline in each epoch (e.g. c(-.1, 0)), or
+"none", which will perform no baseline correction. As of v0.6 of eegUtils,
+the default will be "none".</p></td>
     </tr>
     <tr>
       <th>epoch_labels</th>

@@ -71,7 +71,7 @@ ignored, which can result in minor edge artifacts." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">eegUtils</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0.9000</span>
       </span>
     </div>
 
@@ -101,6 +101,9 @@ ignored, which can result in minor edge artifacts." />
     </li>
     <li>
       <a href="../articles/epoch-handling.html">Event and epoch handling</a>
+    </li>
+    <li>
+      <a href="../articles/linear_modelling.html">Linear Modelling</a>
     </li>
     <li>
       <a href="../articles/time-frequency-analysis.html">Frequency analysis</a>
@@ -148,14 +151,30 @@ ignored, which can result in minor edge artifacts.</p>
     <pre class="usage"><span class='fu'>eeg_filter</span>(<span class='no'>.data</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for eeg_data</span>
-<span class='fu'>eeg_filter</span>(<span class='no'>.data</span>, <span class='kw'>low_freq</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>high_freq</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>filter_order</span> <span class='kw'>=</span> <span class='st'>"auto"</span>, <span class='kw'>trans_bw</span> <span class='kw'>=</span> <span class='st'>"auto"</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"fir"</span>,
-  <span class='kw'>window</span> <span class='kw'>=</span> <span class='st'>"hamming"</span>, <span class='kw'>demean</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>...</span>)
+<span class='fu'>eeg_filter</span>(
+  <span class='no'>.data</span>,
+  <span class='kw'>low_freq</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>high_freq</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>filter_order</span> <span class='kw'>=</span> <span class='st'>"auto"</span>,
+  <span class='kw'>trans_bw</span> <span class='kw'>=</span> <span class='st'>"auto"</span>,
+  <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"fir"</span>,
+  <span class='kw'>window</span> <span class='kw'>=</span> <span class='st'>"hamming"</span>,
+  <span class='kw'>demean</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='no'>...</span>
+)
 
 <span class='co'># S3 method for eeg_epochs</span>
-<span class='fu'>eeg_filter</span>(<span class='no'>.data</span>, <span class='kw'>low_freq</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>high_freq</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>filter_order</span> <span class='kw'>=</span> <span class='st'>"auto"</span>, <span class='kw'>trans_bw</span> <span class='kw'>=</span> <span class='st'>"auto"</span>,
-  <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"fir"</span>, <span class='kw'>window</span> <span class='kw'>=</span> <span class='st'>"hamming"</span>, <span class='kw'>demean</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>...</span>)</pre>
+<span class='fu'>eeg_filter</span>(
+  <span class='no'>.data</span>,
+  <span class='kw'>low_freq</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>high_freq</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>filter_order</span> <span class='kw'>=</span> <span class='st'>"auto"</span>,
+  <span class='kw'>trans_bw</span> <span class='kw'>=</span> <span class='st'>"auto"</span>,
+  <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"fir"</span>,
+  <span class='kw'>window</span> <span class='kw'>=</span> <span class='st'>"hamming"</span>,
+  <span class='kw'>demean</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='no'>...</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">

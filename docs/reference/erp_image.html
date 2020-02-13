@@ -70,7 +70,7 @@ order to make across-trial patterns more apparent." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">eegUtils</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0.9000</span>
       </span>
     </div>
 
@@ -100,6 +100,9 @@ order to make across-trial patterns more apparent." />
     </li>
     <li>
       <a href="../articles/epoch-handling.html">Event and epoch handling</a>
+    </li>
+    <li>
+      <a href="../articles/linear_modelling.html">Linear Modelling</a>
     </li>
     <li>
       <a href="../articles/time-frequency-analysis.html">Frequency analysis</a>
@@ -146,16 +149,36 @@ order to make across-trial patterns more apparent.</p>
     <pre class="usage"><span class='fu'>erp_image</span>(<span class='no'>data</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for default</span>
-<span class='fu'>erp_image</span>(<span class='no'>data</span>, <span class='kw'>electrode</span> <span class='kw'>=</span> <span class='st'>"Cz"</span>, <span class='kw'>time_lim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>smoothing</span> <span class='kw'>=</span> <span class='fl'>10</span>, <span class='kw'>clim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>interpolate</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)
+<span class='fu'>erp_image</span>(
+  <span class='no'>data</span>,
+  <span class='kw'>electrode</span> <span class='kw'>=</span> <span class='st'>"Cz"</span>,
+  <span class='kw'>time_lim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>smoothing</span> <span class='kw'>=</span> <span class='fl'>10</span>,
+  <span class='kw'>clim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>interpolate</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='no'>...</span>
+)
 
 <span class='co'># S3 method for eeg_epochs</span>
-<span class='fu'>erp_image</span>(<span class='no'>data</span>, <span class='kw'>electrode</span> <span class='kw'>=</span> <span class='st'>"Cz"</span>, <span class='kw'>time_lim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>smoothing</span> <span class='kw'>=</span> <span class='fl'>10</span>, <span class='kw'>clim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>interpolate</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)
+<span class='fu'>erp_image</span>(
+  <span class='no'>data</span>,
+  <span class='kw'>electrode</span> <span class='kw'>=</span> <span class='st'>"Cz"</span>,
+  <span class='kw'>time_lim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>smoothing</span> <span class='kw'>=</span> <span class='fl'>10</span>,
+  <span class='kw'>clim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>interpolate</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='no'>...</span>
+)
 
 <span class='co'># S3 method for eeg_ICA</span>
-<span class='fu'>erp_image</span>(<span class='no'>data</span>, <span class='kw'>component</span> <span class='kw'>=</span> <span class='st'>"Comp1"</span>, <span class='kw'>smoothing</span> <span class='kw'>=</span> <span class='fl'>10</span>,
-  <span class='kw'>clim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>interpolate</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)</pre>
+<span class='fu'>erp_image</span>(
+  <span class='no'>data</span>,
+  <span class='kw'>component</span> <span class='kw'>=</span> <span class='st'>"Comp1"</span>,
+  <span class='kw'>smoothing</span> <span class='kw'>=</span> <span class='fl'>10</span>,
+  <span class='kw'>clim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>interpolate</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='no'>...</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">

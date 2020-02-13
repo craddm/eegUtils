@@ -63,8 +63,8 @@ plot_psd.eeg_data <- function(data,
 
   psd_out <- compute_psd(data,
                          n_fft = n_fft,
-                         seg_length = NULL,
-                         noverlap = NULL)
+                         seg_length = seg_length,
+                         noverlap = noverlap)
 
   create_psd_plot(psd_out,
                   freq_range)

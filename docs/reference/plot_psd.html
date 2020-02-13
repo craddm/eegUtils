@@ -70,7 +70,7 @@ PSD is calculated using Welch's method." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">eegUtils</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0.9000</span>
       </span>
     </div>
 
@@ -100,6 +100,9 @@ PSD is calculated using Welch's method." />
     </li>
     <li>
       <a href="../articles/epoch-handling.html">Event and epoch handling</a>
+    </li>
+    <li>
+      <a href="../articles/linear_modelling.html">Linear Modelling</a>
     </li>
     <li>
       <a href="../articles/time-frequency-analysis.html">Frequency analysis</a>
@@ -146,23 +149,48 @@ PSD is calculated using Welch's method.</p>
     <pre class="usage"><span class='fu'>plot_psd</span>(<span class='no'>data</span>, <span class='kw'>freq_range</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for eeg_epochs</span>
-<span class='fu'>plot_psd</span>(<span class='no'>data</span>, <span class='kw'>freq_range</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>n_fft</span> <span class='kw'>=</span> <span class='fl'>256</span>,
-  <span class='kw'>seg_length</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>noverlap</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)
+<span class='fu'>plot_psd</span>(
+  <span class='no'>data</span>,
+  <span class='kw'>freq_range</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>n_fft</span> <span class='kw'>=</span> <span class='fl'>256</span>,
+  <span class='kw'>seg_length</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>noverlap</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='no'>...</span>
+)
 
 <span class='co'># S3 method for eeg_data</span>
-<span class='fu'>plot_psd</span>(<span class='no'>data</span>, <span class='kw'>freq_range</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>n_fft</span> <span class='kw'>=</span> <span class='fl'>2048</span>,
-  <span class='kw'>noverlap</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>seg_length</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)
+<span class='fu'>plot_psd</span>(
+  <span class='no'>data</span>,
+  <span class='kw'>freq_range</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>n_fft</span> <span class='kw'>=</span> <span class='fl'>2048</span>,
+  <span class='kw'>noverlap</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>seg_length</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='no'>...</span>
+)
 
 <span class='co'># S3 method for eeg_ICA</span>
-<span class='fu'>plot_psd</span>(<span class='no'>data</span>, <span class='kw'>freq_range</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>components</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>seg_length</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>noverlap</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>n_fft</span> <span class='kw'>=</span> <span class='fl'>256</span>, <span class='no'>...</span>)
+<span class='fu'>plot_psd</span>(
+  <span class='no'>data</span>,
+  <span class='kw'>freq_range</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>components</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>seg_length</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>noverlap</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>n_fft</span> <span class='kw'>=</span> <span class='fl'>256</span>,
+  <span class='no'>...</span>
+)
 
 <span class='co'># S3 method for data.frame</span>
 <span class='fu'>plot_psd</span>(<span class='no'>data</span>, <span class='kw'>freq_range</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for eeg_evoked</span>
-<span class='fu'>plot_psd</span>(<span class='no'>data</span>, <span class='kw'>freq_range</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>n_fft</span> <span class='kw'>=</span> <span class='fl'>256</span>,
-  <span class='kw'>seg_length</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>noverlap</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
+<span class='fu'>plot_psd</span>(
+  <span class='no'>data</span>,
+  <span class='kw'>freq_range</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>n_fft</span> <span class='kw'>=</span> <span class='fl'>256</span>,
+  <span class='kw'>seg_length</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>noverlap</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='no'>...</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">

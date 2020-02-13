@@ -87,12 +87,8 @@ rm_baseline.eeg_epochs <- function(data,
                                  baseline_dat)
 
   } else {
-    base_times <- select_times(data,
-                               time_lim = time_lim)
-    base_times$signals <- as.matrix(base_times$signals)
-    n_bl_times <- length(unique(base_times$timings$time))
-    dim(base_times$signals) <- c(n_bl_times, n_epochs, n_chans)
-    base_times <- colMeans(base_times$signals)
+    base_times <- get_epoch_baselines(data,
+                                      time_lim)
 
     data$signals <- as.matrix(data$signals)
     dim(data$signals) <- c(n_times, n_epochs, n_chans)
@@ -100,9 +96,8 @@ rm_baseline.eeg_epochs <- function(data,
   }
   #Reshape and turn back into data frame
   data$signals <- array(data$signals,
-                       dim = c(n_epochs * n_times, n_chans))
+                        dim = c(n_epochs * n_times, n_chans))
   data$signals <- tibble::as_tibble(data$signals)
-
   names(data$signals) <- elecs
   data
 }
@@ -188,12 +183,17 @@ rm_baseline.eeg_tfr <- function(data,
     epoched <- FALSE
   }
 
-  bline <- select_times(data, time_lim)
+  bline <- select_times(data,
+                        time_lim)
   if (epoched) {
     #bline <- colMeans(colMeans(bline$signals, na.rm = TRUE), na.rm = TRUE)
-    bline <- apply(bline$signals, c(1, 3, 4), mean, na.rm = TRUE)
+    bline <- apply(bline$signals,
+                   c(1, 3, 4),
+                   mean,
+                   na.rm = TRUE)
   } else {
-    bline <- colMeans(bline$signals, na.rm = TRUE)
+    bline <- colMeans(bline$signals,
+                      na.rm = TRUE)
   }
   # This function implements the various baseline correction types
   do_corrs <- function(data,
@@ -266,4 +266,41 @@ rm_baseline.eeg_evoked <- function(data,
   }
   data$signals <- tibble::as_tibble(data$signals[, ..orig_cols])
   data
+}
+
+#' Get epoch baselines
+#'
+#' Gets the baseline values for every epoch separately
+#'
+#' @param data data for which to calculate the baselines
+#' @param time_lim time limits of the baseline period. numeric vector of length
+#'   two, c(start, end)
+#' @return A numeric matrix of n_epochs x n_channels.
+#' @keywords internal
+get_epoch_baselines <- function(data,
+                                time_lim) {
+
+  n_epochs <- nrow(epochs(data))
+  n_chans <- length(channel_names(data))
+  chan_names <- colnames(data$signals)
+
+  if (is.null(time_lim)) {
+    data$signals <- as.matrix(data$signals)
+    n_times <- length(unique(data$timings$time))
+    dim(data$signals) <- c(n_times,
+                           n_epochs,
+                           n_chans)
+    base_times <- colMeans(data$signals)
+  } else {
+    base_times <- select_times(data,
+                               time_lim = time_lim)
+    base_times$signals <- as.matrix(base_times$signals)
+    n_bl_times <- length(unique(base_times$timings$time))
+    dim(base_times$signals) <- c(n_bl_times,
+                                 n_epochs,
+                                 n_chans)
+    base_times <- colMeans(base_times$signals)
+  }
+    colnames(base_times) <- chan_names
+    base_times
 }
