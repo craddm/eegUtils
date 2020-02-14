@@ -38,7 +38,7 @@
 - `compute_tfr` reworked to be faster.
 - Faster baseline correction implemented using Rcpp.
 - Padding now used during `compute_tfr`, which greatly improves speed/accuracy; units may change but this is a change in scaling factor.
-- `epoch_data` now uses a more robust way of determing time limits/samples to include in each epoch that no longer fails at some combinations of time limit and sampling rate
+- `epoch_data` now uses a more robust way of determining time limits/samples to include in each epoch that no longer fails at some combinations of time limit and sampling rate
 - `eeg_average` returns objects of class(`eeg_evoked`, `eeg_epochs`)
 - Updated R requirement to >= 3.2.0
 - Updated rlang requirement to >= 0.4.0
