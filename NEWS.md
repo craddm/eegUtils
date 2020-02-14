@@ -4,6 +4,7 @@
 - Added `filter` method for `eeg_tfr` objects
 - `fit_glm()` overhauled. now far faster and allows specification of models using standard R formulae.
 - New `eeg_lm` class introduced for output of `fit_glm()`.
+  - `plot_butterfly.eeg_lm()` method added
 - `as.data.frame()` methods have been added for `eeg_lm` objects.
 
 ### Internal changes / bug fixes
@@ -13,6 +14,7 @@
 - fixed `filter.eeg_data` and `filter.eeg_evoked`
 - `select_elecs` for `eeg_ICA` now correctly removes components from the unmixing matrix
 - switched back to using `left_join` from `dplyr` in the `tag_events` function as an easy fix for sorting of events when tagging.
+- fixed odd interaction between `select()` and `validate_channels()` that reordered channel names in `chan_info`
 
 # eegUtils 0.5.0
 

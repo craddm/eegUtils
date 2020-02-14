@@ -425,6 +425,39 @@ plot_electrodes.eeg_data <- function(data,
   }
 }
 
+#' @describeIn plot_electrodes Plot electrodes associated with an \code{eeg_data} object.
+#' @export
+plot_electrodes.eeg_tfr <- function(data,
+                                     interact = FALSE) {
+
+  if (is.null(channels(data))) {
+    stop("No channel locations found.")
+  }
+
+  if (interact) {
+    if (!requireNamespace("plotly", quietly = TRUE)) {
+      stop("Package \"plotly\" needed for interactive electrode plots. Please install it.",
+           call. = FALSE)
+    }
+
+    plotly::plot_ly(data$chan_info,
+                    x = ~cart_x,
+                    y = ~cart_y,
+                    z = ~cart_z,
+                    text = ~electrode,
+                    type = "scatter3d",
+                    mode = "text+markers")
+  } else {
+    ggplot2::ggplot(data$chan_info,
+                    aes(x = x,
+                        y = y,
+                        label = electrode)) +
+      geom_text() +
+      theme_minimal() +
+      coord_equal()
+  }
+}
+
 #' Montage check
 #'
 #' @param montage Name of montage
@@ -469,7 +502,9 @@ validate_channels <- function(chan_info,
                          all.x = TRUE,
                          sort = FALSE)
     }
-    chan_info$electrode <- sig_names
+    #chan_info$electrode <- sig_names
+    chan_info <- chan_info[match(toupper(sig_names),
+                                chan_info$electrode), ]
   }
   # merge always converts strings to factors,
   # so also make sure electrode is not a factor
