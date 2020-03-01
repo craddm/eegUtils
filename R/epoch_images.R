@@ -18,6 +18,12 @@ erp_image <- function(data,
   UseMethod("erp_image", data)
 }
 
+erp_image.default <- function(data,
+                              ...) {
+  stop("Not implemented for objects of class ",
+       class(data))
+}
+
 #' @param electrode electrode at which to generate an ERP image.
 #' @param time_lim Time limits of plot
 #' @param smoothing Number of trials to smooth over when generating image
@@ -26,7 +32,7 @@ erp_image <- function(data,
 #' @param interpolate Perform interpolation to produce smoother looking plots. Defaults to FALSE.
 #' @describeIn erp_image Default function operates on normal data frames
 #' @export
-erp_image.default <- function(data,
+erp_image.data.frame <- function(data,
                               electrode = "Cz",
                               time_lim = NULL,
                               smoothing = 10,
@@ -92,7 +98,7 @@ erp_image.eeg_epochs <- function(data,
 #' @describeIn erp_image Plot component image from \code{eeg_ICA}
 #' @export
 erp_image.eeg_ICA <- function(data,
-                              component = "Comp1",
+                              component = "Comp001",
                               smoothing = 10,
                               clim = NULL,
                               interpolate = FALSE,
@@ -110,6 +116,34 @@ erp_image.eeg_ICA <- function(data,
                   smoothing = smoothing,
                   clim = clim,
                   interpolate = interpolate)
+}
+
+
+erp_image.eeg_tfr <- function(data,
+                              electrode = "Cz",
+                              time_lim = NULL,
+                              smoothing = 10,
+                              clim = NULL,
+                              interpolate = FALSE,
+                              ...) {
+
+  data <- select_elecs(data,
+                       electrode)
+
+  if (!is.null(time_lim)) {
+    data <- filter(data,
+                   time > time_lim[1],
+                   time < time_lim[2])
+  }
+
+  data <- as.data.frame(data,
+                        long = TRUE)
+  create_tfrimage(data,
+                  electrode = electrode,
+                  smoothing = smoothing,
+                  clim = clim,
+                  interpolate = interpolate)
+
 }
 
 #' Function for creating an ERP image
@@ -139,10 +173,19 @@ create_erpimage <- function(data,
                               max(data$time),
                               length.out = n_times),
                           times = n_epochs)
-  data$smooth_amp <- as.numeric(stats::filter(data$amplitude,
-                                              rep(1 / smoothing,
-                                                  smoothing),
-                                              sides = 2))
+  if ("amplitude" %in% names(data)) {
+    data$smooth_amp <- as.numeric(stats::filter(data$amplitude,
+                                                rep(1 / smoothing,
+                                                    smoothing),
+                                                sides = 2))
+    units <- "Amplitude"
+  } else if ("power" %in% names(data)) {
+    data$smooth_amp <- as.numeric(stats::filter(data$power,
+                                                rep(1 / smoothing,
+                                                    smoothing),
+                                                sides = 2))
+    units <- "Power"
+  }
   data$epoch <- as.numeric(factor(data$epoch))
   if (is.null(clim)) {
     clim <- max(abs(max(data$smooth_amp, na.rm = TRUE)),
@@ -168,7 +211,68 @@ create_erpimage <- function(data,
     scale_y_continuous(expand = c(0, 0)) +
     scale_x_continuous(expand = c(0, 0)) +
     theme_classic() +
-    labs(x = "Time (s)", fill = "Amplitude", y = "Epoch number") +
+    labs(x = "Time (s)", fill = units, y = "Epoch number") +
+    ggtitle(paste("ERP Image for electrode", electrode))
+}
+
+
+create_tfrimage <- function(data,
+                            electrode,
+                            smoothing,
+                            clim,
+                            interpolate = FALSE,
+                            freq_range = NULL) {
+
+
+  sel_rows <- data$electrode %in% electrode
+
+  if (rlang::is_empty(sel_rows)){
+    sel_rows <- data$component %in% electrode
+  }
+
+  data <- data[sel_rows, ]
+  data <- dplyr::group_by(data,
+                          time, electrode, epoch)
+  data <- dplyr::summarise(data,
+                           power = mean(power, na.rm = TRUE))
+  n_times <- length(unique(data$time))
+  n_epochs <- length(unique(data$epoch))
+  data$smooth_time <- rep(seq(min(data$time),
+                              max(data$time),
+                              length.out = n_times),
+                          each = n_epochs)
+  data$smooth_amp <- as.numeric(stats::filter(data$power,
+                                              rep(1 / smoothing,
+                                                  smoothing),
+                                              sides = 2))
+  units <- "Power"
+
+  data$epoch <- as.numeric(factor(data$epoch))
+  if (is.null(clim)) {
+    clim <- max(abs(max(data$smooth_amp, na.rm = TRUE)),
+                abs(min(data$smooth_amp, na.rm = TRUE)))
+    clim <- c(-clim, clim)
+  } else if (length(clim) != 2) {
+    clim <- max(abs(max(data$smooth_amp, na.rm = TRUE)),
+                abs(min(data$smooth_amp, na.rm = T)))
+    clim <- c(-clim, clim)
+  }
+
+  ggplot2::ggplot(data,
+                  aes(x = smooth_time,
+                      y = epoch,
+                      fill = smooth_amp)) +
+    geom_raster(interpolate = interpolate) +
+    geom_vline(xintercept = 0,
+               linetype = "dashed",
+               size = 1) +
+    scale_fill_distiller(palette = "RdBu",
+                         limits = clim,
+                         oob = scales::squish) +
+    scale_y_continuous(expand = c(0, 0)) +
+    scale_x_continuous(expand = c(0, 0)) +
+    theme_classic() +
+    labs(x = "Time (s)", fill = units, y = "Epoch number") +
     ggtitle(paste("ERP Image for electrode", electrode))
 }
 
