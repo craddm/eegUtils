@@ -81,7 +81,7 @@ fit_glm.eeg_epochs <- function(formula,
     design_mat <- stats::model.matrix(
       formula,
       cbind(epochs(data),
-        baseline = 0
+        baseline = base_times[, 1]
       )
     )
 
