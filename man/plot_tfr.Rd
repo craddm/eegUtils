@@ -4,9 +4,16 @@
 \alias{plot_tfr}
 \title{Time-frequency plot}
 \usage{
-plot_tfr(data, electrode = NULL, time_lim = NULL, freq_range = NULL,
-  baseline_type = "none", baseline = NULL, fill_lims = NULL,
-  interpolate = FALSE)
+plot_tfr(
+  data,
+  electrode = NULL,
+  time_lim = NULL,
+  freq_range = NULL,
+  baseline_type = "none",
+  baseline = NULL,
+  fill_lims = NULL,
+  interpolate = FALSE
+)
 }
 \arguments{
 \item{data}{Object of class \code{eeg_tfr}}

@@ -7,8 +7,14 @@
 \usage{
 epoch_data(data, ...)
 
-\method{epoch_data}{eeg_data}(data, events, time_lim = c(-1, 1),
-  baseline = NULL, epoch_labels = NULL, ...)
+\method{epoch_data}{eeg_data}(
+  data,
+  events,
+  time_lim = c(-1, 1),
+  baseline = NULL,
+  epoch_labels = NULL,
+  ...
+)
 }
 \arguments{
 \item{data}{Continuous data to be epoched.}

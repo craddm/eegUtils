@@ -9,17 +9,39 @@
 \usage{
 compute_psd(data, ...)
 
-\method{compute_psd}{eeg_data}(data, seg_length = NULL,
-  noverlap = NULL, n_fft = NULL, method = "Welch", demean = TRUE,
-  verbose = TRUE, ...)
+\method{compute_psd}{eeg_data}(
+  data,
+  seg_length = NULL,
+  noverlap = NULL,
+  n_fft = NULL,
+  method = "Welch",
+  demean = TRUE,
+  verbose = TRUE,
+  ...
+)
 
-\method{compute_psd}{eeg_epochs}(data, seg_length = NULL,
-  noverlap = NULL, n_fft = 256, method = "Welch",
-  keep_trials = TRUE, demean = TRUE, verbose = TRUE, ...)
+\method{compute_psd}{eeg_epochs}(
+  data,
+  seg_length = NULL,
+  noverlap = NULL,
+  n_fft = 256,
+  method = "Welch",
+  keep_trials = TRUE,
+  demean = TRUE,
+  verbose = TRUE,
+  ...
+)
 
-\method{compute_psd}{eeg_evoked}(data, seg_length = NULL,
-  noverlap = NULL, n_fft = 256, method = "Welch", demean = TRUE,
-  verbose = TRUE, ...)
+\method{compute_psd}{eeg_evoked}(
+  data,
+  seg_length = NULL,
+  noverlap = NULL,
+  n_fft = 256,
+  method = "Welch",
+  demean = TRUE,
+  verbose = TRUE,
+  ...
+)
 }
 \arguments{
 \item{data}{Data to be plotted. Accepts objects of class \code{eeg_data}}

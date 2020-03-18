@@ -7,8 +7,7 @@
 \usage{
 ar_eogcor(decomp, ...)
 
-\method{ar_eogcor}{eeg_ICA}(decomp, data, HEOG, VEOG, threshold = NULL,
-  plot = TRUE, ...)
+\method{ar_eogcor}{eeg_ICA}(decomp, data, HEOG, VEOG, threshold = NULL, plot = TRUE, ...)
 }
 \arguments{
 \item{decomp}{ICA decomposition}

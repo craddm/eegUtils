@@ -4,8 +4,7 @@
 \alias{interactive_scalp}
 \title{Interactive scalp maps}
 \usage{
-interactive_scalp(data, colour = NULL, baseline = NULL,
-  montage = NULL)
+interactive_scalp(data, colour = NULL, baseline = NULL, montage = NULL)
 }
 \arguments{
 \item{data}{An EEG dataset.}

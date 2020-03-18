@@ -34,8 +34,10 @@ events(demo_epochs)
 
 }
 \seealso{
-Other event handlers: \code{\link{list_epochs}},
-  \code{\link{list_events}}, \code{\link{tag_events}}
+Other event handlers: 
+\code{\link{list_epochs}()},
+\code{\link{list_events}()},
+\code{\link{tag_events}()}
 }
 \author{
 Matt Craddock \email{matt@mattcraddock.com}

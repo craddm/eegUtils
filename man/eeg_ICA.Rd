@@ -4,8 +4,17 @@
 \alias{eeg_ICA}
 \title{Function to create an S3 object of class "eeg_ICA".}
 \usage{
-eeg_ICA(mixing_matrix, unmixing_matrix, signals, timings, events,
-  chan_info, srate, epochs, algorithm)
+eeg_ICA(
+  mixing_matrix,
+  unmixing_matrix,
+  signals,
+  timings,
+  events,
+  chan_info,
+  srate,
+  epochs,
+  algorithm
+)
 }
 \arguments{
 \item{mixing_matrix}{ICA mixing matrix}

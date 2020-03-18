@@ -4,8 +4,14 @@
 \alias{ar_chanfoc}
 \title{Detect high channel focality of ICA components}
 \usage{
-ar_chanfoc(data, plot = TRUE, threshold = NULL, verbose = TRUE,
-  measure = "max", ...)
+ar_chanfoc(
+  data,
+  plot = TRUE,
+  threshold = NULL,
+  verbose = TRUE,
+  measure = "max",
+  ...
+)
 }
 \arguments{
 \item{data}{\code{eeg_ICA} object}

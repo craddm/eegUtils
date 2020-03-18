@@ -11,20 +11,15 @@
 \usage{
 select_elecs(data, ...)
 
-\method{select_elecs}{default}(data, electrode = NULL, keep = TRUE,
-  ...)
+\method{select_elecs}{default}(data, electrode = NULL, keep = TRUE, ...)
 
-\method{select_elecs}{eeg_data}(data, electrode, keep = TRUE,
-  df_out = FALSE, ...)
+\method{select_elecs}{eeg_data}(data, electrode, keep = TRUE, df_out = FALSE, ...)
 
-\method{select_elecs}{eeg_evoked}(data, electrode = NULL, keep = TRUE,
-  df_out = FALSE, ...)
+\method{select_elecs}{eeg_evoked}(data, electrode = NULL, keep = TRUE, df_out = FALSE, ...)
 
-\method{select_elecs}{eeg_ICA}(data, component, keep = TRUE,
-  df_out = FALSE, ...)
+\method{select_elecs}{eeg_ICA}(data, component, keep = TRUE, df_out = FALSE, ...)
 
-\method{select_elecs}{eeg_tfr}(data, electrode, keep = TRUE,
-  df_out = FALSE, ...)
+\method{select_elecs}{eeg_tfr}(data, electrode, keep = TRUE, df_out = FALSE, ...)
 }
 \arguments{
 \item{data}{An EEG dataset.}
@@ -72,7 +67,8 @@ remove_A5 <- select_elecs(demo_epochs, electrode = "A5", keep = FALSE)
 \seealso{
 \code{\link{select_times}} and \code{\link{select_epochs}}
 
-Other Data selection functions: \code{\link{select_times}}
+Other Data selection functions: 
+\code{\link{select_times}()}
 }
 \author{
 Matt Craddock, \email{matt@mattcraddock.com}

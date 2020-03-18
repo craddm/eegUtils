@@ -4,8 +4,14 @@
 \alias{run_iir}
 \title{Internal function for running IIR filtering}
 \usage{
-run_iir(data, low_freq = NULL, high_freq = NULL, filter_order, srate,
-  silent = FALSE)
+run_iir(
+  data,
+  low_freq = NULL,
+  high_freq = NULL,
+  filter_order,
+  srate,
+  silent = FALSE
+)
 }
 \arguments{
 \item{data}{Data to be filtered}
