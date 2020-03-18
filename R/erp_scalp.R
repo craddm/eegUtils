@@ -108,7 +108,8 @@ erp_scalp <- function(data,
   }
 
   data$electrodefacet <- data[, electrode]
-  data <- tidyr::nest(tibble::as_tibble(data), -electrode)
+  data <- tidyr::nest(tibble::as_tibble(data),
+                      data = c(time, amplitude, electrodefacet))
   data <- dplyr::mutate(data, plot = map(data, plotfun))
   data <- dplyr::select(data, -data)
 
@@ -119,7 +120,7 @@ erp_scalp <- function(data,
                                 montage = montage)
   } else {
     data <- dplyr::left_join(data, chan_info)
-    data <- filter(data, !(is.na(x) | is.na(y)))
+    data <- dplyr::filter(data, !(is.na(x) | is.na(y)))
   }
 
   max_x <- max(abs(min(data$x, na.rm = TRUE)),
@@ -131,8 +132,10 @@ erp_scalp <- function(data,
 
   panel_size <- floor(sqrt(plot_area / nrow(data)))
 
-  coords_space <- data.frame(x = c(-(max_x + panel_size), max_x + panel_size),
-                             y = c(-(max_y + panel_size), max_y + panel_size))
+  coords_space <- data.frame(x = c(-(max_x + panel_size),
+                                   max_x + panel_size),
+                             y = c(-(max_y + panel_size),
+                                   max_y + panel_size))
 
   p <- ggplot(coords_space,
               aes(x, y)) +
@@ -187,6 +190,9 @@ erp_scalp <- function(data,
   p
 }
 
+
+
+
 #' Interactive scalp maps
 #'
 #' Launches a Shiny Gadget for an interactive version of erp_scalp, allowing
@@ -212,7 +218,7 @@ interactive_scalp <- function(data,
                               baseline = NULL,
                               montage = NULL) {
 
-  if (is.eeg_data(data)) {
+  if (is.eeg_epochs(data)) {
     data <- eeg_average(data)
   }
 
@@ -254,19 +260,24 @@ interactive_scalp <- function(data,
                      session) {
 
     chan_info <- NULL
+
     if (is.eeg_evoked(data)) {
       chan_info <- channels(data)
     }
+    print(chan_info)
     tmp_data <- as.data.frame(data,
                               long = TRUE)
 
-    if (is.null(chan_info)){
+    if (is.null(chan_info)) {
       tmp_data <- electrode_locations(tmp_data,
                                       drop = TRUE,
                                       montage = montage)
+
     } else {
-      tmp_data <- dplyr::left_join(tmp_data, chan_info)
-      tmp_data <- filter(tmp_data, !(is.na(x) | is.na(y)))
+      tmp_data <- dplyr::left_join(tmp_data,
+                                   chan_info)
+      tmp_data <- dplyr::filter(tmp_data,
+                                !(is.na(x) | is.na(y)))
     }
     button_reacts <- reactiveValues(sel_elecs = list(),
                                     avg = TRUE)
@@ -297,7 +308,8 @@ interactive_scalp <- function(data,
           button_reacts$sel_elecs <-
             button_reacts$sel_elecs[-which(button_reacts$sel_elecs == tmp$electrode)]
         } else {
-          button_reacts$sel_elecs <- c(button_reacts$sel_elecs, tmp$electrode)
+          button_reacts$sel_elecs <- c(button_reacts$sel_elecs,
+                                       tmp$electrode)
         }
       }
 

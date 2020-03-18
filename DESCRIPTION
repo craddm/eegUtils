@@ -51,7 +51,7 @@ Suggests: testthat,
     ica,
     geigen,
     fICA
-URL: https://github.com/craddm/eegUtils
+URL: https://github.com/craddm/eegUtils, https://craddm.github.io/eegUtils
 BugReports: https://github.com/craddm/eegUtils/issues
 VignetteBuilder: knitr
 LinkingTo: 

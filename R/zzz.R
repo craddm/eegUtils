@@ -41,7 +41,8 @@ utils::globalVariables(c("time",
                          "Component",
                          "..orig_cols",
                          "statistic",
-                         "level"))
+                         "level",
+                         "electrodefacet"))
 
 ## usethis namespace: start
 #' @importFrom Rcpp sourceCpp

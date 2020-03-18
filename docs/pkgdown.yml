@@ -1,6 +1,6 @@
 pandoc: 2.7.2
-pkgdown: 1.4.1
-pkgdown_sha: ~
+pkgdown: 1.4.1.9000
+pkgdown_sha: dfae44ecfcc5b0ac51f9489993ddd79ad6c707c3
 articles:
   data_structures: data_structures.html
   eegUtils: eegUtils.html
