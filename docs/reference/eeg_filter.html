@@ -18,8 +18,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
 
 <!-- Font Awesome icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.1/css/all.min.css" integrity="sha256-PbSmjxuVAzJ6FPvNYsrXygfGhNJYyZ2GktDbkMBqQZg=" crossorigin="anonymous" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.1/css/v4-shims.min.css" integrity="sha256-A6jcAdwFD48VMjlI3GDxUd+eCQa7/KWy6G9oe/ovaPA=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous" />
 
 <!-- clipboard.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script>
@@ -71,7 +71,7 @@ ignored, which can result in minor edge artifacts." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">eegUtils</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.1</span>
       </span>
     </div>
 
@@ -148,14 +148,30 @@ ignored, which can result in minor edge artifacts.</p>
     <pre class="usage"><span class='fu'>eeg_filter</span>(<span class='no'>.data</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for eeg_data</span>
-<span class='fu'>eeg_filter</span>(<span class='no'>.data</span>, <span class='kw'>low_freq</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>high_freq</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>filter_order</span> <span class='kw'>=</span> <span class='st'>"auto"</span>, <span class='kw'>trans_bw</span> <span class='kw'>=</span> <span class='st'>"auto"</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"fir"</span>,
-  <span class='kw'>window</span> <span class='kw'>=</span> <span class='st'>"hamming"</span>, <span class='kw'>demean</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>...</span>)
+<span class='fu'>eeg_filter</span>(
+  <span class='no'>.data</span>,
+  <span class='kw'>low_freq</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>high_freq</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>filter_order</span> <span class='kw'>=</span> <span class='st'>"auto"</span>,
+  <span class='kw'>trans_bw</span> <span class='kw'>=</span> <span class='st'>"auto"</span>,
+  <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"fir"</span>,
+  <span class='kw'>window</span> <span class='kw'>=</span> <span class='st'>"hamming"</span>,
+  <span class='kw'>demean</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='no'>...</span>
+)
 
 <span class='co'># S3 method for eeg_epochs</span>
-<span class='fu'>eeg_filter</span>(<span class='no'>.data</span>, <span class='kw'>low_freq</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>high_freq</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>filter_order</span> <span class='kw'>=</span> <span class='st'>"auto"</span>, <span class='kw'>trans_bw</span> <span class='kw'>=</span> <span class='st'>"auto"</span>,
-  <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"fir"</span>, <span class='kw'>window</span> <span class='kw'>=</span> <span class='st'>"hamming"</span>, <span class='kw'>demean</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>...</span>)</pre>
+<span class='fu'>eeg_filter</span>(
+  <span class='no'>.data</span>,
+  <span class='kw'>low_freq</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>high_freq</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>filter_order</span> <span class='kw'>=</span> <span class='st'>"auto"</span>,
+  <span class='kw'>trans_bw</span> <span class='kw'>=</span> <span class='st'>"auto"</span>,
+  <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"fir"</span>,
+  <span class='kw'>window</span> <span class='kw'>=</span> <span class='st'>"hamming"</span>,
+  <span class='kw'>demean</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='no'>...</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -224,7 +240,7 @@ channel means or by-channel epoch means.</p>
   alignment.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='plot_psd.html'>plot_psd</a></span>(<span class='fu'>eeg_filter</span>(<span class='no'>demo_epochs</span>, <span class='kw'>low_freq</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>high_freq</span> <span class='kw'>=</span> <span class='fl'>30</span>))</div><div class='output co'>#&gt; <span class='message'>Band-pass FIR filter from 1 - 30 Hz</span></div><div class='output co'>#&gt; <span class='message'>Transition bandwidth: 1 Hz</span></div><div class='output co'>#&gt; <span class='message'>Filter order: 424</span></div><div class='output co'>#&gt; <span class='message'>Removing channel means per epoch...</span></div><div class='output co'>#&gt; <span class='message'>Removing channel means per epoch...</span></div><div class='img'><img src='eeg_filter-1.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'><a href='plot_psd.html'>plot_psd</a></span>(<span class='fu'>eeg_filter</span>(<span class='no'>demo_epochs</span>, <span class='kw'>low_freq</span> <span class='kw'>=</span> <span class='fl'>12</span>, <span class='kw'>high_freq</span> <span class='kw'>=</span> <span class='fl'>8</span>))</div><div class='output co'>#&gt; <span class='message'>Band-stop FIR filter from 8 - 12 Hz.</span></div><div class='output co'>#&gt; <span class='message'>Transition bandwidth: 2 Hz</span></div><div class='output co'>#&gt; <span class='message'>Filter order: 212</span></div><div class='output co'>#&gt; <span class='message'>Removing channel means per epoch...</span></div><div class='output co'>#&gt; <span class='message'>Removing channel means per epoch...</span></div><div class='img'><img src='eeg_filter-2.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'><a href='plot_psd.html'>plot_psd</a></span>(<span class='fu'>eeg_filter</span>(<span class='no'>demo_epochs</span>, <span class='kw'>low_freq</span> <span class='kw'>=</span> <span class='fl'>12</span>, <span class='kw'>high_freq</span> <span class='kw'>=</span> <span class='fl'>8</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"iir"</span>))</div><div class='output co'>#&gt; <span class='message'>Band-stop IIR filter from 8 - 12 Hz.</span></div><div class='output co'>#&gt; <span class='message'>Effective filter order: 4 (two-pass)</span></div><div class='output co'>#&gt; <span class='message'>Removing channel means per epoch...</span></div><div class='output co'>#&gt; <span class='message'>Removing channel means per epoch...</span></div><div class='img'><img src='eeg_filter-3.png' alt='' width='700' height='433' /></div><div class='input'>
+    <pre class="examples"><div class='input'><span class='fu'>plot_psd</span>(<span class='fu'>eeg_filter</span>(<span class='no'>demo_epochs</span>, <span class='kw'>low_freq</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>high_freq</span> <span class='kw'>=</span> <span class='fl'>30</span>))</div><div class='output co'>#&gt; <span class='message'>Band-pass FIR filter from 1 - 30 Hz</span></div><div class='output co'>#&gt; <span class='message'>Transition bandwidth: 1 Hz</span></div><div class='output co'>#&gt; <span class='message'>Filter order: 424</span></div><div class='output co'>#&gt; <span class='message'>Removing channel means per epoch...</span></div><div class='output co'>#&gt; <span class='message'>Removing channel means per epoch...</span></div><div class='img'><img src='eeg_filter-1.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'>plot_psd</span>(<span class='fu'>eeg_filter</span>(<span class='no'>demo_epochs</span>, <span class='kw'>low_freq</span> <span class='kw'>=</span> <span class='fl'>12</span>, <span class='kw'>high_freq</span> <span class='kw'>=</span> <span class='fl'>8</span>))</div><div class='output co'>#&gt; <span class='message'>Band-stop FIR filter from 8 - 12 Hz.</span></div><div class='output co'>#&gt; <span class='message'>Transition bandwidth: 2 Hz</span></div><div class='output co'>#&gt; <span class='message'>Filter order: 212</span></div><div class='output co'>#&gt; <span class='message'>Removing channel means per epoch...</span></div><div class='output co'>#&gt; <span class='message'>Removing channel means per epoch...</span></div><div class='img'><img src='eeg_filter-2.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'>plot_psd</span>(<span class='fu'>eeg_filter</span>(<span class='no'>demo_epochs</span>, <span class='kw'>low_freq</span> <span class='kw'>=</span> <span class='fl'>12</span>, <span class='kw'>high_freq</span> <span class='kw'>=</span> <span class='fl'>8</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"iir"</span>))</div><div class='output co'>#&gt; <span class='message'>Band-stop IIR filter from 8 - 12 Hz.</span></div><div class='output co'>#&gt; <span class='message'>Effective filter order: 4 (two-pass)</span></div><div class='output co'>#&gt; <span class='message'>Removing channel means per epoch...</span></div><div class='output co'>#&gt; <span class='message'>Removing channel means per epoch...</span></div><div class='img'><img src='eeg_filter-3.png' alt='' width='700' height='433' /></div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -246,7 +262,7 @@ channel means or by-channel epoch means.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
 </div>
 
       </footer>

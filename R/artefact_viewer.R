@@ -109,7 +109,7 @@ view_artefacts <- function(data) {
 
   }
 
-  shinyApp(ui, server)
+  shiny::shinyApp(ui, server)
 
 }
 
