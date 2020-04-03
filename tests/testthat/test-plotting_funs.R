@@ -35,6 +35,7 @@ test_that("Plotting of butterfly plots from epochs", {
 
 test_that("Topoplots", {
   skip_on_appveyor()
+  skip_on_travis()
   vdiffr::expect_doppelganger("topoplot of epochs",
                               topoplot(demo_epochs))
   vdiffr::expect_doppelganger("topoplot of epochs 150-200ms",

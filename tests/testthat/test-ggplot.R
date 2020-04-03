@@ -5,6 +5,7 @@ demo_epochs <- electrode_locations(demo_epochs,
                                    overwrite = TRUE)
 
 test_that("geom_topo testing", {
+  skip_on_appveyor()
   vdiffr::expect_doppelganger("geom_topo_test",
                               ggplot(demo_epochs,
                                      aes(x = x,
