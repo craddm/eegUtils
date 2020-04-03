@@ -233,8 +233,8 @@ fit_glm.eeg_epochs <- function(formula,
     length(split_data)
   )
 
+  colnames(all_coefs) <- chan_names# channel_names(data)
   all_coefs <- tibble::as_tibble(all_coefs)
-  names(all_coefs) <- chan_names# channel_names(data)
 
   # for compatibility with other eegUtils structures, create a timings structure.
   timings <- tibble::tibble(

@@ -243,7 +243,9 @@ plot_timecourse.eeg_tfr <- function(data,
   data_f <- as.data.frame(data,
                           long = TRUE)
 
-  ggplot(data_f, aes(x = time, y = power, colour = frequency)) +
+  ggplot(data_f, aes(x = time,
+                     y = power,
+                     colour = frequency)) +
     stat_summary(geom = "line",
                  fun.y = mean)
 
@@ -363,7 +365,7 @@ create_tc <- function(data,
   }
 
   tc_plot <- tc_plot +
-    stat_summary(fun.y = "mean",
+    stat_summary(fun = "mean",
                  geom = "line",
                  size = 1.2)
   tc_plot +
