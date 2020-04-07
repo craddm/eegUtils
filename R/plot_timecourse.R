@@ -247,9 +247,7 @@ plot_timecourse.eeg_tfr <- function(data,
                      y = power,
                      colour = frequency)) +
     stat_summary(geom = "line",
-                 fun.y = mean)
-
-
+                 fun = mean)
 }
 
 #' @describeIn plot_timecourse Plot timecourses from \code{eeg_epochs} objects.

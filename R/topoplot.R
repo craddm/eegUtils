@@ -578,7 +578,6 @@ topoplot.eeg_tfr <- function(data,
 #' @param palette Requested palette
 #' @param limits Limits of colour scale
 #' @import ggplot2
-#' @importFrom viridis scale_fill_viridis
 #' @keywords internal
 
 set_palette <- function(topo, palette, limits = NULL) {
@@ -587,7 +586,7 @@ set_palette <- function(topo, palette, limits = NULL) {
                   "viridis", "A", "B", "C", "D")) {
 
     topo <- topo +
-      viridis::scale_fill_viridis(option = palette,
+      ggplot2::scale_fill_viridis_c(option = palette,
                                   limits = limits,
                                   guide = "colourbar",
                                   oob = scales::squish)

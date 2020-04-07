@@ -267,14 +267,14 @@ plot_tfr <- function(data,
 
   fill_colour <-
     switch(data$freq_info$baseline,
-           "none" = scale_fill_viridis_c(limits = fill_lims,
-                                         oob = scales::squish),
+           "none" = ggplot2::scale_fill_viridis_c(limits = fill_lims,
+                                                  oob = scales::squish),
            "absolute" = fill_dist(),
            "db" = fill_dist(),
            "divide" = fill_dist(),
            "ratio" = fill_dist(),
            "pc" = fill_dist(),
-           scale_fill_viridis_c())
+           ggplot2::scale_fill_viridis_c())
 
   data <- as.data.frame(data,
                         long = TRUE)

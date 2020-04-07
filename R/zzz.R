@@ -1,9 +1,3 @@
-.onAttach <- function(...) {
-
-  packageStartupMessage(paste("Make sure to check for the latest development version at https://github.com/craddm/eegUtils!"))
-
-}
-
 utils::globalVariables(c("time",
                          "amplitude",
                          "electrode",

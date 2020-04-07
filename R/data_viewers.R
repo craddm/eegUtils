@@ -83,7 +83,7 @@ browse_data.eeg_ICA <- function(data,
                      fun.data = mean_cl_normal,
                      alpha = 0.5) +
         stat_summary(geom = "line",
-                     fun.y = mean) +
+                     fun = mean) +
         coord_cartesian(xlim = c(2, 50)) +
         theme_classic() +
         labs(x = "Frequency (Hz)", y = "Power (dB)")
@@ -351,7 +351,7 @@ browse_data.eeg_epochs <- function(data,
       })
 
       tmp_data <- debounce(tmp_dat,
-                           1000)
+                           800)
 
       output$butterfly <- renderPlot({
 
@@ -362,11 +362,12 @@ browse_data.eeg_epochs <- function(data,
         }
 
         tmp_data <- as.data.frame(tmp_data,
-                                  long = TRUE)
+                                   long = TRUE)
 
         butter_out <- plot_butterfly(tmp_data,
                                      legend = FALSE,
-                                     browse_mode = TRUE) +
+                                     browse_mode = TRUE,
+                                     allow_facets = TRUE) +
           facet_wrap("epoch",
                      nrow = 1) +
           theme(
@@ -384,7 +385,7 @@ browse_data.eeg_epochs <- function(data,
                                      input$time_range_ind + input$sig_time_ind - 1))
       })
 
-      tmp_data_ind <- debounce(tmp_dat_ind, 1000)
+      tmp_data_ind <- debounce(tmp_dat_ind, 800)
 
       output$time_plot <- renderPlot({
 
