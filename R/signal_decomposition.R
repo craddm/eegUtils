@@ -93,7 +93,7 @@ run_SSD <- function(data,
                       high_freq = noise_range[2],
                       filter_order = 2,
                       method = "iir")
-  noise <- eeg_filter(data,
+  noise <- eeg_filter(noise,
                       low_freq = (sig_range[2] + noise_range[2]) / 2,
                       high_freq = (sig_range[1] + noise_range[1]) / 2,
                       filter_order = 2,
