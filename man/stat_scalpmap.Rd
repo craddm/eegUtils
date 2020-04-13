@@ -15,7 +15,7 @@ stat_scalpmap(
   na.rm = FALSE,
   show.legend = NA,
   inherit.aes = TRUE,
-  grid_res = 300,
+  grid_res = 100,
   interpolate = FALSE,
   interp_limit = "skirt",
   method = "biharmonic",

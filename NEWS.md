@@ -15,6 +15,9 @@
 - `select_elecs` for `eeg_ICA` now correctly removes components from the unmixing matrix
 - switched back to using `left_join` from `dplyr` in the `tag_events` function as an easy fix for sorting of events when tagging.
 - fixed odd interaction between `select()` and `validate_channels()` that reordered channel names in `chan_info`
+- `eeg_decomp` now doing better job of filtering for `ssd` method
+- various `tibble` related warnings cleaned up
+- `method = "gam"` should now yield sensible results for `geom_topo()`
 
 # eegUtils 0.5.0
 

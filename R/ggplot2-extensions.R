@@ -75,8 +75,8 @@ StatScalpmap <-
                                           interp_limit = interp_limit)
                      } else {
                        data <- fit_gam_topo(data,
-                                        grid_res = grid_res,
-                                        interp_limit = interp_limit)
+                                            grid_res = grid_res,
+                                            interp_limit = interp_limit)
                      }
                      data
 
@@ -104,7 +104,7 @@ stat_scalpmap <- function(mapping = NULL,
                           na.rm = FALSE,
                           show.legend = NA,
                           inherit.aes = TRUE,
-                          grid_res = 300,
+                          grid_res = 100,
                           interpolate = FALSE,
                           interp_limit = "skirt",
                           method = "biharmonic",
@@ -665,7 +665,7 @@ fit_gam_topo <- function(data,
                          interp_limit) {
 
   abs_y_max <- max(abs(data$y), na.rm = TRUE)
-  y_max <- max(data$y, na.rm = TRUE) * 1.5
+  y_max <- max(data$y, na.rm = TRUE) * 2.5
 
   spline_smooth <- mgcv::gam(fill ~ s(x,
                                       y,
