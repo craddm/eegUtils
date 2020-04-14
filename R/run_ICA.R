@@ -97,12 +97,16 @@ run_ICA.eeg_epochs <- function(data,
                           maxiter = maxit,
                           method = "sym2")
 
-    colnames(ICA_out$S) <- sprintf("Comp%03d", 1:pca)
-    ICA_out$S <- tibble::as_tibble(ICA_out$S[, 1:pca])
-
     ICA_out$W <- ICA_out$W[, 1:pca]
     mixing_matrix <- MASS::ginv(ICA_out$W, tol = 0)
+
     mixing_matrix <- pca_decomp[, 1:pca] %*% mixing_matrix
+
+    var_order <- sort(vaf_mix(mixing_matrix),
+                      decreasing = TRUE,
+                      index.return = TRUE)$ix
+
+    mixing_matrix <- mixing_matrix[, var_order]
 
     unmixing_matrix <- as.data.frame(MASS::ginv(mixing_matrix, tol = 0))
     mixing_matrix <- as.data.frame(mixing_matrix)
@@ -111,6 +115,11 @@ run_ICA.eeg_epochs <- function(data,
     mixing_matrix$electrode <- orig_chans
     names(unmixing_matrix) <- orig_chans
     unmixing_matrix$Component <- sprintf("Comp%03d", 1:pca)
+
+    ICA_out$S <- ICA_out$S[, var_order]
+    colnames(ICA_out$S) <- sprintf("Comp%03d", 1:pca)
+    ICA_out$S <- tibble::as_tibble(ICA_out$S[, 1:pca])
+
   } else {
 
     if (method == "sobi") {
@@ -220,25 +229,12 @@ sobi_ICA <- function(data,
   n_lags <- min(100,
                 ceiling(n_times / 3))
 
-  ## Pre-whiten the data using the SVD. zero-mean columns and get SVD. NB:
-  ## should probably edit this to zero mean *epochs*
-  #do by epochs
-
   if (centre) {
     # centre the data on zero.
     data <- rm_baseline(data,
                         verbose = FALSE)
   }
 
-   #SVD_amp <- svd(data$signals)
-  #
-  # ## get the psuedo-inverse of the diagonal matrix, multiply by singular
-  # ## vectors
-   # Q <- tcrossprod(MASS::ginv(diag(SVD_amp$d),
-   #                            tol = 0),
-   #                 SVD_amp$v) # whitening matrix
-   # amp_matrix <- tcrossprod(Q,
-   #                          as.matrix(data$signals))
   Q <- whitening::whiteningMatrix(stats::cov(as.matrix(data$signals)),
                                   method = "PCA")
   amp_matrix <- t(whitening::whiten(as.matrix(data$signals),
@@ -277,17 +273,23 @@ sobi_ICA <- function(data,
   ## create mixing matrix for output
   mixing_matrix <- MASS::ginv(Q, tol = 0) %*% V
 
+  var_order <- sort(vaf_mix(mixing_matrix),
+                    decreasing = TRUE,
+                    index.return = TRUE)$ix
+
+  mixing_matrix <- mixing_matrix[, var_order]
+
   unmixing_matrix <- MASS::ginv(mixing_matrix, tol = 0)
   # rescale vecs
-  scaling <- sqrt(colMeans(mixing_matrix^2))
+  # scaling <- sqrt(colMeans(mixing_matrix^2))
+  #
+  # unmixing_matrix <- sweep(unmixing_matrix,
+  #                          MARGIN = 1,
+  #                          scaling,
+  #                          `*`) # scaled weights
 
-  unmixing_matrix <- sweep(unmixing_matrix,
-                           MARGIN = 1,
-                           scaling,
-                           `*`) # scaled weights
-
-  mixing_matrix <- MASS::ginv(unmixing_matrix %*% diag(ncol(unmixing_matrix)),
-                              tol = 0)
+  # mixing_matrix <- MASS::ginv(unmixing_matrix %*% diag(ncol(unmixing_matrix)),
+  #                             tol = 0)
 
   dim(amp_matrix) <- c(n_channels,
                        n_times * n_epochs)
@@ -296,7 +298,6 @@ sobi_ICA <- function(data,
                   as.matrix(data$signals))
   S <- as.data.frame(t(S))
   names(S) <- sprintf("Comp%03d", 1:ncol(S))
-
 
   list(M = mixing_matrix,
        W = unmixing_matrix,
@@ -375,4 +376,15 @@ mix <- function(sources,
 unmix <- function(data,
                   unmixing_matrix) {
   t(tcrossprod(as.matrix(unmixing_matrix), as.matrix(data)))
+}
+
+vaf_mix <- function(mixing_matrix) {
+  comp_var <- colSums(mixing_matrix^2)
+  comp_var / sum(comp_var)
+}
+
+get_vaf <- function(decomp) {
+  ncomps <- ncol(decomp$mixing_matrix) - 1
+  comp_var <- colSums(decomp$mixing_matrix[, 1:ncomps]^2)
+  comp_var / sum(comp_var)
 }

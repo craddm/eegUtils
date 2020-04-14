@@ -18,6 +18,9 @@
 - `eeg_decomp` now doing better job of filtering for `ssd` method
 - various `tibble` related warnings cleaned up
 - `method = "gam"` should now yield sensible results for `geom_topo()`
+- `run_ICA()` methods now return components ordered by percent variance explained (high to low)
+- removed scaling of components in SOBI ICA method
+- `browse_data().eeg_ica` grid res reduced
 
 # eegUtils 0.5.0
 
