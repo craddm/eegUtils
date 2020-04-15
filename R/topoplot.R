@@ -164,9 +164,6 @@ topoplot.data.frame <- function(data,
 
   if (!is.null(groups)) {
 
-    # groups <- rlang::parse_quo(groups,
-    #                            rlang::current_env())
-
     data <- dplyr::group_by(data,
                             x,
                             y,

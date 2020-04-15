@@ -52,7 +52,8 @@ browse_data.eeg_ICA <- function(data,
       comp_no <- which(names(data$signals) == input$icomp)
       topoplot(data,
                component = comp_no,
-               verbose = FALSE)
+               verbose = FALSE,
+               grid_res = 67)
       },
       cacheKeyExpr = {input$icomp})
 
@@ -76,6 +77,9 @@ browse_data.eeg_ICA <- function(data,
 
       tmp_psd <- dplyr::rename(tmp_psd,
                                power = 2)
+      tmp_psd <- dplyr::filter(tmp_psd,
+                               frequency >= 3,
+                               frequency <= 50)
       ggplot(tmp_psd,
              aes(x = frequency,
                  y = 10 * log10((power)))) +
@@ -84,7 +88,6 @@ browse_data.eeg_ICA <- function(data,
                      alpha = 0.5) +
         stat_summary(geom = "line",
                      fun = mean) +
-        coord_cartesian(xlim = c(2, 50)) +
         theme_classic() +
         labs(x = "Frequency (Hz)", y = "Power (dB)")
         },
