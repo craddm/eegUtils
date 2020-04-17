@@ -34,8 +34,12 @@ Implements a selection of Generalized Eigenvalue based decomposition methods
 for EEG signals. Intended for isolating oscillations at specified
 frequencies, decomposing channel-based data into distinct components
 reflecting distinct or combinations of sources of oscillatory signals.
-Currently only the spatio-spectral decomposition method (Nikulin et al, 2011)
-is implemented.
+Currently, spatio-spectral decomposition (Nikulin, Nolte, & Curio, 2011) and
+Rhythmic Entrainment Source Separation (Cohen & Gulbinate, 2017) are
+implemented. The key difference between the two is that the former returns
+the results of the data-derived spatial filters applied to the
+bandpass-filtered "signal" data, whereas the latter returns the resuls of the
+filters applied to the original, broadband data.
 }
 \section{Methods (by class)}{
 \itemize{
@@ -43,9 +47,10 @@ is implemented.
 }}
 
 \references{
-Cohen, M. X. (2016). Comparison of linear spatial filters for
-  identifying oscillatory activity in multichannel data. BioRxiv, 097402.
-  https://doi.org/10.1101/097402
+Cohen, M. X., & Gulbinate, R. (2017). Rhythmic entrainment source
+  separation: Optimizing analyses of neural responses to rhythmic sensory
+  stimulation. NeuroImage, 147, 43-56.
+  https://doi.org/10.1016/j.neuroimage.2016.11.036
 
   Haufe, S., Dähne, S., & Nikulin, V. V. (2014). Dimensionality reduction for
   the analysis of brain oscillations. NeuroImage, 101, 583–597.

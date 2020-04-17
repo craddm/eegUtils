@@ -4,15 +4,20 @@
 #' for EEG signals. Intended for isolating oscillations at specified
 #' frequencies, decomposing channel-based data into distinct components
 #' reflecting distinct or combinations of sources of oscillatory signals.
-#' Currently only the spatio-spectral decomposition method (Nikulin et al, 2011)
-#' is implemented.
+#' Currently, spatio-spectral decomposition (Nikulin, Nolte, & Curio, 2011) and
+#' Rhythmic Entrainment Source Separation (Cohen & Gulbinate, 2017) are
+#' implemented. The key difference between the two is that the former returns
+#' the results of the data-derived spatial filters applied to the
+#' bandpass-filtered "signal" data, whereas the latter returns the resuls of the
+#' filters applied to the original, broadband data.
 #'
 #' @param data An \code{eeg_data} object
 #' @param ... Additional parameters
 #' @export
-#' @references Cohen, M. X. (2016). Comparison of linear spatial filters for
-#'   identifying oscillatory activity in multichannel data. BioRxiv, 097402.
-#'   https://doi.org/10.1101/097402
+#' @references Cohen, M. X., & Gulbinate, R. (2017). Rhythmic entrainment source
+#'   separation: Optimizing analyses of neural responses to rhythmic sensory
+#'   stimulation. NeuroImage, 147, 43-56.
+#'   https://doi.org/10.1016/j.neuroimage.2016.11.036
 #'
 #'   Haufe, S., Dähne, S., & Nikulin, V. V. (2014). Dimensionality reduction for
 #'   the analysis of brain oscillations. NeuroImage, 101, 583–597.
@@ -98,6 +103,7 @@ run_SSD <- function(data,
                       high_freq = (sig_range[1] + noise_range[1]) / 2,
                       filter_order = 2,
                       method = "iir")
+
   # Calculate covariance respecting the epoching structure of the data
   cov_sig <- cov_epochs(signal)
   cov_noise <- cov_epochs(noise)
@@ -121,8 +127,10 @@ run_SSD <- function(data,
   C_n_r <- t(M) %*% cov_noise %*% M
   ged_v <- geigen::geigen(C_s_r, C_s_r + C_n_r) # this one needs to be sorted
   lambda <- sort(ged_v$values, decreasing = TRUE)
-  W <- ged_v$vectors[,order(ged_v$values, decreasing = TRUE)]
+
+  W <- ged_v$vectors[, order(ged_v$values, decreasing = TRUE)]
   W <- M %*% W
+
   data$mixing_matrix <- (cov_sig %*% W) %*% solve(t(W) %*% cov_sig %*% W)
   data$mixing_matrix <- as.data.frame(data$mixing_matrix)
   names(data$mixing_matrix) <- sprintf("Comp%03d", 1:ncol(data$mixing_matrix))

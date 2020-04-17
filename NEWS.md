@@ -21,6 +21,7 @@
 - `run_ICA()` methods now return components ordered by percent variance explained (high to low)
 - removed scaling of components in SOBI ICA method
 - `browse_data().eeg_ica` grid res reduced
+- `eeg_reference().eeg_epochs` was always average referencing, now fixed.
 
 # eegUtils 0.5.0
 

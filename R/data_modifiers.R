@@ -124,7 +124,7 @@ eeg_reference.eeg_epochs <- function(data,
                                      robust = FALSE,
                                      ...) {
   do_referencing(data,
-                 ref_chans = "average",
+                 ref_chans = ref_chans,
                  exclude = NULL,
                  robust = FALSE,
                  ...)
