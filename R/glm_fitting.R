@@ -81,7 +81,7 @@ fit_glm.eeg_epochs <- function(formula,
     design_mat <- stats::model.matrix(
       formula,
       cbind(epochs(data),
-        baseline = 0
+        baseline = base_times[, 1]
       )
     )
 
@@ -233,8 +233,8 @@ fit_glm.eeg_epochs <- function(formula,
     length(split_data)
   )
 
+  colnames(all_coefs) <- chan_names# channel_names(data)
   all_coefs <- tibble::as_tibble(all_coefs)
-  names(all_coefs) <- chan_names# channel_names(data)
 
   # for compatibility with other eegUtils structures, create a timings structure.
   timings <- tibble::tibble(
@@ -265,14 +265,12 @@ fit_glm.eeg_epochs <- function(formula,
       class = "epoch_info"
     )
 
-  std_errs <- tibble::as_tibble(
-    do.call(
-      rbind,
-      out_se
-    )
-  )
+  std_errs <- do.call(rbind,
+                      out_se)
+  colnames(std_errs) <- chan_names
 
-  names(std_errs) <- chan_names
+  std_errs <- tibble::as_tibble(std_errs)
+
   t_stats <- std_errs
   t_stats[, 1:n_chans] <- all_coefs[, 1:n_chans] / std_errs[, 1:n_chans]
 

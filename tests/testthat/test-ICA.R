@@ -52,6 +52,6 @@ test_that("artefact detect works", {
   skip_on_travis()
   expect_equal(ar_acf(demo_SOBI, plot = FALSE), character(0))
   expect_equal(ar_chanfoc(demo_fastic, plot = FALSE), "Comp006")
-  expect_equal(ar_trialfoc(demo_fica, plot = FALSE), "Comp004")
+  expect_equal(ar_trialfoc(demo_fica, plot = FALSE), "Comp006")
 
 })

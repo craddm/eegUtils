@@ -2,14 +2,14 @@
 % Please edit documentation in R/epoch_images.R
 \name{erp_image}
 \alias{erp_image}
-\alias{erp_image.default}
+\alias{erp_image.data.frame}
 \alias{erp_image.eeg_epochs}
 \alias{erp_image.eeg_ICA}
 \title{Plot ERP images}
 \usage{
 erp_image(data, ...)
 
-\method{erp_image}{default}(
+\method{erp_image}{data.frame}(
   data,
   electrode = "Cz",
   time_lim = NULL,
@@ -31,7 +31,7 @@ erp_image(data, ...)
 
 \method{erp_image}{eeg_ICA}(
   data,
-  component = "Comp1",
+  component = "Comp001",
   smoothing = 10,
   clim = NULL,
   interpolate = FALSE,
@@ -62,7 +62,7 @@ order to make across-trial patterns more apparent.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{default}: Default function operates on normal data frames
+\item \code{data.frame}: Default function operates on normal data frames
 
 \item \code{eeg_epochs}: Create an \code{erp_image} from \code{eeg_epochs}
 

@@ -33,7 +33,6 @@ Imports:
     stats,
     matrixStats,
     R.matlab,
-    viridis,
     pracma,
     abind,
     data.table,
@@ -44,7 +43,7 @@ Imports:
     Rcpp
 Depends:
   R (>= 3.2.0)
-RoxygenNote: 7.0.2
+RoxygenNote: 7.1.0
 Suggests: testthat,
     vdiffr,
     covr,

@@ -4,6 +4,7 @@
 - Added `filter` method for `eeg_tfr` objects
 - `fit_glm()` overhauled. now far faster and allows specification of models using standard R formulae.
 - New `eeg_lm` class introduced for output of `fit_glm()`.
+  - `plot_butterfly.eeg_lm()` method added
 - `as.data.frame()` methods have been added for `eeg_lm` objects.
 
 ### Internal changes / bug fixes
@@ -13,6 +14,14 @@
 - fixed `filter.eeg_data` and `filter.eeg_evoked`
 - `select_elecs` for `eeg_ICA` now correctly removes components from the unmixing matrix
 - switched back to using `left_join` from `dplyr` in the `tag_events` function as an easy fix for sorting of events when tagging.
+- fixed odd interaction between `select()` and `validate_channels()` that reordered channel names in `chan_info`
+- `eeg_decomp` now doing better job of filtering for `ssd` method
+- various `tibble` related warnings cleaned up
+- `method = "gam"` should now yield sensible results for `geom_topo()`
+- `run_ICA()` methods now return components ordered by percent variance explained (high to low)
+- removed scaling of components in SOBI ICA method
+- `browse_data().eeg_ica` grid res reduced
+- `eeg_reference().eeg_epochs` was always average referencing, now fixed.
 
 # eegUtils 0.5.0
 
@@ -36,7 +45,7 @@
 - `compute_tfr` reworked to be faster.
 - Faster baseline correction implemented using Rcpp.
 - Padding now used during `compute_tfr`, which greatly improves speed/accuracy; units may change but this is a change in scaling factor.
-- `epoch_data` now uses a more robust way of determing time limits/samples to include in each epoch that no longer fails at some combinations of time limit and sampling rate
+- `epoch_data` now uses a more robust way of determining time limits/samples to include in each epoch that no longer fails at some combinations of time limit and sampling rate
 - `eeg_average` returns objects of class(`eeg_evoked`, `eeg_epochs`)
 - Updated R requirement to >= 3.2.0
 - Updated rlang requirement to >= 0.4.0

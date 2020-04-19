@@ -31,7 +31,7 @@ as.data.frame.eeg_data <- function(x,
                         amplitude,
                         -time,
                         -sample,
-                        factor_key = T)
+                        factor_key = TRUE)
     }
 
   if (events) {
@@ -209,7 +209,7 @@ as.data.frame.eeg_ICA <- function(x,
                         component,
                         amplitude,
                         channel_names(x),
-                        factor_key = T)
+                        factor_key = TRUE)
     df$component <- as.character(df$component)
   }
 

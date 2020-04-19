@@ -75,8 +75,8 @@ StatScalpmap <-
                                           interp_limit = interp_limit)
                      } else {
                        data <- fit_gam_topo(data,
-                                        grid_res = grid_res,
-                                        interp_limit = interp_limit)
+                                            grid_res = grid_res,
+                                            interp_limit = interp_limit)
                      }
                      data
 
@@ -104,7 +104,7 @@ stat_scalpmap <- function(mapping = NULL,
                           na.rm = FALSE,
                           show.legend = NA,
                           inherit.aes = TRUE,
-                          grid_res = 300,
+                          grid_res = 100,
                           interpolate = FALSE,
                           interp_limit = "skirt",
                           method = "biharmonic",
@@ -665,7 +665,7 @@ fit_gam_topo <- function(data,
                          interp_limit) {
 
   abs_y_max <- max(abs(data$y), na.rm = TRUE)
-  y_max <- max(data$y, na.rm = TRUE) * 1.5
+  y_max <- max(data$y, na.rm = TRUE) * 2.5
 
   spline_smooth <- mgcv::gam(fill ~ s(x,
                                       y,
@@ -694,71 +694,84 @@ fit_gam_topo <- function(data,
   data[data$incircle, ]
 }
 
+get_scalpmap <- function(data, ...) {
+  UseMethod("get_scalpmap", data)
+}
 
-get_scalpmap <- function(data,
-                         grid_res = 100,
-                         interp_limit = "skirt",
-                         method = "biharmonic") {
+get_scalpmap.default <- function(data,
+                                 grid_res,
+                                 interp_limit,
+                                 ...) {
+  stop("Not implemented for objects of class ", class(data))
+}
 
+get_scalpmap.data.frame <- function(data,
+                                    grid_res,
+                                    interp_limit,
+                                    ...) {
+
+}
+
+
+get_scalpmap.eeg_epochs <- function(data,
+                                    method = "biharmonic",
+                                    grid_res = 100,
+                                    interp_limit = "skirt",
+                                    quantity = "amplitude",
+                                    facets = NULL,
+                                     ...) {
+
+  facets <- rlang::enexpr(facets)
   # only useful if passed eeg objects
-  # check_locs <- no_loc_chans(channels(data))
-  # if (!is.null(check_locs)) {
-  #   data <- select(data, -check_locs)
-  # }
-  # tmp <- as.data.frame(data)
-  # tmp <- dplyr::summarise_at(tmp,
-  #                            channel_names(data),
-  #                            .funs = mean)
-  # tmp <- tidyr::gather(tmp,
-  #                      electrode,
-  #                      amplitude)
-  # tmp <- dplyr::left_join(tmp,
-  #                         channels(data))
-  tmp <- dplyr::filter(data, !is.na(x))
-  tmp <- group_by(tmp,
-                  electrode) %>%
-    summarise(amplitude = mean(amplitude),
-              x = mean(x), y= mean(y))
-  smooth <-
-    switch(method,
-           biharmonic = biharmonic(dplyr::rename(tmp,
-                                                 fill = "amplitude"),
-                                   grid_res = grid_res,
-                                   interp_limit = interp_limit),
-           gam = fit_gam_topo(dplyr::rename(tmp,
-                                            fill = "amplitude"),
-                              grid_res = grid_res,
-                              interp_limit = interp_limit))
+  check_locs <- no_loc_chans(channels(data))
 
-  smooth
-}
+  if (!is.null(check_locs)) {
+    data <- select(data, -check_locs)
+  }
 
-
-get_scalpmapn <- function(data, ...) {
-  UseMethod("getscalpmapn", data)
-}
-
-get_scalpmapn.data.frame <- function(data, ...) {
-
-}
-
-
-get_scalpmapn.eeg_epochs <- function(data, ...) {
-  # only useful if passed eeg objects
-   check_locs <- no_loc_chans(channels(data))
-   if (!is.null(check_locs)) {
-     data <- select(data, -check_locs)
-   }
   tmp <- as.data.frame(data)
+  if (!is.null(facets)) {
+    tmp <- dplyr::group_by(tmp, {{ facets }})
+  }
+  #tmp <- group_by(tmp, event_label)
   tmp <- dplyr::summarise_at(tmp,
                              channel_names(data),
                              .funs = mean)
   tmp <- tidyr::gather(tmp,
                        electrode,
-                       amplitude)
+                       amplitude,
+                       -{{facets}})
   tmp <- dplyr::left_join(tmp,
-                          channels(data))
+                          channels(data),
+                          by = "electrode")
+  tmp <- dplyr::rename(tmp, fill = {{quantity}})
+
+  if (!is.null(facets)) {
+    tmp <- dplyr::group_nest(tmp, {{facets}})
+    tmp <- dplyr::mutate(tmp,
+                         topos = map(data,
+                                     ~biharmonic(.,
+                                                 grid_res = grid_res,
+                                                 interp_limit = interp_limit)),
+                         )
+    tmp <- dplyr::select(tmp, -data)
+    smooth <- tidyr::unnest(tmp,
+                            cols = topos)
+  } else {
+    smooth <-
+      switch(method,
+             biharmonic = biharmonic(tmp,
+                                     grid_res = grid_res,
+                                     interp_limit = interp_limit),
+             gam = fit_gam_topo(tmp,
+                                grid_res = grid_res,
+                                interp_limit = interp_limit)
+            )
+  }
+  smooth
 }
+
+
 no_loc_chans <- function(chaninfo) {
 
   if (any(is.na(chaninfo$x))) {
@@ -766,3 +779,4 @@ no_loc_chans <- function(chaninfo) {
   }
   NULL
 }
+

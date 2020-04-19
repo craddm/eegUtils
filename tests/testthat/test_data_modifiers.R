@@ -20,6 +20,8 @@ test_that("Referencing works for eeg_* objects", {
   test_reref <- eeg_reference(test_data, "A14")
   expect_true("A2" %in% names(test_reref$signals))
   expect_false("A14" %in% names(test_reref$signals))
+  demo_reref <- eeg_reference(demo_epochs, "A29")
+  expect_false("A29" %in% names(demo_reref$signals))
 })
 
 

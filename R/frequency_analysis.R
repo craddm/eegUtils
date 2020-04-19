@@ -276,16 +276,22 @@ welch_fft <- function(data,
     data_segs <- lapply(data_segs,
                         function(x) lapply(x,
                                            function(y) y * win))
-    if (n_fft > seg_length) {
-      data_segs <- lapply(data_segs,
-                          function(x) apply(data_segs,
-                                            2,
-                                            function(x) c(x,
-                                                          numeric(n_fft - seg_length))))
-    }
+    # investigate less memory hungry options...
+
+    # if (n_fft > seg_length) {
+    #   # data_segs <- lapply(data_segs,
+    #   #                     function(x) apply(data_segs,
+    #   #                                       2,
+    #   #                                       function(x) c(x,
+    #   #                                                     numeric(n_fft - seg_length))))
+    #   data_segs <- lapply(data_segs,
+    #                       function(x) lapply(x,
+    #                                          function(x) c(x,
+    #                                                        numeric(n_fft - seg_length))))
+    # }
     data_fft <- lapply(data_segs,
                        function(x) lapply(x,
-                                          fft))
+                                          fft_n, n = n_fft))
     final_out <- lapply(data_fft,
                         function(x) sapply(x,
                                            function(y) abs(y * Conj(y)) / U))

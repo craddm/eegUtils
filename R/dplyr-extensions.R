@@ -182,7 +182,8 @@ filter.eeg_tfr <- function(.data, ...) {
     time_idx <- which(hmz$time %in% unique(keep_times))
     .data$signals <- abind::asub(.data$signals,
                                  time_idx,
-                                 dims = which(.data$dimensions == "time"))
+                                 dims = which(.data$dimensions == "time"),
+                                 drop = FALSE)
     args_done[in_timings] <- TRUE
   }
 

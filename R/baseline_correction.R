@@ -97,8 +97,9 @@ rm_baseline.eeg_epochs <- function(data,
   #Reshape and turn back into data frame
   data$signals <- array(data$signals,
                         dim = c(n_epochs * n_times, n_chans))
+  colnames(data$signals) <- elecs
   data$signals <- tibble::as_tibble(data$signals)
-  names(data$signals) <- elecs
+  #names(data$signals) <- elecs
   data
 }
 

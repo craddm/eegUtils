@@ -284,7 +284,7 @@ create_bf <- function(data,
 
   if (length(unique(data$epoch)) > 1) {
     chan_lines <- function() {
-      stat_summary(fun.y = mean,
+      stat_summary(fun = mean,
                    geom = "line",
                    aes(colour = electrode),
                    alpha = 0.5)
