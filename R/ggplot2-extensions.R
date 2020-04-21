@@ -246,7 +246,7 @@ geom_topo <- function(mapping = NULL,
                                     interp_limit = interp_limit,
                                     ...)
                       ),
-       if (identical(chan_markers, "point")) {
+       if (chan_markers == "point") {
          ggplot2::layer(data = data,
                         mapping = mapping,
                         stat = StatChannels,
@@ -706,57 +706,9 @@ get_scalpmap.default <- function(data,
 }
 
 get_scalpmap.data.frame <- function(data,
-                                    method = "biharmonic",
-                                    grid_res = 100,
-                                    interp_limit = "skirt",
-                                    quantity = "amplitude",
-                                    facets = NULL,
+                                    grid_res,
+                                    interp_limit,
                                     ...) {
-
-  facets <- rlang::enexpr(facets)
-
-  if (!is.null(facets)) {
-    tmp <- dplyr::group_by(tmp,
-                           {{facets}})
-  } else {
-    tmp <- data
-  }
-
-  tmp <- dplyr::summarise_at(tmp,
-                             channel_names(data),
-                             .funs = mean)
-  tmp <- tidyr::gather(tmp,
-                       electrode,
-                       amplitude,
-                       -{{facets}})
-  tmp <- dplyr::left_join(tmp,
-                          channels(data),
-                          by = "electrode")
-  tmp <- dplyr::rename(tmp, fill = {{quantity}})
-
-  if (!is.null(facets)) {
-    tmp <- dplyr::group_nest(tmp, {{facets}})
-    tmp <- dplyr::mutate(tmp,
-                         topos = map(data,
-                                     ~biharmonic(.,
-                                                 grid_res = grid_res,
-                                                 interp_limit = interp_limit)),
-    )
-    tmp <- dplyr::select(tmp, -data)
-    smooth <- tidyr::unnest(tmp,
-                            cols = topos)
-  } else {
-    smooth <-
-      switch(method,
-             biharmonic = biharmonic(tmp,
-                                     grid_res = grid_res,
-                                     interp_limit = interp_limit),
-             gam = fit_gam_topo(tmp,
-                                grid_res = grid_res,
-                                interp_limit = interp_limit)
-      )
-  }
-  smooth
 
 }
 
@@ -779,7 +731,7 @@ get_scalpmap.eeg_epochs <- function(data,
 
   tmp <- as.data.frame(data)
   if (!is.null(facets)) {
-    tmp <- dplyr::group_by(tmp, {{facets}})
+    tmp <- dplyr::group_by(tmp, {{ facets }})
   }
   #tmp <- group_by(tmp, event_label)
   tmp <- dplyr::summarise_at(tmp,
@@ -817,74 +769,6 @@ get_scalpmap.eeg_epochs <- function(data,
             )
   }
   smooth
-}
-
-
-get_scalpmap.eeg_ICA <- function(data,
-                                 method = "biharmonic",
-                                 grid_res = 100,
-                                 interp_limit = "skirt",
-                                 quantity = "amplitude",
-                                 facets = component,
-                                 verbose = FALSE,
-                                 ...) {
-
-  facets <- rlang::enexpr(facets)
-  # check_locs <- no_loc_chans(channels(data))
-  #
-  # if (!is.null(check_locs)) {
-  #   data <- select(data, -check_locs)
-  # }
-
-  tmp <- as.data.frame(data,
-                       mixing = TRUE,
-                       long = TRUE)
-
-  if (any(is.na(tmp$x))) {
-    tmp <- tmp[!is.na(tmp$x), ]
-    if (verbose) {
-      warning("Removing channels with no location.")
-    }
-  }
-
-#   tmp <- tidyr::gather(tmp,
-#                        component,
-#                        amplitude,
-# #                       -{{facets}},
-#                        -electrode,
-#                        -x,
-#                        -y)
-
-  tmp <- dplyr::rename(tmp,
-                       fill = {{quantity}})
-
-  if (!is.null(facets)) {
-    #tmp <- dplyr::group_nest(tmp, {{facets}})
-    tmp <- dplyr::group_nest(tmp,
-                             component)
-    tmp <- dplyr::mutate(tmp,
-                         topos = map(data,
-                                     ~biharmonic(.,
-                                                 grid_res = grid_res,
-                                                 interp_limit = interp_limit)),
-    )
-    tmp <- dplyr::select(tmp,
-                         -data)
-    smooth <- tidyr::unnest(tmp,
-                            cols = topos)
-  } else {
-    smooth <-
-      switch(method,
-             biharmonic = biharmonic(tmp,
-                                     grid_res = grid_res,
-                                     interp_limit = interp_limit),
-             gam = fit_gam_topo(tmp,
-                                grid_res = grid_res,
-                                interp_limit = interp_limit)
-      )
-  }
-  smooth
-
 }
 
 

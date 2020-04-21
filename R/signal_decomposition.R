@@ -132,18 +132,11 @@ run_SSD <- function(data,
   W <- M %*% W
 
   data$mixing_matrix <- (cov_sig %*% W) %*% solve(t(W) %*% cov_sig %*% W)
-  vaf_idx <-
-    sort(vaf_mix(data$mixing_matrix),
-         decreasing = TRUE,
-         index.return = TRUE)$ix
-  data$mixing_matrix <- data$mixing_matrix[, vaf_idx]
-  data$unmixing_matrix <- as.data.frame(MASS::ginv(data$mixing_matrix, tol = 0))
-
   data$mixing_matrix <- as.data.frame(data$mixing_matrix)
   names(data$mixing_matrix) <- sprintf("Comp%03d", 1:ncol(data$mixing_matrix))
   data$mixing_matrix$electrode <- names(data$signals)
 
-  #data$unmixing_matrix <- as.data.frame(t(W))
+  data$unmixing_matrix <- as.data.frame(t(W))
   names(data$unmixing_matrix) <- data$mixing_matrix$electrode
   data$unmixing_matrix$Component <- sprintf("Comp%03d", 1:ncol(W))
 
