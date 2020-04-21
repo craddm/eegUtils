@@ -315,14 +315,16 @@ topoplot.data.frame <- function(data,
 
   # Add electrode points or names -------------------
   if (chan_marker == "point") {
-    topo <- topo +
+    topo <-
+      topo +
       annotate("point",
                x = scaled_x,
                y = scaled_y,
                colour = "black",
                size = rel(2 * scaling))
     }  else if (chan_marker == "name") {
-      topo <- topo +
+      topo <-
+        topo +
         annotate("text",
                  x = scaled_x,
                  y = scaled_y,
@@ -771,19 +773,10 @@ add_head <- function(r = 1,
 round_topo <- function(.data,
                        interp_limit,
                        r) {
-
-  # if (identical(interp_limit, "skirt")) {
-  #   .data$incircle <- sqrt(.data$x ^ 2 + .data$y ^ 2) < 1.125
-  #   mask_ring <- data.frame(x = 1.126 * cos(circ_rad_fun()),
-  #                           y = 1.126 * sin(circ_rad_fun()))
-    # } else {
-      .data$incircle <- sqrt(.data$x ^ 2 + .data$y ^ 2) < (r * 1.02)
-      mask_ring <- data.frame(x = r * 1.03 * cos(circ_rad_fun()),
-                              y = r * 1.03 * sin(circ_rad_fun()))
-    # }
+  .data$incircle <- sqrt(.data$x ^ 2 + .data$y ^ 2) < (r * 1.02)
+  mask_ring <- data.frame(x = r * 1.03 * cos(circ_rad_fun()),
+                          y = r * 1.03 * sin(circ_rad_fun()))
   topo_out <- list("out_df" = .data[.data$incircle, ],
                    "mask_ring" = mask_ring)
   topo_out
 }
-
-

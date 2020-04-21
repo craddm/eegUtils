@@ -5,7 +5,6 @@
 #'
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #' @import shiny
-#' @import shinydashboard
 #' @importFrom tidyr gather spread
 #' @import ggplot2
 #' @importFrom plotly plot_ly renderPlotly event_data
@@ -16,6 +15,9 @@
 view_artefacts <- function(data) {
 
   chan_dat <- channel_stats(data)
+  scale_chans <- dplyr::mutate_if(chan_dat,
+                                  is.numeric,
+                                  ~(. - mean(.)) / sd(.))
   epoch_dat <- epoch_stats(data)
   epoch_dat <- tidyr::gather(epoch_dat,
                              electrode,
@@ -26,49 +28,62 @@ view_artefacts <- function(data) {
                              measure,
                              value)
 
-  ui <- shinydashboard::dashboardPage(
-    shinydashboard::dashboardHeader(title = "Artefact viewer"),
-    shinydashboard::dashboardSidebar(
-      shinydashboard::sidebarMenu(
-        shinydashboard::menuItem("Channel stats",
-                                 tabName = "plotly_chans"),
-        shinydashboard::menuItem("Epoch stats",
-                                 tabName = "plotly_epochs"))),
-    shinydashboard::dashboardBody(
-      shinydashboard::tabItems(
-        shinydashboard::tabItem(tabName = "plotly_chans",
-                                h2("Channel statistics"),
-                                channelPlotly(chan_dat),
-                                fluidRow(
-                                  column(6,
-                                         plotly::plotlyOutput("erpplot")),
-                                  column(6,
-                                         plotly::plotlyOutput("erpimage"))),
-                                ),
-        shinydashboard::tabItem(tabName = "plotly_epochs",
-                                h2("Epoch statistics"),
-                                epochPlotly(epoch_dat))
-      )
+  ui <-
+    navbarPage("Artefact checks",
+               tabPanel("Channel stats",
+                        sidebarLayout(
+                          sidebarPanel(selectInput("chan_meas",
+                                                   "Display measures",
+                                                   choices = c("means",
+                                                               "sds",
+                                                               "variance",
+                                                               "kurtosis")
+                                                   ),
+                                       checkboxInput("std_meas",
+                                                     "Standardize?"),
+                                       width = 3),
+                          mainPanel(
+                            plotly::plotlyOutput("chan_plot"),
+                            #channelPlotly(chan_dat),
+                            fluidRow(
+                              column(6,
+                                     plotly::plotlyOutput("erpplot")),
+                              column(6,
+                                     plotly::plotlyOutput("erpimage"))),
+                            ),
+                          )),
+               tabPanel("Epoch stats",
+                        epochPlotly(epoch_dat))
     )
-  )
 
   server <- function(input, output) {
 
-
-    output$selection <- renderPrint({
-      s <- plotly::event_data("plotly_click")
-      if (length(s) == 0) {
-        "Click on a cell in the heatmap to display a scatterplot"
+    plot_data <- reactive({
+      if (input$std_meas) {
+        scale_chans
       } else {
-        cat("You selected: \n\n")
-        as.list(s)
+        chan_dat
       }
+    })
+
+    output$chan_plot <- plotly::renderPlotly({
+      ylab <- switch(
+        input$chan_meas,
+        means = "Mean",
+        variance = "Var",
+        sds = "Std. dev.",
+        kurtosis = "Kurtosis"
+      )
+      plotly::plot_ly(plot_data(),
+                      x = ~electrode,
+                      y = ~get(input$chan_meas)) %>%
+        plotly::add_markers() %>%
+        plotly::layout(yaxis = list(title = ylab))
     })
 
     output$erpplot <- plotly::renderPlotly({
       s <- plotly::event_data("plotly_click")
 
-      print(s)
       if (length(s)) {
         plot_timecourse(data,
                         electrode = s[["x"]]) +
@@ -79,26 +94,12 @@ view_artefacts <- function(data) {
     output$erpimage <- plotly::renderPlotly({
       s <- plotly::event_data("plotly_click")
 
-      print(s)
       if (length(s)) {
         erp_image(data,
                   electrode = s[["x"]])
       }
     })
 
-    output$chan_plotly <- plotly::renderPlotly({
-      plotly::plot_ly(chan_dat,
-                      x = ~electrode,
-                      y = ~means) %>%
-        plotly::add_markers()
-    })
-
-    output$plotly_cvars <- plotly::renderPlotly({
-      plotly::plot_ly(chan_dat,
-                      x = ~electrode,
-                      y = ~variance) %>%
-        plotly::add_markers()
-    })
 
     output$plotly_emeans <- plotly::renderPlotly({
       plotly::plot_ly(epoch_dat,
@@ -106,7 +107,7 @@ view_artefacts <- function(data) {
                       x = ~epoch,
                       z = ~max,
                       type = "heatmap") %>%
-        plotly::layout(title = "Kurtosis")
+        plotly::layout(title = "Max")
     })
 
     output$plotly_evars <- plotly::renderPlotly({
@@ -134,24 +135,6 @@ view_artefacts <- function(data) {
 }
 
 
-channelPlotly <- function(id,
-                          label = "Plotly channels") {
-
-  ns <- shiny::NS(id)
-
-  tagList(
-    fluidRow(
-      shinydashboard::box(plotly::plotlyOutput("chan_plotly",
-                                     height = 250)),
-      shinydashboard::box(plotly::plotlyOutput("plotly_cvars",
-                                               height = 250))
-      # shinydashboard::box(plotly::plotlyOutput("chan_kurt",
-      #                                height = 250))
-    )
-  )
-}
-
-
 epochPlotly <- function(id,
                         label = "Plotly channels") {
 
@@ -159,15 +142,12 @@ epochPlotly <- function(id,
 
   tagList(
     fluidRow(
-      shinydashboard::box(plotly::plotlyOutput("plotly_emeans",
-                                               height = 250)),
-      shinydashboard::box(plotly::plotlyOutput("plotly_evars",
-                                               height = 250)),
-      shinydashboard::box(plotly::plotlyOutput("plotly_kurt",
-                                    height = 250,
-                                    width = "auto"))
-    )
-  )
+      plotly::plotlyOutput("plotly_emeans",
+                           height = 250),
+      plotly::plotlyOutput("plotly_evars",
+                           height = 250),
+      plotly::plotlyOutput("plotly_kurt",
+                           height = 250)))
 }
 
 
