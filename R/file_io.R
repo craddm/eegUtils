@@ -561,16 +561,19 @@ import_set <- function(file_name,
   temp_dat <- R.matlab::readMat(file_name)
   var_names <- dimnames(temp_dat$EEG)[[1]]
 
-  n_chans <- temp_dat$EEG[[which(var_names == "nbchan")]]
-  n_trials <- temp_dat$EEG[[which(var_names == "trials")]]
-  times <- temp_dat$EEG[[which(var_names == "times")]]
+  n_chans <- as.numeric(temp_dat$EEG[[which(var_names == "nbchan")]])
+  n_trials <- as.numeric(temp_dat$EEG[[which(var_names == "trials")]])
+  times <- as.numeric(temp_dat$EEG[[which(var_names == "times")]])
 
   chan_info <- temp_dat$EEG[[which(var_names == "chanlocs")]]
   row_names <- dimnames(chan_info)[[1]]
   size_chans <- dim(chan_info)
   chan_info <- lapply(chan_info,
-                      function(x) ifelse(purrr::is_empty(x), NA, x))
-  dim(chan_info) <- size_chans
+                      function(x) ifelse(purrr::is_empty(x),
+                                         NA,
+                                         x))
+  dim(chan_info) <- c(size_chans[1],
+                      size_chans[3])
   rownames(chan_info) <- row_names
   chan_info <- parse_chaninfo(chan_info)
 

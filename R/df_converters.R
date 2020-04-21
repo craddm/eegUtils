@@ -63,12 +63,12 @@ as.data.frame.eeg_tfr <- function(x,
     out_df <- dplyr::left_join(out_df,
                                x$epochs,
                                by = c("participant_id", "epoch"))
-  } else {
-    #out_df$epoch <- as.numeric(out_df$epoch)
-    out_df <- dplyr::left_join(out_df,
-                               x$epochs,
-                               by = "epoch")
-  }
+   } else {
+    # out_df$epoch <- as.numeric(out_df$epoch)
+     out_df <- dplyr::left_join(out_df,
+                                x$epochs,
+                                by = c("epoch"))
+   }
   if (long) {
     return(tidyr::gather(out_df,
                          electrode,

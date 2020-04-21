@@ -37,12 +37,11 @@ Imports:
     abind,
     data.table,
     ini,
-    shinydashboard,
     plotly,
     future.apply,
     Rcpp
 Depends:
-  R (>= 3.2.0)
+  R (>= 3.3.0)
 RoxygenNote: 7.1.0
 Suggests: testthat,
     vdiffr,
