@@ -7,3 +7,7 @@ inst/doc
 eegUtils.Rproj
 doc
 Meta
+vignettes/linear_modelling/*.fdt
+vignettes/linear_modelling/*.set
+vignettes/linear_modelling/*.mat
+vignettes/linear_modelling/*.txt

@@ -15,7 +15,9 @@
 view_artefacts <- function(data) {
 
   chan_dat <- channel_stats(data)
-  scale_chans <- dplyr::mutate_if(chan_dat,
+  scale_chans <- chan_dat
+
+    dplyr::mutate_if(chan_dat,
                                   is.numeric,
                                   ~(. - mean(.)) / sd(.))
   epoch_dat <- epoch_stats(data)
