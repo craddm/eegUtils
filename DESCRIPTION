@@ -37,7 +37,6 @@ Imports:
     abind,
     data.table,
     ini,
-    shinydashboard,
     plotly,
     future.apply,
     Rcpp
