@@ -177,7 +177,8 @@ plot_timecourse.eeg_ICA <- function(data,
   }
 
   data <- as.data.frame(data,
-                        long = TRUE)
+                        long = TRUE,
+                        coords = FALSE)
 
   tc_plot <- create_tc(data,
                        add_CI = add_CI,
@@ -241,7 +242,8 @@ plot_timecourse.eeg_tfr <- function(data,
   }
 
   data_f <- as.data.frame(data,
-                          long = TRUE)
+                          long = TRUE,
+                          coords = FALSE)
 
   ggplot(data_f, aes(x = time,
                      y = power,
@@ -314,7 +316,8 @@ parse_for_tc <- function(data,
   }
 
   data <- as.data.frame(data,
-                        long = TRUE)
+                        long = TRUE,
+                        coords = FALSE)
 }
 
 #' Internal function for creation of timecourse plots
