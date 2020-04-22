@@ -8,7 +8,7 @@
 #' @param data An \code{eeg_ICA} object
 #' @export
 
-viewer_ica <- function(data) {
+view_ica <- function(data) {
 
   if (!is.eeg_ICA(data)) {
     stop("This function requires an eeg_ICA object.")
@@ -177,11 +177,11 @@ ica_topos <- function(data) {
     geom_contour(aes(linetype = stat(level) < 0),
                  bins = 6,
                  colour = "black",
-                 size = rel(1)) +
+                 size = rel(0.8)) +
     facet_wrap(~component) +
     theme_void() +
     scale_fill_distiller(palette = "RdBu",
-                        limits = c(-2.25, 2.25),
+                        limits = c(-2.5, 2.5),
                          oob = scales::squish) +
     theme(legend.position = "none") +
     coord_fixed()
