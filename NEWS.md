@@ -4,8 +4,12 @@
 - Added `filter` method for `eeg_tfr` objects
 - `fit_glm()` overhauled. now far faster and allows specification of models using standard R formulae.
 - New `eeg_lm` class introduced for output of `fit_glm()`.
-  - `plot_butterfly.eeg_lm()` method added
+- `plot_butterfly.eeg_lm()` method added
 - `as.data.frame()` methods have been added for `eeg_lm` objects.
+- `view_ica()` Shiny viewer for `eeg_ICA` and `eeg_decomp` objects added.
+- `view_artefacts()`Shiny viewer for channel and epoch stats added.
+
+
 
 ### Internal changes / bug fixes
 - Now using `whitening` package for whitening before SOBI ICA
@@ -18,10 +22,11 @@
 - `eeg_decomp` now doing better job of filtering for `ssd` method
 - various `tibble` related warnings cleaned up
 - `method = "gam"` should now yield sensible results for `geom_topo()`
-- `run_ICA()` methods now return components ordered by percent variance explained (high to low)
+- `run_ICA()` and `eeg_decomp()` methods now return components ordered by percent variance explained (high to low)
 - removed scaling of components in SOBI ICA method
 - `browse_data().eeg_ica` grid res reduced
 - `eeg_reference().eeg_epochs` was always average referencing, now fixed.
+- cleaner code in `topoplot()` for biharmonic smooth
 
 # eegUtils 0.5.0
 

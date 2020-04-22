@@ -771,7 +771,7 @@ parse_vhdr_chans <- function(chan_labels,
     init_chans$theta <- NA
     init_chans$phi <- NA
     if (verbose) message("No channel locations found.")
-    return(init_chans)
+    return(validate_channels(init_chans))
   } else {
     coords <- lapply(chan_info,
                      function(x) as.numeric(unlist(strsplit(x, split = ","))))
