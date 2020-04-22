@@ -35,10 +35,12 @@ eeg_reference.default <- function(data, ...) {
 #'   numbers.
 #' @param exclude Electrodes to exclude from average reference calculation.
 #' @param robust Use median instead of mean; only used for average reference.
+#'   Defaults to FALSE.
 #' @param implicit_ref Implicit reference channel - use this to add a channel
 #'   back that was previously used as a reference. E.g. if the LM (left mastoid)
 #'   channel were used in recording and is absent from the data, passing "LM"
 #'   adds an "LM" channel back to the data, populated with zeroes.
+#' @param verbose Print informative messages in console. Defaults to TRUE.
 #' @importFrom matrixStats rowMedians
 #' @import data.table
 #' @return object of class \code{eeg_data}, re-referenced as requested.
@@ -50,113 +52,85 @@ eeg_reference.eeg_data <- function(data,
                                    exclude = NULL,
                                    robust = FALSE,
                                    implicit_ref = NULL,
+                                   verbose = TRUE,
                                    ...) {
 
   do_referencing(data,
                  ref_chans = ref_chans,
                  exclude = exclude,
                  robust = robust,
-                 implicit_ref = implicit_ref)
+                 implicit_ref = implicit_ref,
+                 verbose = verbose)
 }
-#   # check for existing reference. Add it back in if it exists.
-#   if (!is.null(data$reference)) {
-#     if (!identical(data$reference$ref_chans, "average")) {
-#       data$signals[data$reference$ref_chans] <- 0
-#     }
-#   }
-#
-#   # Convert ref_chan channel numbers into channel names
-#   if (is.numeric(ref_chans)) {
-#     ref_chans <- names(data$signals)[ref_chans]
-#   }
-#
-#   # If average reference is requested, first get all channel names.
-#   if (identical(ref_chans, "average")) {
-#     reference <- names(data$signals)
-#   }
-#
-#   # Get excluded channel names and/or convert to numbers if necessary
-#   if (!is.null(exclude)) {
-#     if (is.numeric(exclude)) {
-#       exclude <- names(data$signals)[exclude]
-#     } else {
-#       exclude <- exclude[which(exclude %in% names(data$signals))]
-#     }
-#     reference <- reference[!(reference %in% exclude)]
-#   }
-#
-#   # Calculate new reference data
-#   if (ref_chans == "average") {
-#     if (robust) {
-#       ref_data <- matrixStats::rowMedians(as.matrix(data$signals[, reference]))
-#     } else {
-#       ref_data <- rowMeans(data$signals[, reference])
-#     }
-#     #remove reference from data
-#     data$signals <- data.table(data$signals)
-#     data$signals <- data$signals[, lapply(.SD, function(x) x - ref_data)]
-#   } else {
-#     if (any(all(ref_chans %in% colnames(data$signals)) | is.numeric(ref_chans))) {
-#       if (length(ref_chans) > 1) {
-#         ref_data <- rowMeans(data$signals[, ref_chans])
-#       } else {
-#         ref_data <- unlist(data$signals[, ref_chans])
-#       }
-#       data$signals <- data.table(data$signals)
-#       data$signals <- data$signals[, lapply(.SD, function(x) x - ref_data)]
-#     } else {
-#       stop("Electrode(s) not found.")
-#     }
-#   }
-#   data$signals <- tibble::as_tibble(data$signals)
-#   if (ref_chans == "average") {
-#     data$reference <- list(ref_chans = ref_chans,
-#                            excluded = exclude)
-#     } else {
-#       data$reference <- list(ref_chans = ref_chans,
-#                              excluded = exclude)
-#       data <- select_elecs(data,
-#                            ref_chans,
-#                            keep = FALSE)
-#   }
-#   data
-# }
 
 eeg_reference.eeg_ICA <- function(data,
                                   ...) {
   stop("Cannot rereference ICA decompositions.")
 }
 
-#' @describeIn eeg_reference Rereference objects of class \code{eeg_data}
+#' @describeIn eeg_reference Rereference objects of class \code{eeg_epochs}
 #' @export
 eeg_reference.eeg_epochs <- function(data,
                                      ref_chans = "average",
                                      exclude = NULL,
                                      robust = FALSE,
                                      implicit_ref = NULL,
+                                     verbose = TRUE,
                                      ...) {
   do_referencing(data,
                  ref_chans = ref_chans,
                  exclude = exclude,
                  robust = robust,
-                 implicit_ref = implicit_ref)
+                 implicit_ref = implicit_ref,
+                 verbose = verbose)
 }
 
 do_referencing <- function(data,
                            ref_chans = "average",
                            exclude = NULL,
                            robust = FALSE,
-                           implicit_ref = NULL) {
+                           implicit_ref = NULL,
+                           verbose = TRUE) {
 
   # check for existing reference. Add it back in if it exists.
   if (!is.null(data$reference)) {
-    if (!identical(data$reference$ref_chans, "average")) {
-      data$signals[data$reference$ref_chans] <- 0
+
+    existing_ref <- data$reference$ref_chans
+
+    if (ref_chans %in% existing_ref) {
+      if (verbose) {
+        message(paste0("You have used the existing reference channel(s), ",
+                       paste(existing_ref, collapse = " & "),
+                       " again."))
+      }
+    }
+
+    if (!identical(existing_ref, "average")) {
+      data$signals[existing_ref] <- 0
+      if (verbose) {
+        message(paste("Adding previous reference",
+                      existing_ref,
+                      "back to data."))
+      }
     }
   }
+
+  # if an implicit ref is specified, add a zeroed channel and an additional row
+  # to the chan_info
   if (!is.null(implicit_ref)) {
-    data$signals[implicit_ref] <- 0
-    channels(data) <- tibble::add_row(channels(data), electrode = implicit_ref)
+    if (any(implicit_ref %in% channel_names(data))) {
+      if (verbose) {
+        message(paste("Implicit reference channel",
+                      implicit_ref,
+                      "is already in the data. Ignoring."))
+      }
+    } else {
+      data$signals[implicit_ref] <- 0
+      if (!(implicit_ref %in% channels(data)[["electrode"]])) {
+        channels(data) <- tibble::add_row(channels(data),
+                                          electrode = implicit_ref)
+      }
+    }
   }
 
   # Convert ref_chan channel numbers into channel names
@@ -176,7 +150,7 @@ do_referencing <- function(data,
     } else {
       exclude <- exclude[which(exclude %in% names(data$signals))]
     }
-  reference <- reference[!(reference %in% exclude)]
+    reference <- reference[!(reference %in% exclude)]
   }
 
   # Calculate new reference data
@@ -186,7 +160,7 @@ do_referencing <- function(data,
     } else {
       ref_data <- rowMeans(data$signals[, reference])
     }
-  #remove reference from data
+    #remove reference from data
     data$signals <- data.table(data$signals)
     data$signals <- data$signals[, lapply(.SD, function(x) x - ref_data)]
   } else {
