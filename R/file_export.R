@@ -1,7 +1,8 @@
 #' Export continuous data in Brain Vision Analyzer format
 #'
 #' Export continuous EEG data in Brain Vision Analyzer format. This is one of
-#' the recommended formats for BIDS \url{https://bids-specification.readthedocs.io/en/stable/04-modality-specific-files/03-electroencephalography.html}
+#' the recommended formats for BIDS
+#' \url{https://bids-specification.readthedocs.io/en/stable/04-modality-specific-files/03-electroencephalography.html}
 #'
 #'
 #' @param .data \code{eeg_data} object to be exported.
@@ -24,8 +25,8 @@ export_bva.default <- function(.data,
 }
 
 export_bva.eeg_epochs <- function(.data,
-                                filename,
-                                orientation = "VECTORIZED") {
+                                  filename,
+                                  orientation = "VECTORIZED") {
   stop("export_bva() can currently only export continuous eeg_data objects.")
 }
 

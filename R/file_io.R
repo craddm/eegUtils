@@ -411,8 +411,10 @@ read_vhdr <- function(file_name) {
     multiplexed <- TRUE
   }
 
-  data_file <- header_info$`Common Infos`$DataFile
-  vmrk_file <- header_info$`Common Infos`$MarkerFile
+  data_file <- file.path(dirname(file_name),
+                         header_info$`Common Infos`$DataFile)
+  vmrk_file <- file.path(dirname(file_name),
+                         header_info$`Common Infos`$MarkerFile)
   n_chan <- as.numeric(header_info$`Common Infos`$NumberOfChannels)
   # header gives sampling times in microseconds
   srate <- 1e6 / as.numeric(header_info$`Common Infos`$SamplingInterval)
@@ -420,8 +422,9 @@ read_vhdr <- function(file_name) {
 
   chan_labels <- lapply(header_info$`Channel Infos`,
                         function(x) unlist(strsplit(x = x, split = ",")))
-  chan_labels <- sapply(chan_labels, "[[", 1)
-  chan_info <- parse_vhdr_chans(chan_labels,
+  chan_names <- sapply(chan_labels, "[[", 1)
+  chan_scale <- as.numeric(sapply(chan_labels, "[[", 3))
+  chan_info <- parse_vhdr_chans(chan_names,
                                 header_info$`Coordinates`)
 
   file_size <- file.size(data_file)
@@ -434,8 +437,15 @@ read_vhdr <- function(file_name) {
                   ncol = n_chan,
                   byrow = multiplexed)
 
+  if (any(!is.na(chan_scale))) {
+    .data <- sweep(.data,
+                   2,
+                   chan_scale,
+                   "*")
+  }
+  colnames(.data) <- chan_names
   .data <- tibble::as_tibble(.data)
-  names(.data) <- chan_labels
+
   n_points <- nrow(.data)
 
   timings <- tibble::tibble(sample = 1:n_points,
@@ -475,16 +485,19 @@ read_dat <- function(file_name,
   if (identical(bin_format, "IEEE_FLOAT_32")) {
     nbytes <- 4
     signed <- TRUE
+    file_type <- "double"
   } else if (identical(bin_format, "UINT_16")) {
     nbytes <- 2
     signed <- FALSE
+    file_type <- "int"
   } else {
     nbytes <- 2
     signed <- TRUE
+    file_type <- "int"
   }
 
   raw_data <- readBin(file_name,
-                      what = "double",
+                      what = file_type,
                       n = file_size,
                       size = nbytes,
                       signed = signed)
@@ -749,20 +762,27 @@ parse_chaninfo <- function(chan_info) {
 #' @param chan_info The `Coordinates` section from a BVA vhdr file
 #' @keywords internal
 parse_vhdr_chans <- function(chan_labels,
-                             chan_info) {
+                             chan_info,
+                             verbose = TRUE) {
 
   init_chans <- data.frame(electrode = chan_labels)
-  coords <- lapply(chan_info,
-                   function(x) as.numeric(unlist(strsplit(x, split = ","))))
+  if (is.null(chan_info)) {
+    init_chans$radius <- NA
+    init_chans$theta <- NA
+    init_chans$phi <- NA
+    if (verbose) message("No channel locations found.")
+    return(init_chans)
+  } else {
+    coords <- lapply(chan_info,
+                     function(x) as.numeric(unlist(strsplit(x, split = ","))))
+    new_coords <- data.frame(do.call(rbind, coords))
+    names(new_coords) <- c("radius", "theta", "phi")
+    new_coords <- cbind(init_chans, new_coords)
+    new_coords[new_coords$radius == 0, 2:4] <- NA
 
-  new_coords <- data.frame(do.call(rbind, coords))
-  names(new_coords) <- c("radius", "theta", "phi")
-  new_coords <- cbind(init_chans, new_coords)
-
-  new_coords[new_coords$radius == 0, 2:4] <- NA
-
-  chan_info <- bva_elecs(new_coords)
-  tibble::as_tibble(chan_info)
+    chan_info <- bva_elecs(new_coords)
+    tibble::as_tibble(chan_info)
+  }
 }
 
 #' Convert BVA spherical locations
