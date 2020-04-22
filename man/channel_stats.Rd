@@ -23,7 +23,9 @@ Channel statistics
 objects.
 }}
 
+\examples{
+channel_stats(demo_epochs)
+}
 \author{
 Matt Craddock \email{matt@mattcraddock.com}
 }
-\keyword{internal}

@@ -23,8 +23,8 @@ ar_eogreg(data, heog, veog, bipolarize = TRUE)
 are supplied (2 HEOG and 2 VEOG).}
 }
 \description{
-Calculates and removes the contribution of eye movements to the EEG signal using
-least-squares regression.
+Calculates and removes the contribution of eye movements to the EEG signal
+using least-squares regression.
 }
 \author{
 Matt Craddock, \email{matt@mattcraddock.com}
