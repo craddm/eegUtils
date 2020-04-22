@@ -21,7 +21,8 @@ recommended.}
 }
 \description{
 Export continuous EEG data in Brain Vision Analyzer format. This is one of
-the recommended formats for BIDS \url{https://bids-specification.readthedocs.io/en/stable/04-modality-specific-files/03-electroencephalography.html}
+the recommended formats for BIDS
+\url{https://bids-specification.readthedocs.io/en/stable/04-modality-specific-files/03-electroencephalography.html}
 }
 \section{Methods (by class)}{
 \itemize{
