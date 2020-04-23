@@ -1,7 +1,13 @@
 pandoc: 2.9.2
-pkgdown: 1.4.1
+pkgdown: 1.5.1
 pkgdown_sha: ~
-articles: []
+articles:
+  data_structures: data_structures.html
+  eegUtils: eegUtils.html
+  epoch-handling: epoch-handling.html
+  time-frequency-analysis: time-frequency-analysis.html
+  topoplot: topoplot.html
+last_built: 2020-04-23T19:18Z
 urls:
   reference: http://craddm.github.io/eegUtils/reference
   article: http://craddm.github.io/eegUtils/articles

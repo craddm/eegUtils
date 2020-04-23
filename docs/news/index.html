@@ -10,23 +10,27 @@
 
 
 <!-- jquery -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.7/flatly/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/flatly/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
 
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
+
+<!-- bootstrap-toc -->
+<link rel="stylesheet" href="../bootstrap-toc.css">
+<script src="../bootstrap-toc.js"></script>
 
 <!-- Font Awesome icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous" />
 
 <!-- clipboard.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script>
 
 <!-- headroom.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
@@ -53,7 +57,7 @@
 
   </head>
 
-  <body>
+  <body data-spy="scroll" data-target="#toc">
     <div class="container template-news">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -112,7 +116,7 @@
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/craddm/eegUtils">
+  <a href="https://github.com/craddm/eegUtils/">
     <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
@@ -130,19 +134,19 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Changelog <small></small></h1>
+      <h1 data-toc-skip>Changelog <small></small></h1>
       <small>Source: <a href='https://github.com/craddm/eegUtils/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
     <div id="eegutils-050" class="section level1">
-<h1 class="page-header">
+<h1 class="page-header" data-toc-text="0.5.0">
 <a href="#eegutils-050" class="anchor"></a>eegUtils 0.5.0</h1>
 <div id="function-changes" class="section level3">
 <h3 class="hasAnchor">
 <a href="#function-changes" class="anchor"></a>Function changes</h3>
 <ul>
 <li><p>Default settings for Infomax ICA changed to be similar to EEGLAB/Fieldtrip.</p></li>
-<li><p>Faster reading of bdf implemented. Old behaviour can be retained using <code>fast_bdf = FALSE</code> parameter to <code>import_raw()</code></p></li>
+<li><p>Faster reading of bdf implemented. Old behaviour can be retained using <code>fast_bdf = FALSE</code> parameter to <code><a href="../reference/import_raw.html">import_raw()</a></code></p></li>
 <li><p><code>eeg_combine</code> now supports combining lists.</p></li>
 <li>
 <p><code>eeg_reference</code> now supports <code>eeg_epochs</code> and <code>eeg_evoked</code> objects.</p>
@@ -155,13 +159,13 @@
 <p>Added artefact detection options for ICA objects</p>
 <ul>
 <li>
-<code>ar_acf()</code> checks for low autocorrelation</li>
+<code><a href="../reference/ar_acf.html">ar_acf()</a></code> checks for low autocorrelation</li>
 <li>
-<code>ar_chanfoc()</code> checks for excessive channel focality (e.g. components that load mostly on one channel)</li>
+<code><a href="../reference/ar_chanfoc.html">ar_chanfoc()</a></code> checks for excessive channel focality (e.g. components that load mostly on one channel)</li>
 <li>
-<code>ar_trialfoc()</code> checks for trial focality (components that load mostly on a few trials)</li>
+<code><a href="../reference/ar_trialfoc.html">ar_trialfoc()</a></code> checks for trial focality (components that load mostly on a few trials)</li>
 <li>
-<code>ar_eogcor()</code> checks for correlation with EOG channels</li>
+<code><a href="../reference/ar_eogcor.html">ar_eogcor()</a></code> checks for correlation with EOG channels</li>
 </ul>
 </li>
 <li><p><code>topoplot</code> plotting radius logic altered</p></li>
@@ -176,12 +180,12 @@
 <li><p>Updated rlang requirement to &gt;= 0.4.0</p></li>
 <li><p><code>compute_psd</code> fix for single segment data</p></li>
 <li><p>updated use of <code>nest</code> and <code>unnest</code> in keeping with <code>tidyr 1.0.0</code></p></li>
-<li><p><code>as.data.frame.eeg_tfr()</code> now fixed to output correctly</p></li>
+<li><p><code><a href="../reference/as.data.frame.eeg_tfr.html">as.data.frame.eeg_tfr()</a></code> now fixed to output correctly</p></li>
 </ul>
 </div>
 </div>
     <div id="eegutils-040" class="section level1">
-<h1 class="page-header">
+<h1 class="page-header" data-toc-text="0.4.0">
 <a href="#eegutils-040" class="anchor"></a>eegUtils 0.4.0</h1>
 <div id="function-changes-1" class="section level3">
 <h3 class="hasAnchor">
@@ -200,39 +204,39 @@
 <code>run_ICA</code> now includes the <code>fICA</code> package version of <code>fastica</code>, and now supports running PCA before ICA.</li>
 <li>
 <code>apply_ICA</code> function added to remove ICA components.</li>
-<li>Behaviour of <code>select_times()</code> changed to use exact supplied times rather than finding nearest times in the data.</li>
+<li>Behaviour of <code><a href="../reference/select_times.html">select_times()</a></code> changed to use exact supplied times rather than finding nearest times in the data.</li>
 <li>Some wrappers around <code>dplyr</code> functions added:
 <ul>
 <li>
-<code>select()</code> now works for selecting electrodes from <code>eeg_data</code> and <code>eeg_epochs</code> objects.</li>
+<code><a href="https://dplyr.tidyverse.org/reference/select.html">select()</a></code> now works for selecting electrodes from <code>eeg_data</code> and <code>eeg_epochs</code> objects.</li>
 <li>
-<code><a href="https://rdrr.io/r/stats/filter.html">filter()</a></code> filters by time points or epochs from <code>eeg_data</code> and <code>eeg_epochs</code> objects.</li>
+<code><a href="https://dplyr.tidyverse.org/reference/filter.html">filter()</a></code> filters by time points or epochs from <code>eeg_data</code> and <code>eeg_epochs</code> objects.</li>
 <li>
-<code>mutate()</code> adds columns to the <code>signals</code> from <code>eeg_data</code> and <code>eeg_epochs</code> objects.</li>
+<code><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate()</a></code> adds columns to the <code>signals</code> from <code>eeg_data</code> and <code>eeg_epochs</code> objects.</li>
 </ul>
 </li>
 <li>
-<code>topoplot()</code> now has a <code>groups</code> parameter that allows the possibility of facetting by event labels.</li>
+<code><a href="../reference/topoplot.html">topoplot()</a></code> now has a <code>groups</code> parameter that allows the possibility of facetting by event labels.</li>
 <li>more Biosemi montages added</li>
 <li>
-<code>events()</code> function added to easily access and modify the events structure of all <code>eegUtils</code> objects.</li>
+<code><a href="../reference/events.html">events()</a></code> function added to easily access and modify the events structure of all <code>eegUtils</code> objects.</li>
 <li>
-<code>channels()</code> function added to easily access and modify the chan_info structure of all <code>eegUtils</code> objects.</li>
+<code><a href="../reference/channels.html">channels()</a></code> function added to easily access and modify the chan_info structure of all <code>eegUtils</code> objects.</li>
 <li>
-<code>epochs()</code> function added to access and modify epochs structure.</li>
+<code><a href="../reference/epochs.html">epochs()</a></code> function added to access and modify epochs structure.</li>
 <li>
-<code>ar_eogreg()</code> function added for removing eye movement activity using regression.</li>
+<code><a href="../reference/ar_eogreg.html">ar_eogreg()</a></code> function added for removing eye movement activity using regression.</li>
 <li>
-<code>eeg_filter()</code> function added for a unified method of filtering using either FIR or IIR
+<code><a href="../reference/eeg_filter.html">eeg_filter()</a></code> function added for a unified method of filtering using either FIR or IIR
 <ul>
 <li>
-<code>eeg_filter()</code> supports use of multiple threads/cores through the <code>future</code> package.</li>
+<code><a href="../reference/eeg_filter.html">eeg_filter()</a></code> supports use of multiple threads/cores through the <code>future</code> package.</li>
 <li>
-<code>iir_filt()</code> will be deprecated</li>
+<code><a href="../reference/iir_filt.html">iir_filt()</a></code> will be deprecated</li>
 </ul>
 </li>
 <li>
-<code>geom_topo()</code> extension for <code>ggplot2</code> added. Allows plotting of a topographical scalp maps using standard <code>ggplot2</code> functions.</li>
+<code><a href="../reference/geom_topo.html">geom_topo()</a></code> extension for <code>ggplot2</code> added. Allows plotting of a topographical scalp maps using standard <code>ggplot2</code> functions.</li>
 <li>Default <code>grid_res</code> for topography related plots increased to 200.</li>
 </ul>
 </div>
@@ -243,15 +247,15 @@
 <li>
 <code>data.table</code> now used in the following functions internally:
 <ul>
-<li><code>reref_eeg()</code></li>
-<li><code>iir_filt()</code></li>
-<li><code>eeg_FASTER()</code></li>
+<li><code><a href="../reference/eeg_reference.html">reref_eeg()</a></code></li>
+<li><code><a href="../reference/iir_filt.html">iir_filt()</a></code></li>
+<li><code><a href="../reference/ar_FASTER.html">eeg_FASTER()</a></code></li>
 </ul>
 </li>
 <li>
-<code>reref_eeg()</code> now correctly excludes electrodes as requested.</li>
+<code><a href="../reference/eeg_reference.html">reref_eeg()</a></code> now correctly excludes electrodes as requested.</li>
 <li>
-<code>iir_filt()</code> now correctly respects epoch boundaries.</li>
+<code><a href="../reference/iir_filt.html">iir_filt()</a></code> now correctly respects epoch boundaries.</li>
 <li>New field <code>epochs</code> added to <code>eeg_data</code> and <code>eeg_epochs</code> objects.</li>
 <li>
 <code>chan_info</code> changes to make chan_info consistent across systems.</li>
@@ -266,25 +270,25 @@
 </div>
 </div>
     <div id="eegutils-030" class="section level1">
-<h1 class="page-header">
+<h1 class="page-header" data-toc-text="0.3.0">
 <a href="#eegutils-030" class="anchor"></a>eegUtils 0.3.0</h1>
 <div id="function-changes-2" class="section level3">
 <h3 class="hasAnchor">
 <a href="#function-changes-2" class="anchor"></a>Function changes</h3>
 <ul>
 <li>
-<code>topoplot()</code> now has a scaling parameter to scale the size of any lines or markers drawn on the plot.</li>
+<code><a href="../reference/topoplot.html">topoplot()</a></code> now has a scaling parameter to scale the size of any lines or markers drawn on the plot.</li>
 <li>
-<code>plot_tfr()</code> function now useable, with baseline correction also added.</li>
+<code><a href="../reference/plot_tfr.html">plot_tfr()</a></code> function now useable, with baseline correction also added.</li>
 <li>
-<code>rm_baseline()</code> now handles <code>eeg_tfr</code> objects.</li>
+<code><a href="../reference/rm_baseline.html">rm_baseline()</a></code> now handles <code>eeg_tfr</code> objects.</li>
 <li>
 <code><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame()</a></code> method added for <code>eeg_tfr</code> objects.</li>
 <li>
-<code>compute_tfr()</code> function now available for use with Morlet wavelets.</li>
+<code><a href="../reference/compute_tfr.html">compute_tfr()</a></code> function now available for use with Morlet wavelets.</li>
 <li>
-<code>plot_psd()</code> now allows changing of FFT parameters (e.g. number of FFT points, segment length)</li>
-<li>Data selectors added for <code>eeg_tfr</code> objects (e.g. <code>select_elecs()</code>)</li>
+<code><a href="../reference/plot_psd.html">plot_psd()</a></code> now allows changing of FFT parameters (e.g. number of FFT points, segment length)</li>
+<li>Data selectors added for <code>eeg_tfr</code> objects (e.g. <code><a href="../reference/select_elecs.html">select_elecs()</a></code>)</li>
 </ul>
 </div>
 <div id="internal-changes-bug-fixes" class="section level3">
@@ -292,48 +296,48 @@
 <a href="#internal-changes-bug-fixes" class="anchor"></a>Internal changes/ bug fixes</h3>
 <ul>
 <li>
-<code>plot_timecourse()</code> overhauled to be S3 method.</li>
+<code><a href="../reference/plot_timecourse.html">plot_timecourse()</a></code> overhauled to be S3 method.</li>
 <li>
-<code>plot_butterfly()</code> reworked internally to be more efficient</li>
+<code><a href="../reference/plot_butterfly.html">plot_butterfly()</a></code> reworked internally to be more efficient</li>
 <li>
-<code>rm_baseline()</code> simplified internally, reworked to use matrices; split to separate file.</li>
+<code><a href="../reference/rm_baseline.html">rm_baseline()</a></code> simplified internally, reworked to use matrices; split to separate file.</li>
 <li>
-<code>select_elecs()</code> now works for <code>eeg_evoked</code> objects</li>
+<code><a href="../reference/select_elecs.html">select_elecs()</a></code> now works for <code>eeg_evoked</code> objects</li>
 <li>
 <code>eeg_decomp</code> function in progress for performing SSD analyses</li>
 <li>Various methods added for TFR analyses</li>
 <li>
-<code>topoplot()</code> improvements internally. Now offers potential for facetting.</li>
+<code><a href="../reference/topoplot.html">topoplot()</a></code> improvements internally. Now offers potential for facetting.</li>
 <li>Some <code>dplyr</code> functions implemented internally for some objects.</li>
 </ul>
 </div>
 </div>
     <div id="eegutils-021" class="section level1">
-<h1 class="page-header">
+<h1 class="page-header" data-toc-text="0.2.1">
 <a href="#eegutils-021" class="anchor"></a>eegUtils 0.2.1</h1>
 <div id="function-changes-3" class="section level3">
 <h3 class="hasAnchor">
 <a href="#function-changes-3" class="anchor"></a>Function changes</h3>
 <ul>
 <li>
-<code>topoplot()</code> added highlights parameter to allow specific electrodes to be highlighted.</li>
+<code><a href="../reference/topoplot.html">topoplot()</a></code> added highlights parameter to allow specific electrodes to be highlighted.</li>
 <li>
-<code>run_ICA()</code> now offers extended Infomax and Fastica thanks to the <code>ica</code> package</li>
+<code><a href="../reference/run_ICA.html">run_ICA()</a></code> now offers extended Infomax and Fastica thanks to the <code>ica</code> package</li>
 <li>
 <code>plotly</code> is now a “suggested” package rather than a dependency</li>
 <li>
-<code>plot_psd()</code> function added to calculate and plot the PSD for <code>eeg_epochs</code> and <code>eeg_data</code> objects</li>
+<code><a href="../reference/plot_psd.html">plot_psd()</a></code> function added to calculate and plot the PSD for <code>eeg_epochs</code> and <code>eeg_data</code> objects</li>
 <li>
-<code>plot_tfr()</code> function added to handle <code>eeg_tfr</code> objects.</li>
+<code><a href="../reference/plot_tfr.html">plot_tfr()</a></code> function added to handle <code>eeg_tfr</code> objects.</li>
 <li>
-<code>erp_image()</code> now works with <code>eeg_ICA</code> objects</li>
+<code><a href="../reference/erp_image.html">erp_image()</a></code> now works with <code>eeg_ICA</code> objects</li>
 <li>Generic print methods added for <code>eeg_epochs</code> and <code>eeg_data</code>
 </li>
 <li>
-<code>compute_tfr()</code> function added to performed TFA on <code>eeg_epochs</code>
+<code><a href="../reference/compute_tfr.html">compute_tfr()</a></code> function added to performed TFA on <code>eeg_epochs</code>
 </li>
 <li>
-<code>epoch_data()</code> now warns if some events are not found rather than stops. Only stops if <em>no</em> events are found.</li>
+<code><a href="../reference/epoch_data.html">epoch_data()</a></code> now warns if some events are not found rather than stops. Only stops if <em>no</em> events are found.</li>
 </ul>
 </div>
 <div id="internal-changes-bug-fixes-1" class="section level3">
@@ -341,7 +345,7 @@
 <a href="#internal-changes-bug-fixes-1" class="anchor"></a>Internal changes/ bug fixes</h3>
 <ul>
 <li>
-<code>reref_eeg()</code>
+<code><a href="../reference/eeg_reference.html">reref_eeg()</a></code>
 <ul>
 <li>correctly excludes multiple named electrodes (i.e. passed as characters rather than numbers), where it previously silently failed.</li>
 <li>no longer records the reference data in the <code>ref_data</code> field</li>
@@ -350,60 +354,60 @@
 <li>
 <code>tf_morlet</code> recoded to be called internally</li>
 <li>
-<code>compute_psd()</code>
+<code><a href="../reference/compute_psd.html">compute_psd()</a></code>
 <ul>
-<li>recoded to call <code>welch_fft()</code> in order to support possibility of different FFT methods.</li>
+<li>recoded to call <code><a href="../reference/welch_fft.html">welch_fft()</a></code> in order to support possibility of different FFT methods.</li>
 <li>now drops the DC component (frequency 0)</li>
 </ul>
 </li>
 <li>
-<code>welch_fft()</code> internal function added</li>
+<code><a href="../reference/welch_fft.html">welch_fft()</a></code> internal function added</li>
 <li>
-<code>eeg_downsample()</code> now makes sure epoch length is a multiple of the downsampling factor to avoid problems with timing jitter</li>
+<code><a href="../reference/eeg_downsample.html">eeg_downsample()</a></code> now makes sure epoch length is a multiple of the downsampling factor to avoid problems with timing jitter</li>
 <li>
-<code>erp_image()</code> is now an S3 method</li>
+<code><a href="../reference/erp_image.html">erp_image()</a></code> is now an S3 method</li>
 <li>
-<code>run_ICA()</code>
+<code><a href="../reference/run_ICA.html">run_ICA()</a></code>
 <ul>
 <li>now returns source activations as a “signals” data frame, with component names</li>
 <li>now returns correct unmixing matrix</li>
 </ul>
 </li>
 <li>
-<code>compute_csd()</code>
+<code><a href="../reference/compute_csd.html">compute_csd()</a></code>
 <ul>
 <li>added.</li>
 <li>computation of g-matrix and h-matrix refactored, spherical spline calculation altered accordingly</li>
 </ul>
 </li>
 <li>
-<code>compute_tfr()</code>
+<code><a href="../reference/compute_tfr.html">compute_tfr()</a></code>
 <ul>
 <li>added</li>
 </ul>
 </li>
 <li>
-<code>eeg_FASTER()</code> now properly selects electrodes and epochs for removal</li>
+<code><a href="../reference/ar_FASTER.html">eeg_FASTER()</a></code> now properly selects electrodes and epochs for removal</li>
 </ul>
 </div>
 </div>
     <div id="eegutils-020" class="section level1">
-<h1 class="page-header">
+<h1 class="page-header" data-toc-text="0.2.0">
 <a href="#eegutils-020" class="anchor"></a>eegUtils 0.2.0</h1>
 <div id="function-changes-4" class="section level3">
 <h3 class="hasAnchor">
 <a href="#function-changes-4" class="anchor"></a>Function changes</h3>
 <ul>
 <li>
-<code>as.data.frame.eeg_epochs()</code> now has a <code>cond_labels</code> parameter to select epochs with specific events and add the event label as an additional column.</li>
+<code><a href="../reference/as.data.frame.eeg_epochs.html">as.data.frame.eeg_epochs()</a></code> now has a <code>cond_labels</code> parameter to select epochs with specific events and add the event label as an additional column.</li>
 <li>
 <code><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame()</a></code> methods now drop the <code>sample</code> column.</li>
 <li>
-<code>as.data.frame.eeg_ICA()</code> now has a <code>cond_labels</code> parameter to select epochs with specific events and add the event label as an additional column.</li>
+<code><a href="../reference/as.data.frame.eeg_ICA.html">as.data.frame.eeg_ICA()</a></code> now has a <code>cond_labels</code> parameter to select epochs with specific events and add the event label as an additional column.</li>
 <li>
-<code>reref_eeg()</code> now removes reference channels from the data.</li>
+<code><a href="../reference/eeg_reference.html">reref_eeg()</a></code> now removes reference channels from the data.</li>
 <li>
-<code>eeg_FASTER()</code> - FASTER artefact rejection method now (mostly) implemented (<em>experimental</em>).</li>
+<code><a href="../reference/ar_FASTER.html">eeg_FASTER()</a></code> - FASTER artefact rejection method now (mostly) implemented (<em>experimental</em>).</li>
 </ul>
 </div>
 <div id="internal-changes--bug-fixes-2" class="section level3">
@@ -411,22 +415,22 @@
 <a href="#internal-changes--bug-fixes-2" class="anchor"></a>Internal changes / bug fixes</h3>
 <ul>
 <li>
-<code>plot_butterfly()</code> some <code>dplyr</code> use removed.</li>
+<code><a href="../reference/plot_butterfly.html">plot_butterfly()</a></code> some <code>dplyr</code> use removed.</li>
 <li>
 <code>run_ica()</code> refactored SOBI method, JADE dependency removed.</li>
 <li>
-<code>montage_check()</code> command parses montage info when passed to <code>electrode_locations()</code>
+<code><a href="../reference/montage_check.html">montage_check()</a></code> command parses montage info when passed to <code><a href="../reference/electrode_locations.html">electrode_locations()</a></code>
 </li>
 <li>
-<code>label_check()</code> added to help parse event labels</li>
+<code><a href="../reference/label_check.html">label_check()</a></code> added to help parse event labels</li>
 <li>
-<code>proc_events()</code> added to help parse event labels during <code>select_epochs()</code> calls</li>
+<code><a href="../reference/proc_events.html">proc_events()</a></code> added to help parse event labels during <code><a href="../reference/select_epochs.html">select_epochs()</a></code> calls</li>
 <li>
-<code>topoplot()</code> now tries to average/select across time/epochs before converting to long data, less memory use</li>
+<code><a href="../reference/topoplot.html">topoplot()</a></code> now tries to average/select across time/epochs before converting to long data, less memory use</li>
 <li>
-<code>select_elecs()</code> also removes electrodes from chan_info</li>
+<code><a href="../reference/select_elecs.html">select_elecs()</a></code> also removes electrodes from chan_info</li>
 <li>
-<code>select_epochs()</code> fixed bug where <code>events</code> and <code>timings</code> were inconsistent when using <code>keep = FALSE</code>
+<code><a href="../reference/select_epochs.html">select_epochs()</a></code> fixed bug where <code>events</code> and <code>timings</code> were inconsistent when using <code>keep = FALSE</code>
 </li>
 <li>Electrode/channel related functions (other than selection) now moved to <code>channel_management.r</code>
 </li>
@@ -435,20 +439,20 @@
 </div>
 </div>
     <div id="eegutils-0115" class="section level1">
-<h1 class="page-header">
+<h1 class="page-header" data-toc-text="0.1.15">
 <a href="#eegutils-0115" class="anchor"></a>eegUtils 0.1.15</h1>
 <div id="function-changes-5" class="section level3">
 <h3 class="hasAnchor">
 <a href="#function-changes-5" class="anchor"></a>Function changes</h3>
 <ul>
 <li>
-<code>eeg_evoked()</code> class introduced to hold ERPS</li>
+<code><a href="../reference/eeg_evoked.html">eeg_evoked()</a></code> class introduced to hold ERPS</li>
 <li>
-<code>eeg_ICA()</code> class introduced to hold ICA decompositions</li>
+<code><a href="../reference/eeg_ICA.html">eeg_ICA()</a></code> class introduced to hold ICA decompositions</li>
 <li>
-<code>eeg_average()</code> function to calculate averages (e.g. ERPs) from <code>eeg_epochs</code> objects</li>
+<code><a href="../reference/eeg_average.html">eeg_average()</a></code> function to calculate averages (e.g. ERPs) from <code>eeg_epochs</code> objects</li>
 <li>
-<code>as.data.frame.eeg_evoked()</code> introduced to handle conversion of eeg_evoked objects to data frames.</li>
+<code><a href="../reference/as.data.frame.eeg_evoked.html">as.data.frame.eeg_evoked()</a></code> introduced to handle conversion of eeg_evoked objects to data frames.</li>
 </ul>
 </div>
 <div id="internal-changes--bug-fixes-3" class="section level3">
@@ -456,43 +460,43 @@
 <a href="#internal-changes--bug-fixes-3" class="anchor"></a>Internal changes / bug fixes</h3>
 <ul>
 <li>
-<code>compute_psd()</code> function development, converted to S3method.</li>
+<code><a href="../reference/compute_psd.html">compute_psd()</a></code> function development, converted to S3method.</li>
 <li>
-<code>topoplot()</code> properly checks for existing chan_info in <code>eeg_data</code> objects</li>
+<code><a href="../reference/topoplot.html">topoplot()</a></code> properly checks for existing chan_info in <code>eeg_data</code> objects</li>
 <li>
-<code>plot_timecourse()</code> and <code>plot_butterfly()</code> modified to deal with <code>eeg_evoked</code> objects.</li>
+<code><a href="../reference/plot_timecourse.html">plot_timecourse()</a></code> and <code><a href="../reference/plot_butterfly.html">plot_butterfly()</a></code> modified to deal with <code>eeg_evoked</code> objects.</li>
 <li>
-<code>plot_butterfly()</code> updated to better handle data frames</li>
+<code><a href="../reference/plot_butterfly.html">plot_butterfly()</a></code> updated to better handle data frames</li>
 <li>
-<code>topoplot.eeg_ICA()</code> added to make topolots from ICA components</li>
+<code><a href="../reference/topoplot.html">topoplot.eeg_ICA()</a></code> added to make topolots from ICA components</li>
 <li>
-<code>rm_baseline()</code> reworked as S3 method and to be faster and much less memory intensive.</li>
+<code><a href="../reference/rm_baseline.html">rm_baseline()</a></code> reworked as S3 method and to be faster and much less memory intensive.</li>
 <li>
-<code>plot_butterfly()</code> converted to S3 method.</li>
+<code><a href="../reference/plot_butterfly.html">plot_butterfly()</a></code> converted to S3 method.</li>
 <li>Initial commits for addition of Morlet wavelet time-frequency analysis</li>
 <li>Initial commits for statisical comparisons added</li>
 </ul>
 </div>
 </div>
     <div id="eegutils-0114" class="section level1">
-<h1 class="page-header">
+<h1 class="page-header" data-toc-text="0.1.14">
 <a href="#eegutils-0114" class="anchor"></a>eegUtils 0.1.14</h1>
 <div id="function-changes-6" class="section level3">
 <h3 class="hasAnchor">
 <a href="#function-changes-6" class="anchor"></a>Function changes</h3>
 <ul>
 <li>
-<code>eeg_downsample()</code> function added to downsample EEG data by an integer factor.</li>
+<code><a href="../reference/eeg_downsample.html">eeg_downsample()</a></code> function added to downsample EEG data by an integer factor.</li>
 <li>
-<code>tag_events()</code> function added to give labels to event codes.</li>
+<code><a href="../reference/tag_events.html">tag_events()</a></code> function added to give labels to event codes.</li>
 <li>
-<code>list_events()</code> added to display unique event codes and their associated labels.</li>
+<code><a href="../reference/list_events.html">list_events()</a></code> added to display unique event codes and their associated labels.</li>
 <li>
-<code>select_epochs()</code> now allows selection of epochs by event code or event label.</li>
+<code><a href="../reference/select_epochs.html">select_epochs()</a></code> now allows selection of epochs by event code or event label.</li>
 <li>
-<code>erp_raster()</code> - plot ERPs across the scalp as an ERP image</li>
+<code><a href="../reference/erp_raster.html">erp_raster()</a></code> - plot ERPs across the scalp as an ERP image</li>
 <li>
-<code>eeg_combine()</code> - combine multiple <code>eeg_data</code> or <code>eeg_epochs</code> objects into one</li>
+<code><a href="../reference/eeg_combine.html">eeg_combine()</a></code> - combine multiple <code>eeg_data</code> or <code>eeg_epochs</code> objects into one</li>
 </ul>
 </div>
 <div id="internal-changes-bug-fixes-2" class="section level3">
@@ -500,58 +504,58 @@
 <a href="#internal-changes-bug-fixes-2" class="anchor"></a>Internal changes/ bug fixes</h3>
 <ul>
 <li>
-<code>eeg_epochs()</code> now also handles downsampled data appropriately.</li>
+<code><a href="../reference/eeg_epochs.html">eeg_epochs()</a></code> now also handles downsampled data appropriately.</li>
 <li>
-<code>select_times()</code> no longer leaves “epoch” column in <code>eeg_epochs</code> objects.</li>
+<code><a href="../reference/select_times.html">select_times()</a></code> no longer leaves “epoch” column in <code>eeg_epochs</code> objects.</li>
 <li>
-<code>topoplot()</code> now calls a separate function (<code>gam_topo()</code>) to create GAM smooths</li>
+<code><a href="../reference/topoplot.html">topoplot()</a></code> now calls a separate function (<code><a href="../reference/gam_topo.html">gam_topo()</a></code>) to create GAM smooths</li>
 <li>
-<code>browse_data()</code> major speed-ups, no longer converts to long format until necessary. Converted to S3method.</li>
+<code><a href="../reference/browse_data.html">browse_data()</a></code> major speed-ups, no longer converts to long format until necessary. Converted to S3method.</li>
 <li>
-<code>interactive_scalp()</code> fixed plotting of individual electrodes</li>
+<code><a href="../reference/interactive_scalp.html">interactive_scalp()</a></code> fixed plotting of individual electrodes</li>
 </ul>
 </div>
 </div>
     <div id="eegutils-0113" class="section level1">
-<h1 class="page-header">
+<h1 class="page-header" data-toc-text="0.1.13">
 <a href="#eegutils-0113" class="anchor"></a>eegUtils 0.1.13</h1>
 <div id="function-changes-7" class="section level3">
 <h3 class="hasAnchor">
 <a href="#function-changes-7" class="anchor"></a>Function changes</h3>
 <ul>
 <li>
-<code>interp_elecs()</code> function to perform spherical spline interpolation of individual electrodes</li>
+<code><a href="../reference/interp_elecs.html">interp_elecs()</a></code> function to perform spherical spline interpolation of individual electrodes</li>
 <li>
 <code>eeg_ar_thresh()</code> simple absolute value thresholding added</li>
 <li>
-<code>plot_electrodes()</code> Produces a 2D or interactive 3D plot of electrode locations</li>
+<code><a href="../reference/plot_electrodes.html">plot_electrodes()</a></code> Produces a 2D or interactive 3D plot of electrode locations</li>
 </ul>
 </div>
 </div>
     <div id="eegutils-0112" class="section level1">
-<h1 class="page-header">
+<h1 class="page-header" data-toc-text="0.1.12">
 <a href="#eegutils-0112" class="anchor"></a>eegUtils 0.1.12</h1>
 <div id="function-changes-8" class="section level3">
 <h3 class="hasAnchor">
 <a href="#function-changes-8" class="anchor"></a>Function changes</h3>
 <ul>
 <li>
-<code>iir_filt()</code> now also filters reference channels</li>
+<code><a href="../reference/iir_filt.html">iir_filt()</a></code> now also filters reference channels</li>
 <li>
-<code>load_set()</code> command added to load EEGLAB .set files</li>
+<code><a href="../reference/load_set.html">load_set()</a></code> command added to load EEGLAB .set files</li>
 </ul>
 </div>
 <div id="internal-changes" class="section level3">
 <h3 class="hasAnchor">
 <a href="#internal-changes" class="anchor"></a>Internal changes</h3>
 <ul>
-<li>Converted <code>select_times()</code> to an S3 generic method
+<li>Converted <code><a href="../reference/select_times.html">select_times()</a></code> to an S3 generic method
 <ul>
 <li><code>select_times.eeg_data</code></li>
 <li><code>select_times.eeg_epochs</code></li>
 </ul>
 </li>
-<li>Converted <code>iir_filt()</code> to an S3 generic method
+<li>Converted <code><a href="../reference/iir_filt.html">iir_filt()</a></code> to an S3 generic method
 <ul>
 <li><code>iir_filt.eeg_data</code></li>
 <li><code>iir_filt.eeg_epochs</code></li>
@@ -561,7 +565,7 @@
 </div>
 </div>
     <div id="eegutils-0111" class="section level1">
-<h1 class="page-header">
+<h1 class="page-header" data-toc-text="0.1.11">
 <a href="#eegutils-0111" class="anchor"></a>eegUtils 0.1.11</h1>
 <ul>
 <li>Added a <code>NEWS.md</code> file to track changes to the package.</li>
@@ -569,22 +573,10 @@
 </div>
   </div>
 
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-    <div id="tocnav">
-      <h2>Contents</h2>
-      <ul class="nav nav-pills nav-stacked">
-        <li><a href="#eegutils-050">0.5.0</a></li>
-        <li><a href="#eegutils-040">0.4.0</a></li>
-        <li><a href="#eegutils-030">0.3.0</a></li>
-        <li><a href="#eegutils-021">0.2.1</a></li>
-        <li><a href="#eegutils-020">0.2.0</a></li>
-        <li><a href="#eegutils-0115">0.1.15</a></li>
-        <li><a href="#eegutils-0114">0.1.14</a></li>
-        <li><a href="#eegutils-0113">0.1.13</a></li>
-        <li><a href="#eegutils-0112">0.1.12</a></li>
-        <li><a href="#eegutils-0111">0.1.11</a></li>
-      </ul>
-    </div>
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+    <nav id="toc" data-toggle="toc" class="sticky-top">
+      <h2 data-toc-skip>Contents</h2>
+    </nav>
   </div>
 
 </div>
@@ -596,7 +588,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
 </div>
 
       </footer>
