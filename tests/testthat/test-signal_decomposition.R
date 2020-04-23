@@ -1,3 +1,4 @@
+context("ssd test")
 test_that("ssd runs", {
   skip_on_appveyor()
   skip_on_travis()
