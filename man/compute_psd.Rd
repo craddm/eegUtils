@@ -99,8 +99,8 @@ points. If not specified, it defaults to 50\% overlap between segments.
 }}
 
 \examples{
-compute_psd(demo_epochs)
-compute_psd(demo_epochs, n_fft = 256, seg_length = 128)
+out = compute_psd(demo_epochs)
+out = compute_psd(demo_epochs, n_fft = 256, seg_length = 128)
 }
 \author{
 Matt Craddock \email{matt@mattcraddock.com}
