@@ -18,6 +18,11 @@
 #' @import tools
 #' @importFrom purrr map_df is_empty
 #' @importFrom tibble tibble as_tibble
+#' @examples
+#' \dontrun{
+#' import_raw("test_bdf.bdf")
+#' }
+#' @return An object of class \code{eeg_data}
 #' @export
 
 import_raw <- function(file_name,
@@ -30,7 +35,7 @@ import_raw <- function(file_name,
   file_type <- tools::file_ext(file_name)
 
   if (!is.null(file_path)) {
-    file_name <- paste0(file_path, file_name)
+    file_name <- file.path(file_path, file_name)
   }
 
   if (is.null(recording)) {
@@ -556,6 +561,9 @@ read_vmrk <- function(file_name) {
 #' @importFrom dplyr group_by mutate rename
 #' @importFrom tibble tibble as_tibble
 #' @importFrom purrr is_empty
+#' @examples
+#' \dontrun{import_set("your_data.set")}
+#' @return An object of class \code{eeg_data}
 #' @export
 
 import_set <- function(file_name,
@@ -817,6 +825,10 @@ bva_elecs <- function(chan_info, radius = 85) {
 #' @param participant_id Identifier for the participant.
 #' @param verbose Informative messages printed to console. Defaults to TRUE.
 #' @importFrom R.matlab readMat
+#' @examples
+#' \dontrun{import_ft("fieldtrip_test.mat")}
+#' @return An object of class \code{eeg_data}, \code{eeg_epochs}, or
+#'   \code{eeg_tfr}, depending on the type of input data.
 #' @export
 import_ft <- function(file_name,
                       participant_id = NULL,
@@ -1165,7 +1177,7 @@ read_bdf_data <- function(file_name, headers) {
                               records_per))
     shifted <- colSums(shifted)
     shifted <- matrix(aperm(shifted,
-                            c(1,3,2)),
+                            c(1, 3, 2)),
                       nrow = prod(dim(shifted)[c(1, 3)]))
     modifier <- chunk_size * (records - 1)
     sig_out[(1:chunk_size) + modifier, ] <- shifted
@@ -1177,7 +1189,7 @@ read_bdf_data <- function(file_name, headers) {
                              n = sig_length * remaining,
                              endian = "little")
 
-    shifted <- as.integer(final_records) * as.integer(2^c(0, 8,16))
+    shifted <- as.integer(final_records) * as.integer(2^c(0, 8, 16))
 
     shifted  <- array(shifted, dim = c(3,
                                        headers$srate[[1]],

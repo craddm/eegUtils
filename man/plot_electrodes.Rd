@@ -21,6 +21,10 @@ plot_electrodes(data, interact = FALSE)
 \item{interact}{Choose 2D cartesian layout, or, if set to TRUE, an
 interactive 3D plot of electrode locations. Defaults to FALSE.}
 }
+\value{
+A \code{ggplot} or \code{plotly} figure showing the locations of the
+  electrodes
+}
 \description{
 Produces either a 2D plot of the electrode locations or an interactive plot
 of electrode locations in 3D space.

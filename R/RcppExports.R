@@ -13,15 +13,3 @@ do_iter <- function(amps, k, N) {
     .Call(`_eegUtils_do_iter`, amps, k, N)
 }
 
-get_list <- function(x, mors, n_kern, output) {
-    .Call(`_eegUtils_get_list`, x, mors, n_kern, output)
-}
-
-get_listal <- function(x, mors, n_kern, output) {
-    .Call(`_eegUtils_get_listal`, x, mors, n_kern, output)
-}
-
-get_list2 <- function(x, mors, n_kern, output) {
-    .Call(`_eegUtils_get_list2`, x, mors, n_kern, output)
-}
-

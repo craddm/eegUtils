@@ -6,6 +6,8 @@
 #' @param file_name Name and full path of file to be loaded.
 #' @param format If the file is not .elc format, "spherical", "geographic".
 #'   Default is "spherical".
+#' @return A \code{tibble} containing electrode names and locations in several
+#'   different coordinate systems.
 #' @export
 
 import_chans <- function(file_name,
@@ -126,9 +128,13 @@ topo_norm <- function(angle, radius) {
 #'
 #' @param chan_info channel information structure
 #' @param degrees degrees by which to rotate
+#' @examples
+#' rotate_angle(channels(demo_epochs), 90)
+#' @return A \code{tibble()}
 #' @export
 
-rotate_angle <- function(chan_info, degrees) {
+rotate_angle <- function(chan_info,
+                         degrees) {
 
   degrees <- degrees * pi / 180
   if ("CZ" %in% chan_info$electrode) {
@@ -267,37 +273,6 @@ electrode_locations.eeg_data <- function(data,
             drop = drop,
             montage = montage,
             overwrite = overwrite)
-  # if (!is.null(data$chan_info) & !overwrite) {
-  #   stop("Channel info already present, set overwrite to TRUE to replace.")
-  # }
-  #
-  # if (!is.null(montage)) {
-  #   electrodeLocs <- montage_check(montage)
-  # }
-  #
-  # elec_names <- toupper(channel_names(data))
-  # electrodeLocs$electrode <- toupper(electrodeLocs$electrode)
-  #
-  # matched_els <- electrodeLocs$electrode %in% elec_names
-  # missing_els <- !elec_names %in% electrodeLocs$electrode
-  #
-  # if (!any(matched_els)) {
-  #   stop("No matching electrodes found.")
-  # } else if (any(missing_els)) {
-  #   message("Electrodes not found: ",
-  #           paste(names(data$signals)[missing_els],
-  #                 collapse = " "))
-  # }
-  #
-  # data$chan_info <- electrodeLocs[matched_els, ]
-  #
-  # if (drop) {
-  #   data$signals[matched_els]
-  # }
-  #
-  # channels(data) <- validate_channels(channels(data),
-  #                                     channel_names(data))
-  # data
 }
 
 #' @import ggplot2
@@ -388,9 +363,12 @@ add_elocs <- function(data,
 #' @param data Data with associated electrode locations to be plotted.
 #' @param interact Choose 2D cartesian layout, or, if set to TRUE, an
 #'   interactive 3D plot of electrode locations. Defaults to FALSE.
+#' @return A \code{ggplot} or \code{plotly} figure showing the locations of the
+#'   electrodes
 #' @export
 
-plot_electrodes <- function(data, interact = FALSE) {
+plot_electrodes <- function(data,
+                            interact = FALSE) {
   UseMethod("plot_electrodes", data)
 }
 
@@ -675,12 +653,6 @@ channel_names <- function(.data) {
     return(dimnames(.data$signals)$electrode)
   }
   names(.data$signals)
-}
-
-#' @export
-`channel_names<-` <- function(.data, value) {
-  .data$chan_info <- value
-  .data
 }
 
 #' Normalize 3d Cartesian co-ordinates to unit sphere

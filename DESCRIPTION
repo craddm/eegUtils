@@ -1,14 +1,14 @@
 Package: eegUtils
 Type: Package
-Title: A Collection of Utilities for EEG Analysis 
+Title: Utilities for Electroencephalographic (EEG) Analysis 
 Version: 0.5.0.9000
 Date: 2019-11-03
 Authors@R: c(
   person("Matt", "Craddock", role = c("aut", "cre"), email = "matt@mattcraddock.com"),
   person("Matti", "Vuorre", role = "ctb", email = "mv2521@columbia.edu"))
 Maintainer: Matt Craddock <matt@mattcraddock.com>
-Description: A collection of functions for EEG processing. Includes import
-  functions for Biosemi (BDF), Neuroscan (CNT), Brain Vision Analyzer (VHDR),
+Description: EEG processing and visualization tools. Includes import
+  functions for BioSemi (BDF), Neuroscan (CNT), Brain Vision Analyzer (VHDR),
   EEGLAB (.set) and Fieldtrip (.mat). Many preprocessing functions such as
   referencing, epoching, filtering, and ICA are available. There are a variety 
   of visualizations possible, including timecourse and topographical plotting.

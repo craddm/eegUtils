@@ -154,7 +154,7 @@ epoch_stats.eeg_epochs <- function(data,
   epoch_kur <- data[, lapply(.SD, kurtosis), by = epoch]
   epoch_max <- data[, lapply(.SD, max), by = epoch]
   epoch_min <- data[, lapply(.SD, min), by = epoch]
-  min_max <- epoch_max - epoch_min
+  min_max <- data[, lapply(.SD, function(x) max(x) - min(x)), by = epoch]
   stats_out <- data.table::rbindlist(list(max = epoch_max,
                                           min = epoch_min,
                                           variance = epoch_vars,

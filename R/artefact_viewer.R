@@ -9,26 +9,24 @@
 #' @import ggplot2
 #' @importFrom plotly plot_ly renderPlotly event_data
 #' @param data Object to be explored.
-
+#' @return None.
 #' @export
 
 view_artefacts <- function(data) {
 
   chan_dat <- channel_stats(data)
-  scale_chans <- chan_dat
-
-    dplyr::mutate_if(chan_dat,
+  scale_chans <- dplyr::mutate_if(chan_dat,
                                   is.numeric,
                                   ~(. - mean(.)) / sd(.))
   epoch_dat <- epoch_stats(data)
-  epoch_dat <- tidyr::gather(epoch_dat,
-                             electrode,
-                             value,
-                             -measure,
-                             -epoch)
-  epoch_dat <- tidyr::spread(epoch_dat,
-                             measure,
-                             value)
+  epoch_dat <- tidyr::pivot_longer(epoch_dat,
+                                   cols = channel_names(data),
+                                   names_to = "electrode",
+                                   values_to = "value")
+  epoch_dat <- tidyr::pivot_wider(epoch_dat,
+                                  id_cols = c(epoch, electrode),
+                                  names_from = measure,
+                                  values_from = value)
 
   ui <-
     navbarPage("Artefact checks",
@@ -39,7 +37,8 @@ view_artefacts <- function(data) {
                                                    choices = c("means",
                                                                "sds",
                                                                "variance",
-                                                               "kurtosis")
+                                                               "kurtosis",
+                                                               "minmax")
                                                    ),
                                        checkboxInput("std_meas",
                                                      "Standardize?"),
@@ -74,7 +73,8 @@ view_artefacts <- function(data) {
         means = "Mean",
         variance = "Var",
         sds = "Std. dev.",
-        kurtosis = "Kurtosis"
+        kurtosis = "Kurtosis",
+        minmax = "Max - min"
       )
       plotly::plot_ly(plot_data(),
                       x = ~electrode,
@@ -130,9 +130,19 @@ view_artefacts <- function(data) {
         plotly::layout(title = "Kurtosis")
     })
 
+    output$plotly_minmax <- plotly::renderPlotly({
+      plotly::plot_ly(epoch_dat,
+                      x = ~epoch,
+                      y = ~electrode,
+                      z = ~minmax,
+                      type = "heatmap") %>%
+        plotly::layout(title = "Max-min")
+    })
+
   }
 
-  shinyApp(ui, server)
+  shiny::shinyApp(ui,
+                  server)
 
 }
 
@@ -149,6 +159,8 @@ epochPlotly <- function(id,
       plotly::plotlyOutput("plotly_evars",
                            height = 250),
       plotly::plotlyOutput("plotly_kurt",
+                           height = 250),
+      plotly::plotlyOutput("plotly_minmax",
                            height = 250)))
 }
 
