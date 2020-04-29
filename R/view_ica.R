@@ -14,35 +14,42 @@ view_ica <- function(data) {
     stop("This function requires an eeg_ICA object.")
   }
 
-  ui <- navbarPage("ICA viewer",
-                   tabPanel("Topographies",
-                            plotOutput("comp_topos",
-                                       click = "topo_click"
-                                       )),
-                   tabPanel("Timecourses",
-                            plotOutput("ica_butters",
-                                       hover = "butter_click",
-                                       brush = brushOpts(
-                                         id = "butter_brush",
-                                         resetOnNew = TRUE
-                                       ),
-                                       dblclick = "butter_dbl"),
-                            verbatimTextOutput("info")),
-                   tabPanel("PSDs",
-                            plotOutput("ica_psd",
-                                       hover = "psd_click",
-                                       brush = brushOpts(
-                                         id = "psd_brush",
-                                         resetOnNew = TRUE
-                                       ),
-                                       dblclick = "psd_dbl"),
-                            verbatimTextOutput("psd_info")),
-                   tabPanel("Individual",
+  ui <-
+    navbarPage("ICA viewer",
+               tabPanel("Topographies",
+                        plotOutput("comp_topos",
+                                   dblclick = "topo_click"
+                                   )),
+               tabPanel("Timecourses",
+                        plotOutput("ica_butters",
+                                   hover = "butter_click",
+                                   brush = brushOpts(
+                                     id = "butter_brush",
+                                     resetOnNew = TRUE
+                                     ),
+                                   dblclick = "butter_dbl"),
+                        verbatimTextOutput("info")),
+               tabPanel("PSDs",
+                        plotOutput("ica_psd",
+                                   hover = "psd_click",
+                                   brush = brushOpts(
+                                     id = "psd_brush",
+                                     resetOnNew = TRUE
+                                     ),
+                                   dblclick = "psd_dbl"),
+                        verbatimTextOutput("psd_info")),
+               tabPanel("Individual",
+                        sidebarLayout(
+                          sidebarPanel(selectInput("comp_no",
+                                                   "Component:",
+                                                   channel_names(data)),
+                                       width = 3),
+                          mainPanel(
                             fluidRow(
                               column(
                                 width = 6,
                                 plotOutput("indiv_topo")
-                              ),
+                                ),
                               column(
                                 width = 6,
                                 plotOutput("indiv_erpim"))
@@ -50,21 +57,22 @@ view_ica <- function(data) {
                             fluidRow(
                               column(
                                 width = 6,
-                                plotOutput("indiv_tc")
-                              ),
+                                plotOutput("indiv_psd")
+                                ),
                               column(
                                 width = 6,
-                                selectInput("comp_no", "Comp:",
-                                            channel_names(data))
-                              )
+                                plotOutput("indiv_tc")
+                                )
+                              ),
+                            width = 9
                             )
-                   )
-                  )
+                          )
+                        )
+               )
 
   server <- function(input,
                      output,
                      session) {
-
 
     ranges <- reactiveValues(x = NULL,
                              y = NULL)
@@ -93,7 +101,7 @@ view_ica <- function(data) {
     psd_ica <- dplyr::summarise(psd_ica,
                                 power = mean(10 * log10(power)))
 
-    output$comp_topos <- renderPlot(
+    output$comp_topos <- shiny::renderPlot(
      ica_topos(data),
      height = function() {
        .8 * session$clientData$output_comp_topos_width
@@ -104,7 +112,7 @@ view_ica <- function(data) {
       plot_butterfly(data)
     )
 
-    output$ica_psd <- renderPlot(
+    output$ica_psd <- renderCachedPlot({
       ggplot(psd_ica,
              aes(x = frequency,
                  y = power,
@@ -113,37 +121,66 @@ view_ica <- function(data) {
         theme_bw() +
         coord_cartesian(xlim = ranges$x,
                         ylim = ranges$y,
-                        expand = FALSE)
+                        expand = FALSE)},
+      cacheKeyExpr = "all_psds"
     )
 
     output$info <- renderPrint({
-      nearPoints(ica_erps,
-                 input$butter_click,
-                 threshold = 10,
-                 maxpoints = 1)
+      shiny::nearPoints(ica_erps,
+                        input$butter_click,
+                        threshold = 10,
+                        maxpoints = 1)
     })
 
     output$psd_info <- renderPrint({
-      nearPoints(psd_ica,
-                 input$psd_click,
-                 threshold = 20,
-                 maxpoints = 1)
+      shiny::nearPoints(psd_ica,
+                        input$psd_click,
+                        threshold = 20,
+                        maxpoints = 1)
     })
 
-    output$indiv_topo <- renderPlot({
+    output$indiv_topo <- renderCachedPlot({
       topoplot(data, input$comp_no)
-    })
+    }, cacheKeyExpr = {input$comp_no})
 
-    output$indiv_erpim <- renderPlot({
+    output$indiv_erpim <- renderCachedPlot({
       erp_image(data,
-                input$comp_no,
-                clim = c(-3, 3))
-    })
+                input$comp_no)
+    }, cacheKeyExpr = {input$comp_no})
 
-    output$indiv_tc <- renderPlot({
+    output$indiv_tc <- renderCachedPlot({
       plot_timecourse(data,
                       input$comp_no)
-    })
+    },
+    cacheKeyExpr = {input$comp_no})
+
+    output$indiv_psd <- renderCachedPlot({
+      tmp_psd <-
+        compute_psd(select(data,
+                           input$comp_no),
+                    n_fft = data$srate * 2,
+                    verbose = FALSE)
+
+      tmp_psd <- dplyr::rename(tmp_psd,
+                               power = 2)
+      tmp_psd <- dplyr::filter(tmp_psd,
+                               frequency >= 3,
+                               frequency <= 50)
+      ggplot(tmp_psd,
+             aes(x = frequency,
+                 y = 10 * log10((power)))) +
+        stat_summary(geom = "ribbon",
+                     fun.data = mean_se,
+                     alpha = 0.5) +
+        stat_summary(geom = "line",
+                     fun = mean) +
+        theme_classic() +
+        labs(x = "Frequency (Hz)",
+             y = "Power (dB)") +
+        coord_cartesian(expand = FALSE)
+    },
+    cacheKeyExpr = {input$comp_no},
+    res = 96)
 
     observeEvent(input$psd_dbl, {
       brush <- input$psd_brush
@@ -158,19 +195,20 @@ view_ica <- function(data) {
     })
 
   }
-  shinyApp(ui, server)
+  shiny::shinyApp(ui,
+                  server)
 
 }
 
 
 ica_topos <- function(data) {
   ggplot2::ggplot(get_scalpmap(data,
-                               grid_res = 67),
+                               grid_res = 80),
                   aes(x = x,
                       y = y,
                       fill = scale(fill),
                       z = scale(fill))) +
-    geom_raster() +
+    geom_raster(interpolate = TRUE) +
     geom_head(data = channels(data),
               mapping = aes(fill = NULL,
                             z = NULL)) +
@@ -181,8 +219,8 @@ ica_topos <- function(data) {
     facet_wrap(~component) +
     theme_void() +
     scale_fill_distiller(palette = "RdBu",
-                        limits = c(-2.5, 2.5),
-                         oob = scales::squish) +
+                        limits = c(-3, 3),
+                        oob = scales::squish) +
     theme(legend.position = "none") +
     coord_fixed()
 }
