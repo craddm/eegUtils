@@ -23,7 +23,9 @@ knitr::opts_chunk$set(echo = TRUE,
 
 ### Installation
 
-The package is very much under active development and is subject to a lot of changes. As such, it is not currently available on CRAN. Install the latest released version from Github as below.
+The package is very much under active development and is subject to a lot of changes. As such, it is not currently available on CRAN. 
+
+Install the latest released version from Github as below.
 
 ```{r, eval = FALSE}
 #install.packages("remotes")
@@ -35,6 +37,8 @@ To install the latest development version, install from the *develop* branch as 
 ```{r, eval = FALSE}
 remotes::install_github("craddm/eegUtils@develop")
 ```
+
+You can also find the package on [Neuroconductor](https://neuroconductor.org) - for more information about installing the package from there, see the [Neuroconductor installation tutorial](https://neuroconductor.org/tutorials/install)
 
 ### Usage
 
