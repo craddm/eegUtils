@@ -7,7 +7,6 @@
 import_raw(
   file_name,
   file_path = NULL,
-  chan_nos = NULL,
   recording = NULL,
   participant_id = character(1),
   fast_bdf = TRUE
@@ -17,8 +16,6 @@ import_raw(
 \item{file_name}{File to import. Should include file extension.}
 
 \item{file_path}{Path to file name, if not included in filename.}
-
-\item{chan_nos}{Channels to import. All channels are included by default.}
 
 \item{recording}{Name of the recording. By default, the filename will be
 used.}

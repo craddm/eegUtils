@@ -9,7 +9,6 @@
 #' @author Matt Craddock, \email{matt@@mattcraddock.com}
 #' @param file_name File to import. Should include file extension.
 #' @param file_path Path to file name, if not included in filename.
-#' @param chan_nos Channels to import. All channels are included by default.
 #' @param recording Name of the recording. By default, the filename will be
 #'   used.
 #' @param participant_id Identifier for the participant.
@@ -27,7 +26,6 @@
 
 import_raw <- function(file_name,
                        file_path = NULL,
-                       chan_nos = NULL,
                        recording = NULL,
                        participant_id = character(1),
                        fast_bdf = TRUE) {
@@ -110,7 +108,6 @@ import_raw <- function(file_name,
                                  nrow = 1,
                                  class = "epoch_info")
 
-
     data <- eeg_data(data = sigs,
                      srate = srate,
                      events = event_table,
@@ -119,7 +116,9 @@ import_raw <- function(file_name,
     data
   } else if (identical(file_type,"cnt")) {
     message(paste("Importing Neuroscan", toupper(file_type), file_name))
+    message(paste("Note: if this is 16-bit or an ANT Neuro .CNT file, reading will fail."))
     data <- import_cnt(file_name)
+
     sigs <- tibble::as_tibble(t(data$chan_data))
     names(sigs) <- data$chan_info$electrode
     srate <- data$head_info$samp_rate
