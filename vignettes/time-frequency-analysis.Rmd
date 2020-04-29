@@ -12,8 +12,7 @@ vignette: >
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>",
-  eval = nzchar(Sys.getenv("EVAL_EEG_VIGNETTE"))
+  comment = "#>"
 )
 ```
 
@@ -60,7 +59,7 @@ The results of the time-frequency transformation can be plotted using the `plot_
 plot_tfr(demo_tfr)
 ```
 
-Baseline correction is common in the literature. Several different methods are possible, both for plotting only, and as a modification to the \code{eeg_tfr} object using `rm_baseline`.
+Baseline correction is common in the literature. Several different methods are possible, both for plotting only, and as a modification to the \code{eeg_tfr} object using `rm_baseline()`.
 
 ```{r db-plot}
 plot_tfr(demo_tfr, baseline_type = "absolute", baseline = c(-.1, 0))

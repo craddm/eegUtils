@@ -20,7 +20,7 @@ knitr::opts_chunk$set(
 
 `eegUtils` uses S3 objects to store EEG data and associated information such as channel locations. Using different object classes for data structured in different ways ensures that the various plotting functions work consistently across different types of EEG data. For example, there are different classes for epoched (`eeg_epochs`) and continuous data (`eeg_data`), and for time-frequency representations of data (`eeg_tfr`).
 
-## eeg_data objects
+## `eeg_data` objects
 
 `eeg_data` objects are the base class used for continuous data. When raw data is imported, the output is this class. Currently, this class is a list constituting the following entries:
 
@@ -37,7 +37,7 @@ knitr::opts_chunk$set(
         + event_type (typically integer, others possible)
 
 * `chan_info`
-    + Often NA on import, since BDF and CNT do not contain (useable) electrode locations. 
+    + Often NULL on import, since BDF and CNT do not contain (useable) electrode locations. 
     + A data.frame/tibble containing channel location information can be added. Currently similar to EEGLAB style, with the following columns (may change):
         * `electrode` - electrode names
         * `radius` - Spherical co-ordinates (Radius is typically normalized to 1)
@@ -92,7 +92,7 @@ knitr::opts_chunk$set(
 
 ## eeg_ICA
 
-`eeg_ICA` objects contain the results of an ICA decomposition applied to an `eeg_epochs` objects.
+`eeg_ICA` objects contain the results of an ICA decomposition applied to an `eeg_epochs` object.
 
 * `mixing_matrix`
     - The weights that are used to convert the source data into the original data
