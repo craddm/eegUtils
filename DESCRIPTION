@@ -2,7 +2,7 @@ Package: eegUtils
 Type: Package
 Title: Utilities for Electroencephalographic (EEG) Analysis 
 Version: 0.5.0.9000
-Date: 2019-11-03
+Date: 2020-04-29
 Authors@R: c(
   person("Matt", "Craddock", role = c("aut", "cre"), email = "matt@mattcraddock.com"),
   person("Matti", "Vuorre", role = "ctb", email = "mv2521@columbia.edu"))
@@ -27,7 +27,6 @@ Imports:
     rlang (>= 0.4.0),
     MASS,
     Matrix,
-    edfReader,
     signal,
     tibble,
     stats,
@@ -52,7 +51,8 @@ Suggests: testthat,
     ica,
     geigen,
     whitening,
-    fICA
+    fICA,
+    edfReader
 URL: https://github.com/craddm/eegUtils, https://craddm.github.io/eegUtils
 BugReports: https://github.com/craddm/eegUtils/issues
 VignetteBuilder: knitr

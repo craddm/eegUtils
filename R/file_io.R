@@ -53,6 +53,11 @@ import_raw <- function(file_name,
       sigs <- tibble::as_tibble(sigs)
       srate <- bdf_header$srate[[1]]
     } else {
+
+      if (!requireNamespace("edfReader", quietly = TRUE)) {
+        stop("Package \"edfReader\" needed. Please install it.",
+             call. = FALSE)
+      }
       data <- edfReader::readEdfSignals(edfReader::readEdfHeader(file_name))
       #check for an annotations channel
       anno_chan <- which(vapply(data,
