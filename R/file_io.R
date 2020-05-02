@@ -13,7 +13,6 @@
 #'   used.
 #' @param participant_id Identifier for the participant.
 #' @param fast_bdf New, faster method for loading BDF files. Experimental.
-#' @import edfReader
 #' @import tools
 #' @importFrom purrr map_df is_empty
 #' @importFrom tibble tibble as_tibble
