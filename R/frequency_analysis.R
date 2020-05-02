@@ -300,54 +300,6 @@ welch_fft <- function(data,
 
   }
 
-
-
-  #do windowing and zero padding if necessary, then FFT
-  # if (n_segs == 1) {
-  #   data_segs <- sweep(data_segs,
-  #                      1,
-  #                      win, "*")
-  #
-  #   if (n_fft > seg_length) {
-  #      data_segs <- apply(data_segs, 2,
-  #                         function(x) c(x,
-  #                                       numeric(n_fft - seg_length)))
-  #   }
-  #
-  #   data_fft <- mvfft(data_segs)
-  #   final_out <- apply(data_fft,
-  #                      2,
-  #                      function(x) abs(x * Conj(x)) / U)
-  #
-  #   # Normalize by sampling rate
-  #   if (is.null(srate)) {
-  #     final_out <- final_out / (2 * pi)
-  #     freqs <- seq(0, seg_length / 2) / (seg_length)
-  #   } else {
-  #     final_out <- final_out / srate
-  #     freqs <- seq(0, n_fft / 2) / (n_fft) * srate
-  #   }
-  # } else {
-  #   data_segs <- lapply(data_segs,
-  #                       function(x) lapply(x,
-  #                                          function(y) y * win))
-  #
-  #   data_fft <- lapply(data_segs,
-  #                      function(x) lapply(x,
-  #                                         fft_n, n = n_fft))
-  #   final_out <- lapply(data_fft,
-  #                       function(x) sapply(x,
-  #                                          function(y) abs(y * Conj(y)) / U))
-  #   # Normalize by sampling rate or by signal length if no sampling rate
-  #   if (is.null(srate)) {
-  #     final_out <- rowMeans(as.data.frame(final_out)) / (2 * pi)
-  #     freqs <- seq(0, seg_length / 2) / (seg_length)
-  #   } else {
-  #     final_out <- as.data.frame(lapply(final_out, rowMeans)) / srate
-  #     freqs <- seq(0, n_fft / 2) / (n_fft) * srate
-  #   }
-  # }
-
   #select first half of spectrum and double amps, output is power - uV^2 / Hz
   final_out <- final_out[1:(n_fft / 2 + 1), , drop = FALSE]
   #final_out[2:(n_fft / 2 + 1), ] <- (final_out[2:(n_fft / 2 + 1), ] * 2) ^ 2
