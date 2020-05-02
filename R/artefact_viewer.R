@@ -161,7 +161,9 @@ epochPlotly <- function(id,
       plotly::plotlyOutput("plotly_kurt",
                            height = 250),
       plotly::plotlyOutput("plotly_minmax",
-                           height = 250)))
+                           height = 250)
+      )
+  )
 }
 
 
