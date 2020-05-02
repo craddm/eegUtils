@@ -521,7 +521,7 @@ validate_channels <- function(chan_info,
     }
     # make sure chan_info is in the same order as the signal names
     chan_info <- chan_info[match(toupper(sig_names),
-                                 chan_info$electrode), ]
+                                 toupper(chan_info$electrode)), ]
     # make sure chan_info electrode is the same case as the signal names
     chan_info$electrode <- sig_names
   }
