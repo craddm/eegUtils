@@ -236,6 +236,9 @@ check_timings.eeg_epochs <- function(data) {
   n_rows <- nrow(data$timings)
   #epochs <- unique(data$timings$epoch)
 
+  # really should we be checking for *repeats* rather than decreases, as people
+  # might combine data in the "wrong" order, or even the same file multiple times?
+
   # if the epoch numbers are not ascending, fix them...
   while (any(diff(data$timings$epoch) < 0)) {
 
@@ -244,7 +247,8 @@ check_timings.eeg_epochs <- function(data) {
     # only works correctly with 2 objects
 
     #check for any places where epoch numbers decrease instead of increase
-    switch_locs <- which(diff(data$timings$epoch) == min(diff(data$timings$epoch)))
+    switch_locs <- which(sign(diff(data$timings$epoch)) == -1)
+
 
     #consider switch this out with an RLE method, which would be much simpler.
 
