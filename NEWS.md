@@ -9,8 +9,6 @@
 - `view_ica()` Shiny viewer for `eeg_ICA` and `eeg_decomp` objects added.
 - `view_artefacts()`Shiny viewer for channel and epoch stats added.
 
-
-
 ### Internal changes / bug fixes
 - Now using `whitening` package for whitening before SOBI ICA
 - `select_epochs` for `eeg_ICA` objects fixed to correctly remove epochs from `signals`
@@ -27,6 +25,7 @@
 - `browse_data().eeg_ica` grid res reduced
 - `eeg_reference().eeg_epochs` was always average referencing, now fixed.
 - cleaner code in `topoplot()` for biharmonic smooth
+- `compute_psd()` now demeans individual segments when doing Welch FFT; no longer errors when only one segment per channel
 
 # eegUtils 0.5.0
 
