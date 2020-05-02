@@ -694,17 +694,30 @@ fit_gam_topo <- function(data,
   data[data$incircle, ]
 }
 
-get_scalpmap <- function(data, ...) {
+#' Get an interpolated grid
+#'
+#' @param data Object to be interpolated
+#' @param ... Other arguments
+#' @export
+get_scalpmap <- function(data,
+                         ...) {
   UseMethod("get_scalpmap", data)
 }
 
+#' @export
 get_scalpmap.default <- function(data,
-                                 grid_res,
-                                 interp_limit,
                                  ...) {
   stop("Not implemented for objects of class ", class(data))
 }
 
+#' @param data An object of class \code{eeg_data}
+#' @param method biharmonic spline or gam
+#' @param grid_res grid resolution
+#' @param interp_limit interp to the head or the skirt
+#' @param quantity amplitude
+#' @param facets Any facets you plan to use
+#' @describeIn get_scalpmap data frame
+#' @export
 get_scalpmap.data.frame <- function(data,
                                     method = "biharmonic",
                                     grid_res = 100,
@@ -760,7 +773,7 @@ get_scalpmap.data.frame <- function(data,
 
 }
 
-
+#' @export
 get_scalpmap.eeg_epochs <- function(data,
                                     method = "biharmonic",
                                     grid_res = 100,
@@ -819,7 +832,7 @@ get_scalpmap.eeg_epochs <- function(data,
   smooth
 }
 
-
+#' @export
 get_scalpmap.eeg_ICA <- function(data,
                                  method = "biharmonic",
                                  grid_res = 100,
@@ -830,11 +843,6 @@ get_scalpmap.eeg_ICA <- function(data,
                                  ...) {
 
   facets <- rlang::enexpr(facets)
-  # check_locs <- no_loc_chans(channels(data))
-  #
-  # if (!is.null(check_locs)) {
-  #   data <- select(data, -check_locs)
-  # }
 
   tmp <- as.data.frame(data,
                        mixing = TRUE,
@@ -847,19 +855,11 @@ get_scalpmap.eeg_ICA <- function(data,
     }
   }
 
-#   tmp <- tidyr::gather(tmp,
-#                        component,
-#                        amplitude,
-# #                       -{{facets}},
-#                        -electrode,
-#                        -x,
-#                        -y)
-
   tmp <- dplyr::rename(tmp,
                        fill = {{quantity}})
 
   if (!is.null(facets)) {
-    #tmp <- dplyr::group_nest(tmp, {{facets}})
+
     tmp <- dplyr::group_nest(tmp,
                              component)
     tmp <- dplyr::mutate(tmp,
