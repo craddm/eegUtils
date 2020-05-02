@@ -76,9 +76,12 @@ view_ica <- function(data) {
 
     ranges <- reactiveValues(x = NULL,
                              y = NULL)
+    b_ranges <- reactiveValues(x = NULL,
+                               y = NULL)
 
     ica_erps <- as.data.frame(eeg_average(data),
                               long = TRUE)
+
     ica_erps <- dplyr::group_by(ica_erps,
                                 electrode,
                                 time)
@@ -87,7 +90,6 @@ view_ica <- function(data) {
                                  amplitude = mean(amplitude))
 
     psd_ica <- compute_psd(data,
-                           n_fft = data$srate * 2,
                            verbose = FALSE)
 
     psd_ica <- tidyr::pivot_longer(psd_ica,
@@ -109,10 +111,12 @@ view_ica <- function(data) {
      )
 
     output$ica_butters <- renderPlot(
-      plot_butterfly(data)
+      plot_butterfly(data) +
+        coord_cartesian(xlim = b_ranges$x,
+                        ylim = b_ranges$y)
     )
 
-    output$ica_psd <- renderCachedPlot({
+    output$ica_psd <- renderPlot({
       ggplot(psd_ica,
              aes(x = frequency,
                  y = power,
@@ -121,8 +125,7 @@ view_ica <- function(data) {
         theme_bw() +
         coord_cartesian(xlim = ranges$x,
                         ylim = ranges$y,
-                        expand = FALSE)},
-      cacheKeyExpr = "all_psds"
+                        expand = FALSE)}
     )
 
     output$info <- renderPrint({
@@ -158,7 +161,8 @@ view_ica <- function(data) {
       tmp_psd <-
         compute_psd(select(data,
                            input$comp_no),
-                    n_fft = data$srate * 2,
+                    n_fft = data$srate,
+                    noverlap = 0,
                     verbose = FALSE)
 
       tmp_psd <- dplyr::rename(tmp_psd,
@@ -191,6 +195,20 @@ view_ica <- function(data) {
       } else {
         ranges$x <- NULL
         ranges$y <- NULL
+      }
+    })
+
+    observeEvent(input$butter_dbl, {
+      brush <- input$butter_brush
+      if (!is.null(brush)) {
+        b_ranges$x <- c(brush$xmin,
+                      brush$xmax)
+        b_ranges$y <- c(brush$ymin,
+                      brush$ymax)
+
+      } else {
+        b_ranges$x <- NULL
+        b_ranges$y <- NULL
       }
     })
 
