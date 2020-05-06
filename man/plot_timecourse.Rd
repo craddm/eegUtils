@@ -42,6 +42,7 @@ plot_timecourse(data, ...)
   baseline = NULL,
   colour = NULL,
   color = NULL,
+  mapping = NULL,
   ...
 )
 
