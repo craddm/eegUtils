@@ -128,6 +128,7 @@ plot_timecourse.eeg_ICA <- function(data,
                             baseline = NULL,
                             colour = NULL,
                             color = NULL,
+                            mapping = NULL,
                             ...) {
 
 
@@ -168,7 +169,8 @@ plot_timecourse.eeg_ICA <- function(data,
 
   tc_plot <- create_tc(data,
                        add_CI = add_CI,
-                       colour = colour)
+                       colour = colour,
+                       mapping = mapping)
 
   tc_plot
   }
