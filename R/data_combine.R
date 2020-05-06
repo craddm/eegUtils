@@ -11,6 +11,9 @@
 #' @author Matt Craddock, \email{matt@@mattcraddock.com}
 #' @importFrom dplyr mutate bind_rows
 #' @importFrom purrr map_df
+#' @return If all objects have the same participant_id, an object of the same
+#'   class as the original input object. If the objects have different
+#'   participant_id numbers, an object of class \code{eeg_group}.
 #' @export
 #'
 eeg_combine <- function(data,
@@ -36,6 +39,7 @@ eeg_combine.list <- function(data,
 
   list_classes <- lapply(data,
                          class)
+
   if (any(is.list(unlist(list_classes)))) {
     stop("Cannot handle list of lists. Check class of list items.")
   }
@@ -44,29 +48,20 @@ eeg_combine.list <- function(data,
 
     return(do.call(eeg_combine,
                    data))
-    # out_dat <- data[[1]]
-    # out_class <- class(data[[1]])
-    # out_dat$signals <- purrr::map_df(data,
-    #                                  ~.$signals)
-    # out_dat$events  <- purrr::map_df(data,
-    #                                  ~.$events)
-    # out_dat$timings <- purrr::map_df(data,
-    #                                  ~.$timings)
-    # out_dat$epochs <- purrr::map_df(data,
-    #                                 ~.$epochs)
-    # if (length(unique(epochs(out_dat)$participant_id)) > 1) {
-    #   class(out_dat) <- c("eeg_group", out_class)
-    # }
   } else {
     stop("All list elements must be of the same class.")
   }
 }
 
 #' @describeIn eeg_combine Method for combining \code{eeg_data} objects.
+#' @param check_timings Check whether sample times / epoch numbers are
+#'   continuously ascending; if not, modify so that they are. Useful when, for
+#'   example, combining epochs derived from multiple recording blocks. Defaults to TRUE
 #' @export
 
 eeg_combine.eeg_data <- function(data,
-                                 ...){
+                                 ...,
+                                 check_timings = TRUE){
 
   args <- list(...)
   if (length(args) == 0) {
@@ -106,19 +101,26 @@ eeg_combine.eeg_data <- function(data,
       message("Taking first dataset's recording name.")
     }
   }
-  data <- check_timings(data)
+
+  if (check_timings == TRUE) {
+    data <- check_timings(data)
+  }
+
   data
 }
 
 #' @describeIn eeg_combine Method for combining \code{eeg_epochs} objects
 #' @export
 
-eeg_combine.eeg_epochs <- function(data, ...) {
+eeg_combine.eeg_epochs <- function(data,
+                                   ...,
+                                   check_timings = TRUE) {
 
   args <- list(...)
   if (length(args) == 0) {
     stop("Nothing to combine.")
   }
+
   if (all(sapply(args, is.eeg_epochs))) {
     data$signals <- dplyr::bind_rows(data$signals,
                                      purrr::map_df(args,
@@ -135,15 +137,22 @@ eeg_combine.eeg_epochs <- function(data, ...) {
   } else {
     stop("All inputs must be eeg_epochs objects.")
   }
-  #fix epoch numbering for combined objects
-  data <- check_timings(data)
+
   if (length(unique(epochs(data)$participant_id)) > 1) {
+    message("Multiple participant_ids; creating eeg_group...")
     class(data) <- c("eeg_group", class(data))
+  } else {
+    #fix epoch numbering for combined objects, but only when there are single
+    #participants
+    if (check_timings == TRUE) {
+      data <- check_timings(data)
+    }
   }
   data
 }
 
-
+#' @describeIn eeg_combine Method for combining \code{eeg_evoked} objects
+#' @export
 eeg_combine.eeg_evoked <- function(data,
                                    ...) {
   args <- list(...)
@@ -165,7 +174,12 @@ eeg_combine.eeg_evoked <- function(data,
   } else {
     stop("All inputs must be eeg_evoked objects.")
   }
-  class(data) <- c("eeg_group", "eeg_evoked", "eeg_epochs")
+
+  if (length(unique(epochs(data)$participant_id)) > 1) {
+    message("Multiple participant IDs, creating eeg_group.")
+    class(data) <- c("eeg_group", "eeg_evoked", "eeg_epochs")
+  }
+
   data
 }
 
@@ -211,6 +225,12 @@ eeg_combine.eeg_tfr <- function(data,
   data
 }
 
+#' @export
+eeg_combine.eeg_ICA <- function(data,
+                                ...) {
+  stop("Combination of eeg_ICA objects is not currently supported.")
+}
+
 #' Check consistency of event and timing tables
 #'
 #' @param data \code{eeg_data} or \code{eeg_epochs} object
@@ -237,9 +257,15 @@ check_timings.eeg_epochs <- function(data) {
   #epochs <- unique(data$timings$epoch)
 
   # really should we be checking for *repeats* rather than decreases, as people
-  # might combine data in the "wrong" order, or even the same file multiple times?
+  # might combine data in the "wrong" order, or even the same file multiple
+  # times?
 
   # if the epoch numbers are not ascending, fix them...
+  if (any(diff(data$timings$epoch) < 0)) {
+    message("Decreasing epoch numbers detected, attempting to correct...")
+  }
+
+  # Do I need while here, or just if? double check...
   while (any(diff(data$timings$epoch) < 0)) {
 
     # check consistency of the data timings table.
@@ -248,7 +274,6 @@ check_timings.eeg_epochs <- function(data) {
 
     #check for any places where epoch numbers decrease instead of increase
     switch_locs <- which(sign(diff(data$timings$epoch)) == -1)
-
 
     #consider switch this out with an RLE method, which would be much simpler.
 
@@ -292,6 +317,7 @@ check_timings.eeg_epochs <- function(data) {
     data$events$event_onset <- data$events$sample
     data$events$sample <- NULL
   }
+
   data$epochs$epoch <- unique(data$events$epoch)
   data
 }
