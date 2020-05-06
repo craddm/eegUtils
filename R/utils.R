@@ -92,6 +92,8 @@ as.data.frame.eeg_evoked <- function(x,
   df <- cbind(x$signals,
               x$timings)
 
+  df <- dplyr::left_join(df,
+                         epochs(x))
   if (long) {
     df <- tidyr::gather(df,
                         "electrode",
