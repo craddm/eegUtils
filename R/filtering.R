@@ -31,8 +31,10 @@
 #' plot_psd(eeg_filter(demo_epochs, low_freq = 12, high_freq = 8))
 #' plot_psd(eeg_filter(demo_epochs, low_freq = 12, high_freq = 8, method = "iir"))
 #'
-#' @param .data An \code{eeg_data} or \code{eeg_epochs} object to be filtered
+#' @param .data An \code{eeg_data} or \code{eeg_epochs} object to be filtered.
 #' @param ... Additional parameters.
+#' @return An object of the original class with signals filtered according to
+#'   the user's specifications
 #' @export
 
 eeg_filter <- function(.data, ...) {
@@ -186,6 +188,21 @@ eeg_filter.eeg_epochs <- function(.data,
   }
   .data$signals <- tibble::as_tibble(.data$signals)
   .data
+}
+
+#' @rdname eeg_filter
+#' @export
+eeg_filter.eeg_group <- function(.data,
+                                 low_freq = NULL,
+                                 high_freq = NULL,
+                                 filter_order = "auto",
+                                 trans_bw = "auto",
+                                 method = "fir",
+                                 window = "hamming",
+                                 demean = TRUE,
+                                 ...) {
+
+  stop("Filtering not supported on eeg_group objects.")
 }
 
 
@@ -501,7 +518,7 @@ gauss_filter <- function(data,
             length.out = nrow(data))
   s <- fwhm * (2 * pi - 1) / (4 * pi)
   x <- hz - freq
-  fx <- exp(-.5 * (x / s) ^2)
+  fx <- exp(-.5 * (x / s)^2)
   fx <- fx / max(fx)
   filt_sig <- apply(data, 2, function(x) {
     2 * Re(fft(fft(x) / srate * fx,

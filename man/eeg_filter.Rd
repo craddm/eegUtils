@@ -4,6 +4,7 @@
 \alias{eeg_filter}
 \alias{eeg_filter.eeg_data}
 \alias{eeg_filter.eeg_epochs}
+\alias{eeg_filter.eeg_group}
 \title{Filter EEG data}
 \usage{
 eeg_filter(.data, ...)
@@ -31,9 +32,21 @@ eeg_filter(.data, ...)
   demean = TRUE,
   ...
 )
+
+\method{eeg_filter}{eeg_group}(
+  .data,
+  low_freq = NULL,
+  high_freq = NULL,
+  filter_order = "auto",
+  trans_bw = "auto",
+  method = "fir",
+  window = "hamming",
+  demean = TRUE,
+  ...
+)
 }
 \arguments{
-\item{.data}{An \code{eeg_data} or \code{eeg_epochs} object to be filtered}
+\item{.data}{An \code{eeg_data} or \code{eeg_epochs} object to be filtered.}
 
 \item{...}{Additional parameters.}
 
@@ -54,6 +67,10 @@ Response). Defaults to "fir".}
 "hamming"; currently only "hamming" available.}
 
 \item{demean}{Remove DC component (i.e. channel/epoch mean) before filtering. Defaults to TRUE.}
+}
+\value{
+An object of the original class with signals filtered according to
+  the user's specifications
 }
 \description{
 Perform IIR or FIR filtering on input EEG data of class \code{eeg_data} or
