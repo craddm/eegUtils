@@ -58,9 +58,12 @@ Defaults to FALSE.}
 \item{output}{Sets whether output is power, phase, or fourier coefficients.}
 
 \item{downsample}{Downsampling factor. Integer. Selects every n samples after
-performing time-frequency analysis.}
+performing time-frequency analysis on the full sampling rate data.}
 
 \item{verbose}{Print informative messages in console.}
+}
+\value{
+An object of class \code{eeg_tfr}
 }
 \description{
 This function creates a time frequency represention of EEG time series data.

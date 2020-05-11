@@ -7,6 +7,7 @@
 #' @param data An object of class \code{eeg_epochs}.
 #' @param ... Further TFR parameters
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
+#' @return An object of class \code{eeg_tfr}
 #' @examples
 #' compute_tfr(demo_epochs, method = "morlet", foi = c(4, 30), n_freq = 10, n_cycles = 3)
 #' @export
@@ -31,7 +32,7 @@ compute_tfr.default <- function(data, ...) {
 #'   Defaults to FALSE.
 #' @param output Sets whether output is power, phase, or fourier coefficients.
 #' @param downsample Downsampling factor. Integer. Selects every n samples after
-#'   performing time-frequency analysis.
+#'   performing time-frequency analysis on the full sampling rate data.
 #' @param verbose Print informative messages in console.
 #' @describeIn compute_tfr Default method for compute_tfr
 #' @export
@@ -99,7 +100,6 @@ compute_tfr.eeg_evoked <- function(data,
 #' @param output Sets whether output is power, phase, or fourier coefficients.
 #' @param downsample Downsampling factor (integer).
 #' @param demean Remove mean before transforming.
-#' @param lang defaults to R
 #' @param verbose Print informative messages in console.
 #' @importFrom abind abind
 #' @importFrom stats nextn
@@ -113,7 +113,6 @@ tf_morlet <- function(data,
                       output,
                       downsample,
                       demean = TRUE,
-                      lang = "R",
                       verbose) {
 
   frex <- parse_frex(foi,
@@ -174,7 +173,10 @@ tf_morlet <- function(data,
   # Run the FFT convolutions on each individual trial
 
   # generate a vector for selection of specific timepoints
-  time_sel <- seq(1, length(unique(data$timings$time)), by = downsample)
+  time_sel <- seq(1,
+                  length(unique(data$timings$time)),
+                  by = downsample)
+
 
   data$signals <- run_tf(data,
                          norm_mf,
@@ -183,9 +185,7 @@ tf_morlet <- function(data,
                          keep_trials,
                          time_sel,
                          output)
-  #data$signals <- data$signals[, time_sel, , , drop = FALSE]
 
-  # data$signals <- s3tomat(data, morlet_family)
   sigtime <- sigtime[time_sel]
   data$timings <- data$timings[data$timings$time %in% sigtime, ]
   if (keep_trials) {
@@ -194,7 +194,9 @@ tf_morlet <- function(data,
                                    electrode = elecs,
                                    frequency = data$freq_info$freqs)
   } else {
-    dimnames(data$signals) <- list(time = sigtime,
+    data$signals <- array(data$signals, dim = c(1, dim(data$signals)))
+    dimnames(data$signals) <- list(epoch = "1",
+                                   time = sigtime,
                                    electrode = elecs,
                                    frequency = data$freq_info$freqs)
   }
@@ -230,12 +232,15 @@ tf_morlet <- function(data,
   data <- eeg_tfr(data$signals,
                   srate = data$srate,
                   events = NULL,
-                  epochs = data$epochs[1, ],
+                  epochs = epochs(data)[1, c("epoch",
+                                             "recording",
+                                             "participant_id")],
                   chan_info = data$chan_info,
                   reference = data$reference,
                   timings = data$timings[1:nrow(data$signals), "time"],
                   freq_info = data$freq_info,
-                  dimensions = c("time",
+                  dimensions = c("epoch",
+                                 "time",
                                  "electrode",
                                  "frequency"))
   data
@@ -456,6 +461,7 @@ wavelet_norm <- function(mf_zp, n_freq) {
   norm_mf
 }
 
+#' @noRd
 parse_frex <- function(foi,
                        n_freq,
                        verbose) {
@@ -480,7 +486,7 @@ parse_frex <- function(foi,
   frex
 }
 
-
+#' @noRd
 run_tf <- function(tmp,
                    norm_mf,
                    n_conv,
@@ -534,7 +540,7 @@ run_tf <- function(tmp,
   } else {
     tfr_out <- array(0, dim = c(n_times, n_chans, n_freq))
     for (i in 1:n_chans) {
-      tmp_epo <- fft_n(tmp[,,i], n_conv)
+      tmp_epo <- fft_n(tmp[,,i, drop = FALSE], n_conv)
       for (ik in 1:n_epochs) {
         tfr_out[ ,i, ] <-
           tfr_out[, i, ] +
