@@ -17,6 +17,9 @@ threshold automatically.}
 
 \item{verbose}{Print informative messages.}
 }
+\value{
+A character vector of component names that break the threshold.
+}
 \description{
 Detect components that load heavily on a small number of trials. Looks for components
 that have one particular trial that has a particularly high z-score.

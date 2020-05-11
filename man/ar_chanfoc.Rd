@@ -28,6 +28,9 @@ threshold automatically.}
 
 \item{...}{additional parameters}
 }
+\value{
+A character vector of component names that break the threshold.
+}
 \description{
 Detect components that load heavily on a single channel. Looks for components
 that have one particular channel that has a particularly high z-score.

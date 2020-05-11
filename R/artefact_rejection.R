@@ -1,7 +1,7 @@
 #' Simple absolute value thresholding
 #'
-#' Reject data based on a simple absolute amplitude threshold. This marks any timepoint
-#' from any electrode.
+#' Reject data based on a simple absolute amplitude threshold. This marks any
+#' timepoint from any electrode.
 #'
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #'
@@ -12,6 +12,7 @@
 #'   inspection/rejection. Defaults to FALSE.
 #' @examples
 #' ar_thresh(demo_epochs, c(100))
+#' @return An object
 #' @export
 
 ar_thresh <- function(data,
@@ -77,6 +78,7 @@ ar_thresh.eeg_epochs <- function(data,
   data
 }
 
+#'@noRd
 check_thresh <- function(data, threshold) {
   crossed_thresh <- data$signals > max(threshold) |
     data$signals < min(threshold)
@@ -111,7 +113,8 @@ channel_stats <- function(data, ...) {
 #' @describeIn channel_stats Calculate channel statistics for \code{eeg_data}
 #'   objects.
 #' @export
-channel_stats.eeg_data <- function(data, ...) {
+channel_stats.eeg_data <- function(data,
+                                   ...) {
 
   chan_means <- colMeans(data$signals)
   chan_sds <- apply(data$signals, 2, stats::sd)
@@ -140,7 +143,8 @@ channel_stats.eeg_data <- function(data, ...) {
 #' epoch_stats(demo_epochs)
 #' @export
 
-epoch_stats <- function(data, ...) {
+epoch_stats <- function(data,
+                        ...) {
   UseMethod("epoch_stats", data)
 }
 
@@ -178,14 +182,18 @@ kurtosis <- function(data) {
 #' Remove EOG using regression
 #'
 #' Calculates and removes the contribution of eye movements to the EEG signal
-#' using least-squares regression.
+#' using least-squares regression. Specifically, it generate regression weights
+#' based on EOG channels that are used to estimate how much activity eye
+#' movements are responsible for across all channels.
 #'
-#' @param data data to regress - \code{eeg_data} or \code{eeg_epochs}
+#' @param data Data to regress - \code{eeg_data} or \code{eeg_epochs}
 #' @param heog Horizontal EOG channel labels
 #' @param veog Vertical EOG channel labels
 #' @param bipolarize Bipolarize the EOG channels. Only works when four channels
 #'   are supplied (2 HEOG and 2 VEOG).
 #' @author Matt Craddock, \email{matt@@mattcraddock.com}
+#' @return An \code{eeg_data} or \code{eeg_epochs} object with corrections
+#'   applied.
 #' @export
 
 ar_eogreg <- function(data,
@@ -257,14 +265,18 @@ bip_EOG <- function(data,
 #'
 #' @author Matt Craddock, \email{matt@@mattcraddock.com}
 #' @param decomp ICA decomposition
+#' @param data Original data
 #' @param ... Other parameters
+#' @return A character vector of component names that break the threshold.
 #' @export
 
-ar_eogcor <- function(decomp, ...) {
+ar_eogcor <- function(decomp,
+                      data,
+                      ...) {
   UseMethod("ar_eogcor", decomp)
 }
 
-#' @param data Original data
+
 #' @param HEOG Horizontal eye channels
 #' @param VEOG Vertical eye channels
 #' @param threshold Threshold for correlation (r). Defaults to NULL,
@@ -335,6 +347,7 @@ ar_eogcor.eeg_ICA <- function(decomp,
 #' @examples
 #' demo_sobi <- run_ICA(demo_epochs, pca = 10)
 #' ar_acf(demo_sobi)
+#' @return A character vector of component names that break the threshold.
 #' @export
 ar_acf <- function(data, ...) {
   UseMethod("ar_acf", data)
@@ -396,6 +409,7 @@ ar_acf.eeg_ICA <- function(data,
 #' @examples
 #' demo_sobi <- run_ICA(demo_epochs, pca = 10)
 #' ar_chanfoc(demo_sobi)
+#' @return A character vector of component names that break the threshold.
 #' @export
 ar_chanfoc <- function(data,
                        plot = TRUE,
@@ -404,6 +418,9 @@ ar_chanfoc <- function(data,
                        measure = "max",
                        ...) {
 
+  if (!inherits(data, "eeg_ICA")) {
+    stop("Only eeg_ICA objects supported.")
+  }
   n_comps <- length(channel_names(data))
   zmat <- apply(data$mixing_matrix[, 1:n_comps], 2, scale)
   if (identical(measure, "max")) {
@@ -451,11 +468,17 @@ ar_chanfoc <- function(data,
 #' @examples
 #' demo_sobi <- run_ICA(demo_epochs, pca = 10)
 #' ar_trialfoc(demo_sobi)
+#' @return A character vector of component names that break the threshold.
 #' @export
 ar_trialfoc <- function(data,
                         plot = TRUE,
                         threshold = NULL,
                         verbose = TRUE) {
+
+  if (!inherits(data, "eeg_ICA")) {
+     stop("Only eeg_ICA objects supported.")
+  }
+
   n_comps <- length(channel_names(data))
   n_epochs <- nrow(epochs(data))
   n_times <- nrow(data$signals) / n_epochs

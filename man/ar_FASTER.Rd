@@ -32,6 +32,9 @@ eeg_FASTER(data, ...)
 
 \item{test_cine}{Logical. Run tests for locally bad channels within epochs.}
 }
+\value{
+An \code{eeg_epochs} object with artefact correction applied.
+}
 \description{
 An implementation of the FASTER artefact rejection method for EEG by Nolan,
 Whelan & Reilly (2010) FASTER: Fully Automated Statistical Thresholding for

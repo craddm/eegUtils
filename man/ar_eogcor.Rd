@@ -5,16 +5,16 @@
 \alias{ar_eogcor.eeg_ICA}
 \title{Detect high correlation with EOG channels}
 \usage{
-ar_eogcor(decomp, ...)
+ar_eogcor(decomp, data, ...)
 
 \method{ar_eogcor}{eeg_ICA}(decomp, data, HEOG, VEOG, threshold = NULL, plot = TRUE, ...)
 }
 \arguments{
 \item{decomp}{ICA decomposition}
 
-\item{...}{Other parameters}
-
 \item{data}{Original data}
+
+\item{...}{Other parameters}
 
 \item{HEOG}{Horizontal eye channels}
 
@@ -24,6 +24,9 @@ ar_eogcor(decomp, ...)
 automatically determining a threshold.}
 
 \item{plot}{Plot correlation coefficient for all components}
+}
+\value{
+A character vector of component names that break the threshold.
 }
 \description{
 Detect high correlation with EOG channels

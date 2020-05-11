@@ -21,9 +21,12 @@ as a +- value.}
 \item{reject}{If TRUE, remove marked data immediately, otherwise mark for
 inspection/rejection. Defaults to FALSE.}
 }
+\value{
+An object
+}
 \description{
-Reject data based on a simple absolute amplitude threshold. This marks any timepoint
-from any electrode.
+Reject data based on a simple absolute amplitude threshold. This marks any
+timepoint from any electrode.
 }
 \section{Methods (by class)}{
 \itemize{
