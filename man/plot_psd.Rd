@@ -69,6 +69,9 @@ Defaults to 50\%.}
 
 \item{components}{Which components to compute the PSD for. Defaults to all.}
 }
+\value{
+A ggplot object.
+}
 \description{
 Calculate and plot the PSD for \code{eeg_*} objects. Output units are dB. The
 PSD is calculated using Welch's method.

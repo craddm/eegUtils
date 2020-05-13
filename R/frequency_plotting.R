@@ -17,6 +17,7 @@
 #' @param freq_range Vector of lower and upper frequencies to plot. (e.g. c(1,
 #'   40))
 #' @param ... Additional parameters.
+#' @return A ggplot object.
 #' @author Matt Craddock, \email{matt@@mattcraddock.com}
 #' @export
 
@@ -228,7 +229,7 @@ plot_tfr <- function(data,
     data$signals <- data$signals[, , data_freqs, drop = FALSE]
   }
 
-  if (length(data$dimensions) == 4) {
+  if (!inherits(data, "tfr_average")) {
     data <- eeg_average(data)
    }
 

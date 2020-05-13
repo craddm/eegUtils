@@ -21,6 +21,7 @@
 #' plot_butterfly(demo_epochs,
 #' time_lim = c(-.1, .4),
 #' legend = FALSE)
+#' @return A ggplot object
 #' @export
 
 plot_butterfly <- function(data, ...) {
