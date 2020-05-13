@@ -14,6 +14,9 @@ channel_stats(data, ...)
 
 \item{...}{Other parameters passed to the functions.}
 }
+\value{
+A data frame with statistics for each channel.
+}
 \description{
 Channel statistics
 }

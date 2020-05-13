@@ -12,7 +12,7 @@
 #'   inspection/rejection. Defaults to FALSE.
 #' @examples
 #' ar_thresh(demo_epochs, c(100))
-#' @return An object
+#' @return An object of class \code{eeg_data} or \code{eeg_epochs}
 #' @export
 
 ar_thresh <- function(data,
@@ -104,6 +104,7 @@ check_thresh <- function(data, threshold) {
 #' @param ... Other parameters passed to the functions.
 #' @examples
 #' channel_stats(demo_epochs)
+#' @return A data frame with statistics for each channel.
 #' @export
 
 channel_stats <- function(data, ...) {

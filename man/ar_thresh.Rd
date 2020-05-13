@@ -22,7 +22,7 @@ as a +- value.}
 inspection/rejection. Defaults to FALSE.}
 }
 \value{
-An object
+An object of class \code{eeg_data} or \code{eeg_epochs}
 }
 \description{
 Reject data based on a simple absolute amplitude threshold. This marks any

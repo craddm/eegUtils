@@ -64,7 +64,8 @@ ar_FASTER.eeg_epochs <- function(data,
   # }
 
   orig_names <- channel_names(data)
-  # Exclude ref chan from subsequent computations (may be better to alter reref_eeg...)
+  # Exclude ref chan from subsequent computations (may be better to alter
+  # reref_eeg...)
   data_chans <- orig_names[!(orig_names %in% data$reference$ref_chans)]
   if (!is.null(exclude)) {
     if (is.numeric(exclude)) {
