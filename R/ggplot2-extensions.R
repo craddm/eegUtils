@@ -83,6 +83,7 @@ StatScalpmap <-
                      }
 )
 
+
 #' Create an interpolated scalp surface
 #'
 #' \code{stat_scalpmap} creates an interpolated surface for an irregular set of
@@ -125,37 +126,6 @@ stat_scalpmap <- function(mapping = NULL,
                   ...)
   )
 }
-
-StatConts <-
-  ggplot2::ggproto("StatConts",
-                   Stat,
-                   required_aes = c("x",
-                                    "y",
-                                    "z"),
-                   compute_group = function(data,
-                                            scales,
-                                            grid_res,
-                                            interp_limit,
-                                            method = "biharmonic") {
-
-                     data <- aggregate(z ~ x + y,
-                                       data = data,
-                                       FUN = mean)
-                     data <- rename(data, fill = "z")
-
-                     if (identical(method, "biharmonic")) {
-                       data <- biharmonic(data,
-                                          grid_res = grid_res,
-                                          interp_limit = interp_limit)
-                     } else {
-                       data <- fit_gam_topo(data,
-                                            grid_res = grid_res,
-                                            interp_limit = interp_limit)
-                     }
-                     data <- rename(data, z = "fill")
-                     data
-                   }
-  )
 
 #' Create a topographical plot
 #'
@@ -596,6 +566,7 @@ geom_channels <- function(mapping = NULL,
                                ...))
 }
 
+#' @noRd
 biharmonic <- function(data,
                        grid_res,
                        interp_limit) {
@@ -660,6 +631,7 @@ biharmonic <- function(data,
   data[sqrt(data$x ^ 2 + data$y ^ 2) < circ_scale, ]
 }
 
+#' @noRd
 fit_gam_topo <- function(data,
                          grid_res,
                          interp_limit) {
@@ -887,7 +859,7 @@ get_scalpmap.eeg_ICA <- function(data,
 
 }
 
-
+#' @noRd
 no_loc_chans <- function(chaninfo) {
 
   if (any(is.na(chaninfo$x))) {
