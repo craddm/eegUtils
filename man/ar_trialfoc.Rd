@@ -21,6 +21,10 @@ threshold automatically.}
 Detect components that load heavily on a small number of trials. Looks for components
 that have one particular trial that has a particularly high z-score.
 }
+\examples{
+demo_sobi <- run_ICA(demo_epochs, pca = 10)
+ar_trialfoc(demo_sobi)
+}
 \references{
 Chaumon, M., Bishop, D.V., Busch, N.A. (2015). A practical guide
   to the selection of independent components of the electroencephalogram for

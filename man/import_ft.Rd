@@ -16,8 +16,15 @@ used.}
 
 \item{verbose}{Informative messages printed to console. Defaults to TRUE.}
 }
+\value{
+An object of class \code{eeg_data}, \code{eeg_epochs}, or
+  \code{eeg_tfr}, depending on the type of input data.
+}
 \description{
 Fieldtrip is a Matlab package for EEG/MEG processing and analysis.
+}
+\examples{
+\dontrun{import_ft("fieldtrip_test.mat")}
 }
 \author{
 Matt Craddock \email{matt@mattcraddock.com}

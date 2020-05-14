@@ -100,7 +100,9 @@ check_thresh <- function(data, threshold) {
 #'
 #' @param data Data as a \code{eeg_data} or \code{eeg_epochs} object.
 #' @param ... Other parameters passed to the functions.
-#' @keywords internal
+#' @examples
+#' channel_stats(demo_epochs)
+#' @export
 
 channel_stats <- function(data, ...) {
   UseMethod("channel_stats", data)
@@ -108,20 +110,21 @@ channel_stats <- function(data, ...) {
 
 #' @describeIn channel_stats Calculate channel statistics for \code{eeg_data}
 #'   objects.
-#' @keywords internal
+#' @export
 channel_stats.eeg_data <- function(data, ...) {
 
   chan_means <- colMeans(data$signals)
   chan_sds <- apply(data$signals, 2, stats::sd)
   chan_var <- chan_sds^2
-  #chan_kurt <- as.numeric(as.data.table(data$signals)[, lapply(.SD, kurtosis)])
   chan_kurt <- apply(data$signals, 2, kurtosis)
+  chan_range <- apply(data$signals, 2, function(x) diff(range(x)))
 
   data.frame(electrode = names(data$signals),
              means = chan_means,
              sds = chan_sds,
              variance = chan_var,
-             kurtosis = chan_kurt
+             kurtosis = chan_kurt,
+             minmax = chan_range
              )
 }
 
@@ -133,25 +136,30 @@ channel_stats.eeg_data <- function(data, ...) {
 #'
 #' @param data Data as a \code{eeg_data} or \code{eeg_epochs} object.
 #' @param ... Other parameters passed to the functions.
-#' @keywords internal
+#' @examples
+#' epoch_stats(demo_epochs)
+#' @export
 
 epoch_stats <- function(data, ...) {
   UseMethod("epoch_stats", data)
 }
 
 #' @describeIn epoch_stats Calculate statistics for each epoch.
-#' @keywords internal
-epoch_stats.eeg_epochs <- function(data, ...) {
+#' @export
+epoch_stats.eeg_epochs <- function(data,
+                                   ...) {
   data$signals$epoch <- data$timings$epoch
   data <- data.table::data.table(as.data.frame(data$signals))
   epoch_vars <- data[, lapply(.SD, var), by = epoch]
   epoch_kur <- data[, lapply(.SD, kurtosis), by = epoch]
   epoch_max <- data[, lapply(.SD, max), by = epoch]
   epoch_min <- data[, lapply(.SD, min), by = epoch]
+  min_max <- data[, lapply(.SD, function(x) max(x) - min(x)), by = epoch]
   stats_out <- data.table::rbindlist(list(max = epoch_max,
                                           min = epoch_min,
                                           variance = epoch_vars,
-                                          kurtosis = epoch_kur),
+                                          kurtosis = epoch_kur,
+                                          minmax = min_max),
                                      idcol = "measure")
   stats_out
 }
@@ -169,8 +177,8 @@ kurtosis <- function(data) {
 
 #' Remove EOG using regression
 #'
-#' Calculates and removes the contribution of eye movements to the EEG signal using
-#' least-squares regression.
+#' Calculates and removes the contribution of eye movements to the EEG signal
+#' using least-squares regression.
 #'
 #' @param data data to regress - \code{eeg_data} or \code{eeg_epochs}
 #' @param heog Horizontal EOG channel labels
@@ -211,7 +219,6 @@ ar_eogreg.eeg_epochs <- function(data,
          heog,
          veog,
          bipolarize)
-
 }
 
 #' @noRd
@@ -281,12 +288,10 @@ ar_eogcor.eeg_ICA <- function(decomp,
     veog_threshold <- threshold
   }
 
-
   EOG_corrs <- abs(stats::cor(decomp$signals,
                               bip_EOG(data$signals,
                                       HEOG,
                                       VEOG)))
-
 
   if (is.null(threshold)) {
     mean_corrs <- colMeans(EOG_corrs)
@@ -327,6 +332,9 @@ ar_eogcor.eeg_ICA <- function(decomp,
 #'   to the selection of independent components of the electroencephalogram for
 #'   artifact correction. J Neurosci Methods. Jul 30;250:47-63. doi:
 #'   10.1016/j.jneumeth.2015.02.025
+#' @examples
+#' demo_sobi <- run_ICA(demo_epochs, pca = 10)
+#' ar_acf(demo_sobi)
 #' @export
 ar_acf <- function(data, ...) {
   UseMethod("ar_acf", data)
@@ -385,6 +393,9 @@ ar_acf.eeg_ICA <- function(data,
 #'   to the selection of independent components of the electroencephalogram for
 #'   artifact correction. J Neurosci Methods. Jul 30;250:47-63. doi:
 #'   10.1016/j.jneumeth.2015.02.025
+#' @examples
+#' demo_sobi <- run_ICA(demo_epochs, pca = 10)
+#' ar_chanfoc(demo_sobi)
 #' @export
 ar_chanfoc <- function(data,
                        plot = TRUE,
@@ -437,6 +448,9 @@ ar_chanfoc <- function(data,
 #'   to the selection of independent components of the electroencephalogram for
 #'   artifact correction. J Neurosci Methods. Jul 30;250:47-63. doi:
 #'   10.1016/j.jneumeth.2015.02.025
+#' @examples
+#' demo_sobi <- run_ICA(demo_epochs, pca = 10)
+#' ar_trialfoc(demo_sobi)
 #' @export
 ar_trialfoc <- function(data,
                         plot = TRUE,
@@ -459,7 +473,7 @@ ar_trialfoc <- function(data,
   }
 
   if (plot) {
-    plot(matrixStats::colMaxs(zmat))
+    graphics::plot(matrixStats::colMaxs(zmat))
     graphics::abline(h = threshold)
   }
 

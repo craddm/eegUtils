@@ -32,6 +32,10 @@ threshold automatically.}
 Detect components that load heavily on a single channel. Looks for components
 that have one particular channel that has a particularly high z-score.
 }
+\examples{
+demo_sobi <- run_ICA(demo_epochs, pca = 10)
+ar_chanfoc(demo_sobi)
+}
 \references{
 Chaumon, M., Bishop, D.V., Busch, N.A. (2015). A practical guide
   to the selection of independent components of the electroencephalogram for

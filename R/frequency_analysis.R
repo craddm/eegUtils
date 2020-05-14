@@ -18,11 +18,13 @@
 #' to it.
 #'
 #' \code{noverlap} specifies the amount of overlap between windows in sampling
-#' points. If not specified, it defaults to 50\% overlap between segments.
+#' points. If NULL, it defaults to 50\% overlap between segments.
 #'
 #' @examples
-#' compute_psd(demo_epochs)
-#' compute_psd(demo_epochs, n_fft = 256, seg_length = 128)
+#' out <- compute_psd(demo_epochs)
+#'
+#' out <- compute_psd(demo_epochs, n_fft = 256, seg_length = 128)
+#'
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #' @param data Data to be plotted. Accepts objects of class \code{eeg_data}
 #' @param ... any further parameters passed to specific methods
@@ -147,10 +149,12 @@ compute_psd.eeg_epochs <- function(data,
     final_output$epoch <- as.numeric(final_output$epoch)
     if (!is.null(epochs(data))) {
       final_output <- dplyr::left_join(final_output,
-                                       epochs(data))
+                                       epochs(data),
+                                       by = "epoch")
     }
   } else {
-    final_output <- Reduce("+", final_output) / length(final_output)
+    final_output <- Reduce("+",
+                           final_output) / length(final_output)
   }
   final_output
 }
@@ -225,6 +229,12 @@ welch_fft <- function(data,
                       n_sig,
                       srate) {
 
+  # Hamming window.
+  win <- .54 - (1 - .54) * cos(2 * pi * seq(0, 1, by = 1 / (seg_length - 1)))
+
+  # Normalise the window
+  U <- c(t(win) %*% win)
+
   # split data into segments
   if (seg_length < n_sig) {
     data_segs <- lapply(data,
@@ -236,30 +246,45 @@ welch_fft <- function(data,
     # this splits the data into a list of ncol elements; each list element is
     # also a list containing n_segs elements - consider recoding this to combine
     # segments into
+
+    data_segs <- lapply(data_segs,
+                        function(x) lapply(x,
+                                           function(y) y * win))
+
+    data_fft <- lapply(data_segs,
+                       function(x) lapply(x,
+                                          fft_n, n = n_fft))
+    final_out <- lapply(data_fft,
+                        function(x) sapply(x,
+                                           function(y) abs(y * Conj(y)) / U))
+    # Normalize by sampling rate or by signal length if no sampling rate
+    if (is.null(srate)) {
+      final_out <- rowMeans(as.data.frame(final_out)) / (2 * pi)
+      freqs <- seq(0, seg_length / 2) / (seg_length)
+    } else {
+      final_out <- as.data.frame(lapply(final_out,
+                                        rowMeans)) / srate
+      freqs <- seq(0, n_fft / 2) / (n_fft) * srate
+    }
+
   } else {
     data_segs <- as.matrix(data)
     n_segs <- 1
-  }
 
-  # Hamming window.
-  win <- .54 - (1 - .54) * cos(2 * pi * seq(0, 1, by = 1 / (seg_length - 1)))
-
-  # Normalise the window
-  U <- c(t(win) %*% win)
-
-  #do windowing and zero padding if necessary, then FFT
-  if (n_segs == 1) {
     data_segs <- sweep(data_segs,
                        1,
                        win, "*")
 
-    if (n_fft > seg_length) {
-       data_segs <- apply(data_segs, 2,
-                          function(x) c(x,
-                                        numeric(n_fft - seg_length)))
-    }
+    # if (n_fft > seg_length) {
+    #   data_segs <- apply(data_segs, 2,
+    #                      function(x) c(x,
+    #                                    numeric(n_fft - seg_length)))
+    # }
 
-    data_fft <- mvfft(data_segs)
+    # data_fft <- mvfft(data_segs)
+    data_fft <- fft_n(data_segs,
+                      n_fft)
+    colnames(data_fft) <- colnames(data_segs)
     final_out <- apply(data_fft,
                        2,
                        function(x) abs(x * Conj(x)) / U)
@@ -272,37 +297,7 @@ welch_fft <- function(data,
       final_out <- final_out / srate
       freqs <- seq(0, n_fft / 2) / (n_fft) * srate
     }
-  } else {
-    data_segs <- lapply(data_segs,
-                        function(x) lapply(x,
-                                           function(y) y * win))
-    # investigate less memory hungry options...
 
-    # if (n_fft > seg_length) {
-    #   # data_segs <- lapply(data_segs,
-    #   #                     function(x) apply(data_segs,
-    #   #                                       2,
-    #   #                                       function(x) c(x,
-    #   #                                                     numeric(n_fft - seg_length))))
-    #   data_segs <- lapply(data_segs,
-    #                       function(x) lapply(x,
-    #                                          function(x) c(x,
-    #                                                        numeric(n_fft - seg_length))))
-    # }
-    data_fft <- lapply(data_segs,
-                       function(x) lapply(x,
-                                          fft_n, n = n_fft))
-    final_out <- lapply(data_fft,
-                        function(x) sapply(x,
-                                           function(y) abs(y * Conj(y)) / U))
-    # Normalize by sampling rate or by signal length if no sampling rate
-    if (is.null(srate)) {
-      final_out <- rowMeans(as.data.frame(final_out)) / (2 * pi)
-      freqs <- seq(0, seg_length / 2) / (seg_length)
-    } else {
-      final_out <- as.data.frame(lapply(final_out, rowMeans)) / srate
-      freqs <- seq(0, n_fft / 2) / (n_fft) * srate
-    }
   }
 
   #select first half of spectrum and double amps, output is power - uV^2 / Hz
@@ -316,15 +311,21 @@ welch_fft <- function(data,
 
 #' Segment data
 #'
-#' Split data into segments for Welch PSD.
+#' Split data into segments for Welch PSD. Any leftover data is discared (i.e.
+#' if seg_length is 256 and signal length is 400, only 1 segment is returned)
 #'
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #' @param vec Data vector to be split up into segments.
 #' @param seg_length Length of segments to be FFT'd (in samples).
 #' @param overlap Overlap between segments (in samples).
+#' @param detrend Detrend segments. Defaults to "mean" - removes mean from each
+#'   segment. Anything else turns off detrending.
 #' @keywords internal
 
-split_vec <- function(vec, seg_length, overlap) {
+split_vec <- function(vec,
+                      seg_length,
+                      overlap,
+                      detrend = "mean") {
 
   if (is.data.frame(vec)) {
     k <- floor((nrow(vec) - overlap) / (seg_length - overlap))
@@ -336,8 +337,13 @@ split_vec <- function(vec, seg_length, overlap) {
                 k * (seg_length - overlap),
                 by = seg_length - overlap)
   ends <- starts + seg_length - 1
-  lapply(seq_along(starts),
-         function(i) vec[starts[i]:ends[i]])
+  segs <- lapply(seq_along(starts),
+                 function(i) vec[starts[i]:ends[i]])
+  if (identical(detrend, "mean")) {
+    segs <- lapply(segs, function(x) x - mean(x))
+  }
+  segs
+
 }
 
 

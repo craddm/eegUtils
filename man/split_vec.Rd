@@ -4,7 +4,7 @@
 \alias{split_vec}
 \title{Segment data}
 \usage{
-split_vec(vec, seg_length, overlap)
+split_vec(vec, seg_length, overlap, detrend = "mean")
 }
 \arguments{
 \item{vec}{Data vector to be split up into segments.}
@@ -12,9 +12,13 @@ split_vec(vec, seg_length, overlap)
 \item{seg_length}{Length of segments to be FFT'd (in samples).}
 
 \item{overlap}{Overlap between segments (in samples).}
+
+\item{detrend}{Detrend segments. Defaults to "mean" - removes mean from each
+segment. Anything else turns off detrending.}
 }
 \description{
-Split data into segments for Welch PSD.
+Split data into segments for Welch PSD. Any leftover data is discared (i.e.
+if seg_length is 256 and signal length is 400, only 1 segment is returned)
 }
 \author{
 Matt Craddock \email{matt@mattcraddock.com}

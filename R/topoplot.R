@@ -315,14 +315,16 @@ topoplot.data.frame <- function(data,
 
   # Add electrode points or names -------------------
   if (chan_marker == "point") {
-    topo <- topo +
+    topo <-
+      topo +
       annotate("point",
                x = scaled_x,
                y = scaled_y,
                colour = "black",
                size = rel(2 * scaling))
     }  else if (chan_marker == "name") {
-      topo <- topo +
+      topo <-
+        topo +
         annotate("text",
                  x = scaled_x,
                  y = scaled_y,
@@ -666,15 +668,38 @@ biharm_topo <- function(data,
   weights <- qr.solve(g, data$z)
   xy <- t(xy)
 
-  outmat <-
-    purrr::map(xo + sqrt(as.complex(-1)) * yo,
-               function (x) (abs(x - xy) ^ 2) *
-                 (log(abs(x - xy)) - 1)) %>%
-    rapply(function(x) ifelse(is.nan(x),
-                               0,
-                               x),
-           how = "replace") %>%
-    purrr::map_dbl(function (x) x %*% weights)
+  outmat <- numeric(grid_res^2)
+
+  one_fun <- function(xo) {
+     tmp <-
+       matrix(complex(real = xo,
+                      imaginary = yo),
+            nrow = grid_res,
+            ncol = grid_res)
+     tmp_x <- numeric(length(xy))
+     for (i in seq(length(tmp))) {
+       tmp_x <- (abs(tmp[i] - xy)^2) * (log(abs(tmp[i] - xy)) - 1)
+       tmp_x <- ifelse(is.nan(tmp_x),
+                       0,
+                       tmp_x)
+       outmat[i] <- tmp_x %*% weights
+
+     }
+     outmat
+   }
+   outmat <- one_fun(xo)
+
+   # outmat <-
+   #   purrr::map(xo + sqrt(as.complex(-1)) * yo,
+   #              function(x) (abs(x - xy) ^ 2) *
+   #                (log(abs(x - xy)) - 1))
+   # outmat <- rapply(outmat,
+   #                  function(x) ifelse(is.nan(x),
+   #                                     0,
+   #                                     x),
+   #                  how = "replace")
+   # outmat <- purrr::map_dbl(outmat,
+   #                          function (x) x %*% weights)
 
   dim(outmat) <- c(grid_res, grid_res)
 
@@ -771,19 +796,10 @@ add_head <- function(r = 1,
 round_topo <- function(.data,
                        interp_limit,
                        r) {
-
-  # if (identical(interp_limit, "skirt")) {
-  #   .data$incircle <- sqrt(.data$x ^ 2 + .data$y ^ 2) < 1.125
-  #   mask_ring <- data.frame(x = 1.126 * cos(circ_rad_fun()),
-  #                           y = 1.126 * sin(circ_rad_fun()))
-    # } else {
-      .data$incircle <- sqrt(.data$x ^ 2 + .data$y ^ 2) < (r * 1.02)
-      mask_ring <- data.frame(x = r * 1.03 * cos(circ_rad_fun()),
-                              y = r * 1.03 * sin(circ_rad_fun()))
-    # }
+  .data$incircle <- sqrt(.data$x ^ 2 + .data$y ^ 2) < (r * 1.02)
+  mask_ring <- data.frame(x = r * 1.03 * cos(circ_rad_fun()),
+                          y = r * 1.03 * sin(circ_rad_fun()))
   topo_out <- list("out_df" = .data[.data$incircle, ],
                    "mask_ring" = mask_ring)
   topo_out
 }
-
-

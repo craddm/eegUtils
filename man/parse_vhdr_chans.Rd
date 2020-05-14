@@ -4,7 +4,7 @@
 \alias{parse_vhdr_chans}
 \title{Parse BVA channel info}
 \usage{
-parse_vhdr_chans(chan_labels, chan_info)
+parse_vhdr_chans(chan_labels, chan_info, verbose = TRUE)
 }
 \arguments{
 \item{chan_labels}{The `Channel Infos` section from a BVA vhdr file}

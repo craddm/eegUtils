@@ -2,7 +2,7 @@ context("Test filtering")
 
 test_data <- import_raw("Newtest17-256.bdf")
 
-test_that("filtering behaves", {
+test_that("downsampling behaves", {
 
   skip_on_cran()
 

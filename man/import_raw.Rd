@@ -7,7 +7,6 @@
 import_raw(
   file_name,
   file_path = NULL,
-  chan_nos = NULL,
   recording = NULL,
   participant_id = character(1),
   fast_bdf = TRUE
@@ -18,8 +17,6 @@ import_raw(
 
 \item{file_path}{Path to file name, if not included in filename.}
 
-\item{chan_nos}{Channels to import. All channels are included by default.}
-
 \item{recording}{Name of the recording. By default, the filename will be
 used.}
 
@@ -27,12 +24,20 @@ used.}
 
 \item{fast_bdf}{New, faster method for loading BDF files. Experimental.}
 }
+\value{
+An object of class \code{eeg_data}
+}
 \description{
 Currently BDF/EDF, 32-bit .CNT, and Brain Vision Analyzer files are
 supported. Filetype is determined by the file extension.The \code{edfReader}
 package is used to load BDF/EDF files, whereas custom code is used for .CNT
 and BVA files. The function creates an \code{eeg_data} structure for
 subsequent use.
+}
+\examples{
+\dontrun{
+import_raw("test_bdf.bdf")
+}
 }
 \author{
 Matt Craddock, \email{matt@mattcraddock.com}

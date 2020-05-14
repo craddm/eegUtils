@@ -345,7 +345,8 @@ apply_ica.eeg_ICA <- function(data,
 }
 
 #' @param decomp An \code{eeg_ICA} object.
-#' @describeIn apply_ica Combine a specific set of ICA weights with any \code{eeg_epochs} object.
+#' @describeIn apply_ica Combine a specific set of ICA weights with any
+#'   \code{eeg_epochs} object.
 #' @export
 apply_ica.eeg_epochs <- function(data,
                                  decomp,
@@ -357,10 +358,19 @@ apply_ica.eeg_epochs <- function(data,
 
   ncomps <- ncol(decomp$mixing_matrix) - 1
   nelecs <- ncol(data$signals)
+
+  if (is.character(comps)) {
+    comps_missing <- which(!(comps %in% channel_names(decomp)))
+    #comps <- which(channel_names(decomp) %in% comps)
+    keep_comps <- which(!channel_names(decomp) %in% comps)
+  } else {
+     keep_comps <- seq(1, ncomps)[-comps]
+  }
+
   sources <- unmix(data$signals,
                    decomp$unmixing_matrix[, 1:nelecs])
-  keep_comps <- names(decomp$mixing_matrix[, 1:ncomps])[-comps]
-  new_sigs <- mix(sources[, -comps],
+  #keep_comps <- names(decomp$mixing_matrix[, 1:ncomps])[-comps]
+  new_sigs <- mix(sources[, keep_comps],
                   decomp$mixing_matrix[, keep_comps])
   colnames(new_sigs) <- data$chan_info$electrode
   data$signals <- tibble::as_tibble(new_sigs)

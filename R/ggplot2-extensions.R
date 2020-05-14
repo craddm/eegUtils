@@ -246,7 +246,7 @@ geom_topo <- function(mapping = NULL,
                                     interp_limit = interp_limit,
                                     ...)
                       ),
-       if (chan_markers == "point") {
+       if (identical(chan_markers, "point")) {
          ggplot2::layer(data = data,
                         mapping = mapping,
                         stat = StatChannels,
@@ -694,25 +694,86 @@ fit_gam_topo <- function(data,
   data[data$incircle, ]
 }
 
-get_scalpmap <- function(data, ...) {
+#' Get an interpolated grid
+#'
+#' @param data Object to be interpolated
+#' @param ... Other arguments
+#' @export
+get_scalpmap <- function(data,
+                         ...) {
   UseMethod("get_scalpmap", data)
 }
 
+#' @export
 get_scalpmap.default <- function(data,
-                                 grid_res,
-                                 interp_limit,
                                  ...) {
   stop("Not implemented for objects of class ", class(data))
 }
 
+#' @param data An object of class \code{eeg_data}
+#' @param method biharmonic spline or gam
+#' @param grid_res grid resolution
+#' @param interp_limit interp to the head or the skirt
+#' @param quantity amplitude
+#' @param facets Any facets you plan to use
+#' @describeIn get_scalpmap data frame
+#' @export
 get_scalpmap.data.frame <- function(data,
-                                    grid_res,
-                                    interp_limit,
+                                    method = "biharmonic",
+                                    grid_res = 100,
+                                    interp_limit = "skirt",
+                                    quantity = "amplitude",
+                                    facets = NULL,
                                     ...) {
+
+  facets <- rlang::enexpr(facets)
+
+  if (!is.null(facets)) {
+    tmp <- dplyr::group_by(tmp,
+                           {{facets}})
+  } else {
+    tmp <- data
+  }
+
+  tmp <- dplyr::summarise_at(tmp,
+                             channel_names(data),
+                             .funs = mean)
+  tmp <- tidyr::gather(tmp,
+                       electrode,
+                       amplitude,
+                       -{{facets}})
+  tmp <- dplyr::left_join(tmp,
+                          channels(data),
+                          by = "electrode")
+  tmp <- dplyr::rename(tmp, fill = {{quantity}})
+
+  if (!is.null(facets)) {
+    tmp <- dplyr::group_nest(tmp, {{facets}})
+    tmp <- dplyr::mutate(tmp,
+                         topos = map(data,
+                                     ~biharmonic(.,
+                                                 grid_res = grid_res,
+                                                 interp_limit = interp_limit)),
+    )
+    tmp <- dplyr::select(tmp, -data)
+    smooth <- tidyr::unnest(tmp,
+                            cols = topos)
+  } else {
+    smooth <-
+      switch(method,
+             biharmonic = biharmonic(tmp,
+                                     grid_res = grid_res,
+                                     interp_limit = interp_limit),
+             gam = fit_gam_topo(tmp,
+                                grid_res = grid_res,
+                                interp_limit = interp_limit)
+      )
+  }
+  smooth
 
 }
 
-
+#' @export
 get_scalpmap.eeg_epochs <- function(data,
                                     method = "biharmonic",
                                     grid_res = 100,
@@ -731,7 +792,7 @@ get_scalpmap.eeg_epochs <- function(data,
 
   tmp <- as.data.frame(data)
   if (!is.null(facets)) {
-    tmp <- dplyr::group_by(tmp, {{ facets }})
+    tmp <- dplyr::group_by(tmp, {{facets}})
   }
   #tmp <- group_by(tmp, event_label)
   tmp <- dplyr::summarise_at(tmp,
@@ -769,6 +830,61 @@ get_scalpmap.eeg_epochs <- function(data,
             )
   }
   smooth
+}
+
+#' @export
+get_scalpmap.eeg_ICA <- function(data,
+                                 method = "biharmonic",
+                                 grid_res = 100,
+                                 interp_limit = "skirt",
+                                 quantity = "amplitude",
+                                 facets = component,
+                                 verbose = FALSE,
+                                 ...) {
+
+  facets <- rlang::enexpr(facets)
+
+  tmp <- as.data.frame(data,
+                       mixing = TRUE,
+                       long = TRUE)
+
+  if (any(is.na(tmp$x))) {
+    tmp <- tmp[!is.na(tmp$x), ]
+    if (verbose) {
+      warning("Removing channels with no location.")
+    }
+  }
+
+  tmp <- dplyr::rename(tmp,
+                       fill = {{quantity}})
+
+  if (!is.null(facets)) {
+
+    tmp <- dplyr::group_nest(tmp,
+                             component)
+    tmp <- dplyr::mutate(tmp,
+                         topos = map(data,
+                                     ~biharmonic(.,
+                                                 grid_res = grid_res,
+                                                 interp_limit = interp_limit)),
+    )
+    tmp <- dplyr::select(tmp,
+                         -data)
+    smooth <- tidyr::unnest(tmp,
+                            cols = topos)
+  } else {
+    smooth <-
+      switch(method,
+             biharmonic = biharmonic(tmp,
+                                     grid_res = grid_res,
+                                     interp_limit = interp_limit),
+             gam = fit_gam_topo(tmp,
+                                grid_res = grid_res,
+                                interp_limit = interp_limit)
+      )
+  }
+  smooth
+
 }
 
 

@@ -9,20 +9,22 @@
 #' @author Matt Craddock, \email{matt@@mattcraddock.com}
 #' @param file_name File to import. Should include file extension.
 #' @param file_path Path to file name, if not included in filename.
-#' @param chan_nos Channels to import. All channels are included by default.
 #' @param recording Name of the recording. By default, the filename will be
 #'   used.
 #' @param participant_id Identifier for the participant.
 #' @param fast_bdf New, faster method for loading BDF files. Experimental.
-#' @import edfReader
 #' @import tools
 #' @importFrom purrr map_df is_empty
 #' @importFrom tibble tibble as_tibble
+#' @examples
+#' \dontrun{
+#' import_raw("test_bdf.bdf")
+#' }
+#' @return An object of class \code{eeg_data}
 #' @export
 
 import_raw <- function(file_name,
                        file_path = NULL,
-                       chan_nos = NULL,
                        recording = NULL,
                        participant_id = character(1),
                        fast_bdf = TRUE) {
@@ -30,7 +32,7 @@ import_raw <- function(file_name,
   file_type <- tools::file_ext(file_name)
 
   if (!is.null(file_path)) {
-    file_name <- paste0(file_path, file_name)
+    file_name <- file.path(file_path, file_name)
   }
 
   if (is.null(recording)) {
@@ -50,6 +52,11 @@ import_raw <- function(file_name,
       sigs <- tibble::as_tibble(sigs)
       srate <- bdf_header$srate[[1]]
     } else {
+
+      if (!requireNamespace("edfReader", quietly = TRUE)) {
+        stop("Package \"edfReader\" needed. Please install it.",
+             call. = FALSE)
+      }
       data <- edfReader::readEdfSignals(edfReader::readEdfHeader(file_name))
       #check for an annotations channel
       anno_chan <- which(vapply(data,
@@ -105,7 +112,6 @@ import_raw <- function(file_name,
                                  nrow = 1,
                                  class = "epoch_info")
 
-
     data <- eeg_data(data = sigs,
                      srate = srate,
                      events = event_table,
@@ -114,7 +120,9 @@ import_raw <- function(file_name,
     data
   } else if (identical(file_type,"cnt")) {
     message(paste("Importing Neuroscan", toupper(file_type), file_name))
+    message(paste("Note: if this is 16-bit or an ANT Neuro .CNT file, reading will fail."))
     data <- import_cnt(file_name)
+
     sigs <- tibble::as_tibble(t(data$chan_data))
     names(sigs) <- data$chan_info$electrode
     srate <- data$head_info$samp_rate
@@ -411,8 +419,10 @@ read_vhdr <- function(file_name) {
     multiplexed <- TRUE
   }
 
-  data_file <- header_info$`Common Infos`$DataFile
-  vmrk_file <- header_info$`Common Infos`$MarkerFile
+  data_file <- file.path(dirname(file_name),
+                         header_info$`Common Infos`$DataFile)
+  vmrk_file <- file.path(dirname(file_name),
+                         header_info$`Common Infos`$MarkerFile)
   n_chan <- as.numeric(header_info$`Common Infos`$NumberOfChannels)
   # header gives sampling times in microseconds
   srate <- 1e6 / as.numeric(header_info$`Common Infos`$SamplingInterval)
@@ -420,8 +430,9 @@ read_vhdr <- function(file_name) {
 
   chan_labels <- lapply(header_info$`Channel Infos`,
                         function(x) unlist(strsplit(x = x, split = ",")))
-  chan_labels <- sapply(chan_labels, "[[", 1)
-  chan_info <- parse_vhdr_chans(chan_labels,
+  chan_names <- sapply(chan_labels, "[[", 1)
+  chan_scale <- as.numeric(sapply(chan_labels, "[[", 3))
+  chan_info <- parse_vhdr_chans(chan_names,
                                 header_info$`Coordinates`)
 
   file_size <- file.size(data_file)
@@ -434,8 +445,15 @@ read_vhdr <- function(file_name) {
                   ncol = n_chan,
                   byrow = multiplexed)
 
+  if (any(!is.na(chan_scale))) {
+    .data <- sweep(.data,
+                   2,
+                   chan_scale,
+                   "*")
+  }
+  colnames(.data) <- chan_names
   .data <- tibble::as_tibble(.data)
-  names(.data) <- chan_labels
+
   n_points <- nrow(.data)
 
   timings <- tibble::tibble(sample = 1:n_points,
@@ -475,16 +493,19 @@ read_dat <- function(file_name,
   if (identical(bin_format, "IEEE_FLOAT_32")) {
     nbytes <- 4
     signed <- TRUE
+    file_type <- "double"
   } else if (identical(bin_format, "UINT_16")) {
     nbytes <- 2
     signed <- FALSE
+    file_type <- "int"
   } else {
     nbytes <- 2
     signed <- TRUE
+    file_type <- "int"
   }
 
   raw_data <- readBin(file_name,
-                      what = "double",
+                      what = file_type,
                       n = file_size,
                       size = nbytes,
                       signed = signed)
@@ -543,6 +564,9 @@ read_vmrk <- function(file_name) {
 #' @importFrom dplyr group_by mutate rename
 #' @importFrom tibble tibble as_tibble
 #' @importFrom purrr is_empty
+#' @examples
+#' \dontrun{import_set("your_data.set")}
+#' @return An object of class \code{eeg_data}
 #' @export
 
 import_set <- function(file_name,
@@ -749,20 +773,27 @@ parse_chaninfo <- function(chan_info) {
 #' @param chan_info The `Coordinates` section from a BVA vhdr file
 #' @keywords internal
 parse_vhdr_chans <- function(chan_labels,
-                             chan_info) {
+                             chan_info,
+                             verbose = TRUE) {
 
   init_chans <- data.frame(electrode = chan_labels)
-  coords <- lapply(chan_info,
-                   function(x) as.numeric(unlist(strsplit(x, split = ","))))
+  if (is.null(chan_info)) {
+    init_chans$radius <- NA
+    init_chans$theta <- NA
+    init_chans$phi <- NA
+    if (verbose) message("No channel locations found.")
+    return(validate_channels(init_chans))
+  } else {
+    coords <- lapply(chan_info,
+                     function(x) as.numeric(unlist(strsplit(x, split = ","))))
+    new_coords <- data.frame(do.call(rbind, coords))
+    names(new_coords) <- c("radius", "theta", "phi")
+    new_coords <- cbind(init_chans, new_coords)
+    new_coords[new_coords$radius == 0, 2:4] <- NA
 
-  new_coords <- data.frame(do.call(rbind, coords))
-  names(new_coords) <- c("radius", "theta", "phi")
-  new_coords <- cbind(init_chans, new_coords)
-
-  new_coords[new_coords$radius == 0, 2:4] <- NA
-
-  chan_info <- bva_elecs(new_coords)
-  tibble::as_tibble(chan_info)
+    chan_info <- bva_elecs(new_coords)
+    tibble::as_tibble(chan_info)
+  }
 }
 
 #' Convert BVA spherical locations
@@ -797,6 +828,10 @@ bva_elecs <- function(chan_info, radius = 85) {
 #' @param participant_id Identifier for the participant.
 #' @param verbose Informative messages printed to console. Defaults to TRUE.
 #' @importFrom R.matlab readMat
+#' @examples
+#' \dontrun{import_ft("fieldtrip_test.mat")}
+#' @return An object of class \code{eeg_data}, \code{eeg_epochs}, or
+#'   \code{eeg_tfr}, depending on the type of input data.
 #' @export
 import_ft <- function(file_name,
                       participant_id = NULL,
@@ -1145,7 +1180,7 @@ read_bdf_data <- function(file_name, headers) {
                               records_per))
     shifted <- colSums(shifted)
     shifted <- matrix(aperm(shifted,
-                            c(1,3,2)),
+                            c(1, 3, 2)),
                       nrow = prod(dim(shifted)[c(1, 3)]))
     modifier <- chunk_size * (records - 1)
     sig_out[(1:chunk_size) + modifier, ] <- shifted
@@ -1157,7 +1192,7 @@ read_bdf_data <- function(file_name, headers) {
                              n = sig_length * remaining,
                              endian = "little")
 
-    shifted <- as.integer(final_records) * as.integer(2^c(0, 8,16))
+    shifted <- as.integer(final_records) * as.integer(2^c(0, 8, 16))
 
     shifted  <- array(shifted, dim = c(3,
                                        headers$srate[[1]],

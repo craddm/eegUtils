@@ -150,7 +150,8 @@ ar_FASTER.eeg_epochs <- function(data,
   if (!is.null(orig_ref)) {
     data <- eeg_reference(data,
                           ref_chans = orig_ref,
-                          exclude = excluded)
+                          exclude = excluded,
+                          verbose = FALSE)
   }
 
   #data$chan_info <- orig_chan_info

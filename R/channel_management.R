@@ -6,6 +6,8 @@
 #' @param file_name Name and full path of file to be loaded.
 #' @param format If the file is not .elc format, "spherical", "geographic".
 #'   Default is "spherical".
+#' @return A \code{tibble} containing electrode names and locations in several
+#'   different coordinate systems.
 #' @export
 
 import_chans <- function(file_name,
@@ -126,9 +128,13 @@ topo_norm <- function(angle, radius) {
 #'
 #' @param chan_info channel information structure
 #' @param degrees degrees by which to rotate
+#' @examples
+#' rotate_angle(channels(demo_epochs), 90)
+#' @return A \code{tibble()}
 #' @export
 
-rotate_angle <- function(chan_info, degrees) {
+rotate_angle <- function(chan_info,
+                         degrees) {
 
   degrees <- degrees * pi / 180
   if ("CZ" %in% chan_info$electrode) {
@@ -177,7 +183,10 @@ flip_x <- function(chan_info) {
 #'   system for high-resolution EEG and ERP measurements. Clinical
 #'   Neurophysiology, 112, 4, 713-719
 #' @param data An EEG dataset.
-#' @param ... Parameters passed to S3 methods.
+#' @param ... Passed to S3 methods.
+#' @examples
+#' channels(demo_epochs)
+#' electrode_locations(demo_epochs, overwrite = TRUE, montage = "biosemi64alpha")
 #' @export
 
 electrode_locations <- function(data, ...) {
@@ -187,7 +196,7 @@ electrode_locations <- function(data, ...) {
 #' @param electrode The column name containing electrode names in data.
 #'   (Defaults to "electrode").
 #' @param drop Should electrodes in \code{data} for which default locations are
-#'   not available be dropped? (Defaults to FALSE).
+#'   not available be removed? (Defaults to FALSE).
 #' @param montage Name of an existing montage set. Defaults to NULL.
 #' @importFrom dplyr inner_join pull left_join distinct
 #' @import ggplot2
@@ -257,39 +266,13 @@ electrode_locations.data.frame <- function(data,
 electrode_locations.eeg_data <- function(data,
                                          drop = FALSE,
                                          montage = NULL,
-                                         overwrite = FALSE, ...) {
+                                         overwrite = FALSE,
+                                         ...) {
 
-  if (!is.null(data$chan_info) & !overwrite) {
-    stop("Channel info already present, set overwrite to TRUE to replace.")
-  }
-
-  if (!is.null(montage)) {
-    electrodeLocs <- montage_check(montage)
-  }
-
-  elec_names <- toupper(channel_names(data))
-  electrodeLocs$electrode <- toupper(electrodeLocs$electrode)
-
-  matched_els <- electrodeLocs$electrode %in% elec_names
-  missing_els <- !elec_names %in% electrodeLocs$electrode
-
-  if (!any(matched_els)) {
-    stop("No matching electrodes found.")
-  } else if (any(missing_els)) {
-    message("Electrodes not found: ",
-            paste(names(data$signals)[missing_els],
-                  collapse = " "))
-  }
-
-  data$chan_info <- electrodeLocs[matched_els, ]
-
-  if (drop) {
-    data$signals[matched_els]
-  }
-
-  channels(data) <- validate_channels(channels(data),
-                                      channel_names(data))
-  data
+  add_elocs(data,
+            drop = drop,
+            montage = montage,
+            overwrite = overwrite)
 }
 
 #' @import ggplot2
@@ -299,9 +282,38 @@ electrode_locations.eeg_data <- function(data,
 electrode_locations.eeg_epochs <- function(data,
                                            drop = FALSE,
                                            montage = NULL,
-                                           overwrite = FALSE, ...) {
+                                           overwrite = FALSE,
+                                           ...) {
 
-  if (!is.null(data$chan_info) & !overwrite) {
+  add_elocs(data,
+            drop = drop,
+            montage = montage,
+            overwrite = overwrite)
+}
+
+electrode_locations.eeg_tfr <- function(data,
+                                        drop = FALSE,
+                                        montage = NULL,
+                                        overwrite = FALSE,
+                                        ...) {
+
+  add_elocs(data,
+            drop = drop,
+            montage = montage,
+            overwrite = overwrite)
+}
+
+#' @keywords internal
+add_elocs <- function(data,
+                      drop = FALSE,
+                      montage = NULL,
+                      overwrite = FALSE,
+                      ...) {
+
+  chan_info <- channels(data)
+  chan_names <- channel_names(data)
+
+  if (!is.null(chan_info) & !overwrite) {
     stop("Channel info already present, set overwrite to TRUE to replace.")
   }
 
@@ -309,7 +321,7 @@ electrode_locations.eeg_epochs <- function(data,
     electrodeLocs <- montage_check(montage)
   }
 
-  elec_names <- toupper(channel_names(data))
+  elec_names <- toupper(chan_names)
   electrodeLocs$electrode <- toupper(electrodeLocs$electrode)
 
   matched_els <- electrodeLocs$electrode %in% elec_names
@@ -319,17 +331,19 @@ electrode_locations.eeg_epochs <- function(data,
     stop("No matching electrodes found.")
   } else if (any(missing_els)) {
     message("Electrodes not found: ",
-            paste(names(data$signals)[missing_els],
+            paste(chan_names[missing_els],
                   collapse = " "))
   }
 
-  data$chan_info <- electrodeLocs[matched_els, ]
+  chan_info <- electrodeLocs[matched_els, ]
 
   if (drop) {
-    data$signals[matched_els]
+     data <- select_elecs(data,
+                          chan_names[missing_els],
+                          keep = FALSE)
   }
 
-  channels(data) <- validate_channels(channels(data),
+  channels(data) <- validate_channels(chan_info,
                                       channel_names(data))
   data
 }
@@ -349,9 +363,12 @@ electrode_locations.eeg_epochs <- function(data,
 #' @param data Data with associated electrode locations to be plotted.
 #' @param interact Choose 2D cartesian layout, or, if set to TRUE, an
 #'   interactive 3D plot of electrode locations. Defaults to FALSE.
+#' @return A \code{ggplot} or \code{plotly} figure showing the locations of the
+#'   electrodes
 #' @export
 
-plot_electrodes <- function(data, interact = FALSE) {
+plot_electrodes <- function(data,
+                            interact = FALSE) {
   UseMethod("plot_electrodes", data)
 }
 
@@ -502,10 +519,13 @@ validate_channels <- function(chan_info,
                          all.x = TRUE,
                          sort = FALSE)
     }
-    #chan_info$electrode <- sig_names
+    # make sure chan_info is in the same order as the signal names
     chan_info <- chan_info[match(toupper(sig_names),
-                                chan_info$electrode), ]
+                                 toupper(chan_info$electrode)), ]
+    # make sure chan_info electrode is the same case as the signal names
+    chan_info$electrode <- sig_names
   }
+
   # merge always converts strings to factors,
   # so also make sure electrode is not a factor
   chan_info$electrode <- as.character(chan_info$electrode)
@@ -618,6 +638,7 @@ channels.eeg_stats <- function(.data) {
   .data$chan_info <- value
   .data
 }
+
 #' Retrieve signal/channel names
 #'
 #' Get the names of the `signals` element of `eegUtils` objects.

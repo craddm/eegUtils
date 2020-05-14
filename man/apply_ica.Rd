@@ -31,7 +31,8 @@ dataset.
 \itemize{
 \item \code{eeg_ICA}: From given \code{eeg_ICA} object, recreate channel timecourses.
 
-\item \code{eeg_epochs}: Combine a specific set of ICA weights with any \code{eeg_epochs} object.
+\item \code{eeg_epochs}: Combine a specific set of ICA weights with any
+\code{eeg_epochs} object.
 }}
 
 \author{

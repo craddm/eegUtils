@@ -231,7 +231,8 @@ browse_data.eeg_data <- function(data,
         }
 
         tmp_data <- as.data.frame(tmp_data,
-                                  long = TRUE)
+                                  long = TRUE,
+                                  coords = FALSE)
 
         init_plot <- ggplot2::ggplot(tmp_data,
                                      aes(x = time,
@@ -365,7 +366,8 @@ browse_data.eeg_epochs <- function(data,
         }
 
         tmp_data <- as.data.frame(tmp_data,
-                                   long = TRUE)
+                                  long = TRUE,
+                                  coords = FALSE)
 
         butter_out <- plot_butterfly(tmp_data,
                                      legend = FALSE,
@@ -400,7 +402,8 @@ browse_data.eeg_epochs <- function(data,
         }
 
         tmp_data_ind <- as.data.frame(tmp_data_ind,
-                                      long = TRUE)
+                                      long = TRUE,
+                                      coords = FALSE)
 
         init_plot <- ggplot2::ggplot(tmp_data_ind,
                                      aes(x = time,

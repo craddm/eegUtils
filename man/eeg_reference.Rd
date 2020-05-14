@@ -12,9 +12,25 @@ eeg_reference(data, ...)
 
 \method{eeg_reference}{default}(data, ...)
 
-\method{eeg_reference}{eeg_data}(data, ref_chans = "average", exclude = NULL, robust = FALSE, ...)
+\method{eeg_reference}{eeg_data}(
+  data,
+  ref_chans = "average",
+  exclude = NULL,
+  robust = FALSE,
+  implicit_ref = NULL,
+  verbose = TRUE,
+  ...
+)
 
-\method{eeg_reference}{eeg_epochs}(data, ref_chans = "average", exclude = NULL, robust = FALSE, ...)
+\method{eeg_reference}{eeg_epochs}(
+  data,
+  ref_chans = "average",
+  exclude = NULL,
+  robust = FALSE,
+  implicit_ref = NULL,
+  verbose = TRUE,
+  ...
+)
 
 reref_eeg(data, ...)
 }
@@ -30,7 +46,15 @@ numbers.}
 
 \item{exclude}{Electrodes to exclude from average reference calculation.}
 
-\item{robust}{Use median instead of mean; only used for average reference.}
+\item{robust}{Use median instead of mean; only used for average reference.
+Defaults to FALSE.}
+
+\item{implicit_ref}{Implicit reference channel - use this to add a channel
+back that was previously used as a reference. E.g. if the LM (left mastoid)
+channel were used in recording and is absent from the data, passing "LM"
+adds an "LM" channel back to the data, populated with zeroes.}
+
+\item{verbose}{Print informative messages in console. Defaults to TRUE.}
 }
 \value{
 object of class \code{eeg_data}, re-referenced as requested.
@@ -47,7 +71,7 @@ removed from the data. Meta-data about the referencing scheme is held in the
 
 \item \code{eeg_data}: Rereference objects of class \code{eeg_data}
 
-\item \code{eeg_epochs}: Rereference objects of class \code{eeg_data}
+\item \code{eeg_epochs}: Rereference objects of class \code{eeg_epochs}
 }}
 
 \examples{

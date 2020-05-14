@@ -32,28 +32,23 @@ plot_timecourse.default <- function(data,
 #'  between-subject CIs.
 #'@param time_lim Character vector. Numbers in whatever time unit is used
 #'  specifying beginning and end of time-range to plot. e.g. c(-.1, .3)
-#'@param facet Deprecated. Please use standard ggplot2 facetting functions.
 #'@param baseline Character vector. Times to use as a baseline. Takes the mean
 #'  over the specified period and subtracts. e.g. c(-.1,0)
 #'@param colour Variable to colour lines by. If no variable is passed, only one
 #'  line is drawn.
 #'@param color Alias for colour.
+#'@param mapping A ggplot2 `aes()` mapping.
 #'@describeIn plot_timecourse Plot a data.frame timecourse
 #'@export
 plot_timecourse.data.frame <- function(data,
                                electrode = NULL,
                                time_lim = NULL,
-                               facet,
                                add_CI = FALSE,
                                baseline = NULL,
                                colour = NULL,
                                color = NULL,
+                               mapping = NULL,
                                ...) {
-
-  if (!missing(facet)) {
-    warning("The facet parameter is deprecated. Please use facet_wrap/facet_grid")
-    facet <- NULL
-  }
 
   if (!is.null(electrode)) {
     data <- select_elecs(data,
@@ -89,17 +84,12 @@ plot_timecourse.data.frame <- function(data,
 plot_timecourse.eeg_evoked <- function(data,
                                electrode = NULL,
                                time_lim = NULL,
-                               facet,
                                add_CI = FALSE,
                                baseline = NULL,
                                colour = NULL,
                                color = NULL,
+                               mapping = NULL,
                                ...) {
-
-  if (!missing(facet)) {
-    warning("The facet parameter is deprecated. Please use facet_wrap/facet_grid")
-    facet <- NULL
-  }
 
   if (add_CI) {
     warning("Cannot add_CI for eeg_evoked objects.")
@@ -122,7 +112,8 @@ plot_timecourse.eeg_evoked <- function(data,
 
   tc_plot <- create_tc(data,
                        add_CI = add_CI,
-                       colour = colour)
+                       colour = colour,
+                       mapping = mapping)
 
   tc_plot
 }
@@ -133,17 +124,13 @@ plot_timecourse.eeg_evoked <- function(data,
 plot_timecourse.eeg_ICA <- function(data,
                             component = NULL,
                             time_lim = NULL,
-                            facet,
                             add_CI = FALSE,
                             baseline = NULL,
                             colour = NULL,
                             color = NULL,
+                            mapping = NULL,
                             ...) {
 
-  if (!missing(facet)) {
-    warning("The facet parameter is deprecated. Please use facet_wrap/facet_grid")
-    facet <- NULL
-  }
 
   # Select specifed times
   if (!is.null(time_lim)) {
@@ -177,11 +164,13 @@ plot_timecourse.eeg_ICA <- function(data,
   }
 
   data <- as.data.frame(data,
-                        long = TRUE)
+                        long = TRUE,
+                        coords = FALSE)
 
   tc_plot <- create_tc(data,
                        add_CI = add_CI,
-                       colour = colour)
+                       colour = colour,
+                       mapping = mapping)
 
   tc_plot
   }
@@ -191,16 +180,12 @@ plot_timecourse.eeg_ICA <- function(data,
 plot_timecourse.eeg_epochs <- function(data,
                                electrode = NULL,
                                time_lim = NULL,
-                               facet,
                                add_CI = FALSE,
                                baseline = NULL,
                                colour = NULL,
-                               color = NULL, ...) {
-
-  if (!missing(facet)) {
-    warning("The facet parameter is deprecated. Please use facet_wrap/facet_grid")
-    facet <- NULL
-  }
+                               color = NULL,
+                               mapping = NULL,
+                               ...) {
 
   data <- parse_for_tc(data,
                        time_lim = time_lim,
@@ -218,7 +203,8 @@ plot_timecourse.eeg_epochs <- function(data,
 
   tc_plot <- create_tc(data,
                        add_CI = add_CI,
-                       colour = colour)
+                       colour = colour,
+                       mapping = mapping)
 
   tc_plot
 }
@@ -227,7 +213,6 @@ plot_timecourse.eeg_epochs <- function(data,
 plot_timecourse.eeg_tfr <- function(data,
                                     electrode = NULL,
                                     time_lim = NULL,
-                                    facet,
                                     add_CI = FALSE,
                                     baseline = NULL,
                                     colour = NULL,
@@ -241,34 +226,14 @@ plot_timecourse.eeg_tfr <- function(data,
   }
 
   data_f <- as.data.frame(data,
-                          long = TRUE)
+                          long = TRUE,
+                          coords = FALSE)
 
   ggplot(data_f, aes(x = time,
                      y = power,
                      colour = frequency)) +
     stat_summary(geom = "line",
                  fun = mean)
-}
-
-#' @describeIn plot_timecourse Plot timecourses from \code{eeg_epochs} objects.
-#'
-plot_timecourse.eeg_stats <- function(data,
-                                      time_lim = NULL,
-                                      electrode = NULL,
-                                      ...) {
-
-  data <- parse_for_tc(data,
-                       time_lim = time_lim,
-                       electrode = electrode,
-                       baseline = NULL,
-                       add_CI = FALSE)
-
-  tc_plot <- create_tc(data,
-                       add_CI = FALSE,
-                       colour = NULL,
-                       quantity = statistic)
-
-  tc_plot
 }
 
 #' Parse data for timecourses
@@ -314,7 +279,8 @@ parse_for_tc <- function(data,
   }
 
   data <- as.data.frame(data,
-                        long = TRUE)
+                        long = TRUE,
+                        coords = FALSE)
 }
 
 #' Internal function for creation of timecourse plots
@@ -322,11 +288,14 @@ parse_for_tc <- function(data,
 #' @param data A data frame to be plotted
 #' @param add_CI whether to add confidence intervals
 #' @param colour whether to use colour
+#' @param quantity The name of the column/quantity to plot
+#' @param mapping A ggplot2 `aes()` mapping.
 #' @keywords internal
 create_tc <- function(data,
                       add_CI,
                       colour,
-                      quantity = amplitude) {
+                      quantity = amplitude,
+                      mapping = NULL) {
 
   if (is.null(colour)) {
     tc_plot <- ggplot2::ggplot(data,
@@ -336,8 +305,8 @@ create_tc <- function(data,
     colour <- ggplot2::enquo(colour)
     tc_plot <- ggplot2::ggplot(data,
                                aes(x = time,
-                                  y = amplitude,
-                                  colour = !!colour))
+                                   y = {{quantity}},
+                                   colour = {{colour}}))
   }
 
   if (add_CI) {
@@ -362,10 +331,18 @@ create_tc <- function(data,
     }
   }
 
-  tc_plot <- tc_plot +
+  tc_plot <-
+    tc_plot +
     stat_summary(fun = "mean",
                  geom = "line",
                  size = 1.2)
+
+  if (!is.null(mapping)) {
+    tc_plot <-
+      tc_plot +
+      mapping
+  }
+
   tc_plot +
     labs(x = "Time (s)",
          y = expression(paste("Amplitude (", mu, "V)")),

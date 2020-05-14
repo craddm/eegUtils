@@ -12,7 +12,6 @@
 #' standard R formats.
 #'
 #'
-#'
 #'@author Matt Craddock \email{matt@@mattcraddock.com}
 #' with contributions from Matti Vuorre \email{mv2521@@columbia.edu}.
 #'@docType package

@@ -7,7 +7,6 @@ output: github_document
 knitr::opts_chunk$set(echo = TRUE,
                       collapse = TRUE,
                       comment = "#>",
-                      eval = nzchar(Sys.getenv("EVAL_EEG_VIGNETTE")),
                       fig.path = "man/figures/")
 ```
 
@@ -19,11 +18,13 @@ knitr::opts_chunk$set(echo = TRUE,
 
 ## Overview
 
-*eegUtils* is a package for the processing, manipulation, and plotting of EEG data. It includes functions for importing data from a variety of file formats (including Biosemi, Brain Vision Analyzer, and EEGLAB), many of the typical steps in pre-preprocessing (filtering, referencing, artefact rejection), more advanced processing techniques (time-frequency analysis, ICA), and many types of plot that are common in the field (ERP plots, time-frequency plots, topographical scalp maps). Although it uses custom object classes, it is designed such that these are always translatable to standard R *data.frames*, and thus can be used with any of the myriad packages and methods that support standard R formats.
+*eegUtils* is a package for the processing, manipulation, and plotting of EEG data. It includes functions for importing data from a variety of file formats (including Biosemi, Brain Vision Analyzer, and EEGLAB), many of the typical steps in pre-preprocessing (filtering, referencing, artefact rejection), more advanced processing techniques (time-frequency analysis, ICA), and several types of plot that are common in the field (ERP plots, time-frequency plots, topographical scalp maps). Although it uses custom object classes, it is designed such that these are always translatable to standard R *data.frames*, and thus can be used with any of the myriad packages and methods that support standard R formats.
 
 ### Installation
 
-The package is very much under active development and is subject to a lot of changes. As such, it is not currently available on CRAN. Install the latest released version from Github as below.
+The package is very much under active development and is subject to a lot of changes. As such, it is not currently available on CRAN. 
+
+Install the latest released version from Github as below.
 
 ```{r, eval = FALSE}
 #install.packages("remotes")
@@ -36,136 +37,27 @@ To install the latest development version, install from the *develop* branch as 
 remotes::install_github("craddm/eegUtils@develop")
 ```
 
+You can also find the package on [Neuroconductor](https://neuroconductor.org) - for more information about installing packages from Neuroconductor, see the [Neuroconductor installation tutorial](https://neuroconductor.org/tutorials/install)
+
 ### Usage
 
-In this simple example, we load a Biosemi .BDF file. This data is from an experiment in which participants were cued with a word and then shown a picture of an object that was either a semantic match or a semantic mismatch for the word.
+The following examples show how to use `eegUtils` to produce a few common plots of EEG data from some simple included example data.
 
-```{r load-data}
+```{r}
 library(eegUtils)
-library(dplyr)
-library(ggplot2)
-eeg_example <- import_raw("F:\\Dropbox\\EEGData\\RawEEGData\\BasicCat\\S2B1.bdf")
-eeg_example
+
+plot_butterfly(demo_epochs)
+topoplot(demo_epochs, 
+         time_lim = c(.22, .25 ))
+plot_psd(demo_epochs)
+plot_tfr(compute_tfr(demo_epochs,
+                     foi = c(4, 30),
+                     n_freq = 20,
+                     n_cycles = 3))
 ```
 
-This data was recorded at 512 Hz. There were 72 channels named using the BioSemi alpha-numeric format. EXG1-EXG4 were electrodes placed around the eyes to record eye movements. EXG5 and EXG6 were reference electrodes placed on the participant's earlobes. EXG7 and EXG8 are empty channels; no electrodes were attached.
+There are many potential processing steps that precede the production of plots like these. For more examples of how to import and process data, or import data from other sources, see the [eegUtils website](https://craddm.github.io/eegUtils)
 
-We can use the *select_elecs()* function to select specific channels to keep or remove. Here we'll remove the empty channels EXG7 and EXG8.
-
-```{r}
-eeg_example %>%
-  select_elecs(electrode = c("EXG7", "EXG8"),
-               keep = FALSE)
-```
-
-Note that we could also use the *select()* function from the *dplyr* package, as *eegUtils* has wrapper functions around several *dplyr* functions. Here we'll use it in a chain of pipes leading to the *eeg_reference()* function, which references or rereferences our EEG data. It defaults to average reference.
-
-```{r reref}
-eeg_example <- eeg_example %>%
-  select(-EXG7, -EXG8) %>%
-  eeg_reference()
-eeg_example
-```
-
-A typical step at this stage is to filter the continuous data before epoching. We'll quickly inspect the power spectral density, calculated using Welch's method, of our data using *plot_psd()*.
-We then perform a bandpass filter from .1 Hz to 40 Hz using FIR filtering, using *eeg_filter()*. Note that this function can be made to use multiple cores or processes through the *future* package.
-
-```{r do_filt}
-library(future)
-plan(multiprocess)
-plot_psd(eeg_example, 
-         freq_range = c(0, 60),
-         legend = FALSE)
-eeg_example <- eeg_filter(eeg_example,
-                          low_freq = .1,
-                          high_freq = 40,
-                          method = "fir")
-plot_psd(eeg_example, 
-         freq_range = c(0, 60),
-         legend = FALSE)
-```
-
-The next step is to epoch our filtered data. The trigger *201* marks stimulus onset.
-
-```{r}
-example_epochs <- epoch_data(eeg_example,
-                             events = 201)
-example_epochs
-```
-
-We can plot ERPs of all the channels using *plot_butterfly()*. This can be quite slow at high sampling rates, with many electrodes, and long epochs. Here we'll specify that we want the plot to be from .1s before to .5s after stimulus onset.
-
-```{r}
-plot_butterfly(example_epochs,
-               time_lim = c(-.1, .5))
-```
-This outputs a *ggplot* object with some default styling already set. 
-
-Now we might want a topographical plot. But BioSemi data files do not include channel locations, so we need to add them ourselves.
-
-```{r}
-example_epochs <- electrode_locations(example_epochs,
-                                      montage = "biosemi64alpha")
-channels(example_epochs)
-```
-
-Now we can create a topopgraphical plot, again with default stylings and colour schemes.
-
-```{r}
-topoplot(example_epochs, time_lim = c(.25, .35))
-```
-
-Since this is a *ggplot*, styling can be changed easily. For example, we could use a different colour scale, such as *viridis*.
-
-```{r}
-topoplot(example_epochs,
-         time_lim = c(.25, .35)) +
-  scale_fill_viridis_c()
-```
-
-
-At any point, `eegUtils` objects can be transformed into data frames for use with functions that don't natively support them.
-
-```{r}
-example_epochs %>%
-  select_epochs(epoch_no = 1:30) %>%
-  select_elecs(c("A29", "B6")) %>%
-  select_times(c(-.1, .4)) %>%
-  rm_baseline(c(-.1, 0)) %>%
-  as.data.frame(long = TRUE) %>%
-  ggplot(aes(x = time, y = amplitude)) +
-  geom_line(aes(group = epoch), alpha = 0.2) + 
-  stat_summary(fun.y = mean,
-               geom = "line",
-               size = 2,
-               aes(colour = electrode)) + 
-  geom_vline(xintercept = 0) +
-  geom_hline(yintercept = 0) +
-  facet_wrap(~electrode) + 
-  theme_classic()
-```
-
-In addition, there are overloaded versions of some `dplyr` functions that operate on the `signals` element of `eeg_data` and `eeg_epochs` objects. For example, `select()` can be used to choose particular electrodes, and `filter()` can be used to filter out epochs or timepoints. `mutate()` can be used to add new columns (e.g. creating ROIs from multiple electrodes). Note that the objects can also be passed directly to *ggplot()*.
-
-```{r}
-example_epochs %>%
-  mutate(occipital = (A29 + A27 + B32) / 3) %>%
-  select(A29, B6, occipital) %>%
-  filter(epoch <= 60, time > -.1, time < .5) %>%
-  ggplot(aes(x = time, y = amplitude)) +
-  geom_line(aes(group = epoch), alpha = 0.2) + 
-  stat_summary(fun.y = mean,
-               geom = "line",
-               size = 2,
-               aes(colour = electrode)) +
-  facet_wrap(~electrode) + 
-  scale_colour_viridis_d() +
-  geom_vline(xintercept = 0) +
-  geom_hline(yintercept = 0) +
-  theme_classic()
-```
-
-
-Please note that the 'eegUtils' project is released with a
+Please note that the `eegUtils` project is released with a
 [Contributor Code of Conduct](CODE_OF_CONDUCT.md).
 By contributing to this project, you agree to abide by its terms.
