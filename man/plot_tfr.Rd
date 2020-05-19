@@ -33,6 +33,9 @@ electrodes.}
 
 \item{interpolate}{Interpolation of raster for smoother plotting.}
 }
+\value{
+A \code{ggplot}
+}
 \description{
 Creates a time-frequency plot of an \code{eeg_tfr} object. The plot has time
 on the x-axis and frequency on the y-axis. If no electrode is supplied, it

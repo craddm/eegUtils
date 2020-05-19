@@ -199,6 +199,7 @@ create_psd_plot <- function(psd_out,
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #' @importFrom purrr partial
 #' @import ggplot2
+#' @return A \code{ggplot}
 #' @seealso [rm_baseline()]
 #' @export
 
@@ -209,7 +210,8 @@ plot_tfr <- function(data,
                      baseline_type = "none",
                      baseline = NULL,
                      fill_lims = NULL,
-                     interpolate = FALSE) {
+                     interpolate = FALSE,
+                     na.rm = FALSE) {
 
   if (!inherits(data,"eeg_tfr")) {
     stop("Object of class eeg_tfr required.")
@@ -227,6 +229,13 @@ plot_tfr <- function(data,
     data_freqs <- as.numeric(dimnames(data$signals)[["frequency"]])
     data_freqs <- (data_freqs >= freq_range[1] & data_freqs <= freq_range[2])
     data$signals <- data$signals[, , data_freqs, drop = FALSE]
+  }
+
+  if (identical(data$freq_info$output, "fourier")) {
+    message("Data is complex Fourier coefficients, converting to power.")
+    data$signals <- convert_tfr(data$signals,
+                                "power")
+    data$freq_info$output <- "power"
   }
 
   if (!inherits(data, "tfr_average")) {
@@ -250,14 +259,20 @@ plot_tfr <- function(data,
            "Power (a.u.)")
 
   if (is.null(fill_lims)) {
-    fill_lims <- c(min(data$signals, na.rm = TRUE),
-                   max(data$signals, na.rm = TRUE))
-    if (all(fill_lims > 0)) {
-      fill_lims <- c(0, max(abs(fill_lims)))
-    } else {
-      fill_lims <- max(abs(fill_lims))
-      fill_lims <- c(-fill_lims, fill_lims)
+    if (identical(data$freq_info$baseline, "none")) {
+      fill_lims <- c(0, NA)
+    } else{
+      fill_lims <- c(NA, NA)
     }
+
+    #   fill_lims <- c(min(data$signals, na.rm = TRUE),
+    #                  max(data$signals, na.rm = TRUE))
+    # if (all(fill_lims > 0)) {
+    #   fill_lims <- c(0, NA)
+    # } else {
+    #   fill_lims <- max(abs(fill_lims))
+    #   fill_lims <- c(-fill_lims, fill_lims)
+    # }
   }
 
   # Use purrr::partial to save copy pasting the whole thing in every
@@ -280,12 +295,26 @@ plot_tfr <- function(data,
   data <- as.data.frame(data,
                         long = TRUE)
 
+  n_freqs <- length(unique(data$frequency))
+  n_times <- length(unique(data$time))
+
   tfr_plot <-
     ggplot2::ggplot(data,
                     aes(x = time,
                         y = frequency,
-                        fill = power)) +
-    geom_raster(interpolate = interpolate) +
+                        z = power)) +
+    # stat_raster(interpolate = interpolate,
+    #             na.rm = na.rm) +
+    # # geom_raster(interpolate = interpolate,
+    #             stat = "avgz",
+    #             na.rm = TRUE) +
+    stat_summary_2d(geom = "raster",
+                    bins = c(n_freqs * n_times),
+                    fun = mean,
+                    fun.args = list(na.rm = FALSE),
+                    interpolate = interpolate,
+                    na.rm = FALSE,
+                    drop = FALSE) +
     labs(x = "Time (s)",
          y = "Frequency (Hz)",
          fill = fill_lab) +
