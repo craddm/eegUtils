@@ -106,10 +106,8 @@ eeg_average.eeg_tfr <- function(data,
   if (!any(c("participant_id", "epoch") %in% data$dimensions)) {
     message("Data is already averaged.")
   } else {
-    #orig_names <- dimnames(data$signals)
     data <- average_tf(data)
-    #data <- orig_tfr_avg(data)
-    #data$dimensions <- data$dimensions[-which(data$dimensions == "epoch")]
+    class(data) <- c("tfr_average", class(data))
   }
   data
 }
@@ -132,7 +130,9 @@ average_tf <- function(data) {
   }
 
   col_names <- names(epochs(data))
-  col_names <- col_names[!(col_names %in% c("epoch"))]
+  col_names <- col_names[!(col_names %in% c("epoch",
+                                            "recording",
+                                            "event_type"))]
 
   epo_types <- unique(epochs(data)[col_names])
   new_epos <- nrow(epo_types)
@@ -144,6 +144,10 @@ average_tf <- function(data) {
            function(x) dplyr::inner_join(epochs(data),
                                          epo_types[x, ],
                                          by = col_names)[["epoch"]])
+
+  # convert epoch numbers from epochs() to positions in matrix
+  epo_nums <- lapply(epo_nums,
+                     function(x) which(orig_dims$epoch %in% x))
 
   if (identical(data$freq_info$output, "phase")) {
     data$signals <- apply(data$signals,
@@ -157,8 +161,8 @@ average_tf <- function(data) {
     avg_tf <- array(0, dim = c(new_epos,
                                dim(data$signals)[2:4]))
 
-    for (iz in 1:dim(data$signals)[3]) {
-      for (ij in 1:dim(data$signals)[4]) {
+    for (iz in 1:dim(data$signals)[3]) { # electrodes
+      for (ij in 1:dim(data$signals)[4]) { # frequencies
         for (ik in 1:new_epos) {
           avg_tf[ik, , iz, ij] <-
             array(colMeans(data$signals[epo_nums[[ik]], ,
