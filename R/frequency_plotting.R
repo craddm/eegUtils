@@ -269,15 +269,6 @@ plot_tfr <- function(data,
     } else{
       fill_lims <- c(NA, NA)
     }
-
-    #   fill_lims <- c(min(data$signals, na.rm = TRUE),
-    #                  max(data$signals, na.rm = TRUE))
-    # if (all(fill_lims > 0)) {
-    #   fill_lims <- c(0, NA)
-    # } else {
-    #   fill_lims <- max(abs(fill_lims))
-    #   fill_lims <- c(-fill_lims, fill_lims)
-    # }
   }
 
   # Use purrr::partial to save copy pasting the whole thing in every
@@ -300,9 +291,6 @@ plot_tfr <- function(data,
   data <- as.data.frame(data,
                         long = TRUE)
 
-  n_freqs <- length(unique(data$frequency))
-  n_times <- length(unique(data$time))
-
   tfr_plot <-
     ggplot2::ggplot(data,
                     aes(x = time,
@@ -311,11 +299,6 @@ plot_tfr <- function(data,
     stat_summary_by_fill(fun.data = mean,
                          na.rm = na.rm,
                          interpolate = interpolate) +
-    # stat_raster(interpolate = interpolate,
-    #              na.rm = na.rm,
-    #             drop = FALSE) +
-    # geom_raster(interpolate = interpolate,
-    #             na.rm = FALSE) +
     labs(x = "Time (s)",
          y = "Frequency (Hz)",
          fill = fill_lab) +
