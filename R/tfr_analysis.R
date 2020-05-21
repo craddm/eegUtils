@@ -48,6 +48,12 @@ compute_tfr.eeg_epochs <- function(data,
                                    verbose = TRUE,
                                    ...) {
 
+  if (identical(output, "fourier") && keep_trials == FALSE) {
+    if (verbose == TRUE) {
+      message("For fourier output, all trials are kept.")
+    }
+    keep_trials <- TRUE
+  }
 
   tfr_obj <- switch(method,
                     "morlet" = tf_morlet(data = data,
@@ -142,7 +148,7 @@ tf_morlet <- function(data,
                           srate = data$srate,
                           n_freq = n_freq,
                           n_cycles = n_cycles
-  )
+                          )
 
   # Create a list of metadata about the TFR
   data$freq_info <- list(freqs = frex,
@@ -158,14 +164,14 @@ tf_morlet <- function(data,
   }
 
   n_kern <- nrow(morlet_family)
-  #
-
   max_length <- length(unique(data$timings$time))
   n_conv <- max_length + n_kern - 1
   n_conv <- stats::nextn(n_conv, 2)
+
   # zero-pad and run FFTs on morlets
   mf_zp <- fft_n(morlet_family,
                  n_conv)
+
   # Normalise wavelets for FFT (as suggested by Mike X. Cohen):
   norm_mf <- wavelet_norm(mf_zp,
                           n_freq)
@@ -177,7 +183,6 @@ tf_morlet <- function(data,
                   length(unique(data$timings$time)),
                   by = downsample)
 
-
   data$signals <- run_tf(data,
                          norm_mf,
                          n_conv,
@@ -188,13 +193,15 @@ tf_morlet <- function(data,
 
   sigtime <- sigtime[time_sel]
   data$timings <- data$timings[data$timings$time %in% sigtime, ]
-  if (keep_trials) {
+
+  if (keep_trials == TRUE) {
     dimnames(data$signals) <- list(epoch = unique(data$timings$epoch),
                                    time = sigtime,
                                    electrode = elecs,
                                    frequency = data$freq_info$freqs)
   } else {
-    data$signals <- array(data$signals, dim = c(1, dim(data$signals)))
+    data$signals <- array(data$signals,
+                          dim = c(1, dim(data$signals)))
     dimnames(data$signals) <- list(epoch = "1",
                                    time = sigtime,
                                    electrode = elecs,
@@ -205,7 +212,7 @@ tf_morlet <- function(data,
   edge_mat <- remove_edges(sigtime,
                            data$freq_info$morlet_resolution$sigma_t)
 
-  if (keep_trials) {
+  if (keep_trials == TRUE) {
 
     dims <- which(names(dimnames(data$signals)) %in% c("time", "frequency"))
     data$signals <- sweep(data$signals,
@@ -225,10 +232,12 @@ tf_morlet <- function(data,
   }
 
   dims <- which(names(dimnames(data$signals)) %in% c("time", "frequency"))
+
   data$signals <- sweep(data$signals,
                         dims,
                         edge_mat,
                         "*")
+
   data <- eeg_tfr(data$signals,
                   srate = data$srate,
                   events = NULL,
@@ -237,7 +246,7 @@ tf_morlet <- function(data,
                                              "participant_id")],
                   chan_info = data$chan_info,
                   reference = data$reference,
-                  timings = data$timings[1:nrow(data$signals), "time"],
+                  timings = data$timings[1:length(sigtime), c("epoch", "time")],
                   freq_info = data$freq_info,
                   dimensions = c("epoch",
                                  "time",
@@ -435,6 +444,7 @@ convert_tfr <- function(data, output) {
   } else {
     warning("Data is not complex, returning original data.")
   }
+  data
 }
 
 #' Normalise Morlet wavelets
