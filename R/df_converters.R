@@ -53,7 +53,7 @@ as.data.frame.eeg_data <- function(x,
 #' @param long Convert to long format. Defaults to FALSE.
 #' @param ... arguments for other as.data.frame commands
 #'
-#' @importFrom tidyr spread
+#' @importFrom tidyr gather
 #' @export
 as.data.frame.eeg_tfr <- function(x,
                                   row.names = NULL,
@@ -61,8 +61,9 @@ as.data.frame.eeg_tfr <- function(x,
                                   long = FALSE,
                                   ...) {
 
-
   if (length(dim(x$signals)) == 3) {
+    # Note, as of 0.5.0.9000, eeg_tfr always has more than 3 dimensions, so this
+    # is for compatibility
     out_df <- aperm(x$signals,
                     c("time",
                       "frequency",
@@ -78,16 +79,16 @@ as.data.frame.eeg_tfr <- function(x,
                             each = dim_size[1])
     out_df$epoch <- unique(x$epochs$epoch)
   } else {
-    # Check which dimenstion to average over - participant or epoch
-    if ("epoch" %in% x$dimensions) {
-      avg_dim <- "epoch"
-    } else if ("participant_id" %in% x$dimensions) {
-      avg_dim <- "participant_id"
+    # Build in checks for group objects, as these need custom code adding
+    if ("participant_id" %in% x$dimensions) {
+      stop("Currently not working with eeg_group objects...")
+      #avg_dim <- "participant_id"
     }
-    out_df <- aperm(x$signals, c("time",
-                                 "frequency",
-                                 avg_dim,
-                                 "electrode"))
+    out_df <- aperm(x$signals,
+                    c("time",
+                      "frequency",
+                      "epoch",
+                      "electrode"))
     dim_size <- dim(out_df)
     dim(out_df) <- c(dim_size[1] * dim_size[2] * dim_size[3],
                      dim_size[4])
@@ -101,11 +102,9 @@ as.data.frame.eeg_tfr <- function(x,
                           dim_size[1] * dim_size[2])
     out_df$participant_id <- rep(x$epochs$participant_id,
                                  each = dim_size[1] * dim_size[2])
-
-
   }
 
-  if ("participant_id" %in% x$dimensions) {
+  if ("participant_id" %in% colnames(out_df)) {
     out_df <- dplyr::left_join(out_df,
                                x$epochs,
                                by = c("participant_id", "epoch"))
