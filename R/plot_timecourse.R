@@ -178,20 +178,21 @@ plot_timecourse.eeg_ICA <- function(data,
 #' @describeIn plot_timecourse Plot timecourses from \code{eeg_epochs} objects.
 #' @export
 plot_timecourse.eeg_epochs <- function(data,
-                               electrode = NULL,
-                               time_lim = NULL,
-                               add_CI = FALSE,
-                               baseline = NULL,
-                               colour = NULL,
-                               color = NULL,
-                               mapping = NULL,
-                               ...) {
+                                       electrode = NULL,
+                                       time_lim = NULL,
+                                       add_CI = FALSE,
+                                       baseline = NULL,
+                                       colour = NULL,
+                                       color = NULL,
+                                       mapping = NULL,
+                                       ...) {
 
   data <- parse_for_tc(data,
                        time_lim = time_lim,
                        electrode = electrode,
                        baseline = baseline,
                        add_CI = add_CI)
+
   ## check for US spelling of colour...
   if (is.null(colour)) {
     if (!is.null(color)) {
@@ -209,14 +210,17 @@ plot_timecourse.eeg_epochs <- function(data,
   tc_plot
 }
 
-
+#' @describeIn plot_timecourse Plot timecourses from \code{eeg_tfr} objects.
+#' @export
 plot_timecourse.eeg_tfr <- function(data,
                                     electrode = NULL,
                                     time_lim = NULL,
                                     add_CI = FALSE,
                                     baseline = NULL,
                                     colour = NULL,
-                                    color = NULL, ...) {
+                                    color = NULL,
+                                    mapping = NULL,
+                                    ...) {
 
 
   if (!is.null(time_lim)) {
@@ -225,15 +229,45 @@ plot_timecourse.eeg_tfr <- function(data,
                    time <= time_lim[[2]])
   }
 
+  if (!is.null(electrode)) {
+    data <- select_elecs(data,
+                         electrode)
+  }
+
   data_f <- as.data.frame(data,
                           long = TRUE,
                           coords = FALSE)
 
-  ggplot(data_f, aes(x = time,
-                     y = power,
-                     colour = frequency)) +
+  tc_plot <-
+    ggplot(data_f,
+           aes(x = time,
+               y = power)) +
     stat_summary(geom = "line",
-                 fun = mean)
+                 fun = mean,
+                 na.rm = TRUE) +
+    labs(x = "Time (s)",
+         y = expression(paste("Power (a.u.)")),
+         colour = "",
+         fill = "") +
+    geom_vline(xintercept = 0,
+               linetype = "solid", size = 0.5) +
+    geom_hline(yintercept = 0, linetype = "solid", size = 0.5) +
+    scale_x_continuous(breaks = scales::pretty_breaks(n = 4),
+                       expand = c(0, 0)) +
+    scale_y_continuous(breaks = scales::pretty_breaks(n = 4),
+                       expand = c(0, 0)) +
+    theme_minimal(base_size = 12) +
+    theme(panel.grid = element_blank(),
+          axis.ticks = element_line(size = .5)) +
+    guides(colour = guide_legend(override.aes = list(alpha = 1)))
+
+
+  if (!is.null(mapping)) {
+    tc_plot <-
+      tc_plot +
+      mapping
+  }
+  tc_plot
 }
 
 #' Parse data for timecourses
