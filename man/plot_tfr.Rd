@@ -12,7 +12,9 @@ plot_tfr(
   baseline_type = "none",
   baseline = NULL,
   fill_lims = NULL,
-  interpolate = FALSE
+  interpolate = FALSE,
+  na.rm = TRUE,
+  fun.data = mean
 )
 }
 \arguments{
@@ -32,6 +34,12 @@ electrodes.}
 \item{fill_lims}{Custom colour scale (i.e. range of power). e.g. c(-5, 5).}
 
 \item{interpolate}{Interpolation of raster for smoother plotting.}
+
+\item{na.rm}{Remove NA values silently (TRUE) or with a warning (FALSE).
+Defaults to TRUE.}
+
+\item{fun.data}{Statistical function to use for averaging over
+electrodes/conditions. Defaults to `mean`.}
 }
 \value{
 A \code{ggplot}

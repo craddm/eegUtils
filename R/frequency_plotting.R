@@ -196,6 +196,10 @@ create_psd_plot <- function(psd_out,
 #' @param baseline_type baseline correction to apply. Defaults to "none".
 #' @param fill_lims Custom colour scale (i.e. range of power). e.g. c(-5, 5).
 #' @param interpolate Interpolation of raster for smoother plotting.
+#' @param na.rm Remove NA values silently (TRUE) or with a warning (FALSE).
+#'   Defaults to TRUE.
+#' @param fun.data Statistical function to use for averaging over
+#'   electrodes/conditions. Defaults to `mean`.
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #' @importFrom purrr partial
 #' @import ggplot2
@@ -211,7 +215,8 @@ plot_tfr <- function(data,
                      baseline = NULL,
                      fill_lims = NULL,
                      interpolate = FALSE,
-                     na.rm = FALSE) {
+                     na.rm = TRUE,
+                     fun.data = mean) {
 
   if (!inherits(data,"eeg_tfr")) {
     stop("Object of class eeg_tfr required.")
@@ -302,19 +307,15 @@ plot_tfr <- function(data,
     ggplot2::ggplot(data,
                     aes(x = time,
                         y = frequency,
-                        z = power)) +
+                        fill = power)) +
+    stat_summary_by_fill(fun.data = mean,
+                         na.rm = na.rm,
+                         interpolate = interpolate) +
     # stat_raster(interpolate = interpolate,
-    #             na.rm = na.rm) +
-    # # geom_raster(interpolate = interpolate,
-    #             stat = "avgz",
-    #             na.rm = TRUE) +
-    stat_summary_2d(geom = "raster",
-                    bins = c(n_freqs * n_times),
-                    fun = mean,
-                    fun.args = list(na.rm = FALSE),
-                    interpolate = interpolate,
-                    na.rm = FALSE,
-                    drop = FALSE) +
+    #              na.rm = na.rm,
+    #             drop = FALSE) +
+    # geom_raster(interpolate = interpolate,
+    #             na.rm = FALSE) +
     labs(x = "Time (s)",
          y = "Frequency (Hz)",
          fill = fill_lab) +

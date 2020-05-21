@@ -868,3 +868,47 @@ no_loc_chans <- function(chaninfo) {
   NULL
 }
 
+
+stat_summary_by_fill <- function(mapping = NULL,
+                                 data = NULL,
+                                 geom = "raster",
+                                 position = "identity",
+                                  ...,
+                                 fun.data = NULL,
+                                 na.rm = FALSE,
+                                 show.legend = NA,
+                                 inherit.aes = TRUE) {
+  layer(
+    data = data,
+    mapping = mapping,
+    stat = StatSummaryByFill,
+    geom = geom,
+    position = position,
+    show.legend = show.legend,
+    inherit.aes = inherit.aes,
+    params = list(
+      fun.data = fun.data,
+      na.rm = na.rm,
+      ...
+    )
+  )
+}
+
+StatSummaryByFill <- ggproto("StatSummaryByFill",
+                             Stat,
+                             required_aes = c("x", "y", "fill"),
+                             compute_group = function(data,
+                                                      scales,
+                                                      fun.data = NULL,
+                                                      na.rm = FALSE,
+                                                      params,
+                                                      layout) {
+                                summary <-
+                                  aggregate(fill ~ x + y,
+                                            data = data,
+                                            FUN = fun.data,
+                                            na.rm = na.rm,
+                                            na.action = na.pass)
+                                summary
+                                }
+                             )
