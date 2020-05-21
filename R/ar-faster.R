@@ -10,6 +10,7 @@
 #' @param ... Parameters passed to FASTER
 #' @examples
 #' ar_FASTER(demo_epochs)
+#' @return An \code{eeg_epochs} object with artefact correction applied.
 #' @references
 #' Nolan, Whelan & Reilly (2010). FASTER: Fully Automated Statistical Thresholding for
 #' EEG artifact Rejection. J Neurosci Methods.
@@ -63,7 +64,8 @@ ar_FASTER.eeg_epochs <- function(data,
   # }
 
   orig_names <- channel_names(data)
-  # Exclude ref chan from subsequent computations (may be better to alter reref_eeg...)
+  # Exclude ref chan from subsequent computations (may be better to alter
+  # reref_eeg...)
   data_chans <- orig_names[!(orig_names %in% data$reference$ref_chans)]
   if (!is.null(exclude)) {
     if (is.numeric(exclude)) {
@@ -126,15 +128,15 @@ ar_FASTER.eeg_epochs <- function(data,
 
   # Step 2: epoch statistics
   if (test_epochs) {
-  bad_epochs <- faster_epochs(data)
-  bad_epochs <- unique(data$timings$epoch)[bad_epochs]
-  message(paste("Globally bad epochs:",
-                paste(bad_epochs,
-                      collapse = " ")))
-  data$reject$bad_epochs <- bad_epochs
-  data <- select_epochs(data,
-                        epoch_no = bad_epochs,
-                        keep = FALSE)
+    bad_epochs <- faster_epochs(data)
+    bad_epochs <- unique(data$timings$epoch)[bad_epochs]
+    message(paste("Globally bad epochs:",
+                  paste(bad_epochs,
+                        collapse = " ")))
+    data$reject$bad_epochs <- bad_epochs
+    data <- select_epochs(data,
+                          epoch_no = bad_epochs,
+                          keep = FALSE)
   } else {
     message("Skipping bad epoch detection")
   }
@@ -230,6 +232,7 @@ faster_epochs <- function(data, sds = 3, ...) {
 
 faster_cine <- function(data,
                         exclude = NULL,
+                        max_bad = 10,
                         ...) {
 
   # get xyz coords only
@@ -238,21 +241,27 @@ faster_cine <- function(data,
                                    "cart_y",
                                    "cart_z")]
   # check for rows with missing values
-  missing_values <- apply(xyz_coords, 1, function(x) any(is.na(x)))
+  missing_values <- apply(xyz_coords, 1,
+                          function(x) any(is.na(x)))
   #remove any rows with missing values
   xyz_coords <- xyz_coords[!missing_values, ]
 
   keep_chans <- names(data$signals) %in% xyz_coords$electrode
 
+  if (is.null(exclude)) {
+    chan_means <- colMeans(data$signals)
+  } else {
+    chan_means <- colMeans(data$signals[!colnames(data$signals) %in% exclude])
+  }
 
   epochs <- split(data$signals,
                   data$timings$epoch)
 
-
-  # Work out which chans are bad according to FASTER in each epoch
+  # Work out which chans are bad in each epoch according to FASTER
   bad_chans <- lapply(epochs,
                       faster_epo_stat,
-                      exclude)
+                      exclude = exclude,
+                      chan_means = chan_means)
 
   # remove channel names that are for channels we have no locations for
   bad_chans <- lapply(bad_chans,
@@ -260,6 +269,14 @@ faster_cine <- function(data,
 
   # remove any epochs where there were no bad channels
   bad_chans <- bad_chans[lapply(bad_chans, length) > 0]
+
+  n_bads <- vapply(bad_chans, length, FUN.VALUE = integer(1))
+  broken_epochs <- names(n_bads)[n_bads > max_bad]
+  repairable_epochs <- names(n_bads)[n_bads <= max_bad]
+
+  if (length(repairable_epochs) >= 1) {
+    bad_chans <- bad_chans[repairable_epochs]
+  }
 
   # Get a transfer matrix for each epoch
   bad_coords <- lapply(bad_chans,
@@ -281,7 +298,10 @@ faster_cine <- function(data,
                                                 !keep_chans,
                                                 bad_coords[[x]]))
 
-  epochs <- replace(epochs, bad_epochs, new_epochs)
+  epochs <- replace(epochs,
+                    bad_epochs,
+                    new_epochs)
+  epochs <- epochs[!names(epochs) %in% broken_epochs]
   epochs <- data.table::rbindlist(epochs)
   data$signals <- as.data.frame(epochs)
   data
@@ -329,18 +349,23 @@ quick_hurst <- function(data) {
 
 faster_epo_stat <- function(data,
                             exclude = NULL,
-                            sds = 3) {
+                            sds = 3,
+                            chan_means) {
 
   if (!is.null(exclude)) {
     data <- select(data, -exclude)
   }
-  measures <- data.frame(vars = matrixStats::colVars(as.matrix(data)),
-                         medgrad = matrixStats::colMedians(diff(as.matrix(data))),
-                         range_diff = t(diff(t(matrixStats::colRanges(as.matrix(data)))))
-                         #dev = sweep(data, 2, chan_means)
+
+  measures <-
+    data.frame(vars = matrixStats::colVars(as.matrix(data)),
+               medgrad = matrixStats::colMedians(diff(as.matrix(data))),
+               range_diff = t(diff(t(matrixStats::colRanges(as.matrix(data))))),
+               chan_dev = abs(colMeans(data) - chan_means)
   )
   # Check if any measure is above threshold of standard deviations
-  bad_chans <- rowSums(scale(measures) > sds) > 0
+  # for some reason FASTER median centres all measures.
+
+  bad_chans <- rowSums(abs(scale(measures)) > sds) > 0
   bad_chans <- names(data)[bad_chans]
   bad_chans
 }

@@ -13,7 +13,6 @@ tf_morlet(
   output,
   downsample,
   demean = TRUE,
-  lang = "R",
   verbose
 )
 }
@@ -34,8 +33,6 @@ and highest frequency to resolve.}
 \item{downsample}{Downsampling factor (integer).}
 
 \item{demean}{Remove mean before transforming.}
-
-\item{lang}{defaults to R}
 
 \item{verbose}{Print informative messages in console.}
 }

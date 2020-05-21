@@ -17,6 +17,7 @@
 #' @param freq_range Vector of lower and upper frequencies to plot. (e.g. c(1,
 #'   40))
 #' @param ... Additional parameters.
+#' @return A ggplot object.
 #' @author Matt Craddock, \email{matt@@mattcraddock.com}
 #' @export
 
@@ -198,9 +199,14 @@ create_psd_plot <- function(psd_out,
 #' @param baseline_type baseline correction to apply. Defaults to "none".
 #' @param fill_lims Custom colour scale (i.e. range of power). e.g. c(-5, 5).
 #' @param interpolate Interpolation of raster for smoother plotting.
+#' @param na.rm Remove NA values silently (TRUE) or with a warning (FALSE).
+#'   Defaults to TRUE.
+#' @param fun.data Statistical function to use for averaging over
+#'   electrodes/conditions. Defaults to `mean`.
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #' @importFrom purrr partial
 #' @import ggplot2
+#' @return A \code{ggplot}
 #' @seealso [rm_baseline()]
 #' @export
 
@@ -211,7 +217,9 @@ plot_tfr <- function(data,
                      baseline_type = "none",
                      baseline = NULL,
                      fill_lims = NULL,
-                     interpolate = FALSE) {
+                     interpolate = FALSE,
+                     na.rm = TRUE,
+                     fun.data = mean) {
 
   if (!inherits(data,"eeg_tfr")) {
     stop("Object of class eeg_tfr required.")
@@ -231,7 +239,14 @@ plot_tfr <- function(data,
     data$signals <- data$signals[, , data_freqs, drop = FALSE]
   }
 
-  if (length(data$dimensions) == 4) {
+  if (identical(data$freq_info$output, "fourier")) {
+    message("Data is complex Fourier coefficients, converting to power.")
+    data$signals <- convert_tfr(data$signals,
+                                "power")
+    data$freq_info$output <- "power"
+  }
+
+  if (!inherits(data, "tfr_average")) {
     data <- eeg_average(data)
    }
 
@@ -252,13 +267,10 @@ plot_tfr <- function(data,
            "Power (a.u.)")
 
   if (is.null(fill_lims)) {
-    fill_lims <- c(min(data$signals, na.rm = TRUE),
-                   max(data$signals, na.rm = TRUE))
-    if (all(fill_lims > 0)) {
-      fill_lims <- c(0, max(abs(fill_lims)))
-    } else {
-      fill_lims <- max(abs(fill_lims))
-      fill_lims <- c(-fill_lims, fill_lims)
+    if (identical(data$freq_info$baseline, "none")) {
+      fill_lims <- c(0, NA)
+    } else{
+      fill_lims <- c(NA, NA)
     }
   }
 
@@ -287,7 +299,9 @@ plot_tfr <- function(data,
                     aes(x = time,
                         y = frequency,
                         fill = power)) +
-    geom_raster(interpolate = interpolate) +
+    stat_summary_by_fill(fun.data = mean,
+                         na.rm = na.rm,
+                         interpolate = interpolate) +
     labs(x = "Time (s)",
          y = "Frequency (Hz)",
          fill = fill_lab) +

@@ -63,6 +63,8 @@ eeg_reference.eeg_data <- function(data,
                  verbose = verbose)
 }
 
+#' @noRd
+#' @export
 eeg_reference.eeg_ICA <- function(data,
                                   ...) {
   stop("Cannot rereference ICA decompositions.")

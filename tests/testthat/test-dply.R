@@ -31,4 +31,6 @@ test_that("selection of electrodes and times works as expected", {
                     select_epochs(demo_tfr, epoch_no = 10:15))
   expect_equivalent(select(demo_SOBI, 1:2),
                     select_elecs(demo_SOBI, 1:2))
+  expect_equivalent(filter(demo_tfr, frequency >= 10, frequency <= 30),
+                    select_freqs(demo_tfr, c(10, 30)))
 })

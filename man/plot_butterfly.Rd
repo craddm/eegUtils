@@ -105,6 +105,8 @@ to FALSE.}
 applies to \code{eeg_lm} objects}
 }
 \value{
+A ggplot object
+
 ggplot2 object showing ERPs for all electrodes overlaid on a single
   plot.
 }

@@ -8,6 +8,9 @@
 - `as.data.frame()` methods have been added for `eeg_lm` objects.
 - `view_ica()` Shiny viewer for `eeg_ICA` and `eeg_decomp` objects added.
 - `view_artefacts()`Shiny viewer for channel and epoch stats added.
+- `plot_timecourse()` now takes a mapping argument, which allows use of `ggplot2` `aes()` mappings
+- `eeg_average.eeg_tfr()` now follows behaviour of other `eeg_average()` methods in respecting the `epochs` structure.
+- `plot_tfr()` now always drops NA/NaN values and averages appropriately over electrodes and conditions.
 
 ### Internal changes / bug fixes
 - Now using `whitening` package for whitening before SOBI ICA
@@ -25,7 +28,9 @@
 - `browse_data().eeg_ica` grid res reduced
 - `eeg_reference().eeg_epochs` was always average referencing, now fixed.
 - cleaner code in `topoplot()` for biharmonic smooth
-- `compute_psd()` now demeans individual segments when doing Welch FFT; no longer errors when only one segment per channel
+- `compute_psd()` now demeans individual segments when doing Welch FFT; also no longer errors when only one segment per channel
+- `eeg_tfr()` internal structure modified to keep 4 dimensions even after averaging, for consistency
+- `stat_summary_by_fill()` added to do averaging for raster plots effectively.
 
 # eegUtils 0.5.0
 

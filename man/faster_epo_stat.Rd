@@ -4,7 +4,7 @@
 \alias{faster_epo_stat}
 \title{Calculate statistics for each channel in an epoch and identify bad channels}
 \usage{
-faster_epo_stat(data, exclude = NULL, sds = 3)
+faster_epo_stat(data, exclude = NULL, sds = 3, chan_means)
 }
 \arguments{
 \item{data}{a matrix of signals from a single epoch}

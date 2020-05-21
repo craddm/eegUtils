@@ -4,7 +4,7 @@
 \alias{faster_cine}
 \title{FASTER detection of bad channels in single epochs}
 \usage{
-faster_cine(data, exclude = NULL, ...)
+faster_cine(data, exclude = NULL, max_bad = 10, ...)
 }
 \arguments{
 \item{data}{\code{eeg_epochs} object.}

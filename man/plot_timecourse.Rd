@@ -6,6 +6,7 @@
 \alias{plot_timecourse.eeg_evoked}
 \alias{plot_timecourse.eeg_ICA}
 \alias{plot_timecourse.eeg_epochs}
+\alias{plot_timecourse.eeg_tfr}
 \title{Plot 1-D timecourse data.}
 \usage{
 plot_timecourse(data, ...)
@@ -47,6 +48,18 @@ plot_timecourse(data, ...)
 )
 
 \method{plot_timecourse}{eeg_epochs}(
+  data,
+  electrode = NULL,
+  time_lim = NULL,
+  add_CI = FALSE,
+  baseline = NULL,
+  colour = NULL,
+  color = NULL,
+  mapping = NULL,
+  ...
+)
+
+\method{plot_timecourse}{eeg_tfr}(
   data,
   electrode = NULL,
   time_lim = NULL,
@@ -100,6 +113,8 @@ electrodes. Output is a ggplot2 object.
 \item \code{eeg_ICA}: Plot individual components from \code{eeg_ICA} components
 
 \item \code{eeg_epochs}: Plot timecourses from \code{eeg_epochs} objects.
+
+\item \code{eeg_tfr}: Plot timecourses from \code{eeg_tfr} objects.
 }}
 
 \examples{

@@ -187,13 +187,30 @@ filter.eeg_tfr <- function(.data, ...) {
     args_done[in_timings] <- TRUE
   }
 
+  in_frequency <- lhs_args == "frequency"
+
+  if (any(in_frequency)) {
+    frequency <- as.numeric(dimnames(.data$signals)$frequency)
+    args_done[in_frequency] <- TRUE
+    freq_args <- which(in_frequency)
+    logi_freq <- lapply(freq_args,
+                        function(x) rlang::eval_tidy(args[[x]]))
+
+    logi_freq <- Reduce("&", logi_freq)
+    .data$signals <- abind::asub(.data$signals,
+                                 logi_freq,
+                                 dims = which(names(dimnames(.data$signals)) %in% "frequency"),
+                                 drop = FALSE)
+    .data$freq_info$freqs <- .data$freq_info$freqs[logi_freq]
+    #.data$signals[[]]
+  }
+
   if (any(args_done == FALSE)) {
     warning(paste("Some arguments not used:",
                   unname(vapply(args[!args_done],
                                 rlang::quo_text,
                                 character(1)))))
   }
-
   .data
 }
 
