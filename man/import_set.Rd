@@ -4,7 +4,13 @@
 \alias{import_set}
 \title{Load EEGLAB .set files}
 \usage{
-import_set(file_name, df_out = FALSE, participant_id = NULL, recording = NULL)
+import_set(
+  file_name,
+  df_out = FALSE,
+  participant_id = NULL,
+  recording = NULL,
+  drop_custom = FALSE
+)
 }
 \arguments{
 \item{file_name}{Filename (and path if not in present working directory)}
@@ -15,6 +21,8 @@ TRUE for a normal data frame.}
 \item{participant_id}{By default, the filename will be used as the id of the participant.}
 
 \item{recording}{By default, the filename will be used as the name of the recording.}
+
+\item{drop_custom}{Drop custom event fields.}
 }
 \value{
 An object of class \code{eeg_data}
