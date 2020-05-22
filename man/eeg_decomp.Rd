@@ -10,9 +10,10 @@ eeg_decomp(data, ...)
 \method{eeg_decomp}{eeg_epochs}(
   data,
   sig_range,
-  noise_range = NULL,
+  noise_range,
   method = "ssd",
   verbose = TRUE,
+  order = 2,
   ...
 )
 }
