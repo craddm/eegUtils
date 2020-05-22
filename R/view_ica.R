@@ -6,6 +6,7 @@
 #'
 #' @author Matt craddock \email{matt@@mattcraddock.com}
 #' @param data An \code{eeg_ICA} object
+#' @return NULL
 #' @export
 
 view_ica <- function(data) {
