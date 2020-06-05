@@ -666,8 +666,12 @@ import_set <- function(file_name,
   colnames(event_table) <- dimnames(event_info)[[1]]
 
   event_table <- tibble::as_tibble(event_table)
+  event_table <- lapply(event_table,
+                        unlist)
   event_table <- purrr::map_df(event_table,
-                               unlist)
+                               ~ifelse(is_empty(unlist(.)),
+                                       NA,
+                                       unlist(.)))
 
   # EEGLAB stores latencies in samples and allows non-integer samples (e.g.
   # through downsampling, or more rapidly sampled events than EEG signal)
@@ -711,16 +715,21 @@ import_set <- function(file_name,
   } else {
     signals$time <- signals$time / 1000
     # convert to seconds - eeglab uses milliseconds
-    timings <- tibble::tibble(time = signals$time,
-                              epoch = signals$epoch,
-                              sample = 1:length(signals$time))
-    if (!continuous) {
+    if (continuous) {
+      timings <- tibble::tibble(time = signals$time,                                #epoch = signal,
+                                sample = 1:length(signals$time))
+      n_epochs <- 1
+    } else {
       event_table$time <- NA
       event_table$time <- timings[which(timings$sample %in% event_table$event_onset,
                                         arr.ind = TRUE), ]$time
+      timings <- tibble::tibble(time = signals$time,
+                                epoch = signals$epoch,
+                                sample = 1:length(signals$time))
+      n_epochs <- length(unique(timings$epoch))
     }
 
-    n_epochs <- length(unique(timings$epoch))
+
 
     epochs <-
       tibble::new_tibble(list(epoch = 1:n_epochs,
