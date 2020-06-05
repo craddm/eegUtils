@@ -65,7 +65,7 @@ eeg_average.eeg_epochs <- function(data,
     dplyr::summarise_at(.vars = vars(elecs),
                         mean) %>%
     dplyr::group_by_at(.vars = col_names) %>%
-    dplyr::mutate(epoch = dplyr::group_indices()) %>%
+    dplyr::mutate(epoch = dplyr::cur_group_id()) %>%
     dplyr::ungroup()
 
   timings <- data$signals[, c("time", "epoch", col_names)]
