@@ -40,6 +40,7 @@ eeg_decomp.default <- function(data, ...) {
 #' @param noise_range Range of frequencies to be considered noise (e.g. bounds of flanker frequencies)
 #' @param method Type of decomposition to apply. Currently only "ssd" is supported.
 #' @param verbose Informative messages printed to console. Defaults to TRUE.
+#' @param order Filter order for filter applied to signal/noise
 #' @describeIn eeg_decomp method for \code{eeg_epochs} objects
 #' @export
 eeg_decomp.eeg_epochs <- function(data,

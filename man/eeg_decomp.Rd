@@ -29,6 +29,8 @@ eeg_decomp(data, ...)
 \item{method}{Type of decomposition to apply. Currently only "ssd" is supported.}
 
 \item{verbose}{Informative messages printed to console. Defaults to TRUE.}
+
+\item{order}{Filter order for filter applied to signal/noise}
 }
 \description{
 Implements a selection of Generalized Eigenvalue based decomposition methods
