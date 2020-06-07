@@ -2,7 +2,7 @@
 
 ### Function changes
 - Added `filter` method for `eeg_tfr` objects
-- `fit_glm()` overhauled. now far faster and allows specification of models using standard R formulae.
+- `fit_glm()` overhauled. Now far faster and allows specification of models using standard R formulae.
 - New `eeg_lm` class introduced for output of `fit_glm()`.
 - `plot_butterfly.eeg_lm()` method added
 - `as.data.frame()` methods have been added for `eeg_lm` objects.
@@ -13,6 +13,7 @@
 - `plot_tfr()` now always drops NA/NaN values and averages appropriately over electrodes and conditions.
 
 ### Internal changes / bug fixes
+- `import_set()` handles continuous EEG data from EEGLAB much better
 - Now using `whitening` package for whitening before SOBI ICA
 - `select_epochs` for `eeg_ICA` objects fixed to correctly remove epochs from `signals`
 - added tests for `filter.eeg_ICA` and `filter.eeg_tfr`
@@ -31,6 +32,7 @@
 - `compute_psd()` now demeans individual segments when doing Welch FFT; also no longer errors when only one segment per channel
 - `eeg_tfr()` internal structure modified to keep 4 dimensions even after averaging, for consistency
 - `stat_summary_by_fill()` added to do averaging for raster plots effectively.
+- `convert_tfr()` now properly returns converted data
 
 # eegUtils 0.5.0
 

@@ -559,11 +559,12 @@ read_vmrk <- function(file_name) {
 #'   TRUE for a normal data frame.
 #' @param participant_id By default, the filename will be used as the id of the participant.
 #' @param recording By default, the filename will be used as the name of the recording.
+#' @param drop_custom Drop custom event fields.
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #' @importFrom R.matlab readMat
 #' @importFrom dplyr group_by mutate rename
 #' @importFrom tibble tibble as_tibble
-#' @importFrom purrr is_empty
+#' @importFrom purrr is_empty map_df
 #' @examples
 #' \dontrun{import_set("your_data.set")}
 #' @return An object of class \code{eeg_data}
@@ -572,7 +573,8 @@ read_vmrk <- function(file_name) {
 import_set <- function(file_name,
                        df_out = FALSE,
                        participant_id = NULL,
-                       recording = NULL) {
+                       recording = NULL,
+                       drop_custom = FALSE) {
 
   if (is.null(recording)) {
     recording <- basename(tools::file_path_sans_ext(file_name))
@@ -642,50 +644,92 @@ import_set <- function(file_name,
   colnames(signals) <- unique(chan_info$electrode)
   signals <- as.data.frame(signals)
   signals$time <- times
-    # data.frame(cbind(t(signals),
-    #                           times))
+
   srate <- temp_dat$EEG[[which(var_names == "srate")]][[1]]
-  #names(signals) <- c(unique(chan_info$electrode), "time")
-  signals <- dplyr::group_by(signals,
-                             time)
-  signals <- dplyr::mutate(signals,
-                           epoch = 1:dplyr::n())
-  signals <- dplyr::ungroup(signals)
+
+  if (!continuous) {
+    signals <- dplyr::group_by(signals,
+                               time)
+    signals <- dplyr::mutate(signals,
+                             epoch = 1:dplyr::n())
+    signals <- dplyr::ungroup(signals)
+  }
 
   event_info <- temp_dat$EEG[[which(var_names == "event")]]
 
-  event_table <- as.integer(event_info)
-  event_table <- matrix(event_table,
-                        nrow = dim(event_info)[[1]],
-                        ncol = dim(event_info)[[3]])
+  event_table <- event_info
+  dim(event_table) <- c(dim(event_info)[[1]],
+                        dim(event_info)[[3]])
+
   event_table <- t(event_table)
 
-    # t(matrix(as.integer(event_info),
-    #                       nrow = dim(event_info)[1],
-    #                       ncol = dim(event_info)[3]))
   colnames(event_table) <- dimnames(event_info)[[1]]
 
   event_table <- tibble::as_tibble(event_table)
+  event_table <- lapply(event_table,
+                        unlist)
+  event_table <- purrr::map_df(event_table,
+                               ~ifelse(is_empty(unlist(.)),
+                                       NA,
+                                       unlist(.)))
 
+  # EEGLAB stores latencies in samples and allows non-integer samples (e.g.
+  # through downsampling, or more rapidly sampled events than EEG signal)
+  #
+  if (any(event_table$latency %% 1 > 0)) {
+    message("Rounding non-integer event sample latencies...")
+    event_table$latency <- round(event_table$latency)
+  }
+
+  # EEGLAB stores latencies in samples starting from 1, my event_time is in
+  # seconds, starting from 0
   event_table$event_time <- (event_table$latency - 1) / srate
-  event_table <- event_table[, c("latency", "event_time", "type", "epoch")]
+
+  # if (!"epoch" %in% colnames(event_table)) {
+  #   event_table$epoch <- 1
+  # }
+
+  std_cols <- c("latency",
+                "event_time",
+                "type",
+                "epoch")
+
+  if (drop_custom & any(!colnames(event_table) %in% std_cols)) {
+    message("Dropping custom columns...")
+    event_table <- event_table[, std_cols]
+  }
+
+  col_check <-  colnames(event_table) %in% c("event_type", "event_onset")
+
+  if (any(col_check)) {
+    dupe_checks <- colnames(event_table)[col_check]
+    dupe_labs <- paste0(dupe_checks, ".x")
+  }
+
+  #need to build in check for duplicate columns
   event_table <- dplyr::rename(event_table,
                                event_type = "type",
                                event_onset = "latency")
-  event_table$time <- NA
-
   if (df_out) {
     return(signals)
   } else {
     signals$time <- signals$time / 1000
     # convert to seconds - eeglab uses milliseconds
-    timings <- tibble::tibble(time = signals$time,
-                              epoch = signals$epoch,
-                              sample = 1:length(signals$time))
-    event_table$time <- timings[which(timings$sample %in% event_table$event_onset,
-                                      arr.ind = TRUE), ]$time
+    if (continuous) {
+      timings <- tibble::tibble(time = signals$time,                                #epoch = signal,
+                                sample = 1:length(signals$time))
+      n_epochs <- 1
+    } else {
+      event_table$time <- NA
+      event_table$time <- timings[which(timings$sample %in% event_table$event_onset,
+                                        arr.ind = TRUE), ]$time
+      timings <- tibble::tibble(time = signals$time,
+                                epoch = signals$epoch,
+                                sample = 1:length(signals$time))
+      n_epochs <- length(unique(timings$epoch))
+    }
 
-    n_epochs <- length(unique(timings$epoch))
+
 
     epochs <-
       tibble::new_tibble(list(epoch = 1:n_epochs,
@@ -719,8 +763,11 @@ import_set <- function(file_name,
 #' Internal function to convert EEGLAB chan_info to eegUtils style
 #'
 #' @param chan_info Channel info list from an EEGLAB set file
+#' @param drop If there are additional columns, remove all columns except
+#'   electrode if TRUE, or just unexpected columns if FALSE.
 #' @keywords internal
-parse_chaninfo <- function(chan_info) {
+parse_chaninfo <- function(chan_info,
+                           drop = FALSE) {
   chan_info <- tibble::as_tibble(t(as.data.frame(chan_info)))
   chan_info <- tibble::as_tibble(data.frame(lapply(chan_info,
                                                    unlist),
@@ -732,9 +779,15 @@ parse_chaninfo <- function(chan_info) {
                 "theta", "type",
                 "urchan", "X", "Y", "Z")
   if (!all(names(chan_info) == expected)) {
-    warning("EEGLAB chan info has unexpected format, taking electrode names only.")
-    out <- data.frame(chan_info["labels"])
-    names(out) <- "electrode"
+    if (drop) {
+      warning("EEGLAB chan info has unexpected format, taking electrode names only.")
+      out <- data.frame(chan_info["labels"])
+      names(out) <- "electrode"
+      return(validate_channels(out))
+    } else {
+      warning("EEGLAB chan info has unexpected format, taking only expected columns.")
+      chan_info <- chan_info[, expected]
+    }
   }
   names(chan_info) <- c("electrode",
                         "radius",

@@ -10,9 +10,10 @@ eeg_decomp(data, ...)
 \method{eeg_decomp}{eeg_epochs}(
   data,
   sig_range,
-  noise_range = NULL,
+  noise_range,
   method = "ssd",
   verbose = TRUE,
+  order = 2,
   ...
 )
 }
@@ -28,6 +29,8 @@ eeg_decomp(data, ...)
 \item{method}{Type of decomposition to apply. Currently only "ssd" is supported.}
 
 \item{verbose}{Informative messages printed to console. Defaults to TRUE.}
+
+\item{order}{Filter order for filter applied to signal/noise}
 }
 \description{
 Implements a selection of Generalized Eigenvalue based decomposition methods

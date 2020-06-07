@@ -436,11 +436,11 @@ circ_mean <- function(data) {
 #' @keywords internal
 convert_tfr <- function(data, output) {
   if (is.complex(data[[1]])) {
-    switch(output,
-           "power" = abs(data) ^ 2,
-           "phase" = atan2(Im(data),
-                           Re(data)),
-           "fourier" = data)
+    data <- switch(output,
+                   "power" = abs(data) ^ 2,
+                   "phase" = atan2(Im(data),
+                                   Re(data)),
+                   "fourier" = data)
   } else {
     warning("Data is not complex, returning original data.")
   }
