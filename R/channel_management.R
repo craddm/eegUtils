@@ -12,16 +12,27 @@
 
 import_chans <- function(file_name,
                          format = "spherical") {
+
   file_type <- tools::file_ext(file_name)
-  if (file_type == "elc") {
-    chan_locs <- import_elc(file_name)
-  } else if (file_type == "txt") {
-    chan_locs <-
-      switch(format,
-             spherical = import_txt(file_name))
-  } else {
-    stop("File type ", file_type, " is unknown.")
-  }
+
+  chan_locs <-
+    switch(file_type,
+           elc = import_elc(file_name),
+           txt = switch(format,
+                        spherical = import_text(file_name)),
+           elp = import_elp(file_name),
+           stop("File type ", file_type, " is unknown.")
+           )
+
+  # if (file_type == "elc") {
+  #   chan_locs <- import_elc(file_name)
+  # } else if (file_type == "txt") {
+  #   chan_locs <-
+  #     switch(format,
+  #            spherical = import_txt(file_name))
+  # } else {
+  #   stop("File type ", file_type, " is unknown.")
+  # }
   chan_locs <- validate_channels(chan_locs)
   chan_locs
 }
@@ -80,6 +91,49 @@ import_elc <- function(file_name) {
 import_txt <- function(file_name) {
   raw_locs <- utils::read.delim(file_name,
                                 stringsAsFactors = FALSE)
+  elec_labs <- grepl("electrode",
+                     names(raw_locs),
+                     ignore.case = TRUE)
+  theta_col <- grepl("theta",
+                     names(raw_locs),
+                     ignore.case = TRUE)
+  phi_col <- grepl("phi",
+                   names(raw_locs),
+                   ignore.case = TRUE)
+  cart_xyz <- sph_to_cart(raw_locs[, theta_col],
+                          raw_locs[, phi_col])
+  final_locs <- tibble::tibble(electrode = as.character(raw_locs[, elec_labs]),
+                               radius = 1,
+                               theta = raw_locs[, theta_col],
+                               phi = raw_locs[, phi_col])
+  xy <- project_elecs(final_locs,
+                      method = "stereographic")
+  final_locs <- cbind(final_locs,
+                      cart_xyz,
+                      xy)
+  tibble::as_tibble(final_locs)
+}
+
+
+#' Import electrode locations from '.elp' file
+#'
+#' '.elp' files are from BESA.
+#'
+#' @param file_name file name of '.elp' electrode locations to import.
+#' @return A tibble containing channel locations.
+#' @keywords internal
+import_elp <- function(file_name) {
+
+  raw_locs <- utils::read.delim(file_name,
+                                skip = 1,
+                                header = FALSE,
+                                stringsAsFactors = FALSE,
+                                strip.white = TRUE)
+  colnames(raw_locs) <- c("chantype",
+                          "electrode",
+                          "theta",
+                          "phi",
+                          "circumference")
   elec_labs <- grepl("electrode",
                      names(raw_locs),
                      ignore.case = TRUE)
@@ -548,7 +602,6 @@ validate_channels <- function(chan_info,
   chan_info[missing] <- NA
   chan_info <- chan_info[required_cols]
 
-
   tibble::as_tibble(chan_info)
 }
 
@@ -726,7 +779,7 @@ rad2deg <- function(x) {
 #' projection can be orthographic or stereographic. Orthographic is closer to
 #' how the scalp would look from above, since it does not compensate for
 #' height/distance from the xy plane. This causes bunching up of electrodes near
-#' the limits of the head.Stereographic preserves more of the general shape of
+#' the limits of the head. Stereographic preserves more of the general shape of
 #' the features by "unrolling" the electrode positions.
 #'
 #' @param chan_info Channel information from an eegUtils object
