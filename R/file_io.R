@@ -668,10 +668,15 @@ import_set <- function(file_name,
   event_table <- tibble::as_tibble(event_table)
   event_table <- lapply(event_table,
                         unlist)
-  event_table <- purrr::map_df(event_table,
-                               ~ifelse(is_empty(unlist(.)),
-                                       NA,
-                                       unlist(.)))
+  empty_entries <- unlist(lapply(event_table,
+                                 is_empty))
+  if (any(empty_entries)) {
+    empty_cols <- names(event_table)[empty_entries]
+    message(paste0("Removing empty event table column (s):",
+                   empty_cols))
+    event_table <- event_table[!empty_entries]
+  }
+  event_table <- tibble::as_tibble(event_table)
 
   # EEGLAB stores latencies in samples and allows non-integer samples (e.g.
   # through downsampling, or more rapidly sampled events than EEG signal)
