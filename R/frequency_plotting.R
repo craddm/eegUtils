@@ -31,6 +31,7 @@ plot_psd <- function(data, freq_range = NULL, ...) {
 #' @param noverlap Amount of overlap between segments, in sampling points.
 #'   Defaults to 50\%.
 #' @param seg_length Length of individual segments. Defaults to n_fft. Must be <= n_fft.
+#' @param demean Remove epoch means before FFT.
 #' @describeIn plot_psd Plot PSD for \code{eeg_epochs}.
 #' @export
 plot_psd.eeg_epochs <- function(data,
@@ -38,13 +39,15 @@ plot_psd.eeg_epochs <- function(data,
                                 n_fft = 256,
                                 seg_length = NULL,
                                 noverlap = NULL,
+                                demean = TRUE,
                                 ...) {
 
   psd_out <- compute_psd(data,
                          keep_trials = FALSE,
                          n_fft = n_fft,
                          seg_length = seg_length,
-                         noverlap = noverlap)
+                         noverlap = noverlap,
+                         demean = demean)
 
   create_psd_plot(psd_out,
                   freq_range)
