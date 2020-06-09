@@ -24,20 +24,11 @@ import_chans <- function(file_name,
            stop("File type ", file_type, " is unknown.")
            )
 
-  # if (file_type == "elc") {
-  #   chan_locs <- import_elc(file_name)
-  # } else if (file_type == "txt") {
-  #   chan_locs <-
-  #     switch(format,
-  #            spherical = import_txt(file_name))
-  # } else {
-  #   stop("File type ", file_type, " is unknown.")
-  # }
   chan_locs <- validate_channels(chan_locs)
   chan_locs
 }
 
-#' Import ASA .elc electrode location files
+#' Import ASA '.elc' electrode location files
 #'
 #' Loads and process ASA electrode locations.
 #' ASA electrode locations are given as Cartesian XYZ.
@@ -50,7 +41,8 @@ import_elc <- function(file_name) {
                         n = -1)
   n_elecs <- grep("NumberPositions",
                   raw_locs)
-  n_elecs <- as.numeric(unlist(strsplit(raw_locs[n_elecs], "\t"))[2])
+  n_elecs <-
+    as.numeric(unlist(strsplit(raw_locs[n_elecs], "\t"))[2])
   pos_loc <- grep("^Positions", raw_locs)
   pos <- raw_locs[seq(pos_loc + 1,
                       pos_loc + n_elecs)]
@@ -60,7 +52,8 @@ import_elc <- function(file_name) {
 
   pos <- strsplit(pos, " ")
   pos <- lapply(pos,
-                function(x) as.numeric(x[!x == ""]))
+                function(x)
+                  as.numeric(x[!x == ""]))
   pos <- as.data.frame(do.call("rbind", pos))
 
   sph_pos <- cart_to_spherical(norm_sphere(pos))
@@ -102,10 +95,13 @@ import_txt <- function(file_name) {
                    ignore.case = TRUE)
   cart_xyz <- sph_to_cart(raw_locs[, theta_col],
                           raw_locs[, phi_col])
-  final_locs <- tibble::tibble(electrode = as.character(raw_locs[, elec_labs]),
-                               radius = 1,
-                               theta = raw_locs[, theta_col],
-                               phi = raw_locs[, phi_col])
+  final_locs <-
+    tibble::tibble(
+      electrode = as.character(raw_locs[, elec_labs]),
+      radius = 1,
+      theta = raw_locs[, theta_col],
+      phi = raw_locs[, phi_col]
+    )
   xy <- project_elecs(final_locs,
                       method = "stereographic")
   final_locs <- cbind(final_locs,
@@ -123,12 +119,13 @@ import_txt <- function(file_name) {
 #' @return A tibble containing channel locations.
 #' @keywords internal
 import_elp <- function(file_name) {
-
-  raw_locs <- utils::read.delim(file_name,
-                                skip = 1,
-                                header = FALSE,
-                                stringsAsFactors = FALSE,
-                                strip.white = TRUE)
+  raw_locs <- utils::read.delim(
+    file_name,
+    skip = 1,
+    header = FALSE,
+    stringsAsFactors = FALSE,
+    strip.white = TRUE
+  )
   colnames(raw_locs) <- c("chantype",
                           "electrode",
                           "theta",
@@ -145,10 +142,13 @@ import_elp <- function(file_name) {
                    ignore.case = TRUE)
   cart_xyz <- sph_to_cart(raw_locs[, theta_col],
                           raw_locs[, phi_col])
-  final_locs <- tibble::tibble(electrode = as.character(raw_locs[, elec_labs]),
-                               radius = 1,
-                               theta = raw_locs[, theta_col],
-                               phi = raw_locs[, phi_col])
+  final_locs <-
+    tibble::tibble(
+      electrode = as.character(raw_locs[, elec_labs]),
+      radius = 1,
+      theta = raw_locs[, theta_col],
+      phi = raw_locs[, phi_col]
+    )
   xy <- project_elecs(final_locs,
                       method = "stereographic")
   final_locs <- cbind(final_locs,
@@ -451,12 +451,12 @@ plot_electrodes.default <- function(data,
                       mode = "text+markers")
     } else {
       ggplot2::ggplot(data,
-                      aes(x = x,
-                          y = y,
-                          label = electrode)) +
-        geom_text() +
-        theme_minimal() +
-        coord_equal()
+                      ggplot2::aes(x = x,
+                                   y = y,
+                                   label = electrode)) +
+        ggplot2::geom_text() +
+        ggplot2::theme_minimal() +
+        ggplot2::coord_equal()
     }
   } else {
     stop("No electrodes found.")
