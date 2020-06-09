@@ -577,6 +577,7 @@ biharmonic <- function(data,
   y_max <- max(data$y, na.rm = TRUE) * 2.5
 
   abs_y_max <- max(abs(data$y), na.rm = TRUE)
+
   xo <- seq(x_min,
             x_max,
             length = grid_res)
@@ -599,7 +600,7 @@ biharmonic <- function(data,
               ncol = length(xy))
   d <- abs(d - t(d))
   diag(d) <- 1
-  g <- (d ^ 2) * (log(d) - 1) #Green's function
+  g <- (d^2) * (log(d) - 1) #Green's function
   diag(g) <- 0
   weights <- qr.solve(g, data$fill)
   xy <- t(xy)
@@ -616,13 +617,15 @@ biharmonic <- function(data,
   data <- data.frame(x = xo[, 1],
                      outmat)
   names(data)[1:length(yo[1, ]) + 1] <- yo[1, ]
+
   data <- tidyr::gather(data,
                         key = y,
                         value = fill,
                         -x,
                         convert = TRUE)
 
-  if (identical(interp_limit, "head")) {
+  if (identical(interp_limit,
+                "head")) {
     circ_scale <- abs_y_max * 1.1
   } else {
     circ_scale <- y_max / 1.8
@@ -688,7 +691,7 @@ get_scalpmap.default <- function(data,
 #' @param interp_limit interp to the head or the skirt
 #' @param quantity amplitude
 #' @param facets Any facets you plan to use
-#' @describeIn get_scalpmap data frame
+#' @describeIn get_scalpmap data.frame
 #' @export
 get_scalpmap.data.frame <- function(data,
                                     method = "biharmonic",
