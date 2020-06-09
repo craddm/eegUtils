@@ -539,11 +539,11 @@ read_vmrk <- function(file_name) {
                       "event_onset",
                       "length",
                       ".electrode")
-  markers <- dplyr::mutate(markers,
-                           event_onset = as.numeric(event_onset),
-                           length = as.numeric(length),
-                           .electrode = as.numeric(.electrode))
-
+  markers <-
+    dplyr::mutate(markers,
+                  event_onset = as.numeric(event_onset),
+                  length = as.numeric(length),
+                  .electrode = as.numeric(.electrode))
   markers
 }
 
@@ -690,9 +690,6 @@ import_set <- function(file_name,
   # seconds, starting from 0
   event_table$event_time <- (event_table$latency - 1) / srate
 
-  # if (!"epoch" %in% colnames(event_table)) {
-  #   event_table$epoch <- 1
-  # }
 
   std_cols <- c("latency",
                 "event_time",
