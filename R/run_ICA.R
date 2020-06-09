@@ -34,6 +34,12 @@ run_ICA <- function(data, ...) {
   UseMethod("run_ICA", data)
 }
 
+#' @export
+run_ICA.default <- function(data,
+                            ...) {
+  stop("Not supported for objects of this class.")
+}
+
 #' @param method "sobi" (default), "fastica", or "infomax".
 #' @param maxit Maximum number of iterations of the Infomax and Fastica ICA
 #'   algorithms.
@@ -196,6 +202,12 @@ run_ICA.eeg_epochs <- function(data,
                      epochs = data$epochs,
                      algorithm = method)
   ica_obj
+}
+
+#' @export
+run_ICA.eeg_group <- function(data,
+                              ...) {
+  stop("Not supported for group data.")
 }
 
 #' SOBI ICA
