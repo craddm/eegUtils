@@ -429,21 +429,60 @@ circ_mean <- function(data) {
   atan(mean(sin(data)) / mean(cos(data)))
 }
 
-#' Convert Fourier output to power or phase as requested.
+#' Convert Fourier output to power, phase, or ITC as requested.
 #'
-#' @param data Fourier coefficients from eeg_tfr
-#' @param output What output is desired - "power", "phase" or "fourier"
+#' @param data Fourier coefficients from \code{eeg_tfr}
+#' @param output What output is desired - "power", "phase"
 #' @keywords internal
-convert_tfr <- function(data, output) {
-  if (is.complex(data[[1]])) {
-    data <- switch(output,
-                   "power" = abs(data) ^ 2,
-                   "phase" = atan2(Im(data),
-                                   Re(data)),
-                   "fourier" = data)
+convert_tfr <- function(data,
+                        output) {
+
+  if (!is.eeg_tfr(data)) {
+    stop("This function requires an eeg_tfr object as input.")
+  }
+
+  if (is.complex(data$signals[[1]])) {
+    data$signals <- switch(output,
+                           "power" = abs(data$signals) ^ 2,
+                           "phase" = atan2(Im(data$signals),
+                                           Re(data$signals)),
+                           #"itc" = calc_ITC(data),
+                           "fourier" = data$signals)
   } else {
     warning("Data is not complex, returning original data.")
   }
+  data
+}
+
+calc_ITC <- function(data) {
+
+  if (!is.eeg_tfr(data)) {
+    stop("This function requires an eeg_tfr object as input.")
+  }
+
+  if (!is.complex(data$signals[[1]])) {
+    stop("Data is not complex, returning original data.")
+  }
+
+  orig_dimnames <- dimnames(data$signals)
+  orig_dim <- dim(data$signals)
+  n_epochs <- orig_dim[1]
+
+  if (n_epochs == 1) {
+    stop("Only one epoch, so ITC cannot be calculated.")
+  }
+
+  data$signals <- data$signals / abs(data$signals)
+  data$signals <- abs(apply(data$signals, c(2,3,4), sum))
+  data$signals <- data$signals / n_epochs
+  dim(data$signals) <- c(1, orig_dim[2:4])
+  dimnames(data$signals) <- c(epoch = list("1"),
+                              orig_dimnames[2:4])
+  data$timings <- data$timings[data$timings$epoch == 1, ]
+  epochs(data) <- epochs(data)[epochs(data)$epoch == 1,
+                               c("epoch", "participant_id")]
+  data$freq_info$output <- "itc"
+  class(data) <- c("tfr_average", "eeg_tfr")
   data
 }
 

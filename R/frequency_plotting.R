@@ -238,7 +238,7 @@ plot_tfr <- function(data,
 
   if (identical(data$freq_info$output, "fourier")) {
     message("Data is complex Fourier coefficients, converting to power.")
-    data$signals <- convert_tfr(data$signals,
+    data$signals <- convert_tfr(data,
                                 "power")
     data$freq_info$output <- "power"
   }

@@ -2,16 +2,16 @@
 % Please edit documentation in R/tfr_analysis.R
 \name{convert_tfr}
 \alias{convert_tfr}
-\title{Convert Fourier output to power or phase as requested.}
+\title{Convert Fourier output to power, phase, or ITC as requested.}
 \usage{
 convert_tfr(data, output)
 }
 \arguments{
-\item{data}{Fourier coefficients from eeg_tfr}
+\item{data}{Fourier coefficients from \code{eeg_tfr}}
 
-\item{output}{What output is desired - "power", "phase" or "fourier"}
+\item{output}{What output is desired - "power", "phase"}
 }
 \description{
-Convert Fourier output to power or phase as requested.
+Convert Fourier output to power, phase, or ITC as requested.
 }
 \keyword{internal}
