@@ -31,6 +31,8 @@ test_that("Plotting of butterfly plots from epochs", {
                               plot_butterfly(demo_epochs,
                                              baseline = c(-.2, 0),
                                              electrode = "A29"))
+  vdiffr::expect_doppelganger("butterfly evoked",
+                              plot_butterfly(eeg_average(demo_epochs)))
 })
 
 test_that("Topoplots", {

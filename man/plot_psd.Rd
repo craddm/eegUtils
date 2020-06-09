@@ -17,6 +17,7 @@ plot_psd(data, freq_range = NULL, ...)
   n_fft = 256,
   seg_length = NULL,
   noverlap = NULL,
+  demean = TRUE,
   ...
 )
 
@@ -66,6 +67,8 @@ for \code{eeg_epochs} or minimum of 2048 or the signal length for
 
 \item{noverlap}{Amount of overlap between segments, in sampling points.
 Defaults to 50\%.}
+
+\item{demean}{Remove epoch means before FFT.}
 
 \item{components}{Which components to compute the PSD for. Defaults to all.}
 }
