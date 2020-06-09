@@ -47,7 +47,6 @@ compute_tfr.eeg_epochs <- function(data,
                                    downsample = 1,
                                    verbose = TRUE,
                                    ...) {
-
   if (identical(output, "fourier") && keep_trials == FALSE) {
     if (verbose == TRUE) {
       message("For fourier output, all trials are kept.")
@@ -55,16 +54,22 @@ compute_tfr.eeg_epochs <- function(data,
     keep_trials <- TRUE
   }
 
-  tfr_obj <- switch(method,
-                    "morlet" = tf_morlet(data = data,
-                                         foi = foi,
-                                         n_freq = n_freq,
-                                         n_cycles = n_cycles,
-                                         keep_trials = keep_trials,
-                                         output = output,
-                                         downsample = downsample,
-                                         verbose = verbose),
-                    warning("Unknown method supplied. Currently supported method is 'morlet'"))
+  tfr_obj <- switch(
+    method,
+    "morlet" = tf_morlet(
+      data = data,
+      foi = foi,
+      n_freq = n_freq,
+      n_cycles = n_cycles,
+      keep_trials = keep_trials,
+      output = output,
+      downsample = downsample,
+      verbose = verbose
+    ),
+    warning(
+      "Unknown method supplied. Currently supported method is 'morlet'"
+    )
+  )
   tfr_obj
 }
 
@@ -79,16 +84,22 @@ compute_tfr.eeg_evoked <- function(data,
                                    downsample = 1,
                                    verbose = TRUE,
                                    ...) {
-  switch(method,
-         "morlet" = tf_morlet(data,
-                              foi = foi,
-                              n_freq = n_freq,
-                              n_cycles = n_cycles,
-                              keep_trials = keep_trials,
-                              output = output,
-                              downsample = downsample,
-                              verbose = verbose),
-         warning("Unknown method supplied. Currently supported method is 'morlet'"))
+  switch(
+    method,
+    "morlet" = tf_morlet(
+      data,
+      foi = foi,
+      n_freq = n_freq,
+      n_cycles = n_cycles,
+      keep_trials = keep_trials,
+      output = output,
+      downsample = downsample,
+      verbose = verbose
+    ),
+    warning(
+      "Unknown method supplied. Currently supported method is 'morlet'"
+    )
+  )
 }
 
 
@@ -120,7 +131,6 @@ tf_morlet <- function(data,
                       downsample,
                       demean = TRUE,
                       verbose) {
-
   frex <- parse_frex(foi,
                      n_freq,
                      verbose)
@@ -144,21 +154,25 @@ tf_morlet <- function(data,
   sigtime <- unique(data$timings$time)
 
   #Create a family of morlet wavelets (unscaled)
-  morlet_family <- morlet(frex = frex,
-                          srate = data$srate,
-                          n_freq = n_freq,
-                          n_cycles = n_cycles
-                          )
+  morlet_family <- morlet(
+    frex = frex,
+    srate = data$srate,
+    n_freq = n_freq,
+    n_cycles = n_cycles
+  )
 
   # Create a list of metadata about the TFR
-  data$freq_info <- list(freqs = frex,
-                         morlet_resolution = morlet_res(frex,
-                                                        n_cycles),
-                         method = "morlet",
-                         output = output,
-                         baseline = "none")
+  data$freq_info <- list(
+    freqs = frex,
+    morlet_resolution = morlet_res(frex,
+                                   n_cycles),
+    method = "morlet",
+    output = output,
+    baseline = "none"
+  )
 
-  # This is a total hack to make the rest of the code behave with eeg_evoked data
+  # This is a total hack to make the rest of the code behave with eeg_evoked
+  # data
   if (is.eeg_evoked(data)) {
     data$timings$epoch <- 1
   }
@@ -192,20 +206,24 @@ tf_morlet <- function(data,
                          output)
 
   sigtime <- sigtime[time_sel]
-  data$timings <- data$timings[data$timings$time %in% sigtime, ]
+  data$timings <- data$timings[data$timings$time %in% sigtime,]
 
   if (keep_trials == TRUE) {
-    dimnames(data$signals) <- list(epoch = unique(data$timings$epoch),
-                                   time = sigtime,
-                                   electrode = elecs,
-                                   frequency = data$freq_info$freqs)
+    dimnames(data$signals) <- list(
+      epoch = unique(data$timings$epoch),
+      time = sigtime,
+      electrode = elecs,
+      frequency = data$freq_info$freqs
+    )
   } else {
     data$signals <- array(data$signals,
                           dim = c(1, dim(data$signals)))
-    dimnames(data$signals) <- list(epoch = "1",
-                                   time = sigtime,
-                                   electrode = elecs,
-                                   frequency = data$freq_info$freqs)
+    dimnames(data$signals) <- list(
+      epoch = "1",
+      time = sigtime,
+      electrode = elecs,
+      frequency = data$freq_info$freqs
+    )
   }
 
   # Remove edges of the TFR'd data, where edge effects would be expected.
@@ -213,45 +231,50 @@ tf_morlet <- function(data,
                            data$freq_info$morlet_resolution$sigma_t)
 
   if (keep_trials == TRUE) {
-
-    dims <- which(names(dimnames(data$signals)) %in% c("time", "frequency"))
+    dims <-
+      which(names(dimnames(data$signals)) %in% c("time", "frequency"))
     data$signals <- sweep(data$signals,
                           dims,
                           edge_mat,
                           "*")
-    data <- eeg_tfr(data$signals,
-                    srate = data$srate,
-                    events = data$events,
-                    chan_info = data$chan_info,
-                    reference = data$reference,
-                    timings = data$timings,
-                    freq_info = data$freq_info,
-                    dimensions = names(dimnames(data$signals)),
-                    epochs = data$epochs)
+    data <- eeg_tfr(
+      data$signals,
+      srate = data$srate,
+      events = data$events,
+      chan_info = data$chan_info,
+      reference = data$reference,
+      timings = data$timings,
+      freq_info = data$freq_info,
+      dimensions = names(dimnames(data$signals)),
+      epochs = data$epochs
+    )
     return(data)
   }
 
-  dims <- which(names(dimnames(data$signals)) %in% c("time", "frequency"))
+  dims <-
+    which(names(dimnames(data$signals)) %in% c("time", "frequency"))
 
   data$signals <- sweep(data$signals,
                         dims,
                         edge_mat,
                         "*")
 
-  data <- eeg_tfr(data$signals,
-                  srate = data$srate,
-                  events = NULL,
-                  epochs = epochs(data)[1, c("epoch",
-                                             "recording",
-                                             "participant_id")],
-                  chan_info = data$chan_info,
-                  reference = data$reference,
-                  timings = data$timings[1:length(sigtime), c("epoch", "time")],
-                  freq_info = data$freq_info,
-                  dimensions = c("epoch",
-                                 "time",
-                                 "electrode",
-                                 "frequency"))
+  data <- eeg_tfr(
+    data$signals,
+    srate = data$srate,
+    events = NULL,
+    epochs = epochs(data)[1, c("epoch",
+                               "recording",
+                               "participant_id")],
+    chan_info = data$chan_info,
+    reference = data$reference,
+    timings = data$timings[1:length(sigtime), c("epoch", "time")],
+    freq_info = data$freq_info,
+    dimensions = c("epoch",
+                   "time",
+                   "electrode",
+                   "frequency")
+  )
   data
 }
 
@@ -454,6 +477,15 @@ convert_tfr <- function(data,
   data
 }
 
+#' Calculate inter-trial coherence
+#'
+#' Calculates inter-trial coherence (ITC), a measure of phase consistency across
+#' single trial data. Input data must be provided as complex Fourier
+#' coefficients within an \code{eeg_tfr} object
+#'
+#' @param data An \code{eeg_tfr} object
+#' @return An \code{eeg_tfr} object
+#' @export
 calc_ITC <- function(data) {
 
   if (!is.eeg_tfr(data)) {
@@ -473,16 +505,20 @@ calc_ITC <- function(data) {
   }
 
   data$signals <- data$signals / abs(data$signals)
-  data$signals <- abs(apply(data$signals, c(2,3,4), sum))
+  data$signals <- abs(apply(data$signals,
+                            c(2, 3, 4),
+                            sum))
   data$signals <- data$signals / n_epochs
-  dim(data$signals) <- c(1, orig_dim[2:4])
+  dim(data$signals) <- c(1,
+                         orig_dim[2:4])
   dimnames(data$signals) <- c(epoch = list("1"),
                               orig_dimnames[2:4])
   data$timings <- data$timings[data$timings$epoch == 1, ]
   epochs(data) <- epochs(data)[epochs(data)$epoch == 1,
                                c("epoch", "participant_id")]
   data$freq_info$output <- "itc"
-  class(data) <- c("tfr_average", "eeg_tfr")
+  class(data) <- c("tfr_average",
+                   "eeg_tfr")
   data
 }
 
@@ -502,9 +538,11 @@ wavelet_norm <- function(mf_zp, n_freq) {
                        2,
                        which.max)
   mf_zp_maxes <- lapply(seq_along(mf_zp_maxes),
-                        function(x) mf_zp[mf_zp_maxes[[x]], x])
+                        function(x)
+                          mf_zp[mf_zp_maxes[[x]], x])
   norm_mf <- lapply(seq_along(mf_zp_maxes),
-                    function(x) mf_zp[, x] / mf_zp_maxes[[x]])
+                    function(x)
+                      mf_zp[, x] / mf_zp_maxes[[x]])
   norm_mf <- matrix(unlist(norm_mf),
                     ncol = n_freq)
   norm_mf
@@ -514,7 +552,6 @@ wavelet_norm <- function(mf_zp, n_freq) {
 parse_frex <- function(foi,
                        n_freq,
                        verbose) {
-
   if (length(foi) > 2) {
     stop("No more than two frequencies should be specified.")
   } else if (length(foi) == 2) {
@@ -529,7 +566,7 @@ parse_frex <- function(foi,
               foi[2],
               length.out = n_freq)
 
-  if (verbose){
+  if (verbose) {
     message("Output frequencies: ", paste(round(frex, 2), collapse = " "))
   }
   frex
@@ -567,8 +604,8 @@ run_tf <- function(tmp,
 
         for (ik in 1:n_epochs) {
           tfr_out[ik, , i, ] <-
-            abs(mvfft(norm_mf * tmp_epo[,ik],
-                      inverse = TRUE)[all_times, ] / orig_n)^2
+            abs(mvfft(norm_mf * tmp_epo[, ik],
+                      inverse = TRUE)[all_times, ] / orig_n) ^ 2
         }
       }
     } else {
@@ -580,7 +617,7 @@ run_tf <- function(tmp,
       for (i in 1:n_chans) {
         tmp_epo <- fft_n(tmp[, , i], n_conv)
         for (ik in 1:n_epochs) {
-          tfr_out[ik,,i, ] <-
+          tfr_out[ik, , i, ] <-
             mvfft(norm_mf * tmp_epo[, ik],
                   inverse = TRUE)[all_times,] / orig_n
         }
@@ -589,11 +626,12 @@ run_tf <- function(tmp,
   } else {
     tfr_out <- array(0, dim = c(n_times, n_chans, n_freq))
     for (i in 1:n_chans) {
-      tmp_epo <- fft_n(tmp[,,i, drop = FALSE], n_conv)
+      tmp_epo <- fft_n(tmp[, , i, drop = FALSE], n_conv)
       for (ik in 1:n_epochs) {
-        tfr_out[ ,i, ] <-
+        tfr_out[, i, ] <-
           tfr_out[, i, ] +
-          abs(mvfft(norm_mf * tmp_epo[,ik], inverse = TRUE)[all_times,] / orig_n)^2
+          abs(mvfft(norm_mf * tmp_epo[, ik], inverse = TRUE)[all_times,] / orig_n) ^
+          2
       }
     }
     tfr_out <- tfr_out / n_epochs

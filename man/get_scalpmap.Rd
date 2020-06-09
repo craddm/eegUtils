@@ -37,6 +37,6 @@ Get an interpolated grid
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{data.frame}: data frame
+\item \code{data.frame}: data.frame
 }}
 

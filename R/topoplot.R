@@ -107,7 +107,7 @@ topoplot.data.frame <- function(data,
     palette <- colourmap
   }
 
-  # Filter out unwanted timepoints, and find nearest time values in the data
+  # Filter out unwanted timepoints and find nearest time values in the data
   # --------------
 
    if (!is.null(time_lim)) {
@@ -115,7 +115,8 @@ topoplot.data.frame <- function(data,
                          time_lim)
    }
 
-  # Check for x and y co-ordinates, try to add if not found --------------
+  # Check for x and y co-ordinates, try to add if not found
+  # --------------
   if (all(c("x", "y") %in% names(data))) {
     if (verbose) {
       message("Using electrode locations from data.")
@@ -199,6 +200,7 @@ topoplot.data.frame <- function(data,
                        y = data$y,
                        z = data$z,
                        electrode = data$electrode)
+
     # Rescale electrode co-ordinates to be from -1 to 1 for plotting
     # Selects largest absolute value from x or y.
     # NOTE: this may be less necessary now with new channel location formats.
@@ -218,10 +220,12 @@ topoplot.data.frame <- function(data,
            out_df <-
              dplyr::mutate(data,
                            topos = map(data,
-                                       ~biharm_topo(.x,
-                                                    grid_res = grid_res,
-                                                    scaled_x = scaled_x,
-                                                    scaled_y = scaled_y)))
+                                       #~biharmonic(.x,
+                                        #           grid_res = grid_res)))
+                                        ~biharm_topo(.x,
+                                                     grid_res = grid_res,
+                                                     scaled_x = scaled_x,
+                                                     scaled_y = scaled_y)))
          },
          gam = {
            out_df <-
@@ -278,10 +282,11 @@ topoplot.data.frame <- function(data,
                 na.rm = TRUE)
 
   if (contour) {
-    topo <- topo +
+    topo <-
+      topo +
       stat_contour(
         aes(z = amplitude,
-            linetype = stat(level) < 0),
+            linetype = after_stat(level) < 0),
         bins = 6,
         colour = "black",
         size = rel(1.1 * scaling),
@@ -292,11 +297,11 @@ topoplot.data.frame <- function(data,
   # Add head and mask to topoplot
   topo <-
     topo +
-    annotate("path",
-              x = mask_ring$x,
-              y = mask_ring$y,
-              colour = "white",
-              size = rel(6.5) * scaling) +
+    ggplot2::annotate("path",
+                      x = mask_ring$x,
+                      y = mask_ring$y,
+                      colour = "white",
+                      size = rel(6.5) * scaling) +
     geom_head(r = r,
               size = rel(1.5) * scaling) +
     #add_head(r, scaling) +
@@ -317,21 +322,20 @@ topoplot.data.frame <- function(data,
   if (chan_marker == "point") {
     topo <-
       topo +
-      annotate("point",
-               x = scaled_x,
-               y = scaled_y,
-               colour = "black",
-               size = rel(2 * scaling))
+      ggplot2::annotate("point",
+                        x = scaled_x,
+                        y = scaled_y,
+                        colour = "black",
+                        size = rel(2 * scaling))
     }  else if (chan_marker == "name") {
       topo <-
         topo +
-        annotate("text",
-                 x = scaled_x,
-                 y = scaled_y,
-                 label = data$electrode,
-                 #label = c(levels(data$electrode)[c(data$electrode)]),
-                 colour = "black",
-                 size = rel(4 * scaling))
+        ggplot2::annotate("text",
+                          x = scaled_x,
+                          y = scaled_y,
+                          label = data$electrode,
+                          colour = "black",
+                          size = rel(4 * scaling))
     }
 
   # Highlight specified electrodes
@@ -673,7 +677,7 @@ biharm_topo <- function(data,
               ncol = length(xy))
   d <- abs(d - t(d))
   diag(d) <- 1
-  g <- (d ^ 2) * (log(d) - 1) #Green's function
+  g <- (d^2) * (log(d) - 1) # Green's function
   diag(g) <- 0
   weights <- qr.solve(g, data$z)
   xy <- t(xy)
@@ -681,35 +685,25 @@ biharm_topo <- function(data,
   outmat <- numeric(grid_res^2)
 
   one_fun <- function(xo) {
-     tmp <-
-       matrix(complex(real = xo,
-                      imaginary = yo),
-            nrow = grid_res,
-            ncol = grid_res)
-     tmp_x <- numeric(length(xy))
-     for (i in seq(length(tmp))) {
-       tmp_x <- (abs(tmp[i] - xy)^2) * (log(abs(tmp[i] - xy)) - 1)
-       tmp_x <- ifelse(is.nan(tmp_x),
-                       0,
-                       tmp_x)
-       outmat[i] <- tmp_x %*% weights
 
-     }
-     outmat
-   }
+    tmp <-
+      matrix(complex(real = xo,
+                     imaginary = yo),
+             nrow = grid_res,
+             ncol = grid_res)
+    tmp_x <- numeric(length(xy))
+
+    for (i in seq(length(tmp))) {
+      tmp_x <- (abs(tmp[i] - xy)^2) * (log(abs(tmp[i] - xy)) - 1)
+      tmp_x <- ifelse(is.nan(tmp_x),
+                      0,
+                      tmp_x)
+      outmat[i] <- tmp_x %*% weights
+      }
+    outmat
+  }
+
    outmat <- one_fun(xo)
-
-   # outmat <-
-   #   purrr::map(xo + sqrt(as.complex(-1)) * yo,
-   #              function(x) (abs(x - xy) ^ 2) *
-   #                (log(abs(x - xy)) - 1))
-   # outmat <- rapply(outmat,
-   #                  function(x) ifelse(is.nan(x),
-   #                                     0,
-   #                                     x),
-   #                  how = "replace")
-   # outmat <- purrr::map_dbl(outmat,
-   #                          function (x) x %*% weights)
 
   dim(outmat) <- c(grid_res, grid_res)
 
