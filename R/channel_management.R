@@ -19,7 +19,7 @@ import_chans <- function(file_name,
     switch(file_type,
            elc = import_elc(file_name),
            txt = switch(format,
-                        spherical = import_text(file_name)),
+                        spherical = import_txt(file_name)),
            elp = import_elp(file_name),
            stop("File type ", file_type, " is unknown.")
            )
