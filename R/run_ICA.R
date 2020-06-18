@@ -69,10 +69,10 @@ run_ICA.eeg_epochs <- function(data,
                                rate = 0.1,
                                ...) {
 
+  orig_chans <- channel_names(data)
   if (!is.null(pca)) {
     message("Reducing data to ", pca,
             " dimensions using PCA.")
-    orig_chans <- channel_names(data)
     pca_decomp <- eigen(stats::cov(data$signals))$vectors
     data$signals <- as.data.frame(as.matrix(data$signals) %*% pca_decomp[, 1:pca])
     pca_flag <- TRUE
@@ -106,7 +106,9 @@ run_ICA.eeg_epochs <- function(data,
     ICA_out$W <- ICA_out$W[, 1:pca]
     mixing_matrix <- MASS::ginv(ICA_out$W, tol = 0)
 
-    mixing_matrix <- pca_decomp[, 1:pca] %*% mixing_matrix
+    if (pca_flag) {
+      mixing_matrix <- pca_decomp[, 1:pca] %*% mixing_matrix
+    }
 
     var_order <- sort(vaf_mix(mixing_matrix),
                       decreasing = TRUE,
