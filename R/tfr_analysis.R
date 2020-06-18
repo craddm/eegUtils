@@ -486,7 +486,7 @@ convert_tfr <- function(data,
 #' @param data An \code{eeg_tfr} object
 #' @return An \code{eeg_tfr} object
 #' @export
-compute_ITC <- function(data) {
+compute_itc <- function(data) {
 
   if (!is.eeg_tfr(data)) {
     stop("This function requires an eeg_tfr object as input.")
