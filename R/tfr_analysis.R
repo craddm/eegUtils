@@ -259,13 +259,16 @@ tf_morlet <- function(data,
                         edge_mat,
                         "*")
 
+  recording_id <- epochs(data)$recording[[1]]
+  participant_id <- epochs(data)$participant_id[[1]]
+
   data <- eeg_tfr(
     data$signals,
     srate = data$srate,
     events = NULL,
-    epochs = epochs(data)[1, c("epoch",
-                               "recording",
-                               "participant_id")],
+    epochs = tibble::tibble(epoch = 1,
+                            recording = recording_id,
+                            participant_id = participant_id),
     chan_info = data$chan_info,
     reference = data$reference,
     timings = data$timings[1:length(sigtime), c("epoch", "time")],

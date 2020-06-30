@@ -106,8 +106,10 @@ eeg_average.eeg_tfr <- function(data,
   if (!any(c("participant_id", "epoch") %in% data$dimensions)) {
     message("Data is already averaged.")
   } else {
-    data <- average_tf(data)
-    class(data) <- c("tfr_average", class(data))
+    data <- average_tf(data,
+                       cols = cols)
+    class(data) <- c("tfr_average",
+                     class(data))
   }
   data
 }
@@ -116,7 +118,8 @@ eeg_average.eeg_tfr <- function(data,
 #' Internal function for averaging over epochs for eeg_tfr objects.
 #' @param data data to average over
 #' @keywords internal
-average_tf <- function(data) {
+average_tf <- function(data,
+                       cols = NULL) {
 
   # Need to find a way to make this respect epochs structure...
   orig_dims <- dimnames(data$signals)
@@ -129,10 +132,24 @@ average_tf <- function(data) {
     orig_dims <- dimnames(data$signals)
   }
 
-  col_names <- names(epochs(data))
-  col_names <- col_names[!(col_names %in% c("epoch",
-                                            "recording",
-                                            "event_type"))]
+
+  if (!is.null(cols)) {
+    if ("participant_id" %in% cols) {
+      col_names <- cols
+    } else {
+      col_names <- c("participant_id", cols)
+    }
+  } else {
+    col_names <- names(data$epochs)
+    col_names <- col_names[!(col_names %in% c("epoch",
+                                              "recording",
+                                              "event_type"))]
+  }
+
+  # col_names <- names(epochs(data))
+  # col_names <- col_names[!(col_names %in% c("epoch",
+  #                                           "recording",
+  #                                           "event_type"))]
 
   epo_types <- unique(epochs(data)[col_names])
   new_epos <- nrow(epo_types)

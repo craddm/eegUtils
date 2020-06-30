@@ -12,6 +12,7 @@
 - `eeg_average.eeg_tfr()` now follows behaviour of other `eeg_average()` methods in respecting the `epochs` structure.
 - `plot_tfr()` now always drops NA/NaN values and averages appropriately over electrodes and conditions.
 - `compute_itc()` added for computing inter-trial coherence from `eeg_tfr` objects.
+- `cols` added to `eeg_average.eeg_tfr`
 
 ### Internal changes / bug fixes
 - `import_set()` handles continuous EEG data from EEGLAB much better
