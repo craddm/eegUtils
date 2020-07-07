@@ -523,22 +523,26 @@ read_vmrk <- function(file_name) {
   vmrks <- ini::read.ini(file_name)
   marker_id <- names(vmrks$`Marker Infos`)
 
-  markers <- lapply(vmrks$`Marker Infos`, function(x) unlist(strsplit(x, ",")))
+  markers <- lapply(vmrks$`Marker Infos`,
+                    function(x) unlist(strsplit(x, ",")))
 
   # to do - fix to check for "New segment" instead - it's the extra date field that causes issues
   if (length(markers[[1]]) == 6) {
     date <- markers[[1]][[6]]
-    markers[[1]] <- markers[[1]][1:5]
+    markers <- lapply(markers, `[`, 1:5)
   } else {
     date <- NA
   }
 
-  markers <- tibble::as_tibble(do.call(rbind, markers))
-  names(markers) <- c("BVA_type",
-                      "event_type",
-                      "event_onset",
-                      "length",
-                      ".electrode")
+  markers <- do.call(rbind, markers)
+
+  colnames(markers) <- c("BVA_type",
+                         "event_type",
+                         "event_onset",
+                         "length",
+                         ".electrode")
+
+  markers <- tibble::as_tibble(markers)
   markers <-
     dplyr::mutate(markers,
                   event_onset = as.numeric(event_onset),
@@ -841,7 +845,8 @@ parse_vhdr_chans <- function(chan_labels,
   } else {
     coords <- lapply(chan_info,
                      function(x) as.numeric(unlist(strsplit(x, split = ","))))
-    new_coords <- data.frame(do.call(rbind, coords))
+    new_coords <- data.frame(do.call(rbind,
+                                     coords))
     names(new_coords) <- c("radius", "theta", "phi")
     new_coords <- cbind(init_chans, new_coords)
     new_coords[new_coords$radius == 0, 2:4] <- NA
