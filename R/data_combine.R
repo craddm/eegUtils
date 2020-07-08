@@ -196,21 +196,31 @@ eeg_combine.eeg_tfr <- function(data,
 
     new_dim <- length(dim(data$signals)) + 1
     orig_dims <- dimnames(data$signals)
-    data$signals <- abind::abind(data$signals,
-                                 do.call(abind::abind,
-                                         list(purrr::map(args, ~.$signals),
-                                              along = new_dim)),
-                                 along = new_dim,
-                                 use.first.dimnames = TRUE)
+
+    data$signals <- abind::abind(
+      data$signals,
+      do.call(abind::abind,
+              list(purrr::map(
+                args, ~ .$signals
+                ),
+                along = new_dim)),
+      along = new_dim,
+      use.first.dimnames = TRUE)
+
     data$epochs  <- dplyr::bind_rows(data$epochs,
                                      purrr::map_df(args,
-                                                   ~.$epochs))
-    if (length(unique(data$epochs$participant_id)) > 1) {
+                                                   ~ .$epochs))
+
+    unique_part_ids <- unique(data$epochs$participant_id)
+
+    if (length(unique_part_ids) > 1) {
       dimnames(data$signals) <- c(orig_dims,
-                                  list(participant_id = data$epochs$participant_id))
+                                  list(participant_id = unique_part_ids))
       data$dimensions <- c(data$dimensions,
                            "participant_id")
-      class(data) <- c("eeg_group", "eeg_tfr")
+      class(data) <- c("eeg_group",
+                       "eeg_tfr")
+      message("Multiple participant IDs, creating eeg_group.")
     } else {
       dimnames(data$signals) <- c(orig_dims,
                                   list(epoch = data$epochs$epoch))
@@ -221,6 +231,54 @@ eeg_combine.eeg_tfr <- function(data,
 
   } else {
     stop("All inputs must be eeg_tfr objects.")
+  }
+  data
+}
+
+#' @export
+eeg_combine.tfr_average <- function(data,
+                                    ...) {
+
+  # with tfr_averages, the epochs may not be in the same order, or may not
+  # be present in all data, so the arrays all need to be reorganised
+
+  args <- list(...)
+
+  if (length(args) == 0) {
+    stop("Nothing to combine.")
+  }
+
+  if (!check_dims(c(list(data),
+                    args))) {
+    stop("Signal dimensions are mismatched. All objects must have the same number of channels, frequencies, epochs, and times.")
+  }
+
+  all_data <- rearrange_tfr(data,
+                            args)
+
+  new_dim <- length(dim(data$signals)) + 1
+  orig_dims <- dimnames(data$signals)
+
+  data$signals <- do.call(abind::abind,
+                          list(purrr::map(
+                            all_data, ~ .$signals
+                            ),
+                            along = new_dim,
+                            use.first.dimnames = TRUE))
+
+  data$epochs  <- purrr::map_df(all_data,
+                                ~ .$epochs)
+
+  unique_part_ids <- unique(data$epochs$participant_id)
+
+  if (length(unique_part_ids) > 1) {
+    dimnames(data$signals) <- c(orig_dims,
+                                list(participant_id = unique_part_ids))
+    data$dimensions <- c(data$dimensions,
+                         "participant_id")
+    class(data) <- c("eeg_group",
+                     "eeg_tfr")
+    message("Multiple participant IDs, creating eeg_group.")
   }
   data
 }
@@ -254,7 +312,6 @@ check_timings.eeg_data <- function(.data) {
 check_timings.eeg_epochs <- function(data) {
 
   n_rows <- nrow(data$timings)
-  #epochs <- unique(data$timings$epoch)
 
   # really should we be checking for *repeats* rather than decreases, as people
   # might combine data in the "wrong" order, or even the same file multiple
@@ -320,4 +377,44 @@ check_timings.eeg_epochs <- function(data) {
 
   data$epochs$epoch <- unique(data$events$epoch)
   data
+}
+
+#' Rearrange and combine tfr_average objects
+#'
+#' @keywords internal
+rearrange_tfr <- function(data,
+                          all_l) {
+
+  epo_list <- purrr::map_df(all_l,
+                            epochs)
+  sort_list <- merge(epochs(data),
+                     epo_list,
+                     all = TRUE)
+
+  epo_cols <- colnames(sort_list)
+
+  sort_list <- split(sort_list,
+                     sort_list$participant_id,
+                     drop = TRUE)
+  new_orders <- lapply(sort_list,
+                       `[[`, "epoch")
+  ah <- c(list(data),
+          all_l)
+  uhoh <-
+    lapply(seq_along(ah),
+           function(x) {
+             epochs(ah[[x]]) <- sort_list[[x]]
+             epochs(ah[[x]])$epoch <- 1:nrow(epochs(ah[[x]]))
+             ah[[x]]$signals <- ah[[x]]$signals[new_orders[[x]], , ,]
+             ah[[x]]
+           })
+  uhoh
+}
+
+check_dims <- function(x) {
+
+  sig_dims <- lapply(x,
+                     function(y) dim(y$signals))
+  length(unique(sig_dims)) == 1
+  #add more informative error messages
 }
