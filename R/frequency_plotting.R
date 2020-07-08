@@ -246,7 +246,7 @@ plot_tfr <- function(data,
     data$freq_info$output <- "power"
   }
 
-  if (!inherits(data, "tfr_average")) {
+  if (!inherits(data, c("tfr_average", "eeg_group"))) {
     data <- eeg_average(data)
    }
 

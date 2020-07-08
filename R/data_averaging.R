@@ -146,11 +146,6 @@ average_tf <- function(data,
                                               "event_type"))]
   }
 
-  # col_names <- names(epochs(data))
-  # col_names <- col_names[!(col_names %in% c("epoch",
-  #                                           "recording",
-  #                                           "event_type"))]
-
   epo_types <- unique(epochs(data)[col_names])
   new_epos <- nrow(epo_types)
   n_times <- dim(data$signals)[2]

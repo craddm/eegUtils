@@ -117,6 +117,8 @@ run_SSD <- function(data,
   cov_sig <- cov_epochs(signal)
   cov_noise <- cov_epochs(noise)
 
+
+
   eig_sigs <- base::eigen(cov_sig)
   # Get the rank of the covariance matrix and select only as many components as
   # there are ranks
@@ -151,6 +153,7 @@ run_SSD <- function(data,
     sort(vaf_mix(data$mixing_matrix),
          decreasing = TRUE,
          index.return = TRUE)$ix
+
   data$mixing_matrix <- data$mixing_matrix[, vaf_idx]
   data$unmixing_matrix <- as.data.frame(MASS::ginv(data$mixing_matrix, tol = 0))
 

@@ -78,31 +78,49 @@ as.data.frame.eeg_tfr <- function(x,
     out_df$frequency <- rep(as.numeric(dimnames(x$signals)$frequency),
                             each = dim_size[1])
     out_df$epoch <- unique(x$epochs$epoch)
-  } else {
-    # Build in checks for group objects, as these need custom code adding
-    if ("participant_id" %in% x$dimensions) {
-      stop("Currently not working with eeg_group objects...")
+  } else if (inherits(x, "eeg_group")) {
+     # stop("Currently not working with eeg_group objects...")
       #avg_dim <- "participant_id"
-    }
-    out_df <- aperm(x$signals,
-                    c("time",
-                      "frequency",
-                      "epoch",
-                      "electrode"))
-    dim_size <- dim(out_df)
-    dim(out_df) <- c(dim_size[1] * dim_size[2] * dim_size[3],
-                     dim_size[4])
-    out_df <- as.data.frame(out_df)
-    names(out_df) <- dimnames(x$signals)$electrode
-    out_df$time <- rep(as.numeric(dimnames(x$signals)$time),
-                       dim_size[3] * dim_size[2])#out_df$time)
-    out_df$frequency <- rep(as.numeric(dimnames(x$signals)$frequency),
-                            each = dim_size[1])
-    out_df$epoch <- rep(x$epochs$epoch, each =
-                          dim_size[1] * dim_size[2])
-    out_df$participant_id <- rep(x$epochs$participant_id,
-                                 each = dim_size[1] * dim_size[2])
-  }
+      out_df <- aperm(x$signals,
+                      c("time",
+                        "frequency",
+                        "epoch",
+                        "participant_id",
+                        "electrode"))
+      dim_size <- dim(out_df)
+      dim(out_df) <- c(prod(dim_size[1:4]),
+                       dim_size[5])
+      colnames(out_df) <- dimnames(x$signals)$electrode
+      out_df <- as.data.frame(out_df)
+      out_df$time <- rep(as.numeric(dimnames(x$signals)$time),
+                         prod(dim_size[2:4]))#out_df$time)
+      out_df$frequency <- rep(as.numeric(dimnames(x$signals)$frequency),
+                              each = dim_size[1])
+      out_df$epoch <- rep(x$epochs$epoch, each =
+                            dim_size[1] * dim_size[2])
+      out_df$participant_id <- rep(x$epochs$participant_id,
+                                   each = dim_size[1] * dim_size[2])
+
+    } else {
+      out_df <- aperm(x$signals,
+                      c("time",
+                        "frequency",
+                        "epoch",
+                        "electrode"))
+      dim_size <- dim(out_df)
+      dim(out_df) <- c(prod(dim_size[1:3]),
+                       dim_size[4])
+      out_df <- as.data.frame(out_df)
+      names(out_df) <- dimnames(x$signals)$electrode
+      out_df$time <- rep(as.numeric(dimnames(x$signals)$time),
+                         dim_size[3] * dim_size[2])#out_df$time)
+      out_df$frequency <- rep(as.numeric(dimnames(x$signals)$frequency),
+                              each = dim_size[1])
+      out_df$epoch <- rep(x$epochs$epoch, each =
+                            dim_size[1] * dim_size[2])
+      out_df$participant_id <- rep(x$epochs$participant_id,
+                                   each = dim_size[1] * dim_size[2])
+      }
 
   if ("participant_id" %in% colnames(out_df)) {
     out_df <- dplyr::left_join(out_df,
@@ -115,10 +133,10 @@ as.data.frame.eeg_tfr <- function(x,
                                by = "epoch")
   }
   if (long) {
-    return(tidyr::gather(out_df,
-                         electrode,
-                         power,
-                         channel_names(x)))
+    return(tidyr::pivot_longer(out_df,
+                               cols = channel_names(x),
+                               names_to = "electrode",
+                               values_to = "power"))
   }
 
   out_df
