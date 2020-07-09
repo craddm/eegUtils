@@ -13,6 +13,7 @@
 - `plot_tfr()` now always drops NA/NaN values and averages appropriately over electrodes and conditions.
 - `compute_itc()` added for computing inter-trial coherence from `eeg_tfr` objects.
 - `cols` added to `eeg_average.eeg_tfr`
+- `eeg_combine.tfr_average()` added to handle pre-averaged `eeg_tfr` objects
 
 ### Internal changes / bug fixes
 - `import_set()` handles continuous EEG data from EEGLAB much better
@@ -35,6 +36,7 @@
 - `eeg_tfr()` internal structure modified to keep 4 dimensions even after averaging, for consistency
 - `stat_summary_by_fill()` added to do averaging for raster plots effectively.
 - `convert_tfr()` now properly returns converted data
+- `import_raw()` fix for Brain Vision Analyzer files with date fields in the markers
 
 # eegUtils 0.5.0
 
