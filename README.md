@@ -24,7 +24,7 @@ uses custom object classes, it is designed such that these are always
 translatable to standard R *data.frames*, and thus can be used with any
 of the myriad packages and methods that support standard R formats.
 
-### Installation
+## Installation
 
 The package is very much under active development and is subject to a
 lot of changes. As such, it is not currently available on CRAN.
@@ -48,10 +48,12 @@ You can also find the package on
 about installing packages from Neuroconductor, see the [Neuroconductor
 installation tutorial](https://neuroconductor.org/tutorials/install)
 
-### Usage
+## Usage
 
 The following examples show how to use `eegUtils` to produce a few
 common plots of EEG data from some simple included example data.
+
+### ERP butterfly plots
 
 ``` r
 library(eegUtils)
@@ -60,26 +62,33 @@ library(eegUtils)
 #> The following object is masked from 'package:stats':
 #> 
 #>     filter
-
 plot_butterfly(demo_epochs)
+#> Joining, by = c("epoch", "recording", "epoch_label", "participant_id")
 ```
 
 ![](man/figures/unnamed-chunk-3-1.png)<!-- -->
 
+### Topographical plots
+
 ``` r
 topoplot(demo_epochs, 
          time_lim = c(.22, .25 ))
+#> Joining, by = c("epoch", "recording", "epoch_label", "participant_id")
 #> Using electrode locations from data.
 ```
 
-![](man/figures/unnamed-chunk-3-2.png)<!-- -->
+![](man/figures/unnamed-chunk-4-1.png)<!-- -->
+
+### Power spectral density
 
 ``` r
 plot_psd(demo_epochs)
 #> Removing channel means per epoch...
 ```
 
-![](man/figures/unnamed-chunk-3-3.png)<!-- -->
+![](man/figures/unnamed-chunk-5-1.png)<!-- -->
+
+### Time-frequency analysis
 
 ``` r
 plot_tfr(compute_tfr(demo_epochs,
@@ -90,12 +99,28 @@ plot_tfr(compute_tfr(demo_epochs,
 #> Removing channel means per epoch...
 ```
 
-![](man/figures/unnamed-chunk-3-4.png)<!-- -->
+![](man/figures/unnamed-chunk-6-1.png)<!-- -->
 
 There are many potential processing steps that precede the production of
 plots like these. For more examples of how to import and process data,
 or import data from other sources, see the [eegUtils
 website](https://craddm.github.io/eegUtils)
+
+## Contributing
+
+If you have any bug reports or feature requests, please report them
+using the [Github issue
+tracker](https://github.com/craddm/eegUtils/issues).
+
+If you would like to contribute any code, be that anything from a
+documentation fix to a whole new feature, then please file a [Github
+pull request](https://github.com/craddm/eegUtils/issues).
+
+You can find a guide to the \[how Github issues and pull requests work
+here\]
+(<https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/about-pull-requests>).
+
+## Code of Conduct
 
 Please note that the `eegUtils` project is released with a [Contributor
 Code of Conduct](CODE_OF_CONDUCT.md). By contributing to this project,
