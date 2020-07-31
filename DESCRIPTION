@@ -31,7 +31,6 @@ Imports:
     tibble,
     stats,
     matrixStats,
-    R.matlab,
     pracma,
     abind,
     data.table,
@@ -52,7 +51,8 @@ Suggests: testthat,
     whitening,
     fICA,
     edfReader,
-    ini
+    ini,
+    R.matlab
 URL: https://github.com/craddm/eegUtils, https://craddm.github.io/eegUtils
 BugReports: https://github.com/craddm/eegUtils/issues
 VignetteBuilder: knitr

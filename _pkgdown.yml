@@ -32,10 +32,14 @@ reference:
       Functions for artefact rejection.
     contents:
       - starts_with("ar")
+      - epoch_stats
+      - channel_stats
+      - view_artefacts
   - title: Selection
     desc: Functions for selecting subsets of data
     contents:
       - starts_with("select")
+      - filter
   - title: Plotting
     desc: >
       Functions for plotting data
@@ -63,3 +67,4 @@ reference:
       - channels
       - epochs
       - events
+      - channel_names

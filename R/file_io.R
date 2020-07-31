@@ -405,7 +405,6 @@ import_vhdr <- function(file_name,
   .data
 }
 
-#' @importFrom ini read.ini
 #' @keywords internal
 read_vhdr <- function(file_name) {
 
@@ -574,7 +573,6 @@ read_vmrk <- function(file_name) {
 #' @param recording By default, the filename will be used as the name of the recording.
 #' @param drop_custom Drop custom event fields.
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
-#' @importFrom R.matlab readMat
 #' @importFrom dplyr group_by mutate rename
 #' @importFrom tibble tibble as_tibble
 #' @importFrom purrr is_empty map_df
@@ -588,6 +586,11 @@ import_set <- function(file_name,
                        participant_id = NULL,
                        recording = NULL,
                        drop_custom = FALSE) {
+
+  if (!requireNamespace("R.matlab", quietly = TRUE)) {
+    stop("Package \"R.matlab\" needed. Please install it.",
+         call. = FALSE)
+  }
 
   if (is.null(recording)) {
     recording <- basename(tools::file_path_sans_ext(file_name))
@@ -896,7 +899,6 @@ bva_elecs <- function(chan_info, radius = 85) {
 #'   used.
 #' @param participant_id Identifier for the participant.
 #' @param verbose Informative messages printed to console. Defaults to TRUE.
-#' @importFrom R.matlab readMat
 #' @examples
 #' \dontrun{import_ft("fieldtrip_test.mat")}
 #' @return An object of class \code{eeg_data}, \code{eeg_epochs}, or
@@ -906,6 +908,11 @@ import_ft <- function(file_name,
                       participant_id = NULL,
                       recording = NULL,
                       verbose = TRUE) {
+
+  if (!requireNamespace("R.matlab", quietly = TRUE)) {
+    stop("Package \"R.matlab\" needed. Please install it.",
+         call. = FALSE)
+  }
 
   tmp_ft <- R.matlab::readMat(file_name)
 
