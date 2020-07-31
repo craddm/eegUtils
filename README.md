@@ -113,12 +113,13 @@ using the [Github issue
 tracker](https://github.com/craddm/eegUtils/issues).
 
 If you would like to contribute any code, be that anything from a
-documentation fix to a whole new feature, then please file a [Github
-pull request](https://github.com/craddm/eegUtils/issues).
+documentation fix to a whole new feature, then please begin by raising
+an [issue](https://github.com/craddm/eegUtils/issues) before moving on
+to file a [Github pull
+request](https://github.com/craddm/eegUtils/pulls).
 
-You can find a guide to the \[how Github issues and pull requests work
-here\]
-(<https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/about-pull-requests>).
+You can find a guide to [how Github issues and pull requests work
+here](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/about-pull-requests).
 
 ## Code of Conduct
 

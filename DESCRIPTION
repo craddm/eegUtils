@@ -35,7 +35,6 @@ Imports:
     pracma,
     abind,
     data.table,
-    ini,
     plotly,
     future.apply,
     Rcpp
@@ -52,7 +51,8 @@ Suggests: testthat,
     geigen,
     whitening,
     fICA,
-    edfReader
+    edfReader,
+    ini
 URL: https://github.com/craddm/eegUtils, https://craddm.github.io/eegUtils
 BugReports: https://github.com/craddm/eegUtils/issues
 VignetteBuilder: knitr

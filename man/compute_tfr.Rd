@@ -47,10 +47,12 @@ compute_tfr(data, ...)
 \item{foi}{Frequencies of interest. Scalar or character vector of the lowest
 and highest frequency to resolve.}
 
-\item{n_freq}{Number of frequencies to be resolved. Scalar.}
+\item{n_freq}{Number of frequencies to be resolved. Must be an integer number
+of frequencies.}
 
-\item{n_cycles}{Scalar. Number of cycles at each frequency. Currently only
-supports a single number of cycles at all frequencies.}
+\item{n_cycles}{Number of cycles at each frequency. If a single integer, use
+a constant number of cycles at each frequency. If a character vector of
+length 2, use a linearly scaling number of cycles at each frequency.}
 
 \item{keep_trials}{Keep single trials or average over them before returning.
 Defaults to FALSE.}
@@ -80,7 +82,11 @@ performed using convolution in the frequency domain.
 }}
 
 \examples{
-compute_tfr(demo_epochs, method = "morlet", foi = c(4, 30), n_freq = 10, n_cycles = 3)
+out <- compute_tfr(demo_epochs, method = "morlet", foi = c(4, 30), n_freq = 10, n_cycles = 3)
+out
+out$freq_info$morlet_resolution
+out <- compute_tfr(demo_epochs, method = "morlet", foi = c(4, 30), n_freq = 10, n_cycles = c(3, 10))
+out$freq_info$morlet_resolution
 }
 \author{
 Matt Craddock \email{matt@mattcraddock.com}

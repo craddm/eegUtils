@@ -147,11 +147,20 @@ import_raw <- function(file_name,
                      timings = timings,
                      epochs = epochs)
 
-    } else if (file_type == "vhdr") {
+    } else if (identical(file_type, "vhdr")) {
+
+      if (!requireNamespace("ini", quietly = TRUE)) {
+        stop("Package \"ini\" needed to read BVA files. Please install it.",
+             call. = FALSE)
+      }
+
       message(paste("Importing Brain Vision Analyzer file", file_name))
+
+
       data <- import_vhdr(file_name,
                           recording = recording,
                           participant_id = participant_id)
+
     } else {
       stop("Unsupported filetype")
     }

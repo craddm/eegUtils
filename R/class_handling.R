@@ -386,28 +386,27 @@ is.eeg_data <- function(x) inherits(x, "eeg_data")
 #'
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #' @param x Object to check.
-#' @keywords internal
-
+#' @export
 is.eeg_epochs <- function(x) inherits(x, "eeg_epochs")
 
 #' Check if object is of class \code{eeg_evoked}
 #'
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #' @param x Object to check.
-#' @keywords internal
+#' @export
 is.eeg_evoked <- function(x) inherits(x, "eeg_evoked")
 
 #' Check if object is of class \code{eeg_stats}
 #'
 #' @param x Object to check.
-#' @keywords internal
+#' @export
 is.eeg_stats <- function(x) inherits(x, "eeg_stats")
 
 #' Check if object is of class \code{eeg_ICA}
 #'
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #' @param x Object to check.
-#' @keywords internal
+#' @export
 
 is.eeg_ICA <- function(x) inherits(x, "eeg_ICA")
 
@@ -415,7 +414,7 @@ is.eeg_ICA <- function(x) inherits(x, "eeg_ICA")
 #'
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #' @param x Object to check.
-#' @keywords internal
+#' @export
 is.eeg_tfr <- function(x) inherits(x, "eeg_tfr")
 
 #' Check if object is of class eeg_group

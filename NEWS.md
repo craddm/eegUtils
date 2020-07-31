@@ -10,12 +10,13 @@
 - `view_artefacts()`Shiny viewer for channel and epoch stats added.
 - `plot_timecourse()` now takes a mapping argument, which allows use of `ggplot2` `aes()` mappings
 - `eeg_average.eeg_tfr()` now follows behaviour of other `eeg_average()` methods in respecting the `epochs` structure.
-- `plot_tfr()` now always drops NA/NaN values and averages appropriately over electrodes and conditions.
 - `compute_itc()` added for computing inter-trial coherence from `eeg_tfr` objects.
 - `cols` added to `eeg_average.eeg_tfr`
 - `eeg_combine.tfr_average()` added to handle pre-averaged `eeg_tfr` objects
+- `compute_tfr()` now allows non-constant number of cycles
 
 ### Internal changes / bug fixes
+- `plot_tfr()` now always drops NA/NaN values and averages appropriately over electrodes and conditions.
 - `import_set()` handles continuous EEG data from EEGLAB much better
 - Now using `whitening` package for whitening before SOBI ICA
 - `select_epochs` for `eeg_ICA` objects fixed to correctly remove epochs from `signals`

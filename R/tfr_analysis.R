@@ -9,7 +9,11 @@
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #' @return An object of class \code{eeg_tfr}
 #' @examples
-#' compute_tfr(demo_epochs, method = "morlet", foi = c(4, 30), n_freq = 10, n_cycles = 3)
+#' out <- compute_tfr(demo_epochs, method = "morlet", foi = c(4, 30), n_freq = 10, n_cycles = 3)
+#' out
+#' out$freq_info$morlet_resolution
+#' out <- compute_tfr(demo_epochs, method = "morlet", foi = c(4, 30), n_freq = 10, n_cycles = c(3, 10))
+#' out$freq_info$morlet_resolution
 #' @export
 
 compute_tfr <- function(data, ...) {
@@ -25,9 +29,11 @@ compute_tfr.default <- function(data, ...) {
 #' @param method Time-frequency analysis method. Defaults to "morlet".
 #' @param foi Frequencies of interest. Scalar or character vector of the lowest
 #'   and highest frequency to resolve.
-#' @param n_freq Number of frequencies to be resolved. Scalar.
-#' @param n_cycles Scalar. Number of cycles at each frequency. Currently only
-#'   supports a single number of cycles at all frequencies.
+#' @param n_freq Number of frequencies to be resolved. Must be an integer number
+#'   of frequencies.
+#' @param n_cycles Number of cycles at each frequency. If a single integer, use
+#'   a constant number of cycles at each frequency. If a character vector of
+#'   length 2, use a linearly scaling number of cycles at each frequency.
 #' @param keep_trials Keep single trials or average over them before returning.
 #'   Defaults to FALSE.
 #' @param output Sets whether output is power, phase, or fourier coefficients.
@@ -336,7 +342,10 @@ morlet <- function(frex,
 morlet_res <- function(frex, n_cycles) {
   sigma_f <- frex / n_cycles
   sigma_t <- 1 / (2 * pi * sigma_f)
-  data.frame(sigma_f, sigma_t)
+  data.frame(frequency = frex,
+             sigma_f,
+             sigma_t,
+             n_cycles)
 }
 
 #' N-point FFT
@@ -391,7 +400,6 @@ conv_mor <- function(morlet_fam,
   signal <- fft_n(as.matrix(signal),
                   n)
 
-  #tf_matrix <- do_allfft(signal, morlet_fam)
   tf_matrix <- array(1i, dim = c(nrow(signal),
                                  n_chans,
                                  ncol(morlet_fam)))
@@ -400,7 +408,6 @@ conv_mor <- function(morlet_fam,
     tf_matrix[, , i] <- mvfft(signal * morlet_fam[, i], #tf_mat2[, i, ],
                               inverse = TRUE) / n
   }
-  #tf_matrix <- aperm(tf_matrix, c(1, 3, 2))
 
   nHfkn <- floor(n_kern / 2) + 1
   tf_matrix <- tf_matrix[nHfkn:(nrow(tf_matrix) - nHfkn + 1), , , drop = FALSE]
