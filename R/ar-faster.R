@@ -6,11 +6,11 @@
 #'
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #'
-#' @param data An object of class \code{eeg_epochs}
+#' @param data An object of class `eeg_epochs`
 #' @param ... Parameters passed to FASTER
 #' @examples
 #' ar_FASTER(demo_epochs)
-#' @return An \code{eeg_epochs} object with artefact correction applied.
+#' @return An `eeg_epochs` object with artefact correction applied.
 #' @references
 #' Nolan, Whelan & Reilly (2010). FASTER: Fully Automated Statistical Thresholding for
 #' EEG artifact Rejection. J Neurosci Methods.
@@ -24,7 +24,7 @@ ar_FASTER <- function(data, ...) {
 #' @param test_chans Logical. Run tests of global channel statistics
 #' @param test_epochs Logical. Run tests of globally bad epochs.
 #' @param test_cine Logical. Run tests for locally bad channels within epochs.
-#' @describeIn ar_FASTER Run FASTER on \code{eeg_epochs}
+#' @describeIn ar_FASTER Run FASTER on `eeg_epochs`
 #' @export
 ar_FASTER.eeg_epochs <- function(data,
                                  exclude = NULL,
@@ -188,7 +188,7 @@ faster_chans <- function(data,
 
 #' Perform global bad epoch detection for FASTER
 #'
-#' @param data \code{eeg_epochs} object
+#' @param data `eeg_epochs` object
 #' @param sds standard deviations for threshold
 #' @param ... Further parameters (tbd)
 #' @keywords internal
@@ -225,7 +225,7 @@ faster_epochs <- function(data, sds = 3, ...) {
 
 #' FASTER detection of bad channels in single epochs
 #'
-#' @param data \code{eeg_epochs} object.
+#' @param data `eeg_epochs` object.
 #' @param exclude Channels to be ignored.
 #' @param ... further parameters (tbd)
 #' @keywords internal

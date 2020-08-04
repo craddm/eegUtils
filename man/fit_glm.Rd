@@ -31,14 +31,14 @@ Fits a linear model to each timepoint separately for each electrode.
 \section{Notes On Usage}{
 
 
-  The \code{fit_glm} function will fit a linear model to each timepoint for
-  each electrode in the input dataset.
+The \code{fit_glm} function will fit a linear model to each timepoint for
+each electrode in the input dataset.
 
-  The formula is a standard R formula. Specify only the right-hand side of
-  the formula i.e. any predictors.
+The formula is a standard R formula. Specify only the right-hand side of
+the formula i.e. any predictors.
 
-  The function allows flexible fitting of a baseline covariate, recognising
-  the term \code{baseline} in the specified formula.
+The function allows flexible fitting of a baseline covariate, recognising
+the term \code{baseline} in the specified formula.
 }
 
 \author{

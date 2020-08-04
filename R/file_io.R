@@ -1,9 +1,9 @@
 #' Function for reading raw data.
 #'
 #' Currently BDF/EDF, 32-bit .CNT, and Brain Vision Analyzer files are
-#' supported. Filetype is determined by the file extension.The \code{edfReader}
+#' supported. Filetype is determined by the file extension.The `edfReader`
 #' package is used to load BDF/EDF files, whereas custom code is used for .CNT
-#' and BVA files. The function creates an \code{eeg_data} structure for
+#' and BVA files. The function creates an `eeg_data` structure for
 #' subsequent use.
 #'
 #' @author Matt Craddock, \email{matt@@mattcraddock.com}
@@ -20,7 +20,7 @@
 #' \dontrun{
 #' import_raw("test_bdf.bdf")
 #' }
-#' @return An object of class \code{eeg_data}
+#' @return An object of class `eeg_data`
 #' @export
 
 import_raw <- function(file_name,
@@ -578,7 +578,7 @@ read_vmrk <- function(file_name) {
 #' @importFrom purrr is_empty map_df
 #' @examples
 #' \dontrun{import_set("your_data.set")}
-#' @return An object of class \code{eeg_data}
+#' @return An object of class `eeg_data`
 #' @export
 
 import_set <- function(file_name,
@@ -901,8 +901,8 @@ bva_elecs <- function(chan_info, radius = 85) {
 #' @param verbose Informative messages printed to console. Defaults to TRUE.
 #' @examples
 #' \dontrun{import_ft("fieldtrip_test.mat")}
-#' @return An object of class \code{eeg_data}, \code{eeg_epochs}, or
-#'   \code{eeg_tfr}, depending on the type of input data.
+#' @return An object of class `eeg_data`, `eeg_epochs`, or
+#'   `eeg_tfr`, depending on the type of input data.
 #' @export
 import_ft <- function(file_name,
                       participant_id = NULL,

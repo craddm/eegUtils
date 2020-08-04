@@ -12,7 +12,7 @@ epochs(.data) <- value
 \arguments{
 \item{.data}{\code{eegUtils} object to view}
 
-\item{value}{Structure to replace `epochs` structure with.}
+\item{value}{Structure to replace \code{epochs} structure with.}
 }
 \description{
 Get or set the epochs structure of an \code{eegUtils} object

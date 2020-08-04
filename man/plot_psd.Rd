@@ -66,7 +66,7 @@ for \code{eeg_epochs} or minimum of 2048 or the signal length for
 \item{seg_length}{Length of individual segments. Defaults to n_fft. Must be <= n_fft.}
 
 \item{noverlap}{Amount of overlap between segments, in sampling points.
-Defaults to 50\%.}
+Defaults to 50\\%.}
 
 \item{demean}{Remove epoch means before FFT.}
 
@@ -76,7 +76,7 @@ Defaults to 50\%.}
 A ggplot object.
 }
 \description{
-Calculate and plot the PSD for \code{eeg_*} objects. Output units are dB. The
+Calculate and plot the PSD for \verb{eeg_*} objects. Output units are dB. The
 PSD is calculated using Welch's method.
 }
 \details{

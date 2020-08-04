@@ -1,7 +1,7 @@
-#' A demo \code{eeg_epochs} dataset
+#' A demo `eeg_epochs` dataset
 #'
 #' This is a small dataset with 11 electrodes and 80 epochs used for
-#' demonstrating some features of the \code{eegUtils} package.
+#' demonstrating some features of the `eegUtils` package.
 #'
-#' @format A \code{eeg_epochs} object
+#' @format A `eeg_epochs` object
 "demo_epochs"

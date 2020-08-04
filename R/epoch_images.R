@@ -63,7 +63,7 @@ erp_image.data.frame <- function(data,
 
 }
 
-#'@describeIn erp_image Create an \code{erp_image} from \code{eeg_epochs}
+#'@describeIn erp_image Create an `erp_image` from `eeg_epochs`
 #'@export
 erp_image.eeg_epochs <- function(data,
                                  electrode = "Cz",
@@ -94,8 +94,8 @@ erp_image.eeg_epochs <- function(data,
                   interpolate = interpolate)
 }
 
-#' @param component \code{eeg_ICA} component to plot
-#' @describeIn erp_image Plot component image from \code{eeg_ICA}
+#' @param component `eeg_ICA` component to plot
+#' @describeIn erp_image Plot component image from `eeg_ICA`
 #' @export
 erp_image.eeg_ICA <- function(data,
                               component = "Comp001",
@@ -289,7 +289,7 @@ create_tfrimage <- function(data,
 #' @examples
 #' erp_raster(demo_epochs)
 #' erp_raster(demo_epochs, interpolate = TRUE)
-#' @param data An \code{eeg_epochs} object
+#' @param data An `eeg_epochs` object
 #' @param anat_order Arrange the channels in a more anatomically representative
 #'   order. Defaults to TRUE.
 #' @param time_lim Time limits of plot - should be a character vector (e.g.

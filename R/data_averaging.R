@@ -1,9 +1,9 @@
 #' Calculate averages (e.g. ERPs) for single datasets
 #'
-#' This function is used to create an \code{eeg_evoked} object from
-#' \code{eeg_epochs}.
+#' This function is used to create an `eeg_evoked` object from
+#' `eeg_epochs`.
 #'
-#' @param data An \code{eeg_epochs} object.
+#' @param data An `eeg_epochs` object.
 #' @param ... Other arguments passed to the averaging functions
 #' @author Matt craddock \email{matt@@mattcraddock.com}
 #' @export
@@ -21,11 +21,11 @@ eeg_average.default <- function(data,
   stop("eeg_epochs or eeg_tfr object required as input.")
 }
 
-#' @describeIn eeg_average Create evoked data from \code{eeg_epochs}
+#' @describeIn eeg_average Create evoked data from `eeg_epochs`
 #' @importFrom tibble tibble
 #' @importFrom dplyr left_join group_by_at summarise_at ungroup
-#' @param cols Columns from the \code{epochs} structure that the average should
-#'   group on. NULL, the default, uses all columns other than the \code{epoch}
+#' @param cols Columns from the `epochs` structure that the average should
+#'   group on. NULL, the default, uses all columns other than the `epoch`
 #'   column.
 #' @export
 eeg_average.eeg_epochs <- function(data,
@@ -98,7 +98,7 @@ eeg_average.eeg_evoked <- function(data,
   data
 }
 
-#' @describeIn eeg_average average an \code{eeg_tfr} object over epochs.
+#' @describeIn eeg_average average an `eeg_tfr` object over epochs.
 #' @export
 eeg_average.eeg_tfr <- function(data,
                                 cols = NULL,

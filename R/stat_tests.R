@@ -1,6 +1,6 @@
 #' Compare epochs using an independent t-test.
 #'
-#' @param data \code{eeg_epochs} object.
+#' @param data `eeg_epochs` object.
 #' @param ... Other parameters passed to functions.
 #' @author Matt Craddock, \email{matt@@mattcraddock.com}
 #' @keywords internal

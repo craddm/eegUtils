@@ -10,7 +10,7 @@
 #'@import ggplot2
 #'@import shiny
 #'@import miniUI
-#'@param data \code{eeg_data}, \code{eeg_epochs}, or \code{eeg_ICA} object to be
+#'@param data `eeg_data`, `eeg_epochs`, or `eeg_ICA` object to be
 #'  plotted.
 #'@param ... Other parameters passed to browsing functions.
 #'@export
@@ -20,7 +20,7 @@ browse_data <- function(data, ...) {
 }
 
 #' @export
-#' @describeIn browse_data View \code{eeg_ICA} component properties
+#' @describeIn browse_data View `eeg_ICA` component properties
 browse_data.eeg_ICA <- function(data,
                                 ...) {
 
@@ -113,7 +113,7 @@ browse_data.eeg_stats <- function(data, ...) {
 #'  continuous, epochs if epoched).
 #'@param n_elecs Number of electrodes to be plotted on a single screen. (not yet
 #'  implemented)
-#'@param downsample Only works on \code{eeg_data} or \code{eeg_epochs} objects.
+#'@param downsample Only works on `eeg_data` or `eeg_epochs` objects.
 #'  Reduces size of data by only plotting every 4th point, speeding up plotting
 #'  considerably. Defaults to TRUE for eeg_data, FALSE for eeg_epochs
 #'

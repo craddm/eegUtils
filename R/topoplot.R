@@ -41,7 +41,7 @@ topoplot.default <- function(data,
 #'   vector with two values specifying the start and endpoints e.g. limits =
 #'   c(-2,-2). Will ignore anything else. Defaults to the range of the data.
 #' @param chanLocs Allows passing of channel locations (see
-#'   \code{electrode_locations})
+#'   `electrode_locations`)
 #' @param method Interpolation method. "Biharmonic" or "gam". "Biharmonic"
 #'   implements the same method used in Matlab's EEGLAB. "gam" fits a
 #'   Generalized Additive Model with k = 40 knots. Defaults to biharmonic spline
@@ -357,7 +357,7 @@ topoplot.data.frame <- function(data,
   topo
 }
 
-#' @describeIn topoplot Topographical plotting of \code{eeg_data} objects.
+#' @describeIn topoplot Topographical plotting of `eeg_data` objects.
 #' @export
 
 topoplot.eeg_data <- function(data, time_lim = NULL,
@@ -415,7 +415,7 @@ topoplot.eeg_data <- function(data, time_lim = NULL,
 }
 
 
-#' @describeIn topoplot Topographical plotting of \code{eeg_epochs} objects.
+#' @describeIn topoplot Topographical plotting of `eeg_epochs` objects.
 #' @export
 
 topoplot.eeg_epochs <- function(data,
@@ -474,7 +474,7 @@ topoplot.eeg_epochs <- function(data,
 
 
 #' @param component Component to plot (numeric)
-#' @describeIn topoplot Topographical plot for \code{eeg_ICA} objects
+#' @describeIn topoplot Topographical plot for `eeg_ICA` objects
 #' @export
 topoplot.eeg_ICA <- function(data,
                              component,
@@ -526,7 +526,7 @@ topoplot.eeg_ICA <- function(data,
 }
 
 #' @param freq_range Range of frequencies to average over.
-#' @describeIn topoplot Topographical plotting of \code{eeg_tfr} objects.
+#' @describeIn topoplot Topographical plotting of `eeg_tfr` objects.
 #' @export
 
 topoplot.eeg_tfr <- function(data,

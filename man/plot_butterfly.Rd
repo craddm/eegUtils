@@ -108,7 +108,7 @@ applies to \code{eeg_lm} objects}
 A ggplot object
 
 ggplot2 object showing ERPs for all electrodes overlaid on a single
-  plot.
+plot.
 }
 \description{
 Typically event-related potentials/fields, but could also be timecourses from
@@ -117,7 +117,7 @@ not possible.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{default}: Default `plot_butterfly` method for data.frames,
+\item \code{default}: Default \code{plot_butterfly} method for data.frames,
 \code{eeg_data}
 
 \item \code{eeg_evoked}: Plot butterfly for \code{eeg_evoked} objects
@@ -134,12 +134,12 @@ not possible.
 \section{Notes on ggplot2 facetting}{
 
 
-  In order for ggplot2 facetting to work, the data has to be plotted using
-  `stat_summary()` rather than `geom_line()`, so that the plots can still be
-  made when not all categorical variables are reflected in the facets. e.g.
-  if there are two variables with two levels each, but you want to average
-  over one of those variables, `stat_summary()` is required. However,
-  `stat_summary()` is extremely slow.
+In order for ggplot2 facetting to work, the data has to be plotted using
+\code{stat_summary()} rather than \code{geom_line()}, so that the plots can still be
+made when not all categorical variables are reflected in the facets. e.g.
+if there are two variables with two levels each, but you want to average
+over one of those variables, \code{stat_summary()} is required. However,
+\code{stat_summary()} is extremely slow.
 }
 
 \examples{

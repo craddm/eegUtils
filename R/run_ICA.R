@@ -23,7 +23,7 @@
 #' @param data Data to be ICAed.
 #' @param ... Other parameters passed to function.
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
-#' @return An \code{eeg_ICA} object containing an ICA decomposition
+#' @return An `eeg_ICA` object containing an ICA decomposition
 #' @importFrom MASS ginv
 #' @importFrom Matrix rankMatrix
 #' @examples
@@ -54,7 +54,7 @@ run_ICA.default <- function(data,
 #'   "infomax".
 #' @param rate Learning rate for extended infomax. Ignored if method !=
 #'   "infomax".
-#' @describeIn run_ICA Run ICA on an \code{eeg_epochs} object
+#' @describeIn run_ICA Run ICA on an `eeg_epochs` object
 #' @importFrom stats cov
 #' @export
 
@@ -214,7 +214,7 @@ run_ICA.eeg_group <- function(data,
 
 #' SOBI ICA
 #'
-#' Internal function for running SOBI ICA on an \code{eeg_epochs} object
+#' Internal function for running SOBI ICA on an `eeg_epochs` object
 #'
 #' @param data Data to be ICAed.
 #' @param maxiter Maximum number of iterations of the joint diagonalization
@@ -326,7 +326,7 @@ sobi_ICA <- function(data,
 #' given dataset for the purpose of removing specific ICA components from that
 #' dataset.
 #'
-#' @param data An \code{eeg_ICA} or \code{eeg_epochs} object.
+#' @param data An `eeg_ICA` or `eeg_epochs` object.
 #' @param ... Other parameters.
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #' @export
@@ -335,7 +335,7 @@ apply_ica <- function(data, ...) {
 }
 
 #' @param comps Components to remove.
-#' @describeIn apply_ica From given \code{eeg_ICA} object, recreate channel timecourses.
+#' @describeIn apply_ica From given `eeg_ICA` object, recreate channel timecourses.
 #' @export
 apply_ica.eeg_ICA <- function(data,
                               comps = NULL,
@@ -358,9 +358,9 @@ apply_ica.eeg_ICA <- function(data,
   out
 }
 
-#' @param decomp An \code{eeg_ICA} object.
+#' @param decomp An `eeg_ICA` object.
 #' @describeIn apply_ica Combine a specific set of ICA weights with any
-#'   \code{eeg_epochs} object.
+#'   `eeg_epochs` object.
 #' @export
 apply_ica.eeg_epochs <- function(data,
                                  decomp,

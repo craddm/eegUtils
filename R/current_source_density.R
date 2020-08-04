@@ -5,7 +5,7 @@
 #'
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #'
-#' @param data Data as a \code{eeg_data} or \code{eeg_epochs} object.
+#' @param data Data as a `eeg_data` or `eeg_epochs` object.
 #' @param bad_elecs Name(s) of electrode(s) to interpolate.
 #' @param ... Other parameters passed to the functions.
 #' @references [1] Perrin, F., Pernier, J., Bertrand, O., & Echallier, J. F.
@@ -153,13 +153,13 @@ interp_chans <- function(.data,
 
 #' Convert to Current Source Density
 #'
-#' Convert an \code{eeg_data} or \code{eeg_epochs} object to using Current
+#' Convert an `eeg_data` or `eeg_epochs` object to using Current
 #' Source Densities. This command uses a spherical spline algorithm (Perrin et
 #' al., 1989) to compute scalp surface Laplacian/current source density
 #' estimates of scalp potentials, a reference-free measure of electrical
 #' activity that emphasises more local spatial features
 #'
-#' @param data \code{eeg_data} or \code{eeg_epochs} object
+#' @param data `eeg_data` or `eeg_epochs` object
 #' @param ... Other parameters
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #' @references [1] Perrin, F., Pernier, J., Bertrand, O., Echallier, J.F.
@@ -220,7 +220,7 @@ compute_csd.eeg_epochs <- function(data,
 
 #' Calculate current source densities
 #'
-#' @param data \code{eeg_data} object
+#' @param data `eeg_data` object
 #' @param m smoothing constraint (higher = more rigid)
 #' @param smoothing lambda constant
 #' @param scaling Default scaling (1) is uV / m^2.

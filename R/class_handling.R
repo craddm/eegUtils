@@ -34,7 +34,8 @@ eeg_data <- function(data,
                 chan_info = chan_info,
                 timings = timings,
                 reference = reference,
-                epochs = epochs)
+                epochs = epochs,
+                version = packageVersion("eeg"))
   class(value) <- "eeg_data"
   value
 }
@@ -106,17 +107,17 @@ eeg_tfr <- function(data,
                     dimensions,
                     epochs = NULL) {
 
-  value <- list(signals = data,
-                srate = srate,
+  structure(list(signals = data,
+                 srate = srate,
                 events = events,
                 chan_info = chan_info,
                 reference = reference,
                 timings = timings,
                 freq_info = freq_info,
                 dimensions = dimensions,
-                epochs = epochs)
-  class(value) <- "eeg_tfr"
-  value
+                epochs = epochs,
+                version = packageVersion("eegUtils")),
+                class = "eeg_tfr")
 }
 
 #' Function to create an object of class eeg_psd
@@ -148,7 +149,7 @@ eeg_psd <- function(data,
 }
 
 
-#' Function to create an object of class \code{eeg_GA}
+#' Function to create an object of class `eeg_GA`
 #'
 #' @noRd
 
@@ -196,7 +197,8 @@ eeg_epochs <- function(data,
                 chan_info = chan_info,
                 timings = timings,
                 reference = reference,
-                epochs = epochs)
+                epochs = epochs,
+                version = packageVersion("eegUtils"))
   class(value) <- c("eeg_epochs", "eeg_data")
   value
 }
@@ -267,7 +269,8 @@ eeg_evoked <- function(data,
                 chan_info = chan_info,
                 timings = timings,
                 srate = srate,
-                epochs = epochs)
+                epochs = epochs,
+                version = packageVersion("eegUtils"))
   class(value) <- c("eeg_evoked", "eeg_epochs")
   value
 }
@@ -292,7 +295,8 @@ eeg_stats <- function(statistic,
                 pvals = tibble::as_tibble(pvals),
                 chan_info = chan_info,
                 timings = timings,
-                method = method)
+                method = method,
+                version = packageVersion("eegUtils"))
   class(value) <- "eeg_stats"
   value
 }
@@ -389,20 +393,20 @@ is.eeg_data <- function(x) inherits(x, "eeg_data")
 #' @export
 is.eeg_epochs <- function(x) inherits(x, "eeg_epochs")
 
-#' Check if object is of class \code{eeg_evoked}
+#' Check if object is of class `eeg_evoked`
 #'
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #' @param x Object to check.
 #' @export
 is.eeg_evoked <- function(x) inherits(x, "eeg_evoked")
 
-#' Check if object is of class \code{eeg_stats}
+#' Check if object is of class `eeg_stats`
 #'
 #' @param x Object to check.
 #' @export
 is.eeg_stats <- function(x) inherits(x, "eeg_stats")
 
-#' Check if object is of class \code{eeg_ICA}
+#' Check if object is of class `eeg_ICA`
 #'
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #' @param x Object to check.
@@ -418,5 +422,6 @@ is.eeg_ICA <- function(x) inherits(x, "eeg_ICA")
 is.eeg_tfr <- function(x) inherits(x, "eeg_tfr")
 
 #' Check if object is of class eeg_group
-#' @noRd
+#' @param x Object to check.
+#' @export
 is.eeg_group <- function(x) inherits(x, "eeg_group")

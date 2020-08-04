@@ -1,12 +1,12 @@
 
 
-#' Convert \code{eeg_epochs} object to data.frame
+#' Convert `eeg_epochs` object to data.frame
 #'
-#' Convert an \code{eeg_epochs} object to a data.frame for use with whatever
+#' Convert an `eeg_epochs` object to a data.frame for use with whatever
 #' packages you desire.
 #'
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
-#' @param x Object of class \code{eeg_epochs}
+#' @param x Object of class `eeg_epochs`
 #' @param row.names Kept for compatability with S3 generic, ignored.
 #' @param optional Kept for compatability with S3 generic, ignored.
 #' @param long Convert to long format. Defaults to FALSE.
@@ -69,10 +69,10 @@ as.data.frame.eeg_epochs <- function(x, row.names = NULL,
   df
 }
 
-#' Convert \code{eeg_evoked} object to data frame
+#' Convert `eeg_evoked` object to data frame
 #
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
-#' @param x Object of class \code{eeg_evoked}
+#' @param x Object of class `eeg_evoked`
 #' @param row.names Kept for compatability with S3 generic, ignored.
 #' @param optional Kept for compatability with S3 generic, ignored.
 #' @param long Convert to long format. Defaults to FALSE
@@ -112,10 +112,10 @@ as.data.frame.eeg_evoked <- function(x,
   df
 }
 
-#' Convert \code{eeg_ICA} object to data frame
+#' Convert `eeg_ICA` object to data frame
 #
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
-#' @param x Object of class \code{eeg_ICA}
+#' @param x Object of class `eeg_ICA`
 #' @param row.names Kept for compatability with S3 generic, ignored.
 #' @param optional Kept for compatability with S3 generic, ignored.
 #' @param long Convert to long format. Defaults to FALSE

@@ -45,7 +45,7 @@ plot_butterfly <- function(data, ...) {
 #' @importFrom dplyr group_by ungroup summarise
 #' @importFrom tidyr gather
 #' @describeIn plot_butterfly Default `plot_butterfly` method for data.frames,
-#'   \code{eeg_data}
+#'   `eeg_data`
 #' @export
 
 plot_butterfly.default <- function(data,
@@ -87,7 +87,7 @@ plot_butterfly.default <- function(data,
             allow_facets = allow_facets)
 }
 
-#' @describeIn plot_butterfly Plot butterfly for \code{eeg_evoked} objects
+#' @describeIn plot_butterfly Plot butterfly for `eeg_evoked` objects
 #' @export
 plot_butterfly.eeg_evoked <- function(data,
                                       time_lim = NULL,
@@ -110,7 +110,7 @@ plot_butterfly.eeg_evoked <- function(data,
             allow_facets = allow_facets)
 }
 
-#' @describeIn plot_butterfly Create butterfly plot for \code{eeg_data} objects
+#' @describeIn plot_butterfly Create butterfly plot for `eeg_data` objects
 #' @export
 plot_butterfly.eeg_data <- function(data,
                                     time_lim = NULL,
@@ -130,7 +130,7 @@ plot_butterfly.eeg_data <- function(data,
             allow_facets = allow_facets)
 }
 
-#' @describeIn plot_butterfly Create butterfly plot for \code{eeg_epochs} objects
+#' @describeIn plot_butterfly Create butterfly plot for `eeg_epochs` objects
 #' @export
 plot_butterfly.eeg_epochs <- function(data,
                                       time_lim = NULL,
@@ -152,7 +152,7 @@ plot_butterfly.eeg_epochs <- function(data,
             allow_facets = allow_facets)
 }
 
-#' @describeIn plot_butterfly Create butterfly plot for \code{eeg_stats} objects
+#' @describeIn plot_butterfly Create butterfly plot for `eeg_stats` objects
 #' @export
 plot_butterfly.eeg_stats <- function(data,
                                      time_lim = NULL,
@@ -175,9 +175,9 @@ plot_butterfly.eeg_stats <- function(data,
 }
 
 
-#' @describeIn plot_butterfly Create butterfly plot for \code{eeg_lm} objects
+#' @describeIn plot_butterfly Create butterfly plot for `eeg_lm` objects
 #' @param quantity Which aspect of the linear model you want to be plotted. only
-#'   applies to \code{eeg_lm} objects
+#'   applies to `eeg_lm` objects
 #' @export
 plot_butterfly.eeg_lm <- function(data,
                                   time_lim = NULL,
@@ -222,7 +222,7 @@ plot_butterfly.eeg_lm <- function(data,
 #' Parse data for butterfly plots
 #'
 #' Internal command for parsing various data structures into a suitable format
-#' for \code{plot_butterfly}
+#' for `plot_butterfly`
 #'
 #' @param data data to be parsed
 #' @param time_lim time limits to be returned.

@@ -3,7 +3,7 @@
 #' Used to reference the EEG data to a specified electrode or electrodes.
 #' Defaults to average reference. When specific electrodes are used, they are
 #' removed from the data. Meta-data about the referencing scheme is held in the
-#' \code{eeg_data} structure.
+#' `eeg_data` structure.
 #'
 #' @examples
 #' # demo_epochs is average referenced by default
@@ -15,7 +15,7 @@
 #'
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #' @param data Data to re-reference. Primarily meant for use with data of class
-#'   \code{eeg_data}.
+#'   `eeg_data`.
 #' @param ... Further parameters to be passed to eeg_reference
 #' @export
 
@@ -43,8 +43,8 @@ eeg_reference.default <- function(data, ...) {
 #' @param verbose Print informative messages in console. Defaults to TRUE.
 #' @importFrom matrixStats rowMedians
 #' @import data.table
-#' @return object of class \code{eeg_data}, re-referenced as requested.
-#' @describeIn eeg_reference Rereference objects of class \code{eeg_data}
+#' @return object of class `eeg_data`, re-referenced as requested.
+#' @describeIn eeg_reference Rereference objects of class `eeg_data`
 #' @export
 
 eeg_reference.eeg_data <- function(data,
@@ -70,7 +70,7 @@ eeg_reference.eeg_ICA <- function(data,
   stop("Cannot rereference ICA decompositions.")
 }
 
-#' @describeIn eeg_reference Rereference objects of class \code{eeg_epochs}
+#' @describeIn eeg_reference Rereference objects of class `eeg_epochs`
 #' @export
 eeg_reference.eeg_epochs <- function(data,
                                      ref_chans = "average",
@@ -196,8 +196,8 @@ do_referencing <- function(data,
 #' Downsampling EEG data
 #'
 #' Performs low-pass anti-aliasing filtering and downsamples EEG data by a
-#' specified factor. This is a wrapper for \code{decimate} from the
-#' \code{signal} package. Note that this will also adjust the event table,
+#' specified factor. This is a wrapper for `decimate` from the
+#' `signal` package. Note that this will also adjust the event table,
 #' moving events to the nearest time remaining after downsampling
 #'
 #' @examples
@@ -205,7 +205,7 @@ do_referencing <- function(data,
 #'
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #'
-#' @param data An \code{eeg_data} object to be downsampled
+#' @param data An `eeg_data` object to be downsampled
 #' @param ... Parameters passed to functions
 #' @export
 

@@ -19,7 +19,7 @@ reref_eeg <- function(data, ...) {
 #' Butterworth IIR filter
 #'
 #' Construct a Butterworth IIR filter and filter input data. This uses
-#' \code{signal::filt_filt}, which filters the signal twice to - once forwards,
+#' `signal::filt_filt`, which filters the signal twice to - once forwards,
 #' then again backwards).
 #'
 #' low_freq and high_freq are passband edges. Pass low freq or high freq alone
@@ -79,7 +79,7 @@ iir_filt.data.frame <- function(data,
 }
 
 #' @export
-#' @describeIn iir_filt Filter \code{eeg_data} objects
+#' @describeIn iir_filt Filter `eeg_data` objects
 
 iir_filt.eeg_data <- function(data,
                               low_freq = NULL,
@@ -98,7 +98,7 @@ iir_filt.eeg_data <- function(data,
 }
 
 #' @export
-#' @describeIn iir_filt Filter \code{eeg_epochs} objects.
+#' @describeIn iir_filt Filter `eeg_epochs` objects.
 iir_filt.eeg_epochs <- function(data,
                                 low_freq = NULL,
                                 high_freq = NULL,

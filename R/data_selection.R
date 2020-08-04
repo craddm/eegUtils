@@ -1,8 +1,8 @@
 #' Select timerange
 #'
 #' Generic function for selecting specific time ranges from a given dataset.
-#' Input can be a dataframe, or an object of class \code{eeg_data},
-#' \code{eeg_epochs}, or \code{eeg_evoked}. Note this finds the closest times to
+#' Input can be a dataframe, or an object of class `eeg_data`,
+#' `eeg_epochs`, or `eeg_evoked`. Note this finds the closest times to
 #' those specified, so the time range returned may be slightly longer or shorter
 #' than that requested.
 #'
@@ -17,7 +17,7 @@
 #' @param data Data from which to select
 #' @param ... Further arguments passed to or from other methods.
 #' @family Data selection functions
-#' @seealso \code{\link{select_elecs}} and \code{\link{select_epochs}}
+#' @seealso [select_elecs()] and [select_epochs()]
 #' @export
 
 select_times <- function(data, ...) {
@@ -50,7 +50,7 @@ select_times.default <- function(data,
 #' @param df_out Returns a data frame rather than an object of the same type
 #'   that was passed in.
 #' @export
-#' @return \code{eeg_data} object
+#' @return `eeg_data` object
 #' @describeIn select_times Select times from an eeg_data object
 
 select_times.eeg_data <- function(data,
@@ -74,7 +74,7 @@ select_times.eeg_data <- function(data,
 }
 
 #' @export
-#' @describeIn select_times Select times in \code{eeg_epochs} objects
+#' @describeIn select_times Select times in `eeg_epochs` objects
 select_times.eeg_epochs <- function(data,
                                     time_lim,
                                     df_out = FALSE,
@@ -95,7 +95,7 @@ select_times.eeg_epochs <- function(data,
 }
 
 #' @export
-#' @describeIn select_times Select times in \code{eeg_evoked} objects
+#' @describeIn select_times Select times in `eeg_evoked` objects
 select_times.eeg_evoked <- function(data,
                                     time_lim,
                                     df_out = FALSE,
@@ -113,7 +113,7 @@ select_times.eeg_evoked <- function(data,
   data
 }
 
-#' @describeIn select_times Select times from an \code{eeg_tfr} object
+#' @describeIn select_times Select times from an `eeg_tfr` object
 #' @export
 select_times.eeg_tfr <- function(data,
                                  time_lim = NULL,
@@ -167,7 +167,7 @@ find_times <- function(timings,
 #' @param data An EEG dataset.
 #' @param ... Arguments used with related methods
 #' @family Data selection functions
-#' @seealso \code{\link{select_times}} and \code{\link{select_epochs}}
+#' @seealso [select_times()] and [select_epochs()]
 #' @export
 
 select_elecs <- function(data, ...) {
@@ -212,10 +212,10 @@ select_elecs.default <- function(data,
 }
 
 #' @param df_out Defaults to FALSE. Set to TRUE to return a dataframe rather
-#'   than an \code{eeg_data} object.
-#' @return \code{eeg_data} object with selected electrodes removed/kept.
+#'   than an `eeg_data` object.
+#' @return `eeg_data` object with selected electrodes removed/kept.
 #' @export
-#' @describeIn select_elecs Select electrodes from a \code{eeg_data} object.
+#' @describeIn select_elecs Select electrodes from a `eeg_data` object.
 
 select_elecs.eeg_data <- function(data,
                                   electrode,
@@ -283,7 +283,7 @@ select_elecs.eeg_evoked <- function(data,
 }
 
 #' @param component Component to select
-#' @describeIn select_elecs Select components from \code{eeg_ICA} objects.
+#' @describeIn select_elecs Select components from `eeg_ICA` objects.
 #' @export
 select_elecs.eeg_ICA <- function(data,
                                  component,
@@ -316,7 +316,7 @@ select_elecs.eeg_ICA <- function(data,
 }
 
 #'@importFrom abind asub
-#'@describeIn select_elecs Select electrodes from \code{eeg_tfr} objects.
+#'@describeIn select_elecs Select electrodes from `eeg_tfr` objects.
 #'@export
 select_elecs.eeg_tfr <- function(data,
                                  electrode,
@@ -368,10 +368,10 @@ select_elecs.eeg_tfr <- function(data,
 #'
 #' @author Matt Craddock, \email{matt@@mattcraddock.com}
 #'
-#' @param data \code{eeg_epochs} object from which to select epochs.
+#' @param data `eeg_epochs` object from which to select epochs.
 #' @param ... Parameters passed to specific methods
 #' @family data selection functions
-#' @seealso \code{\link{select_times}} and \code{\link{select_elecs}}
+#' @seealso [select_times()] and [select_elecs()]
 #' @export
 
 select_epochs <- function(data, ...) {
@@ -394,7 +394,7 @@ select_epochs.default <- function(data, ...) {
 #' @param keep Defaults to TRUE, meaning select the specified epochs. Set to
 #'   FALSE to remove specified epochs.
 #' @param df_out Output a data.frame instead of an eeg_data object.
-#' @describeIn select_epochs Selection of epochs from \code{eeg_epochs} objects.
+#' @describeIn select_epochs Selection of epochs from `eeg_epochs` objects.
 #' @export
 
 select_epochs.eeg_epochs <- function(data,
@@ -437,7 +437,7 @@ select_epochs.eeg_epochs <- function(data,
   data
 }
 
-#' @describeIn select_epochs Selection of epochs from \code{eeg_ICA} objects.
+#' @describeIn select_epochs Selection of epochs from `eeg_ICA` objects.
 #' @export
 
 select_epochs.eeg_ICA <- function(data,
@@ -479,7 +479,7 @@ select_epochs.eeg_ICA <- function(data,
   data
 }
 
-#' @describeIn select_epochs Selection of epochs from \code{eeg_tfr} objects.
+#' @describeIn select_epochs Selection of epochs from `eeg_tfr` objects.
 #' @export
 select_epochs.eeg_tfr <- function(data,
                                   epoch_events = NULL,
@@ -519,13 +519,13 @@ select_epochs.eeg_tfr <- function(data,
 
 #' Select frequencies
 #'
-#' Select specific frequencies from \code{eeg_tfr} objects. Can be used to
+#' Select specific frequencies from `eeg_tfr` objects. Can be used to
 #' selecting either single frequencies or anything within a range.
 #'
 #' @examples
 #' demo_tfr <- compute_tfr(demo_epochs, foi = c(4, 30), n_freq = 10, n_cycles = 5)
 #' select_freqs(demo_tfr, c(8, 12))
-#' @param data An \code{eeg_tfr} object.
+#' @param data An `eeg_tfr` object.
 #' @param freq_range The range of frequencies to retain. Can be a scale or the
 #'   lower and upper bounds. (e.g. c(5, 30))
 #' @export
@@ -542,7 +542,7 @@ select_freqs.default <- function(data,
                 "and can currently only be used on eeg_tfr objects."))
 }
 
-#' @describeIn select_freqs Function for selecting specific frequencies from \code{eeg_tfr} objects.
+#' @describeIn select_freqs Function for selecting specific frequencies from `eeg_tfr` objects.
 #' @export
 select_freqs.eeg_tfr <- function(data,
                                  freq_range) {

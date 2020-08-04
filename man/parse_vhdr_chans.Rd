@@ -7,9 +7,9 @@
 parse_vhdr_chans(chan_labels, chan_info, verbose = TRUE)
 }
 \arguments{
-\item{chan_labels}{The `Channel Infos` section from a BVA vhdr file}
+\item{chan_labels}{The \verb{Channel Infos} section from a BVA vhdr file}
 
-\item{chan_info}{The `Coordinates` section from a BVA vhdr file}
+\item{chan_info}{The \code{Coordinates} section from a BVA vhdr file}
 }
 \description{
 Parse BVA channel info

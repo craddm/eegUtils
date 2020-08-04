@@ -79,7 +79,7 @@ plot_timecourse.data.frame <- function(data,
   tc_plot
 }
 
-#' @describeIn plot_timecourse plot \code{eeg_evoked} timecourses
+#' @describeIn plot_timecourse plot `eeg_evoked` timecourses
 #' @export
 plot_timecourse.eeg_evoked <- function(data,
                                electrode = NULL,
@@ -118,7 +118,7 @@ plot_timecourse.eeg_evoked <- function(data,
   tc_plot
 }
 
-#' @describeIn plot_timecourse Plot individual components from \code{eeg_ICA} components
+#' @describeIn plot_timecourse Plot individual components from `eeg_ICA` components
 #' @param component name or number of ICA component to plot
 #' @export
 plot_timecourse.eeg_ICA <- function(data,
@@ -175,7 +175,7 @@ plot_timecourse.eeg_ICA <- function(data,
   tc_plot
   }
 
-#' @describeIn plot_timecourse Plot timecourses from \code{eeg_epochs} objects.
+#' @describeIn plot_timecourse Plot timecourses from `eeg_epochs` objects.
 #' @export
 plot_timecourse.eeg_epochs <- function(data,
                                        electrode = NULL,
@@ -210,7 +210,7 @@ plot_timecourse.eeg_epochs <- function(data,
   tc_plot
 }
 
-#' @describeIn plot_timecourse Plot timecourses from \code{eeg_tfr} objects.
+#' @describeIn plot_timecourse Plot timecourses from `eeg_tfr` objects.
 #' @export
 plot_timecourse.eeg_tfr <- function(data,
                                     electrode = NULL,
@@ -273,7 +273,7 @@ plot_timecourse.eeg_tfr <- function(data,
 #' Parse data for timecourses
 #'
 #' Internal command for parsing various data structures into a suitable format
-#' for \code{tc_plot}
+#' for `tc_plot`
 #'
 #' @param data data to be parsed
 #' @param time_lim time limits to be returned.

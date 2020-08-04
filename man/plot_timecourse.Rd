@@ -92,7 +92,7 @@ line is drawn.}
 
 \item{color}{Alias for colour.}
 
-\item{mapping}{A ggplot2 `aes()` mapping.}
+\item{mapping}{A ggplot2 \code{aes()} mapping.}
 
 \item{component}{name or number of ICA component to plot}
 }

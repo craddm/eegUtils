@@ -5,14 +5,14 @@
 #'
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #'
-#' @param data An object of class \code{eeg_data} or \code{eeg_epochs}.
+#' @param data An object of class `eeg_data` or `eeg_epochs`.
 #' @param threshold In microvolts. If one value is supplied, it will be treated
 #'   as a +- value.
 #' @param reject If TRUE, remove marked data immediately, otherwise mark for
 #'   inspection/rejection. Defaults to FALSE.
 #' @examples
 #' ar_thresh(demo_epochs, c(100))
-#' @return An object of class \code{eeg_data} or \code{eeg_epochs}
+#' @return An object of class `eeg_data` or `eeg_epochs`
 #' @export
 
 ar_thresh <- function(data,
@@ -100,7 +100,7 @@ check_thresh <- function(data, threshold) {
 #'
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #'
-#' @param data Data as a \code{eeg_data} or \code{eeg_epochs} object.
+#' @param data Data as a `eeg_data` or `eeg_epochs` object.
 #' @param ... Other parameters passed to the functions.
 #' @examples
 #' channel_stats(demo_epochs)
@@ -111,7 +111,7 @@ channel_stats <- function(data, ...) {
   UseMethod("channel_stats", data)
 }
 
-#' @describeIn channel_stats Calculate channel statistics for \code{eeg_data}
+#' @describeIn channel_stats Calculate channel statistics for `eeg_data`
 #'   objects.
 #' @export
 channel_stats.eeg_data <- function(data,
@@ -138,7 +138,7 @@ channel_stats.eeg_data <- function(data,
 #'
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #'
-#' @param data Data as a \code{eeg_data} or \code{eeg_epochs} object.
+#' @param data Data as a `eeg_data` or `eeg_epochs` object.
 #' @param ... Other parameters passed to the functions.
 #' @examples
 #' epoch_stats(demo_epochs)
@@ -187,13 +187,13 @@ kurtosis <- function(data) {
 #' based on EOG channels that are used to estimate how much activity eye
 #' movements are responsible for across all channels.
 #'
-#' @param data Data to regress - \code{eeg_data} or \code{eeg_epochs}
+#' @param data Data to regress - `eeg_data` or `eeg_epochs`
 #' @param heog Horizontal EOG channel labels
 #' @param veog Vertical EOG channel labels
 #' @param bipolarize Bipolarize the EOG channels. Only works when four channels
 #'   are supplied (2 HEOG and 2 VEOG).
 #' @author Matt Craddock, \email{matt@@mattcraddock.com}
-#' @return An \code{eeg_data} or \code{eeg_epochs} object with corrections
+#' @return An `eeg_data` or `eeg_epochs` object with corrections
 #'   applied.
 #' @export
 
@@ -338,7 +338,7 @@ ar_eogcor.eeg_ICA <- function(decomp,
 #' noise. Low autocorrelation at a lag of 20ms is often associated with muscle
 #' noise.
 #'
-#' @param data \code{eeg_ICA} object
+#' @param data `eeg_ICA` object
 #' @param ... additional parameters
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #' @references Chaumon, M., Bishop, D.V., Busch, N.A. (2015). A practical guide
@@ -358,7 +358,7 @@ ar_acf <- function(data, ...) {
 #' @param plot Produce plot showing ACF and threshold for all EEG components.
 #' @param verbose Print informative messages. Defaults to TRUE.
 #' @param threshold Specify a threshold for low ACF. NULL estimates the threshold automatically.
-#' @describeIn ar_acf Autocorrelation checker for \code{eeg_ICA} objects
+#' @describeIn ar_acf Autocorrelation checker for `eeg_ICA` objects
 #' @importFrom stats sd cor
 #' @importFrom graphics abline par
 #' @export
@@ -395,7 +395,7 @@ ar_acf.eeg_ICA <- function(data,
 #' that have one particular channel that has a particularly high z-score.
 #'
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
-#' @param data \code{eeg_ICA} object
+#' @param data `eeg_ICA` object
 #' @param plot Produce plot showing max z-scores and threshold for all ICA
 #'   components.
 #' @param threshold Specify a threshold for high focality. NULL estimates the
@@ -456,7 +456,7 @@ ar_chanfoc <- function(data,
 #' that have one particular trial that has a particularly high z-score.
 #'
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
-#' @param data \code{eeg_ICA} object
+#' @param data `eeg_ICA` object
 #' @param plot Produce plot showing max z-scores and threshold for all ICA
 #'   components.
 #' @param threshold Specify a threshold (z-score) for high focality. NULL estimates the

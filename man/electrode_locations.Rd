@@ -66,6 +66,6 @@ electrode_locations(demo_epochs, overwrite = TRUE, montage = "biosemi64alpha")
 }
 \references{
 Oostenveld, R. & Praamstra, P. (2001). The five percent electrode
-  system for high-resolution EEG and ERP measurements. Clinical
-  Neurophysiology, 112, 4, 713-719
+system for high-resolution EEG and ERP measurements. Clinical
+Neurophysiology, 112, 4, 713-719
 }

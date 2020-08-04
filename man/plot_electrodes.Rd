@@ -23,7 +23,7 @@ interactive 3D plot of electrode locations. Defaults to FALSE.}
 }
 \value{
 A \code{ggplot} or \code{plotly} figure showing the locations of the
-  electrodes
+electrodes
 }
 \description{
 Produces either a 2D plot of the electrode locations or an interactive plot

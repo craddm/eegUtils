@@ -16,7 +16,7 @@ List trigger types and any labels found in an \code{eeg_data} object.
 list_events(demo_epochs)
 }
 \seealso{
-\code{\link{tag_events}} and \code{\link{list_epochs}}
+\code{\link[=tag_events]{tag_events()}} and \code{\link[=list_epochs]{list_epochs()}}
 
 Other event handlers: 
 \code{\link{events}()},

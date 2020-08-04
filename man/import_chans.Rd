@@ -14,7 +14,7 @@ Default is "spherical".}
 }
 \value{
 A \code{tibble} containing electrode names and locations in several
-  different coordinate systems.
+different coordinate systems.
 }
 \description{
 Currently only ASA .elc format with Cartesian x-y-z coordinates is supported.

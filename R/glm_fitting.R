@@ -4,19 +4,19 @@
 #'
 #' @section Notes On Usage:
 #'
-#'   The \code{fit_glm} function will fit a linear model to each timepoint for
+#'   The `fit_glm` function will fit a linear model to each timepoint for
 #'   each electrode in the input dataset.
 #'
 #'   The formula is a standard R formula. Specify only the right-hand side of
 #'   the formula i.e. any predictors.
 #'
 #'   The function allows flexible fitting of a baseline covariate, recognising
-#'   the term \code{baseline} in the specified formula.
+#'   the term `baseline` in the specified formula.
 #'
 #' @author Matt Craddock, \email{matt@@mattcraddock.com}
-#' @param formula An object of class "\code{formula}". Right-hand side A
+#' @param formula An object of class "`formula`". Right-hand side A
 #'   regression formula for a GLM. See ?formula and notes on use below
-#' @param data An \code{eegUtils} object.
+#' @param data An `eegUtils` object.
 #' @param ... Any other arguments passed to (LM/GLM)
 #' @importFrom tibble as_tibble
 #' @importFrom dplyr mutate
@@ -36,7 +36,7 @@ fit_glm.default <- function(formula,
 
 #' @param time_lim Numeric vector of length 2 specifying time period to be used
 #'   as a baseline.
-#' @describeIn fit_glm GLM fitting for \code{eeg_epochs}
+#' @describeIn fit_glm GLM fitting for `eeg_epochs`
 #' @export
 fit_glm.eeg_epochs <- function(formula,
                                data,

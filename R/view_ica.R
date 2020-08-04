@@ -5,7 +5,7 @@
 #' individual components.
 #'
 #' @author Matt craddock \email{matt@@mattcraddock.com}
-#' @param data An \code{eeg_ICA} object
+#' @param data An `eeg_ICA` object
 #' @return NULL
 #' @export
 

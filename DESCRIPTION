@@ -59,3 +59,4 @@ VignetteBuilder: knitr
 LinkingTo: 
     Rcpp,
     RcppArmadillo
+Roxygen: list(markdown = TRUE)

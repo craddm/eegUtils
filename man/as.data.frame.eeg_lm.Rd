@@ -2,7 +2,7 @@
 % Please edit documentation in R/df_converters.R
 \name{as.data.frame.eeg_lm}
 \alias{as.data.frame.eeg_lm}
-\title{Convert `eeg_lm` to data.frame}
+\title{Convert \code{eeg_lm} to data.frame}
 \usage{
 \method{as.data.frame}{eeg_lm}(
   x,
@@ -31,7 +31,7 @@ long = TRUE.}
 \item{...}{arguments for other as.data.frame commands}
 }
 \description{
-Convert an object of class \code{eeg_data} into a standard `data.frame`.
+Convert an object of class \code{eeg_data} into a standard \code{data.frame}.
 }
 \author{
 Matt Craddock \email{matt@mattcraddock.com}

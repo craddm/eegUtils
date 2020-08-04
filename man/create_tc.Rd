@@ -15,7 +15,7 @@ create_tc(data, add_CI, colour, quantity = amplitude, mapping = NULL)
 
 \item{quantity}{The name of the column/quantity to plot}
 
-\item{mapping}{A ggplot2 `aes()` mapping.}
+\item{mapping}{A ggplot2 \code{aes()} mapping.}
 }
 \description{
 Internal function for creation of timecourse plots

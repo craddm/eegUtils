@@ -18,10 +18,10 @@ events(.data) <- value
 \arguments{
 \item{.data}{\code{eegUtils} object to view}
 
-\item{value}{Value to replace `events` structure with.}
+\item{value}{Value to replace \code{events} structure with.}
 }
 \description{
-Get or set the values in the `events` structure of an eegUtils object.
+Get or set the values in the \code{events} structure of an eegUtils object.
 }
 \examples{
 events(demo_epochs)

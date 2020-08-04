@@ -4,10 +4,10 @@
 #' Currently, the only available method is a Morlet wavelet transformation
 #' performed using convolution in the frequency domain.
 #'
-#' @param data An object of class \code{eeg_epochs}.
+#' @param data An object of class `eeg_epochs`.
 #' @param ... Further TFR parameters
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
-#' @return An object of class \code{eeg_tfr}
+#' @return An object of class `eeg_tfr`
 #' @examples
 #' out <- compute_tfr(demo_epochs, method = "morlet", foi = c(4, 30), n_freq = 10, n_cycles = 3)
 #' out
@@ -79,7 +79,7 @@ compute_tfr.eeg_epochs <- function(data,
   tfr_obj
 }
 
-#' @describeIn compute_tfr Method for \code{eeg_evoked} objects.
+#' @describeIn compute_tfr Method for `eeg_evoked` objects.
 compute_tfr.eeg_evoked <- function(data,
                                    method = "morlet",
                                    foi,
@@ -114,7 +114,7 @@ compute_tfr.eeg_evoked <- function(data,
 #' Internal function for performing Morlet wavelet transforms using convolution
 #' in frequency domain
 #'
-#' @param data Data in \code{eeg_epochs} format.
+#' @param data Data in `eeg_epochs` format.
 #' @param foi Frequencies of interest. Scalar or character vector of the lowest
 #'   and highest frequency to resolve.
 #' @param n_freq Number of frequencies to be resolved.
@@ -464,7 +464,7 @@ circ_mean <- function(data) {
 
 #' Convert Fourier output to power, phase, or ITC as requested.
 #'
-#' @param data Fourier coefficients from \code{eeg_tfr}
+#' @param data Fourier coefficients from `eeg_tfr`
 #' @param output What output is desired - "power", "phase"
 #' @keywords internal
 convert_tfr <- function(data,
@@ -491,10 +491,10 @@ convert_tfr <- function(data,
 #'
 #' Calculates inter-trial coherence (ITC), a measure of phase consistency across
 #' single trial data. Input data must be provided as complex Fourier
-#' coefficients within an \code{eeg_tfr} object
+#' coefficients within an `eeg_tfr` object
 #'
-#' @param data An \code{eeg_tfr} object
-#' @return An \code{eeg_tfr} object
+#' @param data An `eeg_tfr` object
+#' @return An `eeg_tfr` object
 #' @export
 compute_itc <- function(data) {
 

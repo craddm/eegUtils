@@ -1,6 +1,6 @@
 #' Plot Power Spectral Density
 #'
-#' Calculate and plot the PSD for \code{eeg_*} objects. Output units are dB. The
+#' Calculate and plot the PSD for `eeg_*` objects. Output units are dB. The
 #' PSD is calculated using Welch's method.
 #'
 #' Welch's method splits the data into multiple segments and then averages over
@@ -13,7 +13,7 @@
 #' @examples
 #'  plot_psd(demo_epochs)
 #'  plot_psd(demo_epochs, seg_length = 256)
-#' @param data Object of class \code{eeg_epochs}, \code{eeg_data}, or \code{eeg_ICA}.
+#' @param data Object of class `eeg_epochs`, `eeg_data`, or `eeg_ICA`.
 #' @param freq_range Vector of lower and upper frequencies to plot. (e.g. c(1,
 #'   40))
 #' @param ... Additional parameters.
@@ -26,13 +26,13 @@ plot_psd <- function(data, freq_range = NULL, ...) {
 }
 
 #' @param n_fft Number of points to use for the underlying FFTs. Defaults to 256
-#'   for \code{eeg_epochs} or minimum of 2048 or the signal length for
-#'   \code{eeg_data}.
+#'   for `eeg_epochs` or minimum of 2048 or the signal length for
+#'   `eeg_data`.
 #' @param noverlap Amount of overlap between segments, in sampling points.
 #'   Defaults to 50\%.
 #' @param seg_length Length of individual segments. Defaults to n_fft. Must be <= n_fft.
 #' @param demean Remove epoch means before FFT.
-#' @describeIn plot_psd Plot PSD for \code{eeg_epochs}.
+#' @describeIn plot_psd Plot PSD for `eeg_epochs`.
 #' @export
 plot_psd.eeg_epochs <- function(data,
                                 freq_range = NULL,
@@ -53,7 +53,7 @@ plot_psd.eeg_epochs <- function(data,
                   freq_range)
 }
 
-#' @describeIn plot_psd Plot PSD for \code{eeg_data}.
+#' @describeIn plot_psd Plot PSD for `eeg_data`.
 #' @export
 plot_psd.eeg_data <- function(data,
                               freq_range = NULL,
@@ -73,7 +73,7 @@ plot_psd.eeg_data <- function(data,
 }
 
 #' @param components Which components to compute the PSD for. Defaults to all.
-#' @describeIn plot_psd Plot PSD for \code{eeg_ICA} objects
+#' @describeIn plot_psd Plot PSD for `eeg_ICA` objects
 #' @export
 plot_psd.eeg_ICA <- function(data,
                              freq_range = NULL,
@@ -98,7 +98,7 @@ plot_psd.eeg_ICA <- function(data,
                   freq_range)
 }
 
-#' @describeIn plot_psd Plot PSD for \code{data.frame}s.
+#' @describeIn plot_psd Plot PSD for `data.frame`s.
 #' @importFrom dplyr select group_by summarise_all
 #' @export
 plot_psd.data.frame <- function(data,
@@ -126,7 +126,7 @@ plot_psd.data.frame <- function(data,
     xlab("Frequency (Hz)")
 }
 
-#' @describeIn plot_psd Plot PSD for \code{eeg_evoked} objects
+#' @describeIn plot_psd Plot PSD for `eeg_evoked` objects
 #' @export
 plot_psd.eeg_evoked <- function(data,
                                 freq_range = NULL,
@@ -182,15 +182,15 @@ create_psd_plot <- function(psd_out,
 
 #' Time-frequency plot
 #'
-#' Creates a time-frequency plot of an \code{eeg_tfr} object. The plot has time
+#' Creates a time-frequency plot of an `eeg_tfr` object. The plot has time
 #' on the x-axis and frequency on the y-axis. If no electrode is supplied, it
 #' will average over all electrodes.
 #'
 #' Various different baseline options can be applied here (e.g. "db" for
 #' decibels, "pc" for percent change, "divide" for division; see
-#' \code{rm_baseline} for details).
+#' `rm_baseline` for details).
 #'
-#' @param data Object of class \code{eeg_tfr}
+#' @param data Object of class `eeg_tfr`
 #' @param electrode Electrode to plot. If none is supplied, averages over all
 #'   electrodes.
 #' @param time_lim Time limits of plot.
@@ -206,7 +206,7 @@ create_psd_plot <- function(psd_out,
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #' @importFrom purrr partial
 #' @import ggplot2
-#' @return A \code{ggplot}
+#' @return A `ggplot`
 #' @seealso [rm_baseline()]
 #' @export
 

@@ -39,7 +39,7 @@ electrodes.}
 Defaults to TRUE.}
 
 \item{fun.data}{Statistical function to use for averaging over
-electrodes/conditions. Defaults to `mean`.}
+electrodes/conditions. Defaults to \code{mean}.}
 }
 \value{
 A \code{ggplot}
@@ -55,7 +55,7 @@ decibels, "pc" for percent change, "divide" for division; see
 \code{rm_baseline} for details).
 }
 \seealso{
-[rm_baseline()]
+\code{\link[=rm_baseline]{rm_baseline()}}
 }
 \author{
 Matt Craddock \email{matt@mattcraddock.com}

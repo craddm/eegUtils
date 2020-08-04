@@ -11,7 +11,7 @@ ortho_norm(chan_info)
 }
 \value{
 A data.frame with x and y columns indictating electrode positions in
-  mm
+mm
 }
 \description{
 Produce a set of x and y coordinates for plotting from 3D Cartesian

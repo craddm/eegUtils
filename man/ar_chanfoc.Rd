@@ -41,9 +41,9 @@ ar_chanfoc(demo_sobi)
 }
 \references{
 Chaumon, M., Bishop, D.V., Busch, N.A. (2015). A practical guide
-  to the selection of independent components of the electroencephalogram for
-  artifact correction. J Neurosci Methods. Jul 30;250:47-63. doi:
-  10.1016/j.jneumeth.2015.02.025
+to the selection of independent components of the electroencephalogram for
+artifact correction. J Neurosci Methods. Jul 30;250:47-63. doi:
+10.1016/j.jneumeth.2015.02.025
 }
 \author{
 Matt Craddock \email{matt@mattcraddock.com}

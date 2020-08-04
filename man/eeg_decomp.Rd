@@ -51,16 +51,16 @@ filters applied to the original, broadband data.
 
 \references{
 Cohen, M. X., & Gulbinate, R. (2017). Rhythmic entrainment source
-  separation: Optimizing analyses of neural responses to rhythmic sensory
-  stimulation. NeuroImage, 147, 43-56.
-  https://doi.org/10.1016/j.neuroimage.2016.11.036
+separation: Optimizing analyses of neural responses to rhythmic sensory
+stimulation. NeuroImage, 147, 43-56.
+https://doi.org/10.1016/j.neuroimage.2016.11.036
 
-  Haufe, S., Dähne, S., & Nikulin, V. V. (2014). Dimensionality reduction for
-  the analysis of brain oscillations. NeuroImage, 101, 583–597.
-  https://doi.org/10.1016/j.neuroimage.2014.06.073
+Haufe, S., Dähne, S., & Nikulin, V. V. (2014). Dimensionality reduction for
+the analysis of brain oscillations. NeuroImage, 101, 583–597.
+https://doi.org/10.1016/j.neuroimage.2014.06.073
 
-  Nikulin, V. V., Nolte, G., & Curio, G. (2011). A novel method for reliable
-  and fast extraction of neuronal EEG/MEG oscillations on the basis of
-  spatio-spectral decomposition. NeuroImage, 55(4), 1528–1535.
-  https://doi.org/10.1016/j.neuroimage.2011.01.057
+Nikulin, V. V., Nolte, G., & Curio, G. (2011). A novel method for reliable
+and fast extraction of neuronal EEG/MEG oscillations on the basis of
+spatio-spectral decomposition. NeuroImage, 55(4), 1528–1535.
+https://doi.org/10.1016/j.neuroimage.2011.01.057
 }

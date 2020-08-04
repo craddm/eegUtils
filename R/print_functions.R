@@ -1,8 +1,8 @@
 #' Print eeg_data summary
 #'
-#' Print a basic summary of the contents of an \code{eeg_data} object
+#' Print a basic summary of the contents of an `eeg_data` object
 #'
-#' @param x \code{eeg_data} object to be printed
+#' @param x `eeg_data` object to be printed
 #' @param ... Further arguments passed
 #' @export
 print.eeg_data <- function(x,
@@ -19,9 +19,9 @@ print.eeg_data <- function(x,
 
 #' Print eeg_epochs summary
 #'
-#' Print a basic summary of the contents of an \code{eeg_epochs} object
+#' Print a basic summary of the contents of an `eeg_epochs` object
 #'
-#' @param x \code{eeg_epochs} object to be printed
+#' @param x `eeg_epochs` object to be printed
 #' @param ... Further arguments passed
 #' @export
 print.eeg_epochs <- function(x, ...) {
@@ -41,9 +41,9 @@ print.eeg_epochs <- function(x, ...) {
 
 #' Print eeg_epochs summary
 #'
-#' Print a basic summary of the contents of an \code{eeg_epochs} object
+#' Print a basic summary of the contents of an `eeg_epochs` object
 #'
-#' @param x \code{eeg_epochs} object to be printed
+#' @param x `eeg_epochs` object to be printed
 #' @param ... Further arguments passed
 #' @export
 print.eeg_ICA <- function(x, ...) {
@@ -61,9 +61,9 @@ print.eeg_ICA <- function(x, ...) {
 
 #' Print Values
 #'
-#' Print a basic summary of the contents of an \code{eeg_tfr} object
+#' Print a basic summary of the contents of an `eeg_tfr` object
 #'
-#' @param x \code{eeg_tfr} object to be printed
+#' @param x `eeg_tfr` object to be printed
 #' @param ... Further arguments passed
 #' @export
 print.eeg_tfr <- function(x, ...) {
@@ -90,9 +90,9 @@ print.eeg_tfr <- function(x, ...) {
 
 #' Print eeg_evoked summary
 #'
-#' Print a basic summary of the contents of an \code{eeg_epochs} object
+#' Print a basic summary of the contents of an `eeg_epochs` object
 #'
-#' @param x \code{eeg_epochs} object to be printed
+#' @param x `eeg_epochs` object to be printed
 #' @param ... Further arguments passed
 #' @export
 print.eeg_evoked <- function(x, ...) {
@@ -113,9 +113,9 @@ print.eeg_evoked <- function(x, ...) {
 
 #' Print eeg_stats summary
 #'
-#' Print a basic summary of the contents of an \code{eeg_stats} object
+#' Print a basic summary of the contents of an `eeg_stats` object
 #'
-#' @param x \code{eeg_stats} object to be printed
+#' @param x `eeg_stats` object to be printed
 #' @param ... Further arguments passed
 #' @export
 
@@ -136,9 +136,9 @@ print.eeg_stats <- function(x, ...) {
 
 #' Print eeg_lm summary
 #'
-#' Print a basic summary of the contents of an \code{eeg_lm} object
+#' Print a basic summary of the contents of an `eeg_lm` object
 #'
-#' @param x \code{eeg_lm} object to be printed
+#' @param x `eeg_lm` object to be printed
 #' @param ... Further arguments passed
 #' @export
 print.eeg_lm <- function(x, ...) {

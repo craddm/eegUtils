@@ -1,7 +1,7 @@
 #' Filter EEG data
 #'
-#' Perform IIR or FIR filtering on input EEG data of class \code{eeg_data} or
-#' \code{eeg_epochs}. WARNING: with epoched data, epoch boundaries are currently
+#' Perform IIR or FIR filtering on input EEG data of class `eeg_data` or
+#' `eeg_epochs`. WARNING: with epoched data, epoch boundaries are currently
 #' ignored, which can result in minor edge artifacts.
 #'
 #' low_freq and high_freq are the low and high cutoff frequencies. Pass low freq
@@ -31,7 +31,7 @@
 #' plot_psd(eeg_filter(demo_epochs, low_freq = 12, high_freq = 8))
 #' plot_psd(eeg_filter(demo_epochs, low_freq = 12, high_freq = 8, method = "iir"))
 #'
-#' @param .data An \code{eeg_data} or \code{eeg_epochs} object to be filtered.
+#' @param .data An `eeg_data` or `eeg_epochs` object to be filtered.
 #' @param ... Additional parameters.
 #' @return An object of the original class with signals filtered according to
 #'   the user's specifications

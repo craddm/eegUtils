@@ -6,7 +6,7 @@
 #' @param file_name Name and full path of file to be loaded.
 #' @param format If the file is not .elc format, "spherical", "geographic".
 #'   Default is "spherical".
-#' @return A \code{tibble} containing electrode names and locations in several
+#' @return A `tibble` containing electrode names and locations in several
 #'   different coordinate systems.
 #' @export
 
@@ -184,7 +184,7 @@ topo_norm <- function(angle, radius) {
 #' @param degrees degrees by which to rotate
 #' @examples
 #' rotate_angle(channels(demo_epochs), 90)
-#' @return A \code{tibble()}
+#' @return A `tibble()`
 #' @export
 
 rotate_angle <- function(chan_info,
@@ -224,7 +224,7 @@ flip_x <- function(chan_info) {
 
 #' Get standard electrode locations
 #'
-#' Joins standard electrode locations to EEG data from \code{eegUtils} internal
+#' Joins standard electrode locations to EEG data from `eegUtils` internal
 #' data.
 #'
 #' The standard locations are from the 10-05 system derived by Oostenveld &
@@ -249,7 +249,7 @@ electrode_locations <- function(data, ...) {
 
 #' @param electrode The column name containing electrode names in data.
 #'   (Defaults to "electrode").
-#' @param drop Should electrodes in \code{data} for which default locations are
+#' @param drop Should electrodes in `data` for which default locations are
 #'   not available be removed? (Defaults to FALSE).
 #' @param montage Name of an existing montage set. Defaults to NULL.
 #' @importFrom dplyr inner_join pull left_join distinct
@@ -257,7 +257,7 @@ electrode_locations <- function(data, ...) {
 #' @importFrom tibble is_tibble
 #' @describeIn electrode_locations Adds standard locations to a data frame in
 #'   long format
-#' @return A tibble (or data.frame), or ggplot2 object if \code{plot = TRUE}.
+#' @return A tibble (or data.frame), or ggplot2 object if `plot = TRUE`.
 #' @export
 
 electrode_locations.data.frame <- function(data,
@@ -417,7 +417,7 @@ add_elocs <- function(data,
 #' @param data Data with associated electrode locations to be plotted.
 #' @param interact Choose 2D cartesian layout, or, if set to TRUE, an
 #'   interactive 3D plot of electrode locations. Defaults to FALSE.
-#' @return A \code{ggplot} or \code{plotly} figure showing the locations of the
+#' @return A `ggplot` or `plotly` figure showing the locations of the
 #'   electrodes
 #' @export
 
@@ -463,7 +463,7 @@ plot_electrodes.default <- function(data,
   }
 }
 
-#' @describeIn plot_electrodes Plot electrodes associated with an \code{eeg_data} object.
+#' @describeIn plot_electrodes Plot electrodes associated with an `eeg_data` object.
 #' @export
 plot_electrodes.eeg_data <- function(data,
                                      interact = FALSE) {
@@ -496,7 +496,7 @@ plot_electrodes.eeg_data <- function(data,
   }
 }
 
-#' @describeIn plot_electrodes Plot electrodes associated with an \code{eeg_data} object.
+#' @describeIn plot_electrodes Plot electrodes associated with an `eeg_data` object.
 #' @export
 plot_electrodes.eeg_tfr <- function(data,
                                      interact = FALSE) {
@@ -607,13 +607,13 @@ validate_channels <- function(chan_info,
 
 #' Modify channel information
 #'
-#' Get or set the contents of the channel information inside \code{eegUtils} objects.
+#' Get or set the contents of the channel information inside `eegUtils` objects.
 #'
 #' @examples
 #' channels(demo_epochs)
 #'
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
-#' @param .data \code{eegUtils} object to view
+#' @param .data `eegUtils` object to view
 #' @export
 channels <- function(.data) {
   UseMethod("channels", .data)
@@ -699,7 +699,7 @@ channels.eeg_stats <- function(.data) {
 #' @examples
 #' channel_names(demo_epochs)
 #'
-#' @param .data \code{eegUtils object}
+#' @param .data `eegUtils object`
 #' @export
 channel_names <- function(.data) {
   if (is.eeg_tfr(.data)) {

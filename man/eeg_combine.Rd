@@ -30,8 +30,8 @@ example, combining epochs derived from multiple recording blocks. Defaults to TR
 }
 \value{
 If all objects have the same participant_id, an object of the same
-  class as the original input object. If the objects have different
-  participant_id numbers, an object of class \code{eeg_group}.
+class as the original input object. If the objects have different
+participant_id numbers, an object of class \code{eeg_group}.
 }
 \description{
 Combine multiple \code{eeg_epochs} or \code{eeg_data} objects into a single

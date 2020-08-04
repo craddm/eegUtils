@@ -75,7 +75,7 @@ select_epochs(demo_ica, epoch_no = 1:5)
 
 }
 \seealso{
-\code{\link{select_times}} and \code{\link{select_elecs}}
+\code{\link[=select_times]{select_times()}} and \code{\link[=select_elecs]{select_elecs()}}
 }
 \author{
 Matt Craddock, \email{matt@mattcraddock.com}

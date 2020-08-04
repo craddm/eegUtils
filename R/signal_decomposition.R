@@ -11,7 +11,7 @@
 #' bandpass-filtered "signal" data, whereas the latter returns the resuls of the
 #' filters applied to the original, broadband data.
 #'
-#' @param data An \code{eeg_data} object
+#' @param data An `eeg_data` object
 #' @param ... Additional parameters
 #' @export
 #' @references Cohen, M. X., & Gulbinate, R. (2017). Rhythmic entrainment source
@@ -41,7 +41,7 @@ eeg_decomp.default <- function(data, ...) {
 #' @param method Type of decomposition to apply. Currently only "ssd" is supported.
 #' @param verbose Informative messages printed to console. Defaults to TRUE.
 #' @param order Filter order for filter applied to signal/noise
-#' @describeIn eeg_decomp method for \code{eeg_epochs} objects
+#' @describeIn eeg_decomp method for `eeg_epochs` objects
 #' @export
 eeg_decomp.eeg_epochs <- function(data,
                                   sig_range,
@@ -73,7 +73,7 @@ eeg_decomp.eeg_epochs <- function(data,
 
 #' Internal function for running SSD algorithm
 #'
-#' @param data \code{eeg_epochs} object to be decomposed
+#' @param data `eeg_epochs` object to be decomposed
 #' @param sig_range Frequency range of the signal of interest
 #' @param noise_range Frequency range of the noise
 #' @param RESS Run RESS rather than SSD. Defaults to FALSE.

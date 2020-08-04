@@ -1,19 +1,19 @@
 #' Combine EEG objects
 #'
-#' Combine multiple \code{eeg_epochs} or \code{eeg_data} objects into a single
+#' Combine multiple `eeg_epochs` or `eeg_data` objects into a single
 #' object. Note that this does not currently perform any sort of checking for
 #' internal consistency or duplication. It simply combines the objects in the
 #' order they are passed.
 #'
-#' @param data An \code{eeg_data} or \code{eeg_epochs} object, or a list of such
+#' @param data An `eeg_data` or `eeg_epochs` object, or a list of such
 #'   objects.
-#' @param ... additional \code{eeg_data} or \code{eeg_epochs} objects
+#' @param ... additional `eeg_data` or `eeg_epochs` objects
 #' @author Matt Craddock, \email{matt@@mattcraddock.com}
 #' @importFrom dplyr mutate bind_rows
 #' @importFrom purrr map_df
 #' @return If all objects have the same participant_id, an object of the same
 #'   class as the original input object. If the objects have different
-#'   participant_id numbers, an object of class \code{eeg_group}.
+#'   participant_id numbers, an object of class `eeg_group`.
 #' @export
 #'
 eeg_combine <- function(data,
@@ -31,8 +31,8 @@ eeg_combine.default <- function(data,
   )
 }
 
-#' @describeIn eeg_combine Method for combining lists of \code{eeg_data} and
-#'   \code{eeg_epochs} objects.
+#' @describeIn eeg_combine Method for combining lists of `eeg_data` and
+#'   `eeg_epochs` objects.
 #' @export
 eeg_combine.list <- function(data,
                              ...) {
@@ -53,7 +53,7 @@ eeg_combine.list <- function(data,
   }
 }
 
-#' @describeIn eeg_combine Method for combining \code{eeg_data} objects.
+#' @describeIn eeg_combine Method for combining `eeg_data` objects.
 #' @param check_timings Check whether sample times / epoch numbers are
 #'   continuously ascending; if not, modify so that they are. Useful when, for
 #'   example, combining epochs derived from multiple recording blocks. Defaults to TRUE
@@ -109,7 +109,7 @@ eeg_combine.eeg_data <- function(data,
   data
 }
 
-#' @describeIn eeg_combine Method for combining \code{eeg_epochs} objects
+#' @describeIn eeg_combine Method for combining `eeg_epochs` objects
 #' @export
 
 eeg_combine.eeg_epochs <- function(data,
@@ -151,7 +151,7 @@ eeg_combine.eeg_epochs <- function(data,
   data
 }
 
-#' @describeIn eeg_combine Method for combining \code{eeg_evoked} objects
+#' @describeIn eeg_combine Method for combining `eeg_evoked` objects
 #' @export
 eeg_combine.eeg_evoked <- function(data,
                                    ...) {
@@ -291,7 +291,7 @@ eeg_combine.eeg_ICA <- function(data,
 
 #' Check consistency of event and timing tables
 #'
-#' @param data \code{eeg_data} or \code{eeg_epochs} object
+#' @param data `eeg_data` or `eeg_epochs` object
 #' @keywords internal
 
 check_timings <- function(.data) {

@@ -24,7 +24,7 @@ are supplied (2 HEOG and 2 VEOG).}
 }
 \value{
 An \code{eeg_data} or \code{eeg_epochs} object with corrections
-  applied.
+applied.
 }
 \description{
 Calculates and removes the contribution of eye movements to the EEG signal

@@ -24,7 +24,7 @@ rm_baseline <- function(data,
 }
 
 
-#' @describeIn rm_baseline remove baseline from continuous \code{eeg_data}
+#' @describeIn rm_baseline remove baseline from continuous `eeg_data`
 #' @export
 
 rm_baseline.eeg_data <- function(data,
@@ -160,7 +160,7 @@ rm_baseline.data.frame <- function(data,
 
 #' @param type Type of baseline correction to apply. Options are ("divide",
 #'   "ratio", "absolute", "db", and "pc")
-#' @describeIn rm_baseline Method for \code{eeg_tfr} objects
+#' @describeIn rm_baseline Method for `eeg_tfr` objects
 #' @export
 rm_baseline.eeg_tfr <- function(data,
                                 time_lim = NULL,
@@ -240,7 +240,7 @@ rm_baseline.eeg_tfr <- function(data,
   data
 }
 
-#' @describeIn rm_baseline Method for \code{eeg_evoked} objects
+#' @describeIn rm_baseline Method for `eeg_evoked` objects
 #' @export
 rm_baseline.eeg_evoked <- function(data,
                                    time_lim = NULL,

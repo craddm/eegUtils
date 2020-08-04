@@ -12,7 +12,7 @@ channels(.data) <- value
 \arguments{
 \item{.data}{\code{eegUtils} object to view}
 
-\item{value}{Value to replace `chan_info` structure with.}
+\item{value}{Value to replace \code{chan_info} structure with.}
 }
 \description{
 Get or set the contents of the channel information inside \code{eegUtils} objects.

@@ -1,9 +1,9 @@
 #' Convert eeg_data to data.frame
 #'
-#' Convert an object of class \code{eeg_data} into a standard data.frame.
+#' Convert an object of class `eeg_data` into a standard data.frame.
 #'
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
-#' @param x Object of class \code{eeg_data}
+#' @param x Object of class `eeg_data`
 #' @param row.names Kept for compatibility with S3 generic, ignored.
 #' @param optional Kept for compatibility with S3 generic, ignored.
 #' @param long Convert to long format. Defaults to FALSE
@@ -44,10 +44,10 @@ as.data.frame.eeg_data <- function(x,
 }
 
 
-#' Convert \code{eeg_tfr} objects to data frames
+#' Convert `eeg_tfr` objects to data frames
 #'
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
-#' @param x Object of class \code{eeg_tfr}
+#' @param x Object of class `eeg_tfr`
 #' @param row.names Kept for compatability with S3 generic, ignored.
 #' @param optional Kept for compatability with S3 generic, ignored.
 #' @param long Convert to long format. Defaults to FALSE.
@@ -146,10 +146,10 @@ as.data.frame.eeg_tfr <- function(x,
 
 #' Convert `eeg_lm` to data.frame
 #'
-#' Convert an object of class \code{eeg_data} into a standard `data.frame`.
+#' Convert an object of class `eeg_data` into a standard `data.frame`.
 #'
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
-#' @param x Object of class \code{eeg_data}
+#' @param x Object of class `eeg_data`
 #' @param row.names Kept for compatibility with S3 generic, ignored.
 #' @param optional Kept for compatibility with S3 generic, ignored.
 #' @param long Convert to long format. Defaults to FALSE.
@@ -211,10 +211,10 @@ as.data.frame.eeg_lm <- function(x,
   df
 }
 
-#' Convert \code{eeg_stats} objects to data frames
+#' Convert `eeg_stats` objects to data frames
 #'
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
-#' @param x Object of class \code{eeg_stats}
+#' @param x Object of class `eeg_stats`
 #' @param row.names Kept for compatability with S3 generic, ignored.
 #' @param optional Kept for compatability with S3 generic, ignored.
 #' @param long Convert to long format. Defaults to FALSE.

@@ -1,7 +1,7 @@
 #' Create epochs from EEG data
 #'
 #' Creates epochs around specified event triggers. Requires data of class
-#' \code{eeg_data}. Where multiple events are specified, epochs will be created
+#' `eeg_data`. Where multiple events are specified, epochs will be created
 #' around each event.
 #'
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
@@ -37,9 +37,9 @@ epoch_data.default <- function(data, ...) {
 #' @importFrom dplyr left_join
 #' @importFrom purrr map map_df
 #'
-#' @return Returns an epoched object of class \code{eeg_epochs}
+#' @return Returns an epoched object of class `eeg_epochs`
 #'
-#' @describeIn epoch_data Epoch \code{eeg_data} objects
+#' @describeIn epoch_data Epoch `eeg_data` objects
 #'
 #' @export
 
@@ -224,9 +224,9 @@ epoch_data.eeg_epochs <- function(data, ...) {
 
 #' Modify the epochs structure
 #'
-#' Get or set the epochs structure of an \code{eegUtils} object
+#' Get or set the epochs structure of an `eegUtils` object
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
-#' @param .data \code{eegUtils} object to view
+#' @param .data `eegUtils` object to view
 #' @export
 epochs <- function(.data) {
   if (any(class(.data) %in% c("eeg_data",
