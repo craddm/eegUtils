@@ -9,11 +9,12 @@
 - `view_ica()` Shiny viewer for `eeg_ICA` and `eeg_decomp` objects added.
 - `view_artefacts()`Shiny viewer for channel and epoch stats added.
 - `plot_timecourse()` now takes a mapping argument, which allows use of `ggplot2` `aes()` mappings
-- `eeg_average.eeg_tfr()` now follows behaviour of other `eeg_average()` methods in respecting the `epochs` structure.
+- `eeg_average.eeg_tfr()` now follows behaviour of other `eeg_average()` methods in respecting the `epochs` structure.  
 - `compute_itc()` added for computing inter-trial coherence from `eeg_tfr` objects.
 - `cols` added to `eeg_average.eeg_tfr`
 - `eeg_combine.tfr_average()` added to handle pre-averaged `eeg_tfr` objects
 - `compute_tfr()` now allows non-constant number of cycles
+- `compute_tfr()` now uses a different scaling factor, so raw units should now be microvolts-squared. 
 
 ### Internal changes / bug fixes
 - `plot_tfr()` now always drops NA/NaN values and averages appropriately over electrodes and conditions.
@@ -38,6 +39,7 @@
 - `stat_summary_by_fill()` added to do averaging for raster plots effectively.
 - `convert_tfr()` now properly returns converted data
 - `import_raw()` fix for Brain Vision Analyzer files with date fields in the markers
+- added `version` field to most objects
 
 # eegUtils 0.5.0
 

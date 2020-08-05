@@ -8,8 +8,9 @@
 #' each trial.
 #'
 #' Specific parameters such as the number of FFT points and the amount of
-#' overlap between segments can be passed to Welch's FFT
+#' overlap between segments can be passed to Welch's FFT.
 #'
+#' @author Matt Craddock, \email{matt@@mattcraddock.com}
 #' @examples
 #'  plot_psd(demo_epochs)
 #'  plot_psd(demo_epochs, seg_length = 256)
@@ -18,7 +19,6 @@
 #'   40))
 #' @param ... Additional parameters.
 #' @return A ggplot object.
-#' @author Matt Craddock, \email{matt@@mattcraddock.com}
 #' @export
 
 plot_psd <- function(data, freq_range = NULL, ...) {
@@ -29,7 +29,7 @@ plot_psd <- function(data, freq_range = NULL, ...) {
 #'   for `eeg_epochs` or minimum of 2048 or the signal length for
 #'   `eeg_data`.
 #' @param noverlap Amount of overlap between segments, in sampling points.
-#'   Defaults to 50\%.
+#'   Defaults to 50%.
 #' @param seg_length Length of individual segments. Defaults to n_fft. Must be <= n_fft.
 #' @param demean Remove epoch means before FFT.
 #' @describeIn plot_psd Plot PSD for `eeg_epochs`.
@@ -99,7 +99,6 @@ plot_psd.eeg_ICA <- function(data,
 }
 
 #' @describeIn plot_psd Plot PSD for `data.frame`s.
-#' @importFrom dplyr select group_by summarise_all
 #' @export
 plot_psd.data.frame <- function(data,
                                 freq_range = NULL,
@@ -246,9 +245,10 @@ plot_tfr <- function(data,
     data$freq_info$output <- "power"
   }
 
-  if (!inherits(data, c("tfr_average", "eeg_group"))) {
+  if (!inherits(data, c("tfr_average",
+                        "eeg_group"))) {
     data <- eeg_average(data)
-   }
+  }
 
   if (baseline_type != "none") {
     data <- rm_baseline(data,

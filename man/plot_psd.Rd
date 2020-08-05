@@ -66,7 +66,7 @@ for \code{eeg_epochs} or minimum of 2048 or the signal length for
 \item{seg_length}{Length of individual segments. Defaults to n_fft. Must be <= n_fft.}
 
 \item{noverlap}{Amount of overlap between segments, in sampling points.
-Defaults to 50\\%.}
+Defaults to 50\%.}
 
 \item{demean}{Remove epoch means before FFT.}
 
@@ -85,7 +85,7 @@ those segments. For epoched data, Welch's FFT is calculated separately for
 each trial.
 
 Specific parameters such as the number of FFT points and the amount of
-overlap between segments can be passed to Welch's FFT
+overlap between segments can be passed to Welch's FFT.
 }
 \section{Methods (by class)}{
 \itemize{

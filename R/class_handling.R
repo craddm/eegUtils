@@ -35,7 +35,7 @@ eeg_data <- function(data,
                 timings = timings,
                 reference = reference,
                 epochs = epochs,
-                version = packageVersion("eeg"))
+                version = utils::packageVersion("eegUtils"))
   class(value) <- "eeg_data"
   value
 }
@@ -116,7 +116,7 @@ eeg_tfr <- function(data,
                 freq_info = freq_info,
                 dimensions = dimensions,
                 epochs = epochs,
-                version = packageVersion("eegUtils")),
+                version = utils::packageVersion("eegUtils")),
                 class = "eeg_tfr")
 }
 
@@ -159,13 +159,12 @@ eeg_group <- function(data,
                       timings,
                       epochs) {
 
-  value <- list(signals = data,
-                srate = srate,
-                chan_info = chan_info,
-                timings = timings,
-                epochs = epochs)
-  class(value) <- "eeg_group"
-  value
+  structure(list(signals = data,
+                 srate = srate,
+                 chan_info = chan_info,
+                 timings = timings,
+                 epochs = epochs),
+            class = "eeg_group")
 }
 
 #' Function to create an S3 object of class "eeg_epochs".
@@ -198,7 +197,7 @@ eeg_epochs <- function(data,
                 timings = timings,
                 reference = reference,
                 epochs = epochs,
-                version = packageVersion("eegUtils"))
+                version = utils::packageVersion("eegUtils"))
   class(value) <- c("eeg_epochs", "eeg_data")
   value
 }
@@ -270,7 +269,7 @@ eeg_evoked <- function(data,
                 timings = timings,
                 srate = srate,
                 epochs = epochs,
-                version = packageVersion("eegUtils"))
+                version = utils::packageVersion("eegUtils"))
   class(value) <- c("eeg_evoked", "eeg_epochs")
   value
 }
@@ -296,7 +295,7 @@ eeg_stats <- function(statistic,
                 chan_info = chan_info,
                 timings = timings,
                 method = method,
-                version = packageVersion("eegUtils"))
+                version = utils::packageVersion("eegUtils"))
   class(value) <- "eeg_stats"
   value
 }

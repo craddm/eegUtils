@@ -242,7 +242,6 @@ welch_fft <- function(data,
                         seg_length,
                         noverlap)
     n_segs <- length(data_segs[[1]])
-    #n_segs <- length(data_segs)
     # this splits the data into a list of ncol elements; each list element is
     # also a list containing n_segs elements - consider recoding this to combine
     # segments into
@@ -275,13 +274,6 @@ welch_fft <- function(data,
                        1,
                        win, "*")
 
-    # if (n_fft > seg_length) {
-    #   data_segs <- apply(data_segs, 2,
-    #                      function(x) c(x,
-    #                                    numeric(n_fft - seg_length)))
-    # }
-
-    # data_fft <- mvfft(data_segs)
     data_fft <- fft_n(data_segs,
                       n_fft)
     colnames(data_fft) <- colnames(data_segs)
@@ -297,12 +289,10 @@ welch_fft <- function(data,
       final_out <- final_out / srate
       freqs <- seq(0, n_fft / 2) / (n_fft) * srate
     }
-
   }
 
   #select first half of spectrum and double amps, output is power - uV^2 / Hz
   final_out <- final_out[1:(n_fft / 2 + 1), , drop = FALSE]
-  #final_out[2:(n_fft / 2 + 1), ] <- (final_out[2:(n_fft / 2 + 1), ] * 2) ^ 2
   final_out <- data.frame(final_out,
                           frequency = freqs)
   final_out <- final_out[final_out$frequency > 0, ]

@@ -613,9 +613,9 @@ run_tf <- function(tmp,
                          n_conv)
 
         for (ik in 1:n_epochs) {
-          tfr_out[ik, , i, ] <-
-            abs(mvfft(norm_mf * tmp_epo[, ik],
-                      inverse = TRUE)[all_times, ] / orig_n) ^ 2
+          tfr_out[ik, , i, ] <- 2 *
+            (2 * abs(mvfft(norm_mf * tmp_epo[, ik],
+                      inverse = TRUE)[all_times, ] / n_conv)) ^ 2
         }
       }
     } else {
@@ -625,23 +625,24 @@ run_tf <- function(tmp,
                                n_chans,
                                n_freq))
       for (i in 1:n_chans) {
-        tmp_epo <- fft_n(tmp[, , i], n_conv)
+        tmp_epo <- fft_n(tmp[, , i, drop = FALSE], n_conv)
         for (ik in 1:n_epochs) {
           tfr_out[ik, , i, ] <-
-            mvfft(norm_mf * tmp_epo[, ik],
-                  inverse = TRUE)[all_times,] / orig_n
+           2 * mvfft(norm_mf * tmp_epo[, ik],
+                     inverse = TRUE)[all_times,] / n_conv
         }
       }
     }
   } else {
-    tfr_out <- array(0, dim = c(n_times, n_chans, n_freq))
+    tfr_out <- array(0,
+                     dim = c(n_times, n_chans, n_freq))
     for (i in 1:n_chans) {
-      tmp_epo <- fft_n(tmp[, , i, drop = FALSE], n_conv)
+      tmp_epo <- fft_n(tmp[, , i, drop = FALSE],
+                       n_conv)
       for (ik in 1:n_epochs) {
         tfr_out[, i, ] <-
           tfr_out[, i, ] +
-          abs(mvfft(norm_mf * tmp_epo[, ik], inverse = TRUE)[all_times,] / orig_n) ^
-          2
+          (2 * abs(mvfft(norm_mf * tmp_epo[, ik], inverse = TRUE)[all_times,] / n_conv)) ^ 2
       }
     }
     tfr_out <- tfr_out / n_epochs

@@ -8,11 +8,11 @@
 #' @param data Data as a `eeg_data` or `eeg_epochs` object.
 #' @param bad_elecs Name(s) of electrode(s) to interpolate.
 #' @param ... Other parameters passed to the functions.
-#' @references [1] Perrin, F., Pernier, J., Bertrand, O., & Echallier, J. F.
+#' @references * Perrin, F., Pernier, J., Bertrand, O., & Echallier, J. F.
 #'       (1989). Spherical splines for scalp potential and current
 #'       density mapping. Electroencephalography and Clinical
 #'     Neurophysiology, 72, 184-187
-#' [2] Perrin, F., Pernier, J., Bertrand, O., & Echallier, J. F.
+#'  * Perrin, F., Pernier, J., Bertrand, O., & Echallier, J. F.
 #'      (1990). Corrigenda EEG 02274. Electroencephalography and
 #'      Clinical Neurophysiology, 76, 565
 #' @export
@@ -162,13 +162,15 @@ interp_chans <- function(.data,
 #' @param data `eeg_data` or `eeg_epochs` object
 #' @param ... Other parameters
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
-#' @references [1] Perrin, F., Pernier, J., Bertrand, O., Echallier, J.F.
+#' @references * Perrin, F., Pernier, J., Bertrand, O., Echallier, J.F.
 #'   (1989). Spherical splines for scalp potential and current density mapping.
 #'   Electroencephalography and Clinical Neurophysiology, 72(2), 184-187. PMID:
-#'   2464490 [2] Kayser, J., Tenke, C.E. (2006). Principal components analysis
+#'   2464490
+#'  * Kayser, J., Tenke, C.E. (2006). Principal components analysis
 #'   of Laplacian waveforms as a generic method for identifying ERP generator
 #'   patterns: I. Evaluation with auditory oddball tasks. Clinical
-#'   Neurophysiology, 117(2), 348-368. [3] Kayser, J., Tenke, C.E. (2015).
+#'   Neurophysiology, 117(2), 348-368.
+#'  * Kayser, J., Tenke, C.E. (2015).
 #'   Issues and considerations for using the scalp surface Laplacian in EEG/ERP
 #'   research: A tutorial review. International Journal of Psycholphysiology,
 #'   97(3), 189-209
@@ -192,7 +194,7 @@ compute_csd.default <- function(data,
 #' @param smoothing lambda constant. Added to the Defaults to 1e-05
 #' @param scaling Default scaling (1) is uV / m^2. Note that this depends on the
 #'   units of the electrode co-ordinates.
-#' @describeIn compute_csd Transform eeg_data to CSD
+#' @describeIn compute_csd Transform `eeg_data` to CSD
 #' @export
 compute_csd.eeg_data <- function(data,
                                  m = 4,
@@ -205,7 +207,7 @@ compute_csd.eeg_data <- function(data,
                  scaling)
 }
 
-#' @describeIn compute_csd Transform eeg_data to CSD
+#' @describeIn compute_csd Transform `eeg_data` to CSD
 #' @export
 compute_csd.eeg_epochs <- function(data,
                                  m = 4,
