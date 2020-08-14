@@ -2,11 +2,16 @@
 % Please edit documentation in R/data_combine.R
 \name{rearrange_tfr}
 \alias{rearrange_tfr}
-\title{Rearrange and combine tfr_average objects}
+\title{Rearrange and combine \code{tfr_average} objects}
 \usage{
-rearrange_tfr(data, all_l)
+rearrange_tfr(data, add_obj)
+}
+\arguments{
+\item{data}{first object to be combined}
+
+\item{add_obj}{list of additional objects}
 }
 \description{
-Rearrange and combine tfr_average objects
+Epochs in different \code{tfr_average} objects are not necessarily in the same order.
 }
 \keyword{internal}
