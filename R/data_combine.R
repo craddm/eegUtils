@@ -379,19 +379,19 @@ check_timings.eeg_epochs <- function(data) {
   data
 }
 
-#' Rearrange and combine tfr_average objects
+#' Rearrange and combine `tfr_average` objects
 #'
-#' Epochs in different tfr_average objects are not necessarily in the same order.
+#' Epochs in different `tfr_average` objects are not necessarily in the same order.
 #'
-#' @param
-#' @param
+#' @param data first object to be combined
+#' @param add_obj list of additional objects
 #' @keywords internal
 rearrange_tfr <- function(data,
-                          all_l) {
+                          add_obj) {
 
   # Combine all epochs() metadata from the objects to be combined with the first
   # data
-  epo_list <- purrr::map_df(all_l,
+  epo_list <- purrr::map_df(add_obj,
                             epochs)
 
   # Merge them into a single data frame that can be used for subsequent sorting
@@ -406,18 +406,18 @@ rearrange_tfr <- function(data,
                      drop = TRUE)
   new_orders <- lapply(sort_list,
                        `[[`, "epoch")
-  ah <- c(list(data),
-          all_l)
+  full_list <- c(list(data),
+                 add_obj)
   # Step through list, sorting each one accordingly
-  uhoh <-
-    lapply(seq_along(ah),
+  sorted_list <-
+    lapply(seq_along(full_list),
            function(x) {
-             epochs(ah[[x]]) <- sort_list[[x]]
-             epochs(ah[[x]])$epoch <- 1:nrow(epochs(ah[[x]]))
-             ah[[x]]$signals <- ah[[x]]$signals[new_orders[[x]], , ,]
-             ah[[x]]
+             epochs(full_list[[x]]) <- sort_list[[x]]
+             epochs(full_list[[x]])$epoch <- 1:nrow(epochs(full_list[[x]]))
+             full_list[[x]]$signals <- full_list[[x]]$signals[new_orders[[x]], , ,]
+             full_list[[x]]
            })
-  uhoh
+  sorted_list
 }
 
 check_dims <- function(x) {
