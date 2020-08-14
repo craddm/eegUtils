@@ -381,12 +381,20 @@ check_timings.eeg_epochs <- function(data) {
 
 #' Rearrange and combine tfr_average objects
 #'
+#' Epochs in different tfr_average objects are not necessarily in the same order.
+#'
+#' @param
+#' @param
 #' @keywords internal
 rearrange_tfr <- function(data,
                           all_l) {
 
+  # Combine all epochs() metadata from the objects to be combined with the first
+  # data
   epo_list <- purrr::map_df(all_l,
                             epochs)
+
+  # Merge them into a single data frame that can be used for subsequent sorting
   sort_list <- merge(epochs(data),
                      epo_list,
                      all = TRUE)
@@ -400,6 +408,7 @@ rearrange_tfr <- function(data,
                        `[[`, "epoch")
   ah <- c(list(data),
           all_l)
+  # Step through list, sorting each one accordingly
   uhoh <-
     lapply(seq_along(ah),
            function(x) {

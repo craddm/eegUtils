@@ -639,6 +639,7 @@ run_tf <- function(tmp,
     for (i in 1:n_chans) {
       tmp_epo <- fft_n(tmp[, , i, drop = FALSE],
                        n_conv)
+
       for (ik in 1:n_epochs) {
         tfr_out[, i, ] <-
           tfr_out[, i, ] +
