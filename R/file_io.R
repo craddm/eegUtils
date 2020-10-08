@@ -607,13 +607,18 @@ import_set <- function(file_name,
   n_trials <- temp_dat$EEG[[which(var_names == "trials")]]
   times <- temp_dat$EEG[[which(var_names == "times")]]
 
-  chan_info <- temp_dat$EEG[[which(var_names == "chanlocs")]]
-  row_names <- dimnames(chan_info)[[1]]
-  size_chans <- dim(chan_info)
+  #chan_info <- temp_dat$EEG[[which(var_names == "chanlocs")]]
+  chan_info <- drop(Reduce(rbind, temp_dat$EEG["chanlocs",,]))
+  chan_info <- apply(chan_info, 1, unlist)
   chan_info <- lapply(chan_info,
-                      function(x) ifelse(purrr::is_empty(x), NA, x))
-  dim(chan_info) <- size_chans
-  rownames(chan_info) <- row_names
+                      function(x) if (length(x) == 0) NA else x)
+  # row_names <- dimnames(chan_info)[[1]]
+  # size_chans <- dim(chan_info)
+  # chan_info <- lapply(chan_info,
+  #                     function(x) ifelse(purrr::is_empty(x), NA, x))
+  # dim(chan_info) <- size_chans
+  # rownames(chan_info) <- row_names
+  chan_info <- tibble::as_tibble(chan_info)
   chan_info <- parse_chaninfo(chan_info)
 
   # check if the data is stored in the set or in a separate .fdt
@@ -787,10 +792,10 @@ import_set <- function(file_name,
 #' @keywords internal
 parse_chaninfo <- function(chan_info,
                            drop = FALSE) {
-  chan_info <- tibble::as_tibble(t(as.data.frame(chan_info)))
-  chan_info <- tibble::as_tibble(data.frame(lapply(chan_info,
-                                                   unlist),
-                                            stringsAsFactors = FALSE))
+  #chan_info <- tibble::as_tibble(t(as.data.frame(chan_info)))
+  # chan_info <- tibble::as_tibble(data.frame(lapply(chan_info,
+  #                                                  unlist),
+  #                                           stringsAsFactors = FALSE))
   chan_info <- chan_info[, sort(names(chan_info))]
   expected <- c("labels", "radius",
                 "ref", "sph.phi",
