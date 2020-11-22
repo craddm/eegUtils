@@ -456,7 +456,9 @@ plot_electrodes.default <- function(data,
                                    label = electrode)) +
         ggplot2::geom_text() +
         ggplot2::theme_minimal() +
-        ggplot2::coord_equal()
+        ggplot2::coord_equal() +
+        ggplot2::labs(x = "y (cm)",
+                      y = "x (cm)")
     }
   } else {
     stop("No electrodes found.")
@@ -492,7 +494,9 @@ plot_electrodes.eeg_data <- function(data,
                         label = electrode)) +
       geom_text() +
       theme_minimal() +
-      coord_equal()
+      coord_equal() +
+      ggplot2::labs(x = "y (cm)",
+                    y = "x (cm)")
   }
 }
 
@@ -525,7 +529,9 @@ plot_electrodes.eeg_tfr <- function(data,
                         label = electrode)) +
       geom_text() +
       theme_minimal() +
-      coord_equal()
+      coord_equal() +
+      ggplot2::labs(x = "y (cm)",
+                    y = "x (cm)")
   }
 }
 
