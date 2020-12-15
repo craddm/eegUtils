@@ -868,7 +868,7 @@ parse_vhdr_chans <- function(chan_labels,
                                      coords))
     names(new_coords) <- c("radius", "theta", "phi")
     new_coords <- cbind(init_chans, new_coords)
-    new_coords[new_coords$radius == 0, 2:4] <- NA
+    new_coords[new_coords$radius %in% c(0, NaN), 2:4] <- NA
 
     chan_info <- bva_elecs(new_coords)
     tibble::as_tibble(chan_info)
@@ -991,9 +991,6 @@ ft_raw <- function(data,
   n_trials <- length(data["trial", , ][[1]])
   signals <- purrr::flatten(purrr::flatten(data["trial", ,]))
   signals <- tibble::as_tibble(t(do.call(cbind, signals)))
-
-    #tibble::as_tibble(t(as.data.frame(data["trial", , ])))
-
   names(signals) <- sig_names
   timings <- tibble::tibble(epoch = rep(seq(1, n_trials),
                                         each = length(unique(times))),
