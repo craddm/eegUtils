@@ -457,8 +457,8 @@ plot_electrodes.default <- function(data,
         ggplot2::geom_text() +
         ggplot2::theme_minimal() +
         ggplot2::coord_equal() +
-        ggplot2::labs(x = "y (cm)",
-                      y = "x (cm)")
+        ggplot2::labs(x = "y (mm)",
+                      y = "x (mm)")
     }
   } else {
     stop("No electrodes found.")
@@ -495,8 +495,8 @@ plot_electrodes.eeg_data <- function(data,
       geom_text() +
       theme_minimal() +
       coord_equal() +
-      ggplot2::labs(x = "y (cm)",
-                    y = "x (cm)")
+      ggplot2::labs(x = "y (mm)",
+                    y = "x (mm)")
   }
 }
 
@@ -530,8 +530,8 @@ plot_electrodes.eeg_tfr <- function(data,
       geom_text() +
       theme_minimal() +
       coord_equal() +
-      ggplot2::labs(x = "y (cm)",
-                    y = "x (cm)")
+      ggplot2::labs(x = "y (mm)",
+                    y = "x (mm)")
   }
 }
 
@@ -574,7 +574,7 @@ validate_channels <- function(chan_info,
     missing_sigs <- !(toupper(sig_names) %in% toupper(chan_info$electrode))
 
     if (any(missing_sigs)) {
-      chan_info <- merge(data.frame(electrode = toupper(sig_names)),
+      chan_info <- merge(data.frame(electrode = sig_names),
                          chan_info,
                          all.x = TRUE,
                          sort = FALSE)
