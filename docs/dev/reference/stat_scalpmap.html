@@ -10,23 +10,27 @@
 
 
 <!-- jquery -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.7/flatly/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/flatly/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
 
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
+
+<!-- bootstrap-toc -->
+<link rel="stylesheet" href="../bootstrap-toc.css">
+<script src="../bootstrap-toc.js"></script>
 
 <!-- Font Awesome icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous" />
 
 <!-- clipboard.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script>
 
 <!-- headroom.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
@@ -47,7 +51,6 @@ geom_ears simply draws a pair of ears attached to the head shape.
 geom_channels adds either points or text labels at channel locations.
 This is a convenience function to prevent overplotting when the input data
 contains many rows of data." />
-<meta name="twitter:card" content="summary" />
 
 
 <meta name="robots" content="noindex">
@@ -65,7 +68,7 @@ contains many rows of data." />
 
   </head>
 
-  <body>
+  <body data-spy="scroll" data-target="#toc">
     <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -87,7 +90,7 @@ contains many rows of data." />
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -111,13 +114,13 @@ contains many rows of data." />
       <a href="../articles/epoch-handling.html">Event and epoch handling</a>
     </li>
     <li>
-      <a href="../articles/linear_modelling.html">Linear Modelling</a>
+      <a href="../articles/linear_modelling/linear_modelling.html">Linear Modelling</a>
     </li>
     <li>
       <a href="../articles/time-frequency-analysis.html">Frequency analysis</a>
     </li>
     <li>
-      <a href="../articles/topoplot.html">Building a topographical plot</a>
+      <a href="../articles/topoplot/topoplot.html">Building a topographical plot</a>
     </li>
   </ul>
 </li>
@@ -127,8 +130,8 @@ contains many rows of data." />
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/craddm/eegUtils">
-    <span class="fab fa fab fa-github fa-lg"></span>
+  <a href="https://github.com/craddm/eegUtils/">
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -164,53 +167,62 @@ This is a convenience function to prevent overplotting when the input data
 contains many rows of data.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>stat_scalpmap</span>(
-  <span class='kw'>mapping</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>data</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>position</span> <span class='kw'>=</span> <span class='st'>"identity"</span>,
-  <span class='kw'>na.rm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>show.legend</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>inherit.aes</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>grid_res</span> <span class='kw'>=</span> <span class='fl'>300</span>,
-  <span class='kw'>interpolate</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>interp_limit</span> <span class='kw'>=</span> <span class='st'>"skirt"</span>,
-  <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"biharmonic"</span>,
-  <span class='no'>...</span>
-)
+    <pre class="usage"><span class='fu'>stat_scalpmap</span><span class='op'>(</span>
+  mapping <span class='op'>=</span> <span class='cn'>NULL</span>,
+  data <span class='op'>=</span> <span class='cn'>NULL</span>,
+  position <span class='op'>=</span> <span class='st'>"identity"</span>,
+  na.rm <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  show.legend <span class='op'>=</span> <span class='cn'>NA</span>,
+  inherit.aes <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  grid_res <span class='op'>=</span> <span class='fl'>200</span>,
+  interpolate <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  interp_limit <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"skirt"</span>, <span class='st'>"head"</span><span class='op'>)</span>,
+  method <span class='op'>=</span> <span class='st'>"biharmonic"</span>,
+  <span class='va'>...</span>
+<span class='op'>)</span>
 
-<span class='fu'>geom_head</span>(
-  <span class='kw'>mapping</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>data</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>show.legend</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>na.rm</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>inherit.aes</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>interp_limit</span> <span class='kw'>=</span> <span class='st'>"skirt"</span>,
-  <span class='kw'>r</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='no'>...</span>
-)
+<span class='fu'>geom_head</span><span class='op'>(</span>
+  mapping <span class='op'>=</span> <span class='cn'>NULL</span>,
+  data <span class='op'>=</span> <span class='cn'>NULL</span>,
+  show.legend <span class='op'>=</span> <span class='cn'>NA</span>,
+  na.rm <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  inherit.aes <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  interp_limit <span class='op'>=</span> <span class='st'>"skirt"</span>,
+  r <span class='op'>=</span> <span class='fl'>95</span>,
+  <span class='va'>...</span>
+<span class='op'>)</span>
 
-<span class='fu'>geom_mask</span>(
-  <span class='kw'>mapping</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>data</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>show.legend</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>na.rm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>colour</span> <span class='kw'>=</span> <span class='st'>"white"</span>,
-  <span class='kw'>size</span> <span class='kw'>=</span> <span class='fu'>rel</span>(<span class='fl'>6.5</span>),
-  <span class='kw'>scale_fac</span> <span class='kw'>=</span> <span class='fl'>1.32</span>,
-  <span class='no'>...</span>
-)
+<span class='fu'>geom_mask</span><span class='op'>(</span>
+  mapping <span class='op'>=</span> <span class='cn'>NULL</span>,
+  data <span class='op'>=</span> <span class='cn'>NULL</span>,
+  show.legend <span class='op'>=</span> <span class='cn'>NA</span>,
+  na.rm <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  colour <span class='op'>=</span> <span class='st'>"white"</span>,
+  size <span class='op'>=</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/element.html'>rel</a></span><span class='op'>(</span><span class='fl'>5</span><span class='op'>)</span>,
+  scale_fac <span class='op'>=</span> <span class='fl'>1.04</span>,
+  r <span class='op'>=</span> <span class='fl'>95</span>,
+  interp_limit <span class='op'>=</span> <span class='st'>"skirt"</span>,
+  <span class='va'>...</span>
+<span class='op'>)</span>
 
-<span class='fu'>geom_ears</span>(<span class='kw'>mapping</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>show.legend</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>na.rm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)
+<span class='fu'>geom_ears</span><span class='op'>(</span>
+  mapping <span class='op'>=</span> <span class='cn'>NULL</span>,
+  data <span class='op'>=</span> <span class='cn'>NULL</span>,
+  show.legend <span class='op'>=</span> <span class='cn'>NA</span>,
+  na.rm <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  r <span class='op'>=</span> <span class='fl'>95</span>,
+  <span class='va'>...</span>
+<span class='op'>)</span>
 
-<span class='fu'>geom_channels</span>(
-  <span class='kw'>mapping</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>data</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>geom</span> <span class='kw'>=</span> <span class='st'>"point"</span>,
-  <span class='kw'>show.legend</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>inherit.aes</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>na.rm</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='no'>...</span>
-)</pre>
+<span class='fu'>geom_channels</span><span class='op'>(</span>
+  mapping <span class='op'>=</span> <span class='cn'>NULL</span>,
+  data <span class='op'>=</span> <span class='cn'>NULL</span>,
+  geom <span class='op'>=</span> <span class='st'>"point"</span>,
+  show.legend <span class='op'>=</span> <span class='cn'>NA</span>,
+  inherit.aes <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  na.rm <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  <span class='va'>...</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -263,7 +275,7 @@ the default plot specification, e.g. <code><a href='https://ggplot2.tidyverse.or
     </tr>
     <tr>
       <th>grid_res</th>
-      <td><p>Resolution of the interpolation grid. (Defaults to 100
+      <td><p>Resolution of the interpolation grid. (Defaults to 200
 points).</p></td>
     </tr>
     <tr>
@@ -301,7 +313,7 @@ to the paired geom/stat.</p></td>
     <tr>
       <th>scale_fac</th>
       <td><p>The radius of the ring is determined from the front-most
-electrode's location by a scaling factor. Defaults to 1.32 * max(y).</p></td>
+electrode's location by a scaling factor. Defaults to 1.04 * max(y).</p></td>
     </tr>
     <tr>
       <th>geom</th>
@@ -317,17 +329,15 @@ electrode's location by a scaling factor. Defaults to 1.32 * max(y).</p></td>
 <code><a href='geom_topo.html'>geom_topo</a>()</code></p>
 <p>Other topoplot functions: 
 <code><a href='geom_topo.html'>geom_topo</a>()</code></p></div>
+    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
+
+    <p>Matt Craddock <a href='mailto:matt@mattcraddock.com'>matt@mattcraddock.com</a></p>
 
   </div>
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-    <h2>Contents</h2>
-    <ul class="nav nav-pills nav-stacked">
-      <li><a href="#arguments">Arguments</a></li>
-      <li><a href="#see-also">See also</a></li>
-    </ul>
-
-    <h2>Author</h2>
-    <p>Matt Craddock <a href='mailto:matt@mattcraddock.com'>matt@mattcraddock.com</a></p>
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+    <nav id="toc" data-toggle="toc" class="sticky-top">
+      <h2 data-toc-skip>Contents</h2>
+    </nav>
   </div>
 </div>
 
@@ -338,7 +348,7 @@ electrode's location by a scaling factor. Defaults to 1.32 * max(y).</p></td>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>
