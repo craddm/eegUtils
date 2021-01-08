@@ -1,5 +1,7 @@
 # eegUtils 0.5.0.9000
 
+IMPORTANT: There have been some changes to the logic of the `topoplot()` that may make their appearance quite different. Specifically, these changes are to the way the underlying interpolation grid is calculated and to how things like the diameter of the cartoon head is calculated. These changes often lead to different minimum or maximum amplitudes across the image, and thus changes in the appearance of the plot due to different scales- don't be alarmed!
+
 ### Function changes
 - Added `filter` method for `eeg_tfr` objects
 - `fit_glm()` overhauled. Now far faster and allows specification of models using standard R formulae.
@@ -28,7 +30,7 @@
 - switched back to using `left_join` from `dplyr` in the `tag_events` function as an easy fix for sorting of events when tagging.
 - fixed odd interaction between `select()` and `validate_channels()` that reordered channel names in `chan_info`
 - `eeg_decomp` now doing better job of filtering for `ssd` method
-- various `tibble` related warnings cleaned up
+- various `tibble` related warnings and errors cleaned up.
 - `method = "gam"` should now yield sensible results for `geom_topo()`
 - `run_ICA()` and `eeg_decomp()` methods now return components ordered by percent variance explained (high to low)
 - removed scaling of components in SOBI ICA method
