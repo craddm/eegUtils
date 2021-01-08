@@ -39,14 +39,17 @@ test_that("Topoplots", {
   skip_on_appveyor()
   skip_on_travis()
   vdiffr::expect_doppelganger("topoplot of epochs",
-                              topoplot(demo_epochs))
+                              topoplot(demo_epochs,
+                                       limits = c(-2.87, 4.69)))
   vdiffr::expect_doppelganger("topoplot of epochs 150-200ms",
                               topoplot(demo_epochs,
-                                       time_lim = c(.150, .200)))
+                                       time_lim = c(.150, .200),
+                                       limits = c(-4, 4)))
   vdiffr::expect_doppelganger("GAM topo",
                               topoplot(EEGdat,
                                        time_lim = c(150, 200),
-                                       method = "gam"))
+                                       method = "gam",
+                                       limits = c(-2.25, 2.75)))
 })
 
 

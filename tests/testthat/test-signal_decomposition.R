@@ -8,5 +8,6 @@ test_that("ssd runs", {
                noise_range = c(7, 13))
   vdiffr::expect_doppelganger("topographical plot for ssd",
                               topoplot(ssd_demo,
-                                       component = "Comp001"))
+                                       component = "Comp001",
+                                       limits = c(-4, 3)))
 })
