@@ -4,7 +4,7 @@ author: "Matt Craddock"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Linear modelling}
+  %\VignetteIndexEntry{Linear Modelling}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -25,7 +25,7 @@ library(ggplot2)
 library(tidyr)
 ```
 
-Here we show how to fit a linear model to a single subject's data. We'll use the data from the LIMO EEG dataset. [S1](https://datashare.is.ed.ac.uk/handle/10283/2189?show=full)
+Here we show how to fit a linear model to a single subject's data. We'll use the data from the LIMO EEG datase [^1] - [S1](https://datashare.is.ed.ac.uk/handle/10283/2189?show=full)
 
 This data is from a two-alternative forced choice experiment in which participants had to discriminate between two different faces. Across the course of the experiment, the faces were also varied in their phase coherence from 0% to 85%. The more phase coherent the face images, the easier they were to discriminate from each other.
 
@@ -114,3 +114,7 @@ fitted_model$r_sq %>%
   geom_line() +
   theme(legend.position = "none")
 ```
+
+## References
+
+[^1] Guillaume, Rousselet. (2016). LIMO EEG Dataset, [dataset]. University of Edinburgh, Centre for Clinical Brain Sciences. https://doi.org/10.7488/ds/1556.
