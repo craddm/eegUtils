@@ -73,8 +73,7 @@ topoplot.default <- function(data,
 #'   Defaults to TRUE.
 #' @import ggplot2
 #' @import tidyr
-#' @importFrom dplyr group_by mutate summarise ungroup
-#' @importFrom rlang parse_quo current_env
+#' @importFrom dplyr group_by summarise ungroup
 #' @import scales
 #' @importFrom mgcv gam
 #' @describeIn topoplot Topographical plotting of data.frames and other non
@@ -99,6 +98,7 @@ topoplot.data.frame <- function(data,
                                 scaling = 1,
                                 groups = NULL,
                                 verbose = TRUE,
+                                scale_fac = 1.02,
                                 ...) {
 
   if (!missing(colourmap)) {
@@ -176,12 +176,7 @@ topoplot.data.frame <- function(data,
     data <- dplyr::ungroup(data)
     data <- tidyr::nest(data,
                         data = -{{groups}})
-    # Rescale electrode co-ordinates to be from -1 to 1 for plotting
-    # Selects largest absolute value from x or y
-    max_dim <- max(abs(data$data[[1]]$x),
-                   abs(data$data[[1]]$y))
-    scaled_x <- data$data[[1]]$x / max_dim
-    scaled_y <- data$data[[1]]$y / max_dim
+
   } else {
     if (is.character(quantity)) {
       quantity <- as.name(quantity)
@@ -198,94 +193,44 @@ topoplot.data.frame <- function(data,
     # the right names
     data <- data.frame(x = data$x,
                        y = data$y,
-                       z = data$z,
+                       fill = data$z,
                        electrode = data$electrode)
 
-    # Rescale electrode co-ordinates to be from -1 to 1 for plotting
-    # Selects largest absolute value from x or y.
-    # NOTE: this may be less necessary now with new channel location formats.
-    max_dim <- max(abs(data$x),
-                   abs(data$y))
-    scaled_x <- data$x / max_dim
-    scaled_y <- data$y / max_dim
     data <- dplyr::ungroup(data)
     data <- tidyr::nest(tibble::as_tibble(data),
                         data = everything())
   }
 
   # Do the interpolation! ------------------------
-
-  switch(method,
-         Biharmonic = {
-           out_df <-
-             dplyr::mutate(data,
-                           topos = map(data,
-                                       #~biharmonic(.x,
-                                        #           grid_res = grid_res)))
-                                        ~biharm_topo(.x,
-                                                     grid_res = grid_res,
-                                                     scaled_x = scaled_x,
-                                                     scaled_y = scaled_y)))
-         },
-         gam = {
-           out_df <-
-             dplyr::mutate(data,
-                           topos = map(data,
-                                       ~gam_topo(.x,
-                                                 grid_res = grid_res,
-                                                 scaled_x = scaled_x,
-                                                 scaled_y = scaled_y)))
-         })
-
-  out_df <- tidyr::unnest(out_df["topos"],
-                          cols = topos)
-
   data <- tidyr::unnest(data,
                         cols = c(data))
 
-  # Create the head_shape -----------------
-
-  #set radius as max of y (i.e. furthest forward electrode's y position). Add a
-  #little to push the circle out a bit more. Consider making max of abs(scaled_y)
-
+  # Add head and mask to topoplot
   if (is.null(r)) {
-    r <- max(scaled_y) * 1.1
+    abs_x_max <- max(abs(data$x), na.rm = TRUE)
+    abs_y_max <- max(abs(data$y), na.rm = TRUE)
+    r <- switch(interp_limit,
+                "head" = sqrt(abs_x_max^2 + abs_y_max^2),
+                "skirt" = 95) # mm are expected for coords, 95 is good approx for Fpz - Oz radius
   }
-
-  plot_rad <- max(scaled_x ^2 + scaled_y ^2) * 1.05
-
-  if (interp_limit == "head") {
-    r <- plot_rad
-  }
-
-  circ_rads <- seq(0,
-                   2 * pi,
-                   length.out = 101)
-
-  # Check if should interp/extrap beyond head_shape, and set up ring to mask
-  # edges for smoothness
-
-  out_df <- round_topo(out_df,
-                       r = plot_rad,
-                       interp_limit = interp_limit)
-  mask_ring <- out_df$mask_ring
-  out_df <- out_df$out_df
 
   # Create the actual plot -------------------------------
-
   topo <-
-    ggplot2::ggplot(out_df,
-                    aes(x,
-                        y,
-                        fill = amplitude)) +
-    geom_raster(interpolate = TRUE,
-                na.rm = TRUE)
+    ggplot2::ggplot(get_scalpmap(data,
+                                 interp_limit = interp_limit,
+                                 method = method,
+                                 grid_res = grid_res),
+                    aes(x = x,
+                        y = y,
+                        fill = fill)) +
+     geom_raster(interpolate = TRUE,
+                 na.rm = TRUE)
 
   if (contour) {
     topo <-
       topo +
       stat_contour(
-        aes(z = amplitude,
+        aes(z = fill,
             linetype = after_stat(level) < 0),
         bins = 6,
         colour = "black",
@@ -294,23 +239,18 @@ topoplot.data.frame <- function(data,
       )
     }
 
-  # Add head and mask to topoplot
   topo <-
     topo +
-    ggplot2::annotate("path",
-                      x = mask_ring$x,
-                      y = mask_ring$y,
-                      colour = "white",
-                      size = rel(6.5) * scaling) +
+    geom_mask(scale_fac = scale_fac,
+              size = 5 * scaling) +
     geom_head(r = r,
               size = rel(1.5) * scaling) +
-    #add_head(r, scaling) +
     coord_equal() +
     theme_bw() +
     theme(rect = element_blank(),
-      line = element_blank(),
-      axis.text = element_blank(),
-      axis.title = element_blank()) +
+          line = element_blank(),
+          axis.text = element_blank(),
+          axis.title = element_blank()) +
     guides(fill = guide_colorbar(title = expression(paste("Amplitude (",
                                                           mu, "V)")),
                                  title.position = "right",
@@ -323,16 +263,16 @@ topoplot.data.frame <- function(data,
     topo <-
       topo +
       ggplot2::annotate("point",
-                        x = scaled_x,
-                        y = scaled_y,
-                        colour = "black",
-                        size = rel(2 * scaling))
+                       x = data$x,
+                       y = data$y,
+                       colour = "black",
+                       size = rel(2 * scaling))
     }  else if (chan_marker == "name") {
       topo <-
         topo +
         ggplot2::annotate("text",
-                          x = scaled_x,
-                          y = scaled_y,
+                          x = data$x,
+                          y = data$y,
                           label = data$electrode,
                           colour = "black",
                           size = rel(4 * scaling))
@@ -340,8 +280,8 @@ topoplot.data.frame <- function(data,
 
   # Highlight specified electrodes
   if (!is.null(highlights)) {
-    high_x <- scaled_x[data$electrode %in% highlights]
-    high_y <- scaled_y[data$electrode %in% highlights]
+    high_x <- data$x[data$electrode %in% highlights]
+    high_y <- data$y[data$electrode %in% highlights]
     topo <- topo +
       annotate("point",
                x = high_x,
@@ -375,6 +315,7 @@ topoplot.eeg_data <- function(data, time_lim = NULL,
                               highlights = NULL,
                               scaling = 1,
                               verbose = TRUE,
+                              scale_fac = 1.02,
                               ...) {
 
   if (!is.null(data$chan_info)) {
@@ -411,7 +352,8 @@ topoplot.eeg_data <- function(data, time_lim = NULL,
            highlights = highlights,
            passed = TRUE,
            scaling = scaling,
-           verbose = verbose)
+           verbose = verbose,
+           scale_fac = scale_fac)
 }
 
 
@@ -435,6 +377,7 @@ topoplot.eeg_epochs <- function(data,
                                 scaling = 1,
                                 groups = NULL,
                                 verbose = TRUE,
+                                scale_fac = 1.02,
                                 ...) {
 
   if (!is.null(data$chan_info)) {
@@ -468,7 +411,8 @@ topoplot.eeg_epochs <- function(data,
            highlights = highlights,
            scaling = scaling,
            groups = groups,
-           verbose = verbose
+           verbose = verbose,
+           scale_fac = scale_fac
            )
 }
 
@@ -494,6 +438,7 @@ topoplot.eeg_ICA <- function(data,
                              highlights = NULL,
                              scaling = 1,
                              verbose = TRUE,
+                             scale_fac = 1.02,
                              ...) {
   if (missing(component)) {
     stop("Component number must be specified for eeg_ICA objects.")
@@ -521,7 +466,8 @@ topoplot.eeg_ICA <- function(data,
            highlights = NULL,
            chan_marker = chan_marker,
            time_lim = NULL,
-           verbose = verbose)
+           verbose = verbose,
+           scale_fac = scale_fac)
 
 }
 
@@ -807,3 +753,6 @@ round_topo <- function(.data,
                    "mask_ring" = mask_ring)
   topo_out
 }
+
+
+

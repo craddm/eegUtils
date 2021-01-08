@@ -17,6 +17,7 @@ geom_topo(
   chan_markers = "point",
   chan_size = rel(2),
   head_size = rel(1.5),
+  r = 95,
   grid_res = 200,
   method = "biharmonic",
   ...

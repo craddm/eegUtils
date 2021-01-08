@@ -11,19 +11,21 @@
 #' @param orientation VECTORIZED or MULTIPLEXED. This relates to the way the
 #'   data is stored in the binary file. VECTORIZED is the default and
 #'   recommended.
-#' @keywords internal
+#' @export
 export_bva <- function(.data,
                        filename,
                        orientation) {
   UseMethod("export_bva", .data)
 }
 
+#' @export
 export_bva.default <- function(.data,
                                filename,
                                orientation) {
   stop("export_bva() can currently only export continuous eeg_data objects.")
 }
 
+#' @export
 export_bva.eeg_epochs <- function(.data,
                                   filename,
                                   orientation = "VECTORIZED") {
@@ -31,7 +33,7 @@ export_bva.eeg_epochs <- function(.data,
 }
 
 #' @describeIn export_bva Method for `eeg_data`
-#' @keywords internal
+#' @export
 export_bva.eeg_data <- function(.data,
                                 filename,
                                 orientation = "VECTORIZED") {
@@ -55,6 +57,8 @@ write_vhdr <- function(.data,
   con <- file(vhdr_file, open = "w", encoding = "UTF-8")
 
   on.exit(close(con))
+
+  n_chans <- ncol(.data$signals)
   new_header <- list()
   new_header[["Common Infos"]] <-
     list(Codepage = "UTF-8",
@@ -63,8 +67,8 @@ write_vhdr <- function(.data,
          DataFormat = "BINARY",
          DataOrientation=orientation,
          DataType = "TIMEDOMAIN",
-         NumberOfChannels = ncol(.data$signals),
-         DataPoints = nrow(.data$signals) * ncol(.data$signals),
+         NumberOfChannels = n_chans,
+         DataPoints = nrow(.data$signals),
          SamplingInterval = 1e6 / .data$srate)
   #new_header[["User Infos"]] <- ""
   new_header[["Binary Infos"]] <- list(BinaryFormat = "IEEE_FLOAT_32")
@@ -73,12 +77,23 @@ write_vhdr <- function(.data,
                                                  "",
                                                  paste0(intToUtf8(0x03BC), "V"),
                                                  sep = ","))
-  names(new_header[["Channel Infos"]]) <- paste0("Ch", 1:ncol(.data$signals))
-  new_header[["Coordinates"]] <- as.list(paste(.data$chan_info$radius,
-                                               .data$chan_info$theta,
-                                               .data$chan_info$phi,
-                                               sep = ","))
-  names(new_header[["Coordinates"]]) <- paste0("Ch", 1:ncol(.data$signals))
+  names(new_header[["Channel Infos"]]) <- paste0("Ch",
+                                                 seq(1, n_chans))
+  if (is.null(channels(.data))) {
+    message("No channel locations found.")
+  } else {
+    channels(.data) <- validate_channels(channels(.data),
+                                         channel_names(.data))
+
+    channels(.data)[is.na(channels(.data))] <- NaN
+    new_header[["Coordinates"]] <- as.list(paste(.data$chan_info$radius,
+                                                 .data$chan_info$theta,
+                                                 .data$chan_info$phi,
+                                                 sep = ","))
+    names(new_header[["Coordinates"]]) <- paste0("Ch",
+                                                 seq(1, n_chans))
+  }
+
   writeLines("Brain Vision Data Exchange Header File Version 2.0", con)
   writeLines(paste0("; Created using eegUtils http://craddm.github.io/eegUtils/"),
              con)

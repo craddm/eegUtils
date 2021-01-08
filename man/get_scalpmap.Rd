@@ -18,17 +18,17 @@ get_scalpmap(data, ...)
 )
 }
 \arguments{
-\item{data}{An object of class \code{eeg_data}}
+\item{data}{An object of class 'data.frame`}
 
 \item{...}{Other arguments}
 
-\item{method}{biharmonic spline or gam}
+\item{method}{"biharmonic" or "gam"}
 
 \item{grid_res}{grid resolution}
 
-\item{interp_limit}{interp to the head or the skirt}
+\item{interp_limit}{interpolate up to the "head" or add a "skirt"}
 
-\item{quantity}{amplitude}
+\item{quantity}{"amplitude"}
 
 \item{facets}{Any facets you plan to use}
 }

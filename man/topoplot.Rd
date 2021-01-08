@@ -33,6 +33,7 @@ topoplot(data, ...)
   scaling = 1,
   groups = NULL,
   verbose = TRUE,
+  scale_fac = 1.02,
   ...
 )
 
@@ -53,6 +54,7 @@ topoplot(data, ...)
   highlights = NULL,
   scaling = 1,
   verbose = TRUE,
+  scale_fac = 1.02,
   ...
 )
 
@@ -74,6 +76,7 @@ topoplot(data, ...)
   scaling = 1,
   groups = NULL,
   verbose = TRUE,
+  scale_fac = 1.02,
   ...
 )
 
@@ -96,6 +99,7 @@ topoplot(data, ...)
   highlights = NULL,
   scaling = 1,
   verbose = TRUE,
+  scale_fac = 1.02,
   ...
 )
 

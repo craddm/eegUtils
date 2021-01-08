@@ -29,4 +29,3 @@ the recommended formats for BIDS
 \item \code{eeg_data}: Method for \code{eeg_data}
 }}
 
-\keyword{internal}
