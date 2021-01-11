@@ -145,6 +145,7 @@ stat_scalpmap <- function(mapping = NULL,
 #' @param head_size Size of the head shape.
 #' @param grid_res Smoothness of the interpolation grid.
 #' @param method "biharmonic" or ""gam".
+#' @param r Head circumference
 #' @family topoplot functions
 #' @export
 geom_topo <- function(mapping = NULL,

@@ -76,6 +76,8 @@ or text.}
 
 \item{head_size}{Size of the head shape.}
 
+\item{r}{Head circumference}
+
 \item{grid_res}{Smoothness of the interpolation grid.}
 
 \item{method}{"biharmonic" or ""gam".}

@@ -185,6 +185,8 @@ Defaults to 1.}
 \item{verbose}{Warning messages when electrodes do not have locations.
 Defaults to TRUE.}
 
+\item{scale_fac}{Scaling factor for masking ring}
+
 \item{component}{Component to plot (numeric)}
 
 \item{freq_range}{Range of frequencies to average over.}
