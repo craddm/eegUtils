@@ -5,19 +5,20 @@
 \alias{export_bva.eeg_data}
 \title{Export continuous data in Brain Vision Analyzer format}
 \usage{
-export_bva(.data, filename, orientation)
+export_bva(.data, filename, orientation, verbose = TRUE)
 
-\method{export_bva}{eeg_data}(.data, filename, orientation = "VECTORIZED")
+\method{export_bva}{eeg_data}(.data, filename, orientation = "VECTORIZED", verbose = TRUE)
 }
 \arguments{
 \item{.data}{\code{eeg_data} object to be exported.}
 
-\item{filename}{String giving filename to export to. Do NOT include the .vhdr
-file extension.}
+\item{filename}{String giving filename to export to. File extensions will be removed when supplied.}
 
 \item{orientation}{VECTORIZED or MULTIPLEXED. This relates to the way the
 data is stored in the binary file. VECTORIZED is the default and
 recommended.}
+
+\item{verbose}{print informative messages to console}
 }
 \description{
 Export continuous EEG data in Brain Vision Analyzer format. This is one of
