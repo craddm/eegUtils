@@ -571,17 +571,20 @@ validate_channels <- function(chan_info,
                               sig_names = NULL) {
 
   if (!is.null(sig_names)) {
-    missing_sigs <- !(toupper(sig_names) %in% toupper(chan_info$electrode))
+    #use toupper to ensure matches between added chan_info
+    chan_info$electrode <- toupper(chan_info$electrode)
+    missing_sigs <- !(toupper(sig_names) %in% chan_info$electrode)
+
 
     if (any(missing_sigs)) {
-      chan_info <- merge(data.frame(electrode = sig_names),
+      chan_info <- merge(data.frame(electrode = toupper(sig_names)),
                          chan_info,
                          all.x = TRUE,
                          sort = FALSE)
     }
     # make sure chan_info is in the same order as the signal names
     chan_info <- chan_info[match(toupper(sig_names),
-                                 toupper(chan_info$electrode)), ]
+                                 chan_info$electrode), ]
     # make sure chan_info electrode is the same case as the signal names
     chan_info$electrode <- sig_names
   }
