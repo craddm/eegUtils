@@ -574,7 +574,7 @@ validate_channels <- function(chan_info,
     missing_sigs <- !(toupper(sig_names) %in% toupper(chan_info$electrode))
 
     if (any(missing_sigs)) {
-      chan_info <- merge(data.frame(electrode = sig_names),
+      chan_info <- merge(data.frame(electrode = toupper(sig_names)),
                          chan_info,
                          all.x = TRUE,
                          sort = FALSE)
