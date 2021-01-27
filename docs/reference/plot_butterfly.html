@@ -10,23 +10,27 @@
 
 
 <!-- jquery -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.7/flatly/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/flatly/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
 
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
+
+<!-- bootstrap-toc -->
+<link rel="stylesheet" href="../bootstrap-toc.css">
+<script src="../bootstrap-toc.js"></script>
 
 <!-- Font Awesome icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.1/css/all.min.css" integrity="sha256-PbSmjxuVAzJ6FPvNYsrXygfGhNJYyZ2GktDbkMBqQZg=" crossorigin="anonymous" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.1/css/v4-shims.min.css" integrity="sha256-A6jcAdwFD48VMjlI3GDxUd+eCQa7/KWy6G9oe/ovaPA=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous" />
 
 <!-- clipboard.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script>
 
 <!-- headroom.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
@@ -39,7 +43,6 @@
 <meta property="og:description" content="Typically event-related potentials/fields, but could also be timecourses from
 frequency analyses for single frequencies. Output is a ggplot2 object. CIs
 not possible." />
-<meta name="twitter:card" content="summary" />
 
 
 
@@ -57,7 +60,7 @@ not possible." />
 
   </head>
 
-  <body>
+  <body data-spy="scroll" data-target="#toc">
     <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -71,7 +74,7 @@ not possible." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">eegUtils</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.0</span>
       </span>
     </div>
 
@@ -79,7 +82,7 @@ not possible." />
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -103,13 +106,13 @@ not possible." />
       <a href="../articles/epoch-handling.html">Event and epoch handling</a>
     </li>
     <li>
-      <a href="../articles/linear_modelling.html">Linear Modelling</a>
+      <a href="../articles/linear_modelling/linear_modelling.html">Linear Modelling</a>
     </li>
     <li>
       <a href="../articles/time-frequency-analysis.html">Frequency analysis</a>
     </li>
     <li>
-      <a href="../articles/topoplot.html">Building a topographical plot</a>
+      <a href="../articles/topoplot/topoplot.html">Building a topographical plot</a>
     </li>
   </ul>
 </li>
@@ -119,8 +122,8 @@ not possible." />
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/craddm/eegUtils">
-    <span class="fab fa fab fa-github fa-lg"></span>
+  <a href="https://github.com/craddm/eegUtils/">
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -148,79 +151,79 @@ frequency analyses for single frequencies. Output is a ggplot2 object. CIs
 not possible.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>plot_butterfly</span>(<span class='no'>data</span>, <span class='no'>...</span>)
+    <pre class="usage"><span class='fu'>plot_butterfly</span><span class='op'>(</span><span class='va'>data</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S3 method for default</span>
-<span class='fu'>plot_butterfly</span>(
-  <span class='no'>data</span>,
-  <span class='kw'>time_lim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>baseline</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>colourmap</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>legend</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>continuous</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>browse_mode</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>allow_facets</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='no'>...</span>
-)
+<span class='fu'>plot_butterfly</span><span class='op'>(</span>
+  <span class='va'>data</span>,
+  time_lim <span class='op'>=</span> <span class='cn'>NULL</span>,
+  baseline <span class='op'>=</span> <span class='cn'>NULL</span>,
+  colourmap <span class='op'>=</span> <span class='cn'>NULL</span>,
+  legend <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  continuous <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  browse_mode <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  allow_facets <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  <span class='va'>...</span>
+<span class='op'>)</span>
 
 <span class='co'># S3 method for eeg_evoked</span>
-<span class='fu'>plot_butterfly</span>(
-  <span class='no'>data</span>,
-  <span class='kw'>time_lim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>baseline</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>colourmap</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>legend</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>continuous</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>browse_mode</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>allow_facets</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='no'>...</span>
-)
+<span class='fu'>plot_butterfly</span><span class='op'>(</span>
+  <span class='va'>data</span>,
+  time_lim <span class='op'>=</span> <span class='cn'>NULL</span>,
+  baseline <span class='op'>=</span> <span class='cn'>NULL</span>,
+  colourmap <span class='op'>=</span> <span class='cn'>NULL</span>,
+  legend <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  continuous <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  browse_mode <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  allow_facets <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  <span class='va'>...</span>
+<span class='op'>)</span>
 
 <span class='co'># S3 method for eeg_data</span>
-<span class='fu'>plot_butterfly</span>(
-  <span class='no'>data</span>,
-  <span class='kw'>time_lim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>baseline</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>legend</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>allow_facets</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>browse_mode</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='no'>...</span>
-)
+<span class='fu'>plot_butterfly</span><span class='op'>(</span>
+  <span class='va'>data</span>,
+  time_lim <span class='op'>=</span> <span class='cn'>NULL</span>,
+  baseline <span class='op'>=</span> <span class='cn'>NULL</span>,
+  legend <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  allow_facets <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  browse_mode <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  <span class='va'>...</span>
+<span class='op'>)</span>
 
 <span class='co'># S3 method for eeg_epochs</span>
-<span class='fu'>plot_butterfly</span>(
-  <span class='no'>data</span>,
-  <span class='kw'>time_lim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>baseline</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>legend</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>allow_facets</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>browse_mode</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='no'>...</span>
-)
+<span class='fu'>plot_butterfly</span><span class='op'>(</span>
+  <span class='va'>data</span>,
+  time_lim <span class='op'>=</span> <span class='cn'>NULL</span>,
+  baseline <span class='op'>=</span> <span class='cn'>NULL</span>,
+  legend <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  allow_facets <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  browse_mode <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  <span class='va'>...</span>
+<span class='op'>)</span>
 
 <span class='co'># S3 method for eeg_stats</span>
-<span class='fu'>plot_butterfly</span>(
-  <span class='no'>data</span>,
-  <span class='kw'>time_lim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>baseline</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>legend</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>allow_facets</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>browse_mode</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>quantity</span> <span class='kw'>=</span> <span class='st'>"statistic"</span>,
-  <span class='no'>...</span>
-)
+<span class='fu'>plot_butterfly</span><span class='op'>(</span>
+  <span class='va'>data</span>,
+  time_lim <span class='op'>=</span> <span class='cn'>NULL</span>,
+  baseline <span class='op'>=</span> <span class='cn'>NULL</span>,
+  legend <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  allow_facets <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  browse_mode <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  quantity <span class='op'>=</span> <span class='st'>"statistic"</span>,
+  <span class='va'>...</span>
+<span class='op'>)</span>
 
 <span class='co'># S3 method for eeg_lm</span>
-<span class='fu'>plot_butterfly</span>(
-  <span class='no'>data</span>,
-  <span class='kw'>time_lim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>baseline</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>legend</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>allow_facets</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>browse_mode</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>quantity</span> <span class='kw'>=</span> <span class='st'>"coefficients"</span>,
-  <span class='no'>...</span>
-)</pre>
+<span class='fu'>plot_butterfly</span><span class='op'>(</span>
+  <span class='va'>data</span>,
+  time_lim <span class='op'>=</span> <span class='cn'>NULL</span>,
+  baseline <span class='op'>=</span> <span class='cn'>NULL</span>,
+  legend <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  allow_facets <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  browse_mode <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  quantity <span class='op'>=</span> <span class='st'>"coefficients"</span>,
+  <span class='va'>...</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -274,13 +277,14 @@ applies to <code>eeg_lm</code> objects</p></td>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>ggplot2 object showing ERPs for all electrodes overlaid on a single
-  plot.</p>
+    <p>A ggplot object</p>
+<p>ggplot2 object showing ERPs for all electrodes overlaid on a single
+plot.</p>
     <h2 class="hasAnchor" id="methods-by-class-"><a class="anchor" href="#methods-by-class-"></a>Methods (by class)</h2>
 
     
 <ul>
-<li><p><code>default</code>: Default `plot_butterfly` method for data.frames,
+<li><p><code>default</code>: Default <code>plot_butterfly</code> method for data.frames,
 <code>eeg_data</code></p></li>
 <li><p><code>eeg_evoked</code>: Plot butterfly for <code>eeg_evoked</code> objects</p></li>
 <li><p><code>eeg_data</code>: Create butterfly plot for <code>eeg_data</code> objects</p></li>
@@ -294,29 +298,26 @@ applies to <code>eeg_lm</code> objects</p></td>
 
 
 <p>In order for ggplot2 facetting to work, the data has to be plotted using
-  `stat_summary()` rather than `geom_line()`, so that the plots can still be
-  made when not all categorical variables are reflected in the facets. e.g.
-  if there are two variables with two levels each, but you want to average
-  over one of those variables, `stat_summary()` is required. However,
-  `stat_summary()` is extremely slow.</p>
+<code><a href='https://ggplot2.tidyverse.org/reference/stat_summary.html'>stat_summary()</a></code> rather than <code><a href='https://ggplot2.tidyverse.org/reference/geom_path.html'>geom_line()</a></code>, so that the plots can still be
+made when not all categorical variables are reflected in the facets. e.g.
+if there are two variables with two levels each, but you want to average
+over one of those variables, <code><a href='https://ggplot2.tidyverse.org/reference/stat_summary.html'>stat_summary()</a></code> is required. However,
+<code><a href='https://ggplot2.tidyverse.org/reference/stat_summary.html'>stat_summary()</a></code> is extremely slow.</p>
+    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
+
+    <p>Matt Craddock, <a href='mailto:matt@mattcraddock.com'>matt@mattcraddock.com</a></p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>plot_butterfly</span>(<span class='no'>demo_epochs</span>)</div><div class='img'><img src='plot_butterfly-1.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'>plot_butterfly</span>(<span class='no'>demo_epochs</span>,
-<span class='kw'>time_lim</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(-<span class='fl'>.1</span>, <span class='fl'>.4</span>),
-<span class='kw'>legend</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</div><div class='img'><img src='plot_butterfly-2.png' alt='' width='700' height='433' /></div></pre>
+    <pre class="examples"><div class='input'><span class='fu'>plot_butterfly</span><span class='op'>(</span><span class='va'>demo_epochs</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>Joining, by = c("epoch", "recording", "epoch_label", "participant_id")</span></div><div class='img'><img src='plot_butterfly-1.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'>plot_butterfly</span><span class='op'>(</span><span class='va'>demo_epochs</span>,
+time_lim <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>.1</span>, <span class='fl'>.4</span><span class='op'>)</span>,
+legend <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>Joining, by = c("epoch", "recording", "epoch_label", "participant_id")</span></div><div class='img'><img src='plot_butterfly-2.png' alt='' width='700' height='433' /></div></pre>
   </div>
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-    <h2>Contents</h2>
-    <ul class="nav nav-pills nav-stacked">
-      <li><a href="#arguments">Arguments</a></li>
-      <li><a href="#value">Value</a></li>
-      <li><a href="#methods-by-class-">Methods (by class)</a></li>
-      <li><a href="#notes-on-ggplot-facetting">Notes on ggplot2 facetting</a></li>
-      <li><a href="#examples">Examples</a></li>
-    </ul>
-
-    <h2>Author</h2>
-    <p>Matt Craddock, <a href='mailto:matt@mattcraddock.com'>matt@mattcraddock.com</a></p>
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+    <nav id="toc" data-toggle="toc" class="sticky-top">
+      <h2 data-toc-skip>Contents</h2>
+    </nav>
   </div>
 </div>
 
@@ -327,7 +328,7 @@ applies to <code>eeg_lm</code> objects</p></td>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

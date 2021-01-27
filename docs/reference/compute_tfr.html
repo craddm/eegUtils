@@ -10,23 +10,27 @@
 
 
 <!-- jquery -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.7/flatly/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/flatly/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
 
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
+
+<!-- bootstrap-toc -->
+<link rel="stylesheet" href="../bootstrap-toc.css">
+<script src="../bootstrap-toc.js"></script>
 
 <!-- Font Awesome icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.1/css/all.min.css" integrity="sha256-PbSmjxuVAzJ6FPvNYsrXygfGhNJYyZ2GktDbkMBqQZg=" crossorigin="anonymous" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.1/css/v4-shims.min.css" integrity="sha256-A6jcAdwFD48VMjlI3GDxUd+eCQa7/KWy6G9oe/ovaPA=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous" />
 
 <!-- clipboard.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script>
 
 <!-- headroom.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
@@ -39,7 +43,6 @@
 <meta property="og:description" content="This function creates a time frequency represention of EEG time series data.
 Currently, the only available method is a Morlet wavelet transformation
 performed using convolution in the frequency domain." />
-<meta name="twitter:card" content="summary" />
 
 
 
@@ -57,7 +60,7 @@ performed using convolution in the frequency domain." />
 
   </head>
 
-  <body>
+  <body data-spy="scroll" data-target="#toc">
     <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -71,7 +74,7 @@ performed using convolution in the frequency domain." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">eegUtils</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.0</span>
       </span>
     </div>
 
@@ -79,7 +82,7 @@ performed using convolution in the frequency domain." />
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -103,13 +106,13 @@ performed using convolution in the frequency domain." />
       <a href="../articles/epoch-handling.html">Event and epoch handling</a>
     </li>
     <li>
-      <a href="../articles/linear_modelling.html">Linear Modelling</a>
+      <a href="../articles/linear_modelling/linear_modelling.html">Linear Modelling</a>
     </li>
     <li>
       <a href="../articles/time-frequency-analysis.html">Frequency analysis</a>
     </li>
     <li>
-      <a href="../articles/topoplot.html">Building a topographical plot</a>
+      <a href="../articles/topoplot/topoplot.html">Building a topographical plot</a>
     </li>
   </ul>
 </li>
@@ -119,8 +122,8 @@ performed using convolution in the frequency domain." />
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/craddm/eegUtils">
-    <span class="fab fa fab fa-github fa-lg"></span>
+  <a href="https://github.com/craddm/eegUtils/">
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -148,38 +151,38 @@ Currently, the only available method is a Morlet wavelet transformation
 performed using convolution in the frequency domain.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>compute_tfr</span>(<span class='no'>data</span>, <span class='no'>...</span>)
+    <pre class="usage"><span class='fu'>compute_tfr</span><span class='op'>(</span><span class='va'>data</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S3 method for default</span>
-<span class='fu'>compute_tfr</span>(<span class='no'>data</span>, <span class='no'>...</span>)
+<span class='fu'>compute_tfr</span><span class='op'>(</span><span class='va'>data</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S3 method for eeg_epochs</span>
-<span class='fu'>compute_tfr</span>(
-  <span class='no'>data</span>,
-  <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"morlet"</span>,
-  <span class='no'>foi</span>,
-  <span class='no'>n_freq</span>,
-  <span class='kw'>n_cycles</span> <span class='kw'>=</span> <span class='fl'>7</span>,
-  <span class='kw'>keep_trials</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>output</span> <span class='kw'>=</span> <span class='st'>"power"</span>,
-  <span class='kw'>downsample</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='no'>...</span>
-)
+<span class='fu'>compute_tfr</span><span class='op'>(</span>
+  <span class='va'>data</span>,
+  method <span class='op'>=</span> <span class='st'>"morlet"</span>,
+  <span class='va'>foi</span>,
+  <span class='va'>n_freq</span>,
+  n_cycles <span class='op'>=</span> <span class='fl'>7</span>,
+  keep_trials <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  output <span class='op'>=</span> <span class='st'>"power"</span>,
+  downsample <span class='op'>=</span> <span class='fl'>1</span>,
+  verbose <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  <span class='va'>...</span>
+<span class='op'>)</span>
 
 <span class='co'># S3 method for eeg_evoked</span>
-<span class='fu'>compute_tfr</span>(
-  <span class='no'>data</span>,
-  <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"morlet"</span>,
-  <span class='no'>foi</span>,
-  <span class='no'>n_freq</span>,
-  <span class='kw'>n_cycles</span> <span class='kw'>=</span> <span class='fl'>7</span>,
-  <span class='kw'>keep_trials</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>output</span> <span class='kw'>=</span> <span class='st'>"power"</span>,
-  <span class='kw'>downsample</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='no'>...</span>
-)</pre>
+<span class='fu'>compute_tfr</span><span class='op'>(</span>
+  <span class='va'>data</span>,
+  method <span class='op'>=</span> <span class='st'>"morlet"</span>,
+  <span class='va'>foi</span>,
+  <span class='va'>n_freq</span>,
+  n_cycles <span class='op'>=</span> <span class='fl'>7</span>,
+  keep_trials <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  output <span class='op'>=</span> <span class='st'>"power"</span>,
+  downsample <span class='op'>=</span> <span class='fl'>1</span>,
+  verbose <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  <span class='va'>...</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -203,12 +206,14 @@ and highest frequency to resolve.</p></td>
     </tr>
     <tr>
       <th>n_freq</th>
-      <td><p>Number of frequencies to be resolved. Scalar.</p></td>
+      <td><p>Number of frequencies to be resolved. Must be an integer number
+of frequencies.</p></td>
     </tr>
     <tr>
       <th>n_cycles</th>
-      <td><p>Scalar. Number of cycles at each frequency. Currently only
-supports a single number of cycles at all frequencies.</p></td>
+      <td><p>Number of cycles at each frequency. If a single integer, use
+a constant number of cycles at each frequency. If a character vector of
+length 2, use a linearly scaling number of cycles at each frequency.</p></td>
     </tr>
     <tr>
       <th>keep_trials</th>
@@ -222,7 +227,7 @@ Defaults to FALSE.</p></td>
     <tr>
       <th>downsample</th>
       <td><p>Downsampling factor. Integer. Selects every n samples after
-performing time-frequency analysis.</p></td>
+performing time-frequency analysis on the full sampling rate data.</p></td>
     </tr>
     <tr>
       <th>verbose</th>
@@ -230,6 +235,9 @@ performing time-frequency analysis.</p></td>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>An object of class <code>eeg_tfr</code></p>
     <h2 class="hasAnchor" id="methods-by-class-"><a class="anchor" href="#methods-by-class-"></a>Methods (by class)</h2>
 
     
@@ -238,27 +246,49 @@ performing time-frequency analysis.</p></td>
 <li><p><code>eeg_epochs</code>: Default method for compute_tfr</p></li>
 <li><p><code>eeg_evoked</code>: Method for <code>eeg_evoked</code> objects.</p></li>
 </ul>
+    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
+
+    <p>Matt Craddock <a href='mailto:matt@mattcraddock.com'>matt@mattcraddock.com</a></p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>compute_tfr</span>(<span class='no'>demo_epochs</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"morlet"</span>, <span class='kw'>foi</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>4</span>, <span class='fl'>30</span>), <span class='kw'>n_freq</span> <span class='kw'>=</span> <span class='fl'>10</span>, <span class='kw'>n_cycles</span> <span class='kw'>=</span> <span class='fl'>3</span>)</div><div class='output co'>#&gt; <span class='message'>Output frequencies: 4 6.89 9.78 12.67 15.56 18.44 21.33 24.22 27.11 30</span></div><div class='output co'>#&gt; <span class='message'>Removing channel means per epoch...</span></div><div class='output co'>#&gt; Epoched EEG TFR data
+    <pre class="examples"><div class='input'><span class='va'>out</span> <span class='op'>&lt;-</span> <span class='fu'>compute_tfr</span><span class='op'>(</span><span class='va'>demo_epochs</span>, method <span class='op'>=</span> <span class='st'>"morlet"</span>, foi <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>4</span>, <span class='fl'>30</span><span class='op'>)</span>, n_freq <span class='op'>=</span> <span class='fl'>10</span>, n_cycles <span class='op'>=</span> <span class='fl'>3</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>Output frequencies: 4 6.89 9.78 12.67 15.56 18.44 21.33 24.22 27.11 30</span></div><div class='output co'>#&gt; <span class='message'>Removing channel means per epoch...</span></div><div class='input'><span class='va'>out</span>
+</div><div class='output co'>#&gt; Epoched EEG TFR data
 #&gt; 
 #&gt; Frequency range		:	 4 6.89 9.78 12.67 15.56 18.44 21.33 24.22 27.11 30 
 #&gt; Number of channels	:	 11 
 #&gt; Electrode names		:	 A5 A13 A21 A29 A31 B5 B6 B8 B16 B18 B26 
-#&gt; Number of epochs	:	 None, averaged. 
+#&gt; Number of epochs	:	 1 
 #&gt; Epoch limits		:	 -0.197 - 0.451 seconds
-#&gt; Sampling rate		:	 128  Hz</div></pre>
+#&gt; Sampling rate		:	 128  Hz</div><div class='input'><span class='va'>out</span><span class='op'>$</span><span class='va'>freq_info</span><span class='op'>$</span><span class='va'>morlet_resolution</span>
+</div><div class='output co'>#&gt;    frequency   sigma_f    sigma_t n_cycles
+#&gt; 1   4.000000  1.333333 0.11936621        3
+#&gt; 2   6.888889  2.296296 0.06930941        3
+#&gt; 3   9.777778  3.259259 0.04883163        3
+#&gt; 4  12.666667  4.222222 0.03769459        3
+#&gt; 5  15.555556  5.185185 0.03069417        3
+#&gt; 6  18.444444  6.148148 0.02588665        3
+#&gt; 7  21.333333  7.111111 0.02238116        3
+#&gt; 8  24.222222  8.074074 0.01971185        3
+#&gt; 9  27.111111  9.037037 0.01761141        3
+#&gt; 10 30.000000 10.000000 0.01591549        3</div><div class='input'><span class='va'>out</span> <span class='op'>&lt;-</span> <span class='fu'>compute_tfr</span><span class='op'>(</span><span class='va'>demo_epochs</span>, method <span class='op'>=</span> <span class='st'>"morlet"</span>, foi <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>4</span>, <span class='fl'>30</span><span class='op'>)</span>, n_freq <span class='op'>=</span> <span class='fl'>10</span>, n_cycles <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>3</span>, <span class='fl'>10</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>Output frequencies: 4 6.89 9.78 12.67 15.56 18.44 21.33 24.22 27.11 30</span></div><div class='output co'>#&gt; <span class='message'>Removing channel means per epoch...</span></div><div class='input'><span class='va'>out</span><span class='op'>$</span><span class='va'>freq_info</span><span class='op'>$</span><span class='va'>morlet_resolution</span>
+</div><div class='output co'>#&gt;    frequency  sigma_f    sigma_t  n_cycles
+#&gt; 1   4.000000 1.333333 0.11936621  3.000000
+#&gt; 2   6.888889 1.823529 0.08727852  3.777778
+#&gt; 3   9.777778 2.146341 0.07415173  4.555556
+#&gt; 4  12.666667 2.375000 0.06701261  5.333333
+#&gt; 5  15.555556 2.545455 0.06252516  6.111111
+#&gt; 6  18.444444 2.677419 0.05944341  6.888889
+#&gt; 7  21.333333 2.782609 0.05719631  7.666667
+#&gt; 8  24.222222 2.868421 0.05548521  8.444444
+#&gt; 9  27.111111 2.939759 0.05413877  9.222222
+#&gt; 10 30.000000 3.000000 0.05305165 10.000000</div></pre>
   </div>
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-    <h2>Contents</h2>
-    <ul class="nav nav-pills nav-stacked">
-      <li><a href="#arguments">Arguments</a></li>
-      <li><a href="#methods-by-class-">Methods (by class)</a></li>
-      <li><a href="#examples">Examples</a></li>
-    </ul>
-
-    <h2>Author</h2>
-    <p>Matt Craddock <a href='mailto:matt@mattcraddock.com'>matt@mattcraddock.com</a></p>
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+    <nav id="toc" data-toggle="toc" class="sticky-top">
+      <h2 data-toc-skip>Contents</h2>
+    </nav>
   </div>
 </div>
 
@@ -269,7 +299,7 @@ performing time-frequency analysis.</p></td>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>
