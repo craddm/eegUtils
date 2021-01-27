@@ -1,4 +1,4 @@
-# eegUtils 0.5.0.9000
+# eegUtils 0.6.0
 
 IMPORTANT: There have been some changes to the logic of the `topoplot()` that may make their appearance quite different. Specifically, these changes are to the way the underlying interpolation grid is calculated and to how things like the diameter of the cartoon head is calculated. These changes often lead to different minimum or maximum amplitudes across the image, and thus changes in the appearance of the plot due to different scales- don't be alarmed!
 
