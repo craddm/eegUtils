@@ -1,6 +1,6 @@
 #' Plot Power Spectral Density
 #'
-#' Calculate and plot the PSD for \code{eeg_*} objects. Output units are dB. The
+#' Calculate and plot the PSD for `eeg_*` objects. Output units are dB. The
 #' PSD is calculated using Welch's method.
 #'
 #' Welch's method splits the data into multiple segments and then averages over
@@ -8,16 +8,17 @@
 #' each trial.
 #'
 #' Specific parameters such as the number of FFT points and the amount of
-#' overlap between segments can be passed to Welch's FFT
+#' overlap between segments can be passed to Welch's FFT.
 #'
+#' @author Matt Craddock, \email{matt@@mattcraddock.com}
 #' @examples
 #'  plot_psd(demo_epochs)
 #'  plot_psd(demo_epochs, seg_length = 256)
-#' @param data Object of class \code{eeg_epochs}, \code{eeg_data}, or \code{eeg_ICA}.
+#' @param data Object of class `eeg_epochs`, `eeg_data`, or `eeg_ICA`.
 #' @param freq_range Vector of lower and upper frequencies to plot. (e.g. c(1,
 #'   40))
 #' @param ... Additional parameters.
-#' @author Matt Craddock, \email{matt@@mattcraddock.com}
+#' @return A ggplot object.
 #' @export
 
 plot_psd <- function(data, freq_range = NULL, ...) {
@@ -25,31 +26,34 @@ plot_psd <- function(data, freq_range = NULL, ...) {
 }
 
 #' @param n_fft Number of points to use for the underlying FFTs. Defaults to 256
-#'   for \code{eeg_epochs} or minimum of 2048 or the signal length for
-#'   \code{eeg_data}.
+#'   for `eeg_epochs` or minimum of 2048 or the signal length for
+#'   `eeg_data`.
 #' @param noverlap Amount of overlap between segments, in sampling points.
-#'   Defaults to 50\%.
+#'   Defaults to 50%.
 #' @param seg_length Length of individual segments. Defaults to n_fft. Must be <= n_fft.
-#' @describeIn plot_psd Plot PSD for \code{eeg_epochs}.
+#' @param demean Remove epoch means before FFT.
+#' @describeIn plot_psd Plot PSD for `eeg_epochs`.
 #' @export
 plot_psd.eeg_epochs <- function(data,
                                 freq_range = NULL,
                                 n_fft = 256,
                                 seg_length = NULL,
                                 noverlap = NULL,
+                                demean = TRUE,
                                 ...) {
 
   psd_out <- compute_psd(data,
                          keep_trials = FALSE,
                          n_fft = n_fft,
                          seg_length = seg_length,
-                         noverlap = noverlap)
+                         noverlap = noverlap,
+                         demean = demean)
 
   create_psd_plot(psd_out,
                   freq_range)
 }
 
-#' @describeIn plot_psd Plot PSD for \code{eeg_data}.
+#' @describeIn plot_psd Plot PSD for `eeg_data`.
 #' @export
 plot_psd.eeg_data <- function(data,
                               freq_range = NULL,
@@ -60,8 +64,8 @@ plot_psd.eeg_data <- function(data,
 
   psd_out <- compute_psd(data,
                          n_fft = n_fft,
-                         seg_length = NULL,
-                         noverlap = NULL)
+                         seg_length = seg_length,
+                         noverlap = noverlap)
 
   create_psd_plot(psd_out,
                   freq_range)
@@ -69,7 +73,7 @@ plot_psd.eeg_data <- function(data,
 }
 
 #' @param components Which components to compute the PSD for. Defaults to all.
-#' @describeIn plot_psd Plot PSD for \code{eeg_ICA} objects
+#' @describeIn plot_psd Plot PSD for `eeg_ICA` objects
 #' @export
 plot_psd.eeg_ICA <- function(data,
                              freq_range = NULL,
@@ -94,8 +98,7 @@ plot_psd.eeg_ICA <- function(data,
                   freq_range)
 }
 
-#' @describeIn plot_psd Plot PSD for \code{data.frame}s.
-#' @importFrom dplyr select group_by summarise_all
+#' @describeIn plot_psd Plot PSD for `data.frame`s.
 #' @export
 plot_psd.data.frame <- function(data,
                                 freq_range = NULL,
@@ -122,7 +125,7 @@ plot_psd.data.frame <- function(data,
     xlab("Frequency (Hz)")
 }
 
-#' @describeIn plot_psd Plot PSD for \code{eeg_evoked} objects
+#' @describeIn plot_psd Plot PSD for `eeg_evoked` objects
 #' @export
 plot_psd.eeg_evoked <- function(data,
                                 freq_range = NULL,
@@ -178,15 +181,15 @@ create_psd_plot <- function(psd_out,
 
 #' Time-frequency plot
 #'
-#' Creates a time-frequency plot of an \code{eeg_tfr} object. The plot has time
+#' Creates a time-frequency plot of an `eeg_tfr` object. The plot has time
 #' on the x-axis and frequency on the y-axis. If no electrode is supplied, it
 #' will average over all electrodes.
 #'
 #' Various different baseline options can be applied here (e.g. "db" for
 #' decibels, "pc" for percent change, "divide" for division; see
-#' \code{rm_baseline} for details).
+#' `rm_baseline` for details).
 #'
-#' @param data Object of class \code{eeg_tfr}
+#' @param data Object of class `eeg_tfr`
 #' @param electrode Electrode to plot. If none is supplied, averages over all
 #'   electrodes.
 #' @param time_lim Time limits of plot.
@@ -195,9 +198,14 @@ create_psd_plot <- function(psd_out,
 #' @param baseline_type baseline correction to apply. Defaults to "none".
 #' @param fill_lims Custom colour scale (i.e. range of power). e.g. c(-5, 5).
 #' @param interpolate Interpolation of raster for smoother plotting.
+#' @param na.rm Remove NA values silently (TRUE) or with a warning (FALSE).
+#'   Defaults to TRUE.
+#' @param fun.data Statistical function to use for averaging over
+#'   electrodes/conditions. Defaults to `mean`.
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #' @importFrom purrr partial
 #' @import ggplot2
+#' @return A `ggplot`
 #' @seealso [rm_baseline()]
 #' @export
 
@@ -208,9 +216,11 @@ plot_tfr <- function(data,
                      baseline_type = "none",
                      baseline = NULL,
                      fill_lims = NULL,
-                     interpolate = FALSE) {
+                     interpolate = FALSE,
+                     na.rm = TRUE,
+                     fun.data = mean) {
 
-  if (!class(data) == "eeg_tfr") {
+  if (!inherits(data,"eeg_tfr")) {
     stop("Object of class eeg_tfr required.")
   }
 
@@ -228,9 +238,17 @@ plot_tfr <- function(data,
     data$signals <- data$signals[, , data_freqs, drop = FALSE]
   }
 
-  if (length(data$dimensions) == 4) {
+  if (identical(data$freq_info$output, "fourier")) {
+    message("Data is complex Fourier coefficients, converting to power.")
+    data <- convert_tfr(data,
+                        "power")
+    data$freq_info$output <- "power"
+  }
+
+  if (!inherits(data, c("tfr_average",
+                        "eeg_group"))) {
     data <- eeg_average(data)
-   }
+  }
 
   if (baseline_type != "none") {
     data <- rm_baseline(data,
@@ -249,13 +267,10 @@ plot_tfr <- function(data,
            "Power (a.u.)")
 
   if (is.null(fill_lims)) {
-    fill_lims <- c(min(data$signals, na.rm = TRUE),
-                   max(data$signals, na.rm = TRUE))
-    if (all(fill_lims > 0)) {
-      fill_lims <- c(0, max(abs(fill_lims)))
-    } else {
-      fill_lims <- max(abs(fill_lims))
-      fill_lims <- c(-fill_lims, fill_lims)
+    if (identical(data$freq_info$baseline, "none")) {
+      fill_lims <- c(0, NA)
+    } else{
+      fill_lims <- c(NA, NA)
     }
   }
 
@@ -267,14 +282,14 @@ plot_tfr <- function(data,
 
   fill_colour <-
     switch(data$freq_info$baseline,
-           "none" = scale_fill_viridis_c(limits = fill_lims,
-                                         oob = scales::squish),
+           "none" = ggplot2::scale_fill_viridis_c(limits = fill_lims,
+                                                  oob = scales::squish),
            "absolute" = fill_dist(),
            "db" = fill_dist(),
            "divide" = fill_dist(),
            "ratio" = fill_dist(),
            "pc" = fill_dist(),
-           scale_fill_viridis_c())
+           ggplot2::scale_fill_viridis_c())
 
   data <- as.data.frame(data,
                         long = TRUE)
@@ -284,7 +299,9 @@ plot_tfr <- function(data,
                     aes(x = time,
                         y = frequency,
                         fill = power)) +
-    geom_raster(interpolate = interpolate) +
+    stat_summary_by_fill(fun.data = mean,
+                         na.rm = na.rm,
+                         interpolate = interpolate) +
     labs(x = "Time (s)",
          y = "Frequency (Hz)",
          fill = fill_lab) +

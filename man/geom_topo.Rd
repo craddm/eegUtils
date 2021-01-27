@@ -17,6 +17,7 @@ geom_topo(
   chan_markers = "point",
   chan_size = rel(2),
   head_size = rel(1.5),
+  r = 95,
   grid_res = 200,
   method = "biharmonic",
   ...
@@ -74,6 +75,8 @@ or text.}
 \item{chan_size}{Size for channel markers, if any.}
 
 \item{head_size}{Size of the head shape.}
+
+\item{r}{Head circumference}
 
 \item{grid_res}{Smoothness of the interpolation grid.}
 

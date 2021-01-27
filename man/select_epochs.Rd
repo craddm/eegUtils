@@ -5,6 +5,7 @@
 \alias{select_epochs.default}
 \alias{select_epochs.eeg_epochs}
 \alias{select_epochs.eeg_ICA}
+\alias{select_epochs.eeg_tfr}
 \title{Select epochs}
 \usage{
 select_epochs(data, ...)
@@ -21,6 +22,15 @@ select_epochs(data, ...)
 )
 
 \method{select_epochs}{eeg_ICA}(
+  data,
+  epoch_events = NULL,
+  epoch_no = NULL,
+  keep = TRUE,
+  df_out = FALSE,
+  ...
+)
+
+\method{select_epochs}{eeg_tfr}(
   data,
   epoch_events = NULL,
   epoch_no = NULL,
@@ -54,16 +64,18 @@ This is a generic function for selecting epochs from an epoched data set.
 \item \code{eeg_epochs}: Selection of epochs from \code{eeg_epochs} objects.
 
 \item \code{eeg_ICA}: Selection of epochs from \code{eeg_ICA} objects.
+
+\item \code{eeg_tfr}: Selection of epochs from \code{eeg_tfr} objects.
 }}
 
 \examples{
 select_epochs(demo_epochs, epoch_no = 1:5)
-(demo_ica <- run_ICA(demo_epochs))
+demo_ica <- run_ICA(demo_epochs, pca = 10)
 select_epochs(demo_ica, epoch_no = 1:5)
 
 }
 \seealso{
-\code{\link{select_times}} and \code{\link{select_elecs}}
+\code{\link[=select_times]{select_times()}} and \code{\link[=select_elecs]{select_elecs()}}
 }
 \author{
 Matt Craddock, \email{matt@mattcraddock.com}

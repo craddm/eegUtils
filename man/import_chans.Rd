@@ -12,6 +12,10 @@ import_chans(file_name, format = "spherical")
 \item{format}{If the file is not .elc format, "spherical", "geographic".
 Default is "spherical".}
 }
+\value{
+A \code{tibble} containing electrode names and locations in several
+different coordinate systems.
+}
 \description{
 Currently only ASA .elc format with Cartesian x-y-z coordinates is supported.
 }

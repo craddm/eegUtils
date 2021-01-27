@@ -4,15 +4,20 @@
 #' for EEG signals. Intended for isolating oscillations at specified
 #' frequencies, decomposing channel-based data into distinct components
 #' reflecting distinct or combinations of sources of oscillatory signals.
-#' Currently only the spatio-spectral decomposition method (Nikulin et al, 2011)
-#' is implemented.
+#' Currently, spatio-spectral decomposition (Nikulin, Nolte, & Curio, 2011) and
+#' Rhythmic Entrainment Source Separation (Cohen & Gulbinate, 2017) are
+#' implemented. The key difference between the two is that the former returns
+#' the results of the data-derived spatial filters applied to the
+#' bandpass-filtered "signal" data, whereas the latter returns the resuls of the
+#' filters applied to the original, broadband data.
 #'
-#' @param data An \code{eeg_data} object
+#' @param data An `eeg_data` object
 #' @param ... Additional parameters
 #' @export
-#' @references Cohen, M. X. (2016). Comparison of linear spatial filters for
-#'   identifying oscillatory activity in multichannel data. BioRxiv, 097402.
-#'   https://doi.org/10.1101/097402
+#' @references Cohen, M. X., & Gulbinate, R. (2017). Rhythmic entrainment source
+#'   separation: Optimizing analyses of neural responses to rhythmic sensory
+#'   stimulation. NeuroImage, 147, 43-56.
+#'   https://doi.org/10.1016/j.neuroimage.2016.11.036
 #'
 #'   Haufe, S., Dähne, S., & Nikulin, V. V. (2014). Dimensionality reduction for
 #'   the analysis of brain oscillations. NeuroImage, 101, 583–597.
@@ -35,13 +40,15 @@ eeg_decomp.default <- function(data, ...) {
 #' @param noise_range Range of frequencies to be considered noise (e.g. bounds of flanker frequencies)
 #' @param method Type of decomposition to apply. Currently only "ssd" is supported.
 #' @param verbose Informative messages printed to console. Defaults to TRUE.
-#' @describeIn eeg_decomp method for \code{eeg_epochs} objects
+#' @param order Filter order for filter applied to signal/noise
+#' @describeIn eeg_decomp method for `eeg_epochs` objects
 #' @export
 eeg_decomp.eeg_epochs <- function(data,
                                   sig_range,
-                                  noise_range = NULL,
+                                  noise_range,
                                   method = "ssd",
                                   verbose = TRUE,
+                                  order = 2,
                                   ...) {
 
   if (verbose) {
@@ -52,30 +59,34 @@ eeg_decomp.eeg_epochs <- function(data,
                  "ssd" = run_SSD(data,
                                  sig_range,
                                  noise_range,
-                                 verbose = verbose),
+                                 verbose = verbose,
+                                 order = order),
                  "ress" = run_SSD(data,
                                   sig_range,
                                   noise_range,
                                   RESS = TRUE,
-                                  verbose = verbose))
+                                  verbose = verbose,
+                                  order = order))
   class(data) <- c("eeg_ICA", "eeg_epochs")
   data
 }
 
 #' Internal function for running SSD algorithm
 #'
-#' @param data \code{eeg_epochs} object to be decomposed
+#' @param data `eeg_epochs` object to be decomposed
 #' @param sig_range Frequency range of the signal of interest
 #' @param noise_range Frequency range of the noise
 #' @param RESS Run RESS rather than SSD. Defaults to FALSE.
 #' @param verbose Informative messages in consoles. Defaults to TRUE.
+#' @param order filter order for IIR filters
 #' @keywords internal
 
 run_SSD <- function(data,
                     sig_range,
                     noise_range,
                     RESS = FALSE,
-                    verbose = TRUE) {
+                    verbose = TRUE,
+                    order = 2) {
 
   if (!requireNamespace("geigen",
                         quietly = TRUE)) {
@@ -83,24 +94,30 @@ run_SSD <- function(data,
          call. = FALSE)
   }
 
+  # modify to allow gaussian filter?
   signal <- eeg_filter(data,
                        low_freq = sig_range[1],
                        high_freq = sig_range[2],
-                       filter_order = 2,
+                       filter_order = order,
                        method = "iir")
+
   noise <- eeg_filter(data,
                       low_freq = noise_range[1],
                       high_freq = noise_range[2],
-                      filter_order = 2,
+                      filter_order = order,
                       method = "iir")
-  noise <- eeg_filter(data,
+
+  noise <- eeg_filter(noise,
                       low_freq = (sig_range[2] + noise_range[2]) / 2,
                       high_freq = (sig_range[1] + noise_range[1]) / 2,
-                      filter_order = 2,
+                      filter_order = order,
                       method = "iir")
+
   # Calculate covariance respecting the epoching structure of the data
   cov_sig <- cov_epochs(signal)
   cov_noise <- cov_epochs(noise)
+
+
 
   eig_sigs <- base::eigen(cov_sig)
   # Get the rank of the covariance matrix and select only as many components as
@@ -112,31 +129,48 @@ run_SSD <- function(data,
       message("Input data is not full rank; returning ",
               rank_sig,
               "components")
+      M <- eig_sigs$vectors[, 1:rank_sig] %*% (diag(eig_sigs$values[1:rank_sig] ^ -0.5))
+    } else {
+      M <- diag(ncol(cov_sig))
     }
   }
 
-  M <- eig_sigs$vectors[, 1:rank_sig] %*% (diag(eig_sigs$values[1:rank_sig] ^ -0.5))
-
-  C_s_r <- t(M) %*% cov_sig %*% M
-  C_n_r <- t(M) %*% cov_noise %*% M
+  C_s_r <- crossprod(M, cov_sig) %*% M
+  C_n_r <- crossprod(M, cov_noise) %*% M
+  # this is the generalized eigenvalue decomp with sig vs
+  # sig+noise, Cohen uses avg of flanking freqs?
   ged_v <- geigen::geigen(C_s_r, C_s_r + C_n_r) # this one needs to be sorted
-  lambda <- sort(ged_v$values, decreasing = TRUE)
-  W <- ged_v$vectors[,order(ged_v$values, decreasing = TRUE)]
+  lambda <- sort(ged_v$values, decreasing = TRUE) # return lambda?
+
+  W <- ged_v$vectors[, order(ged_v$values, decreasing = TRUE)]
   W <- M %*% W
-  data$mixing_matrix <- (cov_sig %*% W) %*% solve(t(W) %*% cov_sig %*% W)
+
+  # Alternatively could just invert W?
+  data$mixing_matrix <- (cov_sig %*% W) %*% solve(crossprod(W, cov_sig) %*% W)
+
+  # sort by variance explained
+  vaf_idx <-
+    sort(vaf_mix(data$mixing_matrix),
+         decreasing = TRUE,
+         index.return = TRUE)$ix
+
+  data$mixing_matrix <- data$mixing_matrix[, vaf_idx]
+  data$unmixing_matrix <- as.data.frame(MASS::ginv(data$mixing_matrix, tol = 0))
+
   data$mixing_matrix <- as.data.frame(data$mixing_matrix)
   names(data$mixing_matrix) <- sprintf("Comp%03d", 1:ncol(data$mixing_matrix))
   data$mixing_matrix$electrode <- names(data$signals)
 
-  data$unmixing_matrix <- as.data.frame(t(W))
   names(data$unmixing_matrix) <- data$mixing_matrix$electrode
   data$unmixing_matrix$Component <- sprintf("Comp%03d", 1:ncol(W))
 
+  # RESS applies weights to unfiltered original data
   if (RESS) {
     data$signals <- as.data.frame(as.matrix(data$signals) %*% W)
     names(data$signals) <- sprintf("Comp%03d", 1:ncol(W))
     return(data)
   }
+
   data$signals <- as.data.frame(as.matrix(signal$signals) %*% W)
   names(data$signals) <- sprintf("Comp%03d", 1:ncol(W))
   data

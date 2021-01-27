@@ -17,6 +17,7 @@ plot_psd(data, freq_range = NULL, ...)
   n_fft = 256,
   seg_length = NULL,
   noverlap = NULL,
+  demean = TRUE,
   ...
 )
 
@@ -67,10 +68,15 @@ for \code{eeg_epochs} or minimum of 2048 or the signal length for
 \item{noverlap}{Amount of overlap between segments, in sampling points.
 Defaults to 50\%.}
 
+\item{demean}{Remove epoch means before FFT.}
+
 \item{components}{Which components to compute the PSD for. Defaults to all.}
 }
+\value{
+A ggplot object.
+}
 \description{
-Calculate and plot the PSD for \code{eeg_*} objects. Output units are dB. The
+Calculate and plot the PSD for \verb{eeg_*} objects. Output units are dB. The
 PSD is calculated using Welch's method.
 }
 \details{
@@ -79,7 +85,7 @@ those segments. For epoched data, Welch's FFT is calculated separately for
 each trial.
 
 Specific parameters such as the number of FFT points and the amount of
-overlap between segments can be passed to Welch's FFT
+overlap between segments can be passed to Welch's FFT.
 }
 \section{Methods (by class)}{
 \itemize{

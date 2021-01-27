@@ -26,13 +26,15 @@ data must have channel locations attached.
 }}
 
 \references{
-[1] Perrin, F., Pernier, J., Bertrand, O., & Echallier, J. F.
-      (1989). Spherical splines for scalp potential and current
-      density mapping. Electroencephalography and Clinical
-    Neurophysiology, 72, 184-187
-[2] Perrin, F., Pernier, J., Bertrand, O., & Echallier, J. F.
-     (1990). Corrigenda EEG 02274. Electroencephalography and
-     Clinical Neurophysiology, 76, 565
+\itemize{
+\item Perrin, F., Pernier, J., Bertrand, O., & Echallier, J. F.
+(1989). Spherical splines for scalp potential and current
+density mapping. Electroencephalography and Clinical
+Neurophysiology, 72, 184-187
+\item Perrin, F., Pernier, J., Bertrand, O., & Echallier, J. F.
+(1990). Corrigenda EEG 02274. Electroencephalography and
+Clinical Neurophysiology, 76, 565
+}
 }
 \author{
 Matt Craddock \email{matt@mattcraddock.com}

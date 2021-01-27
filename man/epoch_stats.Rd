@@ -22,7 +22,9 @@ Calculate various statistics for each epoch in the data
 \item \code{eeg_epochs}: Calculate statistics for each epoch.
 }}
 
+\examples{
+epoch_stats(demo_epochs)
+}
 \author{
 Matt Craddock \email{matt@mattcraddock.com}
 }
-\keyword{internal}

@@ -4,7 +4,7 @@
 \alias{parse_for_bf}
 \title{Parse data for butterfly plots}
 \usage{
-parse_for_bf(data, time_lim = NULL, baseline = NULL)
+parse_for_bf(data, time_lim = NULL, baseline = NULL, quantity = "coefficients")
 }
 \arguments{
 \item{data}{data to be parsed}

@@ -10,23 +10,27 @@
 
 
 <!-- jquery -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.7/flatly/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/flatly/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
 
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
+
+<!-- bootstrap-toc -->
+<link rel="stylesheet" href="../bootstrap-toc.css">
+<script src="../bootstrap-toc.js"></script>
 
 <!-- Font Awesome icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.1/css/all.min.css" integrity="sha256-PbSmjxuVAzJ6FPvNYsrXygfGhNJYyZ2GktDbkMBqQZg=" crossorigin="anonymous" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.1/css/v4-shims.min.css" integrity="sha256-A6jcAdwFD48VMjlI3GDxUd+eCQa7/KWy6G9oe/ovaPA=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous" />
 
 <!-- clipboard.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script>
 
 <!-- headroom.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
@@ -53,7 +57,7 @@
 
   </head>
 
-  <body>
+  <body data-spy="scroll" data-target="#toc">
     <div class="container template-news">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -67,7 +71,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">eegUtils</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.0</span>
       </span>
     </div>
 
@@ -75,7 +79,7 @@
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -99,10 +103,13 @@
       <a href="../articles/epoch-handling.html">Event and epoch handling</a>
     </li>
     <li>
+      <a href="../articles/linear_modelling/linear_modelling.html">Linear Modelling</a>
+    </li>
+    <li>
       <a href="../articles/time-frequency-analysis.html">Frequency analysis</a>
     </li>
     <li>
-      <a href="../articles/topoplot.html">Building a topographical plot</a>
+      <a href="../articles/topoplot/topoplot.html">Building a topographical plot</a>
     </li>
   </ul>
 </li>
@@ -112,8 +119,8 @@
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/craddm/eegUtils">
-    <span class="fab fa fab fa-github fa-lg"></span>
+  <a href="https://github.com/craddm/eegUtils/">
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -130,23 +137,111 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Changelog <small></small></h1>
+      <h1 data-toc-skip>Changelog <small></small></h1>
       <small>Source: <a href='https://github.com/craddm/eegUtils/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
-    <div id="eegutils-050" class="section level1">
-<h1 class="page-header">
-<a href="#eegutils-050" class="anchor"></a>eegUtils 0.5.0</h1>
+    <div id="eegutils-060" class="section level1">
+<h1 class="page-header" data-toc-text="0.6.0">
+<a href="#eegutils-060" class="anchor"></a>eegUtils 0.6.0</h1>
+<p>IMPORTANT: There have been some changes to the logic of the <code><a href="../reference/topoplot.html">topoplot()</a></code> that may make their appearance quite different. Specifically, these changes are to the way the underlying interpolation grid is calculated and to how things like the diameter of the cartoon head is calculated. These changes often lead to different minimum or maximum amplitudes across the image, and thus changes in the appearance of the plot due to different scales- don’t be alarmed!</p>
 <div id="function-changes" class="section level3">
 <h3 class="hasAnchor">
 <a href="#function-changes" class="anchor"></a>Function changes</h3>
+<ul>
+<li>Added <code>filter</code> method for <code>eeg_tfr</code> objects</li>
+<li>
+<code><a href="../reference/fit_glm.html">fit_glm()</a></code> overhauled. Now far faster and allows specification of models using standard R formulae.</li>
+<li>New <code>eeg_lm</code> class introduced for output of <code><a href="../reference/fit_glm.html">fit_glm()</a></code>.</li>
+<li>
+<code><a href="../reference/plot_butterfly.html">plot_butterfly.eeg_lm()</a></code> method added</li>
+<li>
+<code><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame()</a></code> methods have been added for <code>eeg_lm</code> objects.</li>
+<li>
+<code><a href="../reference/view_ica.html">view_ica()</a></code> Shiny viewer for <code>eeg_ICA</code> and <code>eeg_decomp</code> objects added.</li>
+<li>
+<code><a href="../reference/view_artefacts.html">view_artefacts()</a></code>Shiny viewer for channel and epoch stats added.</li>
+<li>
+<code><a href="../reference/plot_timecourse.html">plot_timecourse()</a></code> now takes a mapping argument, which allows use of <code>ggplot2</code> <code><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes()</a></code> mappings</li>
+<li>
+<code><a href="../reference/eeg_average.html">eeg_average.eeg_tfr()</a></code> now follows behaviour of other <code><a href="../reference/eeg_average.html">eeg_average()</a></code> methods in respecting the <code>epochs</code> structure.<br>
+</li>
+<li>
+<code><a href="../reference/compute_itc.html">compute_itc()</a></code> added for computing inter-trial coherence from <code>eeg_tfr</code> objects.</li>
+<li>
+<code>cols</code> added to <code>eeg_average.eeg_tfr</code>
+</li>
+<li>
+<code>eeg_combine.tfr_average()</code> added to handle pre-averaged <code>eeg_tfr</code> objects</li>
+<li>
+<code><a href="../reference/compute_tfr.html">compute_tfr()</a></code> now allows non-constant number of cycles</li>
+<li>
+<code><a href="../reference/compute_tfr.html">compute_tfr()</a></code> now uses a different scaling factor, so raw units should now be microvolts-squared.</li>
+<li>added <code><a href="../reference/import_erplab.html">import_erplab()</a></code> function</li>
+</ul>
+</div>
+<div id="internal-changes--bug-fixes" class="section level3">
+<h3 class="hasAnchor">
+<a href="#internal-changes--bug-fixes" class="anchor"></a>Internal changes / bug fixes</h3>
+<ul>
+<li>
+<code><a href="../reference/plot_tfr.html">plot_tfr()</a></code> now always drops NA/NaN values and averages appropriately over electrodes and conditions.</li>
+<li>
+<code><a href="../reference/import_set.html">import_set()</a></code> handles continuous EEG data from EEGLAB much better</li>
+<li>Now using <code>whitening</code> package for whitening before SOBI ICA</li>
+<li>
+<code>select_epochs</code> for <code>eeg_ICA</code> objects fixed to correctly remove epochs from <code>signals</code>
+</li>
+<li>added tests for <code>filter.eeg_ICA</code> and <code>filter.eeg_tfr</code>
+</li>
+<li>fixed <code>filter.eeg_data</code> and <code>filter.eeg_evoked</code>
+</li>
+<li>
+<code>select_elecs</code> for <code>eeg_ICA</code> now correctly removes components from the unmixing matrix</li>
+<li>switched back to using <code>left_join</code> from <code>dplyr</code> in the <code>tag_events</code> function as an easy fix for sorting of events when tagging.</li>
+<li>fixed odd interaction between <code><a href="https://dplyr.tidyverse.org/reference/select.html">select()</a></code> and <code><a href="../reference/validate_channels.html">validate_channels()</a></code> that reordered channel names in <code>chan_info</code>
+</li>
+<li>
+<code>eeg_decomp</code> now doing better job of filtering for <code>ssd</code> method</li>
+<li>various <code>tibble</code> related warnings and errors cleaned up.</li>
+<li>
+<code>method = "gam"</code> should now yield sensible results for <code><a href="../reference/geom_topo.html">geom_topo()</a></code>
+</li>
+<li>
+<code><a href="../reference/run_ICA.html">run_ICA()</a></code> and <code><a href="../reference/eeg_decomp.html">eeg_decomp()</a></code> methods now return components ordered by percent variance explained (high to low)</li>
+<li>removed scaling of components in SOBI ICA method</li>
+<li>
+<code>browse_data().eeg_ica</code> grid res reduced</li>
+<li>
+<code>eeg_reference().eeg_epochs</code> was always average referencing, now fixed.</li>
+<li>cleaner code in <code><a href="../reference/topoplot.html">topoplot()</a></code> for biharmonic smooth</li>
+<li>
+<code><a href="../reference/compute_psd.html">compute_psd()</a></code> now demeans individual segments when doing Welch FFT; also no longer errors when only one segment per channel</li>
+<li>
+<code><a href="../reference/eeg_tfr.html">eeg_tfr()</a></code> internal structure modified to keep 4 dimensions even after averaging, for consistency</li>
+<li>
+<code>stat_summary_by_fill()</code> added to do averaging for raster plots effectively.</li>
+<li>
+<code><a href="../reference/convert_tfr.html">convert_tfr()</a></code> now properly returns converted data</li>
+<li>
+<code><a href="../reference/import_raw.html">import_raw()</a></code> fix for Brain Vision Analyzer files with date fields in the markers</li>
+<li>added <code>version</code> field to most objects</li>
+</ul>
+</div>
+</div>
+    <div id="eegutils-050" class="section level1">
+<h1 class="page-header" data-toc-text="0.5.0">
+<a href="#eegutils-050" class="anchor"></a>eegUtils 0.5.0</h1>
+<div id="function-changes-1" class="section level3">
+<h3 class="hasAnchor">
+<a href="#function-changes-1" class="anchor"></a>Function changes</h3>
 <ul>
 <li><p>Default settings for Infomax ICA changed to be similar to EEGLAB/Fieldtrip.</p></li>
 <li><p>Faster reading of bdf implemented. Old behaviour can be retained using <code>fast_bdf = FALSE</code> parameter to <code><a href="../reference/import_raw.html">import_raw()</a></code></p></li>
 <li><p><code>eeg_combine</code> now supports combining lists.</p></li>
 <li>
 <p><code>eeg_reference</code> now supports <code>eeg_epochs</code> and <code>eeg_evoked</code> objects.</p>
-<h3 id="internal-changes--bug-fixes">Internal changes / bug fixes</h3>
+<h3 id="internal-changes--bug-fixes-1">Internal changes / bug fixes</h3>
 </li>
 <li><p><code>plot_butterfly</code> should now be faster again.</p></li>
 <li><p>Much faster reader for BDF implemented.</p></li>
@@ -170,7 +265,7 @@
 <li><p><code>compute_tfr</code> reworked to be faster.</p></li>
 <li><p>Faster baseline correction implemented using Rcpp.</p></li>
 <li><p>Padding now used during <code>compute_tfr</code>, which greatly improves speed/accuracy; units may change but this is a change in scaling factor.</p></li>
-<li><p><code>epoch_data</code> now uses a more robust way of determing time limits/samples to include in each epoch that no longer fails at some combinations of time limit and sampling rate</p></li>
+<li><p><code>epoch_data</code> now uses a more robust way of determining time limits/samples to include in each epoch that no longer fails at some combinations of time limit and sampling rate</p></li>
 <li><p><code>eeg_average</code> returns objects of class(<code>eeg_evoked</code>, <code>eeg_epochs</code>)</p></li>
 <li><p>Updated R requirement to &gt;= 3.2.0</p></li>
 <li><p>Updated rlang requirement to &gt;= 0.4.0</p></li>
@@ -181,11 +276,11 @@
 </div>
 </div>
     <div id="eegutils-040" class="section level1">
-<h1 class="page-header">
+<h1 class="page-header" data-toc-text="0.4.0">
 <a href="#eegutils-040" class="anchor"></a>eegUtils 0.4.0</h1>
-<div id="function-changes-1" class="section level3">
+<div id="function-changes-2" class="section level3">
 <h3 class="hasAnchor">
-<a href="#function-changes-1" class="anchor"></a>Function changes</h3>
+<a href="#function-changes-2" class="anchor"></a>Function changes</h3>
 <ul>
 <li>Behaviour of <code>as.data.frame</code> methods changed.
 <ul>
@@ -236,9 +331,9 @@
 <li>Default <code>grid_res</code> for topography related plots increased to 200.</li>
 </ul>
 </div>
-<div id="internal-changes--bug-fixes-1" class="section level3">
+<div id="internal-changes--bug-fixes-2" class="section level3">
 <h3 class="hasAnchor">
-<a href="#internal-changes--bug-fixes-1" class="anchor"></a>Internal changes / bug fixes</h3>
+<a href="#internal-changes--bug-fixes-2" class="anchor"></a>Internal changes / bug fixes</h3>
 <ul>
 <li>
 <code>data.table</code> now used in the following functions internally:
@@ -266,11 +361,11 @@
 </div>
 </div>
     <div id="eegutils-030" class="section level1">
-<h1 class="page-header">
+<h1 class="page-header" data-toc-text="0.3.0">
 <a href="#eegutils-030" class="anchor"></a>eegUtils 0.3.0</h1>
-<div id="function-changes-2" class="section level3">
+<div id="function-changes-3" class="section level3">
 <h3 class="hasAnchor">
-<a href="#function-changes-2" class="anchor"></a>Function changes</h3>
+<a href="#function-changes-3" class="anchor"></a>Function changes</h3>
 <ul>
 <li>
 <code><a href="../reference/topoplot.html">topoplot()</a></code> now has a scaling parameter to scale the size of any lines or markers drawn on the plot.</li>
@@ -309,11 +404,11 @@
 </div>
 </div>
     <div id="eegutils-021" class="section level1">
-<h1 class="page-header">
+<h1 class="page-header" data-toc-text="0.2.1">
 <a href="#eegutils-021" class="anchor"></a>eegUtils 0.2.1</h1>
-<div id="function-changes-3" class="section level3">
+<div id="function-changes-4" class="section level3">
 <h3 class="hasAnchor">
-<a href="#function-changes-3" class="anchor"></a>Function changes</h3>
+<a href="#function-changes-4" class="anchor"></a>Function changes</h3>
 <ul>
 <li>
 <code><a href="../reference/topoplot.html">topoplot()</a></code> added highlights parameter to allow specific electrodes to be highlighted.</li>
@@ -388,11 +483,11 @@
 </div>
 </div>
     <div id="eegutils-020" class="section level1">
-<h1 class="page-header">
+<h1 class="page-header" data-toc-text="0.2.0">
 <a href="#eegutils-020" class="anchor"></a>eegUtils 0.2.0</h1>
-<div id="function-changes-4" class="section level3">
+<div id="function-changes-5" class="section level3">
 <h3 class="hasAnchor">
-<a href="#function-changes-4" class="anchor"></a>Function changes</h3>
+<a href="#function-changes-5" class="anchor"></a>Function changes</h3>
 <ul>
 <li>
 <code><a href="../reference/as.data.frame.eeg_epochs.html">as.data.frame.eeg_epochs()</a></code> now has a <code>cond_labels</code> parameter to select epochs with specific events and add the event label as an additional column.</li>
@@ -406,9 +501,9 @@
 <code><a href="../reference/ar_FASTER.html">eeg_FASTER()</a></code> - FASTER artefact rejection method now (mostly) implemented (<em>experimental</em>).</li>
 </ul>
 </div>
-<div id="internal-changes--bug-fixes-2" class="section level3">
+<div id="internal-changes--bug-fixes-3" class="section level3">
 <h3 class="hasAnchor">
-<a href="#internal-changes--bug-fixes-2" class="anchor"></a>Internal changes / bug fixes</h3>
+<a href="#internal-changes--bug-fixes-3" class="anchor"></a>Internal changes / bug fixes</h3>
 <ul>
 <li>
 <code><a href="../reference/plot_butterfly.html">plot_butterfly()</a></code> some <code>dplyr</code> use removed.</li>
@@ -435,11 +530,11 @@
 </div>
 </div>
     <div id="eegutils-0115" class="section level1">
-<h1 class="page-header">
+<h1 class="page-header" data-toc-text="0.1.15">
 <a href="#eegutils-0115" class="anchor"></a>eegUtils 0.1.15</h1>
-<div id="function-changes-5" class="section level3">
+<div id="function-changes-6" class="section level3">
 <h3 class="hasAnchor">
-<a href="#function-changes-5" class="anchor"></a>Function changes</h3>
+<a href="#function-changes-6" class="anchor"></a>Function changes</h3>
 <ul>
 <li>
 <code><a href="../reference/eeg_evoked.html">eeg_evoked()</a></code> class introduced to hold ERPS</li>
@@ -451,9 +546,9 @@
 <code><a href="../reference/as.data.frame.eeg_evoked.html">as.data.frame.eeg_evoked()</a></code> introduced to handle conversion of eeg_evoked objects to data frames.</li>
 </ul>
 </div>
-<div id="internal-changes--bug-fixes-3" class="section level3">
+<div id="internal-changes--bug-fixes-4" class="section level3">
 <h3 class="hasAnchor">
-<a href="#internal-changes--bug-fixes-3" class="anchor"></a>Internal changes / bug fixes</h3>
+<a href="#internal-changes--bug-fixes-4" class="anchor"></a>Internal changes / bug fixes</h3>
 <ul>
 <li>
 <code><a href="../reference/compute_psd.html">compute_psd()</a></code> function development, converted to S3method.</li>
@@ -475,11 +570,11 @@
 </div>
 </div>
     <div id="eegutils-0114" class="section level1">
-<h1 class="page-header">
+<h1 class="page-header" data-toc-text="0.1.14">
 <a href="#eegutils-0114" class="anchor"></a>eegUtils 0.1.14</h1>
-<div id="function-changes-6" class="section level3">
+<div id="function-changes-7" class="section level3">
 <h3 class="hasAnchor">
-<a href="#function-changes-6" class="anchor"></a>Function changes</h3>
+<a href="#function-changes-7" class="anchor"></a>Function changes</h3>
 <ul>
 <li>
 <code><a href="../reference/eeg_downsample.html">eeg_downsample()</a></code> function added to downsample EEG data by an integer factor.</li>
@@ -513,11 +608,11 @@
 </div>
 </div>
     <div id="eegutils-0113" class="section level1">
-<h1 class="page-header">
+<h1 class="page-header" data-toc-text="0.1.13">
 <a href="#eegutils-0113" class="anchor"></a>eegUtils 0.1.13</h1>
-<div id="function-changes-7" class="section level3">
+<div id="function-changes-8" class="section level3">
 <h3 class="hasAnchor">
-<a href="#function-changes-7" class="anchor"></a>Function changes</h3>
+<a href="#function-changes-8" class="anchor"></a>Function changes</h3>
 <ul>
 <li>
 <code><a href="../reference/interp_elecs.html">interp_elecs()</a></code> function to perform spherical spline interpolation of individual electrodes</li>
@@ -529,16 +624,16 @@
 </div>
 </div>
     <div id="eegutils-0112" class="section level1">
-<h1 class="page-header">
+<h1 class="page-header" data-toc-text="0.1.12">
 <a href="#eegutils-0112" class="anchor"></a>eegUtils 0.1.12</h1>
-<div id="function-changes-8" class="section level3">
+<div id="function-changes-9" class="section level3">
 <h3 class="hasAnchor">
-<a href="#function-changes-8" class="anchor"></a>Function changes</h3>
+<a href="#function-changes-9" class="anchor"></a>Function changes</h3>
 <ul>
 <li>
 <code><a href="../reference/iir_filt.html">iir_filt()</a></code> now also filters reference channels</li>
 <li>
-<code><a href="../reference/load_set.html">load_set()</a></code> command added to load EEGLAB .set files</li>
+<code>load_set()</code> command added to load EEGLAB .set files</li>
 </ul>
 </div>
 <div id="internal-changes" class="section level3">
@@ -561,7 +656,7 @@
 </div>
 </div>
     <div id="eegutils-0111" class="section level1">
-<h1 class="page-header">
+<h1 class="page-header" data-toc-text="0.1.11">
 <a href="#eegutils-0111" class="anchor"></a>eegUtils 0.1.11</h1>
 <ul>
 <li>Added a <code>NEWS.md</code> file to track changes to the package.</li>
@@ -569,22 +664,10 @@
 </div>
   </div>
 
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-    <div id="tocnav">
-      <h2>Contents</h2>
-      <ul class="nav nav-pills nav-stacked">
-        <li><a href="#eegutils-050">0.5.0</a></li>
-        <li><a href="#eegutils-040">0.4.0</a></li>
-        <li><a href="#eegutils-030">0.3.0</a></li>
-        <li><a href="#eegutils-021">0.2.1</a></li>
-        <li><a href="#eegutils-020">0.2.0</a></li>
-        <li><a href="#eegutils-0115">0.1.15</a></li>
-        <li><a href="#eegutils-0114">0.1.14</a></li>
-        <li><a href="#eegutils-0113">0.1.13</a></li>
-        <li><a href="#eegutils-0112">0.1.12</a></li>
-        <li><a href="#eegutils-0111">0.1.11</a></li>
-      </ul>
-    </div>
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+    <nav id="toc" data-toggle="toc" class="sticky-top">
+      <h2 data-toc-skip>Contents</h2>
+    </nav>
   </div>
 
 </div>
@@ -596,7 +679,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

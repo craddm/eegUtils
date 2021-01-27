@@ -24,13 +24,13 @@ electrode_locations(data, ...)
 \arguments{
 \item{data}{An EEG dataset.}
 
-\item{...}{Parameters passed to S3 methods.}
+\item{...}{Passed to S3 methods.}
 
 \item{electrode}{The column name containing electrode names in data.
 (Defaults to "electrode").}
 
 \item{drop}{Should electrodes in \code{data} for which default locations are
-not available be dropped? (Defaults to FALSE).}
+not available be removed? (Defaults to FALSE).}
 
 \item{montage}{Name of an existing montage set. Defaults to NULL.}
 
@@ -60,8 +60,12 @@ long format
 \item \code{eeg_epochs}: Adds standard locations to the chan_info field of an eeg_data object.
 }}
 
+\examples{
+channels(demo_epochs)
+electrode_locations(demo_epochs, overwrite = TRUE, montage = "biosemi64alpha")
+}
 \references{
 Oostenveld, R. & Praamstra, P. (2001). The five percent electrode
-  system for high-resolution EEG and ERP measurements. Clinical
-  Neurophysiology, 112, 4, 713-719
+system for high-resolution EEG and ERP measurements. Clinical
+Neurophysiology, 112, 4, 713-719
 }

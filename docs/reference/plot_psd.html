@@ -10,23 +10,27 @@
 
 
 <!-- jquery -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.7/flatly/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/flatly/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
 
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
+
+<!-- bootstrap-toc -->
+<link rel="stylesheet" href="../bootstrap-toc.css">
+<script src="../bootstrap-toc.js"></script>
 
 <!-- Font Awesome icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.1/css/all.min.css" integrity="sha256-PbSmjxuVAzJ6FPvNYsrXygfGhNJYyZ2GktDbkMBqQZg=" crossorigin="anonymous" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.1/css/v4-shims.min.css" integrity="sha256-A6jcAdwFD48VMjlI3GDxUd+eCQa7/KWy6G9oe/ovaPA=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous" />
 
 <!-- clipboard.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script>
 
 <!-- headroom.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
@@ -38,7 +42,6 @@
 <meta property="og:title" content="Plot Power Spectral Density — plot_psd" />
 <meta property="og:description" content="Calculate and plot the PSD for eeg_* objects. Output units are dB. The
 PSD is calculated using Welch's method." />
-<meta name="twitter:card" content="summary" />
 
 
 
@@ -56,7 +59,7 @@ PSD is calculated using Welch's method." />
 
   </head>
 
-  <body>
+  <body data-spy="scroll" data-target="#toc">
     <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -70,7 +73,7 @@ PSD is calculated using Welch's method." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">eegUtils</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.0</span>
       </span>
     </div>
 
@@ -78,7 +81,7 @@ PSD is calculated using Welch's method." />
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -102,10 +105,13 @@ PSD is calculated using Welch's method." />
       <a href="../articles/epoch-handling.html">Event and epoch handling</a>
     </li>
     <li>
+      <a href="../articles/linear_modelling/linear_modelling.html">Linear Modelling</a>
+    </li>
+    <li>
       <a href="../articles/time-frequency-analysis.html">Frequency analysis</a>
     </li>
     <li>
-      <a href="../articles/topoplot.html">Building a topographical plot</a>
+      <a href="../articles/topoplot/topoplot.html">Building a topographical plot</a>
     </li>
   </ul>
 </li>
@@ -115,8 +121,8 @@ PSD is calculated using Welch's method." />
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/craddm/eegUtils">
-    <span class="fab fa fab fa-github fa-lg"></span>
+  <a href="https://github.com/craddm/eegUtils/">
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -143,26 +149,52 @@ PSD is calculated using Welch's method." />
 PSD is calculated using Welch's method.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>plot_psd</span>(<span class='no'>data</span>, <span class='kw'>freq_range</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)
+    <pre class="usage"><span class='fu'>plot_psd</span><span class='op'>(</span><span class='va'>data</span>, freq_range <span class='op'>=</span> <span class='cn'>NULL</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S3 method for eeg_epochs</span>
-<span class='fu'>plot_psd</span>(<span class='no'>data</span>, <span class='kw'>freq_range</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>n_fft</span> <span class='kw'>=</span> <span class='fl'>256</span>,
-  <span class='kw'>seg_length</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>noverlap</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)
+<span class='fu'>plot_psd</span><span class='op'>(</span>
+  <span class='va'>data</span>,
+  freq_range <span class='op'>=</span> <span class='cn'>NULL</span>,
+  n_fft <span class='op'>=</span> <span class='fl'>256</span>,
+  seg_length <span class='op'>=</span> <span class='cn'>NULL</span>,
+  noverlap <span class='op'>=</span> <span class='cn'>NULL</span>,
+  demean <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  <span class='va'>...</span>
+<span class='op'>)</span>
 
 <span class='co'># S3 method for eeg_data</span>
-<span class='fu'>plot_psd</span>(<span class='no'>data</span>, <span class='kw'>freq_range</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>n_fft</span> <span class='kw'>=</span> <span class='fl'>2048</span>,
-  <span class='kw'>noverlap</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>seg_length</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)
+<span class='fu'>plot_psd</span><span class='op'>(</span>
+  <span class='va'>data</span>,
+  freq_range <span class='op'>=</span> <span class='cn'>NULL</span>,
+  n_fft <span class='op'>=</span> <span class='fl'>2048</span>,
+  noverlap <span class='op'>=</span> <span class='cn'>NULL</span>,
+  seg_length <span class='op'>=</span> <span class='cn'>NULL</span>,
+  <span class='va'>...</span>
+<span class='op'>)</span>
 
 <span class='co'># S3 method for eeg_ICA</span>
-<span class='fu'>plot_psd</span>(<span class='no'>data</span>, <span class='kw'>freq_range</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>components</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>seg_length</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>noverlap</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>n_fft</span> <span class='kw'>=</span> <span class='fl'>256</span>, <span class='no'>...</span>)
+<span class='fu'>plot_psd</span><span class='op'>(</span>
+  <span class='va'>data</span>,
+  freq_range <span class='op'>=</span> <span class='cn'>NULL</span>,
+  components <span class='op'>=</span> <span class='cn'>NULL</span>,
+  seg_length <span class='op'>=</span> <span class='cn'>NULL</span>,
+  noverlap <span class='op'>=</span> <span class='cn'>NULL</span>,
+  n_fft <span class='op'>=</span> <span class='fl'>256</span>,
+  <span class='va'>...</span>
+<span class='op'>)</span>
 
 <span class='co'># S3 method for data.frame</span>
-<span class='fu'>plot_psd</span>(<span class='no'>data</span>, <span class='kw'>freq_range</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)
+<span class='fu'>plot_psd</span><span class='op'>(</span><span class='va'>data</span>, freq_range <span class='op'>=</span> <span class='cn'>NULL</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S3 method for eeg_evoked</span>
-<span class='fu'>plot_psd</span>(<span class='no'>data</span>, <span class='kw'>freq_range</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>n_fft</span> <span class='kw'>=</span> <span class='fl'>256</span>,
-  <span class='kw'>seg_length</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>noverlap</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
+<span class='fu'>plot_psd</span><span class='op'>(</span>
+  <span class='va'>data</span>,
+  freq_range <span class='op'>=</span> <span class='cn'>NULL</span>,
+  n_fft <span class='op'>=</span> <span class='fl'>256</span>,
+  seg_length <span class='op'>=</span> <span class='cn'>NULL</span>,
+  noverlap <span class='op'>=</span> <span class='cn'>NULL</span>,
+  <span class='va'>...</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -196,18 +228,25 @@ for <code>eeg_epochs</code> or minimum of 2048 or the signal length for
 Defaults to 50%.</p></td>
     </tr>
     <tr>
+      <th>demean</th>
+      <td><p>Remove epoch means before FFT.</p></td>
+    </tr>
+    <tr>
       <th>components</th>
       <td><p>Which components to compute the PSD for. Defaults to all.</p></td>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>A ggplot object.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>Welch's method splits the data into multiple segments and then averages over
 those segments. For epoched data, Welch's FFT is calculated separately for
 each trial.</p>
 <p>Specific parameters such as the number of FFT points and the amount of
-overlap between segments can be passed to Welch's FFT</p>
+overlap between segments can be passed to Welch's FFT.</p>
     <h2 class="hasAnchor" id="methods-by-class-"><a class="anchor" href="#methods-by-class-"></a>Methods (by class)</h2>
 
     
@@ -218,21 +257,19 @@ overlap between segments can be passed to Welch's FFT</p>
 <li><p><code>data.frame</code>: Plot PSD for <code>data.frame</code>s.</p></li>
 <li><p><code>eeg_evoked</code>: Plot PSD for <code>eeg_evoked</code> objects</p></li>
 </ul>
+    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
+
+    <p>Matt Craddock, <a href='mailto:matt@mattcraddock.com'>matt@mattcraddock.com</a></p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'> <span class='fu'>plot_psd</span>(<span class='no'>demo_epochs</span>)</div><div class='output co'>#&gt; <span class='message'>Removing channel means per epoch...</span></div><div class='img'><img src='plot_psd-1.png' alt='' width='700' height='433' /></div><div class='input'> <span class='fu'>plot_psd</span>(<span class='no'>demo_epochs</span>, <span class='kw'>seg_length</span> <span class='kw'>=</span> <span class='fl'>256</span>)</div><div class='output co'>#&gt; <span class='message'>Removing channel means per epoch...</span></div><div class='img'><img src='plot_psd-2.png' alt='' width='700' height='433' /></div></pre>
+    <pre class="examples"><div class='input'> <span class='fu'>plot_psd</span><span class='op'>(</span><span class='va'>demo_epochs</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>Removing channel means per epoch...</span></div><div class='img'><img src='plot_psd-1.png' alt='' width='700' height='433' /></div><div class='input'> <span class='fu'>plot_psd</span><span class='op'>(</span><span class='va'>demo_epochs</span>, seg_length <span class='op'>=</span> <span class='fl'>256</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>Removing channel means per epoch...</span></div><div class='img'><img src='plot_psd-2.png' alt='' width='700' height='433' /></div></pre>
   </div>
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-    <h2>Contents</h2>
-    <ul class="nav nav-pills nav-stacked">
-      <li><a href="#arguments">Arguments</a></li>
-      <li><a href="#details">Details</a></li>
-      <li><a href="#methods-by-class-">Methods (by class)</a></li>
-      <li><a href="#examples">Examples</a></li>
-    </ul>
-
-    <h2>Author</h2>
-    <p>Matt Craddock, <a href='mailto:matt@mattcraddock.com'>matt@mattcraddock.com</a></p>
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+    <nav id="toc" data-toggle="toc" class="sticky-top">
+      <h2 data-toc-skip>Contents</h2>
+    </nav>
   </div>
 </div>
 
@@ -243,7 +280,7 @@ overlap between segments can be passed to Welch's FFT</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

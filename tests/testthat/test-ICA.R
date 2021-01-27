@@ -14,13 +14,16 @@ test_that("topoplots for ICA work", {
   skip_on_travis()
   vdiffr::expect_doppelganger("topographical plot for SOBI",
                               topoplot(demo_SOBI,
-                                       component = "Comp001"))
+                                       component = "Comp001",
+                                       limits = c(-4, 5)))
   vdiffr::expect_doppelganger("topographical plot for fastica",
                               topoplot(demo_fastic,
-                                       component = "Comp001"))
+                                       component = "Comp001",
+                                       limits = c(-5, 5)))
   vdiffr::expect_doppelganger("topographical plot for fica",
                               topoplot(demo_fica,
-                                       component = "Comp001"))
+                                       component = "Comp001",
+                                       limits = c(-4, 3.5)))
 })
 
 test_that("ICA timecourses work", {
@@ -52,6 +55,6 @@ test_that("artefact detect works", {
   skip_on_travis()
   expect_equal(ar_acf(demo_SOBI, plot = FALSE), character(0))
   expect_equal(ar_chanfoc(demo_fastic, plot = FALSE), "Comp006")
-  expect_equal(ar_trialfoc(demo_fica, plot = FALSE), "Comp004")
+  expect_equal(ar_trialfoc(demo_fica, plot = FALSE), "Comp006")
 
 })

@@ -65,7 +65,7 @@ short_epochs
 
 }
 \seealso{
-\code{\link{select_elecs}} and \code{\link{select_epochs}}
+\code{\link[=select_elecs]{select_elecs()}} and \code{\link[=select_epochs]{select_epochs()}}
 
 Other Data selection functions: 
 \code{\link{select_elecs}()}

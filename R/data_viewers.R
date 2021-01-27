@@ -10,7 +10,7 @@
 #'@import ggplot2
 #'@import shiny
 #'@import miniUI
-#'@param data \code{eeg_data}, \code{eeg_epochs}, or \code{eeg_ICA} object to be
+#'@param data `eeg_data`, `eeg_epochs`, or `eeg_ICA` object to be
 #'  plotted.
 #'@param ... Other parameters passed to browsing functions.
 #'@export
@@ -20,7 +20,7 @@ browse_data <- function(data, ...) {
 }
 
 #' @export
-#' @describeIn browse_data View \code{eeg_ICA} component properties
+#' @describeIn browse_data View `eeg_ICA` component properties
 browse_data.eeg_ICA <- function(data,
                                 ...) {
 
@@ -52,7 +52,8 @@ browse_data.eeg_ICA <- function(data,
       comp_no <- which(names(data$signals) == input$icomp)
       topoplot(data,
                component = comp_no,
-               verbose = FALSE)
+               verbose = FALSE,
+               grid_res = 67)
       },
       cacheKeyExpr = {input$icomp})
 
@@ -76,6 +77,9 @@ browse_data.eeg_ICA <- function(data,
 
       tmp_psd <- dplyr::rename(tmp_psd,
                                power = 2)
+      tmp_psd <- dplyr::filter(tmp_psd,
+                               frequency >= 3,
+                               frequency <= 50)
       ggplot(tmp_psd,
              aes(x = frequency,
                  y = 10 * log10((power)))) +
@@ -83,8 +87,7 @@ browse_data.eeg_ICA <- function(data,
                      fun.data = mean_cl_normal,
                      alpha = 0.5) +
         stat_summary(geom = "line",
-                     fun.y = mean) +
-        coord_cartesian(xlim = c(2, 50)) +
+                     fun = mean) +
         theme_classic() +
         labs(x = "Frequency (Hz)", y = "Power (dB)")
         },
@@ -110,7 +113,7 @@ browse_data.eeg_stats <- function(data, ...) {
 #'  continuous, epochs if epoched).
 #'@param n_elecs Number of electrodes to be plotted on a single screen. (not yet
 #'  implemented)
-#'@param downsample Only works on \code{eeg_data} or \code{eeg_epochs} objects.
+#'@param downsample Only works on `eeg_data` or `eeg_epochs` objects.
 #'  Reduces size of data by only plotting every 4th point, speeding up plotting
 #'  considerably. Defaults to TRUE for eeg_data, FALSE for eeg_epochs
 #'
@@ -228,7 +231,8 @@ browse_data.eeg_data <- function(data,
         }
 
         tmp_data <- as.data.frame(tmp_data,
-                                  long = TRUE)
+                                  long = TRUE,
+                                  coords = FALSE)
 
         init_plot <- ggplot2::ggplot(tmp_data,
                                      aes(x = time,
@@ -351,7 +355,7 @@ browse_data.eeg_epochs <- function(data,
       })
 
       tmp_data <- debounce(tmp_dat,
-                           1000)
+                           800)
 
       output$butterfly <- renderPlot({
 
@@ -362,11 +366,13 @@ browse_data.eeg_epochs <- function(data,
         }
 
         tmp_data <- as.data.frame(tmp_data,
-                                  long = TRUE)
+                                  long = TRUE,
+                                  coords = FALSE)
 
         butter_out <- plot_butterfly(tmp_data,
                                      legend = FALSE,
-                                     browse_mode = TRUE) +
+                                     browse_mode = TRUE,
+                                     allow_facets = TRUE) +
           facet_wrap("epoch",
                      nrow = 1) +
           theme(
@@ -384,7 +390,7 @@ browse_data.eeg_epochs <- function(data,
                                      input$time_range_ind + input$sig_time_ind - 1))
       })
 
-      tmp_data_ind <- debounce(tmp_dat_ind, 1000)
+      tmp_data_ind <- debounce(tmp_dat_ind, 800)
 
       output$time_plot <- renderPlot({
 
@@ -396,7 +402,8 @@ browse_data.eeg_epochs <- function(data,
         }
 
         tmp_data_ind <- as.data.frame(tmp_data_ind,
-                                      long = TRUE)
+                                      long = TRUE,
+                                      coords = FALSE)
 
         init_plot <- ggplot2::ggplot(tmp_data_ind,
                                      aes(x = time,

@@ -33,6 +33,7 @@ topoplot(data, ...)
   scaling = 1,
   groups = NULL,
   verbose = TRUE,
+  scale_fac = 1.02,
   ...
 )
 
@@ -53,6 +54,7 @@ topoplot(data, ...)
   highlights = NULL,
   scaling = 1,
   verbose = TRUE,
+  scale_fac = 1.02,
   ...
 )
 
@@ -74,6 +76,7 @@ topoplot(data, ...)
   scaling = 1,
   groups = NULL,
   verbose = TRUE,
+  scale_fac = 1.02,
   ...
 )
 
@@ -96,6 +99,7 @@ topoplot(data, ...)
   highlights = NULL,
   scaling = 1,
   verbose = TRUE,
+  scale_fac = 1.02,
   ...
 )
 
@@ -181,6 +185,8 @@ Defaults to 1.}
 \item{verbose}{Warning messages when electrodes do not have locations.
 Defaults to TRUE.}
 
+\item{scale_fac}{Scaling factor for masking ring}
+
 \item{component}{Component to plot (numeric)}
 
 \item{freq_range}{Range of frequencies to average over.}
@@ -206,13 +212,13 @@ eeg_data objects.
 
 \section{Notes on usage of Generalized Additive Models for interpolation}{
  The
-  function fits a GAM using the gam function from mgcv. Specifically, it fits
-  a spline using the model function gam(z ~ s(x, y, bs = "ts", k = 40). Using
-  GAMs for smooths is very much experimental. The surface is produced from
-  the predictions of the GAM model fitted to the supplied data. Values at
-  each electrode do not necessarily match actual values in the data:
-  high-frequency variation will tend to be smoothed out. Thus, the method
-  should be used with caution.
+function fits a GAM using the \code{gam} function from \code{mgcv}. Specifically, it fits
+a spline using the model function gam(z ~ s(x, y, bs = "ts", k = 40). Using
+GAMs for smooths is very much experimental. The surface is produced from
+the predictions of the GAM model fitted to the supplied data. Values at
+each electrode do not necessarily match actual values in the data:
+high-frequency variation will tend to be smoothed out. Thus, the method
+should be used with caution.
 }
 
 \examples{

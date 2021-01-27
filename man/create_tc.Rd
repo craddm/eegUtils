@@ -4,7 +4,7 @@
 \alias{create_tc}
 \title{Internal function for creation of timecourse plots}
 \usage{
-create_tc(data, add_CI, colour, quantity = amplitude)
+create_tc(data, add_CI, colour, quantity = amplitude, mapping = NULL)
 }
 \arguments{
 \item{data}{A data frame to be plotted}
@@ -12,6 +12,10 @@ create_tc(data, add_CI, colour, quantity = amplitude)
 \item{add_CI}{whether to add confidence intervals}
 
 \item{colour}{whether to use colour}
+
+\item{quantity}{The name of the column/quantity to plot}
+
+\item{mapping}{A ggplot2 \code{aes()} mapping.}
 }
 \description{
 Internal function for creation of timecourse plots

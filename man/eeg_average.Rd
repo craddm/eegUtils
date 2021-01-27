@@ -37,9 +37,9 @@ This function is used to create an \code{eeg_evoked} object from
 
 \item \code{eeg_epochs}: Create evoked data from \code{eeg_epochs}
 
-\item \code{eeg_evoked}: average an eeg_tfr objects over epochs.
+\item \code{eeg_evoked}: average an eeg_epochs object over epochs.
 
-\item \code{eeg_tfr}: average an eeg_tfr objects over epochs.
+\item \code{eeg_tfr}: average an \code{eeg_tfr} object over epochs.
 }}
 
 \author{

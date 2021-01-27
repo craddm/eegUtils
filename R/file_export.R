@@ -1,20 +1,46 @@
-# Export continuous data in Brain Vision Analyzer format
-#' @noRd
+#' Export continuous data in Brain Vision Analyzer format
+#'
+#' Export continuous EEG data in Brain Vision Analyzer format. This is one of
+#' the recommended formats for BIDS
+#' <https://bids-specification.readthedocs.io/en/stable/04-modality-specific-files/03-electroencephalography.html>
+#'
+#'
+#' @param .data `eeg_data` object to be exported.
+#' @param filename String giving filename to export to. File extensions will be removed when supplied.
+#' @param orientation VECTORIZED or MULTIPLEXED. This relates to the way the
+#'   data is stored in the binary file. VECTORIZED is the default and
+#'   recommended.
+#' @param verbose print informative messages to console
+#' @export
 export_bva <- function(.data,
                        filename,
-                       orientation) {
+                       orientation,
+                       verbose = TRUE) {
   UseMethod("export_bva", .data)
 }
 
+#' @export
 export_bva.default <- function(.data,
                                filename,
-                               orientation) {
+                               orientation,
+                               verbose = TRUE) {
   stop("export_bva() can currently only export continuous eeg_data objects.")
 }
 
+#' @export
 export_bva.eeg_epochs <- function(.data,
                                   filename,
-                                  orientation = "VECTORIZED") {
+                                  orientation = "VECTORIZED",
+                                  verbose = TRUE) {
+  stop("export_bva() can currently only export continuous eeg_data objects.")
+}
+
+#' @describeIn export_bva Method for `eeg_data`
+#' @export
+export_bva.eeg_data <- function(.data,
+                                filename,
+                                orientation = "VECTORIZED",
+                                verbose = TRUE) {
 
   if (!(orientation %in% c("VECTORIZED", "MULTIPLEXED"))) {
     stop("Orientation must be VECTORIZED or MULTIPLEXED.")
@@ -22,19 +48,30 @@ export_bva.eeg_epochs <- function(.data,
 
   filename <- tools::file_path_sans_ext(filename)
 
-  write_vhdr(.data, filename, orientation)
-  write_dat(.data, filename, orientation)
-  write_vmrk(.data, filename)
+  write_vhdr(.data,
+             filename,
+             orientation,
+             verbose = verbose)
+  write_dat(.data,
+            filename,
+            orientation,
+            verbose = verbose)
+  write_vmrk(.data,
+             filename,
+             verbose = verbose)
 }
 
 
 write_vhdr <- function(.data,
                        filename,
-                       orientation) {
+                       orientation,
+                       verbose) {
   vhdr_file <- paste0(filename, ".vhdr")
   con <- file(vhdr_file, open = "w", encoding = "UTF-8")
 
   on.exit(close(con))
+
+  n_chans <- ncol(.data$signals)
   new_header <- list()
   new_header[["Common Infos"]] <-
     list(Codepage = "UTF-8",
@@ -43,8 +80,8 @@ write_vhdr <- function(.data,
          DataFormat = "BINARY",
          DataOrientation=orientation,
          DataType = "TIMEDOMAIN",
-         NumberOfChannels = ncol(.data$signals),
-         DataPoints = nrow(.data$signals) * ncol(.data$signals),
+         NumberOfChannels = n_chans,
+         DataPoints = nrow(.data$signals),
          SamplingInterval = 1e6 / .data$srate)
   #new_header[["User Infos"]] <- ""
   new_header[["Binary Infos"]] <- list(BinaryFormat = "IEEE_FLOAT_32")
@@ -53,12 +90,25 @@ write_vhdr <- function(.data,
                                                  "",
                                                  paste0(intToUtf8(0x03BC), "V"),
                                                  sep = ","))
-  names(new_header[["Channel Infos"]]) <- paste0("Ch", 1:ncol(.data$signals))
-  new_header[["Coordinates"]] <- as.list(paste(.data$chan_info$sph_radius,
-                                               .data$chan_info$sph_theta,
-                                               .data$chan_info$sph_phi,
-                                               sep = ","))
-  names(new_header[["Coordinates"]]) <- paste0("Ch", 1:ncol(.data$signals))
+  names(new_header[["Channel Infos"]]) <- paste0("Ch",
+                                                 seq(1, n_chans))
+  if (is.null(channels(.data))) {
+    if (verbose) {
+      message("No channel locations found, exporting without channel info.")
+    }
+  } else {
+    channels(.data) <- validate_channels(channels(.data),
+                                         channel_names(.data))
+
+    channels(.data)[is.na(channels(.data))] <- NaN
+    new_header[["Coordinates"]] <- as.list(paste(.data$chan_info$radius,
+                                                 .data$chan_info$theta,
+                                                 .data$chan_info$phi,
+                                                 sep = ","))
+    names(new_header[["Coordinates"]]) <- paste0("Ch",
+                                                 seq(1, n_chans))
+  }
+
   writeLines("Brain Vision Data Exchange Header File Version 2.0", con)
   writeLines(paste0("; Created using eegUtils http://craddm.github.io/eegUtils/"),
              con)
@@ -77,25 +127,44 @@ write_vhdr <- function(.data,
     writeLines("", con)
   }
   writeLines("", con)
+  if (verbose) {
+    message(paste0(filename, ".vhdr exported."))
+  }
 }
 
 write_dat <- function(.data,
                       filename,
-                      orientation) {
-  vdat_file <- paste0(filename, ".dat")
-  con <- file(vdat_file, open = "wb")
+                      orientation,
+                      verbose) {
+
+  vdat_file <- paste0(filename,
+                      ".dat")
+  con <- file(vdat_file,
+              open = "wb")
   on.exit(close(con))
-  if (identical(orientation, "VECTORIZED")) {
+
+  if (identical(orientation,
+                "VECTORIZED")) {
     # convert to matrix and vector before writiing
-    writeBin(as.vector(as.matrix(.data$signals)), con, size = 4)
-  } else if (identical(orientation, "MULTIPLEXED")) {
+    writeBin(as.vector(as.matrix(.data$signals)),
+             con,
+             size = 4)
+  } else if (identical(orientation,
+                       "MULTIPLEXED")) {
     # transpose matrix before vectorizing
-    writeBin(as.vector(t(as.matrix(.data$signals))), con, size = 4)
+    writeBin(as.vector(t(as.matrix(.data$signals))),
+             con,
+             size = 4)
+  }
+  if (verbose) {
+    message(paste0(filename,
+                   ".dat exported."))
   }
 }
 
 write_vmrk <- function(.data,
-                       filename) {
+                       filename,
+                       verbose) {
   vmrk_file <- paste0(filename,
                       ".vmrk")
   con <- file(vmrk_file,
@@ -129,5 +198,8 @@ write_vmrk <- function(.data,
            con)
 
     writeLines("", con)
+  }
+  if (verbose) {
+    message(paste0(filename, ".vmrk exported."))
   }
 }

@@ -38,7 +38,7 @@ Numeric,  >1 and < number of channels}
 \item{centre}{Defaults to TRUE. Centre the data on zero by subtracting the
 column mean. See notes on usage.}
 
-\item{alg}{Use "gradient" descent or "newton" algorithm for extended infomax.
+\item{alg}{Use "gradient descent" or "newton" algorithm for extended infomax.
 Defaults to "gradient". Ignored if method != "infomax".}
 
 \item{rateanneal}{Annealing rate for extended infomax. Ignored if method !=
@@ -63,19 +63,22 @@ fastica, extended Infomax, and Second-Order Blind Identification (SOBI).
 \section{Notes on ICA usage}{
 
 
-  It is recommended to mean-centre your data appropriately before running
-  ICA. The implementations of FASTICA and extended-Infomax from the `ica`
-  package, and of SOBI ICA have this as an option which is enabled by
-  default, while the implementation of FASTICA in the fICA package enforces
-  mean-centring of the columns of the data. With epoched data, it is
-  recommended to centre each epoch on zero, rather than centre on the overall
-  channel mean. This can be achieved with the `rm_baseline()` function. SOBI
-  ICA will do this automatically, whereas the other ICA implementations will
-  centre on the channel means, not the epoch means.
+It is recommended to mean-centre your data appropriately before running
+ICA. The implementations of FASTICA and extended-Infomax from the \code{ica}
+package, and of SOBI ICA have this as an option which is enabled by
+default, while the implementation of FASTICA in the fICA package enforces
+mean-centring of the columns of the data. With epoched data, it is
+recommended to centre each epoch on zero, rather than centre on the overall
+channel mean. This can be achieved with the \code{rm_baseline()} function. SOBI
+ICA will do this automatically, whereas the other ICA implementations will
+centre on the channel means, not the epoch means.
+
+In addition, PCA will be required if the data is not full rank. This is
+typical when using average reference, when the data rank will be
+n_electrodes - 1.
 }
 
 \examples{
-run_ICA(demo_epochs)
 run_ICA(demo_epochs, pca = 10)
 }
 \author{

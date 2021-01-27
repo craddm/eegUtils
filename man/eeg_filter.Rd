@@ -4,6 +4,7 @@
 \alias{eeg_filter}
 \alias{eeg_filter.eeg_data}
 \alias{eeg_filter.eeg_epochs}
+\alias{eeg_filter.eeg_group}
 \title{Filter EEG data}
 \usage{
 eeg_filter(.data, ...)
@@ -31,9 +32,21 @@ eeg_filter(.data, ...)
   demean = TRUE,
   ...
 )
+
+\method{eeg_filter}{eeg_group}(
+  .data,
+  low_freq = NULL,
+  high_freq = NULL,
+  filter_order = "auto",
+  trans_bw = "auto",
+  method = "fir",
+  window = "hamming",
+  demean = TRUE,
+  ...
+)
 }
 \arguments{
-\item{.data}{An \code{eeg_data} or \code{eeg_epochs} object to be filtered}
+\item{.data}{An \code{eeg_data} or \code{eeg_epochs} object to be filtered.}
 
 \item{...}{Additional parameters.}
 
@@ -55,6 +68,10 @@ Response). Defaults to "fir".}
 
 \item{demean}{Remove DC component (i.e. channel/epoch mean) before filtering. Defaults to TRUE.}
 }
+\value{
+An object of the original class with signals filtered according to
+the user's specifications
+}
 \description{
 Perform IIR or FIR filtering on input EEG data of class \code{eeg_data} or
 \code{eeg_epochs}. WARNING: with epoched data, epoch boundaries are currently
@@ -72,17 +89,17 @@ If low_freq > high_freq, bandstop filtering is performed.
 Note that it is recommended to first zero-mean the signal using either
 channel means or by-channel epoch means.
 
-The function allows parallelization using the `future` package, e.g. using
-`plan(multiprocess)`
+The function allows parallelization using the \code{future} package, e.g. using
+\code{plan(multiprocess)}
 }
 \section{FIR versus IIR filtering}{
  Finite Impulse Response (FIR) filtering is
-  performed using an overlap-add FFT method. Note that this only performs a
-  single-pass; the data is shifted back in time by the group delay of the
-  filter to compensate for the phase delay imposed by the linear filtering
-  process. Infinite Impulse Response (IIR) filtering is performed using a
-  two-pass (once forwards, once reversed) method to correct for phase
-  alignment.
+performed using an overlap-add FFT method. Note that this only performs a
+single-pass; the data is shifted back in time by the group delay of the
+filter to compensate for the phase delay imposed by the linear filtering
+process. Infinite Impulse Response (IIR) filtering is performed using a
+two-pass (once forwards, once reversed) method to correct for phase
+alignment.
 }
 
 \examples{

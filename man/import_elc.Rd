@@ -2,7 +2,7 @@
 % Please edit documentation in R/channel_management.R
 \name{import_elc}
 \alias{import_elc}
-\title{Import ASA .elc electrode location files}
+\title{Import ASA '.elc' electrode location files}
 \usage{
 import_elc(file_name)
 }

@@ -1,6 +1,6 @@
 #' Compute power spectral density
 #'
-#' \code{compute_psd} returns the PSD calculated using Welch's method for every
+#' `compute_psd` returns the PSD calculated using Welch's method for every
 #' channel in the data. The output is in  microvolts ^2 / Hz. If the object has
 #' multiple epochs, it will perform Welch's FFT separately for each epoch and
 #' then average them afterwards.
@@ -11,20 +11,22 @@
 #' Welch's FFT is calculated separately for each trial.
 #'
 #' The number of sampling points used for the FFT can be specified using n_fft.
-#' n_fft defaults to 256 sampling points for \code{eeg_epochs} data, or the
-#' minimum of 2048 or the length of the signal for continuous \code{eeg_data}.
+#' n_fft defaults to 256 sampling points for `eeg_epochs` data, or the
+#' minimum of 2048 or the length of the signal for continuous `eeg_data`.
 #'
-#' \code{seg_length} defaults to be \code{n_fft}, and must be less than or equal
+#' `seg_length` defaults to be `n_fft`, and must be less than or equal
 #' to it.
 #'
-#' \code{noverlap} specifies the amount of overlap between windows in sampling
-#' points. If not specified, it defaults to 50\% overlap between segments.
+#' `noverlap` specifies the amount of overlap between windows in sampling
+#' points. If NULL, it defaults to 50\% overlap between segments.
 #'
 #' @examples
-#' compute_psd(demo_epochs)
-#' compute_psd(demo_epochs, n_fft = 256, seg_length = 128)
+#' out <- compute_psd(demo_epochs)
+#'
+#' out <- compute_psd(demo_epochs, n_fft = 256, seg_length = 128)
+#'
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
-#' @param data Data to be plotted. Accepts objects of class \code{eeg_data}
+#' @param data Data to be plotted. Accepts objects of class `eeg_data`
 #' @param ... any further parameters passed to specific methods
 #' @return Currently, a data frame with the PSD for each channel separately.
 #' @export
@@ -34,14 +36,14 @@ compute_psd <- function(data, ...) {
 }
 
 #' @param n_fft Length of FFT to be calculated in sampling points. See details.
-#' @param seg_length Length of rolling data segments. Defaults to \code{n_fft}.
-#'   Must be <= \code{n_fft}.
+#' @param seg_length Length of rolling data segments. Defaults to `n_fft`.
+#'   Must be <= `n_fft`.
 #' @param noverlap Number of (sampling) points of overlap between segments. Must
-#'   be <= \code{seg_length}.
+#'   be <= `seg_length`.
 #' @param method Defaults to "Welch". No other method currently implemented.
 #' @param demean Remove channel/epoch means. TRUE by default.
 #' @param verbose Print informative messages. TRUE by default.
-#' @describeIn compute_psd Compute PSD for an \code{eeg_data} object
+#' @describeIn compute_psd Compute PSD for an `eeg_data` object
 #' @export
 
 compute_psd.eeg_data <- function(data,
@@ -93,7 +95,7 @@ compute_psd.eeg_data <- function(data,
 }
 
 #' @param keep_trials Include FFT for every trial in output, or average over them if FALSE.
-#' @describeIn compute_psd Compute PSD for an \code{eeg_epochs} object
+#' @describeIn compute_psd Compute PSD for an `eeg_epochs` object
 #' @export
 
 compute_psd.eeg_epochs <- function(data,
@@ -147,15 +149,17 @@ compute_psd.eeg_epochs <- function(data,
     final_output$epoch <- as.numeric(final_output$epoch)
     if (!is.null(epochs(data))) {
       final_output <- dplyr::left_join(final_output,
-                                       epochs(data))
+                                       epochs(data),
+                                       by = "epoch")
     }
   } else {
-    final_output <- Reduce("+", final_output) / length(final_output)
+    final_output <- Reduce("+",
+                           final_output) / length(final_output)
   }
   final_output
 }
 
-#' @describeIn compute_psd Compute PSD for an \code{eeg_evoked} object
+#' @describeIn compute_psd Compute PSD for an `eeg_evoked` object
 #' @export
 
 compute_psd.eeg_evoked <- function(data,
@@ -225,6 +229,12 @@ welch_fft <- function(data,
                       n_sig,
                       srate) {
 
+  # Hamming window.
+  win <- .54 - (1 - .54) * cos(2 * pi * seq(0, 1, by = 1 / (seg_length - 1)))
+
+  # Normalise the window
+  U <- c(t(win) %*% win)
+
   # split data into segments
   if (seg_length < n_sig) {
     data_segs <- lapply(data,
@@ -232,34 +242,41 @@ welch_fft <- function(data,
                         seg_length,
                         noverlap)
     n_segs <- length(data_segs[[1]])
-    #n_segs <- length(data_segs)
     # this splits the data into a list of ncol elements; each list element is
     # also a list containing n_segs elements - consider recoding this to combine
     # segments into
+
+    data_segs <- lapply(data_segs,
+                        function(x) lapply(x,
+                                           function(y) y * win))
+
+    data_fft <- lapply(data_segs,
+                       function(x) lapply(x,
+                                          fft_n, n = n_fft))
+    final_out <- lapply(data_fft,
+                        function(x) sapply(x,
+                                           function(y) abs(y * Conj(y)) / U))
+    # Normalize by sampling rate or by signal length if no sampling rate
+    if (is.null(srate)) {
+      final_out <- rowMeans(as.data.frame(final_out)) / (2 * pi)
+      freqs <- seq(0, seg_length / 2) / (seg_length)
+    } else {
+      final_out <- as.data.frame(lapply(final_out,
+                                        rowMeans)) / srate
+      freqs <- seq(0, n_fft / 2) / (n_fft) * srate
+    }
+
   } else {
     data_segs <- as.matrix(data)
     n_segs <- 1
-  }
 
-  # Hamming window.
-  win <- .54 - (1 - .54) * cos(2 * pi * seq(0, 1, by = 1 / (seg_length - 1)))
-
-  # Normalise the window
-  U <- c(t(win) %*% win)
-
-  #do windowing and zero padding if necessary, then FFT
-  if (n_segs == 1) {
     data_segs <- sweep(data_segs,
                        1,
                        win, "*")
 
-    if (n_fft > seg_length) {
-       data_segs <- apply(data_segs, 2,
-                          function(x) c(x,
-                                        numeric(n_fft - seg_length)))
-    }
-
-    data_fft <- mvfft(data_segs)
+    data_fft <- fft_n(data_segs,
+                      n_fft)
+    colnames(data_fft) <- colnames(data_segs)
     final_out <- apply(data_fft,
                        2,
                        function(x) abs(x * Conj(x)) / U)
@@ -272,36 +289,10 @@ welch_fft <- function(data,
       final_out <- final_out / srate
       freqs <- seq(0, n_fft / 2) / (n_fft) * srate
     }
-  } else {
-    data_segs <- lapply(data_segs,
-                        function(x) lapply(x,
-                                           function(y) y * win))
-    if (n_fft > seg_length) {
-      data_segs <- lapply(data_segs,
-                          function(x) apply(data_segs,
-                                            2,
-                                            function(x) c(x,
-                                                          numeric(n_fft - seg_length))))
-    }
-    data_fft <- lapply(data_segs,
-                       function(x) lapply(x,
-                                          fft))
-    final_out <- lapply(data_fft,
-                        function(x) sapply(x,
-                                           function(y) abs(y * Conj(y)) / U))
-    # Normalize by sampling rate or by signal length if no sampling rate
-    if (is.null(srate)) {
-      final_out <- rowMeans(as.data.frame(final_out)) / (2 * pi)
-      freqs <- seq(0, seg_length / 2) / (seg_length)
-    } else {
-      final_out <- as.data.frame(lapply(final_out, rowMeans)) / srate
-      freqs <- seq(0, n_fft / 2) / (n_fft) * srate
-    }
   }
 
   #select first half of spectrum and double amps, output is power - uV^2 / Hz
   final_out <- final_out[1:(n_fft / 2 + 1), , drop = FALSE]
-  #final_out[2:(n_fft / 2 + 1), ] <- (final_out[2:(n_fft / 2 + 1), ] * 2) ^ 2
   final_out <- data.frame(final_out,
                           frequency = freqs)
   final_out <- final_out[final_out$frequency > 0, ]
@@ -310,15 +301,21 @@ welch_fft <- function(data,
 
 #' Segment data
 #'
-#' Split data into segments for Welch PSD.
+#' Split data into segments for Welch PSD. Any leftover data is discared (i.e.
+#' if seg_length is 256 and signal length is 400, only 1 segment is returned)
 #'
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #' @param vec Data vector to be split up into segments.
 #' @param seg_length Length of segments to be FFT'd (in samples).
 #' @param overlap Overlap between segments (in samples).
+#' @param detrend Detrend segments. Defaults to "mean" - removes mean from each
+#'   segment. Anything else turns off detrending.
 #' @keywords internal
 
-split_vec <- function(vec, seg_length, overlap) {
+split_vec <- function(vec,
+                      seg_length,
+                      overlap,
+                      detrend = "mean") {
 
   if (is.data.frame(vec)) {
     k <- floor((nrow(vec) - overlap) / (seg_length - overlap))
@@ -330,8 +327,13 @@ split_vec <- function(vec, seg_length, overlap) {
                 k * (seg_length - overlap),
                 by = seg_length - overlap)
   ends <- starts + seg_length - 1
-  lapply(seq_along(starts),
-         function(i) vec[starts[i]:ends[i]])
+  segs <- lapply(seq_along(starts),
+                 function(i) vec[starts[i]:ends[i]])
+  if (identical(detrend, "mean")) {
+    segs <- lapply(segs, function(x) x - mean(x))
+  }
+  segs
+
 }
 
 

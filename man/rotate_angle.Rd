@@ -11,7 +11,17 @@ rotate_angle(chan_info, degrees)
 
 \item{degrees}{degrees by which to rotate}
 }
-\description{
-Rotate channel locations
+\value{
+A \code{tibble()}
 }
-\keyword{internal}
+\description{
+On import, channel locations may be rotated (e.g. Fpz pointing towards ears.)
+}
+\examples{
+
+plot_electrodes(demo_epochs)
+channels(demo_epochs) <- rotate_angle(channels(demo_epochs), 90)
+plot_electrodes(demo_epochs)
+
+rotate_angle(channels(demo_epochs), 90)
+}

@@ -1,9 +1,3 @@
-.onAttach <- function(...) {
-
-  packageStartupMessage(paste("Make sure to check for the latest development version at https://github.com/craddm/eegUtils!"))
-
-}
-
 utils::globalVariables(c("time",
                          "amplitude",
                          "electrode",
@@ -42,7 +36,11 @@ utils::globalVariables(c("time",
                          "..orig_cols",
                          "statistic",
                          "level",
-                         "electrodefacet"))
+                         "electrodefacet",
+                         "coef",
+                         "model.matrix",
+                         "resid",
+                         ".lm.fit"))
 
 ## usethis namespace: start
 #' @importFrom Rcpp sourceCpp

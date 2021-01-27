@@ -1,55 +1,12 @@
-#' Convert eeg_data to data.frame
+
+
+#' Convert `eeg_epochs` object to data.frame
 #'
-#' Convert an object of class \code{eeg_data} into a standard data.frame.
-#'
-#' @author Matt Craddock \email{matt@@mattcraddock.com}
-#' @param x Object of class \code{eeg_data}
-#' @param row.names Kept for compatibility with S3 generic, ignored.
-#' @param optional Kept for compatibility with S3 generic, ignored.
-#' @param long Convert to long format. Defaults to FALSE
-#' @param events Include events in output.
-#' @param coords Include electrode coordinates in output. Only possible when
-#'   long = TRUE.
-#' @param ... arguments for other as.data.frame commands
-#' @importFrom tidyr gather
-#' @importFrom dplyr left_join
-#' @export
-
-as.data.frame.eeg_data <- function(x,
-                                   row.names = NULL,
-                                   optional = FALSE,
-                                   long = FALSE,
-                                   events = FALSE,
-                                   coords = FALSE,
-                                   ...) {
-  df <- data.frame(x$signals,
-                   x$timings)
-
-  if (long) {
-    df <- tidyr::gather(df,
-                        electrode,
-                        amplitude,
-                        -time,
-                        -sample,
-                        factor_key = T)
-    }
-
-  if (events) {
-    df <- dplyr::left_join(df,
-                           x$events,
-                           by = c("sample" = "event_onset"))
-  }
-
-  df
-}
-
-#' Convert \code{eeg_epochs} object to data.frame
-#'
-#' Convert an \code{eeg_epochs} object to a data.frame for use with whatever
+#' Convert an `eeg_epochs` object to a data.frame for use with whatever
 #' packages you desire.
 #'
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
-#' @param x Object of class \code{eeg_epochs}
+#' @param x Object of class `eeg_epochs`
 #' @param row.names Kept for compatability with S3 generic, ignored.
 #' @param optional Kept for compatability with S3 generic, ignored.
 #' @param long Convert to long format. Defaults to FALSE.
@@ -76,11 +33,13 @@ as.data.frame.eeg_epochs <- function(x, row.names = NULL,
     stop("The cond_labels argument is deprecated.")
   }
 
+  chan_names <- channel_names(x)
   df <- data.frame(x$signals,
                    time = x$timings$time,
                    epoch = x$timings$epoch,
                    stringsAsFactors = FALSE)
 
+  names(df)[1:length(chan_names)] <- chan_names
   # combine the new data frame with any condition labels from the events table
   if (long) {
 
@@ -110,10 +69,10 @@ as.data.frame.eeg_epochs <- function(x, row.names = NULL,
   df
 }
 
-#' Convert \code{eeg_evoked} object to data frame
+#' Convert `eeg_evoked` object to data frame
 #
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
-#' @param x Object of class \code{eeg_evoked}
+#' @param x Object of class `eeg_evoked`
 #' @param row.names Kept for compatability with S3 generic, ignored.
 #' @param optional Kept for compatability with S3 generic, ignored.
 #' @param long Convert to long format. Defaults to FALSE
@@ -133,6 +92,8 @@ as.data.frame.eeg_evoked <- function(x,
   df <- cbind(x$signals,
               x$timings)
 
+  df <- dplyr::left_join(df,
+                         epochs(x))
   if (long) {
     df <- tidyr::gather(df,
                         "electrode",
@@ -151,10 +112,10 @@ as.data.frame.eeg_evoked <- function(x,
   df
 }
 
-#' Convert \code{eeg_ICA} object to data frame
+#' Convert `eeg_ICA` object to data frame
 #
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
-#' @param x Object of class \code{eeg_ICA}
+#' @param x Object of class `eeg_ICA`
 #' @param row.names Kept for compatability with S3 generic, ignored.
 #' @param optional Kept for compatability with S3 generic, ignored.
 #' @param long Convert to long format. Defaults to FALSE
@@ -209,109 +170,11 @@ as.data.frame.eeg_ICA <- function(x,
                         component,
                         amplitude,
                         channel_names(x),
-                        factor_key = T)
+                        factor_key = TRUE)
     df$component <- as.character(df$component)
   }
 
 
-  df
-}
-
-#' Convert \code{eeg_tfr} objects to data frames
-#'
-#' @author Matt Craddock \email{matt@@mattcraddock.com}
-#' @param x Object of class \code{eeg_tfr}
-#' @param row.names Kept for compatability with S3 generic, ignored.
-#' @param optional Kept for compatability with S3 generic, ignored.
-#' @param long Convert to long format. Defaults to FALSE.
-#' @param ... arguments for other as.data.frame commands
-#'
-#' @importFrom tidyr spread
-#' @export
-as.data.frame.eeg_tfr <- function(x,
-                                  row.names = NULL,
-                                  optional = FALSE,
-                                  long = FALSE,
-                                  ...) {
-
-  # out_df <- as.data.frame.table(x$signals,
-  #                               stringsAsFactors = FALSE)
-  if (length(dim(x$signals)) == 3) {
-    out_df <- aperm(x$signals, c("time", "frequency", "electrode"))
-    dim_size <- dim(out_df)
-    dim(out_df) <- c(dim_size[1] * dim_size[2],
-                     dim_size[3])
-    out_df <- as.data.frame(out_df)
-    names(out_df) <- dimnames(x$signals)$electrode
-    out_df$time <- rep(as.numeric(dimnames(x$signals)$time),
-                       dim_size[2])
-    out_df$frequency <- rep(as.numeric(dimnames(x$signals)$frequency),
-                            each = dim_size[1])
-    out_df$epoch <- 1
-  } else {
-    out_df <- aperm(x$signals, c("time", "frequency", "epoch", "electrode"))
-    dim_size <- dim(out_df)
-    dim(out_df) <- c(dim_size[1] * dim_size[2] * dim_size[3],
-                     dim_size[4])
-    out_df <- as.data.frame(out_df)
-    names(out_df) <- dimnames(x$signals)$electrode
-    out_df$time <- rep(as.numeric(dimnames(x$signals)$time),
-                       dim_size[3] * dim_size[2])#out_df$time)
-    out_df$frequency <- rep(as.numeric(dimnames(x$signals)$frequency),
-                            each = dim_size[1])
-    out_df$epoch <- rep(unique(x$epochs$epoch), each =
-                        dim_size[1] * dim_size[2])
-
-    if (!is.null(x$epochs) && "epoch" %in% x$dimensions) {
-      #out_df$epoch <- as.numeric(out_df$epoch)
-      out_df <- dplyr::left_join(out_df,
-                                 x$epochs,
-                                 by = "epoch")
-    }
-  }
-
-  if (long) {
-    return(tidyr::gather(out_df, electrode, power, channel_names(x)))
-  }
-
-  out_df
-}
-
-#' Convert \code{eeg_stats} objects to data frames
-#'
-#' @author Matt Craddock \email{matt@@mattcraddock.com}
-#' @param x Object of class \code{eeg_stats}
-#' @param row.names Kept for compatability with S3 generic, ignored.
-#' @param optional Kept for compatability with S3 generic, ignored.
-#' @param long Convert to long format. Defaults to FALSE.
-#' @param coords Include electrode coordinates in output (ignored if long = FALSE)
-#' @param ... arguments for other as.data.frame commands
-#'
-#' @importFrom tidyr spread
-#' @export
-
-as.data.frame.eeg_stats <- function(x,
-                                   row.names = NULL,
-                                   optional = FALSE,
-                                   long = FALSE,
-                                   coords = FALSE,
-                                   ...) {
-
-  df <- data.frame(x$statistic,
-                   time = x$timings)
-
-  if (long) {
-    df <- tidyr::gather(df,
-                        electrode,
-                        statistic,
-                        -time,
-                        factor_key = T)
-    if (coords && !is.null(channels(x))) {
-      df <- dplyr::left_join(df,
-                             channels(x)[, c("electrode", "x", "y")],
-                             by = "electrode")
-    }
-  }
   df
 }
 
@@ -402,8 +265,15 @@ zero_vec <- function(vec_length) {
 #'
 #' @param x vector to pad
 #' @param n number of zeros to pad
+#' @param startval value to add at the start of the vector - defaults to zero
+#' @param endval value to add at the end of the vector - defaults to zero
 #' @keywords internal
-pad <- function(x, n) {c(rep(0, n), x, rep(0, n))}
+pad <- function(x,
+                n,
+                startval = 0,
+                endval = 0) {c(rep(startval, n),
+                         x,
+                         rep(endval, n))}
 
 #' Unpad a vector
 #'

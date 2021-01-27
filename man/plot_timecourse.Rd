@@ -6,7 +6,7 @@
 \alias{plot_timecourse.eeg_evoked}
 \alias{plot_timecourse.eeg_ICA}
 \alias{plot_timecourse.eeg_epochs}
-\alias{plot_timecourse.eeg_stats}
+\alias{plot_timecourse.eeg_tfr}
 \title{Plot 1-D timecourse data.}
 \usage{
 plot_timecourse(data, ...)
@@ -15,11 +15,11 @@ plot_timecourse(data, ...)
   data,
   electrode = NULL,
   time_lim = NULL,
-  facet,
   add_CI = FALSE,
   baseline = NULL,
   colour = NULL,
   color = NULL,
+  mapping = NULL,
   ...
 )
 
@@ -27,11 +27,11 @@ plot_timecourse(data, ...)
   data,
   electrode = NULL,
   time_lim = NULL,
-  facet,
   add_CI = FALSE,
   baseline = NULL,
   colour = NULL,
   color = NULL,
+  mapping = NULL,
   ...
 )
 
@@ -39,11 +39,11 @@ plot_timecourse(data, ...)
   data,
   component = NULL,
   time_lim = NULL,
-  facet,
   add_CI = FALSE,
   baseline = NULL,
   colour = NULL,
   color = NULL,
+  mapping = NULL,
   ...
 )
 
@@ -51,15 +51,25 @@ plot_timecourse(data, ...)
   data,
   electrode = NULL,
   time_lim = NULL,
-  facet,
   add_CI = FALSE,
   baseline = NULL,
   colour = NULL,
   color = NULL,
+  mapping = NULL,
   ...
 )
 
-\method{plot_timecourse}{eeg_stats}(data, time_lim = NULL, electrode = NULL, ...)
+\method{plot_timecourse}{eeg_tfr}(
+  data,
+  electrode = NULL,
+  time_lim = NULL,
+  add_CI = FALSE,
+  baseline = NULL,
+  colour = NULL,
+  color = NULL,
+  mapping = NULL,
+  ...
+)
 }
 \arguments{
 \item{data}{EEG dataset. Should have multiple timepoints.}
@@ -71,8 +81,6 @@ plot_timecourse(data, ...)
 \item{time_lim}{Character vector. Numbers in whatever time unit is used
 specifying beginning and end of time-range to plot. e.g. c(-.1, .3)}
 
-\item{facet}{Deprecated. Please use standard ggplot2 facetting functions.}
-
 \item{add_CI}{Add confidence intervals to the graph. Defaults to 95 percent
 between-subject CIs.}
 
@@ -83,6 +91,8 @@ over the specified period and subtracts. e.g. c(-.1,0)}
 line is drawn.}
 
 \item{color}{Alias for colour.}
+
+\item{mapping}{A ggplot2 \code{aes()} mapping.}
 
 \item{component}{name or number of ICA component to plot}
 }
@@ -104,7 +114,7 @@ electrodes. Output is a ggplot2 object.
 
 \item \code{eeg_epochs}: Plot timecourses from \code{eeg_epochs} objects.
 
-\item \code{eeg_stats}: Plot timecourses from \code{eeg_epochs} objects.
+\item \code{eeg_tfr}: Plot timecourses from \code{eeg_tfr} objects.
 }}
 
 \examples{

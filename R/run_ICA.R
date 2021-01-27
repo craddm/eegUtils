@@ -16,19 +16,28 @@
 #'   ICA will do this automatically, whereas the other ICA implementations will
 #'   centre on the channel means, not the epoch means.
 #'
+#'   In addition, PCA will be required if the data is not full rank. This is
+#'   typical when using average reference, when the data rank will be
+#'   n_electrodes - 1.
+#'
 #' @param data Data to be ICAed.
 #' @param ... Other parameters passed to function.
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
-#' @return An \code{eeg_ICA} object containing an ICA decomposition
+#' @return An `eeg_ICA` object containing an ICA decomposition
 #' @importFrom MASS ginv
 #' @importFrom Matrix rankMatrix
 #' @examples
-#' run_ICA(demo_epochs)
 #' run_ICA(demo_epochs, pca = 10)
 #' @export
 
 run_ICA <- function(data, ...) {
   UseMethod("run_ICA", data)
+}
+
+#' @export
+run_ICA.default <- function(data,
+                            ...) {
+  stop("Not supported for objects of this class.")
 }
 
 #' @param method "sobi" (default), "fastica", or "infomax".
@@ -39,13 +48,13 @@ run_ICA <- function(data, ...) {
 #'   Numeric,  >1 and < number of channels
 #' @param centre Defaults to TRUE. Centre the data on zero by subtracting the
 #'   column mean. See notes on usage.
-#' @param alg Use "gradient" descent or "newton" algorithm for extended infomax.
+#' @param alg Use "gradient descent" or "newton" algorithm for extended infomax.
 #'   Defaults to "gradient". Ignored if method != "infomax".
 #' @param rateanneal Annealing rate for extended infomax. Ignored if method !=
 #'   "infomax".
 #' @param rate Learning rate for extended infomax. Ignored if method !=
 #'   "infomax".
-#' @describeIn run_ICA Run ICA on an \code{eeg_epochs} object
+#' @describeIn run_ICA Run ICA on an `eeg_epochs` object
 #' @importFrom stats cov
 #' @export
 
@@ -60,10 +69,10 @@ run_ICA.eeg_epochs <- function(data,
                                rate = 0.1,
                                ...) {
 
+  orig_chans <- channel_names(data)
   if (!is.null(pca)) {
     message("Reducing data to ", pca,
             " dimensions using PCA.")
-    orig_chans <- channel_names(data)
     pca_decomp <- eigen(stats::cov(data$signals))$vectors
     data$signals <- as.data.frame(as.matrix(data$signals) %*% pca_decomp[, 1:pca])
     pca_flag <- TRUE
@@ -75,7 +84,7 @@ run_ICA.eeg_epochs <- function(data,
   rank_check <- Matrix::rankMatrix(as.matrix(data$signals))
 
   if (rank_check < ncol(data$signals)) {
-    warning(paste("Data is rank deficient. Detected rank", rank_check))
+    stop(paste("Data is rank deficient. PCA required. Detected rank: ", rank_check))
   }
 
   if (!(method %in% c("sobi", "fastica", "infomax", "fica"))) {
@@ -94,12 +103,18 @@ run_ICA.eeg_epochs <- function(data,
                           maxiter = maxit,
                           method = "sym2")
 
-    colnames(ICA_out$S) <- sprintf("Comp%03d", 1:pca)
-    ICA_out$S <- tibble::as_tibble(ICA_out$S[, 1:pca])
-
     ICA_out$W <- ICA_out$W[, 1:pca]
     mixing_matrix <- MASS::ginv(ICA_out$W, tol = 0)
-    mixing_matrix <- pca_decomp[, 1:pca] %*% mixing_matrix
+
+    if (pca_flag) {
+      mixing_matrix <- pca_decomp[, 1:pca] %*% mixing_matrix
+    }
+
+    var_order <- sort(vaf_mix(mixing_matrix),
+                      decreasing = TRUE,
+                      index.return = TRUE)$ix
+
+    mixing_matrix <- mixing_matrix[, var_order]
 
     unmixing_matrix <- as.data.frame(MASS::ginv(mixing_matrix, tol = 0))
     mixing_matrix <- as.data.frame(mixing_matrix)
@@ -108,10 +123,19 @@ run_ICA.eeg_epochs <- function(data,
     mixing_matrix$electrode <- orig_chans
     names(unmixing_matrix) <- orig_chans
     unmixing_matrix$Component <- sprintf("Comp%03d", 1:pca)
+
+    ICA_out$S <- ICA_out$S[, var_order]
+    colnames(ICA_out$S) <- sprintf("Comp%03d", 1:pca)
+    ICA_out$S <- tibble::as_tibble(ICA_out$S[, 1:pca])
+
   } else {
 
     if (method == "sobi") {
       if (!requireNamespace("JADE", quietly = TRUE)) {
+        if (!requireNamespace("whitening", quietly = TRUE)) {
+          stop("Packages \"JADE\" and \"whitening\" needed to use SOBI. Please install them.",
+             call. = FALSE)
+        }
         stop("Package \"JADE\" needed to use SOBI. Please install it.",
              call. = FALSE)
       }
@@ -182,9 +206,15 @@ run_ICA.eeg_epochs <- function(data,
   ica_obj
 }
 
+#' @export
+run_ICA.eeg_group <- function(data,
+                              ...) {
+  stop("Not supported for group data.")
+}
+
 #' SOBI ICA
 #'
-#' Internal function for running SOBI ICA on an \code{eeg_epochs} object
+#' Internal function for running SOBI ICA on an `eeg_epochs` object
 #'
 #' @param data Data to be ICAed.
 #' @param maxiter Maximum number of iterations of the joint diagonalization
@@ -213,26 +243,16 @@ sobi_ICA <- function(data,
   n_lags <- min(100,
                 ceiling(n_times / 3))
 
-  ## Pre-whiten the data using the SVD. zero-mean columns and get SVD. NB:
-  ## should probably edit this to zero mean *epochs*
-  #do by epochs
-
-  if (centre){
+  if (centre) {
     # centre the data on zero.
     data <- rm_baseline(data,
                         verbose = FALSE)
   }
 
-  SVD_amp <- svd(data$signals)
-
-  ## get the psuedo-inverse of the diagonal matrix, multiply by singular
-  ## vectors
-  Q <- tcrossprod(MASS::ginv(diag(SVD_amp$d),
-                             tol = 0),
-                  SVD_amp$v) # whitening matrix
-  amp_matrix <- tcrossprod(Q,
-                           as.matrix(data$signals))
-
+  Q <- whitening::whiteningMatrix(stats::cov(as.matrix(data$signals)),
+                                  method = "PCA")
+  amp_matrix <- t(whitening::whiten(as.matrix(data$signals),
+                                 method = "PCA"))
   ## reshape to reflect epoching structure
   dim(amp_matrix) <- c(n_channels,
                        n_times,
@@ -248,14 +268,6 @@ sobi_ICA <- function(data,
 
   for (u in seq(1, pm, n_channels)) {
     k <- k + 1
-    # Rxp <- lapply(seq(1, n_epochs),
-    #               function(x) tmp_fun(amp_matrix[, , x],
-    #                                   k,
-    #                                   N))
-    # Rxp <- Reduce("+",
-    #               Rxp)
-    # Rxp <- Rxp / n_epochs
-    # M[, u:(u + n_channels - 1)] <- norm(Rxp, "F") * (Rxp)
     M[, u:(u + n_channels - 1)] <- do_iter(amp_matrix, k, N)
   }
 
@@ -275,17 +287,23 @@ sobi_ICA <- function(data,
   ## create mixing matrix for output
   mixing_matrix <- MASS::ginv(Q, tol = 0) %*% V
 
+  var_order <- sort(vaf_mix(mixing_matrix),
+                    decreasing = TRUE,
+                    index.return = TRUE)$ix
+
+  mixing_matrix <- mixing_matrix[, var_order]
+
   unmixing_matrix <- MASS::ginv(mixing_matrix, tol = 0)
   # rescale vecs
-  scaling <- sqrt(colMeans(mixing_matrix^2))
+  # scaling <- sqrt(colMeans(mixing_matrix^2))
+  #
+  # unmixing_matrix <- sweep(unmixing_matrix,
+  #                          MARGIN = 1,
+  #                          scaling,
+  #                          `*`) # scaled weights
 
-  unmixing_matrix <- sweep(unmixing_matrix,
-                           MARGIN = 1,
-                           scaling,
-                           `*`) # scaled weights
-
-  mixing_matrix <- MASS::ginv(unmixing_matrix %*% diag(ncol(unmixing_matrix)),
-                              tol = 0)
+  # mixing_matrix <- MASS::ginv(unmixing_matrix %*% diag(ncol(unmixing_matrix)),
+  #                             tol = 0)
 
   dim(amp_matrix) <- c(n_channels,
                        n_times * n_epochs)
@@ -294,7 +312,6 @@ sobi_ICA <- function(data,
                   as.matrix(data$signals))
   S <- as.data.frame(t(S))
   names(S) <- sprintf("Comp%03d", 1:ncol(S))
-
 
   list(M = mixing_matrix,
        W = unmixing_matrix,
@@ -309,7 +326,7 @@ sobi_ICA <- function(data,
 #' given dataset for the purpose of removing specific ICA components from that
 #' dataset.
 #'
-#' @param data An \code{eeg_ICA} or \code{eeg_epochs} object.
+#' @param data An `eeg_ICA` or `eeg_epochs` object.
 #' @param ... Other parameters.
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #' @export
@@ -318,7 +335,7 @@ apply_ica <- function(data, ...) {
 }
 
 #' @param comps Components to remove.
-#' @describeIn apply_ica From given \code{eeg_ICA} object, recreate channel timecourses.
+#' @describeIn apply_ica From given `eeg_ICA` object, recreate channel timecourses.
 #' @export
 apply_ica.eeg_ICA <- function(data,
                               comps = NULL,
@@ -341,8 +358,9 @@ apply_ica.eeg_ICA <- function(data,
   out
 }
 
-#' @param decomp An \code{eeg_ICA} object.
-#' @describeIn apply_ica Combine a specific set of ICA weights with any \code{eeg_epochs} object.
+#' @param decomp An `eeg_ICA` object.
+#' @describeIn apply_ica Combine a specific set of ICA weights with any
+#'   `eeg_epochs` object.
 #' @export
 apply_ica.eeg_epochs <- function(data,
                                  decomp,
@@ -354,14 +372,22 @@ apply_ica.eeg_epochs <- function(data,
 
   ncomps <- ncol(decomp$mixing_matrix) - 1
   nelecs <- ncol(data$signals)
+
+  if (is.character(comps)) {
+    comps_missing <- which(!(comps %in% channel_names(decomp)))
+    #comps <- which(channel_names(decomp) %in% comps)
+    keep_comps <- which(!channel_names(decomp) %in% comps)
+  } else {
+     keep_comps <- seq(1, ncomps)[-comps]
+  }
+
   sources <- unmix(data$signals,
                    decomp$unmixing_matrix[, 1:nelecs])
-  keep_comps <- names(decomp$mixing_matrix[, 1:ncomps])[-comps]
-  new_sigs <- mix(sources[, -comps],
+  #keep_comps <- names(decomp$mixing_matrix[, 1:ncomps])[-comps]
+  new_sigs <- mix(sources[, keep_comps],
                   decomp$mixing_matrix[, keep_comps])
   colnames(new_sigs) <- data$chan_info$electrode
   data$signals <- tibble::as_tibble(new_sigs)
-#
   data
 }
 
@@ -374,4 +400,15 @@ mix <- function(sources,
 unmix <- function(data,
                   unmixing_matrix) {
   t(tcrossprod(as.matrix(unmixing_matrix), as.matrix(data)))
+}
+
+vaf_mix <- function(mixing_matrix) {
+  comp_var <- colSums(mixing_matrix^2)
+  comp_var / sum(comp_var)
+}
+
+get_vaf <- function(decomp) {
+  ncomps <- ncol(decomp$mixing_matrix) - 1
+  comp_var <- colSums(decomp$mixing_matrix[, 1:ncomps]^2)
+  comp_var / sum(comp_var)
 }

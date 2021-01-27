@@ -17,15 +17,22 @@ threshold automatically.}
 
 \item{verbose}{Print informative messages.}
 }
+\value{
+A character vector of component names that break the threshold.
+}
 \description{
 Detect components that load heavily on a small number of trials. Looks for components
 that have one particular trial that has a particularly high z-score.
 }
+\examples{
+demo_sobi <- run_ICA(demo_epochs, pca = 10)
+ar_trialfoc(demo_sobi)
+}
 \references{
 Chaumon, M., Bishop, D.V., Busch, N.A. (2015). A practical guide
-  to the selection of independent components of the electroencephalogram for
-  artifact correction. J Neurosci Methods. Jul 30;250:47-63. doi:
-  10.1016/j.jneumeth.2015.02.025
+to the selection of independent components of the electroencephalogram for
+artifact correction. J Neurosci Methods. Jul 30;250:47-63. doi:
+10.1016/j.jneumeth.2015.02.025
 }
 \author{
 Matt Craddock \email{matt@mattcraddock.com}

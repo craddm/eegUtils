@@ -63,7 +63,7 @@ StatScalpmap <-
                                             scales,
                                             grid_res,
                                             interp_limit,
-                                            method = "biharmonic") {
+                                            method) {
 
                      data <- aggregate(fill ~ x + y,
                                        data = data,
@@ -75,24 +75,25 @@ StatScalpmap <-
                                           interp_limit = interp_limit)
                      } else {
                        data <- fit_gam_topo(data,
-                                        grid_res = grid_res,
-                                        interp_limit = interp_limit)
+                                            grid_res = grid_res,
+                                            interp_limit = interp_limit)
                      }
                      data
 
                      }
 )
 
+
 #' Create an interpolated scalp surface
 #'
-#' \code{stat_scalpmap} creates an interpolated surface for an irregular set of
+#' `stat_scalpmap` creates an interpolated surface for an irregular set of
 #' x-y coordinates, as is typically required for a topographical EEG plot. Since
 #' the surface should be approximately round, the function attempts to blank out
 #' portions of the surface that lay outside the area within the electrodes.
 #'
 #' @inheritParams ggplot2::geom_raster
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
-#' @param grid_res Resolution of the interpolation grid. (Defaults to 100
+#' @param grid_res Resolution of the interpolation grid. (Defaults to 200
 #'   points).
 #' @param interp_limit Topoplot with a "skirt" or inside the "head".
 #' @param method "biharmonic" or "gam"
@@ -104,9 +105,9 @@ stat_scalpmap <- function(mapping = NULL,
                           na.rm = FALSE,
                           show.legend = NA,
                           inherit.aes = TRUE,
-                          grid_res = 300,
+                          grid_res = 200,
                           interpolate = FALSE,
-                          interp_limit = "skirt",
+                          interp_limit = c("skirt", "head"),
                           method = "biharmonic",
                           ...) {
   ggplot2::layer(
@@ -126,40 +127,9 @@ stat_scalpmap <- function(mapping = NULL,
   )
 }
 
-StatConts <-
-  ggplot2::ggproto("StatConts",
-                   Stat,
-                   required_aes = c("x",
-                                    "y",
-                                    "z"),
-                   compute_group = function(data,
-                                            scales,
-                                            grid_res,
-                                            interp_limit,
-                                            method = "biharmonic") {
-
-                     data <- aggregate(z ~ x + y,
-                                       data = data,
-                                       FUN = mean)
-                     data <- rename(data, fill = "z")
-
-                     if (identical(method, "biharmonic")) {
-                       data <- biharmonic(data,
-                                          grid_res = grid_res,
-                                          interp_limit = interp_limit)
-                     } else {
-                       data <- fit_gam_topo(data,
-                                            grid_res = grid_res,
-                                            interp_limit = interp_limit)
-                     }
-                     data <- rename(data, z = "fill")
-                     data
-                   }
-  )
-
 #' Create a topographical plot
 #'
-#' \code{geom_topo()} creates a topographical plot as a \code{ggplot2} object.
+#' `geom_topo()` creates a topographical plot as a `ggplot2` object.
 #' This function automatically combines a number of distinct geom_* and stat_*
 #' functions to create a default topographical scalp map. Since geom_raster does
 #' not allow unevenly spaced grids, the function creates an interpolated surface.
@@ -175,6 +145,7 @@ StatConts <-
 #' @param head_size Size of the head shape.
 #' @param grid_res Smoothness of the interpolation grid.
 #' @param method "biharmonic" or ""gam".
+#' @param r Head circumference
 #' @family topoplot functions
 #' @export
 geom_topo <- function(mapping = NULL,
@@ -189,6 +160,7 @@ geom_topo <- function(mapping = NULL,
                       chan_markers = "point",
                       chan_size = rel(2),
                       head_size = rel(1.5),
+                      r = 95,
                       grid_res = 200,
                       method = "biharmonic",
                       ...) {
@@ -215,6 +187,7 @@ geom_topo <- function(mapping = NULL,
                       inherit.aes = inherit.aes,
                       params = list(na.rm = na.rm,
                                     size = head_size,
+                                    r = r,
                                     interp_limit = interp_limit,
                                     ...)
                       ),
@@ -229,6 +202,7 @@ geom_topo <- function(mapping = NULL,
                                     curvature = -.5,
                                     angle = 60,
                                     size = head_size,
+                                    r = r,
                                     interp_limit = interp_limit,
                                     ...)
                       ),
@@ -243,10 +217,12 @@ geom_topo <- function(mapping = NULL,
                                     curvature = .5,
                                     angle = 120,
                                     size = head_size,
+                                    r = r,
                                     interp_limit = interp_limit,
                                     ...)
                       ),
-       if (chan_markers == "point") {
+       if (identical(chan_markers,
+                     "point")) {
          ggplot2::layer(data = data,
                         mapping = mapping,
                         stat = StatChannels,
@@ -258,7 +234,8 @@ geom_topo <- function(mapping = NULL,
                                       fill = NA,
                                       size = chan_size,
                                       ...))
-         } else if (chan_markers == "text") {
+         } else if (identical(chan_markers,
+                              "text")) {
            ggplot2::layer(data = data,
                           mapping = mapping,
                           stat = StatChannels,
@@ -280,7 +257,7 @@ GeomTopo <- ggplot2::ggproto("GeomTopo",
 
 #' Add head shape
 #'
-#' \code{geom_head()} adds a headshape to a plot.
+#' `geom_head()` adds a headshape to a plot.
 #' @rdname stat_scalpmap
 #' @inheritParams ggplot2::geom_path
 #' @param r Radius of head
@@ -292,7 +269,7 @@ geom_head <- function(mapping = NULL,
                       na.rm = TRUE,
                       inherit.aes = TRUE,
                       interp_limit = "skirt",
-                      r = NULL,
+                      r = 95,
                       ...) {
 
   list(ggplot2::layer(geom = GeomHead,
@@ -339,23 +316,11 @@ StatHead <- ggplot2::ggproto("StatHead",
                              compute_group = function(data,
                                                       scales,
                                                       interp_limit,
-                                                      r = NULL) {
-
-                               if (!is.null(r)) {
-                                 heads <- make_head(r = r)
-                                 return(heads)
-                               }
-
-                               if (identical(interp_limit, "head")) {
-                                 y_lim <- max(abs(data$y),
-                                              na.rm = TRUE) * 1.1
-                               } else {
-                                 y_lim <- max(data$y,
-                                              na.rm = TRUE) * 1.1
-                               }
-
-                               heads <- make_head(r = y_lim)
-                               heads
+                                                      r) {
+                               r <- update_r(r,
+                                             data,
+                                             interp_limit)
+                               make_head(r = r)
                              }
 )
 
@@ -365,14 +330,14 @@ GeomHead <- ggplot2::ggproto("GeomHead",
 
 #' Mask ring
 #'
-#' \code{geom_mask()} adds a masking ring to smooth the edges of a scalp map
-#' generated by \code{stat_scalpmap()}, to give it a circular appearance.
+#' `geom_mask()` adds a masking ring to smooth the edges of a scalp map
+#' generated by `stat_scalpmap()`, to give it a circular appearance.
 #'
 #' @inheritParams ggplot2::geom_path
-#' @param colour For \code{geom_mask}, colour of the masking ring.
-#' @param size For \code{geom_mask}, width of the masking ring.
+#' @param colour For `geom_mask`, colour of the masking ring.
+#' @param size For `geom_mask`, width of the masking ring.
 #' @param scale_fac The radius of the ring is determined from the front-most
-#'   electrode's location by a scaling factor. Defaults to 1.32 * max(y).
+#'   electrode's location by a scaling factor. Defaults to 1.04 * max(y).
 #' @rdname stat_scalpmap
 #' @family topoplot functions
 #' @export
@@ -381,8 +346,10 @@ geom_mask <- function(mapping = NULL,
                       show.legend = NA,
                       na.rm = FALSE,
                       colour = "white",
-                      size = rel(6.5),
-                      scale_fac = 1.32,
+                      size = rel(5),
+                      scale_fac = 1.04,
+                      r = 95,
+                      interp_limit = "skirt",
                       ...) {
 
   ggplot2::layer(data = data,
@@ -396,6 +363,8 @@ geom_mask <- function(mapping = NULL,
                                colour = colour,
                                size = size,
                                scale_fac = scale_fac,
+                               r = r,
+                               interp_limit = interp_limit,
                                ...))
 }
 
@@ -404,10 +373,18 @@ StatMask <-
                    Stat,
                    compute_group = function(data,
                                             scales,
-                                            scale_fac = 1.32) {
+                                            scale_fac,
+                                            interp_limit,
+                                            r) {
 
-                     scale_fac <- scale_fac * max(data$y,
-                                                  na.rm = TRUE)
+                     abs_x_max <- max(abs(data$x),
+                                      na.rm = TRUE)
+                     abs_y_max <- max(abs(data$y),
+                                      na.rm = TRUE)
+
+                     scale_fac <- max(abs_x_max,
+                                      abs_y_max) * scale_fac
+
                      data <- data.frame(x = scale_fac * cos(circ_rad_fun()),
                                         y = scale_fac * sin(circ_rad_fun()))
                      data
@@ -418,7 +395,7 @@ StatMask <-
 
 #' Add ears to head
 #'
-#' \code{geom_ears} simply draws a pair of ears attached to the head shape.
+#' `geom_ears` simply draws a pair of ears attached to the head shape.
 #' @inheritParams ggplot2::geom_curve
 #' @rdname stat_scalpmap
 #' @export
@@ -426,6 +403,7 @@ geom_ears <- function(mapping = NULL,
                       data = NULL,
                       show.legend = NA,
                       na.rm = FALSE,
+                      r = 95,
                       ...) {
 
   list(
@@ -439,6 +417,7 @@ geom_ears <- function(mapping = NULL,
                  params = list(na.rm = na.rm,
                                curvature = -.5,
                                angle = 60,
+                               r = r,
                                ...)),
     ggplot2::layer(data = data,
                    mapping = mapping,
@@ -450,6 +429,7 @@ geom_ears <- function(mapping = NULL,
                    params = list(na.rm = na.rm,
                                  curvature = .5,
                                  angle = 120,
+                                 r = r,
                                  ...))
   )
 
@@ -464,20 +444,11 @@ StatREar <- ggplot2::ggproto("StatREar",
                              compute_group = function(data,
                                                       scales,
                                                       interp_limit,
-                                                      r = NULL) {
-
-                               if (!is.null(r)) {
-                                 return(make_r_ear(r = r))
-                               }
-
-                               if (identical(interp_limit, "head")) {
-                                 y_lim <- max(abs(data$y),
-                                              na.rm = TRUE) * 1.1
-                               } else {
-                                 y_lim <- max(data$y,
-                                              na.rm = TRUE) * 1.1
-                               }
-                               make_r_ear(y_lim)
+                                                      r = 95) {
+                               r <- update_r(r,
+                                             data,
+                                             interp_limit)
+                               make_r_ear(r = r)
                              })
 
 StatLEar <- ggplot2::ggproto("StatLEar",
@@ -486,20 +457,12 @@ StatLEar <- ggplot2::ggproto("StatLEar",
                                                       scales,
                                                       interp_limit,
                                                       r = NULL) {
-
-                               if (!is.null(r)) {
-                                 return(make_l_ear(r = r))
-                               }
-
-                               if (identical(interp_limit, "head")) {
-                                 y_lim <- max(abs(data$y),
-                                              na.rm = TRUE) * 1.1
-                               } else {
-                                 y_lim <- max(data$y,
-                                              na.rm = TRUE) * 1.1
-                               }
-                               make_l_ear(r = y_lim)
-                             })
+                               r <- update_r(r,
+                                             data,
+                                             interp_limit)
+                               make_l_ear(r = r)
+                             }
+)
 
 #' Create a headshape
 #'
@@ -518,7 +481,8 @@ make_head <- function(r) {
                            head_shape$y[[29]]),
                      group = 2)
 
-  head_out <- rbind(head_shape, nose)
+  head_out <- rbind(head_shape,
+                    nose)
   head_out
 }
 
@@ -568,7 +532,7 @@ StatChannels <-
 
 #' Add channel indicators
 #'
-#' \code{geom_channels} adds either points or text labels at channel locations.
+#' `geom_channels` adds either points or text labels at channel locations.
 #' This is a convenience function to prevent overplotting when the input data
 #' contains many rows of data.
 #'
@@ -596,16 +560,24 @@ geom_channels <- function(mapping = NULL,
                                ...))
 }
 
+#' @noRd
 biharmonic <- function(data,
                        grid_res,
-                       interp_limit) {
+                       interp_limit,
+                       r = 95) {
+
+  # max_dim <- max(c(abs(data$x),
+  #                  abs(data$y)))
+  abs_y_max <- max(abs(data$y),
+                   na.rm = TRUE)
+  abs_x_max <- max(abs(data$x),
+                   na.rm = TRUE)
 
   x_min <- min(data$x, na.rm = TRUE) * 2.5
   x_max <- max(data$x, na.rm = TRUE) * 2.5
   y_min <- min(data$y, na.rm = TRUE) * 2.5
   y_max <- max(data$y, na.rm = TRUE) * 2.5
 
-  abs_y_max <- max(abs(data$y), na.rm = TRUE)
   xo <- seq(x_min,
             x_max,
             length = grid_res)
@@ -628,44 +600,71 @@ biharmonic <- function(data,
               ncol = length(xy))
   d <- abs(d - t(d))
   diag(d) <- 1
-  g <- (d ^ 2) * (log(d) - 1) #Green's function
+  g <- (d^2) * (log(d) - 1) #Green's function
   diag(g) <- 0
   weights <- qr.solve(g, data$fill)
   xy <- t(xy)
   # Remind me to make this code readable at some point.
-  outmat <-
-    purrr::map(xo + sqrt(as.complex(-1)) * yo,
-               function(x) (abs(x - xy) ^ 2) *
-                 (log(abs(x - xy)) - 1)) %>%
-    rapply(function(x) ifelse(is.nan(x), 0, x),
-           how = "replace") %>%
-    purrr::map_dbl(function(x) x %*% weights)
 
-  dim(outmat) <- c(grid_res, grid_res)
+  outmat <- numeric(grid_res^2)
+
+  one_fun <- function(xo, yo) {
+
+    tmp <-
+      matrix(complex(real = xo,
+                     imaginary = yo),
+             nrow = grid_res,
+             ncol = grid_res)
+    tmp_x <- numeric(length(xy))
+
+    for (i in seq(length(tmp))) {
+      tmp_x <- (abs(tmp[i] - xy)^2) * (log(abs(tmp[i] - xy)) - 1)
+      tmp_x <- ifelse(is.nan(tmp_x),
+                      0,
+                      tmp_x)
+      outmat[i] <- tmp_x %*% weights
+    }
+    outmat
+  }
+
+  outmat <- one_fun(xo, yo)
+
+  dim(outmat) <- c(grid_res,
+                   grid_res)
   data <- data.frame(x = xo[, 1],
                      outmat)
   names(data)[1:length(yo[1, ]) + 1] <- yo[1, ]
-  data <- tidyr::gather(data,
-                        key = y,
-                        value = fill,
-                        -x,
-                        convert = TRUE)
 
-  if (identical(interp_limit, "head")) {
-    circ_scale <- abs_y_max * 1.1
-  } else {
-    circ_scale <- y_max / 1.8
+  data <-
+    tidyr::pivot_longer(data,
+                        cols = !x,
+                        names_to = "y",
+                        values_to = "fill",
+                        names_transform = list(y = as.numeric))
+
+  if (identical(interp_limit,
+                "head")) {
+    circ_scale <- sqrt(abs_x_max^2 + abs_y_max^2) * 1.01
+    } else {
+     circ_scale <- sqrt(
+       ((abs_x_max/2)^2 + abs_x_max^2) +
+         ((abs_y_max/2)^2 + abs_y_max^2)
+       )
   }
+  data[sqrt(data$x ^ 2 + data$y ^ 2) <= circ_scale, ]
 
-  data[sqrt(data$x ^ 2 + data$y ^ 2) < circ_scale, ]
 }
 
+
+#' @noRd
 fit_gam_topo <- function(data,
                          grid_res,
                          interp_limit) {
 
-  abs_y_max <- max(abs(data$y), na.rm = TRUE)
-  y_max <- max(data$y, na.rm = TRUE) * 1.5
+  abs_y_max <- max(abs(data$y),
+                   na.rm = TRUE)
+  y_max <- max(data$y,
+               na.rm = TRUE) * 2.5
 
   spline_smooth <- mgcv::gam(fill ~ s(x,
                                       y,
@@ -683,82 +682,206 @@ fit_gam_topo <- function(data,
                                type = "response")
 
 
-  if (identical(interp_limit, "head")) {
+  if (identical(interp_limit,
+                "head")) {
     circ_scale <- abs_y_max * 1.1
   } else {
     circ_scale <- y_max / 1.8
   }
 
-
   data$incircle <- sqrt(data$x ^ 2 + data$y ^ 2) < circ_scale
   data[data$incircle, ]
 }
 
-
+#' Get an interpolated grid
+#'
+#' @param data Object to be interpolated
+#' @param ... Other arguments
+#' @export
 get_scalpmap <- function(data,
-                         grid_res = 100,
-                         interp_limit = "skirt",
-                         method = "biharmonic") {
+                         ...) {
+  UseMethod("get_scalpmap", data)
+}
 
-  # only useful if passed eeg objects
-  # check_locs <- no_loc_chans(channels(data))
-  # if (!is.null(check_locs)) {
-  #   data <- select(data, -check_locs)
-  # }
-  # tmp <- as.data.frame(data)
-  # tmp <- dplyr::summarise_at(tmp,
-  #                            channel_names(data),
-  #                            .funs = mean)
-  # tmp <- tidyr::gather(tmp,
-  #                      electrode,
-  #                      amplitude)
-  # tmp <- dplyr::left_join(tmp,
-  #                         channels(data))
-  tmp <- dplyr::filter(data, !is.na(x))
-  tmp <- group_by(tmp,
-                  electrode) %>%
-    summarise(amplitude = mean(amplitude),
-              x = mean(x), y= mean(y))
-  smooth <-
-    switch(method,
-           biharmonic = biharmonic(dplyr::rename(tmp,
-                                                 fill = "amplitude"),
-                                   grid_res = grid_res,
-                                   interp_limit = interp_limit),
-           gam = fit_gam_topo(dplyr::rename(tmp,
-                                            fill = "amplitude"),
-                              grid_res = grid_res,
-                              interp_limit = interp_limit))
+#' @export
+get_scalpmap.default <- function(data,
+                                 ...) {
+  stop("Not implemented for objects of class ", class(data))
+}
 
+#' @param data An object of class 'data.frame`
+#' @param method "biharmonic" or "gam"
+#' @param grid_res grid resolution
+#' @param interp_limit interpolate up to the "head" or add a "skirt"
+#' @param quantity "amplitude"
+#' @param facets Any facets you plan to use
+#' @describeIn get_scalpmap data.frame
+#' @export
+get_scalpmap.data.frame <- function(data,
+                                    method = "biharmonic",
+                                    grid_res = 100,
+                                    interp_limit = "skirt",
+                                    quantity = "amplitude",
+                                    facets = NULL,
+                                    ...) {
+
+  facets <- rlang::enexpr(facets)
+  method <- match.arg(method,
+                      c("biharmonic",
+                        "gam",
+                        "Biharmonic"))
+  method <- switch(method,
+                   "Biharmonic" = "biharmonic",
+                   method)
+
+  if (!is.null(facets)) {
+    tmp <- dplyr::group_by(tmp,
+                           {{facets}})
+  } else {
+    tmp <- data
+  }
+
+  if (!is.null(facets)) {
+    tmp <- dplyr::group_nest(tmp, {{facets}})
+    tmp <- dplyr::mutate(tmp,
+                         topos = map(data,
+                                     ~biharmonic(.,
+                                                 grid_res = grid_res,
+                                                 interp_limit = interp_limit)),
+    )
+    tmp <- dplyr::select(tmp, -data)
+    smooth <- tidyr::unnest(tmp,
+                            cols = topos)
+  } else {
+    smooth <-
+      switch(method,
+             biharmonic = biharmonic(tmp,
+                                     grid_res = grid_res,
+                                     interp_limit = interp_limit),
+             gam = fit_gam_topo(tmp,
+                                grid_res = grid_res,
+                                interp_limit = interp_limit)
+      )
+  }
   smooth
-}
-
-
-get_scalpmapn <- function(data, ...) {
-  UseMethod("getscalpmapn", data)
-}
-
-get_scalpmapn.data.frame <- function(data, ...) {
 
 }
 
+#' @export
+get_scalpmap.eeg_epochs <- function(data,
+                                    method = "biharmonic",
+                                    grid_res = 100,
+                                    interp_limit = "skirt",
+                                    quantity = "amplitude",
+                                    facets = NULL,
+                                     ...) {
 
-get_scalpmapn.eeg_epochs <- function(data, ...) {
+  facets <- rlang::enexpr(facets)
   # only useful if passed eeg objects
-   check_locs <- no_loc_chans(channels(data))
-   if (!is.null(check_locs)) {
-     data <- select(data, -check_locs)
-   }
+  check_locs <- no_loc_chans(channels(data))
+
+  if (!is.null(check_locs)) {
+    data <- select(data, -check_locs)
+  }
+
   tmp <- as.data.frame(data)
+  if (!is.null(facets)) {
+    tmp <- dplyr::group_by(tmp, {{facets}})
+  }
+  #tmp <- group_by(tmp, event_label)
   tmp <- dplyr::summarise_at(tmp,
                              channel_names(data),
                              .funs = mean)
   tmp <- tidyr::gather(tmp,
                        electrode,
-                       amplitude)
+                       amplitude,
+                       -{{facets}})
   tmp <- dplyr::left_join(tmp,
-                          channels(data))
+                          channels(data),
+                          by = "electrode")
+  tmp <- dplyr::rename(tmp, fill = {{quantity}})
+
+  if (!is.null(facets)) {
+    tmp <- dplyr::group_nest(tmp, {{facets}})
+    tmp <- dplyr::mutate(tmp,
+                         topos = map(data,
+                                     ~biharmonic(.,
+                                                 grid_res = grid_res,
+                                                 interp_limit = interp_limit)),
+                         )
+    tmp <- dplyr::select(tmp, -data)
+    smooth <- tidyr::unnest(tmp,
+                            cols = topos)
+  } else {
+    smooth <-
+      switch(method,
+             biharmonic = biharmonic(tmp,
+                                     grid_res = grid_res,
+                                     interp_limit = interp_limit),
+             gam = fit_gam_topo(tmp,
+                                grid_res = grid_res,
+                                interp_limit = interp_limit)
+            )
+  }
+  smooth
 }
+
+#' @export
+get_scalpmap.eeg_ICA <- function(data,
+                                 method = "biharmonic",
+                                 grid_res = 100,
+                                 interp_limit = "skirt",
+                                 quantity = "amplitude",
+                                 facets = component,
+                                 verbose = FALSE,
+                                 ...) {
+
+  facets <- rlang::enexpr(facets)
+
+  tmp <- as.data.frame(data,
+                       mixing = TRUE,
+                       long = TRUE)
+
+  if (any(is.na(tmp$x))) {
+    tmp <- tmp[!is.na(tmp$x), ]
+    if (verbose) {
+      warning("Removing channels with no location.")
+    }
+  }
+
+  tmp <- dplyr::rename(tmp,
+                       fill = {{quantity}})
+
+  if (!is.null(facets)) {
+
+    tmp <- dplyr::group_nest(tmp,
+                             component)
+    tmp <- dplyr::mutate(tmp,
+                         topos = map(data,
+                                     ~biharmonic(.,
+                                                 grid_res = grid_res,
+                                                 interp_limit = interp_limit)),
+    )
+    tmp <- dplyr::select(tmp,
+                         -data)
+    smooth <- tidyr::unnest(tmp,
+                            cols = topos)
+  } else {
+    smooth <-
+      switch(method,
+             biharmonic = biharmonic(tmp,
+                                     grid_res = grid_res,
+                                     interp_limit = interp_limit),
+             gam = fit_gam_topo(tmp,
+                                grid_res = grid_res,
+                                interp_limit = interp_limit)
+      )
+  }
+  smooth
+
+}
+
+#' @noRd
 no_loc_chans <- function(chaninfo) {
 
   if (any(is.na(chaninfo$x))) {
@@ -766,3 +889,62 @@ no_loc_chans <- function(chaninfo) {
   }
   NULL
 }
+
+
+stat_summary_by_fill <- function(mapping = NULL,
+                                 data = NULL,
+                                 geom = "raster",
+                                 position = "identity",
+                                  ...,
+                                 fun.data = NULL,
+                                 na.rm = FALSE,
+                                 show.legend = NA,
+                                 inherit.aes = TRUE) {
+  ggplot2::layer(
+    data = data,
+    mapping = mapping,
+    stat = StatSummaryByFill,
+    geom = geom,
+    position = position,
+    show.legend = show.legend,
+    inherit.aes = inherit.aes,
+    params = list(
+      fun.data = fun.data,
+      na.rm = na.rm,
+      ...
+    )
+  )
+}
+
+StatSummaryByFill <- ggproto("StatSummaryByFill",
+                             Stat,
+                             required_aes = c("x", "y", "fill"),
+                             compute_group = function(data,
+                                                      scales,
+                                                      fun.data = NULL,
+                                                      na.rm = FALSE,
+                                                      params,
+                                                      layout) {
+                                summary <-
+                                  aggregate(fill ~ x + y,
+                                            data = data,
+                                            FUN = fun.data,
+                                            na.rm = na.rm,
+                                            na.action = na.pass)
+                                summary
+                                }
+                             )
+
+update_r <-
+  function(r,
+           data,
+           interp_limit) {
+    abs_x_max <- max(abs(data$x),
+                     na.rm = TRUE)
+    abs_y_max <- max(abs(data$y),
+                     na.rm = TRUE)
+    r <- switch(interp_limit,
+                 "head" = sqrt(abs_x_max^2 + abs_y_max^2),
+                 "skirt" = r) # mm are expected for coords, 95 is good approx for Fpz - Oz radius
+    r
+  }

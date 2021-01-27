@@ -29,7 +29,7 @@ select_elecs(data, ...)
 \item{electrode}{A character vector of electrode labels for selection or
 removal.}
 
-\item{keep}{Defaults to TRUE. Set to false to *remove* the selected
+\item{keep}{Defaults to TRUE. Set to false to \emph{remove} the selected
 electrodes.}
 
 \item{df_out}{Defaults to FALSE. Set to TRUE to return a dataframe rather
@@ -65,7 +65,7 @@ remove_A5 <- select_elecs(demo_epochs, electrode = "A5", keep = FALSE)
 
 }
 \seealso{
-\code{\link{select_times}} and \code{\link{select_epochs}}
+\code{\link[=select_times]{select_times()}} and \code{\link[=select_epochs]{select_epochs()}}
 
 Other Data selection functions: 
 \code{\link{select_times}()}

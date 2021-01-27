@@ -4,7 +4,13 @@
 \alias{import_set}
 \title{Load EEGLAB .set files}
 \usage{
-import_set(file_name, df_out = FALSE, participant_id = NULL, recording = NULL)
+import_set(
+  file_name,
+  df_out = FALSE,
+  participant_id = NULL,
+  recording = NULL,
+  drop_custom = FALSE
+)
 }
 \arguments{
 \item{file_name}{Filename (and path if not in present working directory)}
@@ -15,12 +21,20 @@ TRUE for a normal data frame.}
 \item{participant_id}{By default, the filename will be used as the id of the participant.}
 
 \item{recording}{By default, the filename will be used as the name of the recording.}
+
+\item{drop_custom}{Drop custom event fields.}
+}
+\value{
+An object of class \code{eeg_data}
 }
 \description{
 EEGLAB .set files are standard Matlab .mat files, but EEGLAB can be set to
 export either v6.5 or v7.3 format files. Only v6.5 files can be read with
 this function. v7.3 files (which use HDF5 format) are not currently
 supported, as they cannot be fully read with existing tools.
+}
+\examples{
+\dontrun{import_set("your_data.set")}
 }
 \author{
 Matt Craddock \email{matt@mattcraddock.com}

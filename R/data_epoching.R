@@ -1,7 +1,7 @@
 #' Create epochs from EEG data
 #'
 #' Creates epochs around specified event triggers. Requires data of class
-#' \code{eeg_data}. Where multiple events are specified, epochs will be created
+#' `eeg_data`. Where multiple events are specified, epochs will be created
 #' around each event.
 #'
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
@@ -27,16 +27,19 @@ epoch_data.default <- function(data, ...) {
 #' @param events Character vector of events to epoch around.
 #' @param time_lim Time in seconds to form epoch around the events. Defaults to
 #'   one second either side.
-#' @param baseline Baseline times to subtract. Defaults to NULL (mean centres
-#'   epochs). Set to "none" to perform no corrections.
+#' @param baseline Baseline times to subtract. Defaults to NULL which will mean
+#'   centre each epoch. Can be set to a numeric vector of length two to specify
+#'   a time window to use as a baseline in each epoch (e.g. c(-.1, 0)), or
+#'   "none", which will perform no baseline correction. As of v0.6 of eegUtils,
+#'   the default will be "none".
 #' @param epoch_labels Character vector of same length as events which'll be
 #'   used to label the epochs.
 #' @importFrom dplyr left_join
 #' @importFrom purrr map map_df
 #'
-#' @return Returns an epoched object of class \code{eeg_epochs}
+#' @return Returns an epoched object of class `eeg_epochs`
 #'
-#' @describeIn epoch_data Epoch \code{eeg_data} objects
+#' @describeIn epoch_data Epoch `eeg_data` objects
 #'
 #' @export
 
@@ -47,6 +50,11 @@ epoch_data.eeg_data <- function(data,
                                 epoch_labels = NULL,
                                 ...) {
 
+  if (is.null(baseline)) {
+    message("The current default value of baseline, NULL,
+            will change to 'none' in v0.6 of eegUtils,
+            performing no baseline correction.")
+  }
   if (!any(events %in% unique(data$events$event_type))) {
     stop("No events found - check event codes.")
   }
@@ -216,9 +224,9 @@ epoch_data.eeg_epochs <- function(data, ...) {
 
 #' Modify the epochs structure
 #'
-#' Get or set the epochs structure of an \code{eegUtils} object
+#' Get or set the epochs structure of an `eegUtils` object
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
-#' @param .data \code{eegUtils} object to view
+#' @param .data `eegUtils` object to view
 #' @export
 epochs <- function(.data) {
   if (any(class(.data) %in% c("eeg_data",

@@ -1,8 +1,8 @@
 #' Print eeg_data summary
 #'
-#' Print a basic summary of the contents of an \code{eeg_data} object
+#' Print a basic summary of the contents of an `eeg_data` object
 #'
-#' @param x \code{eeg_data} object to be printed
+#' @param x `eeg_data` object to be printed
 #' @param ... Further arguments passed
 #' @export
 print.eeg_data <- function(x,
@@ -14,13 +14,14 @@ print.eeg_data <- function(x,
   cat("Electrode names\t\t:", elec_names, "\n")
   cat("Sampling rate\t\t:", x$srate, "Hz\n")
   cat("Reference\t\t:", x$reference$ref_chans, "\n")
+  invisible(x)
 }
 
 #' Print eeg_epochs summary
 #'
-#' Print a basic summary of the contents of an \code{eeg_epochs} object
+#' Print a basic summary of the contents of an `eeg_epochs` object
 #'
-#' @param x \code{eeg_epochs} object to be printed
+#' @param x `eeg_epochs` object to be printed
 #' @param ... Further arguments passed
 #' @export
 print.eeg_epochs <- function(x, ...) {
@@ -29,19 +30,20 @@ print.eeg_epochs <- function(x, ...) {
   n_epochs <- length(unique(x$timings$epoch))
   cat("Epoched EEG data\n\n")
   cat("Number of channels\t:", n_chan, "\n")
-  cat("Number of epochs\t\t:", n_epochs, "\n")
+  cat("Number of epochs\t:", n_epochs, "\n")
   cat("Epoch limits\t\t:", round(min(unique(x$timings$time)), 3),
       "-", round(max(unique(x$timings$time)), 3), "seconds\n")
   cat("Electrode names\t\t:", elec_names, "\n")
   cat("Sampling rate\t\t:", x$srate, " Hz\n")
   cat("Reference\t\t:", x$reference$ref_chans, "\n")
+  invisible(x)
 }
 
 #' Print eeg_epochs summary
 #'
-#' Print a basic summary of the contents of an \code{eeg_epochs} object
+#' Print a basic summary of the contents of an `eeg_epochs` object
 #'
-#' @param x \code{eeg_epochs} object to be printed
+#' @param x `eeg_epochs` object to be printed
 #' @param ... Further arguments passed
 #' @export
 print.eeg_ICA <- function(x, ...) {
@@ -54,13 +56,14 @@ print.eeg_ICA <- function(x, ...) {
   cat("Epoch limits\t\t:", round(min(unique(x$timings$time)), 3),
       "-", round(max(unique(x$timings$time)), 3), "seconds\n")
   cat("Sampling rate\t\t:", x$srate, " Hz\n")
+  invisible(x)
 }
 
 #' Print Values
 #'
-#' Print a basic summary of the contents of an \code{eeg_tfr} object
+#' Print a basic summary of the contents of an `eeg_tfr` object
 #'
-#' @param x \code{eeg_tfr} object to be printed
+#' @param x `eeg_tfr` object to be printed
 #' @param ... Further arguments passed
 #' @export
 print.eeg_tfr <- function(x, ...) {
@@ -82,13 +85,14 @@ print.eeg_tfr <- function(x, ...) {
       round(max(unique(x$timings$time)), 3),
       "seconds\n")
   cat("Sampling rate\t\t:\t", x$srate, " Hz\n")
+  invisible(x)
 }
 
 #' Print eeg_evoked summary
 #'
-#' Print a basic summary of the contents of an \code{eeg_epochs} object
+#' Print a basic summary of the contents of an `eeg_epochs` object
 #'
-#' @param x \code{eeg_epochs} object to be printed
+#' @param x `eeg_epochs` object to be printed
 #' @param ... Further arguments passed
 #' @export
 print.eeg_evoked <- function(x, ...) {
@@ -103,16 +107,18 @@ print.eeg_evoked <- function(x, ...) {
       "seconds\n")
   cat("Electrode names\t\t:\t", elec_names, "\n")
   cat("Sampling rate\t\t:\t", x$srate, " Hz\n")
+  invisible(x)
 }
 
 
 #' Print eeg_stats summary
 #'
-#' Print a basic summary of the contents of an \code{eeg_stats} object
+#' Print a basic summary of the contents of an `eeg_stats` object
 #'
-#' @param x \code{eeg_stats} object to be printed
+#' @param x `eeg_stats` object to be printed
 #' @param ... Further arguments passed
 #' @export
+
 print.eeg_stats <- function(x, ...) {
   elec_names <- names(x$statistic)
   n_chan <- length(elec_names)
@@ -125,21 +131,27 @@ print.eeg_stats <- function(x, ...) {
       "seconds\n")
   cat("Electrode names\t\t:\t", elec_names, "\n")
   cat("Type\t\t:\t", x$method, "\n")
+  invisible(x)
 }
 
-#' Print eeg_data summary
+#' Print eeg_lm summary
 #'
-#' Print a basic summary of the contents of an \code{eeg_data} object
+#' Print a basic summary of the contents of an `eeg_lm` object
 #'
-#' @param object \code{eeg_data} object to be printed
+#' @param x `eeg_lm` object to be printed
 #' @param ... Further arguments passed
 #' @export
-
-summary.eeg_data <- function(object, ...) {
-  elec_names <- names(object$signals)
+print.eeg_lm <- function(x, ...) {
+  elec_names <- x$chan_info$electrode
   n_chan <- length(elec_names)
-  cat("Epoched EEG data\n\n")
-  cat("Number of channels\t:\t", n_chan, "\n")
-  cat("Electrode names\t:", elec_names, "\n")
-  cat("Sampling rate\t:", object$srate, "Hz\n")
+  cat("EEG Linear Model\n\n")
+  cat("Formula:", paste(x$formula), "\n\n")
+  cat("Number of fitted channels\t:\t", n_chan, "\n")
+  cat("Channel names\t\t\t:", elec_names, "\n")
+  cat("Epoch limits\t\t\t:",
+      round(min(unique(x$timings$time)), 3),
+      "-",
+      round(max(unique(x$timings$time)), 3),
+      "seconds\n")
+  invisible(x)
 }

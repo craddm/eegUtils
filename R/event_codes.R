@@ -8,7 +8,7 @@
 #'
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #'
-#' @param data An object of class \code{eeg_data} or \code{eeg_epochs}
+#' @param data An object of class `eeg_data` or `eeg_epochs`
 #' @param ... Parameters passed to S3 methods
 #' @family event handlers
 #' @export
@@ -21,7 +21,7 @@ tag_events <- function(data, ...) {
 #' @param event_label Labels for the events.
 #' @importFrom tibble as_tibble
 #' @export
-#' @describeIn tag_events Tag events in an \code{eeg_data} object
+#' @describeIn tag_events Tag events in an `eeg_data` object
 
 tag_events.eeg_data <- function(data,
                                 trigs,
@@ -36,11 +36,11 @@ tag_events.eeg_data <- function(data,
     stop(paste0("Trigger(s) not found. Check trigger values with list_events()."))
   }
 
-  data$events <- merge(data$events,
-                       data.frame(event_type = trigs,
-                                  event_label = as.character(event_label),
-                                  stringsAsFactors = FALSE),
-                       all = TRUE)
+  data$events <- dplyr::left_join(data$events,
+                                  data.frame(event_type = trigs,
+                                             event_label = as.character(event_label),
+                                             stringsAsFactors = FALSE),
+                                  by = "event_type")
   data$events <- tibble::as_tibble(data$events)
   data
 }
@@ -56,32 +56,26 @@ tag_events.eeg_epochs <- function(data,
     stop("Trigs and event_label parameters must be the same length.")
   }
 
-
-
-  # dplyr::mutate(data$events,
-  #               event_label = ifelse(event_type %in% trigs,
-  #                                    event_label,
-  #                                    .data$event_label))
-  data$events <- merge(data$events,
-                       data.frame(event_type = trigs,
-                                  event_label = as.character(event_label),
-                                  stringsAsFactors = FALSE),
-                       all = TRUE)
+  data$events <- dplyr::left_join(data$events,
+                                  data.frame(event_type = trigs,
+                                             event_label = as.character(event_label),
+                                             stringsAsFactors = FALSE),
+                                  by = "event_type")
   data$events <- tibble::as_tibble(data$events)
   data
 }
 
 #' List events
 #'
-#' List trigger types and any labels found in an \code{eeg_data} object.
+#' List trigger types and any labels found in an `eeg_data` object.
 #'
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
-#' @param data An object of class \code{eeg_data}
+#' @param data An object of class `eeg_data`
 #' @examples
 #' list_events(demo_epochs)
 #' @export
 #' @family event handlers
-#' @seealso \code{\link{tag_events}} and \code{\link{list_epochs}}
+#' @seealso [tag_events()] and [list_epochs()]
 
 list_events <- function(data) {
   if (!is.eeg_data(data)) {
@@ -98,27 +92,27 @@ list_events <- function(data) {
 
 #' List epochs
 #'
-#' List trigger types and any labels found in an \code{eeg_epochs} object.
+#' List trigger types and any labels found in an `eeg_epochs` object.
 #'
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #'
-#' @param data An object of class \code{eeg_epochs}
+#' @param data An object of class `eeg_epochs`
 #' @param ... Additional arguments
 #' @export
 #' @family event handlers
-#' @seealso \code{\link{tag_events}} and \code{\link{list_events}}
+#' @seealso [tag_events()] and [list_events()]
 
 list_epochs <- function(data, ...) {
   UseMethod("list_epochs", data)
 }
 
-#' @describeIn list_epochs List epochs and associated events from \code{eeg_epochs} objects
+#' @describeIn list_epochs List epochs and associated events from `eeg_epochs` objects
 #' @export
 list_epochs.eeg_epochs <- function(data, ...) {
   data$events[, c("epoch", "event_type", "event_label")]
 }
 
-#' @describeIn list_epochs List epochs and associated events from \code{eeg_ICA} objects
+#' @describeIn list_epochs List epochs and associated events from `eeg_ICA` objects
 #' @export
 list_epochs.eeg_ICA <- function(data, ...) {
   data$events[, c("epoch", "event_type", "event_label")]
@@ -138,7 +132,7 @@ list_epochs.eeg_ICA <- function(data, ...) {
 #' events(demo_epochs)
 #'
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
-#' @param .data \code{eegUtils} object to view
+#' @param .data `eegUtils` object to view
 #' @family event handlers
 #' @export
 events <- function(.data) {
@@ -184,9 +178,9 @@ events.eeg_epochs <- function(.data) {
 #'
 #' Tag epochs with labels indicating details such as experimental condition,
 #' based on the occurrence of event triggers from the events() structure. This
-#' adds a new column to the epochs structure in an \code{eeg_epochs} object.
+#' adds a new column to the epochs structure in an `eeg_epochs` object.
 #'
-#' @param .data An \code{eegUtils} object
+#' @param .data An `eegUtils` object
 #' @param ... Additional arguments.
 #' @export
 tag_epochs <- function(.data,
@@ -202,7 +196,7 @@ tag_epochs.default <- function(.data,
 
 }
 
-#'@describeIn tag_epochs Tag epochs in an \code{eeg_epochs} object.
+#'@describeIn tag_epochs Tag epochs in an `eeg_epochs` object.
 #'@param event_type Label epochs according to specific event_types (typically a
 #'  trigger)
 #'@param event_label Label epochs according to specific event_labels

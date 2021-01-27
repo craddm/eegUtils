@@ -4,6 +4,7 @@
 \alias{plot_electrodes}
 \alias{plot_electrodes.default}
 \alias{plot_electrodes.eeg_data}
+\alias{plot_electrodes.eeg_tfr}
 \title{Plot electrode locations}
 \usage{
 plot_electrodes(data, interact = FALSE)
@@ -11,12 +12,18 @@ plot_electrodes(data, interact = FALSE)
 \method{plot_electrodes}{default}(data, interact = FALSE)
 
 \method{plot_electrodes}{eeg_data}(data, interact = FALSE)
+
+\method{plot_electrodes}{eeg_tfr}(data, interact = FALSE)
 }
 \arguments{
 \item{data}{Data with associated electrode locations to be plotted.}
 
 \item{interact}{Choose 2D cartesian layout, or, if set to TRUE, an
 interactive 3D plot of electrode locations. Defaults to FALSE.}
+}
+\value{
+A \code{ggplot} or \code{plotly} figure showing the locations of the
+electrodes
 }
 \description{
 Produces either a 2D plot of the electrode locations or an interactive plot
@@ -27,6 +34,8 @@ of electrode locations in 3D space.
 \item \code{default}: generic plot electrodes function
 
 \item \code{eeg_data}: Plot electrodes associated with an \code{eeg_data} object.
+
+\item \code{eeg_tfr}: Plot electrodes associated with an \code{eeg_data} object.
 }}
 
 \examples{

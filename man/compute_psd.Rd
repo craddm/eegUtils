@@ -87,7 +87,7 @@ minimum of 2048 or the length of the signal for continuous \code{eeg_data}.
 to it.
 
 \code{noverlap} specifies the amount of overlap between windows in sampling
-points. If not specified, it defaults to 50\% overlap between segments.
+points. If NULL, it defaults to 50\\% overlap between segments.
 }
 \section{Methods (by class)}{
 \itemize{
@@ -99,8 +99,10 @@ points. If not specified, it defaults to 50\% overlap between segments.
 }}
 
 \examples{
-compute_psd(demo_epochs)
-compute_psd(demo_epochs, n_fft = 256, seg_length = 128)
+out <- compute_psd(demo_epochs)
+
+out <- compute_psd(demo_epochs, n_fft = 256, seg_length = 128)
+
 }
 \author{
 Matt Craddock \email{matt@mattcraddock.com}

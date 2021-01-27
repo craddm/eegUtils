@@ -22,6 +22,9 @@ ar_acf(data, ...)
 
 \item{threshold}{Specify a threshold for low ACF. NULL estimates the threshold automatically.}
 }
+\value{
+A character vector of component names that break the threshold.
+}
 \description{
 Low autocorrelation can be a sign of a poor quality channel or component.
 Often these are noisy, poor contact, or heavily contaminated with muscle
@@ -33,11 +36,15 @@ noise.
 \item \code{eeg_ICA}: Autocorrelation checker for \code{eeg_ICA} objects
 }}
 
+\examples{
+demo_sobi <- run_ICA(demo_epochs, pca = 10)
+ar_acf(demo_sobi)
+}
 \references{
 Chaumon, M., Bishop, D.V., Busch, N.A. (2015). A practical guide
-  to the selection of independent components of the electroencephalogram for
-  artifact correction. J Neurosci Methods. Jul 30;250:47-63. doi:
-  10.1016/j.jneumeth.2015.02.025
+to the selection of independent components of the electroencephalogram for
+artifact correction. J Neurosci Methods. Jul 30;250:47-63. doi:
+10.1016/j.jneumeth.2015.02.025
 }
 \author{
 Matt Craddock \email{matt@mattcraddock.com}

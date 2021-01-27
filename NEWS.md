@@ -1,3 +1,50 @@
+# eegUtils 0.6.0
+
+IMPORTANT: There have been some changes to the logic of the `topoplot()` that may make their appearance quite different. Specifically, these changes are to the way the underlying interpolation grid is calculated and to how things like the diameter of the cartoon head is calculated. These changes often lead to different minimum or maximum amplitudes across the image, and thus changes in the appearance of the plot due to different scales- don't be alarmed!
+
+### Function changes
+- Added `filter` method for `eeg_tfr` objects
+- `fit_glm()` overhauled. Now far faster and allows specification of models using standard R formulae.
+- New `eeg_lm` class introduced for output of `fit_glm()`.
+- `plot_butterfly.eeg_lm()` method added
+- `as.data.frame()` methods have been added for `eeg_lm` objects.
+- `view_ica()` Shiny viewer for `eeg_ICA` and `eeg_decomp` objects added.
+- `view_artefacts()`Shiny viewer for channel and epoch stats added.
+- `plot_timecourse()` now takes a mapping argument, which allows use of `ggplot2` `aes()` mappings
+- `eeg_average.eeg_tfr()` now follows behaviour of other `eeg_average()` methods in respecting the `epochs` structure.  
+- `compute_itc()` added for computing inter-trial coherence from `eeg_tfr` objects.
+- `cols` added to `eeg_average.eeg_tfr`
+- `eeg_combine.tfr_average()` added to handle pre-averaged `eeg_tfr` objects
+- `compute_tfr()` now allows non-constant number of cycles
+- `compute_tfr()` now uses a different scaling factor, so raw units should now be microvolts-squared. 
+- added `import_erplab()` function
+
+### Internal changes / bug fixes
+- `plot_tfr()` now always drops NA/NaN values and averages appropriately over electrodes and conditions.
+- `import_set()` handles continuous EEG data from EEGLAB much better
+- Now using `whitening` package for whitening before SOBI ICA
+- `select_epochs` for `eeg_ICA` objects fixed to correctly remove epochs from `signals`
+- added tests for `filter.eeg_ICA` and `filter.eeg_tfr`
+- fixed `filter.eeg_data` and `filter.eeg_evoked`
+- `select_elecs` for `eeg_ICA` now correctly removes components from the unmixing matrix
+- switched back to using `left_join` from `dplyr` in the `tag_events` function as an easy fix for sorting of events when tagging.
+- fixed odd interaction between `select()` and `validate_channels()` that reordered channel names in `chan_info`
+- `eeg_decomp` now doing better job of filtering for `ssd` method
+- various `tibble` related warnings and errors cleaned up.
+- `method = "gam"` should now yield sensible results for `geom_topo()`
+- `run_ICA()` and `eeg_decomp()` methods now return components ordered by percent variance explained (high to low)
+- removed scaling of components in SOBI ICA method
+- `browse_data().eeg_ica` grid res reduced
+- `eeg_reference().eeg_epochs` was always average referencing, now fixed.
+- cleaner code in `topoplot()` for biharmonic smooth
+- `compute_psd()` now demeans individual segments when doing Welch FFT; also no longer errors when only one segment per channel
+- `eeg_tfr()` internal structure modified to keep 4 dimensions even after averaging, for consistency
+- `stat_summary_by_fill()` added to do averaging for raster plots effectively.
+- `convert_tfr()` now properly returns converted data
+- `import_raw()` fix for Brain Vision Analyzer files with date fields in the markers
+- added `version` field to most objects
+
+
 # eegUtils 0.5.0
 
 ### Function changes
@@ -20,7 +67,7 @@
 - `compute_tfr` reworked to be faster.
 - Faster baseline correction implemented using Rcpp.
 - Padding now used during `compute_tfr`, which greatly improves speed/accuracy; units may change but this is a change in scaling factor.
-- `epoch_data` now uses a more robust way of determing time limits/samples to include in each epoch that no longer fails at some combinations of time limit and sampling rate
+- `epoch_data` now uses a more robust way of determining time limits/samples to include in each epoch that no longer fails at some combinations of time limit and sampling rate
 - `eeg_average` returns objects of class(`eeg_evoked`, `eeg_epochs`)
 - Updated R requirement to >= 3.2.0
 - Updated rlang requirement to >= 0.4.0

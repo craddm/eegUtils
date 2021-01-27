@@ -12,4 +12,3 @@ is.eeg_stats(x)
 \description{
 Check if object is of class \code{eeg_stats}
 }
-\keyword{internal}

@@ -7,10 +7,10 @@
 channel_names(.data)
 }
 \arguments{
-\item{.data}{\code{eegUtils object}}
+\item{.data}{\verb{eegUtils object}}
 }
 \description{
-Get the names of the `signals` element of `eegUtils` objects.
+Get the names of the \code{signals} element of \code{eegUtils} objects.
 }
 \examples{
 channel_names(demo_epochs)

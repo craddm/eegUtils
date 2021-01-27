@@ -38,9 +38,9 @@ activity that emphasises more local spatial features
 \itemize{
 \item \code{default}: Default method to detect unknown classes.
 
-\item \code{eeg_data}: Transform eeg_data to CSD
+\item \code{eeg_data}: Transform \code{eeg_data} to CSD
 
-\item \code{eeg_epochs}: Transform eeg_data to CSD
+\item \code{eeg_epochs}: Transform \code{eeg_data} to CSD
 }}
 
 \examples{
@@ -48,16 +48,20 @@ csd_epochs <- compute_csd(demo_epochs)
 plot_butterfly(csd_epochs)
 }
 \references{
-[1] Perrin, F., Pernier, J., Bertrand, O., Echallier, J.F.
-  (1989). Spherical splines for scalp potential and current density mapping.
-  Electroencephalography and Clinical Neurophysiology, 72(2), 184-187. PMID:
-  2464490 [2] Kayser, J., Tenke, C.E. (2006). Principal components analysis
-  of Laplacian waveforms as a generic method for identifying ERP generator
-  patterns: I. Evaluation with auditory oddball tasks. Clinical
-  Neurophysiology, 117(2), 348-368. [3] Kayser, J., Tenke, C.E. (2015).
-  Issues and considerations for using the scalp surface Laplacian in EEG/ERP
-  research: A tutorial review. International Journal of Psycholphysiology,
-  97(3), 189-209
+\itemize{
+\item Perrin, F., Pernier, J., Bertrand, O., Echallier, J.F.
+(1989). Spherical splines for scalp potential and current density mapping.
+Electroencephalography and Clinical Neurophysiology, 72(2), 184-187. PMID:
+2464490
+\item Kayser, J., Tenke, C.E. (2006). Principal components analysis
+of Laplacian waveforms as a generic method for identifying ERP generator
+patterns: I. Evaluation with auditory oddball tasks. Clinical
+Neurophysiology, 117(2), 348-368.
+\item Kayser, J., Tenke, C.E. (2015).
+Issues and considerations for using the scalp surface Laplacian in EEG/ERP
+research: A tutorial review. International Journal of Psycholphysiology,
+97(3), 189-209
+}
 }
 \author{
 Matt Craddock \email{matt@mattcraddock.com}

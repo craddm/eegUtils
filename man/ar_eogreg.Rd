@@ -13,7 +13,7 @@ ar_eogreg(data, heog, veog, bipolarize = TRUE)
 \method{ar_eogreg}{eeg_epochs}(data, heog, veog, bipolarize = TRUE)
 }
 \arguments{
-\item{data}{data to regress - \code{eeg_data} or \code{eeg_epochs}}
+\item{data}{Data to regress - \code{eeg_data} or \code{eeg_epochs}}
 
 \item{heog}{Horizontal EOG channel labels}
 
@@ -22,9 +22,15 @@ ar_eogreg(data, heog, veog, bipolarize = TRUE)
 \item{bipolarize}{Bipolarize the EOG channels. Only works when four channels
 are supplied (2 HEOG and 2 VEOG).}
 }
+\value{
+An \code{eeg_data} or \code{eeg_epochs} object with corrections
+applied.
+}
 \description{
-Calculates and removes the contribution of eye movements to the EEG signal using
-least-squares regression.
+Calculates and removes the contribution of eye movements to the EEG signal
+using least-squares regression. Specifically, it generate regression weights
+based on EOG channels that are used to estimate how much activity eye
+movements are responsible for across all channels.
 }
 \author{
 Matt Craddock, \email{matt@mattcraddock.com}

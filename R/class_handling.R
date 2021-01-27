@@ -34,7 +34,8 @@ eeg_data <- function(data,
                 chan_info = chan_info,
                 timings = timings,
                 reference = reference,
-                epochs = epochs)
+                epochs = epochs,
+                version = utils::packageVersion("eegUtils"))
   class(value) <- "eeg_data"
   value
 }
@@ -106,17 +107,17 @@ eeg_tfr <- function(data,
                     dimensions,
                     epochs = NULL) {
 
-  value <- list(signals = data,
-                srate = srate,
+  structure(list(signals = data,
+                 srate = srate,
                 events = events,
                 chan_info = chan_info,
                 reference = reference,
                 timings = timings,
                 freq_info = freq_info,
                 dimensions = dimensions,
-                epochs = epochs)
-  class(value) <- "eeg_tfr"
-  value
+                epochs = epochs,
+                version = utils::packageVersion("eegUtils")),
+                class = "eeg_tfr")
 }
 
 #' Function to create an object of class eeg_psd
@@ -148,23 +149,22 @@ eeg_psd <- function(data,
 }
 
 
-#' Function to create an object of class \code{eeg_GA}
+#' Function to create an object of class `eeg_GA`
 #'
 #' @noRd
 
-eeg_GA <- function(data,
-                   srate,
-                   chan_info,
-                   timings,
-                   indivs) {
+eeg_group <- function(data,
+                      srate,
+                      chan_info,
+                      timings,
+                      epochs) {
 
-  value <- list(signals = data,
-                srate = srate,
-                chan_info = chan_info,
-                timings = timings,
-                indivs = indivs)
-  class(value) <- "eeg_GA"
-  value
+  structure(list(signals = data,
+                 srate = srate,
+                 chan_info = chan_info,
+                 timings = timings,
+                 epochs = epochs),
+            class = "eeg_group")
 }
 
 #' Function to create an S3 object of class "eeg_epochs".
@@ -196,7 +196,8 @@ eeg_epochs <- function(data,
                 chan_info = chan_info,
                 timings = timings,
                 reference = reference,
-                epochs = epochs)
+                epochs = epochs,
+                version = utils::packageVersion("eegUtils"))
   class(value) <- c("eeg_epochs", "eeg_data")
   value
 }
@@ -267,7 +268,8 @@ eeg_evoked <- function(data,
                 chan_info = chan_info,
                 timings = timings,
                 srate = srate,
-                epochs = epochs)
+                epochs = epochs,
+                version = utils::packageVersion("eegUtils"))
   class(value) <- c("eeg_evoked", "eeg_epochs")
   value
 }
@@ -292,11 +294,50 @@ eeg_stats <- function(statistic,
                 pvals = tibble::as_tibble(pvals),
                 chan_info = chan_info,
                 timings = timings,
-                method = method)
+                method = method,
+                version = utils::packageVersion("eegUtils"))
   class(value) <- "eeg_stats"
   value
 }
 
+new_eeg_lm <- function(coefficients,
+                       std_err,
+                       t_stats,
+                       r_sq,
+                       chan_info,
+                       epochs,
+                       timings,
+                       formula) {
+
+  stopifnot(is.data.frame(coefficients))
+  stopifnot(is.data.frame(std_err))
+  stopifnot(is.data.frame(t_stats))
+  stopifnot(is.data.frame(r_sq))
+  #stopifnot(is.data.frame(chan_info))
+  stopifnot(rlang::is_formula(formula))
+
+  new_eeg_stats(
+    coefficients = coefficients,
+    std_err = std_err,
+    t_stats = t_stats,
+    r_sq = r_sq,
+    timings = timings,
+    epochs = epochs,
+    chan_info = chan_info,
+    formula = formula,
+    class = "eeg_lm"
+  )
+}
+
+new_eeg_stats <- function(...,
+                          class = character()) {
+
+  new_obj <- list(...)
+  structure(
+    new_obj,
+    class = c(class, "eeg_stats")
+  )
+}
 
 #' Function to create an S3 object of class "eeg_ICA".
 #'
@@ -348,28 +389,27 @@ is.eeg_data <- function(x) inherits(x, "eeg_data")
 #'
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #' @param x Object to check.
-#' @keywords internal
-
+#' @export
 is.eeg_epochs <- function(x) inherits(x, "eeg_epochs")
 
-#' Check if object is of class \code{eeg_evoked}
+#' Check if object is of class `eeg_evoked`
 #'
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #' @param x Object to check.
-#' @keywords internal
+#' @export
 is.eeg_evoked <- function(x) inherits(x, "eeg_evoked")
 
-#' Check if object is of class \code{eeg_stats}
+#' Check if object is of class `eeg_stats`
 #'
 #' @param x Object to check.
-#' @keywords internal
+#' @export
 is.eeg_stats <- function(x) inherits(x, "eeg_stats")
 
-#' Check if object is of class \code{eeg_ICA}
+#' Check if object is of class `eeg_ICA`
 #'
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #' @param x Object to check.
-#' @keywords internal
+#' @export
 
 is.eeg_ICA <- function(x) inherits(x, "eeg_ICA")
 
@@ -377,9 +417,10 @@ is.eeg_ICA <- function(x) inherits(x, "eeg_ICA")
 #'
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #' @param x Object to check.
-#' @keywords internal
+#' @export
 is.eeg_tfr <- function(x) inherits(x, "eeg_tfr")
 
 #' Check if object is of class eeg_group
-#' @noRd
+#' @param x Object to check.
+#' @export
 is.eeg_group <- function(x) inherits(x, "eeg_group")

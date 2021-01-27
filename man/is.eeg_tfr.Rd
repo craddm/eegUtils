@@ -15,4 +15,3 @@ Check if object is of class eeg_tfr
 \author{
 Matt Craddock \email{matt@mattcraddock.com}
 }
-\keyword{internal}

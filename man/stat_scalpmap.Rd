@@ -15,9 +15,9 @@ stat_scalpmap(
   na.rm = FALSE,
   show.legend = NA,
   inherit.aes = TRUE,
-  grid_res = 300,
+  grid_res = 200,
   interpolate = FALSE,
-  interp_limit = "skirt",
+  interp_limit = c("skirt", "head"),
   method = "biharmonic",
   ...
 )
@@ -29,7 +29,7 @@ geom_head(
   na.rm = TRUE,
   inherit.aes = TRUE,
   interp_limit = "skirt",
-  r = NULL,
+  r = 95,
   ...
 )
 
@@ -39,12 +39,21 @@ geom_mask(
   show.legend = NA,
   na.rm = FALSE,
   colour = "white",
-  size = rel(6.5),
-  scale_fac = 1.32,
+  size = rel(5),
+  scale_fac = 1.04,
+  r = 95,
+  interp_limit = "skirt",
   ...
 )
 
-geom_ears(mapping = NULL, data = NULL, show.legend = NA, na.rm = FALSE, ...)
+geom_ears(
+  mapping = NULL,
+  data = NULL,
+  show.legend = NA,
+  na.rm = FALSE,
+  r = 95,
+  ...
+)
 
 geom_channels(
   mapping = NULL,
@@ -94,7 +103,7 @@ rather than combining with them. This is most useful for helper functions
 that define both data and aesthetics and shouldn't inherit behaviour from
 the default plot specification, e.g. \code{\link[ggplot2:borders]{borders()}}.}
 
-\item{grid_res}{Resolution of the interpolation grid. (Defaults to 100
+\item{grid_res}{Resolution of the interpolation grid. (Defaults to 200
 points).}
 
 \item{interpolate}{If \code{TRUE} interpolate linearly, if \code{FALSE}
@@ -116,7 +125,7 @@ to the paired geom/stat.}
 \item{size}{For \code{geom_mask}, width of the masking ring.}
 
 \item{scale_fac}{The radius of the ring is determined from the front-most
-electrode's location by a scaling factor. Defaults to 1.32 * max(y).}
+electrode's location by a scaling factor. Defaults to 1.04 * max(y).}
 
 \item{geom}{"point" for points or "text" for labels. Default is "point".}
 }

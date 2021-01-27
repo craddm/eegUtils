@@ -1,14 +1,17 @@
 Package: eegUtils
 Type: Package
-Title: A collection of utilities for EEG analysis 
-Version: 0.5.0
-Date: 2019-11-03
+Title: Utilities for Electroencephalographic (EEG) Analysis 
+Version: 0.6.0
+Date: 2021-01-27
 Authors@R: c(
-  person("Matt", "Craddock", role = c("aut", "cre"), email = "matt@mattcraddock.com"),
+  person("Matt", "Craddock", role = c("aut", "cre", "cph"), email = "matt@mattcraddock.com"),
   person("Matti", "Vuorre", role = "ctb", email = "mv2521@columbia.edu"))
 Maintainer: Matt Craddock <matt@mattcraddock.com>
-Description: A collection of functions for EEG processing. Includes import
-  functions for Biosemi (BDF) and Neuroscan (CNT), topographical plotting, referencing, and epoching.
+Description: EEG processing and visualization tools. Includes import
+  functions for 'BioSemi' (.BDF), 'Neuroscan' (.CNT), 'Brain Vision Analyzer' (.VHDR),
+  'EEGLAB' (.set) and 'Fieldtrip' (.mat). Many preprocessing functions such as
+  referencing, epoching, filtering, and ICA are available. There are a variety 
+  of visualizations possible, including timecourse and topographical plotting.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
@@ -24,24 +27,19 @@ Imports:
     rlang (>= 0.4.0),
     MASS,
     Matrix,
-    edfReader,
     signal,
     tibble,
     stats,
     matrixStats,
-    R.matlab,
-    viridis,
     pracma,
     abind,
     data.table,
-    ini,
-    shinydashboard,
     plotly,
     future.apply,
     Rcpp
 Depends:
-  R (>= 3.2.0)
-RoxygenNote: 7.0.2
+  R (>= 3.3.0)
+RoxygenNote: 7.1.1
 Suggests: testthat,
     vdiffr,
     covr,
@@ -50,10 +48,15 @@ Suggests: testthat,
     JADE,
     ica,
     geigen,
-    fICA
+    whitening,
+    fICA,
+    edfReader,
+    ini,
+    R.matlab
 URL: https://github.com/craddm/eegUtils, https://craddm.github.io/eegUtils
 BugReports: https://github.com/craddm/eegUtils/issues
 VignetteBuilder: knitr
 LinkingTo: 
     Rcpp,
     RcppArmadillo
+Roxygen: list(markdown = TRUE)

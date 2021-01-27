@@ -1,28 +1,30 @@
 #' Function for reading raw data.
 #'
 #' Currently BDF/EDF, 32-bit .CNT, and Brain Vision Analyzer files are
-#' supported. Filetype is determined by the file extension.The \code{edfReader}
+#' supported. Filetype is determined by the file extension.The `edfReader`
 #' package is used to load BDF/EDF files, whereas custom code is used for .CNT
-#' and BVA files. The function creates an \code{eeg_data} structure for
+#' and BVA files. The function creates an `eeg_data` structure for
 #' subsequent use.
 #'
 #' @author Matt Craddock, \email{matt@@mattcraddock.com}
 #' @param file_name File to import. Should include file extension.
 #' @param file_path Path to file name, if not included in filename.
-#' @param chan_nos Channels to import. All channels are included by default.
 #' @param recording Name of the recording. By default, the filename will be
 #'   used.
 #' @param participant_id Identifier for the participant.
 #' @param fast_bdf New, faster method for loading BDF files. Experimental.
-#' @import edfReader
 #' @import tools
 #' @importFrom purrr map_df is_empty
 #' @importFrom tibble tibble as_tibble
+#' @examples
+#' \dontrun{
+#' import_raw("test_bdf.bdf")
+#' }
+#' @return An object of class `eeg_data`
 #' @export
 
 import_raw <- function(file_name,
                        file_path = NULL,
-                       chan_nos = NULL,
                        recording = NULL,
                        participant_id = character(1),
                        fast_bdf = TRUE) {
@@ -30,14 +32,14 @@ import_raw <- function(file_name,
   file_type <- tools::file_ext(file_name)
 
   if (!is.null(file_path)) {
-    file_name <- paste0(file_path, file_name)
+    file_name <- file.path(file_path, file_name)
   }
 
   if (is.null(recording)) {
     recording <- basename(tools::file_path_sans_ext(file_name))
   }
 
-  if (file_type == "bdf" | file_type == "edf") {
+  if (file_type %in% c("bdf","edf")) {
     message(paste("Importing",
                   file_name,
                   "as",
@@ -50,6 +52,11 @@ import_raw <- function(file_name,
       sigs <- tibble::as_tibble(sigs)
       srate <- bdf_header$srate[[1]]
     } else {
+
+      if (!requireNamespace("edfReader", quietly = TRUE)) {
+        stop("Package \"edfReader\" needed. Please install it.",
+             call. = FALSE)
+      }
       data <- edfReader::readEdfSignals(edfReader::readEdfHeader(file_name))
       #check for an annotations channel
       anno_chan <- which(vapply(data,
@@ -105,16 +112,17 @@ import_raw <- function(file_name,
                                  nrow = 1,
                                  class = "epoch_info")
 
-
     data <- eeg_data(data = sigs,
                      srate = srate,
                      events = event_table,
                      timings = timings,
                      epochs = epochs)
     data
-  } else if (file_type == "cnt") {
+  } else if (identical(file_type,"cnt")) {
     message(paste("Importing Neuroscan", toupper(file_type), file_name))
+    message(paste("Note: if this is 16-bit or an ANT Neuro .CNT file, reading will fail."))
     data <- import_cnt(file_name)
+
     sigs <- tibble::as_tibble(t(data$chan_data))
     names(sigs) <- data$chan_info$electrode
     srate <- data$head_info$samp_rate
@@ -139,11 +147,20 @@ import_raw <- function(file_name,
                      timings = timings,
                      epochs = epochs)
 
-    } else if (file_type == "vhdr") {
+    } else if (identical(file_type, "vhdr")) {
+
+      if (!requireNamespace("ini", quietly = TRUE)) {
+        stop("Package \"ini\" needed to read BVA files. Please install it.",
+             call. = FALSE)
+      }
+
       message(paste("Importing Brain Vision Analyzer file", file_name))
+
+
       data <- import_vhdr(file_name,
                           recording = recording,
                           participant_id = participant_id)
+
     } else {
       stop("Unsupported filetype")
     }
@@ -388,7 +405,6 @@ import_vhdr <- function(file_name,
   .data
 }
 
-#' @importFrom ini read.ini
 #' @keywords internal
 read_vhdr <- function(file_name) {
 
@@ -411,8 +427,10 @@ read_vhdr <- function(file_name) {
     multiplexed <- TRUE
   }
 
-  data_file <- header_info$`Common Infos`$DataFile
-  vmrk_file <- header_info$`Common Infos`$MarkerFile
+  data_file <- file.path(dirname(file_name),
+                         header_info$`Common Infos`$DataFile)
+  vmrk_file <- file.path(dirname(file_name),
+                         header_info$`Common Infos`$MarkerFile)
   n_chan <- as.numeric(header_info$`Common Infos`$NumberOfChannels)
   # header gives sampling times in microseconds
   srate <- 1e6 / as.numeric(header_info$`Common Infos`$SamplingInterval)
@@ -420,8 +438,9 @@ read_vhdr <- function(file_name) {
 
   chan_labels <- lapply(header_info$`Channel Infos`,
                         function(x) unlist(strsplit(x = x, split = ",")))
-  chan_labels <- sapply(chan_labels, "[[", 1)
-  chan_info <- parse_vhdr_chans(chan_labels,
+  chan_names <- sapply(chan_labels, "[[", 1)
+  chan_scale <- as.numeric(sapply(chan_labels, "[[", 3))
+  chan_info <- parse_vhdr_chans(chan_names,
                                 header_info$`Coordinates`)
 
   file_size <- file.size(data_file)
@@ -434,8 +453,15 @@ read_vhdr <- function(file_name) {
                   ncol = n_chan,
                   byrow = multiplexed)
 
+  if (any(!is.na(chan_scale))) {
+    .data <- sweep(.data,
+                   2,
+                   chan_scale,
+                   "*")
+  }
+  colnames(.data) <- chan_names
   .data <- tibble::as_tibble(.data)
-  names(.data) <- chan_labels
+
   n_points <- nrow(.data)
 
   timings <- tibble::tibble(sample = 1:n_points,
@@ -475,16 +501,19 @@ read_dat <- function(file_name,
   if (identical(bin_format, "IEEE_FLOAT_32")) {
     nbytes <- 4
     signed <- TRUE
+    file_type <- "double"
   } else if (identical(bin_format, "UINT_16")) {
     nbytes <- 2
     signed <- FALSE
+    file_type <- "int"
   } else {
     nbytes <- 2
     signed <- TRUE
+    file_type <- "int"
   }
 
   raw_data <- readBin(file_name,
-                      what = "double",
+                      what = file_type,
                       n = file_size,
                       size = nbytes,
                       signed = signed)
@@ -502,27 +531,31 @@ read_vmrk <- function(file_name) {
   vmrks <- ini::read.ini(file_name)
   marker_id <- names(vmrks$`Marker Infos`)
 
-  markers <- lapply(vmrks$`Marker Infos`, function(x) unlist(strsplit(x, ",")))
+  markers <- lapply(vmrks$`Marker Infos`,
+                    function(x) unlist(strsplit(x, ",")))
 
   # to do - fix to check for "New segment" instead - it's the extra date field that causes issues
   if (length(markers[[1]]) == 6) {
     date <- markers[[1]][[6]]
-    markers[[1]] <- markers[[1]][1:5]
+    markers <- lapply(markers, `[`, 1:5)
   } else {
     date <- NA
   }
 
-  markers <- tibble::as_tibble(do.call(rbind, markers))
-  names(markers) <- c("BVA_type",
-                      "event_type",
-                      "event_onset",
-                      "length",
-                      ".electrode")
-  markers <- dplyr::mutate(markers,
-                           event_onset = as.numeric(event_onset),
-                           length = as.numeric(length),
-                           .electrode = as.numeric(.electrode))
+  markers <- do.call(rbind, markers)
 
+  colnames(markers) <- c("BVA_type",
+                         "event_type",
+                         "event_onset",
+                         "length",
+                         ".electrode")
+
+  markers <- tibble::as_tibble(markers)
+  markers <-
+    dplyr::mutate(markers,
+                  event_onset = as.numeric(event_onset),
+                  length = as.numeric(length),
+                  .electrode = as.numeric(.electrode))
   markers
 }
 
@@ -538,18 +571,26 @@ read_vmrk <- function(file_name) {
 #'   TRUE for a normal data frame.
 #' @param participant_id By default, the filename will be used as the id of the participant.
 #' @param recording By default, the filename will be used as the name of the recording.
+#' @param drop_custom Drop custom event fields.
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
-#' @importFrom R.matlab readMat
 #' @importFrom dplyr group_by mutate rename
 #' @importFrom tibble tibble as_tibble
-#' @importFrom purrr is_empty
+#' @importFrom purrr is_empty map_df
+#' @examples
+#' \dontrun{import_set("your_data.set")}
+#' @return An object of class `eeg_data`
 #' @export
 
 import_set <- function(file_name,
                        df_out = FALSE,
                        participant_id = NULL,
-                       recording = NULL) {
+                       recording = NULL,
+                       drop_custom = FALSE) {
 
+  if (!requireNamespace("R.matlab", quietly = TRUE)) {
+    stop("Package \"R.matlab\" needed. Please install it.",
+         call. = FALSE)
+  }
 
   if (is.null(recording)) {
     recording <- basename(tools::file_path_sans_ext(file_name))
@@ -565,14 +606,18 @@ import_set <- function(file_name,
   n_chans <- temp_dat$EEG[[which(var_names == "nbchan")]]
   n_trials <- temp_dat$EEG[[which(var_names == "trials")]]
   times <- temp_dat$EEG[[which(var_names == "times")]]
+  chan_info <- drop(Reduce(rbind, temp_dat$EEG["chanlocs",,]))
 
-  chan_info <- temp_dat$EEG[[which(var_names == "chanlocs")]]
-  col_names <- dimnames(chan_info)[1]
-  size_chans <- dim(chan_info)
-  chan_info <- lapply(chan_info,
-                      function(x) ifelse(purrr::is_empty(x), NA, x))
-  dim(chan_info) <- size_chans
-  dimnames(chan_info) <- col_names
+  pick_empties <-
+    vapply(
+      chan_info,
+      function(x) is.null(x) | length(x) == 0,
+      FUN.VALUE = logical(1)
+    )
+  chan_info[pick_empties] <- NA
+  chan_info <- lapply(data.frame(t(chan_info)),
+                      unlist) # unlist each data.frame column
+  chan_info <- data.frame(chan_info) # turn back into data frame
   chan_info <- parse_chaninfo(chan_info)
 
   # check if the data is stored in the set or in a separate .fdt
@@ -615,42 +660,99 @@ import_set <- function(file_name,
     }
   }
 
-  signals <- data.frame(cbind(t(signals),
-                              times))
-  srate <- c(temp_dat$EEG[[which(var_names == "srate")]])
-  names(signals) <- c(unique(chan_info$electrode), "time")
-  signals <- dplyr::group_by(signals,
-                             time)
-  signals <- dplyr::mutate(signals,
-                           epoch = 1:dplyr::n())
-  signals <- dplyr::ungroup(signals)
+  signals <- t(signals)
+  colnames(signals) <- unique(chan_info$electrode)
+  signals <- as.data.frame(signals)
+  signals$time <- times
+
+  srate <- temp_dat$EEG[[which(var_names == "srate")]][[1]]
+
+  if (!continuous) {
+    signals <- dplyr::group_by(signals,
+                               time)
+    signals <- dplyr::mutate(signals,
+                             epoch = 1:dplyr::n())
+    signals <- dplyr::ungroup(signals)
+  }
 
   event_info <- temp_dat$EEG[[which(var_names == "event")]]
 
-  event_table <- tibble::as_tibble(t(matrix(as.integer(event_info),
-                               nrow = dim(event_info)[1],
-                               ncol = dim(event_info)[3])))
+  event_table <- event_info
+  dim(event_table) <- c(dim(event_info)[[1]],
+                        dim(event_info)[[3]])
 
-  names(event_table) <- unlist(dimnames(event_info)[1])
+  event_table <- t(event_table)
+
+  colnames(event_table) <- dimnames(event_info)[[1]]
+
+  event_table <- tibble::as_tibble(event_table)
+  event_table <- lapply(event_table,
+                        unlist)
+  empty_entries <- unlist(lapply(event_table,
+                                 is_empty))
+  if (any(empty_entries)) {
+    empty_cols <- names(event_table)[empty_entries]
+    message(paste0("Removing empty event table column (s):",
+                   empty_cols))
+    event_table <- event_table[!empty_entries]
+  }
+  event_table <- tibble::as_tibble(event_table)
+
+  # EEGLAB stores latencies in samples and allows non-integer samples (e.g.
+  # through downsampling, or more rapidly sampled events than EEG signal)
+  #
+  if (any(event_table$latency %% 1 > 0)) {
+    message("Rounding non-integer event sample latencies...")
+    event_table$latency <- round(event_table$latency)
+  }
+
+  # EEGLAB stores latencies in samples starting from 1, my event_time is in
+  # seconds, starting from 0
   event_table$event_time <- (event_table$latency - 1) / srate
-  event_table <- event_table[c("latency", "event_time", "type", "epoch")]
+
+
+  std_cols <- c("latency",
+                "event_time",
+                "type",
+                "epoch")
+
+  if (drop_custom & any(!colnames(event_table) %in% std_cols)) {
+    message("Dropping custom columns...")
+    event_table <- event_table[, std_cols]
+  }
+
+  col_check <-  colnames(event_table) %in% c("event_type", "event_onset")
+
+  if (any(col_check)) {
+    dupe_checks <- colnames(event_table)[col_check]
+    dupe_labs <- paste0(dupe_checks, ".x")
+  }
+
+  #need to build in check for duplicate columns
   event_table <- dplyr::rename(event_table,
                                event_type = "type",
                                event_onset = "latency")
-  event_table$time <- NA
-
   if (df_out) {
     return(signals)
   } else {
     signals$time <- signals$time / 1000
     # convert to seconds - eeglab uses milliseconds
-    timings <- tibble::tibble(time = signals$time,
-                              epoch = signals$epoch,
-                              sample = 1:length(signals$time))
-    event_table$time <- timings[which(timings$sample %in% event_table$event_onset,
-                                      arr.ind = TRUE), ]$time
+    if (continuous) {
+      timings <- tibble::tibble(time = signals$time,                                #epoch = signal,
+                                sample = 1:length(signals$time))
+      n_epochs <- 1
+    } else {
+      timings <- tibble::tibble(time = signals$time,
+                                epoch = signals$epoch,
+                                sample = 1:length(signals$time))
+      event_table$time <- NA
+      event_table$time <- timings[which(timings$sample %in% event_table$event_onset,
+                                        arr.ind = TRUE), ]$time
 
-    n_epochs <- length(unique(timings$epoch))
+      n_epochs <- length(unique(timings$epoch))
+    }
+
+
 
     epochs <-
       tibble::new_tibble(list(epoch = 1:n_epochs,
@@ -658,16 +760,21 @@ import_set <- function(file_name,
                               recording = rep(recording, n_epochs)),
                          nrow = n_epochs,
                          class = "epoch_info")
-
-    out_data <- eeg_data(signals[, 1:n_chans],
-                         srate = srate,
-                         timings = timings,
-                         chan_info = chan_info,
-                         events = event_table,
-                         epochs = epochs)
-
-    if (!continuous) {
-      class(out_data) <- c("eeg_epochs", "eeg_data")
+    if (continuous) {
+      out_data <- eeg_data(signals[, 1:n_chans],
+                           srate = srate,
+                           timings = timings,
+                           chan_info = chan_info,
+                           events = event_table,
+                           epochs = epochs)
+    } else {
+      out_data <- eeg_epochs(signals[, 1:n_chans],
+                             srate = srate,
+                             timings = timings,
+                             chan_info = chan_info,
+                             events = event_table,
+                             reference = NULL,
+                             epochs = epochs)
     }
     out_data
   }
@@ -679,12 +786,15 @@ import_set <- function(file_name,
 #' Internal function to convert EEGLAB chan_info to eegUtils style
 #'
 #' @param chan_info Channel info list from an EEGLAB set file
+#' @param drop If there are additional columns, remove all columns except
+#'   electrode if TRUE, or just unexpected columns if FALSE.
 #' @keywords internal
-parse_chaninfo <- function(chan_info) {
-  chan_info <- tibble::as_tibble(t(as.data.frame(chan_info)))
-  chan_info <- tibble::as_tibble(data.frame(lapply(chan_info,
-                                                   unlist),
-                                            stringsAsFactors = FALSE))
+parse_chaninfo <- function(chan_info,
+                           drop = FALSE) {
+  #chan_info <- tibble::as_tibble(t(as.data.frame(chan_info)))
+  # chan_info <- tibble::as_tibble(data.frame(lapply(chan_info,
+  #                                                  unlist),
+  #                                           stringsAsFactors = FALSE))
   chan_info <- chan_info[, sort(names(chan_info))]
   expected <- c("labels", "radius",
                 "ref", "sph.phi",
@@ -692,9 +802,15 @@ parse_chaninfo <- function(chan_info) {
                 "theta", "type",
                 "urchan", "X", "Y", "Z")
   if (!all(names(chan_info) == expected)) {
-    warning("EEGLAB chan info has unexpected format, taking electrode names only.")
-    out <- data.frame(chan_info["labels"])
-    names(out) <- "electrode"
+    if (drop) {
+      warning("EEGLAB chan info has unexpected format, taking electrode names only.")
+      out <- data.frame(chan_info["labels"])
+      names(out) <- "electrode"
+      return(validate_channels(out))
+    } else {
+      warning("EEGLAB chan info has unexpected format, taking only expected columns.")
+      chan_info <- chan_info[, expected]
+    }
   }
   names(chan_info) <- c("electrode",
                         "radius",
@@ -733,20 +849,28 @@ parse_chaninfo <- function(chan_info) {
 #' @param chan_info The `Coordinates` section from a BVA vhdr file
 #' @keywords internal
 parse_vhdr_chans <- function(chan_labels,
-                             chan_info) {
+                             chan_info,
+                             verbose = TRUE) {
 
   init_chans <- data.frame(electrode = chan_labels)
-  coords <- lapply(chan_info,
-                   function(x) as.numeric(unlist(strsplit(x, split = ","))))
+  if (is.null(chan_info)) {
+    init_chans$radius <- NA
+    init_chans$theta <- NA
+    init_chans$phi <- NA
+    if (verbose) message("No channel locations found.")
+    return(validate_channels(init_chans))
+  } else {
+    coords <- lapply(chan_info,
+                     function(x) as.numeric(unlist(strsplit(x, split = ","))))
+    new_coords <- data.frame(do.call(rbind,
+                                     coords))
+    names(new_coords) <- c("radius", "theta", "phi")
+    new_coords <- cbind(init_chans, new_coords)
+    new_coords[new_coords$radius %in% c(0, NaN), 2:4] <- NA
 
-  new_coords <- data.frame(do.call(rbind, coords))
-  names(new_coords) <- c("radius", "theta", "phi")
-  new_coords <- cbind(init_chans, new_coords)
-
-  new_coords[new_coords$radius == 0, 2:4] <- NA
-
-  chan_info <- bva_elecs(new_coords)
-  tibble::as_tibble(chan_info)
+    chan_info <- bva_elecs(new_coords)
+    tibble::as_tibble(chan_info)
+  }
 }
 
 #' Convert BVA spherical locations
@@ -780,12 +904,20 @@ bva_elecs <- function(chan_info, radius = 85) {
 #'   used.
 #' @param participant_id Identifier for the participant.
 #' @param verbose Informative messages printed to console. Defaults to TRUE.
-#' @importFrom R.matlab readMat
+#' @examples
+#' \dontrun{import_ft("fieldtrip_test.mat")}
+#' @return An object of class `eeg_data`, `eeg_epochs`, or
+#'   `eeg_tfr`, depending on the type of input data.
 #' @export
 import_ft <- function(file_name,
                       participant_id = NULL,
                       recording = NULL,
                       verbose = TRUE) {
+
+  if (!requireNamespace("R.matlab", quietly = TRUE)) {
+    stop("Package \"R.matlab\" needed. Please install it.",
+         call. = FALSE)
+  }
 
   tmp_ft <- R.matlab::readMat(file_name)
 
@@ -855,8 +987,8 @@ ft_raw <- function(data,
   }
 
   n_trials <- length(data["trial", , ][[1]])
-  signals <- tibble::as_tibble(t(as.data.frame(data["trial", , ])))
-
+  signals <- purrr::flatten(purrr::flatten(data["trial", ,]))
+  signals <- tibble::as_tibble(t(do.call(cbind, signals)))
   names(signals) <- sig_names
   timings <- tibble::tibble(epoch = rep(seq(1, n_trials),
                                         each = length(unique(times))),
@@ -1126,7 +1258,7 @@ read_bdf_data <- function(file_name, headers) {
                               records_per))
     shifted <- colSums(shifted)
     shifted <- matrix(aperm(shifted,
-                            c(1,3,2)),
+                            c(1, 3, 2)),
                       nrow = prod(dim(shifted)[c(1, 3)]))
     modifier <- chunk_size * (records - 1)
     sig_out[(1:chunk_size) + modifier, ] <- shifted
@@ -1138,7 +1270,7 @@ read_bdf_data <- function(file_name, headers) {
                              n = sig_length * remaining,
                              endian = "little")
 
-    shifted <- as.integer(final_records) * as.integer(2^c(0, 8,16))
+    shifted <- as.integer(final_records) * as.integer(2^c(0, 8, 16))
 
     shifted  <- array(shifted, dim = c(3,
                                        headers$srate[[1]],
