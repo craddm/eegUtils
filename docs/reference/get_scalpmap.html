@@ -139,7 +139,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Get an interpolated grid</h1>
-    <small class="dont-index">Source: <a href='https://github.com/craddm/eegUtils/blob/master/R/ggplot2-extensions.R'><code>R/ggplot2-extensions.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/craddm/eegUtils/blob/master/R/get_scalpmap.R'><code>R/get_scalpmap.R</code></a></small>
     <div class="hidden name"><code>get_scalpmap.Rd</code></div>
     </div>
 
@@ -157,6 +157,7 @@
   interp_limit <span class='op'>=</span> <span class='st'>"skirt"</span>,
   quantity <span class='op'>=</span> <span class='st'>"amplitude"</span>,
   facets <span class='op'>=</span> <span class='cn'>NULL</span>,
+  r <span class='op'>=</span> <span class='fl'>95</span>,
   <span class='va'>...</span>
 <span class='op'>)</span></pre>
 
@@ -173,23 +174,27 @@
     </tr>
     <tr>
       <th>method</th>
-      <td><p>"biharmonic" or "gam"</p></td>
+      <td><p>"biharmonic" or "gam" smooth</p></td>
     </tr>
     <tr>
       <th>grid_res</th>
-      <td><p>grid resolution</p></td>
+      <td><p>Grid resolution</p></td>
     </tr>
     <tr>
       <th>interp_limit</th>
-      <td><p>interpolate up to the "head" or add a "skirt"</p></td>
+      <td><p>Interpolate up to the "head" or add a "skirt"</p></td>
     </tr>
     <tr>
       <th>quantity</th>
-      <td><p>"amplitude"</p></td>
+      <td><p>Quantity to be plotted. Defaults to "amplitude".</p></td>
     </tr>
     <tr>
       <th>facets</th>
       <td><p>Any facets you plan to use</p></td>
+    </tr>
+    <tr>
+      <th>r</th>
+      <td><p>Size of headshape</p></td>
     </tr>
     </table>
 

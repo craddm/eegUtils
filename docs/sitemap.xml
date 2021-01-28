@@ -4,9 +4,6 @@
     <loc>http://craddm.github.io/eegUtils/index.html</loc>
   </url>
   <url>
-    <loc>http://craddm.github.io/eegUtils/reference/add_head.html</loc>
-  </url>
-  <url>
     <loc>http://craddm.github.io/eegUtils/reference/apply_ica.html</loc>
   </url>
   <url>
@@ -59,9 +56,6 @@
   </url>
   <url>
     <loc>http://craddm.github.io/eegUtils/reference/average_tf.html</loc>
-  </url>
-  <url>
-    <loc>http://craddm.github.io/eegUtils/reference/biharm_topo.html</loc>
   </url>
   <url>
     <loc>http://craddm.github.io/eegUtils/reference/browse_data.html</loc>
@@ -146,9 +140,6 @@
   </url>
   <url>
     <loc>http://craddm.github.io/eegUtils/reference/create_erpimage.html</loc>
-  </url>
-  <url>
-    <loc>http://craddm.github.io/eegUtils/reference/create_head.html</loc>
   </url>
   <url>
     <loc>http://craddm.github.io/eegUtils/reference/create_psd_plot.html</loc>
@@ -278,9 +269,6 @@
   </url>
   <url>
     <loc>http://craddm.github.io/eegUtils/reference/flip_x.html</loc>
-  </url>
-  <url>
-    <loc>http://craddm.github.io/eegUtils/reference/gam_topo.html</loc>
   </url>
   <url>
     <loc>http://craddm.github.io/eegUtils/reference/gauss_filter.html</loc>
