@@ -1,6 +1,8 @@
 eegUtils
 ================
 
+<!-- badges: start -->
+
 [![Repo
 Status](http://www.repostatus.org/badges/latest/wip.svg)](http://www.repostatus.org/#wip)
 [![Coverage
@@ -9,6 +11,8 @@ Status](https://img.shields.io/codecov/c/github/craddm/eegUtils/master.svg)](htt
 Status](https://travis-ci.org/craddm/eegUtils.svg?branch=master)](https://travis-ci.org/craddm/eegUtils)
 [![AppVeyor build
 status](https://ci.appveyor.com/api/projects/status/github/craddm/eegUtils?branch=master&svg=true)](https://ci.appveyor.com/project/craddm/eegUtils)
+[![R-CMD-check](https://github.com/craddm/eegUtils/workflows/R-CMD-check/badge.svg)](https://github.com/craddm/eegUtils/actions)
+<!-- badges: end -->
 [![DOI](https://zenodo.org/badge/85406871.svg)](https://zenodo.org/badge/latestdoi/85406871)
 
 ## Overview

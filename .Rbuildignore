@@ -13,3 +13,4 @@
 ^doc$
 ^Meta$
 ^\.zenodo\.json$
+^\.github$
