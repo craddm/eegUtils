@@ -18,7 +18,7 @@ test_that("geom_topo testing", {
                                          y = y,
                                          fill = amplitude)) +
                                 stat_scalpmap() +
-                                geom_mask(scale_fac = 1.25) +
+                                geom_mask(scale_fac = 1.22) +
                                 geom_head() +
                                 geom_channels())
   }

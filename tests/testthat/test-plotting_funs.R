@@ -36,8 +36,7 @@ test_that("Plotting of butterfly plots from epochs", {
 })
 
 test_that("Topoplots", {
-  skip_on_appveyor()
-  skip_on_travis()
+  skip_on_ci()
   vdiffr::expect_doppelganger("topoplot of epochs",
                               topoplot(demo_epochs,
                                        limits = c(-2.87, 4.69)))
@@ -50,6 +49,11 @@ test_that("Topoplots", {
                                        time_lim = c(150, 200),
                                        method = "gam",
                                        limits = c(-2.25, 2.75)))
+  vdiffr::expect_doppelganger("head limit",
+                              topoplot(demo_epochs,
+                                       time_lim = c(.15, .20),
+                                       interp_limit = "head",
+                                       limits = c(-3, 3)))
 })
 
 
