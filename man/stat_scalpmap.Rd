@@ -19,6 +19,7 @@ stat_scalpmap(
   interpolate = FALSE,
   interp_limit = c("skirt", "head"),
   method = "biharmonic",
+  r = 95,
   ...
 )
 
@@ -113,12 +114,12 @@ points).}
 
 \item{method}{"biharmonic" or "gam"}
 
+\item{r}{Radius of head}
+
 \item{...}{Other arguments passed on to \code{\link[ggplot2:layer]{layer()}}. These are
 often aesthetics, used to set an aesthetic to a fixed value, like
 \code{colour = "red"} or \code{size = 3}. They may also be parameters
 to the paired geom/stat.}
-
-\item{r}{Radius of head}
 
 \item{colour}{For \code{geom_mask}, colour of the masking ring.}
 
