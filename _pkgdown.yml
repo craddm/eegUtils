@@ -17,10 +17,13 @@ reference:
     desc: >
       Functions for pre-processing and processing data
     contents:
+      - apply_ica
       - compute_csd
+      - eeg_average
+      - eeg_decompose
+      - eeg_downsample
       - eeg_filter
       - eeg_reference
-      - eeg_downsample
       - electrode_locations
       - epoch_data
       - interp_elecs
