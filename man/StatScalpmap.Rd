@@ -6,17 +6,11 @@
 \title{StatScalpmap}
 \format{
 An object of class \code{StatScalpmap} (inherits from \code{Stat}, \code{ggproto}, \code{gg}) of length 3.
-
-An object of class \code{StatScalpmap} (inherits from \code{Stat}, \code{ggproto}, \code{gg}) of length 3.
 }
 \usage{
 StatScalpmap
-
-StatScalpmap
 }
 \description{
-StatScalpmap
-
 StatScalpmap
 }
 \keyword{internal}

@@ -28,11 +28,11 @@
 #'   spatio-spectral decomposition. NeuroImage, 55(4), 1528–1535.
 #'   https://doi.org/10.1016/j.neuroimage.2011.01.057
 
-eeg_decomp <- function(data, ...) {
-  UseMethod("eeg_decomp", data)
+eeg_decompose <- function(data, ...) {
+  UseMethod("eeg_decompose", data)
 }
 
-eeg_decomp.default <- function(data, ...) {
+eeg_decompose.default <- function(data, ...) {
   stop("Not implemented for objects of class ", class(data))
 }
 
@@ -41,9 +41,9 @@ eeg_decomp.default <- function(data, ...) {
 #' @param method Type of decomposition to apply. Currently only "ssd" is supported.
 #' @param verbose Informative messages printed to console. Defaults to TRUE.
 #' @param order Filter order for filter applied to signal/noise
-#' @describeIn eeg_decomp method for `eeg_epochs` objects
+#' @describeIn eeg_decompose method for `eeg_epochs` objects
 #' @export
-eeg_decomp.eeg_epochs <- function(data,
+eeg_decompose.eeg_epochs <- function(data,
                                   sig_range,
                                   noise_range,
                                   method = "ssd",

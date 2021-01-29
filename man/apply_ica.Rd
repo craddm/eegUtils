@@ -35,6 +35,16 @@ dataset.
 \code{eeg_epochs} object.
 }}
 
+\examples{
+test_ica <- run_ICA(demo_epochs, pca = 10)
+plot_butterfly(demo_epochs)
+# Reconstruct the original data from the ICA decomposition.
+# Note that the ICA process subtracts the mean from each epoch,
+# so the reconstructed plot may look slightly different to the original.
+plot_butterfly(apply_ica(test_ica))
+# Remove component 2 from the data
+plot_butterfly(apply_ica(demo_epochs, test_ica, comps = 2))
+}
 \author{
 Matt Craddock \email{matt@mattcraddock.com}
 }

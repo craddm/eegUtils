@@ -211,6 +211,39 @@ plot_timecourse.eeg_epochs <- function(data,
   tc_plot
 }
 
+#' @describeIn plot_timecourse Plot timecourses from `eeg_group` objects.
+#' @export
+plot_timecourse.eeg_group <- function(data,
+                                       electrode = NULL,
+                                       time_lim = NULL,
+                                       add_CI = FALSE,
+                                       baseline = NULL,
+                                       colour = NULL,
+                                       color = NULL,
+                                       mapping = NULL,
+                                       ...) {
+  data <- parse_for_tc(data,
+                       time_lim,
+                       electrode,
+                       baseline,
+                       add_CI)
+
+  if (is.null(colour)) {
+    if (!is.null(color)) {
+      colour <- as.name(color)
+    }
+  } else {
+    colour <- as.name(colour)
+  }
+
+  tc_plot <- create_tc(data,
+                       add_CI = add_CI,
+                       colour = colour,
+                       mapping = mapping)
+
+  tc_plot
+}
+
 #' @describeIn plot_timecourse Plot timecourses from `eeg_tfr` objects.
 #' @export
 plot_timecourse.eeg_tfr <- function(data,
@@ -345,25 +378,37 @@ create_tc <- function(data,
   }
 
   if (add_CI) {
-    if (is.null(colour)) {
-      tc_plot <- tc_plot +
-        stat_summary(fun.data = mean_cl_normal,
-                     geom = "ribbon",
-                     linetype = "dashed",
-                     fill = NA,
-                     colour = "black",
-                     size = 1,
-                     alpha = 0.5)
-    } else {
-      tc_plot <- tc_plot +
-        stat_summary(fun.data = mean_cl_normal,
-                     geom = "ribbon",
-                     linetype = "dashed",
-                     aes(colour = !!colour),
-                     fill = NA,
-                     size = 1,
-                     alpha = 0.5)
-    }
+    if (is.null(mapping)) {
+      if (is.null(colour)) {
+        tc_plot <- tc_plot +
+          stat_summary(fun.data = mean_cl_normal,
+                       geom = "ribbon",
+                       linetype = "dashed",
+                       fill = NA,
+                       colour = "black",
+                       size = 1,
+                       alpha = 0.5)
+        } else {
+          tc_plot <- tc_plot +
+            stat_summary(fun.data = mean_cl_normal,
+                         geom = "ribbon",
+                         linetype = "dashed",
+                         aes(colour = !!colour),
+                         fill = NA,
+                         size = 1,
+                         alpha = 0.5)
+          }
+      } else {
+        tc_plot <-
+          tc_plot +
+          stat_summary(fun.data = mean_cl_normal,
+                       geom = "ribbon",
+                       #linetype = "dashed",
+                       mapping = mapping,
+                       fill = NA,
+                       size = 1,
+                       alpha = 0.5)
+      }
   }
 
   tc_plot <-
