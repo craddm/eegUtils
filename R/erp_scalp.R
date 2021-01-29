@@ -179,7 +179,8 @@ erp_scalp <- function(data,
   }
 
   for (i in 1:nrow(data)) {
-    p <- p +
+    p <-
+      p +
       annotation_custom(grob = ggplotGrob(data$plot[[i]]),
                         xmin = data$x[i] - panel_size,
                         xmax = data$x[i] + panel_size,
@@ -189,9 +190,6 @@ erp_scalp <- function(data,
 
   p
 }
-
-
-
 
 #' Interactive scalp maps
 #'
@@ -264,7 +262,7 @@ interactive_scalp <- function(data,
     if (is.eeg_evoked(data)) {
       chan_info <- channels(data)
     }
-    print(chan_info)
+
     tmp_data <- as.data.frame(data,
                               long = TRUE)
 

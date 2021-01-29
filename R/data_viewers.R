@@ -24,9 +24,9 @@ browse_data <- function(data, ...) {
 browse_data.eeg_ICA <- function(data,
                                 ...) {
 
-  ui <- miniPage(
+  ui <- miniUI::miniPage(
     gadgetTitleBar("ICA dashboard"),
-    miniContentPanel(
+    miniUI::miniContentPanel(
       fillRow(
         fillCol(
           plotOutput("topo_ica",
