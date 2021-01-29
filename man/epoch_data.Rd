@@ -11,7 +11,7 @@ epoch_data(data, ...)
   data,
   events,
   time_lim = c(-1, 1),
-  baseline = NULL,
+  baseline = "none",
   epoch_labels = NULL,
   ...
 )
@@ -26,11 +26,10 @@ epoch_data(data, ...)
 \item{time_lim}{Time in seconds to form epoch around the events. Defaults to
 one second either side.}
 
-\item{baseline}{Baseline times to subtract. Defaults to NULL which will mean
-centre each epoch. Can be set to a numeric vector of length two to specify
-a time window to use as a baseline in each epoch (e.g. c(-.1, 0)), or
-"none", which will perform no baseline correction. As of v0.6 of eegUtils,
-the default will be "none".}
+\item{baseline}{Baseline times to subtract. Can be set to a numeric vector of length two to specify
+a time window to use as a baseline in each epoch (e.g. c(-.1, 0)), "none",
+which will perform no baseline correction, or \code{NULL} to use the mean of the
+whole epoch. As of v0.6 of \code{eegUtils}, the default is "none".}
 
 \item{epoch_labels}{Character vector of same length as events which'll be
 used to label the epochs.}

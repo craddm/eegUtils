@@ -27,16 +27,15 @@ epoch_data.default <- function(data, ...) {
 #' @param events Character vector of events to epoch around.
 #' @param time_lim Time in seconds to form epoch around the events. Defaults to
 #'   one second either side.
-#' @param baseline Baseline times to subtract. Defaults to NULL which will mean
-#'   centre each epoch. Can be set to a numeric vector of length two to specify
-#'   a time window to use as a baseline in each epoch (e.g. c(-.1, 0)), or
-#'   "none", which will perform no baseline correction. As of v0.6 of eegUtils,
-#'   the default will be "none".
+#' @param baseline Baseline times to subtract. Can be set to a numeric vector of length two to specify
+#'   a time window to use as a baseline in each epoch (e.g. c(-.1, 0)), "none",
+#'   which will perform no baseline correction, or `NULL` to use the mean of the
+#'   whole epoch. As of v0.6 of `eegUtils`, the default is "none".
 #' @param epoch_labels Character vector of same length as events which'll be
 #'   used to label the epochs.
-#' @importFrom dplyr left_join
+#' @importFrom dplyr left_join inner_join
 #' @importFrom purrr map map_df
-#'
+#' @importFrom tibble tibble
 #' @return Returns an epoched object of class `eeg_epochs`
 #'
 #' @describeIn epoch_data Epoch `eeg_data` objects
@@ -46,15 +45,10 @@ epoch_data.default <- function(data, ...) {
 epoch_data.eeg_data <- function(data,
                                 events,
                                 time_lim = c(-1, 1),
-                                baseline = NULL,
+                                baseline = "none",
                                 epoch_labels = NULL,
                                 ...) {
 
-  if (is.null(baseline)) {
-    message("The current default value of baseline, NULL,
-            will change to 'none' in v0.6 of eegUtils,
-            performing no baseline correction.")
-  }
   if (!any(events %in% unique(data$events$event_type))) {
     stop("No events found - check event codes.")
   }
@@ -79,32 +73,23 @@ epoch_data.eeg_data <- function(data,
   # generate time vector
   init_times <- seq(time_lim[1], time_lim[2], 1/data$srate)
   #check if times need adjusting.
-  # min(abs(times)) should be zero, otherwise the times don't fit the samp. rate
   time_check <- min(abs(init_times))
   if (time_check != 0) {
     time_offset <- init_times[which.min(abs(init_times))]
-    #if (sign(time_offset) == -1) {
-      init_times <- init_times - time_offset
-    #} else {
-     # init_times <- init_times - time_offset
-    #}
+    init_times <- init_times - time_offset
     message("Adjusting output limits to match sampling rate.")
     time_lim[1] <- min(init_times)
     time_lim[2] <- max(init_times)
   }
+
   message(paste("Output limits: ", time_lim[1], time_lim[2]))
 
   # If the data has been downsampled, sample spacing will be greater than 1.
   # Subsequent steps need to account for this when selecting based on sample number.
   # Multiplying srate by spacing accomplishes this.
 
-  #samp_diff <- unique(diff(data$timings$sample))
   samp_diff <- min(diff(data$timings$sample))
-  #if (length(samp_diff) > 1) {
-   # stop("Sample spacing is uneven, cannot downsample.")
-  #} else {
   srate <- data$srate * samp_diff
-  #}
 
   # create a vector that counts back and ahead of the timelock event in samples
   # i.e. if srate is 1000, a vector from -100 to 0 to 100 would be -.1 s before
@@ -207,6 +192,8 @@ epoch_data.eeg_data <- function(data,
   if (!identical(baseline, "none")) {
     data <- rm_baseline(data,
                         time_lim = baseline)
+  } else {
+    message("No baseline removal performed.")
   }
 
   n_epochs <- length(unique(epochs$epoch))
