@@ -75,7 +75,8 @@ plot_timecourse.data.frame <- function(data,
 
   tc_plot <- create_tc(data,
                        add_CI = FALSE,
-                       colour = colour)
+                       colour = colour,
+                       mapping = mapping)
   tc_plot
 }
 
