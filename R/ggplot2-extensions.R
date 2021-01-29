@@ -48,45 +48,6 @@ fortify.eeg_evoked <- function(model,
                 stringsAsFactors = FALSE)
 }
 
-
-#' StatScalpmap
-#'
-#' @export
-#' @keywords internal
-
-StatScalpmap <-
-  ggplot2::ggproto("StatScalpmap",
-                   Stat,
-                   required_aes = c("x",
-                                    "y",
-                                    "fill"),
-                   compute_group = function(data,
-                                            scales,
-                                            grid_res,
-                                            interp_limit,
-                                            method,
-                                            r) {
-
-                     data <- aggregate(fill ~ x + y,
-                                       data = data,
-                                       FUN = mean)
-
-                     if (identical(method, "biharmonic")) {
-                       data <- biharmonic(data,
-                                          grid_res = grid_res,
-                                          interp_limit = interp_limit,
-                                          r = r)
-                     } else {
-                       data <- fit_gam_topo(data,
-                                            grid_res = grid_res,
-                                            interp_limit = interp_limit,
-                                            r = r)
-                     }
-                     data
-
-                     }
-)
-
 #' Create an interpolated scalp surface
 #'
 #' `stat_scalpmap` creates an interpolated surface for an irregular set of
