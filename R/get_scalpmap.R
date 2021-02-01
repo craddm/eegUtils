@@ -300,11 +300,13 @@ biharmonic <- function(data,
     }
 
   } else {
-    max_elec <- max(abs_x_max, abs_y_max)
+    max_elec <- max(abs_x_max,
+                    abs_y_max,
+                    na.rm = TRUE)
     if (max_elec > r) {
       circ_scale <- (max_elec - r) + max_elec
     } else {
-      circ_scale <- r * 1.18
+      circ_scale <- r * 1.25
     }
   }
   data[sqrt(data$x ^ 2 + data$y ^ 2) <= circ_scale, ]

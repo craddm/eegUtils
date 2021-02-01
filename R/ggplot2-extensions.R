@@ -74,7 +74,7 @@ stat_scalpmap <- function(mapping = NULL,
                           interpolate = FALSE,
                           interp_limit = c("skirt", "head"),
                           method = "biharmonic",
-                          r = 95,
+                          r = NULL,
                           ...) {
   ggplot2::layer(
     stat = StatScalpmap,
@@ -115,6 +115,16 @@ StatScalpmap <-
                      data <- aggregate(fill ~ x + y,
                                        data = data,
                                        FUN = mean)
+
+                     # Add head and mask to topoplot
+
+                     if (is.null(r)) {
+                       abs_x_max <- max(abs(data$x), na.rm = TRUE)
+                       abs_y_max <- max(abs(data$y), na.rm = TRUE)
+                       r <- switch(interp_limit,
+                                   "head" = sqrt(abs_x_max^2 + abs_y_max^2),
+                                   "skirt" = 95) # mm are expected for coords, 95 is good approx for Fpz - Oz radius
+                     }
 
                      if (identical(method, "biharmonic")) {
                        data <- biharmonic(data,
@@ -165,7 +175,7 @@ geom_topo <- function(mapping = NULL,
                       chan_markers = "point",
                       chan_size = rel(2),
                       head_size = rel(1.5),
-                      r = 95,
+                      r = NULL,
                       grid_res = 200,
                       method = "biharmonic",
                       ...) {
@@ -322,7 +332,17 @@ StatHead <- ggplot2::ggproto("StatHead",
                              compute_group = function(data,
                                                       scales,
                                                       interp_limit,
-                                                      r) {
+                                                      r = 95) {
+                               # Add head and mask to topoplot
+                               if (is.null(r)) {
+                                 abs_x_max <- max(abs(data$x),
+                                                  na.rm = TRUE)
+                                 abs_y_max <- max(abs(data$y),
+                                                  na.rm = TRUE)
+                                 r <- switch(interp_limit,
+                                             "head" = sqrt(abs_x_max^2 + abs_y_max^2),
+                                             "skirt" = 95) # mm are expected for coords, 95 is good approx for Fpz - Oz radius
+                               }
                                r <- update_r(r,
                                              data,
                                              interp_limit)
@@ -382,6 +402,7 @@ StatMask <-
                                             scale_fac,
                                             interp_limit,
                                             r) {
+
 
                      abs_x_max <- max(abs(data$x),
                                       na.rm = TRUE)
@@ -451,6 +472,10 @@ StatREar <- ggplot2::ggproto("StatREar",
                                                       scales,
                                                       interp_limit,
                                                       r = 95) {
+
+                               if (is.null(r)) {
+                                 r <- 95
+                               }
                                r <- update_r(r,
                                              data,
                                              interp_limit)
@@ -463,6 +488,9 @@ StatLEar <- ggplot2::ggproto("StatLEar",
                                                       scales,
                                                       interp_limit,
                                                       r = NULL) {
+                               if (is.null(r)) {
+                                 r <- 95
+                               }
                                r <- update_r(r,
                                              data,
                                              interp_limit)

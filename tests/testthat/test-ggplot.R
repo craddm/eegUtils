@@ -21,5 +21,11 @@ test_that("geom_topo testing", {
                                 geom_mask(scale_fac = 1.22) +
                                 geom_head() +
                                 geom_channels())
+  vdiffr::expect_doppelganger("geom_topo_head_test",
+                              ggplot(demo_epochs,
+                                     aes(x = x,
+                                         y = y,
+                                         fill = amplitude)) +
+                                geom_topo(interp_limit = "head"))
   }
 )
