@@ -32,7 +32,8 @@ get_scalpmap.data.frame <- function(data,
                                     r = 95,
                                     ...) {
 
-  facets <- rlang::enexpr(facets)
+  #if (!is.null(fa))
+
   method <- match.arg(method,
                       c("biharmonic",
                         "gam",
@@ -42,7 +43,8 @@ get_scalpmap.data.frame <- function(data,
                    method)
 
   if (!is.null(facets)) {
-    tmp <- dplyr::group_by(tmp,
+    facets <- rlang::enexpr(facets)
+    tmp <- dplyr::group_by(data,
                            {{facets}})
   } else {
     tmp <- data
@@ -221,10 +223,16 @@ biharmonic <- function(data,
   abs_x_max <- max(abs(data$x),
                    na.rm = TRUE)
 
-  x_min <- min(data$x, na.rm = TRUE) * 2.5
-  x_max <- max(data$x, na.rm = TRUE) * 2.5
-  y_min <- min(data$y, na.rm = TRUE) * 2.5
-  y_max <- max(data$y, na.rm = TRUE) * 2.5
+  max_elec <- sqrt(abs_x_max^2 + abs_y_max^2)
+
+  max_elec <- max(sqrt(data$y^2 + data$x^2))
+
+  #print(paste("orig:", max_elec, "new:", max_elecm))
+
+  x_min <- r * -2
+  x_max <- r * 2
+  y_min <- r * -2
+  y_max <- r * 2
 
   xo <- seq(x_min,
             x_max,
@@ -292,23 +300,20 @@ biharmonic <- function(data,
 
   if (identical(interp_limit,
                 "head")) {
+     if (is.null(r)) {
+       circ_scale <- max_elec * 1.01
+     } else {
+       circ_scale <- r * 1.01
+     }
 
-    if (is.null(r)) {
-      circ_scale <- sqrt(abs_x_max^2 + abs_y_max^2) * 1.01
-    } else {
-      circ_scale <- r * 1.01
-    }
+   } else {
 
-  } else {
-    max_elec <- max(abs_x_max,
-                    abs_y_max,
-                    na.rm = TRUE)
-    if (max_elec > r) {
-      circ_scale <- (max_elec - r) + max_elec
+    if (r < max_elec) {
+      circ_scale <- min(max_elec * 1.15, max_elec + 15) #sqrt(abs_x_max^2 + abs_y_max^2) * 1.01
     } else {
-      circ_scale <- r * 1.25
+      circ_scale <- min(r * 1.15, r + 15)
     }
-  }
+   }
   data[sqrt(data$x ^ 2 + data$y ^ 2) <= circ_scale, ]
 
 }
@@ -322,6 +327,9 @@ fit_gam_topo <- function(data,
 
   abs_y_max <- max(abs(data$y),
                    na.rm = TRUE)
+  abs_x_max <- max(abs(data$x),
+                   na.rm = TRUE)
+  max_elec <- max(sqrt(data$x^2 + data$y^2), na.rm = TRUE)
   y_max <- max(data$y,
                na.rm = TRUE) * 2.5
 
@@ -330,24 +338,37 @@ fit_gam_topo <- function(data,
                                       bs = "ts",
                                       k = 40),
                              data = data)
-  data <- data.frame(expand.grid(x = seq(min(data$x) * 1.5,
-                                         max(data$x) * 1.5,
-                                         length = grid_res),
-                                 y = seq(min(data$y) * 1.5,
-                                         max(data$y) * 1.5,
-                                         length = grid_res)))
+  # data <- data.frame(expand.grid(x = seq(min(data$x) * 1.5,
+  #                                        max(data$x) * 1.5,
+  #                                        length = grid_res),
+  #                                y = seq(min(data$y) * 1.5,
+  #                                        max(data$y) * 1.5,
+  #                                        length = grid_res)))
+  data <- expand.grid(x = seq(max_elec * -1.5,
+                              max_elec * 1.5,
+                              length = grid_res),
+                      y = seq(max_elec * -1.5,
+                              max_elec * 1.5,
+                              length = grid_res))
   data$fill <-  stats::predict(spline_smooth,
                                data,
                                type = "response")
 
-
   if (identical(interp_limit,
                 "head")) {
-    circ_scale <- abs_y_max * 1.1
+    if (is.null(r)) {
+      circ_scale <- max_elec * 1.02
+    } else {
+      circ_scale <- r * 1.02
+    }
   } else {
-    circ_scale <- y_max / 1.8
-  }
 
+    if (r < max_elec) {
+      circ_scale <- min(max_elec * 1.15, max_elec + 15) #sqrt(abs_x_max^2 + abs_y_max^2) * 1.01
+    } else {
+      circ_scale <- min(r * 1.15, r + 15)
+    }
+  }
   data$incircle <- sqrt(data$x ^ 2 + data$y ^ 2) < circ_scale
   data[data$incircle, ]
 }

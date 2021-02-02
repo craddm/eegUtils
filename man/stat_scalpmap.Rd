@@ -19,7 +19,7 @@ stat_scalpmap(
   interpolate = FALSE,
   interp_limit = c("skirt", "head"),
   method = "biharmonic",
-  r = 95,
+  r = NULL,
   ...
 )
 
@@ -149,13 +149,16 @@ contains many rows of data.
 }
 \seealso{
 Other topoplot functions: 
-\code{\link{geom_topo}()}
+\code{\link{geom_topo}()},
+\code{\link{stat_scalpcontours}()}
 
 Other topoplot functions: 
-\code{\link{geom_topo}()}
+\code{\link{geom_topo}()},
+\code{\link{stat_scalpcontours}()}
 
 Other topoplot functions: 
-\code{\link{geom_topo}()}
+\code{\link{geom_topo}()},
+\code{\link{stat_scalpcontours}()}
 }
 \author{
 Matt Craddock \email{matt@mattcraddock.com}

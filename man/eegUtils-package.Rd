@@ -27,6 +27,7 @@ Useful links:
 Other contributors:
 \itemize{
   \item Matti Vuorre \email{mv2521@columbia.edu} [contributor]
+  \item ggplot2-authors [contributor, copyright holder]
 }
 
 }

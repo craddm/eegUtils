@@ -110,21 +110,27 @@ StatScalpmap <-
                                             grid_res,
                                             interp_limit,
                                             method,
-                                            r) {
+                                            params,
+                                            r = NULL) {
 
+                     interp_limit <- match.arg(interp_limit,
+                                               c("skirt", "head"))
                      data <- aggregate(fill ~ x + y,
                                        data = data,
                                        FUN = mean)
 
-                     # Add head and mask to topoplot
-
                      if (is.null(r)) {
-                       abs_x_max <- max(abs(data$x), na.rm = TRUE)
-                       abs_y_max <- max(abs(data$y), na.rm = TRUE)
+                       abs_x_max <- max(abs(data$x),
+                                        na.rm = TRUE)
+                       abs_y_max <- max(abs(data$y),
+                                        na.rm = TRUE)
                        r <- switch(interp_limit,
                                    "head" = sqrt(abs_x_max^2 + abs_y_max^2),
-                                   "skirt" = 95) # mm are expected for coords, 95 is good approx for Fpz - Oz radius
+                                   "skirt" = 95)
                      }
+                     print(abs_x_max)
+                     print(abs_y_max)
+                     print(r)
 
                      if (identical(method, "biharmonic")) {
                        data <- biharmonic(data,
@@ -151,7 +157,7 @@ StatScalpmap <-
 #'
 #' @examples
 #' library(ggplot2)
-#' ggplot(demo_epochs, aes(x = x, y = y, fill = amplitude)) + geom_topo()
+#' ggplot(demo_epochs, aes(x = x, y = y, fill = amplitude, z = amplitude)) + geom_topo()
 #' @inheritParams ggplot2::geom_raster
 #' @param interp_limit Topoplot with a "skirt" or inside the "head".
 #' @param chan_markers Defaults to "point". Mark electrode positions with points
@@ -161,6 +167,7 @@ StatScalpmap <-
 #' @param grid_res Smoothness of the interpolation grid.
 #' @param method "biharmonic" or ""gam".
 #' @param r Head circumference
+#' @param bins Number of bins to use for contour lines.
 #' @family topoplot functions
 #' @export
 geom_topo <- function(mapping = NULL,
@@ -178,6 +185,7 @@ geom_topo <- function(mapping = NULL,
                       r = NULL,
                       grid_res = 200,
                       method = "biharmonic",
+                      bins = 6,
                       ...) {
 
   list(ggplot2::layer(geom = GeomRaster,
@@ -262,9 +270,25 @@ geom_topo <- function(mapping = NULL,
                           params = list(na.rm = na.rm,
                                         size = chan_size,
                                         ...))
-           }
+           },
+       ggplot2::layer(geom = "contour",
+                      stat = StatScalpContours,
+                      data = data,
+                      mapping = mapping,
+                      position = position,
+                      show.legend = FALSE,
+                      inherit.aes = inherit.aes,
+                      params = list(na.rm = na.rm,
+                                    ...,
+                                    bins = bins,
+                                    r = r,
+                                    interp_limit = interp_limit,
+                                    method = method,
+                                    grid_res = grid_res)
        )
+  )
 }
+
 
 #' @keywords internal
 GeomTopo <- ggplot2::ggproto("GeomTopo",
@@ -333,15 +357,8 @@ StatHead <- ggplot2::ggproto("StatHead",
                                                       scales,
                                                       interp_limit,
                                                       r = 95) {
-                               # Add head and mask to topoplot
                                if (is.null(r)) {
-                                 abs_x_max <- max(abs(data$x),
-                                                  na.rm = TRUE)
-                                 abs_y_max <- max(abs(data$y),
-                                                  na.rm = TRUE)
-                                 r <- switch(interp_limit,
-                                             "head" = sqrt(abs_x_max^2 + abs_y_max^2),
-                                             "skirt" = 95) # mm are expected for coords, 95 is good approx for Fpz - Oz radius
+                                 r <- 95
                                }
                                r <- update_r(r,
                                              data,
@@ -363,7 +380,8 @@ GeomHead <- ggplot2::ggproto("GeomHead",
 #' @param colour For `geom_mask`, colour of the masking ring.
 #' @param size For `geom_mask`, width of the masking ring.
 #' @param scale_fac The radius of the ring is determined from the front-most
-#'   electrode's location by a scaling factor. Defaults to 1.04 * max(y).
+#'   electrode's location by a scaling factor. Defaults to 1.04 * max(y),
+#'   max(y)).
 #' @rdname stat_scalpmap
 #' @family topoplot functions
 #' @export
@@ -403,15 +421,17 @@ StatMask <-
                                             interp_limit,
                                             r) {
 
-
-                     abs_x_max <- max(abs(data$x),
-                                      na.rm = TRUE)
                      abs_y_max <- max(abs(data$y),
                                       na.rm = TRUE)
-
-                     scale_fac <- max(abs_x_max,
-                                      abs_y_max) * scale_fac
-
+                     # scale_fac <- max(abs_x_max,
+                     #                  abs_y_max) * scale_fac
+                     scale_fac <- abs_y_max
+                     if (scale_fac < r) scale_fac <- r
+                     print(scale_fac)
+                     if (identical(interp_limit, "head")) {
+                       scale_fac <- max(scale_fac + 5, scale_fac * 1.02)
+                     }
+                     print(scale_fac)
                      data <- data.frame(x = scale_fac * cos(circ_rad_fun()),
                                         y = scale_fac * sin(circ_rad_fun()))
                      data
@@ -598,7 +618,7 @@ stat_summary_by_fill <- function(mapping = NULL,
                                  data = NULL,
                                  geom = "raster",
                                  position = "identity",
-                                 fun.data = NULL,
+                                 fun.data = mean,
                                  na.rm = FALSE,
                                  show.legend = NA,
                                  inherit.aes = TRUE,
@@ -620,24 +640,25 @@ stat_summary_by_fill <- function(mapping = NULL,
 }
 
 
-StatSummaryByFill <- ggproto("StatSummaryByFill",
-                             Stat,
-                             required_aes = c("x", "y", "fill"),
-                             compute_group = function(data,
-                                                      scales,
-                                                      fun.data = NULL,
-                                                      na.rm = FALSE,
-                                                      params,
-                                                      layout) {
-                                summary <-
-                                  aggregate(fill ~ x + y,
-                                            data = data,
-                                            FUN = fun.data,
-                                            na.rm = na.rm,
-                                            na.action = na.pass)
-                                summary
-                                }
-                             )
+StatSummaryByFill <-
+  ggplot2::ggproto("StatSummaryByFill",
+                   Stat,
+                   required_aes = c("x", "y", "fill"),
+                   compute_group = function(data,
+                                            scales,
+                                            fun.data = NULL,
+                                            na.rm = FALSE,
+                                            params,
+                                            layout) {
+                     summary <-
+                       aggregate(fill ~ x + y,
+                                 data = data,
+                                 FUN = fun.data,
+                                 na.rm = na.rm,
+                                 na.action = na.pass)
+                     summary
+                     }
+                   )
 
 update_r <-
   function(r,
