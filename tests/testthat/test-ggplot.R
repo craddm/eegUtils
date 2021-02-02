@@ -27,7 +27,7 @@ test_that("geom_topo testing", {
                                          y = y,
                                          fill = amplitude)) +
                                 stat_scalpmap() +
-                                geom_mask(scale_fac = 1.27) +
+                                geom_mask(r = 115) +
                                 geom_head() +
                                 geom_channels())
   vdiffr::expect_doppelganger("geom_topo_labels",
@@ -36,10 +36,11 @@ test_that("geom_topo testing", {
                                          y = y,
                                          fill = amplitude)) +
                                 stat_scalpmap() +
-                                geom_mask() +
+                                geom_mask(r = 115) +
                                 geom_head() +
                                 geom_channels(geom = "text",
-                                              aes(label = electrode))
+                                              aes(label = electrode),
+                                              size = 6)
                               )
   vdiffr::expect_doppelganger("geom_topo_head_test",
                               ggplot(demo_epochs,
@@ -54,8 +55,8 @@ test_that("geom_topo testing", {
                                          y = y,
                                          fill = amplitude)) +
                                 stat_scalpmap(interp_limit = "head") +
-                                geom_mask() +
-                                geom_head() +
+                                geom_mask(r = 100) +
+                                geom_head(r = 100) +
                                 geom_channels(geom = "text",
                                               aes(label = electrode))
   )

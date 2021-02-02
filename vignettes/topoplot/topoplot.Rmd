@@ -106,7 +106,7 @@ ggplot(demo_epochs,
            y = y,
            fill = amplitude)) + 
   stat_scalpmap(grid_res = 60) +  #based on geom_raster()
-  geom_mask(scale_fac = 1.25) +    #based on geom_path()
+  geom_mask(r = 114, size = 6) +    #based on geom_path()
   geom_head() +                   #based on geom_path() and geom_curve()
   geom_channels() +               #based on geom_point() and geom_text()
   scale_fill_viridis_c(limits = c(-6, 6),

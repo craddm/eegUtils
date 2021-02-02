@@ -41,7 +41,6 @@ geom_mask(
   na.rm = FALSE,
   colour = "white",
   size = rel(5),
-  scale_fac = 1.04,
   r = 95,
   interp_limit = "skirt",
   ...
@@ -124,9 +123,6 @@ to the paired geom/stat.}
 \item{colour}{For \code{geom_mask}, colour of the masking ring.}
 
 \item{size}{For \code{geom_mask}, width of the masking ring.}
-
-\item{scale_fac}{The radius of the ring is determined from the front-most
-electrode's location by a scaling factor. Defaults to 1.04 * max(y).}
 
 \item{geom}{"point" for points or "text" for labels. Default is "point".}
 }

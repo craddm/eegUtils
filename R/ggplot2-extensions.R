@@ -128,9 +128,6 @@ StatScalpmap <-
                                    "head" = sqrt(abs_x_max^2 + abs_y_max^2),
                                    "skirt" = 95)
                      }
-                     print(abs_x_max)
-                     print(abs_y_max)
-                     print(r)
 
                      if (identical(method, "biharmonic")) {
                        data <- biharmonic(data,
@@ -200,8 +197,7 @@ geom_topo <- function(mapping = NULL,
                                     grid_res = grid_res,
                                     interp_limit = interp_limit,
                                     method = method,
-                                    r = r,
-                                    ...)
+                                    r = r)
                       ),
        ggplot2::layer(geom = GeomHead,
                       data = data,
@@ -212,8 +208,7 @@ geom_topo <- function(mapping = NULL,
                       params = list(na.rm = na.rm,
                                     size = head_size,
                                     r = r,
-                                    interp_limit = interp_limit,
-                                    ...)
+                                    interp_limit = interp_limit)
                       ),
        ggplot2::layer(data = data,
                       mapping = mapping,
@@ -227,8 +222,7 @@ geom_topo <- function(mapping = NULL,
                                     angle = 60,
                                     size = head_size,
                                     r = r,
-                                    interp_limit = interp_limit,
-                                    ...)
+                                    interp_limit = interp_limit)
                       ),
        ggplot2::layer(data = data,
                       mapping = mapping,
@@ -242,8 +236,7 @@ geom_topo <- function(mapping = NULL,
                                     angle = 120,
                                     size = head_size,
                                     r = r,
-                                    interp_limit = interp_limit,
-                                    ...)
+                                    interp_limit = interp_limit)
                       ),
        if (identical(chan_markers,
                      "point")) {
@@ -256,8 +249,7 @@ geom_topo <- function(mapping = NULL,
                         inherit.aes = inherit.aes,
                         params = list(na.rm = na.rm,
                                       fill = NA,
-                                      size = chan_size,
-                                      ...))
+                                      size = chan_size))
          } else if (identical(chan_markers,
                               "text")) {
            ggplot2::layer(data = data,
@@ -268,8 +260,7 @@ geom_topo <- function(mapping = NULL,
                           show.legend = show.legend,
                           inherit.aes = inherit.aes,
                           params = list(na.rm = na.rm,
-                                        size = chan_size,
-                                        ...))
+                                        size = chan_size))
            },
        ggplot2::layer(geom = "contour",
                       stat = StatScalpContours,
@@ -379,9 +370,6 @@ GeomHead <- ggplot2::ggproto("GeomHead",
 #' @inheritParams ggplot2::geom_path
 #' @param colour For `geom_mask`, colour of the masking ring.
 #' @param size For `geom_mask`, width of the masking ring.
-#' @param scale_fac The radius of the ring is determined from the front-most
-#'   electrode's location by a scaling factor. Defaults to 1.04 * max(y),
-#'   max(y)).
 #' @rdname stat_scalpmap
 #' @family topoplot functions
 #' @export
@@ -391,7 +379,6 @@ geom_mask <- function(mapping = NULL,
                       na.rm = FALSE,
                       colour = "white",
                       size = rel(5),
-                      scale_fac = 1.04,
                       r = 95,
                       interp_limit = "skirt",
                       ...) {
@@ -406,7 +393,6 @@ geom_mask <- function(mapping = NULL,
                  params = list(na.rm = na.rm,
                                colour = colour,
                                size = size,
-                               scale_fac = scale_fac,
                                r = r,
                                interp_limit = interp_limit,
                                ...))
@@ -417,21 +403,19 @@ StatMask <-
                    Stat,
                    compute_group = function(data,
                                             scales,
-                                            scale_fac,
                                             interp_limit,
                                             r) {
 
                      abs_y_max <- max(abs(data$y),
                                       na.rm = TRUE)
-                     # scale_fac <- max(abs_x_max,
-                     #                  abs_y_max) * scale_fac
+
                      scale_fac <- abs_y_max
                      if (scale_fac < r) scale_fac <- r
-                     print(scale_fac)
+
                      if (identical(interp_limit, "head")) {
                        scale_fac <- max(scale_fac + 5, scale_fac * 1.02)
                      }
-                     print(scale_fac)
+
                      data <- data.frame(x = scale_fac * cos(circ_rad_fun()),
                                         y = scale_fac * sin(circ_rad_fun()))
                      data

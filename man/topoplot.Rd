@@ -32,7 +32,6 @@ topoplot(data, ...)
   scaling = 1,
   groups = NULL,
   verbose = TRUE,
-  scale_fac = 1.02,
   ...
 )
 

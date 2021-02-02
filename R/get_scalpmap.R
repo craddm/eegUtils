@@ -223,11 +223,7 @@ biharmonic <- function(data,
   abs_x_max <- max(abs(data$x),
                    na.rm = TRUE)
 
-  max_elec <- sqrt(abs_x_max^2 + abs_y_max^2)
-
   max_elec <- max(sqrt(data$y^2 + data$x^2))
-
-  #print(paste("orig:", max_elec, "new:", max_elecm))
 
   x_min <- r * -2
   x_max <- r * 2
@@ -309,9 +305,9 @@ biharmonic <- function(data,
    } else {
 
     if (r < max_elec) {
-      circ_scale <- min(max_elec * 1.15, max_elec + 15) #sqrt(abs_x_max^2 + abs_y_max^2) * 1.01
+      circ_scale <- min(max_elec * 1.20, max_elec + 20) #sqrt(abs_x_max^2 + abs_y_max^2) * 1.01
     } else {
-      circ_scale <- min(r * 1.15, r + 15)
+      circ_scale <- min(r * 1.20, r + 20)
     }
    }
   data[sqrt(data$x ^ 2 + data$y ^ 2) <= circ_scale, ]
@@ -364,9 +360,9 @@ fit_gam_topo <- function(data,
   } else {
 
     if (r < max_elec) {
-      circ_scale <- min(max_elec * 1.15, max_elec + 15) #sqrt(abs_x_max^2 + abs_y_max^2) * 1.01
+      circ_scale <- min(max_elec * 1.20, max_elec + 20) #sqrt(abs_x_max^2 + abs_y_max^2) * 1.01
     } else {
-      circ_scale <- min(r * 1.15, r + 15)
+      circ_scale <- min(r * 1.20, r + 20)
     }
   }
   data$incircle <- sqrt(data$x ^ 2 + data$y ^ 2) < circ_scale
