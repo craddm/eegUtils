@@ -36,7 +36,7 @@ get_scalpmap(data, ...)
 \item{r}{Size of headshape}
 }
 \description{
-Get an interpolated grid
+\lifecycle{experimental}
 }
 \section{Methods (by class)}{
 \itemize{

@@ -150,21 +150,21 @@ topoplot.data.frame <- function(data,
   x <- NULL
   y <- NULL
   electrode <- NULL
-  if (is.character(groups)) {
-    groups <- as.name(groups)
-  }
+  # if (is.character(groups)) {
+  #   groups <- as.name(groups)
+  # }
 
   if (is.character(quantity)) {
     quantity <- as.name(quantity)
   }
 
-  if (!is.null(groups)) {
+  if (!is.null(rlang::enexpr(groups))) {
     data <-
       dplyr::group_by(data,
                       x,
                       y,
                       electrode,
-                      {{groups}})
+                      dplyr::across({{ groups }}))
     data <-
       dplyr::summarise(data,
                        fill = mean({{quantity}},
