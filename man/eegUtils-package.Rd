@@ -27,7 +27,7 @@ Useful links:
 Other contributors:
 \itemize{
   \item Matti Vuorre \email{mv2521@columbia.edu} [contributor]
-  \item ggplot2-authors [contributor, copyright holder]
+  \item ggplot2-authors (Routines borrowed from ggplot2 to allow stat_summary_by_z) [contributor, copyright holder]
 }
 
 }
