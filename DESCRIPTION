@@ -6,7 +6,7 @@ Date: 2021-01-27
 Authors@R: c(
   person("Matt", "Craddock", role = c("aut", "cre", "cph"), email = "matt@mattcraddock.com"),
   person("Matti", "Vuorre", role = "ctb", email = "mv2521@columbia.edu"),
-  person("ggplot2-authors", role = c("ctb", "cph")))
+  person("ggplot2-authors", role = c("ctb", "cph"), comment = "Routines borrowed from ggplot2 to allow stat_summary_by_z"))
 Maintainer: Matt Craddock <matt@mattcraddock.com>
 Description: EEG processing and visualization tools. Includes import
   functions for 'BioSemi' (.BDF), 'Neuroscan' (.CNT), 'Brain Vision Analyzer' (.VHDR),
