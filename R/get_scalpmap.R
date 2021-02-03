@@ -1,7 +1,14 @@
-#' Get an interpolated grid
+#' Calculate an interpolated scalpmap
+#'
+#' Calculate and return an interpolated scalpmap from a `data.frame` or
+#' `eeg_epochs` object. This provides the basis for a raster plot, as used to
+#' create topographical plots.
 #'
 #' @param data Object to be interpolated
 #' @param ... Other arguments
+#' @return A `tibble` with the columns `x`, `y`, `fill`
+#' @examples
+#' head(get_scalpmap(demo_epochs))
 #' @export
 get_scalpmap <- function(data,
                          ...) {
@@ -21,7 +28,7 @@ get_scalpmap.default <- function(data,
 #' @param quantity Quantity to be plotted. Defaults to "amplitude".
 #' @param facets Any facets you plan to use
 #' @param r Size of headshape
-#' @describeIn get_scalpmap data.frame
+#' @describeIn get_scalpmap Get scalpmap from a `data.frame`
 #' @export
 get_scalpmap.data.frame <- function(data,
                                     method = "biharmonic",
@@ -81,6 +88,7 @@ get_scalpmap.data.frame <- function(data,
 
 }
 
+#' @describeIn get_scalpmap Get scalpmap from an `eeg_epochs` object.
 #' @export
 get_scalpmap.eeg_epochs <- function(data,
                                     method = "biharmonic",
