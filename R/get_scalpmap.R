@@ -128,18 +128,10 @@ get_scalpmap.eeg_ICA <- function(data,
                                  ...) {
 
   facets <- rlang::enexpr(facets)
-  # only useful if passed eeg objects
-  check_locs <- no_loc_chans(channels(data))
-
-  if (!is.null(check_locs)) {
-    data <- select(data,
-                   -check_locs)
-  }
-
   tmp <- as.data.frame(data,
                        mixing = TRUE,
                        long = TRUE)
-
+  tmp <- tmp[complete.cases(tmp),]
   tmp <- dplyr::rename(tmp,
                        fill = {{quantity}})
 

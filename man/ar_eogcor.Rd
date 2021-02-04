@@ -7,7 +7,16 @@
 \usage{
 ar_eogcor(decomp, data, ...)
 
-\method{ar_eogcor}{eeg_ICA}(decomp, data, HEOG, VEOG, threshold = NULL, plot = TRUE, ...)
+\method{ar_eogcor}{eeg_ICA}(
+  decomp,
+  data,
+  HEOG,
+  VEOG,
+  threshold = NULL,
+  plot = TRUE,
+  bipolarize = TRUE,
+  ...
+)
 }
 \arguments{
 \item{decomp}{ICA decomposition}
@@ -24,6 +33,8 @@ ar_eogcor(decomp, data, ...)
 automatically determining a threshold.}
 
 \item{plot}{Plot correlation coefficient for all components}
+
+\item{bipolarize}{Bipolarize the HEOG and VEOG channels?}
 }
 \value{
 A character vector of component names that break the threshold.

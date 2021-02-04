@@ -283,6 +283,7 @@ ar_eogcor <- function(decomp,
 #' @param threshold Threshold for correlation (r). Defaults to NULL,
 #'   automatically determining a threshold.
 #' @param plot Plot correlation coefficient for all components
+#' @param bipolarize Bipolarize the HEOG and VEOG channels?
 #' @describeIn ar_eogcor Method for eeg_ICA objects.
 #' @export
 ar_eogcor.eeg_ICA <- function(decomp,
@@ -291,6 +292,7 @@ ar_eogcor.eeg_ICA <- function(decomp,
                               VEOG,
                               threshold = NULL,
                               plot = TRUE,
+                              bipolarize = TRUE,
                               ...) {
 
   if (!is.null(threshold)) {
@@ -302,9 +304,13 @@ ar_eogcor.eeg_ICA <- function(decomp,
   }
 
   EOG_corrs <- abs(stats::cor(decomp$signals,
-                              bip_EOG(data$signals,
-                                      HEOG,
-                                      VEOG)))
+                              if (bipolarize) {
+                                bip_EOG(data$signals,
+                                        HEOG,
+                                        VEOG)
+                                } else {
+                                  data$signals[,c("HEOG", "VEOG")]
+                                }))
 
   if (is.null(threshold)) {
     mean_corrs <- colMeans(EOG_corrs)
