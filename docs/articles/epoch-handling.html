@@ -100,7 +100,7 @@
       <h1 data-toc-skip>Event and epoch handling</h1>
                         <h4 class="author">Matt Craddock</h4>
             
-            <h4 class="date">2021-01-28</h4>
+            <h4 class="date">2021-02-03</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/craddm/eegUtils/blob/master/vignettes/epoch-handling.Rmd"><code>vignettes/epoch-handling.Rmd</code></a></small>
       <div class="hidden name"><code>epoch-handling.Rmd</code></div>
@@ -218,12 +218,9 @@
                               <span class="st">"Nonsense/HSF"</span>,
                               <span class="st">"Nonsense/LSF"</span><span class="op">)</span>,
              time_lim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">.2</span>, <span class="fl">.6</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt; The current default value of baseline, NULL,</span>
-<span class="co">#&gt;             will change to 'none' in v0.6 of eegUtils,</span>
-<span class="co">#&gt;             performing no baseline correction.</span>
 <span class="co">#&gt; Adjusting output limits to match sampling rate.</span>
 <span class="co">#&gt; Output limits:  -0.19921875 0.599609375</span>
-<span class="co">#&gt; Removing channel means per epoch...</span>
+<span class="co">#&gt; No baseline removal performed.</span>
 <span class="co">#&gt; Creating 78 epochs.</span>
 <span class="fu"><a href="../reference/events.html">events</a></span><span class="op">(</span><span class="va">example_epochs</span><span class="op">)</span>
 <span class="co">#&gt; # A tibble: 78 x 6</span>

@@ -58,6 +58,7 @@ reference:
       - interactive_scalp
       - starts_with("plot_")
       - topoplot
+      - view_ica
   - title: Frequency analysis
     desc: Functions related to (time-)frequency analysis
     contents:

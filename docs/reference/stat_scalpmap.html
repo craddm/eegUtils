@@ -178,7 +178,7 @@ contains many rows of data.</p>
   interpolate <span class='op'>=</span> <span class='cn'>FALSE</span>,
   interp_limit <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"skirt"</span>, <span class='st'>"head"</span><span class='op'>)</span>,
   method <span class='op'>=</span> <span class='st'>"biharmonic"</span>,
-  r <span class='op'>=</span> <span class='fl'>95</span>,
+  r <span class='op'>=</span> <span class='cn'>NULL</span>,
   <span class='va'>...</span>
 <span class='op'>)</span>
 
@@ -200,7 +200,6 @@ contains many rows of data.</p>
   na.rm <span class='op'>=</span> <span class='cn'>FALSE</span>,
   colour <span class='op'>=</span> <span class='st'>"white"</span>,
   size <span class='op'>=</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/element.html'>rel</a></span><span class='op'>(</span><span class='fl'>5</span><span class='op'>)</span>,
-  scale_fac <span class='op'>=</span> <span class='fl'>1.04</span>,
   r <span class='op'>=</span> <span class='fl'>95</span>,
   interp_limit <span class='op'>=</span> <span class='st'>"skirt"</span>,
   <span class='va'>...</span>
@@ -312,11 +311,6 @@ to the paired geom/stat.</p></td>
       <td><p>For <code>geom_mask</code>, width of the masking ring.</p></td>
     </tr>
     <tr>
-      <th>scale_fac</th>
-      <td><p>The radius of the ring is determined from the front-most
-electrode's location by a scaling factor. Defaults to 1.04 * max(y).</p></td>
-    </tr>
-    <tr>
       <th>geom</th>
       <td><p>"point" for points or "text" for labels. Default is "point".</p></td>
     </tr>
@@ -325,11 +319,14 @@ electrode's location by a scaling factor. Defaults to 1.04 * max(y).</p></td>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p>Other topoplot functions: 
-<code><a href='geom_topo.html'>geom_topo</a>()</code></p>
+<code><a href='geom_topo.html'>geom_topo</a>()</code>,
+<code><a href='stat_scalpcontours.html'>stat_scalpcontours</a>()</code></p>
 <p>Other topoplot functions: 
-<code><a href='geom_topo.html'>geom_topo</a>()</code></p>
+<code><a href='geom_topo.html'>geom_topo</a>()</code>,
+<code><a href='stat_scalpcontours.html'>stat_scalpcontours</a>()</code></p>
 <p>Other topoplot functions: 
-<code><a href='geom_topo.html'>geom_topo</a>()</code></p></div>
+<code><a href='geom_topo.html'>geom_topo</a>()</code>,
+<code><a href='stat_scalpcontours.html'>stat_scalpcontours</a>()</code></p></div>
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 
     <p>Matt Craddock <a href='mailto:matt@mattcraddock.com'>matt@mattcraddock.com</a></p>

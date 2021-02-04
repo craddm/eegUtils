@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Calculate an interpolated scalpmap — get_scalpmap • eegUtils</title>
+<title>Create an interpolated scalp surface — stat_scalpcontours • eegUtils</title>
 
 
 <!-- jquery -->
@@ -39,10 +39,10 @@
 
 
 
-<meta property="og:title" content="Calculate an interpolated scalpmap — get_scalpmap" />
-<meta property="og:description" content="Calculate and return an interpolated scalpmap from a data.frame or
-eeg_epochs object. This provides the basis for a raster plot, as used to
-create topographical plots." />
+<meta property="og:title" content="Create an interpolated scalp surface — stat_scalpcontours" />
+<meta property="og:description" content="stat_scalpcontours creates an interpolated surface for an irregular set of
+x-y coordinates, as is typically required for a topographical EEG plot, and
+then calculates contours." />
 
 
 
@@ -140,40 +140,31 @@ create topographical plots." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Calculate an interpolated scalpmap</h1>
-    <small class="dont-index">Source: <a href='https://github.com/craddm/eegUtils/blob/master/R/get_scalpmap.R'><code>R/get_scalpmap.R</code></a></small>
-    <div class="hidden name"><code>get_scalpmap.Rd</code></div>
+    <h1>Create an interpolated scalp surface</h1>
+    <small class="dont-index">Source: <a href='https://github.com/craddm/eegUtils/blob/master/R/summary_contour_test.R'><code>R/summary_contour_test.R</code></a></small>
+    <div class="hidden name"><code>stat_scalpcontours.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Calculate and return an interpolated scalpmap from a <code>data.frame</code> or
-<code>eeg_epochs</code> object. This provides the basis for a raster plot, as used to
-create topographical plots.</p>
+    <p><code>stat_scalpcontours</code> creates an interpolated surface for an irregular set of
+x-y coordinates, as is typically required for a topographical EEG plot, and
+then calculates contours.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>get_scalpmap</span><span class='op'>(</span><span class='va'>data</span>, <span class='va'>...</span><span class='op'>)</span>
-
-<span class='co'># S3 method for data.frame</span>
-<span class='fu'>get_scalpmap</span><span class='op'>(</span>
-  <span class='va'>data</span>,
+    <pre class="usage"><span class='fu'>stat_scalpcontours</span><span class='op'>(</span>
+  mapping <span class='op'>=</span> <span class='cn'>NULL</span>,
+  data <span class='op'>=</span> <span class='cn'>NULL</span>,
+  position <span class='op'>=</span> <span class='st'>"identity"</span>,
+  na.rm <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  show.legend <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  inherit.aes <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  grid_res <span class='op'>=</span> <span class='fl'>200</span>,
+  interp_limit <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"skirt"</span>, <span class='st'>"head"</span><span class='op'>)</span>,
   method <span class='op'>=</span> <span class='st'>"biharmonic"</span>,
-  grid_res <span class='op'>=</span> <span class='fl'>100</span>,
-  interp_limit <span class='op'>=</span> <span class='st'>"skirt"</span>,
-  quantity <span class='op'>=</span> <span class='st'>"amplitude"</span>,
-  facets <span class='op'>=</span> <span class='cn'>NULL</span>,
-  r <span class='op'>=</span> <span class='fl'>95</span>,
-  <span class='va'>...</span>
-<span class='op'>)</span>
-
-<span class='co'># S3 method for eeg_epochs</span>
-<span class='fu'>get_scalpmap</span><span class='op'>(</span>
-  <span class='va'>data</span>,
-  method <span class='op'>=</span> <span class='st'>"biharmonic"</span>,
-  grid_res <span class='op'>=</span> <span class='fl'>100</span>,
-  interp_limit <span class='op'>=</span> <span class='st'>"skirt"</span>,
-  quantity <span class='op'>=</span> <span class='st'>"amplitude"</span>,
-  facets <span class='op'>=</span> <span class='cn'>NULL</span>,
-  r <span class='op'>=</span> <span class='fl'>95</span>,
+  r <span class='op'>=</span> <span class='cn'>NULL</span>,
+  bins <span class='op'>=</span> <span class='fl'>6</span>,
+  binwidth <span class='op'>=</span> <span class='cn'>NULL</span>,
+  breaks <span class='op'>=</span> <span class='cn'>NULL</span>,
   <span class='va'>...</span>
 <span class='op'>)</span></pre>
 
@@ -181,61 +172,99 @@ create topographical plots.</p>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
+      <th>mapping</th>
+      <td><p>Set of aesthetic mappings created by <code><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes()</a></code> or
+<code><a href='https://ggplot2.tidyverse.org/reference/aes_.html'>aes_()</a></code>. If specified and <code>inherit.aes = TRUE</code> (the
+default), it is combined with the default mapping at the top level of the
+plot. You must supply <code>mapping</code> if there is no plot mapping.</p></td>
+    </tr>
+    <tr>
       <th>data</th>
-      <td><p>An object of class 'data.frame`</p></td>
+      <td><p>The data to be displayed in this layer. There are three
+options:</p>
+<p>If <code>NULL</code>, the default, the data is inherited from the plot
+data as specified in the call to <code><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot()</a></code>.</p>
+<p>A <code>data.frame</code>, or other object, will override the plot
+data. All objects will be fortified to produce a data frame. See
+<code><a href='https://ggplot2.tidyverse.org/reference/fortify.html'>fortify()</a></code> for which variables will be created.</p>
+<p>A <code>function</code> will be called with a single argument,
+the plot data. The return value must be a <code>data.frame</code>, and
+will be used as the layer data. A <code>function</code> can be created
+from a <code>formula</code> (e.g. <code>~ head(.x, 10)</code>).</p></td>
     </tr>
     <tr>
-      <th>...</th>
-      <td><p>Other arguments</p></td>
+      <th>position</th>
+      <td><p>Position adjustment, either as a string, or the result of
+a call to a position adjustment function.</p></td>
     </tr>
     <tr>
-      <th>method</th>
-      <td><p>"biharmonic" or "gam" smooth</p></td>
+      <th>na.rm</th>
+      <td><p>If <code>FALSE</code>, the default, missing values are removed with
+a warning. If <code>TRUE</code>, missing values are silently removed.</p></td>
+    </tr>
+    <tr>
+      <th>show.legend</th>
+      <td><p>logical. Should this layer be included in the legends?
+<code>NA</code>, the default, includes if any aesthetics are mapped.
+<code>FALSE</code> never includes, and <code>TRUE</code> always includes.
+It can also be a named logical vector to finely select the aesthetics to
+display.</p></td>
+    </tr>
+    <tr>
+      <th>inherit.aes</th>
+      <td><p>If <code>FALSE</code>, overrides the default aesthetics,
+rather than combining with them. This is most useful for helper functions
+that define both data and aesthetics and shouldn't inherit behaviour from
+the default plot specification, e.g. <code><a href='https://ggplot2.tidyverse.org/reference/borders.html'>borders()</a></code>.</p></td>
     </tr>
     <tr>
       <th>grid_res</th>
-      <td><p>Grid resolution</p></td>
+      <td><p>Resolution of the interpolation grid. (Defaults to 200
+points).</p></td>
     </tr>
     <tr>
       <th>interp_limit</th>
-      <td><p>Interpolate up to the "head" or add a "skirt"</p></td>
+      <td><p>Interpolate to the "skirt" or inside the "head".</p></td>
     </tr>
     <tr>
-      <th>quantity</th>
-      <td><p>Quantity to be plotted. Defaults to "amplitude".</p></td>
-    </tr>
-    <tr>
-      <th>facets</th>
-      <td><p>Any facets you plan to use</p></td>
+      <th>method</th>
+      <td><p>"biharmonic" or "gam" smooth to create interpolated surface</p></td>
     </tr>
     <tr>
       <th>r</th>
-      <td><p>Size of headshape</p></td>
+      <td><p>Radius of interpolated surface</p></td>
+    </tr>
+    <tr>
+      <th>bins</th>
+      <td><p>Number of contour bins. Overridden by binwidth.</p></td>
+    </tr>
+    <tr>
+      <th>binwidth</th>
+      <td><p>The width of the contour bins. Overridden by breaks.</p></td>
+    </tr>
+    <tr>
+      <th>breaks</th>
+      <td><p>Numeric vector to set the contour breaks. Overrides binwidth
+and bins. By default, this is a vector of length ten with pretty() breaks.</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>Other arguments passed on to <code><a href='https://ggplot2.tidyverse.org/reference/layer.html'>layer()</a></code>. These are
+often aesthetics, used to set an aesthetic to a fixed value, like
+<code>colour = "red"</code> or <code>size = 3</code>. They may also be parameters
+to the paired geom/stat.</p></td>
     </tr>
     </table>
 
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <p>A <code>tibble</code> with the columns <code>x</code>, <code>y</code>, <code>fill</code></p>
-    <h2 class="hasAnchor" id="methods-by-class-"><a class="anchor" href="#methods-by-class-"></a>Methods (by class)</h2>
+    <div class='dont-index'><p>Other topoplot functions: 
+<code><a href='geom_topo.html'>geom_topo</a>()</code>,
+<code><a href='stat_scalpmap.html'>stat_scalpmap</a>()</code></p></div>
+    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 
-    
-<ul>
-<li><p><code>data.frame</code>: Get scalpmap from a <code>data.frame</code></p></li>
-<li><p><code>eeg_epochs</code>: Get scalpmap from an <code>eeg_epochs</code> object.</p></li>
-</ul>
+    <p>Matt Craddock <a href='mailto:matt@mattcraddock.com'>matt@mattcraddock.com</a></p>
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='fu'>get_scalpmap</span><span class='op'>(</span><span class='va'>demo_epochs</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>Joining, by = "electrode"</span></div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 6 x 3</span><span>
-#&gt;       x     y  fill
-#&gt;   </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>
-#&gt; </span><span style='color: #BCBCBC;'>1</span><span> -</span><span style='color: #BB0000;'>113.</span><span> -</span><span style='color: #BB0000;'>9.60</span><span>  5.77
-#&gt; </span><span style='color: #BCBCBC;'>2</span><span> -</span><span style='color: #BB0000;'>113.</span><span> -</span><span style='color: #BB0000;'>5.76</span><span>  5.54
-#&gt; </span><span style='color: #BCBCBC;'>3</span><span> -</span><span style='color: #BB0000;'>113.</span><span> -</span><span style='color: #BB0000;'>1.92</span><span>  5.33
-#&gt; </span><span style='color: #BCBCBC;'>4</span><span> -</span><span style='color: #BB0000;'>113.</span><span>  1.92  5.14
-#&gt; </span><span style='color: #BCBCBC;'>5</span><span> -</span><span style='color: #BB0000;'>113.</span><span>  5.76  4.96
-#&gt; </span><span style='color: #BCBCBC;'>6</span><span> -</span><span style='color: #BB0000;'>113.</span><span>  9.60  4.81</div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
