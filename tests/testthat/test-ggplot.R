@@ -55,8 +55,8 @@ test_that("geom_topo testing", {
                                          y = y,
                                          fill = amplitude)) +
                                 stat_scalpmap(interp_limit = "head") +
-                                geom_mask(r = 105) +
-                                geom_head(r = 103) +
+                                geom_mask(r = 94) +
+                                geom_head(r = 92) +
                                 geom_channels(geom = "text",
                                               aes(label = electrode))
   )

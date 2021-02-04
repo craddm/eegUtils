@@ -120,13 +120,17 @@ StatScalpmap <-
                                        FUN = mean)
 
                      if (is.null(r)) {
-                       abs_x_max <- max(abs(data$x),
-                                        na.rm = TRUE)
-                       abs_y_max <- max(abs(data$y),
-                                        na.rm = TRUE)
-                       r <- switch(interp_limit,
-                                   "head" = sqrt(abs_x_max^2 + abs_y_max^2),
-                                   "skirt" = 95)
+                       # abs_x_max <- max(abs(data$x),
+                       #                  na.rm = TRUE)
+                       # abs_y_max <- max(abs(data$y),
+                       #                  na.rm = TRUE)
+                       # r <- switch(interp_limit,
+                       #             "head" = sqrt(abs_x_max^2 + abs_y_max^2),
+                       #             "skirt" = 95)
+                       max_elec <- calc_max_elec(data)#max(sqrt(data$x^2 + data$y^2))
+                        r <- switch(interp_limit,
+                                    "head" = max_elec,
+                                    "skirt" = 95)
                      }
 
                      if (identical(method, "biharmonic")) {
@@ -406,10 +410,11 @@ StatMask <-
                                             interp_limit,
                                             r) {
 
-                     abs_y_max <- max(abs(data$y),
-                                      na.rm = TRUE)
+                     # abs_y_max <- max(abs(data$y),
+                     #                  na.rm = TRUE)
+                     max_elec <- calc_max_elec(data)
 
-                     scale_fac <- abs_y_max
+                     scale_fac <- max_elec
                      if (scale_fac < r) scale_fac <- r
 
                      if (identical(interp_limit, "head")) {
@@ -648,12 +653,12 @@ update_r <-
   function(r,
            data,
            interp_limit) {
-    abs_x_max <- max(abs(data$x),
-                     na.rm = TRUE)
-    abs_y_max <- max(abs(data$y),
-                     na.rm = TRUE)
+
+    max_elec <- calc_max_elec(data)
     r <- switch(interp_limit,
-                 "head" = sqrt(abs_x_max^2 + abs_y_max^2),
+                 "head" = max_elec,
                  "skirt" = r) # mm are expected for coords, 95 is good approx for Fpz - Oz radius
     r
   }
+
+calc_max_elec <- function(data) max(sqrt(data$x^2 + data$y^2), na.rm = TRUE)

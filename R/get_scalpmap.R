@@ -257,7 +257,7 @@ biharmonic <- function(data,
                        interp_limit,
                        r = NULL) {
 
-  max_elec <- max(sqrt(data$y^2 + data$x^2))
+  max_elec <- calc_max_elec(data)
 
   x_min <- r * -2
   x_max <- r * 2
@@ -356,7 +356,7 @@ fit_gam_topo <- function(data,
                          interp_limit,
                          r) {
 
-  max_elec <- max(sqrt(data$x^2 + data$y^2), na.rm = TRUE)
+  max_elec <- calc_max_elec(data)
 
   spline_smooth <- mgcv::gam(fill ~ s(x,
                                       y,
