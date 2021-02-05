@@ -1,9 +1,22 @@
+# eegUtils 0.6.0.9999
+
+### Function changes
+
+- `ar_eogcor` now has a `bipolarize` argument which can be set to false when the HEOG/VEOG channels are already bipolarized.
+- added some new `ggplot2` based functions for topoplotting
+
+### Internal changes / bug fixes
+
+- `eeg_reference` now handles multiple reference channels better on rereferencing
+- `get_scalpmap` handles `eeg_ICA` components better when there are channels with no locations
+- Travis-CI removed.
+
 # eegUtils 0.6.0
 
 IMPORTANT: There have been some changes to the logic of the `topoplot()` that may make their appearance quite different. Specifically, these changes are to the way the underlying interpolation grid is calculated and to how things like the diameter of the cartoon head is calculated. These changes often lead to different minimum or maximum amplitudes across the image, and thus changes in the appearance of the plot due to different scales- don't be alarmed!
 
 ### Function changes
-- `epoch_data` baseline correction no defaults to *no* baseline correction
+- `epoch_data` baseline correction now defaults to *no* baseline correction
 - Added `filter` method for `eeg_tfr` objects
 - `fit_glm()` overhauled. Now far faster and allows specification of models using standard R formulae.
 - New `eeg_lm` class introduced for output of `fit_glm()`.

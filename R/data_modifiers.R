@@ -99,7 +99,7 @@ do_referencing <- function(data,
 
     existing_ref <- data$reference$ref_chans
 
-    if (ref_chans %in% existing_ref) {
+    if (any(ref_chans %in% existing_ref)) {
       if (verbose) {
         message(paste0("You have used the existing reference channel(s), ",
                        paste(existing_ref, collapse = " & "),
