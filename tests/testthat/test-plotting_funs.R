@@ -36,7 +36,7 @@ test_that("Plotting of butterfly plots from epochs", {
 })
 
 test_that("Topoplots", {
-  skip_on_ci()
+  #skip_on_ci()
   vdiffr::expect_doppelganger("topoplot of epochs",
                               topoplot(demo_epochs,
                                        limits = c(-2.87, 4.69)))
