@@ -120,17 +120,12 @@ StatScalpmap <-
                                        FUN = mean)
 
                      if (is.null(r)) {
-                       # abs_x_max <- max(abs(data$x),
-                       #                  na.rm = TRUE)
-                       # abs_y_max <- max(abs(data$y),
-                       #                  na.rm = TRUE)
+                       #max_elec <- calc_max_elec(data)
+                       r <- update_r(interp_limit = interp_limit,
+                                     data = data)
                        # r <- switch(interp_limit,
-                       #             "head" = sqrt(abs_x_max^2 + abs_y_max^2),
-                       #             "skirt" = 95)
-                       max_elec <- calc_max_elec(data)#max(sqrt(data$x^2 + data$y^2))
-                        r <- switch(interp_limit,
-                                    "head" = max_elec,
-                                    "skirt" = 95)
+                       #              "head" = max_elec,
+                       #              "skirt" = 95)
                      }
 
                      if (identical(method, "biharmonic")) {
@@ -410,16 +405,17 @@ StatMask <-
                                             interp_limit,
                                             r) {
 
-                     # abs_y_max <- max(abs(data$y),
-                     #                  na.rm = TRUE)
                      max_elec <- calc_max_elec(data)
 
                      scale_fac <- max_elec
-                     if (scale_fac < r) scale_fac <- r
 
-                     if (identical(interp_limit, "head")) {
-                       scale_fac <- max(scale_fac + 5, scale_fac * 1.02)
-                     }
+                      if (scale_fac < r) scale_fac <- r
+
+                      if (identical(interp_limit, "head")) {
+                        scale_fac <- max_elec + 1.02#* 1.02
+                          #min(max_elec * 1.10, max_elec + 15)
+                        #  max(scale_fac + 5, scale_fac * 1.05)
+                      }
 
                      data <- data.frame(x = scale_fac * cos(circ_rad_fun()),
                                         y = scale_fac * sin(circ_rad_fun()))
@@ -649,16 +645,4 @@ StatSummaryByFill <-
                      }
                    )
 
-update_r <-
-  function(r,
-           data,
-           interp_limit) {
 
-    max_elec <- calc_max_elec(data)
-    r <- switch(interp_limit,
-                 "head" = max_elec,
-                 "skirt" = r) # mm are expected for coords, 95 is good approx for Fpz - Oz radius
-    r
-  }
-
-calc_max_elec <- function(data) max(sqrt(data$x^2 + data$y^2), na.rm = TRUE)

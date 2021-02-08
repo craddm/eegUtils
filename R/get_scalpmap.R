@@ -131,7 +131,7 @@ get_scalpmap.eeg_ICA <- function(data,
   tmp <- as.data.frame(data,
                        mixing = TRUE,
                        long = TRUE)
-  tmp <- tmp[complete.cases(tmp),]
+  tmp <- tmp[stats::complete.cases(tmp),]
   tmp <- dplyr::rename(tmp,
                        fill = {{quantity}})
 

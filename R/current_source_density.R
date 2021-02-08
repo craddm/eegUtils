@@ -96,9 +96,9 @@ interp_elecs.eeg_data <- function(data,
                              xyz_coords)
 
   data$signals <- interp_chans(data$signals,
-                          bad_elecs,
-                          missing_coords = missing_coords,
-                          weights)
+                               bad_elecs,
+                               missing_coords = missing_coords,
+                               weights)
   data
 }
 

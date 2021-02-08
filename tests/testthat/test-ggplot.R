@@ -48,17 +48,19 @@ test_that("geom_topo testing", {
                                          y = y,
                                          fill = amplitude,
                                          z = amplitude)) +
-                                geom_topo(interp_limit = "head"))
+                                geom_topo(interp_limit = "head")
+                              )
   vdiffr::expect_doppelganger("geom_statscalp_head",
                               ggplot(demo_epochs,
                                      aes(x = x,
                                          y = y,
                                          fill = amplitude)) +
                                 stat_scalpmap(interp_limit = "head") +
-                                geom_mask(r = 94) +
-                                geom_head(r = 92) +
+                                geom_mask(r = 101) +
+                                geom_head(r = 98) +
                                 geom_channels(geom = "text",
-                                              aes(label = electrode))
+                                              aes(label = electrode)) +
+                                coord_equal()
   )
   }
 )

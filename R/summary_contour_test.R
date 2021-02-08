@@ -159,13 +159,6 @@ StatScalpContours <-
                                        na.action = na.pass)
 
                      if (is.null(r)) {
-                       # abs_x_max <- max(abs(data$x), na.rm = TRUE)
-                       # abs_y_max <- max(abs(data$y), na.rm = TRUE)
-                       # mm are expected for radius, 95 is good approx for Fpz -
-                       # Oz radius
-                       # r <- switch(interp_limit,
-                       #             "head" = sqrt(abs_x_max^2 + abs_y_max^2),
-                       #             "skirt" = 95)
                        r <- update_r(95,
                                      data = data,
                                      interp_limit = interp_limit)

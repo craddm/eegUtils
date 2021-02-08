@@ -57,6 +57,8 @@ reference:
       - get_scalpmap
       - interactive_scalp
       - starts_with("plot_")
+      - stat_scalpmap
+      - stat_scalpcontours
       - topoplot
       - view_ica
   - title: Frequency analysis
