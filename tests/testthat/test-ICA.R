@@ -26,8 +26,7 @@ test_that("topoplots for ICA work", {
 })
 
 test_that("ICA timecourses work", {
-  skip_on_appveyor()
-  skip_on_travis()
+
   vdiffr::expect_doppelganger("timecourse over one component",
                               plot_timecourse(demo_SOBI,
                                               component = "Comp001"))
@@ -39,8 +38,6 @@ test_that("ICA timecourses work", {
 })
 
 test_that("component removal works", {
-  skip_on_appveyor()
-  skip_on_travis()
   demo_rm <- apply_ica(demo_epochs, demo_SOBI, 1)
   demo_re <- apply_ica(demo_SOBI)
   vdiffr::expect_doppelganger("removed one component",
@@ -50,8 +47,7 @@ test_that("component removal works", {
 })
 
 test_that("artefact detect works", {
-  skip_on_appveyor()
-  skip_on_travis()
+
   expect_equal(ar_acf(demo_SOBI, plot = FALSE), character(0))
   expect_equal(ar_chanfoc(demo_fastic, plot = FALSE), "Comp006")
   expect_equal(ar_trialfoc(demo_fica, plot = FALSE), "Comp006")
