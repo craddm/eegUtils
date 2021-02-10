@@ -34,3 +34,8 @@ test_that("selection of electrodes and times works as expected", {
   expect_equivalent(filter(demo_tfr, frequency >= 10, frequency <= 30),
                     select_freqs(demo_tfr, c(10, 30)))
 })
+
+test_that("filter returns tibble when only 1 channel in data", {
+  one_chan <- select(demo_epochs, 1)
+  expect_s3_class(filter(one_chan, time > .1)$signals, "data.frame")
+})

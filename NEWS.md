@@ -3,13 +3,17 @@
 ### Function changes
 
 - `ar_eogcor` now has a `bipolarize` argument which can be set to false when the HEOG/VEOG channels are already bipolarized.
-- added some new `ggplot2` based functions for topoplotting
+- added some new `ggplot2` based functions for topoplotting and adding contours   
+    - `stat_scalpcontours()`
+- `geom_topo()` now has contours
 
 ### Internal changes / bug fixes
 
 - `eeg_reference` now handles multiple reference channels better on rereferencing
 - `get_scalpmap` handles `eeg_ICA` components better when there are channels with no locations
 - Travis-CI removed.
+- `cart_to_spherical` coord flipping bug fixed (hopefully...)
+- `filter` now converts to tibble internally and does not coerce `signals` to a vector when there is only one channel.
 
 # eegUtils 0.6.0
 
