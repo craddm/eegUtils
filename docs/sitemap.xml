@@ -67,6 +67,9 @@
     <loc>http://craddm.github.io/eegUtils/reference/calc_fstat.html</loc>
   </url>
   <url>
+    <loc>http://craddm.github.io/eegUtils/reference/calc_max_elec.html</loc>
+  </url>
+  <url>
     <loc>http://craddm.github.io/eegUtils/reference/calc_pval.html</loc>
   </url>
   <url>
@@ -523,7 +526,13 @@
     <loc>http://craddm.github.io/eegUtils/reference/split_vec.html</loc>
   </url>
   <url>
+    <loc>http://craddm.github.io/eegUtils/reference/StatScalpContours.html</loc>
+  </url>
+  <url>
     <loc>http://craddm.github.io/eegUtils/reference/StatScalpmap.html</loc>
+  </url>
+  <url>
+    <loc>http://craddm.github.io/eegUtils/reference/stat_scalpcontours.html</loc>
   </url>
   <url>
     <loc>http://craddm.github.io/eegUtils/reference/stat_scalpmap.html</loc>
@@ -548,6 +557,9 @@
   </url>
   <url>
     <loc>http://craddm.github.io/eegUtils/reference/unpad.html</loc>
+  </url>
+  <url>
+    <loc>http://craddm.github.io/eegUtils/reference/update_r.html</loc>
   </url>
   <url>
     <loc>http://craddm.github.io/eegUtils/reference/validate_channels.html</loc>

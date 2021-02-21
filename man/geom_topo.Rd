@@ -17,9 +17,10 @@ geom_topo(
   chan_markers = "point",
   chan_size = rel(2),
   head_size = rel(1.5),
-  r = 95,
+  r = NULL,
   grid_res = 200,
   method = "biharmonic",
+  bins = 6,
   ...
 )
 }
@@ -82,6 +83,8 @@ or text.}
 
 \item{method}{"biharmonic" or ""gam".}
 
+\item{bins}{Number of bins to use for contour lines.}
+
 \item{...}{Other arguments passed on to \code{\link[ggplot2:layer]{layer()}}. These are
 often aesthetics, used to set an aesthetic to a fixed value, like
 \code{colour = "red"} or \code{size = 3}. They may also be parameters
@@ -95,10 +98,11 @@ not allow unevenly spaced grids, the function creates an interpolated surface.
 }
 \examples{
 library(ggplot2)
-ggplot(demo_epochs, aes(x = x, y = y, fill = amplitude)) + geom_topo()
+ggplot(demo_epochs, aes(x = x, y = y, fill = amplitude, z = amplitude)) + geom_topo()
 }
 \seealso{
 Other topoplot functions: 
+\code{\link{stat_scalpcontours}()},
 \code{\link{stat_scalpmap}()}
 }
 \concept{topoplot functions}

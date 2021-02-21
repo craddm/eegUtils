@@ -741,7 +741,7 @@ cart_to_spherical <- function(xyz_coords) {
   phi <- rad2deg(atan(xyz_coords$cart_y / xyz_coords$cart_x))
   theta <- rad2deg(acos(xyz_coords$cart_z / radius))
   theta <- ifelse(xyz_coords$cart_x >= 0, theta, -theta)
-  phi <- ifelse(xyz_coords$cart_x == 0, -phi, phi)
+  #phi <- ifelse(xyz_coords$cart_x == 0, -phi, phi) why is this here?
   phi <- ifelse(is.nan(phi), 0, phi)
   data.frame(radius = 1,
              theta = round(theta),

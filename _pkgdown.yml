@@ -13,6 +13,7 @@ reference:
       Functions for importing data or electrode information into R.
     contents:
       - starts_with("import")
+      - export_bva
   - title: Processing
     desc: >
       Functions for pre-processing and processing data
@@ -20,6 +21,7 @@ reference:
       - apply_ica
       - compute_csd
       - eeg_average
+      - eeg_combine
       - eeg_decompose
       - eeg_downsample
       - eeg_filter
@@ -52,12 +54,17 @@ reference:
       - erp_raster
       - erp_scalp
       - geom_topo
+      - get_scalpmap
       - interactive_scalp
       - starts_with("plot_")
+      - stat_scalpmap
+      - stat_scalpcontours
       - topoplot
+      - view_ica
   - title: Frequency analysis
     desc: Functions related to (time-)frequency analysis
     contents:
+      - compute_itc
       - compute_psd
       - compute_tfr
   - title: Converters

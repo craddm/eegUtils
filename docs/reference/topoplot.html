@@ -167,12 +167,10 @@
   chan_marker <span class='op'>=</span> <span class='st'>"point"</span>,
   quantity <span class='op'>=</span> <span class='st'>"amplitude"</span>,
   montage <span class='op'>=</span> <span class='cn'>NULL</span>,
-  <span class='va'>colourmap</span>,
   highlights <span class='op'>=</span> <span class='cn'>NULL</span>,
   scaling <span class='op'>=</span> <span class='fl'>1</span>,
   groups <span class='op'>=</span> <span class='cn'>NULL</span>,
   verbose <span class='op'>=</span> <span class='cn'>TRUE</span>,
-  scale_fac <span class='op'>=</span> <span class='fl'>1.02</span>,
   <span class='va'>...</span>
 <span class='op'>)</span>
 
@@ -237,7 +235,6 @@
   chan_marker <span class='op'>=</span> <span class='st'>"point"</span>,
   quantity <span class='op'>=</span> <span class='st'>"amplitude"</span>,
   montage <span class='op'>=</span> <span class='cn'>NULL</span>,
-  <span class='va'>colourmap</span>,
   highlights <span class='op'>=</span> <span class='cn'>NULL</span>,
   scaling <span class='op'>=</span> <span class='fl'>1</span>,
   verbose <span class='op'>=</span> <span class='cn'>TRUE</span>,
@@ -306,17 +303,17 @@ interpolation.</p></td>
     </tr>
     <tr>
       <th>r</th>
-      <td><p>Radius of cartoon head_shape; if not given, defaults to 1.1 * the
-maximum y electrode location.</p></td>
+      <td><p>Radius of cartoon head_shape in mm. Default value is 95 (mm) when
+using <code>interp_limit = "skirt"</code>.</p></td>
     </tr>
     <tr>
       <th>grid_res</th>
       <td><p>Resolution of the interpolated grid. Higher = smoother but
-slower.</p></td>
+slower. Defaults to 200 points per edge.</p></td>
     </tr>
     <tr>
       <th>palette</th>
-      <td><p>Defaults to RdBu if none supplied. Can be any from
+      <td><p>Defaults to RdBu if none supplied. Can be any palette from
 RColorBrewer or viridis. If an unsupported palette is specified, switches
 to Greens.</p></td>
     </tr>
@@ -325,7 +322,7 @@ to Greens.</p></td>
       <td><p>"skirt" or "head". Defaults to "skirt". "skirt"
 interpolates just past the farthest electrode and does not respect the
 boundary of the head_shape. "head" interpolates up to the radius of the
-plotted head.</p></td>
+plotted head, and moves all electrodes inside the head.</p></td>
     </tr>
     <tr>
       <th>contour</th>
@@ -338,17 +335,13 @@ plotted head.</p></td>
     </tr>
     <tr>
       <th>quantity</th>
-      <td><p>Allows plotting of arbitrary quantitative column. Defaults to
-amplitude. Use quoted column names. E.g. "p.value", "t_statistic".</p></td>
+      <td><p>Allows plotting of an arbitrary quantitative column. Defaults
+to amplitude. Use quoted column names. E.g. "p.value", "t_statistic".</p></td>
     </tr>
     <tr>
       <th>montage</th>
       <td><p>Name of an existing montage set. Defaults to NULL; (currently
 only 'biosemi64alpha' available other than default 10/20 system)</p></td>
-    </tr>
-    <tr>
-      <th>colourmap</th>
-      <td><p>Deprecated, use palette instead.</p></td>
     </tr>
     <tr>
       <th>highlights</th>
@@ -397,13 +390,14 @@ eeg_data objects.</p></li>
     <h2 class="hasAnchor" id="notes-on-usage-of-generalized-additive-models-for-interpolation"><a class="anchor" href="#notes-on-usage-of-generalized-additive-models-for-interpolation"></a>Notes on usage of Generalized Additive Models for interpolation</h2>
 
     <p>The
-function fits a GAM using the <code>gam</code> function from <code>mgcv</code>. Specifically, it fits
-a spline using the model function gam(z ~ s(x, y, bs = "ts", k = 40). Using
-GAMs for smooths is very much experimental. The surface is produced from
-the predictions of the GAM model fitted to the supplied data. Values at
-each electrode do not necessarily match actual values in the data:
+function fits a GAM using the <code>gam</code> function from <code>mgcv</code>. Specifically, it
+fits a spline using the model function gam(z ~ s(x, y, bs = "ts", k = 40).
+Using GAMs for smooths is very much experimental. The surface is produced
+from the predictions of the GAM model fitted to the supplied data. Values
+at each electrode do not necessarily match actual values in the data:
 high-frequency variation will tend to be smoothed out. Thus, the method
-should be used with caution.</p>
+should be used with caution. In addition the method can only be used when
+there are more than 40 electrodes.</p>
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 
     <p>Matt Craddock, <a href='mailto:matt@mattcraddock.com'>matt@mattcraddock.com</a></p>

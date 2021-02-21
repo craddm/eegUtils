@@ -28,12 +28,10 @@ topoplot(data, ...)
   chan_marker = "point",
   quantity = "amplitude",
   montage = NULL,
-  colourmap,
   highlights = NULL,
   scaling = 1,
   groups = NULL,
   verbose = TRUE,
-  scale_fac = 1.02,
   ...
 )
 
@@ -95,7 +93,6 @@ topoplot(data, ...)
   chan_marker = "point",
   quantity = "amplitude",
   montage = NULL,
-  colourmap,
   highlights = NULL,
   scaling = 1,
   verbose = TRUE,
@@ -147,33 +144,31 @@ implements the same method used in Matlab's EEGLAB. "gam" fits a
 Generalized Additive Model with k = 40 knots. Defaults to biharmonic spline
 interpolation.}
 
-\item{r}{Radius of cartoon head_shape; if not given, defaults to 1.1 * the
-maximum y electrode location.}
+\item{r}{Radius of cartoon head_shape in mm. Default value is 95 (mm) when
+using \code{interp_limit = "skirt"}.}
 
 \item{grid_res}{Resolution of the interpolated grid. Higher = smoother but
-slower.}
+slower. Defaults to 200 points per edge.}
 
-\item{palette}{Defaults to RdBu if none supplied. Can be any from
+\item{palette}{Defaults to RdBu if none supplied. Can be any palette from
 RColorBrewer or viridis. If an unsupported palette is specified, switches
 to Greens.}
 
 \item{interp_limit}{"skirt" or "head". Defaults to "skirt". "skirt"
 interpolates just past the farthest electrode and does not respect the
 boundary of the head_shape. "head" interpolates up to the radius of the
-plotted head.}
+plotted head, and moves all electrodes inside the head.}
 
 \item{contour}{Plot contour lines on topography (defaults to TRUE)}
 
 \item{chan_marker}{Set marker for electrode locations. "point" = point,
 "name" = electrode name, "none" = no marker. Defaults to "point".}
 
-\item{quantity}{Allows plotting of arbitrary quantitative column. Defaults to
-amplitude. Use quoted column names. E.g. "p.value", "t_statistic".}
+\item{quantity}{Allows plotting of an arbitrary quantitative column. Defaults
+to amplitude. Use quoted column names. E.g. "p.value", "t_statistic".}
 
 \item{montage}{Name of an existing montage set. Defaults to NULL; (currently
 only 'biosemi64alpha' available other than default 10/20 system)}
-
-\item{colourmap}{Deprecated, use palette instead.}
 
 \item{highlights}{Electrodes to highlight (in white).}
 
@@ -212,13 +207,14 @@ eeg_data objects.
 
 \section{Notes on usage of Generalized Additive Models for interpolation}{
  The
-function fits a GAM using the \code{gam} function from \code{mgcv}. Specifically, it fits
-a spline using the model function gam(z ~ s(x, y, bs = "ts", k = 40). Using
-GAMs for smooths is very much experimental. The surface is produced from
-the predictions of the GAM model fitted to the supplied data. Values at
-each electrode do not necessarily match actual values in the data:
+function fits a GAM using the \code{gam} function from \code{mgcv}. Specifically, it
+fits a spline using the model function gam(z ~ s(x, y, bs = "ts", k = 40).
+Using GAMs for smooths is very much experimental. The surface is produced
+from the predictions of the GAM model fitted to the supplied data. Values
+at each electrode do not necessarily match actual values in the data:
 high-frequency variation will tend to be smoothed out. Thus, the method
-should be used with caution.
+should be used with caution. In addition the method can only be used when
+there are more than 40 electrodes.
 }
 
 \examples{

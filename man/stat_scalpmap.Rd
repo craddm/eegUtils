@@ -19,7 +19,7 @@ stat_scalpmap(
   interpolate = FALSE,
   interp_limit = c("skirt", "head"),
   method = "biharmonic",
-  r = 95,
+  r = NULL,
   ...
 )
 
@@ -41,7 +41,6 @@ geom_mask(
   na.rm = FALSE,
   colour = "white",
   size = rel(5),
-  scale_fac = 1.04,
   r = 95,
   interp_limit = "skirt",
   ...
@@ -125,9 +124,6 @@ to the paired geom/stat.}
 
 \item{size}{For \code{geom_mask}, width of the masking ring.}
 
-\item{scale_fac}{The radius of the ring is determined from the front-most
-electrode's location by a scaling factor. Defaults to 1.04 * max(y).}
-
 \item{geom}{"point" for points or "text" for labels. Default is "point".}
 }
 \description{
@@ -149,13 +145,16 @@ contains many rows of data.
 }
 \seealso{
 Other topoplot functions: 
-\code{\link{geom_topo}()}
+\code{\link{geom_topo}()},
+\code{\link{stat_scalpcontours}()}
 
 Other topoplot functions: 
-\code{\link{geom_topo}()}
+\code{\link{geom_topo}()},
+\code{\link{stat_scalpcontours}()}
 
 Other topoplot functions: 
-\code{\link{geom_topo}()}
+\code{\link{geom_topo}()},
+\code{\link{stat_scalpcontours}()}
 }
 \author{
 Matt Craddock \email{matt@mattcraddock.com}

@@ -14,7 +14,7 @@ filter.eeg_epochs <- function(.data,
   # labels etc. filter out anything that matches the criteria then return to
   # original format. May want to recode this?
 
-  .data$signals <- as.data.frame(.data)
+  .data$signals <- tibble::as_tibble(.data)
   .data$signals <- dplyr::filter(.data$signals,
                                  ...)
   .data$signals <- .data$signals[, orig_cols]

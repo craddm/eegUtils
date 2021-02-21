@@ -159,6 +159,7 @@ PSD is calculated using Welch's method.</p>
   seg_length <span class='op'>=</span> <span class='cn'>NULL</span>,
   noverlap <span class='op'>=</span> <span class='cn'>NULL</span>,
   demean <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  keep_trials <span class='op'>=</span> <span class='cn'>TRUE</span>,
   <span class='va'>...</span>
 <span class='op'>)</span>
 
@@ -193,6 +194,18 @@ PSD is calculated using Welch's method.</p>
   n_fft <span class='op'>=</span> <span class='fl'>256</span>,
   seg_length <span class='op'>=</span> <span class='cn'>NULL</span>,
   noverlap <span class='op'>=</span> <span class='cn'>NULL</span>,
+  keep_trials <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  <span class='va'>...</span>
+<span class='op'>)</span>
+
+<span class='co'># S3 method for eeg_group</span>
+<span class='fu'>plot_psd</span><span class='op'>(</span>
+  <span class='va'>data</span>,
+  freq_range <span class='op'>=</span> <span class='cn'>NULL</span>,
+  n_fft <span class='op'>=</span> <span class='fl'>256</span>,
+  seg_length <span class='op'>=</span> <span class='cn'>NULL</span>,
+  noverlap <span class='op'>=</span> <span class='cn'>NULL</span>,
+  demean <span class='op'>=</span> <span class='cn'>TRUE</span>,
   <span class='va'>...</span>
 <span class='op'>)</span></pre>
 
@@ -215,12 +228,12 @@ PSD is calculated using Welch's method.</p>
     <tr>
       <th>n_fft</th>
       <td><p>Number of points to use for the underlying FFTs. Defaults to 256
-for <code>eeg_epochs</code> or minimum of 2048 or the signal length for
-<code>eeg_data</code>.</p></td>
+for <code>eeg_epochs</code> or minimum of 2048 or the signal length for <code>eeg_data</code>.</p></td>
     </tr>
     <tr>
       <th>seg_length</th>
-      <td><p>Length of individual segments. Defaults to n_fft. Must be &lt;= n_fft.</p></td>
+      <td><p>Length of individual segments. Defaults to n_fft. Must be
+&lt;= n_fft.</p></td>
     </tr>
     <tr>
       <th>noverlap</th>
@@ -230,6 +243,11 @@ Defaults to 50%.</p></td>
     <tr>
       <th>demean</th>
       <td><p>Remove epoch means before FFT.</p></td>
+    </tr>
+    <tr>
+      <th>keep_trials</th>
+      <td><p>Whether to keep trial information in the output or average
+over all trials</p></td>
     </tr>
     <tr>
       <th>components</th>
@@ -256,6 +274,7 @@ overlap between segments can be passed to Welch's FFT.</p>
 <li><p><code>eeg_ICA</code>: Plot PSD for <code>eeg_ICA</code> objects</p></li>
 <li><p><code>data.frame</code>: Plot PSD for <code>data.frame</code>s.</p></li>
 <li><p><code>eeg_evoked</code>: Plot PSD for <code>eeg_evoked</code> objects</p></li>
+<li><p><code>eeg_group</code>: Plot PSD for <code>eeg_group</code> objects is not currently supported</p></li>
 </ul>
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 

@@ -100,7 +100,7 @@
       <h1 data-toc-skip>Building a topographical plot</h1>
                         <h4 class="author">Matt Craddock</h4>
             
-            <h4 class="date">2021-01-28</h4>
+            <h4 class="date">2021-02-08</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/craddm/eegUtils/blob/master/vignettes/topoplot/topoplot.Rmd"><code>vignettes/topoplot/topoplot.Rmd</code></a></small>
       <div class="hidden name"><code>topoplot.Rmd</code></div>
@@ -136,21 +136,23 @@
 <div id="ggplot2-extensions---geom_topo" class="section level2">
 <h2 class="hasAnchor">
 <a href="#ggplot2-extensions---geom_topo" class="anchor"></a>ggplot2 extensions - geom_topo()</h2>
-<p>For those who desire more control over the plots and are familiar with <code>ggplot2</code>, there are several custom geoms to help you do this. As a starter, the <code><a href="../../reference/geom_topo.html">geom_topo()</a></code> creates a full topographical plot, with cartoon head and points indicating coordinate locations. This is based on <code>ggplot2</code>’s <code><a href="https://ggplot2.tidyverse.org/reference/geom_tile.html">geom_raster()</a></code>, and has such has many parameters in common. But unlike <code><a href="https://ggplot2.tidyverse.org/reference/geom_tile.html">geom_raster()</a></code> it can handle an irregular grid.</p>
+<p>For those who desire more control over the plots and are familiar with <code>ggplot2</code>, there are several custom geoms to help you do this. As a starter, the <code><a href="../../reference/geom_topo.html">geom_topo()</a></code> creates a full topographical plot, with cartoon head and points indicating coordinate locations. This is based on <code>ggplot2</code>’s <code><a href="https://ggplot2.tidyverse.org/reference/geom_tile.html">geom_raster()</a></code>, and has such has many parameters in common. But unlike <code><a href="https://ggplot2.tidyverse.org/reference/geom_tile.html">geom_raster()</a></code> it can handle an irregular grid. You are required to supply <code>x</code>, <code>y</code>, <code>fill</code>, and <code>z</code> aesthetics to use this function.</p>
 <p><code>fortify</code> methods are included in the package so that most <code>eegUtils</code> objects can be passed directly to <code><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot()</a></code>. For more complete control, one might wish to convert the objects using <code><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame()</a></code> first, so that any desired manipulations such as averaging can be conducted first.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org">ggplot2</a></span><span class="op">)</span>
 <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">demo_epochs</span>,
        <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span>,
            y <span class="op">=</span> <span class="va">y</span>,
-           fill <span class="op">=</span> <span class="va">amplitude</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+           fill <span class="op">=</span> <span class="va">amplitude</span>,
+           z <span class="op">=</span> <span class="va">amplitude</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="../../reference/geom_topo.html">geom_topo</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <p><img src="topoplot_files/figure-html/default-geom-1.png" width="384"></p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">demo_epochs</span>,
        <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span>,
            y <span class="op">=</span> <span class="va">y</span>,
-           fill <span class="op">=</span> <span class="va">amplitude</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+           fill <span class="op">=</span> <span class="va">amplitude</span>,
+           z <span class="op">=</span> <span class="va">amplitude</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="../../reference/geom_topo.html">geom_topo</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> 
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_brewer.html">scale_fill_distiller</a></span><span class="op">(</span>palette <span class="op">=</span> <span class="st">"RdBu"</span><span class="op">)</span> <span class="op">+</span> 
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_void</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> 
@@ -163,11 +165,13 @@
        <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span>,
            y <span class="op">=</span> <span class="va">y</span>,
            fill <span class="op">=</span> <span class="va">amplitude</span>,
+           z <span class="op">=</span> <span class="va">amplitude</span>,
            label <span class="op">=</span> <span class="va">electrode</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="../../reference/geom_topo.html">geom_topo</a></span><span class="op">(</span>grid_res <span class="op">=</span> <span class="fl">200</span>,
             interp_limit <span class="op">=</span> <span class="st">"head"</span>,
             chan_markers <span class="op">=</span> <span class="st">"text"</span>,
-            chan_size <span class="op">=</span> <span class="fl">4</span><span class="op">)</span> <span class="op">+</span> 
+            chan_size <span class="op">=</span> <span class="fl">4</span>,
+            colour <span class="op">=</span> <span class="st">"black"</span><span class="op">)</span> <span class="op">+</span> 
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_brewer.html">scale_fill_distiller</a></span><span class="op">(</span>palette <span class="op">=</span> <span class="st">"RdBu"</span><span class="op">)</span> <span class="op">+</span> 
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_void</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> 
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_fixed.html">coord_equal</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> 
@@ -185,7 +189,7 @@
            y <span class="op">=</span> <span class="va">y</span>,
            fill <span class="op">=</span> <span class="va">amplitude</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> 
   <span class="fu"><a href="../../reference/stat_scalpmap.html">stat_scalpmap</a></span><span class="op">(</span>grid_res <span class="op">=</span> <span class="fl">60</span><span class="op">)</span> <span class="op">+</span>  <span class="co">#based on geom_raster()</span>
-  <span class="fu"><a href="../../reference/stat_scalpmap.html">geom_mask</a></span><span class="op">(</span>scale_fac <span class="op">=</span> <span class="fl">1.25</span><span class="op">)</span> <span class="op">+</span>    <span class="co">#based on geom_path()</span>
+  <span class="fu"><a href="../../reference/stat_scalpmap.html">geom_mask</a></span><span class="op">(</span>r <span class="op">=</span> <span class="fl">114</span>, size <span class="op">=</span> <span class="fl">6</span><span class="op">)</span> <span class="op">+</span>    <span class="co">#based on geom_path()</span>
   <span class="fu"><a href="../../reference/stat_scalpmap.html">geom_head</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>                   <span class="co">#based on geom_path() and geom_curve()</span>
   <span class="fu"><a href="../../reference/stat_scalpmap.html">geom_channels</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>               <span class="co">#based on geom_point() and geom_text()</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_viridis.html">scale_fill_viridis_c</a></span><span class="op">(</span>limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">6</span>, <span class="fl">6</span><span class="op">)</span>,

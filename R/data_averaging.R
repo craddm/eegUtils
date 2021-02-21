@@ -47,12 +47,15 @@ eeg_average.eeg_epochs <- function(data,
   data$signals <- dplyr::left_join(cbind(data$signals,
                                          data$timings),
                                    data$epochs, by = "epoch")
-
   if (!is.null(cols)) {
-    if ("participant_id" %in% cols) {
-      col_names <- cols
+    if (identical(cols, "everything")) {
+      col_names <- "participant_id"
     } else {
-      col_names <- c("participant_id", cols)
+      if ("participant_id" %in% cols) {
+        col_names <- cols
+        } else {
+          col_names <- c("participant_id", cols)
+        }
     }
   } else {
     col_names <- names(data$epochs)
@@ -72,8 +75,8 @@ eeg_average.eeg_epochs <- function(data,
 
   epochs <- dplyr::select(timings,
                           epoch,
-                          !!col_names) %>%
-    dplyr::distinct()
+                          !!col_names)
+  epochs <- dplyr::distinct(epochs)
 
   class(epochs) <- c("epoch_info",
                      "tbl_df",

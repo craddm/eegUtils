@@ -3,11 +3,23 @@
 \name{get_scalpmap}
 \alias{get_scalpmap}
 \alias{get_scalpmap.data.frame}
-\title{Get an interpolated grid}
+\alias{get_scalpmap.eeg_epochs}
+\title{Calculate an interpolated scalpmap}
 \usage{
 get_scalpmap(data, ...)
 
 \method{get_scalpmap}{data.frame}(
+  data,
+  method = "biharmonic",
+  grid_res = 100,
+  interp_limit = "skirt",
+  quantity = "amplitude",
+  facets = NULL,
+  r = 95,
+  ...
+)
+
+\method{get_scalpmap}{eeg_epochs}(
   data,
   method = "biharmonic",
   grid_res = 100,
@@ -35,11 +47,21 @@ get_scalpmap(data, ...)
 
 \item{r}{Size of headshape}
 }
+\value{
+A \code{tibble} with the columns \code{x}, \code{y}, \code{fill}
+}
 \description{
-Get an interpolated grid
+Calculate and return an interpolated scalpmap from a \code{data.frame} or
+\code{eeg_epochs} object. This provides the basis for a raster plot, as used to
+create topographical plots.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{data.frame}: data.frame
+\item \code{data.frame}: Get scalpmap from a \code{data.frame}
+
+\item \code{eeg_epochs}: Get scalpmap from an \code{eeg_epochs} object.
 }}
 
+\examples{
+head(get_scalpmap(demo_epochs))
+}

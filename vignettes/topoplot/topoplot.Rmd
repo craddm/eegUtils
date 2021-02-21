@@ -47,7 +47,7 @@ topoplot(demo_ica, component = 2)
 
 ## ggplot2 extensions - geom_topo()
 
-For those who desire more control over the plots and are familiar with `ggplot2`, there are several custom geoms to help you do this. As a starter, the `geom_topo()` creates a full topographical plot, with cartoon head and points indicating coordinate locations. This is based on `ggplot2`'s `geom_raster()`, and has such has many parameters in common. But unlike `geom_raster()` it can handle an irregular grid.
+For those who desire more control over the plots and are familiar with `ggplot2`, there are several custom geoms to help you do this. As a starter, the `geom_topo()` creates a full topographical plot, with cartoon head and points indicating coordinate locations. This is based on `ggplot2`'s `geom_raster()`, and has such has many parameters in common. But unlike `geom_raster()` it can handle an irregular grid. You are required to supply `x`, `y`, `fill`, and `z` aesthetics to use this function.
 
 `fortify` methods are included in the package so that most `eegUtils` objects can be passed directly to `ggplot()`. For more complete control, one might wish to convert the objects using `as.data.frame()` first, so that any desired manipulations such as averaging can be conducted first. 
 
@@ -56,7 +56,8 @@ library(ggplot2)
 ggplot(demo_epochs,
        aes(x = x,
            y = y,
-           fill = amplitude)) +
+           fill = amplitude,
+           z = amplitude)) +
   geom_topo()
 ```
 
@@ -64,7 +65,8 @@ ggplot(demo_epochs,
 ggplot(demo_epochs,
        aes(x = x,
            y = y,
-           fill = amplitude)) +
+           fill = amplitude,
+           z = amplitude)) +
   geom_topo() + 
   scale_fill_distiller(palette = "RdBu") + 
   theme_void() + 
@@ -79,11 +81,13 @@ ggplot(demo_epochs,
        aes(x = x,
            y = y,
            fill = amplitude,
+           z = amplitude,
            label = electrode)) +
   geom_topo(grid_res = 200,
             interp_limit = "head",
             chan_markers = "text",
-            chan_size = 4) + 
+            chan_size = 4,
+            colour = "black") + 
   scale_fill_distiller(palette = "RdBu") + 
   theme_void() + 
   coord_equal() + 
@@ -102,7 +106,7 @@ ggplot(demo_epochs,
            y = y,
            fill = amplitude)) + 
   stat_scalpmap(grid_res = 60) +  #based on geom_raster()
-  geom_mask(scale_fac = 1.25) +    #based on geom_path()
+  geom_mask(r = 114, size = 6) +    #based on geom_path()
   geom_head() +                   #based on geom_path() and geom_curve()
   geom_channels() +               #based on geom_point() and geom_text()
   scale_fill_viridis_c(limits = c(-6, 6),

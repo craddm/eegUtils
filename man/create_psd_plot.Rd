@@ -4,7 +4,7 @@
 \alias{create_psd_plot}
 \title{Create a PSD plot}
 \usage{
-create_psd_plot(psd_out, freq_range)
+create_psd_plot(psd_out, freq_range, chan_names)
 }
 \arguments{
 \item{psd_out}{PSD to plot.}

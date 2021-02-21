@@ -7,6 +7,7 @@
 \alias{plot_psd.eeg_ICA}
 \alias{plot_psd.data.frame}
 \alias{plot_psd.eeg_evoked}
+\alias{plot_psd.eeg_group}
 \title{Plot Power Spectral Density}
 \usage{
 plot_psd(data, freq_range = NULL, ...)
@@ -18,6 +19,7 @@ plot_psd(data, freq_range = NULL, ...)
   seg_length = NULL,
   noverlap = NULL,
   demean = TRUE,
+  keep_trials = TRUE,
   ...
 )
 
@@ -48,6 +50,17 @@ plot_psd(data, freq_range = NULL, ...)
   n_fft = 256,
   seg_length = NULL,
   noverlap = NULL,
+  keep_trials = TRUE,
+  ...
+)
+
+\method{plot_psd}{eeg_group}(
+  data,
+  freq_range = NULL,
+  n_fft = 256,
+  seg_length = NULL,
+  noverlap = NULL,
+  demean = TRUE,
   ...
 )
 }
@@ -60,15 +73,18 @@ plot_psd(data, freq_range = NULL, ...)
 \item{...}{Additional parameters.}
 
 \item{n_fft}{Number of points to use for the underlying FFTs. Defaults to 256
-for \code{eeg_epochs} or minimum of 2048 or the signal length for
-\code{eeg_data}.}
+for \code{eeg_epochs} or minimum of 2048 or the signal length for \code{eeg_data}.}
 
-\item{seg_length}{Length of individual segments. Defaults to n_fft. Must be <= n_fft.}
+\item{seg_length}{Length of individual segments. Defaults to n_fft. Must be
+<= n_fft.}
 
 \item{noverlap}{Amount of overlap between segments, in sampling points.
 Defaults to 50\%.}
 
 \item{demean}{Remove epoch means before FFT.}
+
+\item{keep_trials}{Whether to keep trial information in the output or average
+over all trials}
 
 \item{components}{Which components to compute the PSD for. Defaults to all.}
 }
@@ -98,6 +114,8 @@ overlap between segments can be passed to Welch's FFT.
 \item \code{data.frame}: Plot PSD for \code{data.frame}s.
 
 \item \code{eeg_evoked}: Plot PSD for \code{eeg_evoked} objects
+
+\item \code{eeg_group}: Plot PSD for \code{eeg_group} objects is not currently supported
 }}
 
 \examples{

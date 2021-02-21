@@ -314,3 +314,21 @@ circ_rad_fun <- function() {
       2 * pi,
       length.out = 101)
 }
+
+#' Update radius
+#' @keywords internal
+update_r <-
+  function(r = 95,
+           data,
+           interp_limit) {
+
+    max_elec <- calc_max_elec(data)
+    r <- switch(interp_limit,
+                "head" = min(max_elec * 1.10, max_elec + 15),
+                "skirt" = r) # mm are expected for coords, 95 is good approx for Fpz - Oz radius
+    r
+  }
+
+#' Calculate maximum electrode distance from origin.
+#' @keywords internal
+calc_max_elec <- function(data) max(sqrt(data$x^2 + data$y^2), na.rm = TRUE)
