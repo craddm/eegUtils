@@ -209,6 +209,19 @@ compute_psd.eeg_evoked <- function(data,
   final_output
 }
 
+#' @noRd
+#' @export
+compute_psd.eeg_group <- function(data,
+                                  seg_length = NULL,
+                                  noverlap = NULL,
+                                  n_fft = 256,
+                                  method = "Welch",
+                                  demean = TRUE,
+                                  verbose = TRUE,
+                                  ...) {
+  stop("Cannot compute psd for `eeg_group` objects.")
+}
+
 #' Welch fft
 #'
 #' Internal function for calculating the PSD using Welch's method

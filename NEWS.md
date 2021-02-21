@@ -6,6 +6,8 @@
 - added some new `ggplot2` based functions for topoplotting and adding contours   
     - `stat_scalpcontours()`
 - `geom_topo()` now has contours
+- added errors with when attempting to use `compute_psd` or `compute_tfr` on `eeg_group` objects.
+
 
 ### Internal changes / bug fixes
 
@@ -14,6 +16,7 @@
 - Travis-CI removed.
 - `cart_to_spherical` coord flipping bug fixed (hopefully...)
 - `filter` now converts to tibble internally and does not coerce `signals` to a vector when there is only one channel.
+- added copyright info to `summary_contour` file
 
 # eegUtils 0.6.0
 

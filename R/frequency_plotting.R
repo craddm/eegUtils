@@ -144,6 +144,20 @@ plot_psd.eeg_evoked <- function(data,
                   freq_range)
 }
 
+#' @describeIn plot_psd Plot PSD for `eeg_group` objects is not currently supported
+#' @export
+plot_psd.eeg_group <- function(data,
+                               freq_range = NULL,
+                               n_fft = 256,
+                               seg_length = NULL,
+                               noverlap = NULL,
+                               demean = TRUE,
+                               ...) {
+  stop("Cannot currently plot_psd for eeg_grou objects.")
+
+}
+
+
 #' Create a PSD plot
 #'
 #' @param psd_out PSD to plot.

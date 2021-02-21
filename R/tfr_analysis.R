@@ -108,6 +108,20 @@ compute_tfr.eeg_evoked <- function(data,
   )
 }
 
+#' @noRd
+#' @export
+compute_tfr.eeg_group <- function(data,
+                                  method = "morlet",
+                                  foi,
+                                  n_freq,
+                                  n_cycles = 7,
+                                  keep_trials = FALSE,
+                                  output = "power",
+                                  downsample = 1,
+                                  verbose = TRUE,
+                                  ...) {
+  stop("Cannot compute tfr for grouped data.")
+}
 
 #' Perform Morlet time-frequency analysis
 #'

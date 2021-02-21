@@ -1,3 +1,15 @@
+#' Modified ggplot2 code for contours
+#'
+#' This file contains modified versions of source code from ggplot2. As the
+#' `geom_contour` code relies on several internal ggplot2 functions, I have
+#' reproduced them here to be able to modify the `geom_contour` code
+#' appropriately.
+#'
+#' The original code was released under an MIT license, and remains copyright of
+#' the ggplot2 authors.
+NULL
+
+#' @noRd
 stat_summary_by_z <- function(mapping = NULL, data = NULL,
                               geom = "contour", position = "identity",
                               ...,
@@ -176,12 +188,12 @@ StatScalpContours <-
                                             r = r)
                      }
 
-                     data <-
-                       aggregate(fill ~ x + y,
-                                 data = data,
-                                 FUN = mean,
-                                 na.rm = na.rm,
-                                 na.action = na.pass)
+                      # data <-
+                      #   aggregate(fill ~ x + y,
+                      #             data = data,
+                      #             FUN = mean,
+                      #             na.rm = na.rm,
+                      #             na.action = na.pass)
 
                      data <- dplyr::rename(data,
                                            z = fill)
