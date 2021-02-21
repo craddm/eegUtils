@@ -150,7 +150,14 @@
 <ul>
 <li>
 <code>ar_eogcor</code> now has a <code>bipolarize</code> argument which can be set to false when the HEOG/VEOG channels are already bipolarized.</li>
-<li>added some new <code>ggplot2</code> based functions for topoplotting</li>
+<li>added some new <code>ggplot2</code> based functions for topoplotting and adding contours
+<ul>
+<li><code><a href="../reference/stat_scalpcontours.html">stat_scalpcontours()</a></code></li>
+</ul>
+</li>
+<li>
+<code><a href="../reference/geom_topo.html">geom_topo()</a></code> now has contours</li>
+<li>added errors with when attempting to use <code>compute_psd</code> or <code>compute_tfr</code> on <code>eeg_group</code> objects.</li>
 </ul>
 </div>
 <div id="internal-changes--bug-fixes" class="section level3">
@@ -162,6 +169,11 @@
 <li>
 <code>get_scalpmap</code> handles <code>eeg_ICA</code> components better when there are channels with no locations</li>
 <li>Travis-CI removed.</li>
+<li>
+<code>cart_to_spherical</code> coord flipping bug fixed (hopefully…)</li>
+<li>
+<code>filter</code> now converts to tibble internally and does not coerce <code>signals</code> to a vector when there is only one channel.</li>
+<li>added copyright info to <code>summary_contour</code> file</li>
 </ul>
 </div>
 </div>
@@ -188,7 +200,7 @@
 <li>
 <code><a href="../reference/view_artefacts.html">view_artefacts()</a></code>Shiny viewer for channel and epoch stats added.</li>
 <li>
-<code><a href="../reference/plot_timecourse.html">plot_timecourse()</a></code> now takes a mapping argument, which allows use of <code>ggplot2</code> <code><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes()</a></code> mappings</li>
+<code><a href="../reference/plot_timecourse.html">plot_timecourse()</a></code> now takes a mapping argument, which allows use of <code>ggplot2</code> <code>aes()</code> mappings</li>
 <li>
 <code><a href="../reference/eeg_average.html">eeg_average.eeg_tfr()</a></code> now follows behaviour of other <code><a href="../reference/eeg_average.html">eeg_average()</a></code> methods in respecting the <code>epochs</code> structure.<br>
 </li>

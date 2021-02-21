@@ -26,12 +26,14 @@ plot_psd <- function(data, freq_range = NULL, ...) {
 }
 
 #' @param n_fft Number of points to use for the underlying FFTs. Defaults to 256
-#'   for `eeg_epochs` or minimum of 2048 or the signal length for
-#'   `eeg_data`.
+#'   for `eeg_epochs` or minimum of 2048 or the signal length for `eeg_data`.
 #' @param noverlap Amount of overlap between segments, in sampling points.
 #'   Defaults to 50%.
-#' @param seg_length Length of individual segments. Defaults to n_fft. Must be <= n_fft.
+#' @param seg_length Length of individual segments. Defaults to n_fft. Must be
+#'   <= n_fft.
 #' @param demean Remove epoch means before FFT.
+#' @param keep_trials Whether to keep trial information in the output or average
+#'   over all trials
 #' @describeIn plot_psd Plot PSD for `eeg_epochs`.
 #' @export
 plot_psd.eeg_epochs <- function(data,
@@ -40,17 +42,19 @@ plot_psd.eeg_epochs <- function(data,
                                 seg_length = NULL,
                                 noverlap = NULL,
                                 demean = TRUE,
+                                keep_trials = TRUE,
                                 ...) {
 
   psd_out <- compute_psd(data,
-                         keep_trials = FALSE,
+                         keep_trials = keep_trials,
                          n_fft = n_fft,
                          seg_length = seg_length,
                          noverlap = noverlap,
                          demean = demean)
 
   create_psd_plot(psd_out,
-                  freq_range)
+                  freq_range,
+                  chan_names = channel_names(data))
 }
 
 #' @describeIn plot_psd Plot PSD for `eeg_data`.
@@ -68,7 +72,8 @@ plot_psd.eeg_data <- function(data,
                          noverlap = noverlap)
 
   create_psd_plot(psd_out,
-                  freq_range)
+                  freq_range,
+                  chan_names = channel_names(data))
 
 }
 
@@ -95,7 +100,8 @@ plot_psd.eeg_ICA <- function(data,
                          keep_trials = FALSE)
 
   create_psd_plot(psd_out,
-                  freq_range)
+                  freq_range,
+                  chan_names = channel_names(data))
 }
 
 #' @describeIn plot_psd Plot PSD for `data.frame`s.
@@ -132,16 +138,18 @@ plot_psd.eeg_evoked <- function(data,
                                 n_fft = 256,
                                 seg_length = NULL,
                                 noverlap = NULL,
+                                keep_trials = TRUE,
                                 ...) {
 
   psd_out <- compute_psd(data,
-                         keep_trials = FALSE,
+                         keep_trials = keep_trials,
                          n_fft = n_fft,
                          seg_length = seg_length,
                          noverlap = noverlap)
 
   create_psd_plot(psd_out,
-                  freq_range)
+                  freq_range,
+                  chan_names = channel_names(data))
 }
 
 #' @describeIn plot_psd Plot PSD for `eeg_group` objects is not currently supported
@@ -153,7 +161,7 @@ plot_psd.eeg_group <- function(data,
                                noverlap = NULL,
                                demean = TRUE,
                                ...) {
-  stop("Cannot currently plot_psd for eeg_grou objects.")
+  stop("Cannot currently plot_psd for eeg_group objects.")
 
 }
 
@@ -165,7 +173,8 @@ plot_psd.eeg_group <- function(data,
 #' @return ggplot showing power spectral density.
 #' @keywords internal
 create_psd_plot <- function(psd_out,
-                            freq_range) {
+                            freq_range,
+                            chan_names) {
 
   if (!is.null(freq_range)) {
     if (length(freq_range) < 2 | length(freq_range) > 2) {
@@ -177,16 +186,17 @@ create_psd_plot <- function(psd_out,
     }
   }
 
-  psd_out <- tidyr::gather(psd_out,
-                           electrode,
-                           power,
-                           -frequency)
-  psd_out$power <- 10 * log10(psd_out$power)
+  psd_out <-
+    tidyr::pivot_longer(psd_out,
+                        cols = chan_names,
+                        names_to = "electrode",
+                        values_to = "power")
   ggplot(psd_out,
          aes(x = frequency,
-             y = power,
+             y = 10 * log10(power),
              colour = electrode)) +
-    geom_line() +
+    stat_summary(geom = "line",
+                 fun = mean) +# geom_line() +
     theme_bw() +
     ylab(expression(paste(mu, V^2, "/ Hz(dB)"))) +
     xlab("Frequency (Hz)") +
