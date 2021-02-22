@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../../index.html">eegUtils</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.1</span>
       </span>
     </div>
 
@@ -94,13 +94,13 @@
 
       
 
-      </header><script src="topoplot_files/header-attrs-2.6/header-attrs.js"></script><div class="row">
+      </header><script src="topoplot_files/header-attrs-2.7/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Building a topographical plot</h1>
                         <h4 class="author">Matt Craddock</h4>
             
-            <h4 class="date">2021-02-08</h4>
+            <h4 class="date">2021-02-22</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/craddm/eegUtils/blob/master/vignettes/topoplot/topoplot.Rmd"><code>vignettes/topoplot/topoplot.Rmd</code></a></small>
       <div class="hidden name"><code>topoplot.Rmd</code></div>
@@ -145,7 +145,8 @@
            y <span class="op">=</span> <span class="va">y</span>,
            fill <span class="op">=</span> <span class="va">amplitude</span>,
            z <span class="op">=</span> <span class="va">amplitude</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu"><a href="../../reference/geom_topo.html">geom_topo</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
+  <span class="fu"><a href="../../reference/geom_topo.html">geom_topo</a></span><span class="op">(</span><span class="op">)</span>
+<span class="co">#&gt; Warning: Unknown or uninitialised column: `group`.</span></code></pre></div>
 <p><img src="topoplot_files/figure-html/default-geom-1.png" width="384"></p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">demo_epochs</span>,
@@ -157,7 +158,8 @@
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_brewer.html">scale_fill_distiller</a></span><span class="op">(</span>palette <span class="op">=</span> <span class="st">"RdBu"</span><span class="op">)</span> <span class="op">+</span> 
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_void</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> 
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_fixed.html">coord_equal</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> 
-  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/expression.html">expression</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="st">"Amplitude ("</span>, <span class="va">mu</span>,<span class="st">"V)"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/expression.html">expression</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="st">"Amplitude ("</span>, <span class="va">mu</span>,<span class="st">"V)"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
+<span class="co">#&gt; Warning: Unknown or uninitialised column: `group`.</span></code></pre></div>
 <p><img src="topoplot_files/figure-html/unnamed-chunk-2-1.png" width="384"></p>
 <p>There are several different parameters that can be passed to <code><a href="../../reference/geom_topo.html">geom_topo()</a></code> to change the appearance of the plot.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
@@ -175,7 +177,8 @@
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_brewer.html">scale_fill_distiller</a></span><span class="op">(</span>palette <span class="op">=</span> <span class="st">"RdBu"</span><span class="op">)</span> <span class="op">+</span> 
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_void</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> 
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_fixed.html">coord_equal</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> 
-  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/expression.html">expression</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="st">"Amplitude ("</span>, <span class="va">mu</span>,<span class="st">"V)"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> </code></pre></div>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/expression.html">expression</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="st">"Amplitude ("</span>, <span class="va">mu</span>,<span class="st">"V)"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> 
+<span class="co">#&gt; Warning: Unknown or uninitialised column: `group`.</span></code></pre></div>
 <p><img src="topoplot_files/figure-html/unnamed-chunk-3-1.png" width="384"></p>
 </div>
 <div id="building-from-the-ground-up" class="section level2">
