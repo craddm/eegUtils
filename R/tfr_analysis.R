@@ -191,12 +191,6 @@ tf_morlet <- function(data,
     baseline = "none"
   )
 
-  # This is a total hack to make the rest of the code behave with eeg_evoked
-  # data
-  if (is.eeg_evoked(data)) {
-    data$timings$epoch <- 1
-  }
-
   n_kern <- nrow(morlet_family)
   max_length <- length(unique(data$timings$time))
   n_conv <- max_length + n_kern - 1
@@ -291,7 +285,7 @@ tf_morlet <- function(data,
                             participant_id = participant_id),
     chan_info = data$chan_info,
     reference = data$reference,
-    timings = data$timings[1:length(sigtime), c("epoch", "time")],
+    timings = unique(data$timings),#data$timings[1:length(sigtime), c("epoch", "time")],
     freq_info = data$freq_info,
     dimensions = c("epoch",
                    "time",

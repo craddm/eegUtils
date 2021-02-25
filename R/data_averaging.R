@@ -77,6 +77,8 @@ eeg_average.eeg_epochs <- function(data,
                           epoch,
                           !!col_names)
   epochs <- dplyr::distinct(epochs)
+  timings <- data$signals[, c("time", "epoch")]
+  timings <- dplyr::distinct(timings)
 
   class(epochs) <- c("epoch_info",
                      "tbl_df",
