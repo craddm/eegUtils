@@ -178,6 +178,9 @@ eeg_combine.eeg_evoked <- function(data,
   if (length(unique(epochs(data)$participant_id)) > 1) {
     message("Multiple participant IDs, creating eeg_group.")
     class(data) <- c("eeg_group", "eeg_evoked", "eeg_epochs")
+    p_ids <- rle(as.character(epochs(data)$participant_id))
+    p_ids$lengths <- p_ids$lengths * length(unique(data$timings$time))
+    data$timings$participant_id <- inverse.rle(p_ids)
   }
 
   data
