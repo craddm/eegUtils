@@ -7,6 +7,7 @@
     - `stat_scalpcontours()`
 - `geom_topo()` now has contours
 - added errors with when attempting to use `compute_psd` or `compute_tfr` on `eeg_group` objects.
+- `compute_tfr()` now works better with `eeg_evoked` objects that contain multiple conditions.
 
 
 ### Internal changes / bug fixes
@@ -17,6 +18,8 @@
 - `cart_to_spherical` coord flipping bug fixed (hopefully...)
 - `filter` now converts to tibble internally and does not coerce `signals` to a vector when there is only one channel.
 - added copyright info to `summary_contour` file
+- `eeg_combine.eeg_evoked` made to behave more consistently when creating grouped data
+- all `as.data.frame()` functions moved to `df_converters.r`
 
 # eegUtils 0.6.0
 
