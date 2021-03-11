@@ -80,6 +80,7 @@ eeg_combine.eeg_data <- function(data,
                     vapply(args,
                            samples,
                            numeric(1)))
+        nsamps <- cumsum(nsamps)
       }
 
       data$signals <- dplyr::bind_rows(data$signals,
@@ -141,6 +142,9 @@ eeg_combine.eeg_epochs <- function(data,
   if (length(unique(epochs(data)$participant_id)) > 1) {
     message("Multiple participant_ids; creating eeg_group...")
     class(data) <- c("eeg_group", class(data))
+    p_ids <- rle(as.character(epochs(data)$participant_id))
+    p_ids$lengths <- p_ids$lengths * length(unique(data$timings$time))
+    data$timings$participant_id <- inverse.rle(p_ids)
   } else {
     #fix epoch numbering for combined objects, but only when there are single
     #participants
@@ -224,6 +228,7 @@ eeg_combine.eeg_tfr <- function(data,
       class(data) <- c("eeg_group",
                        "eeg_tfr")
       message("Multiple participant IDs, creating eeg_group.")
+
     } else {
       dimnames(data$signals) <- c(orig_dims,
                                   list(epoch = data$epochs$epoch))

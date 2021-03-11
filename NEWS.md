@@ -1,4 +1,12 @@
-# eegUtils 0.6.0.9999
+# eegUtils 0.6.1.9000
+
+### Function changes
+
+### Internal changes / bug fixes
+
+- When combining three or more continuous `eeg_data` objects, `eeg_combine()` would substantially undercorrect the timing of events in the third file - this is now fixed.
+
+# eegUtils 0.6.1
 
 ### Function changes
 
