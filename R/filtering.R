@@ -228,9 +228,6 @@ run_fir <- function(.data,
    .data$signals <- purrr::map_df(.data$signals,
                                   ~pad(.,
                                        pad_zeros))
-  # .data$signals <- purrr::map_df(.data$signals,
-  #                               ~pad(.,
-  #                                    fft_length))
    .data$signals <- future.apply::future_lapply(.data$signals,
                                                 signal::fftfilt,
                                                 b = filt_coef,
@@ -242,10 +239,6 @@ run_fir <- function(.data,
                                   ~fix_grpdelay(.,
                                                 pad_zeros,
                                                 filter_order / 2))
-     # .data$signals <- purrr::map_df(.data$signals,
-     #                                ~fix_grpdelay(.,
-     #                                              fft_length,
-     #                                              filter_order / 2))
    .data$signals <- tibble::as_tibble(.data$signals)
    .data
 }

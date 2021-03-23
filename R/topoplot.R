@@ -71,7 +71,6 @@ topoplot.default <- function(data,
 #' @param groups Column name for groups to retain. This is required to create facetted plots.
 #' @param verbose Warning messages when electrodes do not have locations.
 #'   Defaults to TRUE.
-#' @param scale_fac Scaling factor for masking ring
 #' @import ggplot2
 #' @import tidyr
 #' @importFrom dplyr group_by summarise ungroup

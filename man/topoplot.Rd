@@ -183,8 +183,6 @@ Defaults to TRUE.}
 \item{component}{Component to plot (numeric)}
 
 \item{freq_range}{Range of frequencies to average over.}
-
-\item{scale_fac}{Scaling factor for masking ring}
 }
 \description{
 Allows topographical plotting of functional data. Output is a ggplot2 object.
