@@ -67,8 +67,11 @@ eeg_combine.eeg_data <- function(data,
   if (length(args) == 0) {
     stop("Nothing to combine.")
   }
-  if (all(vapply(args, is.eeg_data, logical(1)))) {
-    if (any(sapply(args, is.eeg_epochs))) {
+  if (all(vapply(args,
+                 is.eeg_data,
+                 logical(1)))) {
+    if (any(sapply(args,
+                   is.eeg_epochs))) {
       stop("All objects must be unepoched eeg_data objects.")
     } else {
 

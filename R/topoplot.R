@@ -68,7 +68,7 @@ topoplot.default <- function(data,
 #' @param highlights Electrodes to highlight (in white).
 #' @param scaling Scaling multiplication factor for labels and any plot lines.
 #'   Defaults to 1.
-#' @param groups Column name for groups to retain.
+#' @param groups Column name for groups to retain. This is required to create facetted plots.
 #' @param verbose Warning messages when electrodes do not have locations.
 #'   Defaults to TRUE.
 #' @param scale_fac Scaling factor for masking ring
@@ -98,7 +98,6 @@ topoplot.data.frame <- function(data,
                                 scaling = 1,
                                 groups = NULL,
                                 verbose = TRUE,
-                                #scale_fac = 1.02,
                                 ...) {
 
   # Filter out unwanted timepoints and find nearest time values in the data
@@ -243,8 +242,7 @@ topoplot.data.frame <- function(data,
 
   topo <-
     topo +
-    geom_mask(#scale_fac = scale_fac,
-              size = 5 * scaling,
+    geom_mask(size = 5 * scaling,
               interp_limit = interp_limit) +
     geom_head(r = r,
               size = rel(1.5) * scaling) +
@@ -319,7 +317,7 @@ topoplot.eeg_data <- function(data, time_lim = NULL,
                               highlights = NULL,
                               scaling = 1,
                               verbose = TRUE,
-                              scale_fac = 1.02,
+                              groups = NULL,
                               ...) {
 
   if (!is.null(data$chan_info)) {
@@ -357,7 +355,7 @@ topoplot.eeg_data <- function(data, time_lim = NULL,
            passed = TRUE,
            scaling = scaling,
            verbose = verbose,
-           scale_fac = scale_fac)
+           groups = groups)
 }
 
 
@@ -381,7 +379,6 @@ topoplot.eeg_epochs <- function(data,
                                 scaling = 1,
                                 groups = NULL,
                                 verbose = TRUE,
-                                scale_fac = 1.02,
                                 ...) {
 
   if (!is.null(data$chan_info)) {
@@ -415,8 +412,7 @@ topoplot.eeg_epochs <- function(data,
            highlights = highlights,
            scaling = scaling,
            groups = groups,
-           verbose = verbose,
-           scale_fac = scale_fac
+           verbose = verbose
            )
 }
 
@@ -441,7 +437,7 @@ topoplot.eeg_ICA <- function(data,
                              highlights = NULL,
                              scaling = 1,
                              verbose = TRUE,
-                             scale_fac = 1.02,
+                             groups = NULL,
                              ...) {
   if (missing(component)) {
     stop("Component number must be specified for eeg_ICA objects.")
@@ -470,7 +466,7 @@ topoplot.eeg_ICA <- function(data,
            chan_marker = chan_marker,
            time_lim = NULL,
            verbose = verbose,
-           scale_fac = scale_fac)
+           groups = groups)
 
 }
 
@@ -495,6 +491,7 @@ topoplot.eeg_tfr <- function(data,
                              scaling = 1,
                              freq_range = NULL,
                              verbose = TRUE,
+                             groups = NULL,
                              ...) {
 
   if (!is.null(data$chan_info)) {
@@ -531,7 +528,8 @@ topoplot.eeg_tfr <- function(data,
            highlights = highlights,
            scaling = scaling,
            passed = TRUE,
-           verbose = verbose)
+           verbose = verbose,
+           groups = groups)
 }
 
 #' Set palette and limits for topoplot
