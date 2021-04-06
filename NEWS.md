@@ -1,12 +1,14 @@
 # eegUtils 0.6.1.9000
 
 ### Function changes
+- added support for `EEGLAB` .set files saved in newer Matlab file formats.
 
 ### Internal changes / bug fixes
 
 - When combining three or more continuous `eeg_data` objects, `eeg_combine()` would substantially undercorrect the timing of events in the third file - this is now fixed.
 - `groups` parameter for `topoplot()` now correctly passed for all types of object.
 - `stat_tests.R` file removed, will be reimplemented elsewhere
+- Long standing issues with import of channel locations from EEGLAB files hopefully fixed...
 
 # eegUtils 0.6.1
 

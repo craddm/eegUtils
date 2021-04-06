@@ -99,7 +99,9 @@ single-pass; the data is shifted back in time by the group delay of the
 filter to compensate for the phase delay imposed by the linear filtering
 process. Infinite Impulse Response (IIR) filtering is performed using a
 two-pass (once forwards, once reversed) method to correct for phase
-alignment.
+alignment. Note that the Butterworth filter designs used here can become
+numerically unstable with only a small increase in filter order. For most
+purposes, use FIR filters.
 }
 
 \examples{

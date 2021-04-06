@@ -43,11 +43,13 @@ get_scalpmap.data.frame <- function(data,
                       c("biharmonic",
                         "gam",
                         "Biharmonic"))
+
   method <- switch(method,
                    "Biharmonic" = "biharmonic",
                    method)
 
-  if (!is.null(rlang::enquo(facets))) {
+  if (!is.null(facets)) {
+  #if (!is.null(rlang::enquo(facets))) {
     facets <- rlang::enexpr(facets)
     tmp <- dplyr::group_by(data,
                            dplyr::across({{facets}}))

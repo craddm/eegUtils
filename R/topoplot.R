@@ -75,7 +75,6 @@ topoplot.default <- function(data,
 #' @import tidyr
 #' @importFrom dplyr group_by summarise ungroup
 #' @import scales
-#' @importFrom mgcv gam
 #' @describeIn topoplot Topographical plotting of data.frames and other non
 #'   eeg_data objects.
 #' @export
@@ -98,6 +97,14 @@ topoplot.data.frame <- function(data,
                                 groups = NULL,
                                 verbose = TRUE,
                                 ...) {
+
+  if (identical(method, "gam")) {
+    if (!requireNamespace("mgcv",
+                          quietly = TRUE)) {
+      stop("Package \"mgcv\" needed for SSD. Please install it.",
+           call. = FALSE)
+    }
+  }
 
   # Filter out unwanted timepoints and find nearest time values in the data
   # --------------

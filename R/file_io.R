@@ -559,19 +559,20 @@ read_vmrk <- function(file_name) {
   markers
 }
 
-#' Load EEGLAB .set files
+#' Load `EEGLAB` .set files
 #'
-#' EEGLAB .set files are standard Matlab .mat files, but EEGLAB can be set to
-#' export either v6.5 or v7.3 format files. Only v6.5 files can be read with
-#' this function. v7.3 files (which use HDF5 format) are not currently
-#' supported, as they cannot be fully read with existing tools.
+#' Load `EEGLAB` .set files and convert them to `eeg_epochs` objects. Supports
+#' import of files saved both in Matlab v6.5 and Matlab v7.3 formats. Currently,
+#' any ICA weights or decompositions are discarded.
 #'
 #' @param file_name Filename (and path if not in present working directory)
-#' @param df_out Defaults to FALSE - outputs an object of class eeg_data. Set to
-#'   TRUE for a normal data frame.
-#' @param participant_id By default, the filename will be used as the id of the participant.
-#' @param recording By default, the filename will be used as the name of the recording.
-#' @param drop_custom Drop custom event fields.
+#' @param df_out Defaults to FALSE - outputs an object of class `eeg_data`. Set
+#'   to TRUE for a normal data frame.
+#' @param participant_id By default, the filename will be used as the id of the
+#'   participant.
+#' @param recording By default, the filename will be used as the name of the
+#'   recording.
+#' @param drop_custom Drop custom event fields. TRUE by default.
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #' @importFrom dplyr group_by mutate rename
 #' @importFrom tibble tibble as_tibble
@@ -587,9 +588,31 @@ import_set <- function(file_name,
                        recording = NULL,
                        drop_custom = FALSE) {
 
-  if (!requireNamespace("R.matlab", quietly = TRUE)) {
-    stop("Package \"R.matlab\" needed. Please install it.",
-         call. = FALSE)
+  checkpkgs <-
+    unlist(
+      lapply(c("R.matlab", "hdf5r"),
+             requireNamespace,
+             quietly = TRUE)
+    )
+  if (!all(checkpkgs)) {
+    missing_pkg <- c("R.matlab", "hdf5r")[!checkpkgs]
+
+    if (length(missing_pkg) == 1) {
+      stop(paste("Package",
+                 missing_pkg,
+                 "needed. Please install it."),
+           call. = FALSE)
+    } else {
+      stop(
+        paste("Packages",
+              missing_pkg[[1]],
+              "&",
+              missing_pkg[[2]],
+              "needed. Please install them."
+              ),
+        call. = FALSE
+        )
+    }
   }
 
   if (is.null(recording)) {
@@ -600,6 +623,15 @@ import_set <- function(file_name,
     participant_id <- basename(tools::file_path_sans_ext(file_name))
   }
 
+  check_hdf5 <- hdf5r::is.h5file(file_name)
+
+  if (check_hdf5) {
+    return(
+      read_hdf5_set(file_name,
+                    recording = recording,
+                    participant_id = participant_id)
+      )
+  }
   temp_dat <- R.matlab::readMat(file_name)
   var_names <- dimnames(temp_dat$EEG)[[1]]
 
@@ -831,7 +863,7 @@ parse_chaninfo <- function(chan_info,
                            "cart_z")]
   # EEGLAB co-ordinates are rotated 90 degrees compared to our coordinates,
   # and left-right flipped
-  chan_info$cart_y <- -chan_info$cart_y
+  #chan_info$cart_y <- -chan_info$cart_y
   names(chan_info) <- names(chan_info)[c(1, 3, 2, 4)]
   chan_info <- chan_info[, c(1, 3, 2, 4)]
   sph_coords <- cart_to_spherical(chan_info[, c("cart_x", "cart_y", "cart_z")])

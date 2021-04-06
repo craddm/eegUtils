@@ -1,7 +1,10 @@
 context("Test glm.R")
 
-demo_tagged <- tag_epochs(tag_events(demo_epochs,
-                                     c(208,
+demo_tagged <-
+  eegUtils::tag_epochs(
+    eegUtils::tag_events(
+      eegUtils::demo_epochs,
+      c(208,
                                        213,
                                        215,
                                        207,

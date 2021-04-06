@@ -2,7 +2,7 @@
 % Please edit documentation in R/file_io.R
 \name{import_set}
 \alias{import_set}
-\title{Load EEGLAB .set files}
+\title{Load \code{EEGLAB} .set files}
 \usage{
 import_set(
   file_name,
@@ -15,23 +15,24 @@ import_set(
 \arguments{
 \item{file_name}{Filename (and path if not in present working directory)}
 
-\item{df_out}{Defaults to FALSE - outputs an object of class eeg_data. Set to
-TRUE for a normal data frame.}
+\item{df_out}{Defaults to FALSE - outputs an object of class \code{eeg_data}. Set
+to TRUE for a normal data frame.}
 
-\item{participant_id}{By default, the filename will be used as the id of the participant.}
+\item{participant_id}{By default, the filename will be used as the id of the
+participant.}
 
-\item{recording}{By default, the filename will be used as the name of the recording.}
+\item{recording}{By default, the filename will be used as the name of the
+recording.}
 
-\item{drop_custom}{Drop custom event fields.}
+\item{drop_custom}{Drop custom event fields. TRUE by default.}
 }
 \value{
 An object of class \code{eeg_data}
 }
 \description{
-EEGLAB .set files are standard Matlab .mat files, but EEGLAB can be set to
-export either v6.5 or v7.3 format files. Only v6.5 files can be read with
-this function. v7.3 files (which use HDF5 format) are not currently
-supported, as they cannot be fully read with existing tools.
+Load \code{EEGLAB} .set files and convert them to \code{eeg_epochs} objects. Supports
+import of files saved both in Matlab v6.5 and Matlab v7.3 formats. Currently,
+any ICA weights or decompositions are discarded.
 }
 \examples{
 \dontrun{import_set("your_data.set")}
