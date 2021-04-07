@@ -256,6 +256,7 @@ faster_cine <- function(data,
 
   epochs <- split(data$signals,
                   data$timings$epoch)
+  n_epochs <- length(epochs)
 
   # Work out which chans are bad in each epoch according to FASTER
   bad_chans <- lapply(epochs,
@@ -303,7 +304,17 @@ faster_cine <- function(data,
                     new_epochs)
   epochs <- epochs[!names(epochs) %in% broken_epochs]
   epochs <- data.table::rbindlist(epochs)
-  data$signals <- as.data.frame(epochs)
+  data$signals <- tibble::as_tibble(epochs)
+  data$reject$cine_list <- bad_chans
+  data$reject$cine_total <- unlist(lapply(bad_chans,
+                                          length))
+
+  if (length(bad_chans) > 0) {
+    message(paste0(length(bad_chans), " of ", n_epochs, " epochs had at least one channel interpolated."))
+    message(paste0("Max number of channels interpolated in one epoch: ", max(data$reject$cine_total)))
+  } else {
+    message("No channels were interpolated in single epochs.")
+  }
   data
 }
 

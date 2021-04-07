@@ -83,11 +83,11 @@ select_times.eeg_epochs <- function(data,
   keep_rows <- find_times(data$timings,
                          time_lim)
 
-  data$signals <- data$signals[keep_rows, ]
-  data$timings <- data$timings[keep_rows, ]
+  data$signals <- data$signals[keep_rows, , drop = FALSE]
+  data$timings <- data$timings[keep_rows, , drop = FALSE]
   event_rows <- data$events$time > time_lim[1] &
     data$events$time < time_lim[2]
-  data$events <- data$events[event_rows, ]
+  data$events <- data$events[event_rows, , drop = FALSE]
   if (df_out) {
     return(as.data.frame(data))
   }
