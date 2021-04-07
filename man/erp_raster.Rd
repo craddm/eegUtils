@@ -27,7 +27,7 @@ e.g. c(-5,5). Defaults to min and max.}
 \item{interpolate}{Smooth the raster plot. Defaults to FALSE.}
 }
 \value{
-A \code{ggplot2} object
+A \code{ggplot} object
 }
 \description{
 Create a plot showing the ERP at every channel as a single ERP image. By

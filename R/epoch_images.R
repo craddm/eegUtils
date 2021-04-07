@@ -7,11 +7,14 @@
 #' erp_image(demo_epochs, electrode = "A31")
 #' erp_image(demo_epochs, electrode = "A31", interpolate = TRUE)
 #' erp_image(demo_epochs, electrode = "A31", smoothing = 5)
-#' erp_image(compute_tfr(demo_epochs, foi = c(4, 30), n_cycles = 3, n_freq = 20), electrode = "A31", freq_range = c(8, 12))
+#' erp_image(compute_tfr(demo_epochs,
+#'  foi = c(4, 30), n_cycles = 3, n_freq = 20, verbose = FALSE, keep_trials = TRUE),
+#'  electrode = "A31", freq_range = c(8, 12))
 #' @param data Data frame to be plotted. Requires an amplitude column.
 #' @param ... Other arguments passed to the method.
 #' @import ggplot2
 #' @importFrom scales squish
+#' @return A `ggplot` object
 #' @export
 
 erp_image <- function(data,
@@ -312,7 +315,7 @@ create_tfrimage <- function(data,
 #' @importFrom tidyr gather
 #' @importFrom scales squish
 #' @author Matt Craddock, \email{matt@@mattcraddock.com}
-#' @return A `ggplot2` object
+#' @return A `ggplot` object
 #' @export
 
 erp_raster <- function(data,
