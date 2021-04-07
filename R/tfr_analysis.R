@@ -80,6 +80,7 @@ compute_tfr.eeg_epochs <- function(data,
 }
 
 #' @describeIn compute_tfr Method for `eeg_evoked` objects.
+#' @export
 compute_tfr.eeg_evoked <- function(data,
                                    method = "morlet",
                                    foi,
@@ -108,7 +109,6 @@ compute_tfr.eeg_evoked <- function(data,
   )
 }
 
-#' @noRd
 #' @export
 compute_tfr.eeg_group <- function(data,
                                   method = "morlet",
