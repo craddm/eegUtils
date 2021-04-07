@@ -338,15 +338,22 @@ as.data.frame.eeg_evoked <- function(x,
                                      coords = TRUE,
                                      ...) {
 
-  # if (inherits(x, "eeg_group")) {
-  #   stop("currently not working with grouped evoked")
-  # }
+
 
   df <- cbind(x$signals,
               x$timings)
 
-  df <- dplyr::left_join(df,
-                         epochs(x))
+  if (inherits(x, "eeg_group")) {
+    df <- dplyr::left_join(df,
+                           epochs(x),
+                           by = c("participant_id",
+                                  "epoch"))
+  } else {
+    df <- dplyr::left_join(df,
+                           epochs(x),
+                           by = "epoch")
+  }
+
   if (long) {
     df <- tidyr::gather(df,
                         "electrode",
