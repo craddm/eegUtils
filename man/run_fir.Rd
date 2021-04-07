@@ -4,10 +4,10 @@
 \alias{run_fir}
 \title{Run FIR filter using overlap-add FFT}
 \usage{
-run_fir(.data, filt_coef, filter_order)
+run_fir(data, filt_coef, filter_order)
 }
 \arguments{
-\item{.data}{Data to be filtered.}
+\item{data}{Data to be filtered.}
 
 \item{filt_coef}{Filter coefficients}
 

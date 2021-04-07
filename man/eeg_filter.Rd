@@ -7,10 +7,10 @@
 \alias{eeg_filter.eeg_group}
 \title{Filter EEG data}
 \usage{
-eeg_filter(.data, ...)
+eeg_filter(data, ...)
 
 \method{eeg_filter}{eeg_data}(
-  .data,
+  data,
   low_freq = NULL,
   high_freq = NULL,
   filter_order = "auto",
@@ -22,7 +22,7 @@ eeg_filter(.data, ...)
 )
 
 \method{eeg_filter}{eeg_epochs}(
-  .data,
+  data,
   low_freq = NULL,
   high_freq = NULL,
   filter_order = "auto",
@@ -34,7 +34,7 @@ eeg_filter(.data, ...)
 )
 
 \method{eeg_filter}{eeg_group}(
-  .data,
+  data,
   low_freq = NULL,
   high_freq = NULL,
   filter_order = "auto",
@@ -46,7 +46,7 @@ eeg_filter(.data, ...)
 )
 }
 \arguments{
-\item{.data}{An \code{eeg_data} or \code{eeg_epochs} object to be filtered.}
+\item{data}{An \code{eeg_data} or \code{eeg_epochs} object to be filtered.}
 
 \item{...}{Additional parameters.}
 
