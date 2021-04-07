@@ -59,7 +59,7 @@ eeg_average.eeg_epochs <- function(data,
     }
   } else {
     col_names <- names(data$epochs)
-    col_names <- col_names[!(col_names %in% c("epoch"))]
+    col_names <- col_names[!(col_names %in% c("epoch", "recording", "event_type"))]
   }
 
   data$signals <-
@@ -94,7 +94,7 @@ eeg_average.eeg_epochs <- function(data,
   data
 }
 
-#' @describeIn eeg_average average an eeg_epochs object over epochs.
+#' @describeIn eeg_average average an `eeg_epochs` object over epochs.
 #' @export
 eeg_average.eeg_evoked <- function(data,
                                    cols = NULL,
