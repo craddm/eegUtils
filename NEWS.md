@@ -2,6 +2,9 @@
 
 ### Function changes
 - added support for `EEGLAB` .set files saved in newer Matlab file formats.
+- changed first argument of `eeg_filter()` to `data` instead of `.data`
+- added some more informative user messages for importing data and adding electrode locations.
+- `erp_image()` now supports `eeg_tfr` objects.
 
 ### Internal changes / bug fixes
 
@@ -9,6 +12,8 @@
 - `groups` parameter for `topoplot()` now correctly passed for all types of object.
 - `stat_tests.R` file removed, will be reimplemented elsewhere
 - Long standing issues with import of channel locations from EEGLAB files hopefully fixed...
+- `rm_baseline()` for `eeg_evoked` no longer uses `data.table`
+- `as.data.frame.eeg_evoked()` handles grouped data better.
 
 # eegUtils 0.6.1
 
