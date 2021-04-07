@@ -91,4 +91,5 @@ order to make across-trial patterns more apparent.
 erp_image(demo_epochs, electrode = "A31")
 erp_image(demo_epochs, electrode = "A31", interpolate = TRUE)
 erp_image(demo_epochs, electrode = "A31", smoothing = 5)
+erp_image(compute_tfr(demo_epochs, foi = c(4, 30), n_cycles = 3, n_freq = 20), electrode = "A31", freq_range = c(8, 12))
 }

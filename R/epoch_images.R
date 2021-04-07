@@ -7,6 +7,7 @@
 #' erp_image(demo_epochs, electrode = "A31")
 #' erp_image(demo_epochs, electrode = "A31", interpolate = TRUE)
 #' erp_image(demo_epochs, electrode = "A31", smoothing = 5)
+#' erp_image(compute_tfr(demo_epochs, foi = c(4, 30), n_cycles = 3, n_freq = 20), electrode = "A31", freq_range = c(8, 12))
 #' @param data Data frame to be plotted. Requires an amplitude column.
 #' @param ... Other arguments passed to the method.
 #' @import ggplot2
@@ -34,12 +35,12 @@ erp_image.default <- function(data,
 #' @describeIn erp_image Default function operates on normal data frames
 #' @export
 erp_image.data.frame <- function(data,
-                              electrode = "Cz",
-                              time_lim = NULL,
-                              smoothing = 10,
-                              clim = NULL,
-                              interpolate = FALSE,
-                              ...) {
+                                 electrode = "Cz",
+                                 time_lim = NULL,
+                                 smoothing = 10,
+                                 clim = NULL,
+                                 interpolate = FALSE,
+                                 ...) {
 
   required_cols <- c("electrode", "time", "amplitude", "epoch")
   col_names <- names(data)
@@ -311,6 +312,7 @@ create_tfrimage <- function(data,
 #' @importFrom tidyr gather
 #' @importFrom scales squish
 #' @author Matt Craddock, \email{matt@@mattcraddock.com}
+#' @return A `ggplot2` object
 #' @export
 
 erp_raster <- function(data,
@@ -345,9 +347,10 @@ erp_raster <- function(data,
     clim <- c(min(data$amplitude),
               max(data$amplitude))
   }
-  ggplot2::ggplot(data, aes(x = time,
-                            y = electrode,
-                            fill = amplitude)) +
+  ggplot2::ggplot(data,
+                  aes(x = time,
+                      y = electrode,
+                      fill = amplitude)) +
     geom_raster(interpolate = interpolate) +
     geom_vline( xintercept = 0,
                 linetype = "dashed",
