@@ -32,7 +32,7 @@ fit_glm <- function(formula,
 fit_glm.default <- function(formula,
                             data,
                             ...) {
-  stop(paste("Objects of class", class(.data), "not currently supported"))
+  stop(paste("Objects of class", class(data), "not currently supported"))
 }
 
 #' @param time_lim Numeric vector of length 2 specifying time period to be used
