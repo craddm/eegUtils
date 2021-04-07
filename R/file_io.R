@@ -573,6 +573,7 @@ read_vmrk <- function(file_name) {
 #' @param recording By default, the filename will be used as the name of the
 #'   recording.
 #' @param drop_custom Drop custom event fields. TRUE by default.
+#' @param verbose Print informative messages. TRUE by default.
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #' @importFrom dplyr group_by mutate rename
 #' @importFrom tibble tibble as_tibble
@@ -586,7 +587,8 @@ import_set <- function(file_name,
                        df_out = FALSE,
                        participant_id = NULL,
                        recording = NULL,
-                       drop_custom = FALSE) {
+                       drop_custom = FALSE,
+                       verbose = TRUE) {
 
   checkpkgs <-
     unlist(
@@ -615,6 +617,10 @@ import_set <- function(file_name,
     }
   }
 
+  if (verbose) {
+    message("Importing from EEGLAB .set file.")
+  }
+
   if (is.null(recording)) {
     recording <- basename(tools::file_path_sans_ext(file_name))
   }
@@ -626,12 +632,17 @@ import_set <- function(file_name,
   check_hdf5 <- hdf5r::is.h5file(file_name)
 
   if (check_hdf5) {
+    if (verbose) {
+      message("Matlab 7.3 file format detected.")
+    }
     return(
       read_hdf5_set(file_name,
                     recording = recording,
                     participant_id = participant_id)
       )
   }
+
+
   temp_dat <- R.matlab::readMat(file_name)
   var_names <- dimnames(temp_dat$EEG)[[1]]
 
@@ -654,7 +665,9 @@ import_set <- function(file_name,
 
   # check if the data is stored in the set or in a separate .fdt
   if (is.character(temp_dat$EEG[[which(var_names == "data")]])) {
-    message("loading from .fdt")
+    if (verbose) {
+      message("Importing data from .fdt file.")
+    }
     fdt_file <- paste0(tools::file_path_sans_ext(file_name),
                        ".fdt")
     fdt_file <- file(fdt_file, "rb")
@@ -742,7 +755,6 @@ import_set <- function(file_name,
   # seconds, starting from 0
   event_table$event_time <- (event_table$latency - 1) / srate
 
-
   std_cols <- c("latency",
                 "event_time",
                 "type",
@@ -823,10 +835,7 @@ import_set <- function(file_name,
 #' @keywords internal
 parse_chaninfo <- function(chan_info,
                            drop = FALSE) {
-  #chan_info <- tibble::as_tibble(t(as.data.frame(chan_info)))
-  # chan_info <- tibble::as_tibble(data.frame(lapply(chan_info,
-  #                                                  unlist),
-  #                                           stringsAsFactors = FALSE))
+
   chan_info <- chan_info[, sort(names(chan_info))]
   expected <- c("labels", "radius",
                 "ref", "sph.phi",
@@ -950,7 +959,6 @@ import_ft <- function(file_name,
     stop("Package \"R.matlab\" needed. Please install it.",
          call. = FALSE)
   }
-
   tmp_ft <- R.matlab::readMat(file_name)
 
   tmp_ft <- tmp_ft[[1]]
