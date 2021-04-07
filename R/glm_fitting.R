@@ -28,6 +28,7 @@ fit_glm <- function(formula,
   UseMethod("fit_glm", data)
 }
 
+#' @export
 fit_glm.default <- function(formula,
                             data,
                             ...) {

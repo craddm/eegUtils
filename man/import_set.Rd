@@ -9,7 +9,8 @@ import_set(
   df_out = FALSE,
   participant_id = NULL,
   recording = NULL,
-  drop_custom = FALSE
+  drop_custom = FALSE,
+  verbose = TRUE
 )
 }
 \arguments{
@@ -25,6 +26,8 @@ participant.}
 recording.}
 
 \item{drop_custom}{Drop custom event fields. TRUE by default.}
+
+\item{verbose}{Print informative messages. TRUE by default.}
 }
 \value{
 An object of class \code{eeg_data}

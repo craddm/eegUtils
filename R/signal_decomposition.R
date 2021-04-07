@@ -32,6 +32,7 @@ eeg_decompose <- function(data, ...) {
   UseMethod("eeg_decompose", data)
 }
 
+#' @export
 eeg_decompose.default <- function(data, ...) {
   stop("Not implemented for objects of class ", class(data))
 }
