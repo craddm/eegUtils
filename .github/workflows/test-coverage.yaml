@@ -36,6 +36,10 @@ jobs:
           key: ${{ runner.os }}-${{ hashFiles('.github/R-version') }}-1-${{ hashFiles('.github/depends.Rds') }}
           restore-keys: ${{ runner.os }}-${{ hashFiles('.github/R-version') }}-1-
 
+      - name: Install hdf5 on mac
+        if: runner.os == 'macOS'
+        run: brew install hdf5
+
       - name: Install dependencies
         run: |
           install.packages(c("remotes"))
