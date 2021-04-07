@@ -5,6 +5,7 @@
 \alias{electrode_locations.data.frame}
 \alias{electrode_locations.eeg_data}
 \alias{electrode_locations.eeg_epochs}
+\alias{electrode_locations.eeg_tfr}
 \title{Get standard electrode locations}
 \usage{
 electrode_locations(data, ...)
@@ -20,6 +21,8 @@ electrode_locations(data, ...)
 \method{electrode_locations}{eeg_data}(data, drop = FALSE, montage = NULL, overwrite = FALSE, ...)
 
 \method{electrode_locations}{eeg_epochs}(data, drop = FALSE, montage = NULL, overwrite = FALSE, ...)
+
+\method{electrode_locations}{eeg_tfr}(data, drop = FALSE, montage = NULL, overwrite = FALSE, ...)
 }
 \arguments{
 \item{data}{An EEG dataset.}
@@ -57,7 +60,9 @@ long format
 
 \item \code{eeg_data}: Adds standard locations to the chan_info field of an eeg_data object.
 
-\item \code{eeg_epochs}: Adds standard locations to the chan_info field of an eeg_data object.
+\item \code{eeg_epochs}: Adds standard locations to the chan_info field of an \code{eeg_data} object.
+
+\item \code{eeg_tfr}: Adds standard locations to the chan_info field of an \code{eeg_tfr} object.
 }}
 
 \examples{
