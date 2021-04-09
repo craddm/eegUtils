@@ -90,5 +90,5 @@ jobs:
 
       - name: Test coverage
         if: runner.os == 'macOS'
-        run: covr::codecov()
+        run: covr::codecov(type = c("tests", "examples"), exclusions = "R/view_ica.R")
         shell: Rscript {0}
