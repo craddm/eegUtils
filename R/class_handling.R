@@ -296,7 +296,8 @@ eeg_ICA <- function(mixing_matrix,
                     chan_info,
                     srate,
                     epochs,
-                    algorithm) {
+                    algorithm,
+                    version = utils::packageVersion("eegUtils")) {
 
   value <- list(mixing_matrix = mixing_matrix,
                 unmixing_matrix = unmixing_matrix,

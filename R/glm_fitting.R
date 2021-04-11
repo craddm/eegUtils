@@ -14,7 +14,7 @@
 #'   the term `baseline` in the specified formula.
 #'
 #' @author Matt Craddock, \email{matt@@mattcraddock.com}
-#' @param formula An object of class "`formula`". Right-hand side A
+#' @param formula An object of class `formula`. Right-hand side A
 #'   regression formula for a GLM. See ?formula and notes on use below
 #' @param data An `eegUtils` object.
 #' @param ... Any other arguments passed to (LM/GLM)

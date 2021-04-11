@@ -13,7 +13,8 @@ eeg_ICA(
   chan_info,
   srate,
   epochs,
-  algorithm
+  algorithm,
+  version = utils::packageVersion("eegUtils")
 )
 }
 \arguments{

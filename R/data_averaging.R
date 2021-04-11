@@ -200,7 +200,11 @@ average_tf <- function(data,
     } else {
       stop("Averaging of fourier coefficients not supported.")
   }
-  data$timings <- tibble::tibble(time = as.numeric(dimnames(data$signals)[["time"]]))#dplyr::filter(data$timings, epoch == 1)
+  data$timings <-
+    tibble::tibble(
+      time = rep(as.numeric(dimnames(data$signals)[["time"]]), new_epos),
+      epoch = rep(1:new_epos, each = n_times)
+      )#dplyr::filter(data$timings, epoch == 1)
   data
 }
 
