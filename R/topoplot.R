@@ -32,7 +32,8 @@ topoplot <- function(data,
 
 topoplot.default <- function(data,
                              ...) {
-  stop("Not implemented for objects of class ", paste(class(data), collapse = "/"))
+  stop("Not implemented for objects of class ",
+       paste(class(data), collapse = "/"))
 }
 
 #' @param time_lim Timepoint(s) to plot. Can be one time or a range to average
@@ -453,11 +454,18 @@ topoplot.eeg_ICA <- function(data,
     message("time_lim is ignored for ICA components.")
   }
 
-  chan_info <- data$chan_info
-  data <- data.frame(amplitude = data$mixing_matrix[, component],
-                      electrode = data$mixing_matrix$electrode)
+  # chan_info <- data$chan_info
+  # data <- data.frame(amplitude = data$mixing_matrix[, component],
+  #                     electrode = data$mixing_matrix$electrode)
+  data <- select(data,
+                 component)
+  data <- as.data.frame(data,
+                        mixing = TRUE, long = TRUE)
+  if (length(component) > 1) {
+    groups <- "component"
+  }
   topoplot(data,
-           chanLocs = chan_info,
+           chanLocs = chanLocs,#chan_info,
            limits = limits,
            interp_limit = interp_limit,
            r = r,
