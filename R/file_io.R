@@ -644,12 +644,22 @@ import_set <- function(file_name,
 
 
   temp_dat <- R.matlab::readMat(file_name)
-  var_names <- dimnames(temp_dat$EEG)[[1]]
 
-  n_chans <- temp_dat$EEG[[which(var_names == "nbchan")]]
-  n_trials <- temp_dat$EEG[[which(var_names == "trials")]]
-  times <- temp_dat$EEG[[which(var_names == "times")]]
-  chan_info <- drop(Reduce(rbind, temp_dat$EEG["chanlocs",,]))
+  if (identical(names(temp_dat)[[1]], "EEG")) {
+    temp_dat <- temp_dat$EEG[, 1, 1]
+  }
+
+  n_chans <- temp_dat[["nbchan"]]
+  n_trials <- temp_dat[["trials"]]
+  times <- temp_dat[["times"]]
+  chan_info <- drop(Reduce(rbind,
+                           temp_dat["chanlocs"]))
+  #   var_names <- dimnames(temp_dat$EEG)[[1]]
+  #
+  # n_chans <- temp_dat$EEG[[which(var_names == "nbchan")]]
+  # n_trials <- temp_dat$EEG[[which(var_names == "trials")]]
+  # times <- temp_dat$EEG[[which(var_names == "times")]]
+  # chan_info <- drop(Reduce(rbind, temp_dat$EEG["chanlocs",,]))
 
   pick_empties <-
     vapply(
@@ -664,7 +674,8 @@ import_set <- function(file_name,
   chan_info <- parse_chaninfo(chan_info)
 
   # check if the data is stored in the set or in a separate .fdt
-  if (is.character(temp_dat$EEG[[which(var_names == "data")]])) {
+  #if (is.character(temp_dat$EEG[[which(var_names == "data")]])) {
+  if (is.character(temp_dat[["data"]])) {
     if (verbose) {
       message("Importing data from .fdt file.")
     }
@@ -693,7 +704,8 @@ import_set <- function(file_name,
   } else {
 
     # if the data is in the .set file, load it here instead of above
-    signals <- temp_dat$EEG[[which(dimnames(temp_dat$EEG)[[1]] == "data")]]
+    #signals <- temp_dat$EEG[[which(dimnames(temp_dat$EEG)[[1]] == "data")]]
+    signals <- temp_dat[["data"]]
     dim_signals <- dim(signals)
 
     if (length(dim_signals) == 3) {
@@ -708,9 +720,10 @@ import_set <- function(file_name,
   signals <- t(signals)
   colnames(signals) <- unique(chan_info$electrode)
   signals <- as.data.frame(signals)
-  signals$time <- times
+  signals$time <- as.numeric(times)
 
-  srate <- temp_dat$EEG[[which(var_names == "srate")]][[1]]
+  #srate <- temp_dat$EEG[[which(var_names == "srate")]][[1]]
+  srate <- temp_dat[["srate"]][[1]]
 
   if (!continuous) {
     signals <- dplyr::group_by(signals,
@@ -720,7 +733,8 @@ import_set <- function(file_name,
     signals <- dplyr::ungroup(signals)
   }
 
-  event_info <- temp_dat$EEG[[which(var_names == "event")]]
+  #event_info <- temp_dat$EEG[[which(var_names == "event")]]
+  event_info <- temp_dat[["event"]]
 
   event_table <- event_info
   dim(event_table) <- c(dim(event_info)[[1]],
@@ -731,10 +745,15 @@ import_set <- function(file_name,
   colnames(event_table) <- dimnames(event_info)[[1]]
 
   event_table <- tibble::as_tibble(event_table)
+  event_table <- map_df(event_table,
+                        ~unlist(map(.,
+                                    ~ifelse(is.null(.),
+                                            NA,
+                                            .))))
   event_table <- lapply(event_table,
                         unlist)
   empty_entries <- unlist(lapply(event_table,
-                                 is_empty))
+                                 rlang::is_empty))
   if (any(empty_entries)) {
     empty_cols <- names(event_table)[empty_entries]
     message(paste0("Removing empty event table column (s):",
