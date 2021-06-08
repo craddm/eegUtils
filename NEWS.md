@@ -1,4 +1,4 @@
-# eegUtils 0.6.1.9000
+# eegUtils 0.6.2
 
 ### Function changes
 - added support for `EEGLAB` .set files saved in newer Matlab file formats.
@@ -14,6 +14,7 @@
 - Long standing issues with import of channel locations from EEGLAB files hopefully fixed...
 - `rm_baseline()` for `eeg_evoked` no longer uses `data.table`
 - `as.data.frame.eeg_evoked()` handles grouped data better.
+- `import_set()` now handles all EEGLAB formats better.
 
 # eegUtils 0.6.1
 
