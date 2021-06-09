@@ -32,7 +32,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../../index.html">eegUtils</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.5.0.9000</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.6.1.9000</span>
       </span>
     </div>
 
@@ -95,13 +95,13 @@
 
       
 
-      </header><script src="linear_modelling_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><script src="linear_modelling_files/header-attrs-2.7/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Linear Modelling</h1>
                         <h4 class="author">Matt Craddock</h4>
             
-            <h4 class="date">2021-01-08</h4>
+            <h4 class="date">2021-04-07</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/craddm/eegUtils/blob/master/vignettes/linear_modelling/linear_modelling.Rmd"><code>vignettes/linear_modelling/linear_modelling.Rmd</code></a></small>
       <div class="hidden name"><code>linear_modelling.Rmd</code></div>
@@ -130,7 +130,8 @@
 <p>This data is from a two-alternative forced choice experiment in which participants had to discriminate between two different faces. Across the course of the experiment, the faces were also varied in their phase coherence from 0% to 85%. The more phase coherent the face images, the easier they were to discriminate from each other.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">limo_test</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/import_set.html">import_set</a></span><span class="op">(</span><span class="st">"limo_dataset_S1.set"</span><span class="op">)</span>
-<span class="co">#&gt; loading from .fdt</span>
+<span class="co">#&gt; Importing from EEGLAB .set file.</span>
+<span class="co">#&gt; Importing data from .fdt file.</span>
 <span class="co">#&gt; Rounding non-integer event sample latencies...</span>
 <span class="va">limo_cont</span> <span class="op">&lt;-</span> <span class="fu">R.matlab</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/R.matlab/man/readMat.html">readMat</a></span><span class="op">(</span><span class="st">"continuous_variable.mat"</span><span class="op">)</span>
 <span class="va">limo_cat</span> <span class="op">&lt;-</span> <span class="fu">readr</span><span class="fu">::</span><span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html">read_csv</a></span><span class="op">(</span><span class="st">"categorical_variable.txt"</span>,

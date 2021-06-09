@@ -73,7 +73,7 @@ order to make across-trial patterns more apparent." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">eegUtils</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.2</span>
       </span>
     </div>
 
@@ -181,6 +181,18 @@ order to make across-trial patterns more apparent.</p>
   clim <span class='op'>=</span> <span class='cn'>NULL</span>,
   interpolate <span class='op'>=</span> <span class='cn'>FALSE</span>,
   <span class='va'>...</span>
+<span class='op'>)</span>
+
+<span class='co'># S3 method for eeg_tfr</span>
+<span class='fu'>erp_image</span><span class='op'>(</span>
+  <span class='va'>data</span>,
+  electrode <span class='op'>=</span> <span class='st'>"Cz"</span>,
+  time_lim <span class='op'>=</span> <span class='cn'>NULL</span>,
+  smoothing <span class='op'>=</span> <span class='fl'>10</span>,
+  clim <span class='op'>=</span> <span class='cn'>NULL</span>,
+  interpolate <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  freq_range <span class='op'>=</span> <span class='cn'>NULL</span>,
+  <span class='va'>...</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -219,8 +231,17 @@ e.g. c(-5,5). Defaults to min and max.</p></td>
       <th>component</th>
       <td><p><code>eeg_ICA</code> component to plot</p></td>
     </tr>
+    <tr>
+      <th>freq_range</th>
+      <td><p>A numeric vector specify the range of frequencies to
+average over. A single number will find the closest matching frequency. A
+vector of length two will match average over frequencies within that range.</p></td>
+    </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>A <code>ggplot</code> object</p>
     <h2 class="hasAnchor" id="methods-by-class-"><a class="anchor" href="#methods-by-class-"></a>Methods (by class)</h2>
 
     
@@ -228,13 +249,17 @@ e.g. c(-5,5). Defaults to min and max.</p></td>
 <li><p><code>data.frame</code>: Default function operates on normal data frames</p></li>
 <li><p><code>eeg_epochs</code>: Create an <code>erp_image</code> from <code>eeg_epochs</code></p></li>
 <li><p><code>eeg_ICA</code>: Plot component image from <code>eeg_ICA</code></p></li>
+<li><p><code>eeg_tfr</code>: Plot component image from <code>eeg_tfr</code></p></li>
 </ul>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'>erp_image</span><span class='op'>(</span><span class='va'>demo_epochs</span>, electrode <span class='op'>=</span> <span class='st'>"A31"</span><span class='op'>)</span>
 </div><div class='img'><img src='erp_image-1.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'>erp_image</span><span class='op'>(</span><span class='va'>demo_epochs</span>, electrode <span class='op'>=</span> <span class='st'>"A31"</span>, interpolate <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
 </div><div class='img'><img src='erp_image-2.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'>erp_image</span><span class='op'>(</span><span class='va'>demo_epochs</span>, electrode <span class='op'>=</span> <span class='st'>"A31"</span>, smoothing <span class='op'>=</span> <span class='fl'>5</span><span class='op'>)</span>
-</div><div class='img'><img src='erp_image-3.png' alt='' width='700' height='433' /></div></pre>
+</div><div class='img'><img src='erp_image-3.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'>erp_image</span><span class='op'>(</span><span class='fu'><a href='compute_tfr.html'>compute_tfr</a></span><span class='op'>(</span><span class='va'>demo_epochs</span>,
+ foi <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>4</span>, <span class='fl'>30</span><span class='op'>)</span>, n_cycles <span class='op'>=</span> <span class='fl'>3</span>, n_freq <span class='op'>=</span> <span class='fl'>20</span>, verbose <span class='op'>=</span> <span class='cn'>FALSE</span>, keep_trials <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>,
+ electrode <span class='op'>=</span> <span class='st'>"A31"</span>, freq_range <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>8</span>, <span class='fl'>12</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='img'><img src='erp_image-4.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

@@ -73,7 +73,7 @@ data." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">eegUtils</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.5.0.9000</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.6.1.9000</span>
       </span>
     </div>
 
@@ -164,6 +164,9 @@ data.</p>
 <span class='fu'>electrode_locations</span><span class='op'>(</span><span class='va'>data</span>, drop <span class='op'>=</span> <span class='cn'>FALSE</span>, montage <span class='op'>=</span> <span class='cn'>NULL</span>, overwrite <span class='op'>=</span> <span class='cn'>FALSE</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S3 method for eeg_epochs</span>
+<span class='fu'>electrode_locations</span><span class='op'>(</span><span class='va'>data</span>, drop <span class='op'>=</span> <span class='cn'>FALSE</span>, montage <span class='op'>=</span> <span class='cn'>NULL</span>, overwrite <span class='op'>=</span> <span class='cn'>FALSE</span>, <span class='va'>...</span><span class='op'>)</span>
+
+<span class='co'># S3 method for eeg_tfr</span>
 <span class='fu'>electrode_locations</span><span class='op'>(</span><span class='va'>data</span>, drop <span class='op'>=</span> <span class='cn'>FALSE</span>, montage <span class='op'>=</span> <span class='cn'>NULL</span>, overwrite <span class='op'>=</span> <span class='cn'>FALSE</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -214,7 +217,8 @@ BioSemi systems included. These can be added using the montage parameter:
 <li><p><code>data.frame</code>: Adds standard locations to a data frame in
 long format</p></li>
 <li><p><code>eeg_data</code>: Adds standard locations to the chan_info field of an eeg_data object.</p></li>
-<li><p><code>eeg_epochs</code>: Adds standard locations to the chan_info field of an eeg_data object.</p></li>
+<li><p><code>eeg_epochs</code>: Adds standard locations to the chan_info field of an <code>eeg_data</code> object.</p></li>
+<li><p><code>eeg_tfr</code>: Adds standard locations to the chan_info field of an <code>eeg_tfr</code> object.</p></li>
 </ul>
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
@@ -224,20 +228,20 @@ Neurophysiology, 112, 4, 713-719</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'><a href='channels.html'>channels</a></span><span class='op'>(</span><span class='va'>demo_epochs</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span style='color: #555555;'># A tibble: 11 x 9</span><span>
+</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 11 x 9</span><span>
 #&gt;    electrode radius theta   phi cart_x cart_y cart_z     x     y
-#&gt;    </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>      </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>  </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>  </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>  </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
-#&gt; </span><span style='color: #555555;'> 1</span><span> A5             1   -</span><span style='color: #BB0000;'>60</span><span>   -</span><span style='color: #BB0000;'>51</span><span>  -</span><span style='color: #BB0000;'>46.3</span><span>   57.2  42.5  -</span><span style='color: #BB0000;'>37.8</span><span>  46.6
-#&gt; </span><span style='color: #555555;'> 2</span><span> A13            1   -</span><span style='color: #BB0000;'>46</span><span>     0  -</span><span style='color: #BB0000;'>61.1</span><span>    0    59.0  -</span><span style='color: #BB0000;'>46</span><span>     0  
-#&gt; </span><span style='color: #555555;'> 3</span><span> A21            1   -</span><span style='color: #BB0000;'>60</span><span>    51  -</span><span style='color: #BB0000;'>46.3</span><span>  -</span><span style='color: #BB0000;'>57.2</span><span>  42.5  -</span><span style='color: #BB0000;'>37.8</span><span> -</span><span style='color: #BB0000;'>46.6</span><span>
-#&gt; </span><span style='color: #555555;'> 4</span><span> A29            1    92   -</span><span style='color: #BB0000;'>90</span><span>    0    -</span><span style='color: #BB0000;'>85.0</span><span>  -</span><span style='color: #BB0000;'>2.97</span><span>   0   -</span><span style='color: #BB0000;'>92</span><span>  
-#&gt; </span><span style='color: #555555;'> 5</span><span> A31            1    46   -</span><span style='color: #BB0000;'>90</span><span>    0    -</span><span style='color: #BB0000;'>61.1</span><span>  59.0    0   -</span><span style='color: #BB0000;'>46</span><span>  
-#&gt; </span><span style='color: #555555;'> 6</span><span> B5             1    69    90    0     79.4  30.5    0    69  
-#&gt; </span><span style='color: #555555;'> 7</span><span> B6             1    46    90    0     61.1  59.0    0    46  
-#&gt; </span><span style='color: #555555;'> 8</span><span> B8             1    60    51   46.3   57.2  42.5   37.8  46.6
-#&gt; </span><span style='color: #555555;'> 9</span><span> B16            1     0     0    0      0    85      0     0  
-#&gt; </span><span style='color: #555555;'>10</span><span> B18            1    46     0   61.1    0    59.0   46     0  
-#&gt; </span><span style='color: #555555;'>11</span><span> B26            1    60   -</span><span style='color: #BB0000;'>51</span><span>   46.3  -</span><span style='color: #BB0000;'>57.2</span><span>  42.5   37.8 -</span><span style='color: #BB0000;'>46.6</span><span></div><div class='input'><span class='fu'>electrode_locations</span><span class='op'>(</span><span class='va'>demo_epochs</span>, overwrite <span class='op'>=</span> <span class='cn'>TRUE</span>, montage <span class='op'>=</span> <span class='st'>"biosemi64alpha"</span><span class='op'>)</span>
+#&gt;    </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>      </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>  </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>  </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>  </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>
+#&gt; </span><span style='color: #BCBCBC;'> 1</span><span> A5             1   -</span><span style='color: #BB0000;'>60</span><span>   -</span><span style='color: #BB0000;'>51</span><span>  -</span><span style='color: #BB0000;'>46.3</span><span>   57.2  42.5  -</span><span style='color: #BB0000;'>37.8</span><span>  46.6
+#&gt; </span><span style='color: #BCBCBC;'> 2</span><span> A13            1   -</span><span style='color: #BB0000;'>46</span><span>     0  -</span><span style='color: #BB0000;'>61.1</span><span>    0    59.0  -</span><span style='color: #BB0000;'>46</span><span>     0  
+#&gt; </span><span style='color: #BCBCBC;'> 3</span><span> A21            1   -</span><span style='color: #BB0000;'>60</span><span>    51  -</span><span style='color: #BB0000;'>46.3</span><span>  -</span><span style='color: #BB0000;'>57.2</span><span>  42.5  -</span><span style='color: #BB0000;'>37.8</span><span> -</span><span style='color: #BB0000;'>46.6</span><span>
+#&gt; </span><span style='color: #BCBCBC;'> 4</span><span> A29            1    92   -</span><span style='color: #BB0000;'>90</span><span>    0    -</span><span style='color: #BB0000;'>85.0</span><span>  -</span><span style='color: #BB0000;'>2.97</span><span>   0   -</span><span style='color: #BB0000;'>92</span><span>  
+#&gt; </span><span style='color: #BCBCBC;'> 5</span><span> A31            1    46   -</span><span style='color: #BB0000;'>90</span><span>    0    -</span><span style='color: #BB0000;'>61.1</span><span>  59.0    0   -</span><span style='color: #BB0000;'>46</span><span>  
+#&gt; </span><span style='color: #BCBCBC;'> 6</span><span> B5             1    69    90    0     79.4  30.5    0    69  
+#&gt; </span><span style='color: #BCBCBC;'> 7</span><span> B6             1    46    90    0     61.1  59.0    0    46  
+#&gt; </span><span style='color: #BCBCBC;'> 8</span><span> B8             1    60    51   46.3   57.2  42.5   37.8  46.6
+#&gt; </span><span style='color: #BCBCBC;'> 9</span><span> B16            1     0     0    0      0    85      0     0  
+#&gt; </span><span style='color: #BCBCBC;'>10</span><span> B18            1    46     0   61.1    0    59.0   46     0  
+#&gt; </span><span style='color: #BCBCBC;'>11</span><span> B26            1    60   -</span><span style='color: #BB0000;'>51</span><span>   46.3  -</span><span style='color: #BB0000;'>57.2</span><span>  42.5   37.8 -</span><span style='color: #BB0000;'>46.6</span><span></div><div class='input'><span class='fu'>electrode_locations</span><span class='op'>(</span><span class='va'>demo_epochs</span>, overwrite <span class='op'>=</span> <span class='cn'>TRUE</span>, montage <span class='op'>=</span> <span class='st'>"biosemi64alpha"</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; Epoched EEG data
 #&gt; 
 #&gt; Number of channels	: 11 

@@ -74,7 +74,7 @@ ignored, which can result in minor edge artifacts." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">eegUtils</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.2</span>
       </span>
     </div>
 
@@ -151,11 +151,11 @@ ignored, which can result in minor edge artifacts." />
 ignored, which can result in minor edge artifacts.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>eeg_filter</span><span class='op'>(</span><span class='va'>.data</span>, <span class='va'>...</span><span class='op'>)</span>
+    <pre class="usage"><span class='fu'>eeg_filter</span><span class='op'>(</span><span class='va'>data</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S3 method for eeg_data</span>
 <span class='fu'>eeg_filter</span><span class='op'>(</span>
-  <span class='va'>.data</span>,
+  <span class='va'>data</span>,
   low_freq <span class='op'>=</span> <span class='cn'>NULL</span>,
   high_freq <span class='op'>=</span> <span class='cn'>NULL</span>,
   filter_order <span class='op'>=</span> <span class='st'>"auto"</span>,
@@ -168,7 +168,7 @@ ignored, which can result in minor edge artifacts.</p>
 
 <span class='co'># S3 method for eeg_epochs</span>
 <span class='fu'>eeg_filter</span><span class='op'>(</span>
-  <span class='va'>.data</span>,
+  <span class='va'>data</span>,
   low_freq <span class='op'>=</span> <span class='cn'>NULL</span>,
   high_freq <span class='op'>=</span> <span class='cn'>NULL</span>,
   filter_order <span class='op'>=</span> <span class='st'>"auto"</span>,
@@ -181,7 +181,7 @@ ignored, which can result in minor edge artifacts.</p>
 
 <span class='co'># S3 method for eeg_group</span>
 <span class='fu'>eeg_filter</span><span class='op'>(</span>
-  <span class='va'>.data</span>,
+  <span class='va'>data</span>,
   low_freq <span class='op'>=</span> <span class='cn'>NULL</span>,
   high_freq <span class='op'>=</span> <span class='cn'>NULL</span>,
   filter_order <span class='op'>=</span> <span class='st'>"auto"</span>,
@@ -196,7 +196,7 @@ ignored, which can result in minor edge artifacts.</p>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>.data</th>
+      <th>data</th>
       <td><p>An <code>eeg_data</code> or <code>eeg_epochs</code> object to be filtered.</p></td>
     </tr>
     <tr>
@@ -260,7 +260,9 @@ single-pass; the data is shifted back in time by the group delay of the
 filter to compensate for the phase delay imposed by the linear filtering
 process. Infinite Impulse Response (IIR) filtering is performed using a
 two-pass (once forwards, once reversed) method to correct for phase
-alignment.</p>
+alignment. Note that the Butterworth filter designs used here can become
+numerically unstable with only a small increase in filter order. For most
+purposes, use FIR filters.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'><a href='plot_psd.html'>plot_psd</a></span><span class='op'>(</span><span class='fu'>eeg_filter</span><span class='op'>(</span><span class='va'>demo_epochs</span>, low_freq <span class='op'>=</span> <span class='fl'>1</span>, high_freq <span class='op'>=</span> <span class='fl'>30</span><span class='op'>)</span><span class='op'>)</span>

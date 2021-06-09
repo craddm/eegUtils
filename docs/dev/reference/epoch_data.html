@@ -74,7 +74,7 @@ around each event." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">eegUtils</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.5.0.9000</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.6.1.9000</span>
       </span>
     </div>
 
@@ -158,7 +158,7 @@ around each event.</p>
   <span class='va'>data</span>,
   <span class='va'>events</span>,
   time_lim <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>1</span>, <span class='fl'>1</span><span class='op'>)</span>,
-  baseline <span class='op'>=</span> <span class='cn'>NULL</span>,
+  baseline <span class='op'>=</span> <span class='st'>"none"</span>,
   epoch_labels <span class='op'>=</span> <span class='cn'>NULL</span>,
   <span class='va'>...</span>
 <span class='op'>)</span></pre>
@@ -185,11 +185,10 @@ one second either side.</p></td>
     </tr>
     <tr>
       <th>baseline</th>
-      <td><p>Baseline times to subtract. Defaults to NULL which will mean
-centre each epoch. Can be set to a numeric vector of length two to specify
-a time window to use as a baseline in each epoch (e.g. c(-.1, 0)), or
-"none", which will perform no baseline correction. As of v0.6 of eegUtils,
-the default will be "none".</p></td>
+      <td><p>Baseline times to subtract. Can be set to a numeric vector of length two to specify
+a time window to use as a baseline in each epoch (e.g. c(-.1, 0)), "none",
+which will perform no baseline correction, or <code>NULL</code> to use the mean of the
+whole epoch. As of v0.6 of <code>eegUtils</code>, the default is "none".</p></td>
     </tr>
     <tr>
       <th>epoch_labels</th>

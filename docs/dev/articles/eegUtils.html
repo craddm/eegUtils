@@ -32,7 +32,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">eegUtils</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.5.0.9000</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.6.1.9000</span>
       </span>
     </div>
 
@@ -95,13 +95,13 @@
 
       
 
-      </header><script src="eegUtils_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><script src="eegUtils_files/header-attrs-2.7/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>EEG Utils</h1>
                         <h4 class="author">Matt Craddock</h4>
             
-            <h4 class="date">2021-01-08</h4>
+            <h4 class="date">2021-04-07</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/craddm/eegUtils/blob/master/vignettes/eegUtils.Rmd"><code>vignettes/eegUtils.Rmd</code></a></small>
       <div class="hidden name"><code>eegUtils.Rmd</code></div>
@@ -142,7 +142,8 @@
 <span class="co">#&gt; Number of channels   : 72 </span>
 <span class="co">#&gt; Electrode names      : Fp1 AF7 AF3 F1 F3 F5 F7 FT7 FC5 FC3 FC1 C1 C3 C5 T7 TP7 CP5 CP3 CP1 P1 P3 P5 P7 P9 PO7 PO3 O1 Iz Oz POz Pz CPz Fpz Fp2 AF8 AF4 AFz Fz F2 F4 F6 F8 FT8 FC6 FC4 FC2 FCz Cz C2 C4 C6 T8 TP8 CP6 CP4 CP2 P2 P4 P6 P8 P10 PO8 PO4 O2 EXG1 EXG2 EXG3 EXG4 EXG5 EXG6 EXG7 EXG8 </span>
 <span class="co">#&gt; Sampling rate        : 256 Hz</span>
-<span class="co">#&gt; Reference        :</span></code></pre></div>
+<span class="co">#&gt; Reference        : </span>
+<span class="co">#&gt; Signal length: 0 1468.996 seconds</span></code></pre></div>
 <p>This data was recorded at 1024 Hz (downsampled here already to 256 Hz) using a BioSemi ActiveTwo amplifier and active electrodes. There were 64 electrodes positioned and named according to the 10-05 international system. A few additional electrodes (EXG1-EXG4) placed around the eyes to record eye movements, and two further reference electrodes placed on the left and right mastoids (EXG5 and EXG6). EXG7 and EXG8 are empty channels, with no electrodes attached.</p>
 </div>
 <div id="referencing" class="section level2">
@@ -161,7 +162,8 @@
 <span class="co">#&gt; Number of channels   : 70 </span>
 <span class="co">#&gt; Electrode names      : Fp1 AF7 AF3 F1 F3 F5 F7 FT7 FC5 FC3 FC1 C1 C3 C5 T7 TP7 CP5 CP3 CP1 P1 P3 P5 P7 P9 PO7 PO3 O1 Iz Oz POz Pz CPz Fpz Fp2 AF8 AF4 AFz Fz F2 F4 F6 F8 FT8 FC6 FC4 FC2 FCz Cz C2 C4 C6 T8 TP8 CP6 CP4 CP2 P2 P4 P6 P8 P10 PO8 PO4 O2 EXG1 EXG2 EXG3 EXG4 EXG5 EXG6 </span>
 <span class="co">#&gt; Sampling rate        : 256 Hz</span>
-<span class="co">#&gt; Reference        : average</span></code></pre></div>
+<span class="co">#&gt; Reference        : average </span>
+<span class="co">#&gt; Signal length: 0 1468.996 seconds</span></code></pre></div>
 </div>
 <div id="filtering" class="section level2">
 <h2 class="hasAnchor">
@@ -242,24 +244,20 @@
 <p><code>eeg_epochs</code> can then be plotted using <code><a href="../reference/plot_butterfly.html">plot_butterfly()</a></code> or <code><a href="../reference/plot_timecourse.html">plot_timecourse()</a></code>. Both <code><a href="../reference/plot_butterfly.html">plot_butterfly()</a></code> and <code><a href="../reference/plot_timecourse.html">plot_timecourse()</a></code> average over epochs. <code><a href="../reference/plot_timecourse.html">plot_timecourse()</a></code> will also average over electrodes - all electrodes if none are specified, or over any specified electrodes. Baseline correction can also be applied for plotting only using the <code>baseline</code> parameter in the plotting call.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/plot_butterfly.html">plot_butterfly</a></span><span class="op">(</span><span class="va">epoched_example</span>,
-               legend <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-<span class="co">#&gt; Joining, by = c("epoch", "participant_id", "recording", "event_type", "epoch_labels")</span></code></pre></div>
+               legend <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
 <p><img src="eegUtils_files/figure-html/do-plots-1.png" width="700"></p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/plot_butterfly.html">plot_butterfly</a></span><span class="op">(</span><span class="va">epoched_example</span>,
                time_lim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">.1</span>, <span class="fl">.3</span><span class="op">)</span>,
-               legend <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-<span class="co">#&gt; Joining, by = c("epoch", "participant_id", "recording", "event_type", "epoch_labels")</span></code></pre></div>
+               legend <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
 <p><img src="eegUtils_files/figure-html/do-plots-2.png" width="700"></p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/plot_timecourse.html">plot_timecourse</a></span><span class="op">(</span><span class="va">epoched_example</span>,
-                electrode <span class="op">=</span> <span class="st">"POz"</span><span class="op">)</span> <span class="co"># Plot POz</span>
-<span class="co">#&gt; Joining, by = c("epoch", "participant_id", "recording", "event_type", "epoch_labels")</span></code></pre></div>
+                electrode <span class="op">=</span> <span class="st">"POz"</span><span class="op">)</span> <span class="co"># Plot POz</span></code></pre></div>
 <p><img src="eegUtils_files/figure-html/do-plots-3.png" width="700"></p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/plot_timecourse.html">plot_timecourse</a></span><span class="op">(</span><span class="va">epoched_example</span>,
-                electrode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"POz"</span>, <span class="st">"Oz"</span>, <span class="st">"O1"</span>, <span class="st">"O2"</span><span class="op">)</span><span class="op">)</span> <span class="co"># average over four occipital electrodes</span>
-<span class="co">#&gt; Joining, by = c("epoch", "participant_id", "recording", "event_type", "epoch_labels")</span></code></pre></div>
+                electrode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"POz"</span>, <span class="st">"Oz"</span>, <span class="st">"O1"</span>, <span class="st">"O2"</span><span class="op">)</span><span class="op">)</span> <span class="co"># average over four occipital electrodes</span></code></pre></div>
 <p><img src="eegUtils_files/figure-html/do-plots-4.png" width="700"></p>
 <p>Standard channel locations can be added using the <code><a href="../reference/electrode_locations.html">electrode_locations()</a></code> command. This function supplies default locations for over 300 typical locations accroding to the 10-05 system. There are several specific montages provided that can be specified using the <code>montage</code> parameter.</p>
 <p>You can inspect the added locations using <code><a href="../reference/channels.html">channels()</a></code>.</p>
@@ -271,20 +269,19 @@
 <span class="co">#&gt; # A tibble: 70 x 9</span>
 <span class="co">#&gt;    electrode radius theta   phi cart_x cart_y cart_z     x     y</span>
 <span class="co">#&gt;    &lt;chr&gt;      &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;</span>
-<span class="co">#&gt;  1 Fp1           NA    NA    NA   NA     NA     NA    NA    NA  </span>
-<span class="co">#&gt;  2 AF7            1   -97   -51  -54.8   68.6  -10.6 -61.0  75.4</span>
-<span class="co">#&gt;  3 AF3            1   -76   -66  -33.7   76.8   21.2 -30.9  69.4</span>
-<span class="co">#&gt;  4 F1             1   -46   -64  -27.5   56.9   60.3 -20.2  41.3</span>
-<span class="co">#&gt;  5 F3             1   -60   -47  -50.2   53.1   42.2 -40.9  43.9</span>
-<span class="co">#&gt;  6 F5             1   -78   -37  -64.5   48.0   16.9 -62.3  46.9</span>
-<span class="co">#&gt;  7 F7             1   -98   -31  -70.3   42.5  -11.4 -84    50.5</span>
-<span class="co">#&gt;  8 FT7            1   -98   -10  -80.8   14.1  -11.1 -96.5  17.0</span>
-<span class="co">#&gt;  9 FC5            1   -73   -14  -77.2   18.6   24.5 -70.8  17.7</span>
-<span class="co">#&gt; 10 FC3            1   -49   -21  -60.2   22.7   55.5 -45.8  17.6</span>
+<span class="co">#&gt;  1 Fp1            1   -94   -71  -29.4   83.9  -6.99 -30.6  88.9</span>
+<span class="co">#&gt;  2 AF7            1   -97   -51  -54.8   68.6 -10.6  -61.0  75.4</span>
+<span class="co">#&gt;  3 AF3            1   -76   -66  -33.7   76.8  21.2  -30.9  69.4</span>
+<span class="co">#&gt;  4 F1             1   -46   -64  -27.5   56.9  60.3  -20.2  41.3</span>
+<span class="co">#&gt;  5 F3             1   -60   -47  -50.2   53.1  42.2  -40.9  43.9</span>
+<span class="co">#&gt;  6 F5             1   -78   -37  -64.5   48.0  16.9  -62.3  46.9</span>
+<span class="co">#&gt;  7 F7             1   -98   -31  -70.3   42.5 -11.4  -84    50.5</span>
+<span class="co">#&gt;  8 FT7            1   -98   -10  -80.8   14.1 -11.1  -96.5  17.0</span>
+<span class="co">#&gt;  9 FC5            1   -73   -14  -77.2   18.6  24.5  -70.8  17.7</span>
+<span class="co">#&gt; 10 FC3            1   -49   -21  -60.2   22.7  55.5  -45.8  17.6</span>
 <span class="co">#&gt; # ... with 60 more rows</span>
 <span class="fu"><a href="../reference/topoplot.html">topoplot</a></span><span class="op">(</span><span class="va">epoched_example</span>,
          time_lim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">.22</span>, <span class="fl">.24</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt; Joining, by = c("epoch", "participant_id", "recording", "event_type", "epoch_labels")</span>
 <span class="co">#&gt; Using electrode locations from data.</span>
 <span class="co">#&gt; Warning in topoplot.data.frame(data, time_lim = time_lim, limits = limits, :</span>
 <span class="co">#&gt; Removing channels with no location.</span></code></pre></div>

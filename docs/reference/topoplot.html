@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">eegUtils</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.2</span>
       </span>
     </div>
 
@@ -192,7 +192,7 @@
   highlights <span class='op'>=</span> <span class='cn'>NULL</span>,
   scaling <span class='op'>=</span> <span class='fl'>1</span>,
   verbose <span class='op'>=</span> <span class='cn'>TRUE</span>,
-  scale_fac <span class='op'>=</span> <span class='fl'>1.02</span>,
+  groups <span class='op'>=</span> <span class='cn'>NULL</span>,
   <span class='va'>...</span>
 <span class='op'>)</span>
 
@@ -215,7 +215,6 @@
   scaling <span class='op'>=</span> <span class='fl'>1</span>,
   groups <span class='op'>=</span> <span class='cn'>NULL</span>,
   verbose <span class='op'>=</span> <span class='cn'>TRUE</span>,
-  scale_fac <span class='op'>=</span> <span class='fl'>1.02</span>,
   <span class='va'>...</span>
 <span class='op'>)</span>
 
@@ -238,7 +237,7 @@
   highlights <span class='op'>=</span> <span class='cn'>NULL</span>,
   scaling <span class='op'>=</span> <span class='fl'>1</span>,
   verbose <span class='op'>=</span> <span class='cn'>TRUE</span>,
-  scale_fac <span class='op'>=</span> <span class='fl'>1.02</span>,
+  groups <span class='op'>=</span> <span class='cn'>NULL</span>,
   <span class='va'>...</span>
 <span class='op'>)</span>
 
@@ -261,6 +260,7 @@
   scaling <span class='op'>=</span> <span class='fl'>1</span>,
   freq_range <span class='op'>=</span> <span class='cn'>NULL</span>,
   verbose <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  groups <span class='op'>=</span> <span class='cn'>NULL</span>,
   <span class='va'>...</span>
 <span class='op'>)</span></pre>
 
@@ -354,16 +354,12 @@ Defaults to 1.</p></td>
     </tr>
     <tr>
       <th>groups</th>
-      <td><p>Column name for groups to retain.</p></td>
+      <td><p>Column name for groups to retain. This is required to create facetted plots.</p></td>
     </tr>
     <tr>
       <th>verbose</th>
       <td><p>Warning messages when electrodes do not have locations.
 Defaults to TRUE.</p></td>
-    </tr>
-    <tr>
-      <th>scale_fac</th>
-      <td><p>Scaling factor for masking ring</p></td>
     </tr>
     <tr>
       <th>component</th>
@@ -404,8 +400,8 @@ there are more than 40 electrodes.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'>topoplot</span><span class='op'>(</span><span class='va'>demo_epochs</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>Joining, by = c("epoch", "recording", "epoch_label", "participant_id")</span></div><div class='output co'>#&gt; <span class='message'>Using electrode locations from data.</span></div><div class='img'><img src='topoplot-1.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'>topoplot</span><span class='op'>(</span><span class='va'>demo_epochs</span>, time_lim <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>.1</span>, <span class='fl'>.2</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>Joining, by = c("epoch", "recording", "epoch_label", "participant_id")</span></div><div class='output co'>#&gt; <span class='message'>Using electrode locations from data.</span></div><div class='img'><img src='topoplot-2.png' alt='' width='700' height='433' /></div></pre>
+</div><div class='output co'>#&gt; <span class='message'>Using electrode locations from data.</span></div><div class='img'><img src='topoplot-1.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'>topoplot</span><span class='op'>(</span><span class='va'>demo_epochs</span>, time_lim <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>.1</span>, <span class='fl'>.2</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>Using electrode locations from data.</span></div><div class='img'><img src='topoplot-2.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

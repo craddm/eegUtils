@@ -71,7 +71,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">eegUtils</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.5.0.9000</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.6.1.9000</span>
       </span>
     </div>
 
@@ -189,7 +189,13 @@
         <td>
           <p><code><a href="import_set.html">import_set()</a></code> </p>
         </td>
-        <td><p>Load EEGLAB .set files</p></td>
+        <td><p>Load <code>EEGLAB</code> .set files</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="export_bva.html">export_bva()</a></code> </p>
+        </td>
+        <td><p>Export continuous data in Brain Vision Analyzer format</p></td>
       </tr>
     </tbody><tbody>
       <tr>
@@ -206,9 +212,39 @@
       <tr>
         
         <td>
+          <p><code><a href="apply_ica.html">apply_ica()</a></code> </p>
+        </td>
+        <td><p>Recreate channel timecourses from ICA decompositions.</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="compute_csd.html">compute_csd()</a></code> </p>
         </td>
         <td><p>Convert to Current Source Density</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="eeg_average.html">eeg_average()</a></code> </p>
+        </td>
+        <td><p>Calculate averages (e.g. ERPs) for single datasets</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="eeg_combine.html">eeg_combine()</a></code> </p>
+        </td>
+        <td><p>Combine EEG objects</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="eeg_decompose.html">eeg_decompose()</a></code> </p>
+        </td>
+        <td><p>Generalized eigenvalue decomposition based methods for EEG data</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="eeg_downsample.html">eeg_downsample()</a></code> </p>
+        </td>
+        <td><p>Downsampling EEG data</p></td>
       </tr><tr>
         
         <td>
@@ -221,12 +257,6 @@
           <p><code><a href="eeg_reference.html">eeg_reference()</a></code> <code><a href="eeg_reference.html">reref_eeg()</a></code> </p>
         </td>
         <td><p>Referencing</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="eeg_downsample.html">eeg_downsample()</a></code> </p>
-        </td>
-        <td><p>Downsampling EEG data</p></td>
       </tr><tr>
         
         <td>
@@ -425,6 +455,12 @@
       </tr><tr>
         
         <td>
+          <p><code><a href="get_scalpmap.html">get_scalpmap()</a></code> </p>
+        </td>
+        <td><p>Calculate an interpolated scalpmap</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="interactive_scalp.html">interactive_scalp()</a></code> </p>
         </td>
         <td><p>Interactive scalp maps</p></td>
@@ -461,9 +497,27 @@
       </tr><tr>
         
         <td>
+          <p><code><a href="stat_scalpmap.html">stat_scalpmap()</a></code> <code><a href="stat_scalpmap.html">geom_head()</a></code> <code><a href="stat_scalpmap.html">geom_mask()</a></code> <code><a href="stat_scalpmap.html">geom_ears()</a></code> <code><a href="stat_scalpmap.html">geom_channels()</a></code> </p>
+        </td>
+        <td><p>Create an interpolated scalp surface</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="stat_scalpcontours.html">stat_scalpcontours()</a></code> </p>
+        </td>
+        <td><p>Create an interpolated scalp surface</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="topoplot.html">topoplot()</a></code> </p>
         </td>
         <td><p>Topographical Plotting Function for EEG</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="view_ica.html">view_ica()</a></code> </p>
+        </td>
+        <td><p>EEG component viewer</p></td>
       </tr>
     </tbody><tbody>
       <tr>
@@ -478,6 +532,12 @@
       
       
       <tr>
+        
+        <td>
+          <p><code><a href="compute_itc.html">compute_itc()</a></code> </p>
+        </td>
+        <td><p>Calculate inter-trial coherence</p></td>
+      </tr><tr>
         
         <td>
           <p><code><a href="compute_psd.html">compute_psd()</a></code> </p>
@@ -507,7 +567,7 @@
         <td>
           <p><code><a href="as.data.frame.eeg_data.html">as.data.frame(<i>&lt;eeg_data&gt;</i>)</a></code> </p>
         </td>
-        <td><p>Convert eeg_data to data.frame</p></td>
+        <td><p>Convert <code>eeg_data</code> to <code>data.frame</code></p></td>
       </tr><tr>
         
         <td>

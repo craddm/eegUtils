@@ -40,10 +40,9 @@
 
 
 <meta property="og:title" content="Load EEGLAB .set files — import_set" />
-<meta property="og:description" content="EEGLAB .set files are standard Matlab .mat files, but EEGLAB can be set to
-export either v6.5 or v7.3 format files. Only v6.5 files can be read with
-this function. v7.3 files (which use HDF5 format) are not currently
-supported, as they cannot be fully read with existing tools." />
+<meta property="og:description" content="Load EEGLAB .set files and convert them to eeg_epochs objects. Supports
+import of files saved both in Matlab v6.5 and Matlab v7.3 formats. Currently,
+any ICA weights or decompositions are discarded." />
 
 
 
@@ -75,7 +74,7 @@ supported, as they cannot be fully read with existing tools." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">eegUtils</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.2</span>
       </span>
     </div>
 
@@ -141,16 +140,15 @@ supported, as they cannot be fully read with existing tools." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Load EEGLAB .set files</h1>
+    <h1>Load <code>EEGLAB</code> .set files</h1>
     <small class="dont-index">Source: <a href='https://github.com/craddm/eegUtils/blob/master/R/file_io.R'><code>R/file_io.R</code></a></small>
     <div class="hidden name"><code>import_set.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>EEGLAB .set files are standard Matlab .mat files, but EEGLAB can be set to
-export either v6.5 or v7.3 format files. Only v6.5 files can be read with
-this function. v7.3 files (which use HDF5 format) are not currently
-supported, as they cannot be fully read with existing tools.</p>
+    <p>Load <code>EEGLAB</code> .set files and convert them to <code>eeg_epochs</code> objects. Supports
+import of files saved both in Matlab v6.5 and Matlab v7.3 formats. Currently,
+any ICA weights or decompositions are discarded.</p>
     </div>
 
     <pre class="usage"><span class='fu'>import_set</span><span class='op'>(</span>
@@ -158,7 +156,8 @@ supported, as they cannot be fully read with existing tools.</p>
   df_out <span class='op'>=</span> <span class='cn'>FALSE</span>,
   participant_id <span class='op'>=</span> <span class='cn'>NULL</span>,
   recording <span class='op'>=</span> <span class='cn'>NULL</span>,
-  drop_custom <span class='op'>=</span> <span class='cn'>FALSE</span>
+  drop_custom <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  verbose <span class='op'>=</span> <span class='cn'>TRUE</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -170,20 +169,26 @@ supported, as they cannot be fully read with existing tools.</p>
     </tr>
     <tr>
       <th>df_out</th>
-      <td><p>Defaults to FALSE - outputs an object of class eeg_data. Set to
-TRUE for a normal data frame.</p></td>
+      <td><p>Defaults to FALSE - outputs an object of class <code>eeg_data</code>. Set
+to TRUE for a normal data frame.</p></td>
     </tr>
     <tr>
       <th>participant_id</th>
-      <td><p>By default, the filename will be used as the id of the participant.</p></td>
+      <td><p>By default, the filename will be used as the id of the
+participant.</p></td>
     </tr>
     <tr>
       <th>recording</th>
-      <td><p>By default, the filename will be used as the name of the recording.</p></td>
+      <td><p>By default, the filename will be used as the name of the
+recording.</p></td>
     </tr>
     <tr>
       <th>drop_custom</th>
-      <td><p>Drop custom event fields.</p></td>
+      <td><p>Drop custom event fields. TRUE by default.</p></td>
+    </tr>
+    <tr>
+      <th>verbose</th>
+      <td><p>Print informative messages. TRUE by default.</p></td>
     </tr>
     </table>
 

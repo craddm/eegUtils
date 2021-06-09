@@ -75,7 +75,7 @@ dataset." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">eegUtils</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.5.0.9000</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.6.1.9000</span>
       </span>
     </div>
 
@@ -194,6 +194,16 @@ dataset.</p>
 
     <p>Matt Craddock <a href='mailto:matt@mattcraddock.com'>matt@mattcraddock.com</a></p>
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='va'>test_ica</span> <span class='op'>&lt;-</span> <span class='fu'><a href='run_ICA.html'>run_ICA</a></span><span class='op'>(</span><span class='va'>demo_epochs</span>, pca <span class='op'>=</span> <span class='fl'>10</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>Reducing data to 10 dimensions using PCA.</span></div><div class='output co'>#&gt; <span class='message'>Running SOBI ICA.</span></div><div class='output co'>#&gt; <span class='message'>Setting tolerance to 0.0011</span></div><div class='input'><span class='fu'><a href='plot_butterfly.html'>plot_butterfly</a></span><span class='op'>(</span><span class='va'>demo_epochs</span><span class='op'>)</span>
+</div><div class='img'><img src='apply_ica-1.png' alt='' width='700' height='433' /></div><div class='input'><span class='co'># Reconstruct the original data from the ICA decomposition.</span>
+<span class='co'># Note that the ICA process subtracts the mean from each epoch,</span>
+<span class='co'># so the reconstructed plot may look slightly different to the original.</span>
+<span class='fu'><a href='plot_butterfly.html'>plot_butterfly</a></span><span class='op'>(</span><span class='fu'>apply_ica</span><span class='op'>(</span><span class='va'>test_ica</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='img'><img src='apply_ica-2.png' alt='' width='700' height='433' /></div><div class='input'><span class='co'># Remove component 2 from the data</span>
+<span class='fu'><a href='plot_butterfly.html'>plot_butterfly</a></span><span class='op'>(</span><span class='fu'>apply_ica</span><span class='op'>(</span><span class='va'>demo_epochs</span>, <span class='va'>test_ica</span>, comps <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='img'><img src='apply_ica-3.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
