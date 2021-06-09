@@ -1,8 +1,8 @@
 Package: eegUtils
 Type: Package
 Title: Utilities for Electroencephalographic (EEG) Analysis 
-Version: 0.6.1
-Date: 2021-02-21
+Version: 0.6.2
+Date: 2021-06-08
 Authors@R: c(
   person("Matt", "Craddock", role = c("aut", "cre", "cph"), email = "matt@mattcraddock.com"),
   person("Matti", "Vuorre", role = "ctb", email = "mv2521@columbia.edu"),
@@ -20,7 +20,6 @@ Imports:
     ggplot2,
     dplyr (>= 1.0.0),
     scales,
-    mgcv,
     purrr,
     shiny,
     tidyr (>= 1.0.0),
@@ -42,7 +41,8 @@ Imports:
 Depends:
   R (>= 3.3.0)
 RoxygenNote: 7.1.1
-Suggests: testthat,
+Suggests: 
+    testthat,
     vdiffr,
     covr,
     knitr,
@@ -54,7 +54,9 @@ Suggests: testthat,
     fICA,
     edfReader,
     ini,
-    R.matlab
+    R.matlab,
+    hdf5r,
+    mgcv
 URL: https://github.com/craddm/eegUtils, https://craddm.github.io/eegUtils
 BugReports: https://github.com/craddm/eegUtils/issues
 VignetteBuilder: knitr

@@ -10,7 +10,7 @@ fit_glm(formula, data, ...)
 \method{fit_glm}{eeg_epochs}(formula, data, time_lim = NULL, ...)
 }
 \arguments{
-\item{formula}{An object of class "\code{formula}". Right-hand side A
+\item{formula}{An object of class \code{formula}. Right-hand side A
 regression formula for a GLM. See ?formula and notes on use below}
 
 \item{data}{An \code{eegUtils} object.}

@@ -9,11 +9,13 @@ print.eeg_data <- function(x,
                            ...) {
   elec_names <- channel_names(x)
   n_chan <- length(elec_names)
+  sig_times <- round(range(x$timings$time), 3)
   cat("EEG data\n\n")
   cat("Number of channels\t:", n_chan, "\n")
   cat("Electrode names\t\t:", elec_names, "\n")
   cat("Sampling rate\t\t:", x$srate, "Hz\n")
   cat("Reference\t\t:", x$reference$ref_chans, "\n")
+  cat("Signal length:", sig_times, "seconds")
   invisible(x)
 }
 
@@ -24,7 +26,8 @@ print.eeg_data <- function(x,
 #' @param x `eeg_epochs` object to be printed
 #' @param ... Further arguments passed
 #' @export
-print.eeg_epochs <- function(x, ...) {
+print.eeg_epochs <- function(x,
+                             ...) {
   elec_names <- names(x$signals)
   n_chan <- length(elec_names)
   n_epochs <- length(unique(x$timings$epoch))
@@ -46,7 +49,8 @@ print.eeg_epochs <- function(x, ...) {
 #' @param x `eeg_epochs` object to be printed
 #' @param ... Further arguments passed
 #' @export
-print.eeg_ICA <- function(x, ...) {
+print.eeg_ICA <- function(x,
+                          ...) {
   elec_names <- names(x$signals)
   n_chan <- length(elec_names)
   n_epochs <- length(unique(x$timings$epoch))
@@ -66,7 +70,8 @@ print.eeg_ICA <- function(x, ...) {
 #' @param x `eeg_tfr` object to be printed
 #' @param ... Further arguments passed
 #' @export
-print.eeg_tfr <- function(x, ...) {
+print.eeg_tfr <- function(x,
+                          ...) {
   elec_names <- dimnames(x$signals)[["electrode"]]
   n_chan <- length(elec_names)
   if ("epoch" %in% names(x$timings)) {
@@ -95,7 +100,8 @@ print.eeg_tfr <- function(x, ...) {
 #' @param x `eeg_epochs` object to be printed
 #' @param ... Further arguments passed
 #' @export
-print.eeg_evoked <- function(x, ...) {
+print.eeg_evoked <- function(x,
+                             ...) {
   elec_names <- names(x$signals)
   n_chan <- length(elec_names)
   cat("Evoked EEG data\n\n")

@@ -7,10 +7,10 @@
 \alias{eeg_filter.eeg_group}
 \title{Filter EEG data}
 \usage{
-eeg_filter(.data, ...)
+eeg_filter(data, ...)
 
 \method{eeg_filter}{eeg_data}(
-  .data,
+  data,
   low_freq = NULL,
   high_freq = NULL,
   filter_order = "auto",
@@ -22,7 +22,7 @@ eeg_filter(.data, ...)
 )
 
 \method{eeg_filter}{eeg_epochs}(
-  .data,
+  data,
   low_freq = NULL,
   high_freq = NULL,
   filter_order = "auto",
@@ -34,7 +34,7 @@ eeg_filter(.data, ...)
 )
 
 \method{eeg_filter}{eeg_group}(
-  .data,
+  data,
   low_freq = NULL,
   high_freq = NULL,
   filter_order = "auto",
@@ -46,7 +46,7 @@ eeg_filter(.data, ...)
 )
 }
 \arguments{
-\item{.data}{An \code{eeg_data} or \code{eeg_epochs} object to be filtered.}
+\item{data}{An \code{eeg_data} or \code{eeg_epochs} object to be filtered.}
 
 \item{...}{Additional parameters.}
 
@@ -99,7 +99,9 @@ single-pass; the data is shifted back in time by the group delay of the
 filter to compensate for the phase delay imposed by the linear filtering
 process. Infinite Impulse Response (IIR) filtering is performed using a
 two-pass (once forwards, once reversed) method to correct for phase
-alignment.
+alignment. Note that the Butterworth filter designs used here can become
+numerically unstable with only a small increase in filter order. For most
+purposes, use FIR filters.
 }
 
 \examples{

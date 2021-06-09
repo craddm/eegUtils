@@ -248,24 +248,23 @@ rm_baseline.eeg_evoked <- function(data,
                                    ...) {
 
   orig_cols <- channel_names(data)
-  # Edit to handle cases where multiple epochs/participants, now that the internal structure differs
-  if (is.null(time_lim)) {
-    data$signals <- data.table::as.data.table(as.data.frame(data))
-    data$signals <- data$signals[, c(orig_cols) := lapply(.SD,
-                                                          function(x) x - mean(x)),
-                                 by = c("participant_id", "epoch"),
-                                 .SDcols = orig_cols]
+  n_times <- length(unique(data$timings$time))
+  n_epochs <- nrow(data$epochs)
+  n_chans <- length(orig_cols)
+  base_times <- get_epoch_baselines(data,
+                                    time_lim)
 
-  } else {
+  data$signals <- as.matrix(data$signals)
+  dim(data$signals) <- c(n_times,
+                         n_epochs,
+                         n_chans)
+  data$signals <- baseline_epo(data$signals, base_times)
 
-    data$signals <- data.table::as.data.table(as.data.frame(data))
-    data$signals <-
-      data$signals[, c(orig_cols) := lapply(.SD,
-                                            function(x) x - mean(x[time > time_lim[1] & time < time_lim[2]])),
-       .SDcols = orig_cols,
-       by = c("participant_id", "epoch")]
-  }
-  data$signals <- tibble::as_tibble(data$signals[, ..orig_cols])
+  data$signals <- array(data$signals,
+                        dim = c(n_epochs * n_times, n_chans))
+  colnames(data$signals) <- orig_cols
+  data$signals <- tibble::as_tibble(data$signals)
+  #names(data$signals) <- elecs
   data
 }
 

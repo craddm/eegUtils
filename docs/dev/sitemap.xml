@@ -4,16 +4,10 @@
     <loc>http://craddm.github.io/eegUtils/index.html</loc>
   </url>
   <url>
-    <loc>http://craddm.github.io/eegUtils/reference/add_head.html</loc>
-  </url>
-  <url>
     <loc>http://craddm.github.io/eegUtils/reference/apply_ica.html</loc>
   </url>
   <url>
     <loc>http://craddm.github.io/eegUtils/reference/arrange_chans.html</loc>
-  </url>
-  <url>
-    <loc>http://craddm.github.io/eegUtils/reference/array_t.html</loc>
   </url>
   <url>
     <loc>http://craddm.github.io/eegUtils/reference/ar_acf.html</loc>
@@ -61,22 +55,13 @@
     <loc>http://craddm.github.io/eegUtils/reference/average_tf.html</loc>
   </url>
   <url>
-    <loc>http://craddm.github.io/eegUtils/reference/biharm_topo.html</loc>
-  </url>
-  <url>
     <loc>http://craddm.github.io/eegUtils/reference/browse_data.html</loc>
   </url>
   <url>
     <loc>http://craddm.github.io/eegUtils/reference/bva_elecs.html</loc>
   </url>
   <url>
-    <loc>http://craddm.github.io/eegUtils/reference/calc_fstat.html</loc>
-  </url>
-  <url>
-    <loc>http://craddm.github.io/eegUtils/reference/calc_pval.html</loc>
-  </url>
-  <url>
-    <loc>http://craddm.github.io/eegUtils/reference/calc_tstat_2.html</loc>
+    <loc>http://craddm.github.io/eegUtils/reference/calc_max_elec.html</loc>
   </url>
   <url>
     <loc>http://craddm.github.io/eegUtils/reference/cart_to_spherical.html</loc>
@@ -107,9 +92,6 @@
   </url>
   <url>
     <loc>http://craddm.github.io/eegUtils/reference/circ_rad_fun.html</loc>
-  </url>
-  <url>
-    <loc>http://craddm.github.io/eegUtils/reference/compare_epochs.html</loc>
   </url>
   <url>
     <loc>http://craddm.github.io/eegUtils/reference/compute_csd.html</loc>
@@ -148,9 +130,6 @@
     <loc>http://craddm.github.io/eegUtils/reference/create_erpimage.html</loc>
   </url>
   <url>
-    <loc>http://craddm.github.io/eegUtils/reference/create_head.html</loc>
-  </url>
-  <url>
     <loc>http://craddm.github.io/eegUtils/reference/create_psd_plot.html</loc>
   </url>
   <url>
@@ -181,7 +160,7 @@
     <loc>http://craddm.github.io/eegUtils/reference/eeg_data.html</loc>
   </url>
   <url>
-    <loc>http://craddm.github.io/eegUtils/reference/eeg_decomp.html</loc>
+    <loc>http://craddm.github.io/eegUtils/reference/eeg_decompose.html</loc>
   </url>
   <url>
     <loc>http://craddm.github.io/eegUtils/reference/eeg_downsample.html</loc>
@@ -278,9 +257,6 @@
   </url>
   <url>
     <loc>http://craddm.github.io/eegUtils/reference/flip_x.html</loc>
-  </url>
-  <url>
-    <loc>http://craddm.github.io/eegUtils/reference/gam_topo.html</loc>
   </url>
   <url>
     <loc>http://craddm.github.io/eegUtils/reference/gauss_filter.html</loc>
@@ -535,7 +511,13 @@
     <loc>http://craddm.github.io/eegUtils/reference/split_vec.html</loc>
   </url>
   <url>
+    <loc>http://craddm.github.io/eegUtils/reference/StatScalpContours.html</loc>
+  </url>
+  <url>
     <loc>http://craddm.github.io/eegUtils/reference/StatScalpmap.html</loc>
+  </url>
+  <url>
+    <loc>http://craddm.github.io/eegUtils/reference/stat_scalpcontours.html</loc>
   </url>
   <url>
     <loc>http://craddm.github.io/eegUtils/reference/stat_scalpmap.html</loc>
@@ -560,6 +542,9 @@
   </url>
   <url>
     <loc>http://craddm.github.io/eegUtils/reference/unpad.html</loc>
+  </url>
+  <url>
+    <loc>http://craddm.github.io/eegUtils/reference/update_r.html</loc>
   </url>
   <url>
     <loc>http://craddm.github.io/eegUtils/reference/validate_channels.html</loc>

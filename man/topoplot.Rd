@@ -52,7 +52,7 @@ topoplot(data, ...)
   highlights = NULL,
   scaling = 1,
   verbose = TRUE,
-  scale_fac = 1.02,
+  groups = NULL,
   ...
 )
 
@@ -74,7 +74,6 @@ topoplot(data, ...)
   scaling = 1,
   groups = NULL,
   verbose = TRUE,
-  scale_fac = 1.02,
   ...
 )
 
@@ -96,7 +95,7 @@ topoplot(data, ...)
   highlights = NULL,
   scaling = 1,
   verbose = TRUE,
-  scale_fac = 1.02,
+  groups = NULL,
   ...
 )
 
@@ -118,6 +117,7 @@ topoplot(data, ...)
   scaling = 1,
   freq_range = NULL,
   verbose = TRUE,
+  groups = NULL,
   ...
 )
 }
@@ -175,12 +175,10 @@ only 'biosemi64alpha' available other than default 10/20 system)}
 \item{scaling}{Scaling multiplication factor for labels and any plot lines.
 Defaults to 1.}
 
-\item{groups}{Column name for groups to retain.}
+\item{groups}{Column name for groups to retain. This is required to create facetted plots.}
 
 \item{verbose}{Warning messages when electrodes do not have locations.
 Defaults to TRUE.}
-
-\item{scale_fac}{Scaling factor for masking ring}
 
 \item{component}{Component to plot (numeric)}
 

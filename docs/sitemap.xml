@@ -10,9 +10,6 @@
     <loc>http://craddm.github.io/eegUtils/reference/arrange_chans.html</loc>
   </url>
   <url>
-    <loc>http://craddm.github.io/eegUtils/reference/array_t.html</loc>
-  </url>
-  <url>
     <loc>http://craddm.github.io/eegUtils/reference/ar_acf.html</loc>
   </url>
   <url>
@@ -64,16 +61,7 @@
     <loc>http://craddm.github.io/eegUtils/reference/bva_elecs.html</loc>
   </url>
   <url>
-    <loc>http://craddm.github.io/eegUtils/reference/calc_fstat.html</loc>
-  </url>
-  <url>
     <loc>http://craddm.github.io/eegUtils/reference/calc_max_elec.html</loc>
-  </url>
-  <url>
-    <loc>http://craddm.github.io/eegUtils/reference/calc_pval.html</loc>
-  </url>
-  <url>
-    <loc>http://craddm.github.io/eegUtils/reference/calc_tstat_2.html</loc>
   </url>
   <url>
     <loc>http://craddm.github.io/eegUtils/reference/cart_to_spherical.html</loc>
@@ -104,9 +92,6 @@
   </url>
   <url>
     <loc>http://craddm.github.io/eegUtils/reference/circ_rad_fun.html</loc>
-  </url>
-  <url>
-    <loc>http://craddm.github.io/eegUtils/reference/compare_epochs.html</loc>
   </url>
   <url>
     <loc>http://craddm.github.io/eegUtils/reference/compute_csd.html</loc>

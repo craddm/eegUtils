@@ -64,10 +64,15 @@ jobs:
             eval sudo $cmd
           done < <(Rscript -e 'writeLines(remotes::system_requirements("ubuntu", "20.04"))')
 
+      - name: Install hdf5 on mac
+        if: runner.os == 'macOS'
+        run: brew install hdf5
+
       - name: Install dependencies
         run: |
           remotes::install_deps(dependencies = TRUE)
           remotes::install_cran("rcmdcheck")
+          remotes::install_cran("covr")
         shell: Rscript {0}
 
       - name: Check
@@ -82,3 +87,8 @@ jobs:
         with:
           name: ${{ runner.os }}-r${{ matrix.config.r }}-results
           path: check
+
+      - name: Test coverage
+        if: runner.os == 'macOS'
+        run: covr::codecov(type = c("tests", "examples"), exclusions = "R/view_ica.R")
+        shell: Rscript {0}

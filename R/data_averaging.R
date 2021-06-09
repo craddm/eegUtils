@@ -59,7 +59,7 @@ eeg_average.eeg_epochs <- function(data,
     }
   } else {
     col_names <- names(data$epochs)
-    col_names <- col_names[!(col_names %in% c("epoch"))]
+    col_names <- col_names[!(col_names %in% c("epoch", "recording", "event_type"))]
   }
 
   data$signals <-
@@ -94,7 +94,7 @@ eeg_average.eeg_epochs <- function(data,
   data
 }
 
-#' @describeIn eeg_average average an eeg_epochs object over epochs.
+#' @describeIn eeg_average average an `eeg_epochs` object over epochs.
 #' @export
 eeg_average.eeg_evoked <- function(data,
                                    cols = NULL,
@@ -200,7 +200,11 @@ average_tf <- function(data,
     } else {
       stop("Averaging of fourier coefficients not supported.")
   }
-  data$timings <- tibble::tibble(time = as.numeric(dimnames(data$signals)[["time"]]))#dplyr::filter(data$timings, epoch == 1)
+  data$timings <-
+    tibble::tibble(
+      time = rep(as.numeric(dimnames(data$signals)[["time"]]), new_epos),
+      epoch = rep(1:new_epos, each = n_times)
+      )#dplyr::filter(data$timings, epoch == 1)
   data
 }
 

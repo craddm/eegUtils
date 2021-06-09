@@ -253,7 +253,6 @@ electrode_locations <- function(data, ...) {
 #'   not available be removed? (Defaults to FALSE).
 #' @param montage Name of an existing montage set. Defaults to NULL.
 #' @importFrom dplyr inner_join pull left_join distinct
-#' @import ggplot2
 #' @importFrom tibble is_tibble
 #' @describeIn electrode_locations Adds standard locations to a data frame in
 #'   long format
@@ -280,21 +279,21 @@ electrode_locations.data.frame <- function(data,
       dplyr::pull(electrodeLocs[, electrode])
 
     if (!all(elecs)) {
-      message(paste("Electrodes not found: ",
+      message(paste("Electrode locations not found: ",
                     paste(unique(data[, electrode])[!elecs, ],
                           sep = ",")))
     } else if (!any(elecs)) {
-      stop("No matching electrodes found.")
+      stop("No matching electrode locations found.")
     }
   } else {
     elecs <-
       unique(data[, electrode]) %in% electrodeLocs[, electrode,
                                                    drop = TRUE]
     if (!all(elecs)) {
-      message("Electrodes not found: ",
+      message("Electrodes locations not found: ",
               paste(unique(data[, electrode])[!elecs], collapse = " "))
     } else if (!any(elecs)) {
-      stop("No matching electrodes found.")
+      stop("No matching electrode locations found.")
     }
 
   }
@@ -313,7 +312,6 @@ electrode_locations.data.frame <- function(data,
 }
 
 #' @param overwrite Overwrite existing channel info. Defaults to FALSE.
-#' @import ggplot2
 #' @describeIn electrode_locations Adds standard locations to the chan_info field of an eeg_data object.
 #' @export
 
@@ -329,8 +327,7 @@ electrode_locations.eeg_data <- function(data,
             overwrite = overwrite)
 }
 
-#' @import ggplot2
-#' @describeIn electrode_locations Adds standard locations to the chan_info field of an eeg_data object.
+#' @describeIn electrode_locations Adds standard locations to the chan_info field of an `eeg_data` object.
 #' @export
 
 electrode_locations.eeg_epochs <- function(data,
@@ -345,6 +342,8 @@ electrode_locations.eeg_epochs <- function(data,
             overwrite = overwrite)
 }
 
+#' @describeIn electrode_locations Adds standard locations to the chan_info field of an `eeg_tfr` object.
+#' @export
 electrode_locations.eeg_tfr <- function(data,
                                         drop = FALSE,
                                         montage = NULL,

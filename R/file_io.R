@@ -559,19 +559,21 @@ read_vmrk <- function(file_name) {
   markers
 }
 
-#' Load EEGLAB .set files
+#' Load `EEGLAB` .set files
 #'
-#' EEGLAB .set files are standard Matlab .mat files, but EEGLAB can be set to
-#' export either v6.5 or v7.3 format files. Only v6.5 files can be read with
-#' this function. v7.3 files (which use HDF5 format) are not currently
-#' supported, as they cannot be fully read with existing tools.
+#' Load `EEGLAB` .set files and convert them to `eeg_epochs` objects. Supports
+#' import of files saved both in Matlab v6.5 and Matlab v7.3 formats. Currently,
+#' any ICA weights or decompositions are discarded.
 #'
 #' @param file_name Filename (and path if not in present working directory)
-#' @param df_out Defaults to FALSE - outputs an object of class eeg_data. Set to
-#'   TRUE for a normal data frame.
-#' @param participant_id By default, the filename will be used as the id of the participant.
-#' @param recording By default, the filename will be used as the name of the recording.
-#' @param drop_custom Drop custom event fields.
+#' @param df_out Defaults to FALSE - outputs an object of class `eeg_data`. Set
+#'   to TRUE for a normal data frame.
+#' @param participant_id By default, the filename will be used as the id of the
+#'   participant.
+#' @param recording By default, the filename will be used as the name of the
+#'   recording.
+#' @param drop_custom Drop custom event fields. TRUE by default.
+#' @param verbose Print informative messages. TRUE by default.
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #' @importFrom dplyr group_by mutate rename
 #' @importFrom tibble tibble as_tibble
@@ -585,11 +587,38 @@ import_set <- function(file_name,
                        df_out = FALSE,
                        participant_id = NULL,
                        recording = NULL,
-                       drop_custom = FALSE) {
+                       drop_custom = FALSE,
+                       verbose = TRUE) {
 
-  if (!requireNamespace("R.matlab", quietly = TRUE)) {
-    stop("Package \"R.matlab\" needed. Please install it.",
-         call. = FALSE)
+  checkpkgs <-
+    unlist(
+      lapply(c("R.matlab", "hdf5r"),
+             requireNamespace,
+             quietly = TRUE)
+    )
+  if (!all(checkpkgs)) {
+    missing_pkg <- c("R.matlab", "hdf5r")[!checkpkgs]
+
+    if (length(missing_pkg) == 1) {
+      stop(paste("Package",
+                 missing_pkg,
+                 "needed. Please install it."),
+           call. = FALSE)
+    } else {
+      stop(
+        paste("Packages",
+              missing_pkg[[1]],
+              "&",
+              missing_pkg[[2]],
+              "needed. Please install them."
+              ),
+        call. = FALSE
+        )
+    }
+  }
+
+  if (verbose) {
+    message("Importing from EEGLAB .set file.")
   }
 
   if (is.null(recording)) {
@@ -600,13 +629,37 @@ import_set <- function(file_name,
     participant_id <- basename(tools::file_path_sans_ext(file_name))
   }
 
-  temp_dat <- R.matlab::readMat(file_name)
-  var_names <- dimnames(temp_dat$EEG)[[1]]
+  check_hdf5 <- hdf5r::is.h5file(file_name)
 
-  n_chans <- temp_dat$EEG[[which(var_names == "nbchan")]]
-  n_trials <- temp_dat$EEG[[which(var_names == "trials")]]
-  times <- temp_dat$EEG[[which(var_names == "times")]]
-  chan_info <- drop(Reduce(rbind, temp_dat$EEG["chanlocs",,]))
+  if (check_hdf5) {
+    if (verbose) {
+      message("Matlab 7.3 file format detected.")
+    }
+    return(
+      read_hdf5_set(file_name,
+                    recording = recording,
+                    participant_id = participant_id)
+      )
+  }
+
+
+  temp_dat <- R.matlab::readMat(file_name)
+
+  if (identical(names(temp_dat)[[1]], "EEG")) {
+    temp_dat <- temp_dat$EEG[, 1, 1]
+  }
+
+  n_chans <- temp_dat[["nbchan"]]
+  n_trials <- temp_dat[["trials"]]
+  times <- temp_dat[["times"]]
+  chan_info <- drop(Reduce(rbind,
+                           temp_dat["chanlocs"]))
+  #   var_names <- dimnames(temp_dat$EEG)[[1]]
+  #
+  # n_chans <- temp_dat$EEG[[which(var_names == "nbchan")]]
+  # n_trials <- temp_dat$EEG[[which(var_names == "trials")]]
+  # times <- temp_dat$EEG[[which(var_names == "times")]]
+  # chan_info <- drop(Reduce(rbind, temp_dat$EEG["chanlocs",,]))
 
   pick_empties <-
     vapply(
@@ -621,8 +674,11 @@ import_set <- function(file_name,
   chan_info <- parse_chaninfo(chan_info)
 
   # check if the data is stored in the set or in a separate .fdt
-  if (is.character(temp_dat$EEG[[which(var_names == "data")]])) {
-    message("loading from .fdt")
+  #if (is.character(temp_dat$EEG[[which(var_names == "data")]])) {
+  if (is.character(temp_dat[["data"]])) {
+    if (verbose) {
+      message("Importing data from .fdt file.")
+    }
     fdt_file <- paste0(tools::file_path_sans_ext(file_name),
                        ".fdt")
     fdt_file <- file(fdt_file, "rb")
@@ -648,7 +704,8 @@ import_set <- function(file_name,
   } else {
 
     # if the data is in the .set file, load it here instead of above
-    signals <- temp_dat$EEG[[which(dimnames(temp_dat$EEG)[[1]] == "data")]]
+    #signals <- temp_dat$EEG[[which(dimnames(temp_dat$EEG)[[1]] == "data")]]
+    signals <- temp_dat[["data"]]
     dim_signals <- dim(signals)
 
     if (length(dim_signals) == 3) {
@@ -663,9 +720,10 @@ import_set <- function(file_name,
   signals <- t(signals)
   colnames(signals) <- unique(chan_info$electrode)
   signals <- as.data.frame(signals)
-  signals$time <- times
+  signals$time <- as.numeric(times)
 
-  srate <- temp_dat$EEG[[which(var_names == "srate")]][[1]]
+  #srate <- temp_dat$EEG[[which(var_names == "srate")]][[1]]
+  srate <- temp_dat[["srate"]][[1]]
 
   if (!continuous) {
     signals <- dplyr::group_by(signals,
@@ -675,7 +733,8 @@ import_set <- function(file_name,
     signals <- dplyr::ungroup(signals)
   }
 
-  event_info <- temp_dat$EEG[[which(var_names == "event")]]
+  #event_info <- temp_dat$EEG[[which(var_names == "event")]]
+  event_info <- temp_dat[["event"]]
 
   event_table <- event_info
   dim(event_table) <- c(dim(event_info)[[1]],
@@ -686,10 +745,15 @@ import_set <- function(file_name,
   colnames(event_table) <- dimnames(event_info)[[1]]
 
   event_table <- tibble::as_tibble(event_table)
+  event_table <- map_df(event_table,
+                        ~unlist(map(.,
+                                    ~ifelse(is.null(.),
+                                            NA,
+                                            .))))
   event_table <- lapply(event_table,
                         unlist)
   empty_entries <- unlist(lapply(event_table,
-                                 is_empty))
+                                 rlang::is_empty))
   if (any(empty_entries)) {
     empty_cols <- names(event_table)[empty_entries]
     message(paste0("Removing empty event table column (s):",
@@ -709,7 +773,6 @@ import_set <- function(file_name,
   # EEGLAB stores latencies in samples starting from 1, my event_time is in
   # seconds, starting from 0
   event_table$event_time <- (event_table$latency - 1) / srate
-
 
   std_cols <- c("latency",
                 "event_time",
@@ -791,10 +854,7 @@ import_set <- function(file_name,
 #' @keywords internal
 parse_chaninfo <- function(chan_info,
                            drop = FALSE) {
-  #chan_info <- tibble::as_tibble(t(as.data.frame(chan_info)))
-  # chan_info <- tibble::as_tibble(data.frame(lapply(chan_info,
-  #                                                  unlist),
-  #                                           stringsAsFactors = FALSE))
+
   chan_info <- chan_info[, sort(names(chan_info))]
   expected <- c("labels", "radius",
                 "ref", "sph.phi",
@@ -831,7 +891,7 @@ parse_chaninfo <- function(chan_info,
                            "cart_z")]
   # EEGLAB co-ordinates are rotated 90 degrees compared to our coordinates,
   # and left-right flipped
-  chan_info$cart_y <- -chan_info$cart_y
+  #chan_info$cart_y <- -chan_info$cart_y
   names(chan_info) <- names(chan_info)[c(1, 3, 2, 4)]
   chan_info <- chan_info[, c(1, 3, 2, 4)]
   sph_coords <- cart_to_spherical(chan_info[, c("cart_x", "cart_y", "cart_z")])
@@ -918,7 +978,6 @@ import_ft <- function(file_name,
     stop("Package \"R.matlab\" needed. Please install it.",
          call. = FALSE)
   }
-
   tmp_ft <- R.matlab::readMat(file_name)
 
   tmp_ft <- tmp_ft[[1]]

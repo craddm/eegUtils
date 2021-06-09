@@ -7,10 +7,14 @@
 #' erp_image(demo_epochs, electrode = "A31")
 #' erp_image(demo_epochs, electrode = "A31", interpolate = TRUE)
 #' erp_image(demo_epochs, electrode = "A31", smoothing = 5)
+#' erp_image(compute_tfr(demo_epochs,
+#'  foi = c(4, 30), n_cycles = 3, n_freq = 20, verbose = FALSE, keep_trials = TRUE),
+#'  electrode = "A31", freq_range = c(8, 12))
 #' @param data Data frame to be plotted. Requires an amplitude column.
 #' @param ... Other arguments passed to the method.
 #' @import ggplot2
 #' @importFrom scales squish
+#' @return A `ggplot` object
 #' @export
 
 erp_image <- function(data,
@@ -18,6 +22,7 @@ erp_image <- function(data,
   UseMethod("erp_image", data)
 }
 
+#' @export
 erp_image.default <- function(data,
                               ...) {
   stop("Not implemented for objects of class ",
@@ -33,12 +38,12 @@ erp_image.default <- function(data,
 #' @describeIn erp_image Default function operates on normal data frames
 #' @export
 erp_image.data.frame <- function(data,
-                              electrode = "Cz",
-                              time_lim = NULL,
-                              smoothing = 10,
-                              clim = NULL,
-                              interpolate = FALSE,
-                              ...) {
+                                 electrode = "Cz",
+                                 time_lim = NULL,
+                                 smoothing = 10,
+                                 clim = NULL,
+                                 interpolate = FALSE,
+                                 ...) {
 
   required_cols <- c("electrode", "time", "amplitude", "epoch")
   col_names <- names(data)
@@ -118,17 +123,27 @@ erp_image.eeg_ICA <- function(data,
                   interpolate = interpolate)
 }
 
-
+#' @param freq_range A numeric vector specify the range of frequencies to
+#'   average over. A single number will find the closest matching frequency. A
+#'   vector of length two will match average over frequencies within that range.
+#' @describeIn erp_image Plot component image from `eeg_tfr`
+#' @export
 erp_image.eeg_tfr <- function(data,
                               electrode = "Cz",
                               time_lim = NULL,
                               smoothing = 10,
                               clim = NULL,
                               interpolate = FALSE,
+                              freq_range = NULL,
                               ...) {
 
   data <- select_elecs(data,
                        electrode)
+
+  if (!is.null(freq_range)){
+    data <- select_freqs(data,
+                         freq_range)
+  }
 
   if (!is.null(time_lim)) {
     data <- filter(data,
@@ -245,17 +260,17 @@ create_tfrimage <- function(data,
                                               rep(1 / smoothing,
                                                   smoothing),
                                               sides = 2))
-  units <- "Power"
+  units <- "Power (a.u.)"
 
   data$epoch <- as.numeric(factor(data$epoch))
   if (is.null(clim)) {
     clim <- max(abs(max(data$smooth_amp, na.rm = TRUE)),
                 abs(min(data$smooth_amp, na.rm = TRUE)))
-    clim <- c(-clim, clim)
+    clim <- c(0, clim)
   } else if (length(clim) != 2) {
     clim <- max(abs(max(data$smooth_amp, na.rm = TRUE)),
                 abs(min(data$smooth_amp, na.rm = T)))
-    clim <- c(-clim, clim)
+    clim <- c(0, clim)
   }
 
   ggplot2::ggplot(data,
@@ -266,14 +281,13 @@ create_tfrimage <- function(data,
     geom_vline(xintercept = 0,
                linetype = "dashed",
                size = 1) +
-    scale_fill_distiller(palette = "RdBu",
-                         limits = clim,
-                         oob = scales::squish) +
+    scale_fill_viridis_c(limits = clim,
+                       oob = scales::squish) +
     scale_y_continuous(expand = c(0, 0)) +
     scale_x_continuous(expand = c(0, 0)) +
     theme_classic() +
     labs(x = "Time (s)", fill = units, y = "Epoch number") +
-    ggtitle(paste("ERP Image for electrode", electrode))
+    ggtitle(paste("TFR Image for electrode", electrode))
 }
 
 #' ERP raster plot
@@ -301,6 +315,7 @@ create_tfrimage <- function(data,
 #' @importFrom tidyr gather
 #' @importFrom scales squish
 #' @author Matt Craddock, \email{matt@@mattcraddock.com}
+#' @return A `ggplot` object
 #' @export
 
 erp_raster <- function(data,
@@ -335,9 +350,10 @@ erp_raster <- function(data,
     clim <- c(min(data$amplitude),
               max(data$amplitude))
   }
-  ggplot2::ggplot(data, aes(x = time,
-                            y = electrode,
-                            fill = amplitude)) +
+  ggplot2::ggplot(data,
+                  aes(x = time,
+                      y = electrode,
+                      fill = amplitude)) +
     geom_raster(interpolate = interpolate) +
     geom_vline( xintercept = 0,
                 linetype = "dashed",

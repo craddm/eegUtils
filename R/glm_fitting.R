@@ -14,7 +14,7 @@
 #'   the term `baseline` in the specified formula.
 #'
 #' @author Matt Craddock, \email{matt@@mattcraddock.com}
-#' @param formula An object of class "`formula`". Right-hand side A
+#' @param formula An object of class `formula`. Right-hand side A
 #'   regression formula for a GLM. See ?formula and notes on use below
 #' @param data An `eegUtils` object.
 #' @param ... Any other arguments passed to (LM/GLM)
@@ -28,10 +28,11 @@ fit_glm <- function(formula,
   UseMethod("fit_glm", data)
 }
 
+#' @export
 fit_glm.default <- function(formula,
                             data,
                             ...) {
-  stop(paste("Objects of class", class(.data), "not currently supported"))
+  stop(paste("Objects of class", class(data), "not currently supported"))
 }
 
 #' @param time_lim Numeric vector of length 2 specifying time period to be used

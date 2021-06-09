@@ -24,21 +24,23 @@
 #'   filter to compensate for the phase delay imposed by the linear filtering
 #'   process. Infinite Impulse Response (IIR) filtering is performed using a
 #'   two-pass (once forwards, once reversed) method to correct for phase
-#'   alignment.
+#'   alignment. Note that the Butterworth filter designs used here can become
+#'   numerically unstable with only a small increase in filter order. For most
+#'   purposes, use FIR filters.
 #'
 #' @examples
 #' plot_psd(eeg_filter(demo_epochs, low_freq = 1, high_freq = 30))
 #' plot_psd(eeg_filter(demo_epochs, low_freq = 12, high_freq = 8))
 #' plot_psd(eeg_filter(demo_epochs, low_freq = 12, high_freq = 8, method = "iir"))
 #'
-#' @param .data An `eeg_data` or `eeg_epochs` object to be filtered.
+#' @param data An `eeg_data` or `eeg_epochs` object to be filtered.
 #' @param ... Additional parameters.
 #' @return An object of the original class with signals filtered according to
 #'   the user's specifications
 #' @export
 
-eeg_filter <- function(.data, ...) {
-  UseMethod("eeg_filter", .data)
+eeg_filter <- function(data, ...) {
+  UseMethod("eeg_filter", data)
 }
 
 #' @param low_freq Low cutoff frequency.
@@ -54,7 +56,7 @@ eeg_filter <- function(.data, ...) {
 #' @param demean Remove DC component (i.e. channel/epoch mean) before filtering. Defaults to TRUE.
 #' @rdname eeg_filter
 #' @export
-eeg_filter.eeg_data <- function(.data,
+eeg_filter.eeg_data <- function(data,
                                 low_freq = NULL,
                                 high_freq = NULL,
                                 filter_order = "auto",
@@ -66,7 +68,7 @@ eeg_filter.eeg_data <- function(.data,
 
   filt_pars <- parse_filt_freqs(low_freq,
                                 high_freq,
-                                .data$srate,
+                                data$srate,
                                 method)
 
   if (identical(method, "iir")) {
@@ -83,7 +85,7 @@ eeg_filter.eeg_data <- function(.data,
 
     if (identical(trans_bw, "auto")) {
       trans_bw <- est_tbw(filt_pars,
-                          .data$srate)
+                          data$srate)
     }
 
     message(paste("Transition bandwidth:", min(trans_bw), "Hz"))
@@ -91,7 +93,7 @@ eeg_filter.eeg_data <- function(.data,
     if (identical(filter_order, "auto")) {
       filter_order <- est_filt_order(window,
                                      trans_bw,
-                                     srate = .data$srate)
+                                     srate = data$srate)
     }
 
     message(paste("Filter order:", filter_order))
@@ -106,25 +108,25 @@ eeg_filter.eeg_data <- function(.data,
                             window)
 
   if (demean) {
-    .data <- rm_baseline(.data) # remove DC component
+    data <- rm_baseline(data) # remove DC component
   }
 
   if (identical(method, "iir")) {
-    .data <- run_iir_n(.data,
+    data <- run_iir_n(data,
                        filt_coef)
   } else {
-    .data <- run_fir(.data,
+    data <- run_fir(data,
                      filt_coef,
                      filter_order)
   }
-  .data$signals <- tibble::as_tibble(.data$signals)
-  .data
+  data$signals <- tibble::as_tibble(data$signals)
+  data
 }
 
 
 #' @rdname eeg_filter
 #' @export
-eeg_filter.eeg_epochs <- function(.data,
+eeg_filter.eeg_epochs <- function(data,
                                   low_freq = NULL,
                                   high_freq = NULL,
                                   filter_order = "auto",
@@ -136,7 +138,7 @@ eeg_filter.eeg_epochs <- function(.data,
 
   filt_pars <- parse_filt_freqs(low_freq,
                                 high_freq,
-                                .data$srate,
+                                data$srate,
                                 method)
 
   if (identical(method, "iir")) {
@@ -153,7 +155,7 @@ eeg_filter.eeg_epochs <- function(.data,
 
     if (identical(trans_bw, "auto")) {
       trans_bw <- est_tbw(filt_pars,
-                          .data$srate)
+                          data$srate)
     }
 
     message(paste("Transition bandwidth:", min(trans_bw), "Hz"))
@@ -161,7 +163,7 @@ eeg_filter.eeg_epochs <- function(.data,
     if (identical(filter_order, "auto")) {
       filter_order <- est_filt_order(window,
                                      trans_bw,
-                                     srate = .data$srate)
+                                     srate = data$srate)
     }
 
     message(paste("Filter order:", filter_order))
@@ -176,23 +178,23 @@ eeg_filter.eeg_epochs <- function(.data,
                             window)
 
   if (demean) {
-    .data <- rm_baseline(.data) # remove DC component
+     data <- rm_baseline(data) # remove DC component
   }
   if (identical(method, "iir")) {
-    .data <- run_iir_n(.data,
+     data <- run_iir_n(data,
                        filt_coef)
   } else {
-    .data <- run_fir(.data,
+    data <- run_fir(data,
                      filt_coef,
                      filter_order)
   }
-  .data$signals <- tibble::as_tibble(.data$signals)
-  .data
+  data$signals <- tibble::as_tibble(data$signals)
+  data
 }
 
 #' @rdname eeg_filter
 #' @export
-eeg_filter.eeg_group <- function(.data,
+eeg_filter.eeg_group <- function(data,
                                  low_freq = NULL,
                                  high_freq = NULL,
                                  filter_order = "auto",
@@ -208,57 +210,50 @@ eeg_filter.eeg_group <- function(.data,
 
 #' Run FIR filter using overlap-add FFT
 #'
-#' @param .data Data to be filtered.
+#' @param data Data to be filtered.
 #' @param filt_coef Filter coefficients
 #' @param filter_order Order of filter
 #' @importFrom future.apply future_lapply
 #' @importFrom purrr map_df
 #' @importFrom tibble as_tibble
 #' @keywords internal
-run_fir <- function(.data,
+run_fir <- function(data,
                     filt_coef,
                     filter_order) {
 
    fft_length <- length(filt_coef) * 2 - 1
    fft_length <- stats::nextn(fft_length) #length(filt_coef) * 2 - 1
-   sig_length <- nrow(.data$signals)
+   sig_length <- nrow(data$signals)
    # pad the signals with zeros to help with edge effects
    pad_zeros <- stats::nextn(sig_length + fft_length - 1) - sig_length
    pad_zeros <- 2 * round(pad_zeros / 2)
-   .data$signals <- purrr::map_df(.data$signals,
+   data$signals <- purrr::map_df(data$signals,
                                   ~pad(.,
                                        pad_zeros))
-  # .data$signals <- purrr::map_df(.data$signals,
-  #                               ~pad(.,
-  #                                    fft_length))
-   .data$signals <- future.apply::future_lapply(.data$signals,
+   data$signals <- future.apply::future_lapply(data$signals,
                                                 signal::fftfilt,
                                                 b = filt_coef,
                                                 n = fft_length)
    # fftfilt filters once and thus shifts everything in time by the group delay
    # of the filter (half the filter order). Here we correct for both the
    # padding and the group delay
-   .data$signals <- purrr::map_df(.data$signals,
+   data$signals <- purrr::map_df(data$signals,
                                   ~fix_grpdelay(.,
                                                 pad_zeros,
                                                 filter_order / 2))
-     # .data$signals <- purrr::map_df(.data$signals,
-     #                                ~fix_grpdelay(.,
-     #                                              fft_length,
-     #                                              filter_order / 2))
-   .data$signals <- tibble::as_tibble(.data$signals)
-   .data
+   data$signals <- tibble::as_tibble(data$signals)
+   data
 }
 
-run_iir_n <- function(.data,
+run_iir_n <- function(data,
                       filt_coef) {
 
-  .data$signals <- future.apply::future_lapply(.data$signals,
+  data$signals <- future.apply::future_lapply(data$signals,
                                                signal::filtfilt,
                                                filt = filt_coef,
                                                a = 1)
-  .data$signals <- tibble::as_tibble(.data$signals)
-  .data
+  data$signals <- tibble::as_tibble(data$signals)
+  data
 }
 
 

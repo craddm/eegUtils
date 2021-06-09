@@ -75,7 +75,7 @@ not allow unevenly spaced grids, the function creates an interpolated surface." 
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">eegUtils</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.5.0.9000</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.6.1.9000</span>
       </span>
     </div>
 
@@ -166,9 +166,10 @@ not allow unevenly spaced grids, the function creates an interpolated surface.</
   chan_markers <span class='op'>=</span> <span class='st'>"point"</span>,
   chan_size <span class='op'>=</span> <span class='fu'>rel</span><span class='op'>(</span><span class='fl'>2</span><span class='op'>)</span>,
   head_size <span class='op'>=</span> <span class='fu'>rel</span><span class='op'>(</span><span class='fl'>1.5</span><span class='op'>)</span>,
-  r <span class='op'>=</span> <span class='fl'>95</span>,
+  r <span class='op'>=</span> <span class='cn'>NULL</span>,
   grid_res <span class='op'>=</span> <span class='fl'>200</span>,
   method <span class='op'>=</span> <span class='st'>"biharmonic"</span>,
+  bins <span class='op'>=</span> <span class='fl'>6</span>,
   <span class='va'>...</span>
 <span class='op'>)</span></pre>
 
@@ -249,12 +250,20 @@ or text.</p></td>
       <td><p>Size of the head shape.</p></td>
     </tr>
     <tr>
+      <th>r</th>
+      <td><p>Head circumference</p></td>
+    </tr>
+    <tr>
       <th>grid_res</th>
       <td><p>Smoothness of the interpolation grid.</p></td>
     </tr>
     <tr>
       <th>method</th>
       <td><p>"biharmonic" or ""gam".</p></td>
+    </tr>
+    <tr>
+      <th>bins</th>
+      <td><p>Number of bins to use for contour lines.</p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -268,12 +277,13 @@ to the paired geom/stat.</p></td>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p>Other topoplot functions: 
+<code><a href='stat_scalpcontours.html'>stat_scalpcontours</a>()</code>,
 <code><a href='stat_scalpmap.html'>stat_scalpmap</a>()</code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://ggplot2.tidyverse.org'>ggplot2</a></span><span class='op'>)</span>
-<span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='va'>demo_epochs</span>, <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>x</span>, y <span class='op'>=</span> <span class='va'>y</span>, fill <span class='op'>=</span> <span class='va'>amplitude</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'>geom_topo</span><span class='op'>(</span><span class='op'>)</span>
-</div><div class='img'><img src='geom_topo-1.png' alt='' width='700' height='433' /></div></pre>
+<span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='va'>demo_epochs</span>, <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>x</span>, y <span class='op'>=</span> <span class='va'>y</span>, fill <span class='op'>=</span> <span class='va'>amplitude</span>, z <span class='op'>=</span> <span class='va'>amplitude</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'>geom_topo</span><span class='op'>(</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='warning'>Warning: Unknown or uninitialised column: `group`.</span></div><div class='img'><img src='geom_topo-1.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

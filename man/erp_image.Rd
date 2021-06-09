@@ -5,6 +5,7 @@
 \alias{erp_image.data.frame}
 \alias{erp_image.eeg_epochs}
 \alias{erp_image.eeg_ICA}
+\alias{erp_image.eeg_tfr}
 \title{Plot ERP images}
 \usage{
 erp_image(data, ...)
@@ -37,6 +38,17 @@ erp_image(data, ...)
   interpolate = FALSE,
   ...
 )
+
+\method{erp_image}{eeg_tfr}(
+  data,
+  electrode = "Cz",
+  time_lim = NULL,
+  smoothing = 10,
+  clim = NULL,
+  interpolate = FALSE,
+  freq_range = NULL,
+  ...
+)
 }
 \arguments{
 \item{data}{Data frame to be plotted. Requires an amplitude column.}
@@ -55,6 +67,13 @@ e.g. c(-5,5). Defaults to min and max.}
 \item{interpolate}{Perform interpolation to produce smoother looking plots. Defaults to FALSE.}
 
 \item{component}{\code{eeg_ICA} component to plot}
+
+\item{freq_range}{A numeric vector specify the range of frequencies to
+average over. A single number will find the closest matching frequency. A
+vector of length two will match average over frequencies within that range.}
+}
+\value{
+A \code{ggplot} object
 }
 \description{
 Plot an ERP image from a single electrode. Smooths over a series of trials in
@@ -67,10 +86,15 @@ order to make across-trial patterns more apparent.
 \item \code{eeg_epochs}: Create an \code{erp_image} from \code{eeg_epochs}
 
 \item \code{eeg_ICA}: Plot component image from \code{eeg_ICA}
+
+\item \code{eeg_tfr}: Plot component image from \code{eeg_tfr}
 }}
 
 \examples{
 erp_image(demo_epochs, electrode = "A31")
 erp_image(demo_epochs, electrode = "A31", interpolate = TRUE)
 erp_image(demo_epochs, electrode = "A31", smoothing = 5)
+erp_image(compute_tfr(demo_epochs,
+ foi = c(4, 30), n_cycles = 3, n_freq = 20, verbose = FALSE, keep_trials = TRUE),
+ electrode = "A31", freq_range = c(8, 12))
 }

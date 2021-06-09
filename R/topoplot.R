@@ -32,7 +32,8 @@ topoplot <- function(data,
 
 topoplot.default <- function(data,
                              ...) {
-  stop("Not implemented for objects of class ", paste(class(data), collapse = "/"))
+  stop("Not implemented for objects of class ",
+       paste(class(data), collapse = "/"))
 }
 
 #' @param time_lim Timepoint(s) to plot. Can be one time or a range to average
@@ -68,15 +69,13 @@ topoplot.default <- function(data,
 #' @param highlights Electrodes to highlight (in white).
 #' @param scaling Scaling multiplication factor for labels and any plot lines.
 #'   Defaults to 1.
-#' @param groups Column name for groups to retain.
+#' @param groups Column name for groups to retain. This is required to create facetted plots.
 #' @param verbose Warning messages when electrodes do not have locations.
 #'   Defaults to TRUE.
-#' @param scale_fac Scaling factor for masking ring
 #' @import ggplot2
 #' @import tidyr
 #' @importFrom dplyr group_by summarise ungroup
 #' @import scales
-#' @importFrom mgcv gam
 #' @describeIn topoplot Topographical plotting of data.frames and other non
 #'   eeg_data objects.
 #' @export
@@ -98,8 +97,15 @@ topoplot.data.frame <- function(data,
                                 scaling = 1,
                                 groups = NULL,
                                 verbose = TRUE,
-                                #scale_fac = 1.02,
                                 ...) {
+
+  if (identical(method, "gam")) {
+    if (!requireNamespace("mgcv",
+                          quietly = TRUE)) {
+      stop("Package \"mgcv\" needed for SSD. Please install it.",
+           call. = FALSE)
+    }
+  }
 
   # Filter out unwanted timepoints and find nearest time values in the data
   # --------------
@@ -243,8 +249,7 @@ topoplot.data.frame <- function(data,
 
   topo <-
     topo +
-    geom_mask(#scale_fac = scale_fac,
-              size = 5 * scaling,
+    geom_mask(size = 5 * scaling,
               interp_limit = interp_limit) +
     geom_head(r = r,
               size = rel(1.5) * scaling) +
@@ -319,7 +324,7 @@ topoplot.eeg_data <- function(data, time_lim = NULL,
                               highlights = NULL,
                               scaling = 1,
                               verbose = TRUE,
-                              scale_fac = 1.02,
+                              groups = NULL,
                               ...) {
 
   if (!is.null(data$chan_info)) {
@@ -357,7 +362,7 @@ topoplot.eeg_data <- function(data, time_lim = NULL,
            passed = TRUE,
            scaling = scaling,
            verbose = verbose,
-           scale_fac = scale_fac)
+           groups = groups)
 }
 
 
@@ -381,7 +386,6 @@ topoplot.eeg_epochs <- function(data,
                                 scaling = 1,
                                 groups = NULL,
                                 verbose = TRUE,
-                                scale_fac = 1.02,
                                 ...) {
 
   if (!is.null(data$chan_info)) {
@@ -415,8 +419,7 @@ topoplot.eeg_epochs <- function(data,
            highlights = highlights,
            scaling = scaling,
            groups = groups,
-           verbose = verbose,
-           scale_fac = scale_fac
+           verbose = verbose
            )
 }
 
@@ -441,7 +444,7 @@ topoplot.eeg_ICA <- function(data,
                              highlights = NULL,
                              scaling = 1,
                              verbose = TRUE,
-                             scale_fac = 1.02,
+                             groups = NULL,
                              ...) {
   if (missing(component)) {
     stop("Component number must be specified for eeg_ICA objects.")
@@ -451,11 +454,18 @@ topoplot.eeg_ICA <- function(data,
     message("time_lim is ignored for ICA components.")
   }
 
-  chan_info <- data$chan_info
-  data <- data.frame(amplitude = data$mixing_matrix[, component],
-                      electrode = data$mixing_matrix$electrode)
+  # chan_info <- data$chan_info
+  # data <- data.frame(amplitude = data$mixing_matrix[, component],
+  #                     electrode = data$mixing_matrix$electrode)
+  data <- select(data,
+                 component)
+  data <- as.data.frame(data,
+                        mixing = TRUE, long = TRUE)
+  if (length(component) > 1) {
+    groups <- "component"
+  }
   topoplot(data,
-           chanLocs = chan_info,
+           chanLocs = chanLocs,#chan_info,
            limits = limits,
            interp_limit = interp_limit,
            r = r,
@@ -470,7 +480,7 @@ topoplot.eeg_ICA <- function(data,
            chan_marker = chan_marker,
            time_lim = NULL,
            verbose = verbose,
-           scale_fac = scale_fac)
+           groups = groups)
 
 }
 
@@ -495,6 +505,7 @@ topoplot.eeg_tfr <- function(data,
                              scaling = 1,
                              freq_range = NULL,
                              verbose = TRUE,
+                             groups = NULL,
                              ...) {
 
   if (!is.null(data$chan_info)) {
@@ -531,7 +542,8 @@ topoplot.eeg_tfr <- function(data,
            highlights = highlights,
            scaling = scaling,
            passed = TRUE,
-           verbose = verbose)
+           verbose = verbose,
+           groups = groups)
 }
 
 #' Set palette and limits for topoplot
