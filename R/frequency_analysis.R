@@ -94,7 +94,8 @@ compute_psd.eeg_data <- function(data,
   final_output
 }
 
-#' @param keep_trials Include FFT for every trial in output, or average over them if FALSE.
+#' @param keep_trials Include FFT for every trial in output, or average over
+#'   them if FALSE.
 #' @describeIn compute_psd Compute PSD for an `eeg_epochs` object
 #' @export
 
@@ -315,7 +316,7 @@ welch_fft <- function(data,
 
 #' Segment data
 #'
-#' Split data into segments for Welch PSD. Any leftover data is discared (i.e.
+#' Split data into segments for Welch PSD. Any leftover data is discarded (i.e.
 #' if seg_length is 256 and signal length is 400, only 1 segment is returned)
 #'
 #' @author Matt Craddock \email{matt@@mattcraddock.com}

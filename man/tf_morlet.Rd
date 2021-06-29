@@ -8,6 +8,7 @@ tf_morlet(
   data,
   foi,
   n_freq,
+  spacing,
   n_cycles,
   keep_trials,
   output,
@@ -23,6 +24,8 @@ tf_morlet(
 and highest frequency to resolve.}
 
 \item{n_freq}{Number of frequencies to be resolved.}
+
+\item{spacing}{Use linear or log spacing for frequencies.}
 
 \item{n_cycles}{Number of cycles at each frequency.}
 

@@ -16,6 +16,7 @@ compute_tfr(data, ...)
   method = "morlet",
   foi,
   n_freq,
+  spacing = "linear",
   n_cycles = 7,
   keep_trials = FALSE,
   output = "power",
@@ -29,6 +30,7 @@ compute_tfr(data, ...)
   method = "morlet",
   foi,
   n_freq,
+  spacing = "linear",
   n_cycles = 7,
   keep_trials = FALSE,
   output = "power",
@@ -49,6 +51,8 @@ and highest frequency to resolve.}
 
 \item{n_freq}{Number of frequencies to be resolved. Must be an integer number
 of frequencies.}
+
+\item{spacing}{Use "linear" or "log" spacing for the frequency vector.}
 
 \item{n_cycles}{Number of cycles at each frequency. If a single integer, use
 a constant number of cycles at each frequency. If a character vector of

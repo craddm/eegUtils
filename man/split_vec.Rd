@@ -17,7 +17,7 @@ split_vec(vec, seg_length, overlap, detrend = "mean")
 segment. Anything else turns off detrending.}
 }
 \description{
-Split data into segments for Welch PSD. Any leftover data is discared (i.e.
+Split data into segments for Welch PSD. Any leftover data is discarded (i.e.
 if seg_length is 256 and signal length is 400, only 1 segment is returned)
 }
 \author{
