@@ -14,7 +14,7 @@ test_that("topoplots for ICA work", {
   vdiffr::expect_doppelganger("topographical plot for SOBI",
                               topoplot(demo_SOBI,
                                        component = "Comp001",
-                                       limits = c(-4, 5)))
+                                       limits = c(-4, 5), verbose = FALSE))
   vdiffr::expect_doppelganger("topographical plot for fastica",
                               topoplot(demo_fastic,
                                        component = "Comp001",
