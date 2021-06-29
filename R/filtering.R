@@ -249,9 +249,9 @@ run_iir_n <- function(data,
                       filt_coef) {
 
   data$signals <- future.apply::future_lapply(data$signals,
-                                               signal::filtfilt,
-                                               filt = filt_coef,
-                                               a = 1)
+                                              signal::filtfilt,
+                                              filt = filt_coef,
+                                              a = 1)
   data$signals <- tibble::as_tibble(data$signals)
   data
 }

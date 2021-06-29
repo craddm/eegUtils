@@ -458,7 +458,7 @@ topoplot.eeg_ICA <- function(data,
   # data <- data.frame(amplitude = data$mixing_matrix[, component],
   #                     electrode = data$mixing_matrix$electrode)
   data <- select(data,
-                 component)
+                 dplyr::all_of(component))
   data <- as.data.frame(data,
                         mixing = TRUE, long = TRUE)
   if (length(component) > 1) {
