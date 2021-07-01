@@ -63,7 +63,8 @@ compute_psd.eeg_data <- function(data,
   srate <- data$srate
 
   if (is.null(n_fft)) {
-    n_fft <- min(2048, c(nrow(data$signals)))
+    n_fft <- min(2048,
+                 c(nrow(data$signals)))
   }
 
   if (is.null(seg_length)) {
@@ -80,7 +81,19 @@ compute_psd.eeg_data <- function(data,
     stop("noverlap should not be larger than seg_length.")
   }
 
-  if (method == "Welch") {
+  if (identical(method, "Welch")) {
+
+    if (verbose) {
+      message(
+        paste(
+          "Computing Power Spectral Density using Welch's method.\n",
+          "FFT length: ", n_fft, "\n",
+          "Segment length: ", seg_length, "\n",
+          "Overlapping points: ", noverlap, "(", noverlap / seg_length * 100, "%)"
+          )
+        )
+    }
+
     final_output <- welch_fft(data$signals,
                               seg_length,
                               noverlap = noverlap,
@@ -110,8 +123,10 @@ compute_psd.eeg_epochs <- function(data,
                                    ...) {
 
   if (demean) {
-    data <- rm_baseline(data, verbose = verbose)
+    data <- rm_baseline(data,
+                        verbose = verbose)
   }
+
   srate <- data$srate
   if (is.null(seg_length)) {
     seg_length <- n_fft
@@ -131,7 +146,20 @@ compute_psd.eeg_epochs <- function(data,
   } else if (noverlap >= seg_length) {
     stop("noverlap should not be larger than seg_length.")
   }
+
   if (identical(method, "Welch")) {
+
+    if (verbose) {
+      message(
+        paste0(
+          "Computing Power Spectral Density using Welch's method.\n",
+          "FFT length: ", n_fft, "\n",
+          "Segment length: ", seg_length, "\n",
+          "Overlapping points: ", noverlap, " (", noverlap / seg_length * 100, "% overlap)"
+        )
+      )
+    }
+
     final_output <-
       lapply(data$signals,
              function(x) welch_fft(x,
@@ -172,43 +200,6 @@ compute_psd.eeg_evoked <- function(data,
                                    verbose = TRUE,
                                    ...) {
   NextMethod("compute_psd", data)
-  # if (demean) {
-  #   data <- rm_baseline(data, verbose = verbose)
-  # }
-  # srate <- data$srate
-  #
-  # if (is.null(seg_length)) {
-  #   seg_length <- n_fft
-  # }
-  #
-  # if (seg_length > n_fft) {
-  #   stop("seg_length cannot be greater than n_fft")
-  # }
-  #
-  # n_times <- nrow(data$signals)
-  # if (n_times < seg_length) {
-  #   seg_length <- n_times
-  # }
-  #
-  # if (is.null(noverlap)) {
-  #   noverlap <- seg_length %/% 8
-  # } else if (noverlap >= seg_length) {
-  #   stop("noverlap should not be larger than seg_length.")
-  # }
-  #
-  #   if (identical(method, "Welch")) {
-  #   final_output <-
-  #     welch_fft(data$signals,
-  #               seg_length,
-  #               noverlap = noverlap,
-  #               n_fft = n_fft,
-  #               srate = srate,
-  #               n_sig = n_times)
-  # }  else {
-  #   stop("Welch is the only available method at this time.")
-  # }
-  #
-  # final_output
 }
 
 #' @noRd
@@ -234,7 +225,6 @@ compute_psd.eeg_group <- function(data,
 #' @param noverlap overlap between segments.
 #' @param n_sig number of samples total.
 #' @param srate Sampling rate of the data.
-#' @importFrom stats fft
 #' @keywords internal
 
 welch_fft <- function(data,
