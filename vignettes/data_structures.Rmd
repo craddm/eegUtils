@@ -14,6 +14,7 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
+library(eegUtils)
 ```
 
 ## eegUtils
@@ -22,13 +23,13 @@ knitr::opts_chunk$set(
 
 ## `eeg_data` objects
 
-`eeg_data` objects are the base class used for continuous data. When raw data is imported, the output is this class. Currently, this class is a list constituting the following entries:
+`eeg_data` objects are the base class used for continuous data. When raw data is imported, the output is this class. This class is a list constituting the following entries:
 
 * `signals`
     + A data frame containing the actual EEG data in wide format. Each column is data from a single electrode, each row from a single timepoint.
 
 * `srate` 
-    + A single integer giving the sampling rate of the data in Hz
+    + A single numeric value giving the sampling rate of the data in Hz
 
 * `events`
     + A data.frame/tibble with 3 columns describing the events recorded in the data.
@@ -37,7 +38,7 @@ knitr::opts_chunk$set(
         + event_type (typically integer, others possible)
 
 * `chan_info`
-    + Often NULL on import, since BDF and CNT do not contain (useable) electrode locations. 
+    + Often NULL on import, since BDF and CNT do not contain (usable) electrode locations. 
     + A data.frame/tibble containing channel location information can be added. Currently similar to EEGLAB style, with the following columns (may change):
         * `electrode` - electrode names
         * `radius` - Spherical co-ordinates (Radius is typically normalized to 1)
@@ -48,12 +49,17 @@ knitr::opts_chunk$set(
         * `cart_z` - Cartesian 3D coordinates
         * `x` - 2D Stereographic projection  of the spherical coordinates 
         * `y` - 2D Stereographic projection  of the spherical coordinates 
+        ```{r}
+        head(eegUtils:::electrodeLocs)
+        ```
         
 * `timings`
     + A data.frame containing a description of each row in time (s) and sample numbers (samples)
 
+
 * `epochs`
-    + A data.frame containing information about the epochs in the data, more relevant for epoched data
+    + A data.frame containing information about the epochs in the data, more relevant for epoched data.
+
 
 * `reference`
     + NA on loading, in the absence of a recorded reference channel.
@@ -71,28 +77,38 @@ knitr::opts_chunk$set(
         - `time` gives the time point at which the event occurs relative to the *epoch onset*
         - `event_time` still gives the time point at which the event occurs relative to the *recording onset*
         
+    ```{r}
+    events(demo_epochs)
+    ```
+    
 * `timings`
     * The timings table has one additional column, `epoch`.
         - `epoch` gives the epoch number to which a given datapoint belongs
         - `sample` still uniquely identifies each datapoint
         - `time` now gives the time relative to the zero-point of the epoch, i.e. the *event* on which the epoch is centred.
+    ```{r}
+    head(demo_epochs$timings)
+    ```
     
     
 * `epochs`
     + A data.frame containing information about the participant, and labels applied to any epochs
-
+    ```{r}
+    epochs(demo_epochs)
+    ```
+    
 ## eeg_tfr
 
 `eeg_tfr` objects hold time-frequency representations of `eeg_epochs` objects.
 
 * `signals`
-    - a 4D matrix - time by electrode by frequency by epoch
+    - a 4D matrix - epoch by time by electrode by frequency
 * `dimensions`
     - keeps track of which matrix dimension corresponds to which property.
 
 ## eeg_ICA
 
-`eeg_ICA` objects contain the results of an ICA decomposition applied to an `eeg_epochs` object.
+`eeg_ICA` objects contain the results of either an ICA or an SSD decomposition applied to an `eeg_epochs` object.
 
 * `mixing_matrix`
     - The weights that are used to convert the source data into the original data
