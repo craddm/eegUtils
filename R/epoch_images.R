@@ -10,8 +10,9 @@
 #' erp_image(compute_tfr(demo_epochs,
 #'  foi = c(4, 30), n_cycles = 3, n_freq = 20, verbose = FALSE, keep_trials = TRUE),
 #'  electrode = "A31", freq_range = c(8, 12))
-#' @param data Data frame to be plotted. Requires an amplitude column.
+#' @param data Data frame or `eegUtils` object to be plotted.
 #' @param ... Other arguments passed to the method.
+#' @author Matt craddock \email{matt@@mattcraddock.com}
 #' @import ggplot2
 #' @importFrom scales squish
 #' @return A `ggplot` object
@@ -29,12 +30,20 @@ erp_image.default <- function(data,
        class(data))
 }
 
-#' @param electrode electrode at which to generate an ERP image.
-#' @param time_lim Time limits of plot
-#' @param smoothing Number of trials to smooth over when generating image
+#' @export
+erp_image.eeg_evoked <- function(data,
+                                 ...) {
+  stop("`erp_image()` requires single-trial data, but you have passed an `eeg_evoked` object.")
+}
+
+#' @param electrode Electrode for which to generate an ERP image.
+#' @param time_lim Time limits of plot.
+#' @param smoothing Number of trials to smooth over when generating image.
 #' @param clim Character vector of min and max values of plotting colour range.
 #'   e.g. c(-5,5). Defaults to min and max.
-#' @param interpolate Perform interpolation to produce smoother looking plots. Defaults to FALSE.
+#' @param interpolate Perform interpolation to produce smoother looking plots.
+#'   Defaults to FALSE.
+#' @param na.rm Remove trials with NA amplitudes after smoothing. Defaults to TRUE.
 #' @describeIn erp_image Default function operates on normal data frames
 #' @export
 erp_image.data.frame <- function(data,
@@ -43,30 +52,40 @@ erp_image.data.frame <- function(data,
                                  smoothing = 10,
                                  clim = NULL,
                                  interpolate = FALSE,
+                                 na.rm = TRUE,
                                  ...) {
 
-  required_cols <- c("electrode", "time", "amplitude", "epoch")
-  col_names <- names(data)
+  required_cols <- c("electrode",
+                     "time",
+                     "amplitude",
+                     "epoch")
 
-  if (!is.null(time_lim)) {
-    data <- filter(data, time > time_lim[1], time < time_lim[2])
-  }
+  col_names <- names(data)
 
   if (!all(required_cols %in% col_names)) {
     stop("Required columns ",
          required_cols[!required_cols %in% col_names], "missing.")
   }
 
+  if (!is.null(time_lim)) {
+    data <- filter(data,
+                   time > time_lim[1],
+                   time < time_lim[2])
+  }
+
   if (all(electrode %in% data$electrode)) {
     create_erpimage(data,
                     electrode = electrode,
                     smoothing = smoothing,
-                    clim = clim)
+                    clim = clim,
+                    na.rm = na.rm)
   } else {
     stop("Electrode not found.")
   }
 
 }
+
+
 
 #'@describeIn erp_image Create an `erp_image` from `eeg_epochs`
 #'@export
@@ -76,6 +95,7 @@ erp_image.eeg_epochs <- function(data,
                                  smoothing = 10,
                                  clim = NULL,
                                  interpolate = FALSE,
+                                 na.rm = TRUE,
                                  ...) {
 
   if (!electrode %in% names(data$signals)) {
@@ -91,12 +111,15 @@ erp_image.eeg_epochs <- function(data,
   data <- select_elecs(data,
                        electrode = electrode)
   data <- as.data.frame(data,
-                          long = TRUE)
+                        long = TRUE,
+                        coords = FALSE)
+
   create_erpimage(data,
                   electrode = electrode,
                   smoothing = smoothing,
                   clim = clim,
-                  interpolate = interpolate)
+                  interpolate = interpolate,
+                  na.rm = na.rm)
 }
 
 #' @param component `eeg_ICA` component to plot
@@ -107,6 +130,7 @@ erp_image.eeg_ICA <- function(data,
                               smoothing = 10,
                               clim = NULL,
                               interpolate = FALSE,
+                              na.rm = TRUE,
                               ...) {
 
   if (!component %in% names(data$signals)) {
@@ -115,12 +139,15 @@ erp_image.eeg_ICA <- function(data,
   data <- select_elecs(data,
                        component = component)
   data <- as.data.frame(data,
-                        long = TRUE)
+                        long = TRUE,
+                        coords = FALSE)
   create_erpimage(data,
                   electrode = component,
                   smoothing = smoothing,
                   clim = clim,
-                  interpolate = interpolate)
+                  interpolate = interpolate,
+                  na.rm = na.rm)
+
 }
 
 #' @param freq_range A numeric vector specify the range of frequencies to
@@ -135,7 +162,12 @@ erp_image.eeg_tfr <- function(data,
                               clim = NULL,
                               interpolate = FALSE,
                               freq_range = NULL,
+                              na.rm = TRUE,
                               ...) {
+
+  if (length(unique(epochs(data)$epoch)) == 1) {
+    stop("`erp_image()` requires an `eeg_tfr` object with more than one trial.")
+  }
 
   data <- select_elecs(data,
                        electrode)
@@ -152,12 +184,14 @@ erp_image.eeg_tfr <- function(data,
   }
 
   data <- as.data.frame(data,
-                        long = TRUE)
+                        long = TRUE,
+                        coords = FALSE)
   create_tfrimage(data,
                   electrode = electrode,
                   smoothing = smoothing,
                   clim = clim,
-                  interpolate = interpolate)
+                  interpolate = interpolate,
+                  na.rm = na.rm)
 
 }
 
@@ -168,52 +202,51 @@ erp_image.eeg_tfr <- function(data,
 #' @param smoothing Number of trials to smooth over when generating image
 #' @param clim Character vector of min and max values of plotting colour range.
 #'   e.g. c(-5,5). Defaults to min and max.
-#' @param interpolate Turn on geom_raster() interpolation for smoother images.
+#' @param interpolate Turn on `geom_raster()` interpolation for smoother images.
+#' @param na.rm Remove trials with NA amplitudes after smoothing. Defaults to TRUE.
 #' @keywords internal
 create_erpimage <- function(data,
                             electrode,
                             smoothing,
                             clim,
-                            interpolate = FALSE) {
+                            interpolate = FALSE,
+                            na.rm) {
 
   n_times <- length(unique(data$time))
   n_epochs <- length(unique(data$epoch))
-  sel_rows <- data$electrode %in% electrode
 
-  if (rlang::is_empty(sel_rows)){
-    sel_rows <- data$component %in% electrode
-  }
-  data <- data[sel_rows, ]
-  data$smooth_time <- rep(seq(min(data$time),
-                              max(data$time),
-                              length.out = n_times),
-                          times = n_epochs)
-  if ("amplitude" %in% names(data)) {
-    data$smooth_amp <- as.numeric(stats::filter(data$amplitude,
-                                                rep(1 / smoothing,
-                                                    smoothing),
-                                                sides = 2))
-    units <- "Amplitude"
-  } else if ("power" %in% names(data)) {
-    data$smooth_amp <- as.numeric(stats::filter(data$power,
-                                                rep(1 / smoothing,
-                                                    smoothing),
-                                                sides = 2))
-    units <- "Power"
-  }
+  data <- split(data,
+                data$time)
+
+  data <- lapply(data,
+                      function(x) {
+                        x$smooth_amp <-
+                          as.numeric(stats::filter(x$amplitude,
+                                                   rep(1 / smoothing,
+                                                       smoothing),
+                                                   sides = 2))
+                        x
+                      })
+
+  data <- data.table::rbindlist(data)
   data$epoch <- as.numeric(factor(data$epoch))
+
   if (is.null(clim)) {
     clim <- max(abs(max(data$smooth_amp, na.rm = TRUE)),
                 abs(min(data$smooth_amp, na.rm = TRUE)))
     clim <- c(-clim, clim)
   } else if (length(clim) != 2) {
     clim <- max(abs(max(data$smooth_amp, na.rm = TRUE)),
-                abs(min(data$smooth_amp, na.rm = T)))
+                abs(min(data$smooth_amp, na.rm = TRUE)))
     clim <- c(-clim, clim)
   }
 
-  ggplot2::ggplot(data,
-                  aes(x = smooth_time,
+  if (na.rm) {
+    data <- data[!is.na(data$smooth_amp), ]
+  }
+
+  ggplot2::ggplot(tibble::as_tibble(data),
+                  aes(x = time,
                       y = epoch,
                       fill = smooth_amp)) +
     geom_raster(interpolate = interpolate) +
@@ -226,7 +259,7 @@ create_erpimage <- function(data,
     scale_y_continuous(expand = c(0, 0)) +
     scale_x_continuous(expand = c(0, 0)) +
     theme_classic() +
-    labs(x = "Time (s)", fill = units, y = "Epoch number") +
+    labs(x = "Time (s)", fill = "Amplitude", y = "Epoch number") +
     ggtitle(paste("ERP Image for electrode", electrode))
 }
 
@@ -236,33 +269,36 @@ create_tfrimage <- function(data,
                             smoothing,
                             clim,
                             interpolate = FALSE,
-                            freq_range = NULL) {
+                            freq_range = NULL,
+                            na.rm) {
 
-
-  sel_rows <- data$electrode %in% electrode
-
-  if (rlang::is_empty(sel_rows)){
-    sel_rows <- data$component %in% electrode
-  }
-
-  data <- data[sel_rows, ]
   data <- dplyr::group_by(data,
                           time, electrode, epoch)
   data <- dplyr::summarise(data,
                            power = mean(power, na.rm = TRUE))
   n_times <- length(unique(data$time))
   n_epochs <- length(unique(data$epoch))
-  data$smooth_time <- rep(seq(min(data$time),
-                              max(data$time),
-                              length.out = n_times),
-                          each = n_epochs)
-  data$smooth_amp <- as.numeric(stats::filter(data$power,
+
+  data <- split(data,
+                data$time)
+
+  data <- lapply(data,
+                 function(x) {
+                   x$smooth_amp <-
+                     as.numeric(stats::filter(x$power,
                                               rep(1 / smoothing,
                                                   smoothing),
                                               sides = 2))
-  units <- "Power (a.u.)"
+                   x
+                 })
 
+  data <- data.table::rbindlist(data)
   data$epoch <- as.numeric(factor(data$epoch))
+
+  if (na.rm) {
+    data <- data[!is.na(data$smooth_amp), ]
+  }
+
   if (is.null(clim)) {
     clim <- max(abs(max(data$smooth_amp, na.rm = TRUE)),
                 abs(min(data$smooth_amp, na.rm = TRUE)))
@@ -273,8 +309,8 @@ create_tfrimage <- function(data,
     clim <- c(0, clim)
   }
 
-  ggplot2::ggplot(data,
-                  aes(x = smooth_time,
+  ggplot2::ggplot(tibble::as_tibble(data),
+                  aes(x = time,
                       y = epoch,
                       fill = smooth_amp)) +
     geom_raster(interpolate = interpolate) +
@@ -282,12 +318,15 @@ create_tfrimage <- function(data,
                linetype = "dashed",
                size = 1) +
     scale_fill_viridis_c(limits = clim,
-                       oob = scales::squish) +
+                         oob = scales::squish) +
     scale_y_continuous(expand = c(0, 0)) +
     scale_x_continuous(expand = c(0, 0)) +
     theme_classic() +
-    labs(x = "Time (s)", fill = units, y = "Epoch number") +
-    ggtitle(paste("TFR Image for electrode", electrode))
+    labs(x = "Time (s)",
+         fill = "Power (a.u.)",
+         y = "Epoch number") +
+    ggtitle(paste("TFR Image for electrode",
+                  electrode))
 }
 
 #' ERP raster plot
@@ -323,6 +362,11 @@ erp_raster <- function(data,
                        time_lim = NULL,
                        clim = NULL,
                        interpolate = FALSE) {
+
+  if (inherits(data,
+               "eeg_tfr")) {
+    stop("Not currently implemented for `eeg_tfr` objects.")
+  }
 
   if (!is.null(time_lim)){
     data <- select_times(data, time_lim)
