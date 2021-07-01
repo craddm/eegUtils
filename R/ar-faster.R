@@ -2,7 +2,7 @@
 #'
 #' An implementation of the FASTER artefact rejection method for EEG by Nolan,
 #' Whelan & Reilly (2010) FASTER: Fully Automated Statistical Thresholding for
-#' EEG artifact Rejection. J Neurosci Methods. Not yet fully implemented.
+#' EEG artifact Rejection. J Neurosci Methods.
 #'
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #'
@@ -379,4 +379,59 @@ faster_epo_stat <- function(data,
   bad_chans <- rowSums(abs(scale(measures)) > sds) > 0
   bad_chans <- names(data)[bad_chans]
   bad_chans
+}
+
+
+ar_FASTER.eeg_group <- function(data,
+                                exclude = NULL,
+                                test_chans = TRUE,
+                                test_epochs = TRUE,
+                                test_cine = TRUE,
+                                ...) {
+
+  if (!inherits(data, "eeg_evoked")) {
+    stop("FASTER for grouped data only works for group ERPs.")
+  }
+
+
+  all_data <- as.data.frame(data)
+  all_data <- dplyr::group_by(all_data,
+                              participant_id,
+                              time)
+  chan_names <- channel_names(data)
+  all_data <-
+    dplyr::summarise(
+      all_data,
+      dplyr::across(
+        dplyr::all_of(
+          chan_names
+          ),
+        .fns = mean
+        )
+      )
+
+  channel_means <- colMeans(as.matrix(all_data[chan_names]))
+
+  all_data <-
+    group_by(all_data,
+             participant_id)
+  all_data <-
+    summarise(
+      all_data,
+      dplyr::across(
+        dplyr::all_of(chan_names),
+        list(vars = var,
+             maxdiff = ~diff(range(.x)),
+             mean = mean),
+        .names = "{.col}__{.fn}"
+        )
+    )
+  tidyr::pivot_longer(
+    all_data,
+    cols = !participant_id,
+    names_to = c("electrode",
+                 "measure"),
+    values_to = "value",
+    names_sep = "__"
+    )
 }
