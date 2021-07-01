@@ -38,7 +38,7 @@ An \code{eeg_epochs} object with artefact correction applied.
 \description{
 An implementation of the FASTER artefact rejection method for EEG by Nolan,
 Whelan & Reilly (2010) FASTER: Fully Automated Statistical Thresholding for
-EEG artifact Rejection. J Neurosci Methods. Not yet fully implemented.
+EEG artifact Rejection. J Neurosci Methods.
 }
 \section{Methods (by class)}{
 \itemize{

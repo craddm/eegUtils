@@ -19,7 +19,7 @@ eeg_tfr(
 \arguments{
 \item{data}{TFR transformed data}
 
-\item{srate}{Sampling rate in Hz.}
+\item{srate}{Sampling rate in Hz. A numeric value.}
 
 \item{events}{Event tables}
 

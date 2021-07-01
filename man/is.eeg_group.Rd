@@ -2,7 +2,7 @@
 % Please edit documentation in R/class_handling.R
 \name{is.eeg_group}
 \alias{is.eeg_group}
-\title{Check if object is of class eeg_group}
+\title{Check if object is of class \code{eeg_group}}
 \usage{
 is.eeg_group(x)
 }
@@ -10,5 +10,5 @@ is.eeg_group(x)
 \item{x}{Object to check.}
 }
 \description{
-Check if object is of class eeg_group
+Check if object is of class \code{eeg_group}
 }

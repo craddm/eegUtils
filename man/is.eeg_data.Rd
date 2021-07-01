@@ -2,7 +2,7 @@
 % Please edit documentation in R/class_handling.R
 \name{is.eeg_data}
 \alias{is.eeg_data}
-\title{Check if object is of class "eeg_data".}
+\title{Check if object is of class \code{eeg_data}.}
 \usage{
 is.eeg_data(x)
 }
@@ -10,7 +10,7 @@ is.eeg_data(x)
 \item{x}{Object to check.}
 }
 \description{
-Check if object is of class "eeg_data".
+Check if object is of class \code{eeg_data}.
 }
 \author{
 Matt Craddock \email{matt@mattcraddock.com}

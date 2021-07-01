@@ -2,7 +2,7 @@
 % Please edit documentation in R/class_handling.R
 \name{is.eeg_tfr}
 \alias{is.eeg_tfr}
-\title{Check if object is of class eeg_tfr}
+\title{Check if object is of class \code{eeg_tfr}}
 \usage{
 is.eeg_tfr(x)
 }
@@ -10,7 +10,7 @@ is.eeg_tfr(x)
 \item{x}{Object to check.}
 }
 \description{
-Check if object is of class eeg_tfr
+Check if object is of class \code{eeg_tfr}
 }
 \author{
 Matt Craddock \email{matt@mattcraddock.com}
