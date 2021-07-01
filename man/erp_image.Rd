@@ -83,7 +83,7 @@ vector of length two will match average over frequencies within that range.}
 A \code{ggplot} object
 }
 \description{
-Plot an ERP image from a single electrode. Smooths over a series of trials in
+Plot an ERP image from a single electrode. Uses a boxcar smooth over a series of trials in
 order to make across-trial patterns more apparent.
 }
 \section{Methods (by class)}{

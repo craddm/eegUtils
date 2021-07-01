@@ -1,6 +1,6 @@
 #' Plot ERP images
 #'
-#' Plot an ERP image from a single electrode. Smooths over a series of trials in
+#' Plot an ERP image from a single electrode. Uses a boxcar smooth over a series of trials in
 #' order to make across-trial patterns more apparent.
 #'
 #' @examples
@@ -14,7 +14,6 @@
 #' @param ... Other arguments passed to the method.
 #' @author Matt craddock \email{matt@@mattcraddock.com}
 #' @import ggplot2
-#' @importFrom scales squish
 #' @return A `ggplot` object
 #' @export
 
