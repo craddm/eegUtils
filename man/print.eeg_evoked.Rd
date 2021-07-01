@@ -2,7 +2,7 @@
 % Please edit documentation in R/print_functions.R
 \name{print.eeg_evoked}
 \alias{print.eeg_evoked}
-\title{Print eeg_evoked summary}
+\title{Print \code{eeg_evoked} summary}
 \usage{
 \method{print}{eeg_evoked}(x, ...)
 }

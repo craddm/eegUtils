@@ -2,7 +2,7 @@
 % Please edit documentation in R/print_functions.R
 \name{print.eeg_ICA}
 \alias{print.eeg_ICA}
-\title{Print eeg_epochs summary}
+\title{Print \code{eeg_epochs} summary}
 \usage{
 \method{print}{eeg_ICA}(x, ...)
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/print_functions.R
 \name{print.eeg_tfr}
 \alias{print.eeg_tfr}
-\title{Print Values}
+\title{Print \code{eeg_tfr} summary}
 \usage{
 \method{print}{eeg_tfr}(x, ...)
 }

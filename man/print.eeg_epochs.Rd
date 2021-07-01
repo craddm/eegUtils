@@ -2,7 +2,7 @@
 % Please edit documentation in R/print_functions.R
 \name{print.eeg_epochs}
 \alias{print.eeg_epochs}
-\title{Print eeg_epochs summary}
+\title{Print \code{eeg_epochs} summary}
 \usage{
 \method{print}{eeg_epochs}(x, ...)
 }
