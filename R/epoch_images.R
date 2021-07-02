@@ -67,12 +67,23 @@ erp_image.data.frame <- function(data,
   }
 
   if (!is.null(time_lim)) {
-    data <- filter(data,
-                   time > time_lim[1],
-                   time < time_lim[2])
+    data <-
+      dplyr::filter(
+        data,
+        time > time_lim[1],
+        time < time_lim[2]
+        )
   }
 
+
+
   if (all(electrode %in% data$electrode)) {
+    sel_elec <- electrode
+    data <-
+      dplyr::filter(
+        data,
+        electrode %in% sel_elec
+      )
     create_erpimage(data,
                     electrode = electrode,
                     smoothing = smoothing,
@@ -132,8 +143,8 @@ erp_image.eeg_ICA <- function(data,
                               na.rm = TRUE,
                               ...) {
 
-  if (!component %in% names(data$signals)) {
-    stop("Specified component not found.")
+  if (length(component) > 1) {
+    stop("Only one `component` should be supplied")
   }
   data <- select_elecs(data,
                        component = component)
@@ -362,9 +373,17 @@ erp_raster <- function(data,
                        clim = NULL,
                        interpolate = FALSE) {
 
-  if (inherits(data,
-               "eeg_tfr")) {
-    stop("Not currently implemented for `eeg_tfr` objects.")
+  if (
+    inherits(
+      data, c("eeg_tfr", "eeg_ICA")
+      )
+    ) {
+    stop(
+      paste(
+        "Not currently implemented for objects of class",
+        class(data)[[1]]
+        )
+      )
   }
 
   if (!is.null(time_lim)){
@@ -383,7 +402,10 @@ erp_raster <- function(data,
                 data$time)
   data <- lapply(data,
                  Matrix::colMeans)
-  data <- as.data.frame(do.call(rbind, data))
+  data <- as.data.frame(
+    do.call(rbind,
+            data)
+    )
   data <- tidyr::gather(data,
                         electrode,
                         amplitude,
@@ -393,6 +415,7 @@ erp_raster <- function(data,
     clim <- c(min(data$amplitude),
               max(data$amplitude))
   }
+
   ggplot2::ggplot(data,
                   aes(x = time,
                       y = electrode,
