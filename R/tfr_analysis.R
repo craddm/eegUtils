@@ -34,6 +34,7 @@ compute_tfr.default <- function(data, ...) {
 #' @param n_cycles Number of cycles at each frequency. If a single integer, use
 #'   a constant number of cycles at each frequency. If a character vector of
 #'   length 2, use a linearly scaling number of cycles at each frequency.
+#' @param spacing Use "linear" or "log" spacing for the frequency vector.
 #' @param keep_trials Keep single trials or average over them before returning.
 #'   Defaults to FALSE.
 #' @param output Sets whether output is power, phase, or fourier coefficients.
@@ -47,6 +48,7 @@ compute_tfr.eeg_epochs <- function(data,
                                    method = "morlet",
                                    foi,
                                    n_freq,
+                                   spacing = "linear",
                                    n_cycles = 7,
                                    keep_trials = FALSE,
                                    output = "power",
@@ -66,6 +68,7 @@ compute_tfr.eeg_epochs <- function(data,
       data = data,
       foi = foi,
       n_freq = n_freq,
+      spacing = spacing,
       n_cycles = n_cycles,
       keep_trials = keep_trials,
       output = output,
@@ -85,6 +88,7 @@ compute_tfr.eeg_evoked <- function(data,
                                    method = "morlet",
                                    foi,
                                    n_freq,
+                                   spacing = "linear",
                                    n_cycles = 7,
                                    keep_trials = FALSE,
                                    output = "power",
@@ -97,6 +101,7 @@ compute_tfr.eeg_evoked <- function(data,
       data,
       foi = foi,
       n_freq = n_freq,
+      spacing = spacing,
       n_cycles = n_cycles,
       keep_trials = keep_trials,
       output = output,
@@ -132,6 +137,7 @@ compute_tfr.eeg_group <- function(data,
 #' @param foi Frequencies of interest. Scalar or character vector of the lowest
 #'   and highest frequency to resolve.
 #' @param n_freq Number of frequencies to be resolved.
+#' @param spacing Use linear or log spacing for frequencies.
 #' @param n_cycles Number of cycles at each frequency.
 #' @param keep_trials Keep single trials or average over them before returning.
 #' @param output Sets whether output is power, phase, or fourier coefficients.
@@ -145,15 +151,18 @@ compute_tfr.eeg_group <- function(data,
 tf_morlet <- function(data,
                       foi,
                       n_freq,
+                      spacing,
                       n_cycles,
                       keep_trials,
                       output,
                       downsample,
                       demean = TRUE,
                       verbose) {
+
   frex <- parse_frex(foi,
                      n_freq,
-                     verbose)
+                     verbose,
+                     spacing = spacing)
 
   n_freq <- length(unique(frex))
   # if a min and max n_cycles is specified, expand out to cycles per n_freq
@@ -373,7 +382,7 @@ fft_n <- function(signal, n) {
     } else {
       signal_n <- signal[1:n]
     }
-    fft(signal_n)
+    stats::fft(signal_n)
   } else {
     if (nrow(signal) < n) {
       signal_n <- matrix(0,
@@ -383,7 +392,7 @@ fft_n <- function(signal, n) {
     } else {
       signal_n <- signal[1:n, ]
     }
-    mvfft(as.matrix(signal_n))
+    stats::mvfft(as.matrix(signal_n))
   }
 
 }
@@ -413,7 +422,7 @@ conv_mor <- function(morlet_fam,
                                  ncol(morlet_fam)))
 
   for (i in 1:ncol(morlet_fam)) {
-    tf_matrix[, , i] <- mvfft(signal * morlet_fam[, i], #tf_mat2[, i, ],
+    tf_matrix[, , i] <- stats::mvfft(signal * morlet_fam[, i],
                               inverse = TRUE) / n
   }
 
@@ -569,7 +578,9 @@ wavelet_norm <- function(mf_zp, n_freq) {
 #' @noRd
 parse_frex <- function(foi,
                        n_freq,
-                       verbose) {
+                       verbose,
+                       spacing = NULL) {
+
   if (length(foi) > 2) {
     stop("No more than two frequencies should be specified.")
   } else if (length(foi) == 2) {
@@ -580,9 +591,19 @@ parse_frex <- function(foi,
     n_freq <- 1
   }
 
-  frex <- seq(foi[1],
-              foi[2],
-              length.out = n_freq)
+  if (identical(spacing, "log")) {
+    frex <- exp(
+      seq(log(foi[1]),
+          log(foi[2]),
+          length.out = n_freq)
+      )
+  } else {
+    frex <- seq(foi[1],
+                foi[2],
+                length.out = n_freq)
+  }
+
+
 
   if (verbose) {
     message("Output frequencies: ", paste(round(frex, 2), collapse = " "))
@@ -636,7 +657,7 @@ run_tf <- function(tmp,
         tmp_epo <- fft_n(tmp[, , i, drop = FALSE], n_conv)
         for (ik in 1:n_epochs) {
           tfr_out[ik, , i, ] <-
-           2 * mvfft(norm_mf * tmp_epo[, ik],
+           2 * stats::mvfft(norm_mf * tmp_epo[, ik],
                      inverse = TRUE)[all_times,] / n_conv
         }
       }
@@ -651,7 +672,7 @@ run_tf <- function(tmp,
       for (ik in 1:n_epochs) {
         tfr_out[, i, ] <-
           tfr_out[, i, ] +
-          (2 * abs(mvfft(norm_mf * tmp_epo[, ik], inverse = TRUE)[all_times,] / n_conv)) ^ 2
+          (2 * abs(stats::mvfft(norm_mf * tmp_epo[, ik], inverse = TRUE)[all_times,] / n_conv)) ^ 2
       }
     }
     tfr_out <- tfr_out / n_epochs

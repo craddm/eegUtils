@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Function to create an S3 object of class "eeg_ICA". — eeg_ICA • eegUtils</title>
+<title>Function to create an S3 object of class eeg_ICA. — eeg_ICA • eegUtils</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Function to create an S3 object of class "eeg_ICA". — eeg_ICA" />
-<meta property="og:description" content="Function to create an S3 object of class &quot;eeg_ICA&quot;." />
+<meta property="og:title" content="Function to create an S3 object of class eeg_ICA. — eeg_ICA" />
+<meta property="og:description" content="Function to create an S3 object of class eeg_ICA." />
 
 
 
@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">eegUtils</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.3</span>
       </span>
     </div>
 
@@ -138,13 +138,13 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Function to create an S3 object of class "eeg_ICA".</h1>
+    <h1>Function to create an S3 object of class <code>eeg_ICA</code>.</h1>
     <small class="dont-index">Source: <a href='https://github.com/craddm/eegUtils/blob/master/R/class_handling.R'><code>R/class_handling.R</code></a></small>
     <div class="hidden name"><code>eeg_ICA.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Function to create an S3 object of class "eeg_ICA".</p>
+    <p>Function to create an S3 object of class <code>eeg_ICA</code>.</p>
     </div>
 
     <pre class="usage"><span class='fu'>eeg_ICA</span><span class='op'>(</span>
@@ -156,8 +156,7 @@
   <span class='va'>chan_info</span>,
   <span class='va'>srate</span>,
   <span class='va'>epochs</span>,
-  <span class='va'>algorithm</span>,
-  version <span class='op'>=</span> <span class='fu'>utils</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/utils/packageDescription.html'>packageVersion</a></span><span class='op'>(</span><span class='st'>"eegUtils"</span><span class='op'>)</span>
+  <span class='va'>algorithm</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -173,7 +172,7 @@
     </tr>
     <tr>
       <th>signals</th>
-      <td><p>ICA components</p></td>
+      <td><p>ICA component timecourses.</p></td>
     </tr>
     <tr>
       <th>timings</th>
@@ -185,25 +184,31 @@
     </tr>
     <tr>
       <th>chan_info</th>
-      <td><p>String of character names for electrodes.</p></td>
+      <td><p>A data frame containing electrode labels and coordinates.</p></td>
     </tr>
     <tr>
       <th>srate</th>
-      <td><p>Sampling rate</p></td>
+      <td><p>Sampling rate in Hz. A numeric value.</p></td>
     </tr>
     <tr>
       <th>epochs</th>
-      <td><p>Epoch information</p></td>
+      <td><p>A data frame containing meta-information about the epochs
+contained in the data, such as participant ID label and condition labels
+for epochs.</p></td>
     </tr>
     <tr>
       <th>algorithm</th>
-      <td><p>The method used to calculate the ICA decomposition.</p></td>
+      <td><p>The method used to calculate the decomposition.</p></td>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>An object of class <code>eeg_ICA</code>.</p>
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 
     <p>Matt Craddock <a href='mailto:matt@mattcraddock.com'>matt@mattcraddock.com</a></p>
+<p>Matt Craddock <a href='mailto:matt@mattcraddock.com'>matt@mattcraddock.com</a></p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

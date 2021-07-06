@@ -1,4 +1,4 @@
-#' Function to create an S3 object of class "eeg_data".
+#' Function to create an S3 object of class `eeg_data`.
 #'
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #' @param data Raw data - signals from electrodes/channels.
@@ -87,7 +87,7 @@ validate_eeg_data <- function(.data) {
 #' Object creator for eeg_tfr objects.
 #'
 #' @param data TFR transformed data
-#' @param srate Sampling rate in Hz.
+#' @param srate Sampling rate in Hz. A numeric value.
 #' @param events Event tables
 #' @param chan_info Standard channel information.
 #' @param reference Reference information
@@ -167,7 +167,7 @@ eeg_group <- function(data,
             class = "eeg_group")
 }
 
-#' Function to create an S3 object of class "eeg_epochs".
+#' Function to create an S3 object of class `eeg_epochs`.
 #'
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #' @param data Raw data - signals from electrodes/channels.
@@ -275,19 +275,23 @@ eeg_evoked <- function(data,
 }
 
 
-#' Function to create an S3 object of class "eeg_ICA".
+#' Function to create an S3 object of class `eeg_ICA`.
 #'
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #' @param mixing_matrix ICA mixing matrix
 #' @param unmixing_matrix ICA unmixing matrix
-#' @param signals ICA components
+#' @param signals ICA component timecourses.
 #' @param timings Unique timepoints remaining in the data.
 #' @param events event table
-#' @param chan_info String of character names for electrodes.
-#' @param srate Sampling rate
-#' @param epochs Epoch information
-#' @param algorithm The method used to calculate the ICA decomposition.
-#' @keywords internal
+#' @param chan_info A data frame containing electrode labels and coordinates.
+#' @param srate Sampling rate in Hz. A numeric value.
+#' @param epochs A data frame containing meta-information about the epochs
+#'   contained in the data, such as participant ID label and condition labels
+#'   for epochs.
+#' @param algorithm The method used to calculate the decomposition.
+#' @return An object of class `eeg_ICA`.
+#' @author Matt Craddock \email{matt@@mattcraddock.com}
+#' @export
 eeg_ICA <- function(mixing_matrix,
                     unmixing_matrix,
                     signals,
@@ -296,25 +300,77 @@ eeg_ICA <- function(mixing_matrix,
                     chan_info,
                     srate,
                     epochs,
-                    algorithm,
-                    version = utils::packageVersion("eegUtils")) {
+                    algorithm) {
 
-  value <- list(mixing_matrix = mixing_matrix,
-                unmixing_matrix = unmixing_matrix,
-                signals = signals,
-                timings = timings,
-                events = events,
-                chan_info = chan_info,
-                srate = srate,
-                epochs = epochs,
-                algorithm = algorithm)
-  class(value) <- c("eeg_ICA", "eeg_epochs")
-  value
+  new_eeg_ICA(
+    mixing_matrix = mixing_matrix,
+    unmixing_matrix = unmixing_matrix,
+    signals = signals,
+    timings = timings,
+    events = events,
+    chan_info = chan_info,
+    srate = srate,
+    epochs = epochs,
+    algorithm = algorithm,
+    version = utils::packageVersion("eegUtils")
+    )
+  # class(value) <- c("eeg_ICA", "eeg_epochs")
+  # value <- list(mixing_matrix = mixing_matrix,
+  #               unmixing_matrix = unmixing_matrix,
+  #               signals = signals,
+  #               timings = timings,
+  #               events = events,
+  #               chan_info = chan_info,
+  #               srate = srate,
+  #               epochs = epochs,
+  #               algorithm = algorithm)
+  # class(value) <- c("eeg_ICA", "eeg_epochs")
+  # value
+}
+
+
+new_eeg_ICA <- function(mixing_matrix,
+                        unmixing_matrix,
+                        signals,
+                        timings,
+                        events,
+                        chan_info,
+                        srate,
+                        epochs,
+                        algorithm,
+                        version = utils::packageVersion("eegUtils")) {
+
+  stopifnot(is.data.frame(mixing_matrix))
+  stopifnot(is.data.frame(unmixing_matrix))
+  stopifnot(is.data.frame(signals))
+  stopifnot(is.data.frame(timings))
+  stopifnot(is.data.frame(events))
+  stopifnot(is.data.frame(epochs))
+  stopifnot(is.data.frame(chan_info))
+  stopifnot(is.numeric(srate))
+  stopifnot(is.character(algorithm))
+
+  structure(
+    list(
+      mixing_matrix = mixing_matrix,
+      unmixing_matrix = unmixing_matrix,
+      signals = signals,
+      timings = timings,
+      events = events,
+      chan_info = chan_info,
+      srate = srate,
+      epochs = epochs,
+      algorithm = algorithm,
+      version = version
+      ),
+    class = c("eeg_ICA",
+              "eeg_epochs")
+  )
 }
 
 set_type <- function(x, label) attr(x, "type") <- label
 
-#' Check if object is of class "eeg_data".
+#' Check if object is of class `eeg_data`.
 #'
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #' @param x Object to check.
@@ -322,7 +378,7 @@ set_type <- function(x, label) attr(x, "type") <- label
 
 is.eeg_data <- function(x) inherits(x, "eeg_data")
 
-#' Check if object is of class "eeg_epochs".
+#' Check if object is of class `eeg_epochs`.
 #'
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #' @param x Object to check.
@@ -350,14 +406,14 @@ is.eeg_stats <- function(x) inherits(x, "eeg_stats")
 
 is.eeg_ICA <- function(x) inherits(x, "eeg_ICA")
 
-#' Check if object is of class eeg_tfr
+#' Check if object is of class `eeg_tfr`
 #'
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #' @param x Object to check.
 #' @export
 is.eeg_tfr <- function(x) inherits(x, "eeg_tfr")
 
-#' Check if object is of class eeg_group
+#' Check if object is of class `eeg_group`
 #' @param x Object to check.
 #' @export
 is.eeg_group <- function(x) inherits(x, "eeg_group")

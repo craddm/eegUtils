@@ -231,9 +231,11 @@ run_fir <- function(data,
                                   ~pad(.,
                                        pad_zeros))
    data$signals <- future.apply::future_lapply(data$signals,
-                                                signal::fftfilt,
-                                                b = filt_coef,
-                                                n = fft_length)
+                                               signal::fftfilt,
+                                               b = filt_coef,
+                                               n = fft_length)
+
+
    # fftfilt filters once and thus shifts everything in time by the group delay
    # of the filter (half the filter order). Here we correct for both the
    # padding and the group delay
@@ -249,9 +251,9 @@ run_iir_n <- function(data,
                       filt_coef) {
 
   data$signals <- future.apply::future_lapply(data$signals,
-                                               signal::filtfilt,
-                                               filt = filt_coef,
-                                               a = 1)
+                                              signal::filtfilt,
+                                              filt = filt_coef,
+                                              a = 1)
   data$signals <- tibble::as_tibble(data$signals)
   data
 }

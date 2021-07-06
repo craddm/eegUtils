@@ -4,7 +4,7 @@
 \alias{create_erpimage}
 \title{Function for creating an ERP image}
 \usage{
-create_erpimage(data, electrode, smoothing, clim, interpolate = FALSE)
+create_erpimage(data, electrode, smoothing, clim, interpolate = FALSE, na.rm)
 }
 \arguments{
 \item{data}{Data frame to be plotted. Requires an amplitude column.}
@@ -16,7 +16,9 @@ create_erpimage(data, electrode, smoothing, clim, interpolate = FALSE)
 \item{clim}{Character vector of min and max values of plotting colour range.
 e.g. c(-5,5). Defaults to min and max.}
 
-\item{interpolate}{Turn on geom_raster() interpolation for smoother images.}
+\item{interpolate}{Turn on \code{geom_raster()} interpolation for smoother images.}
+
+\item{na.rm}{Remove trials with NA amplitudes after smoothing. Defaults to TRUE.}
 }
 \description{
 Function for creating an ERP image

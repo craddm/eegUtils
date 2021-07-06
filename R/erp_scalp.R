@@ -42,11 +42,14 @@ erp_scalp <- function(data,
                       montage = NULL) {
 
   chan_info <- NULL
+
   if (is.eeg_epochs(data) & is.null(montage)) {
     chan_info <- channels(data)
+    data <- eeg_average(data)
     data <- as.data.frame(data,
                           long = TRUE)
   } else if (is.eeg_epochs(data)) {
+    data <- eeg_average(data)
     data <- as.data.frame(data,
                           long = TRUE)
   }
@@ -79,12 +82,15 @@ erp_scalp <- function(data,
   }
 
   plotfun <- function(x) {
-    plot <- ggplot(data = x,
-                   aes_(as.name(time),
-                        as.name(amplitude)))
-    plot <- plot +
+    plot <-
+      ggplot2::ggplot(data = x,
+                      aes_(as.name(time),
+                           as.name(amplitude)))
+    plot <-
+      plot +
       facet_wrap("electrodefacet")
-    plot <- plot +
+    plot <-
+      plot +
       coord_cartesian(ylim = c(minAmp, maxAmp),
                       xlim = c(minTime, maxTime))
     plot <- plot +
@@ -109,9 +115,13 @@ erp_scalp <- function(data,
 
   data$electrodefacet <- data[, electrode]
   data <- tidyr::nest(tibble::as_tibble(data),
-                      data = c(time, amplitude, electrodefacet))
-  data <- dplyr::mutate(data, plot = map(data, plotfun))
-  data <- dplyr::select(data, -data)
+                      data = c(time,
+                               amplitude,
+                               electrodefacet))
+  data <- dplyr::mutate(data,
+                        plot = map(data, plotfun))
+  data <- dplyr::select(data,
+                        -data)
 
   # Get default electrode locations from pkg internal data
   if (is.null(chan_info)){
@@ -119,8 +129,11 @@ erp_scalp <- function(data,
                                 drop = TRUE,
                                 montage = montage)
   } else {
-    data <- dplyr::left_join(data, chan_info)
-    data <- dplyr::filter(data, !(is.na(x) | is.na(y)))
+    data <- dplyr::left_join(data,
+                             chan_info,
+                             by = "electrode")
+    data <- dplyr::filter(data,
+                          !(is.na(x) | is.na(y)))
   }
 
   max_x <- max(abs(min(data$x, na.rm = TRUE)),
@@ -132,10 +145,13 @@ erp_scalp <- function(data,
 
   panel_size <- floor(sqrt(plot_area / nrow(data)))
 
-  coords_space <- data.frame(x = c(-(max_x + panel_size),
-                                   max_x + panel_size),
-                             y = c(-(max_y + panel_size),
-                                   max_y + panel_size))
+  coords_space <-
+    data.frame(
+      x = c(-(max_x + panel_size),
+            max_x + panel_size),
+      y = c(-(max_y + panel_size),
+            max_y + panel_size)
+      )
 
   p <- ggplot(coords_space,
               aes(x, y)) +

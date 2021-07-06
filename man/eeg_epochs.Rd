@@ -2,7 +2,7 @@
 % Please edit documentation in R/class_handling.R
 \name{eeg_epochs}
 \alias{eeg_epochs}
-\title{Function to create an S3 object of class "eeg_epochs".}
+\title{Function to create an S3 object of class \code{eeg_epochs}.}
 \usage{
 eeg_epochs(
   data,
@@ -31,7 +31,7 @@ channels, excluded channels etc.}
 \item{epochs}{Information about the epochs contained in the data.}
 }
 \description{
-Function to create an S3 object of class "eeg_epochs".
+Function to create an S3 object of class \code{eeg_epochs}.
 }
 \author{
 Matt Craddock \email{matt@mattcraddock.com}

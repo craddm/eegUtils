@@ -2,7 +2,7 @@
 % Please edit documentation in R/class_handling.R
 \name{eeg_ICA}
 \alias{eeg_ICA}
-\title{Function to create an S3 object of class "eeg_ICA".}
+\title{Function to create an S3 object of class \code{eeg_ICA}.}
 \usage{
 eeg_ICA(
   mixing_matrix,
@@ -13,8 +13,7 @@ eeg_ICA(
   chan_info,
   srate,
   epochs,
-  algorithm,
-  version = utils::packageVersion("eegUtils")
+  algorithm
 )
 }
 \arguments{
@@ -22,24 +21,30 @@ eeg_ICA(
 
 \item{unmixing_matrix}{ICA unmixing matrix}
 
-\item{signals}{ICA components}
+\item{signals}{ICA component timecourses.}
 
 \item{timings}{Unique timepoints remaining in the data.}
 
 \item{events}{event table}
 
-\item{chan_info}{String of character names for electrodes.}
+\item{chan_info}{A data frame containing electrode labels and coordinates.}
 
-\item{srate}{Sampling rate}
+\item{srate}{Sampling rate in Hz. A numeric value.}
 
-\item{epochs}{Epoch information}
+\item{epochs}{A data frame containing meta-information about the epochs
+contained in the data, such as participant ID label and condition labels
+for epochs.}
 
-\item{algorithm}{The method used to calculate the ICA decomposition.}
+\item{algorithm}{The method used to calculate the decomposition.}
+}
+\value{
+An object of class \code{eeg_ICA}.
 }
 \description{
-Function to create an S3 object of class "eeg_ICA".
+Function to create an S3 object of class \code{eeg_ICA}.
 }
 \author{
 Matt Craddock \email{matt@mattcraddock.com}
+
+Matt Craddock \email{matt@mattcraddock.com}
 }
-\keyword{internal}

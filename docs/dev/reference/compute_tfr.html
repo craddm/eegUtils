@@ -74,7 +74,7 @@ performed using convolution in the frequency domain." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">eegUtils</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.6.1.9000</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.6.2.9000</span>
       </span>
     </div>
 
@@ -162,6 +162,7 @@ performed using convolution in the frequency domain.</p>
   method <span class='op'>=</span> <span class='st'>"morlet"</span>,
   <span class='va'>foi</span>,
   <span class='va'>n_freq</span>,
+  spacing <span class='op'>=</span> <span class='st'>"linear"</span>,
   n_cycles <span class='op'>=</span> <span class='fl'>7</span>,
   keep_trials <span class='op'>=</span> <span class='cn'>FALSE</span>,
   output <span class='op'>=</span> <span class='st'>"power"</span>,
@@ -176,6 +177,7 @@ performed using convolution in the frequency domain.</p>
   method <span class='op'>=</span> <span class='st'>"morlet"</span>,
   <span class='va'>foi</span>,
   <span class='va'>n_freq</span>,
+  spacing <span class='op'>=</span> <span class='st'>"linear"</span>,
   n_cycles <span class='op'>=</span> <span class='fl'>7</span>,
   keep_trials <span class='op'>=</span> <span class='cn'>FALSE</span>,
   output <span class='op'>=</span> <span class='st'>"power"</span>,
@@ -208,6 +210,10 @@ and highest frequency to resolve.</p></td>
       <th>n_freq</th>
       <td><p>Number of frequencies to be resolved. Must be an integer number
 of frequencies.</p></td>
+    </tr>
+    <tr>
+      <th>spacing</th>
+      <td><p>Use "linear" or "log" spacing for the frequency vector.</p></td>
     </tr>
     <tr>
       <th>n_cycles</th>

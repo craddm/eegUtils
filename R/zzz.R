@@ -40,7 +40,9 @@ utils::globalVariables(c("time",
                          "coef",
                          "model.matrix",
                          "resid",
-                         ".lm.fit"))
+                         ".lm.fit",
+                         "participant_id")
+                       )
 
 ## usethis namespace: start
 #' @importFrom Rcpp sourceCpp

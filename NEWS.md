@@ -1,3 +1,17 @@
+# eegUtils 0.6.2.9000
+
+### Function changes
+- Added log spaced frequencies to `compute_tfr()`, with the new `spacing` argument. `plot_tfr` automatically detects the spacing and plots the figure appropriately.
+- Added `na.rm` option to `erp_image()` to either keep or plot trials with NA values due to smoothing. By default they'll be removed.
+- Added more informative messages for `compute_psd()`.
+
+### Internal changes / bug fixes
+
+- Some minor documentation fixes.
+- `plot_tfr()` error when selecting a specific frequency range fixed.
+- Switched to new style of `vdiffr` tests
+- fixed `erp_image()` smoothing over time instead of epochs.
+
 # eegUtils 0.6.2
 
 ### Function changes

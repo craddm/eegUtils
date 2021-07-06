@@ -1,4 +1,4 @@
-#' Print eeg_data summary
+#' Print `eeg_data` summary
 #'
 #' Print a basic summary of the contents of an `eeg_data` object
 #'
@@ -19,7 +19,7 @@ print.eeg_data <- function(x,
   invisible(x)
 }
 
-#' Print eeg_epochs summary
+#' Print `eeg_epochs` summary
 #'
 #' Print a basic summary of the contents of an `eeg_epochs` object
 #'
@@ -42,7 +42,7 @@ print.eeg_epochs <- function(x,
   invisible(x)
 }
 
-#' Print eeg_epochs summary
+#' Print `eeg_epochs` summary
 #'
 #' Print a basic summary of the contents of an `eeg_epochs` object
 #'
@@ -63,7 +63,7 @@ print.eeg_ICA <- function(x,
   invisible(x)
 }
 
-#' Print Values
+#' Print `eeg_tfr` summary
 #'
 #' Print a basic summary of the contents of an `eeg_tfr` object
 #'
@@ -93,7 +93,7 @@ print.eeg_tfr <- function(x,
   invisible(x)
 }
 
-#' Print eeg_evoked summary
+#' Print `eeg_evoked` summary
 #'
 #' Print a basic summary of the contents of an `eeg_epochs` object
 #'
@@ -117,7 +117,7 @@ print.eeg_evoked <- function(x,
 }
 
 
-#' Print eeg_stats summary
+#' Print `eeg_stats` summary
 #'
 #' Print a basic summary of the contents of an `eeg_stats` object
 #'
@@ -140,7 +140,7 @@ print.eeg_stats <- function(x, ...) {
   invisible(x)
 }
 
-#' Print eeg_lm summary
+#' Print `eeg_lm` summary
 #'
 #' Print a basic summary of the contents of an `eeg_lm` object
 #'
@@ -159,5 +159,34 @@ print.eeg_lm <- function(x, ...) {
       "-",
       round(max(unique(x$timings$time)), 3),
       "seconds\n")
+  invisible(x)
+}
+
+#' Print `eeg_group` summary
+#'
+#' Print a basic summary of the contents of an `eeg_group` object
+#'
+#' @param x `eeg_group` object to be printed
+#' @param ... Further arguments passed
+#' @export
+print.eeg_group <- function(x, ...) {
+  cat("EEG Group Data\n\n")
+  n_participants <- length(unique(epochs(x)$participant_id))
+  elec_names <- x$chan_info$electrode
+  n_chan <- length(elec_names)
+  if (inherits(x, "eeg_evoked")) {
+    cat("EEG evoked data (ERPs)\n\n")
+  } else if (inherits(x, "eeg_ICA")) {
+    cat("EEG ICA/SSD decompositions")
+  }
+  cat("Number of participants\t:\t", n_participants, "\n")
+  cat("Number of channels\t:\t", n_chan, "\n")
+  cat("Epoch limits\t\t:",
+      round(min(unique(x$timings$time)), 3),
+      "-",
+      round(max(unique(x$timings$time)), 3),
+      "seconds\n")
+  cat("Electrode names\t\t:\t", elec_names, "\n")
+  cat("Sampling rate\t\t:\t", x$srate, " Hz\n")
   invisible(x)
 }

@@ -259,7 +259,7 @@ plot_tfr <- function(data,
   if (!is.null(freq_range)) {
     data_freqs <- as.numeric(dimnames(data$signals)[["frequency"]])
     data_freqs <- (data_freqs >= freq_range[1] & data_freqs <= freq_range[2])
-    data$signals <- data$signals[, , data_freqs, drop = FALSE]
+    data$signals <- data$signals[, , , data_freqs, drop = FALSE]
   }
 
   if (identical(data$freq_info$output, "fourier")) {
@@ -330,9 +330,20 @@ plot_tfr <- function(data,
          y = "Frequency (Hz)",
          fill = fill_lab) +
     scale_x_continuous(expand = c(0, 0)) +
-    scale_y_continuous(expand = c(0, 0)) +
     theme_classic() +
     fill_colour
+
+  if (is.unsorted(diff(unique(data$frequency)))) {
+    tfr_plot <-
+      tfr_plot +
+      scale_y_continuous(expand = c(0, 0))
+  } else {
+    tfr_plot <-
+      tfr_plot +
+      scale_y_log10(expand = c(0, 0))
+  }
+
+
 
   tfr_plot
 }

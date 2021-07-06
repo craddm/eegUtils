@@ -2,7 +2,7 @@
 % Please edit documentation in R/class_handling.R
 \name{is.eeg_epochs}
 \alias{is.eeg_epochs}
-\title{Check if object is of class "eeg_epochs".}
+\title{Check if object is of class \code{eeg_epochs}.}
 \usage{
 is.eeg_epochs(x)
 }
@@ -10,7 +10,7 @@ is.eeg_epochs(x)
 \item{x}{Object to check.}
 }
 \description{
-Check if object is of class "eeg_epochs".
+Check if object is of class \code{eeg_epochs}.
 }
 \author{
 Matt Craddock \email{matt@mattcraddock.com}

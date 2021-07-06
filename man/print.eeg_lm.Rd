@@ -2,7 +2,7 @@
 % Please edit documentation in R/print_functions.R
 \name{print.eeg_lm}
 \alias{print.eeg_lm}
-\title{Print eeg_lm summary}
+\title{Print \code{eeg_lm} summary}
 \usage{
 \method{print}{eeg_lm}(x, ...)
 }

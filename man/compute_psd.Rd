@@ -62,7 +62,8 @@ be <= \code{seg_length}.}
 
 \item{verbose}{Print informative messages. TRUE by default.}
 
-\item{keep_trials}{Include FFT for every trial in output, or average over them if FALSE.}
+\item{keep_trials}{Include FFT for every trial in output, or average over
+them if FALSE.}
 }
 \value{
 Currently, a data frame with the PSD for each channel separately.

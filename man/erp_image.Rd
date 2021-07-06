@@ -17,6 +17,7 @@ erp_image(data, ...)
   smoothing = 10,
   clim = NULL,
   interpolate = FALSE,
+  na.rm = TRUE,
   ...
 )
 
@@ -27,6 +28,7 @@ erp_image(data, ...)
   smoothing = 10,
   clim = NULL,
   interpolate = FALSE,
+  na.rm = TRUE,
   ...
 )
 
@@ -36,6 +38,7 @@ erp_image(data, ...)
   smoothing = 10,
   clim = NULL,
   interpolate = FALSE,
+  na.rm = TRUE,
   ...
 )
 
@@ -47,24 +50,28 @@ erp_image(data, ...)
   clim = NULL,
   interpolate = FALSE,
   freq_range = NULL,
+  na.rm = TRUE,
   ...
 )
 }
 \arguments{
-\item{data}{Data frame to be plotted. Requires an amplitude column.}
+\item{data}{Data frame or \code{eegUtils} object to be plotted.}
 
 \item{...}{Other arguments passed to the method.}
 
-\item{electrode}{electrode at which to generate an ERP image.}
+\item{electrode}{Electrode for which to generate an ERP image.}
 
-\item{time_lim}{Time limits of plot}
+\item{time_lim}{Time limits of plot.}
 
-\item{smoothing}{Number of trials to smooth over when generating image}
+\item{smoothing}{Number of trials to smooth over when generating image.}
 
 \item{clim}{Character vector of min and max values of plotting colour range.
 e.g. c(-5,5). Defaults to min and max.}
 
-\item{interpolate}{Perform interpolation to produce smoother looking plots. Defaults to FALSE.}
+\item{interpolate}{Perform interpolation to produce smoother looking plots.
+Defaults to FALSE.}
+
+\item{na.rm}{Remove trials with NA amplitudes after smoothing. Defaults to TRUE.}
 
 \item{component}{\code{eeg_ICA} component to plot}
 
@@ -76,7 +83,7 @@ vector of length two will match average over frequencies within that range.}
 A \code{ggplot} object
 }
 \description{
-Plot an ERP image from a single electrode. Smooths over a series of trials in
+Plot an ERP image from a single electrode. Uses a boxcar smooth over a series of trials in
 order to make across-trial patterns more apparent.
 }
 \section{Methods (by class)}{
@@ -97,4 +104,7 @@ erp_image(demo_epochs, electrode = "A31", smoothing = 5)
 erp_image(compute_tfr(demo_epochs,
  foi = c(4, 30), n_cycles = 3, n_freq = 20, verbose = FALSE, keep_trials = TRUE),
  electrode = "A31", freq_range = c(8, 12))
+}
+\author{
+Matt craddock \email{matt@mattcraddock.com}
 }
