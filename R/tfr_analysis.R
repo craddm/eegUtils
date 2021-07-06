@@ -382,7 +382,7 @@ fft_n <- function(signal, n) {
     } else {
       signal_n <- signal[1:n]
     }
-    fft(signal_n)
+    stats::fft(signal_n)
   } else {
     if (nrow(signal) < n) {
       signal_n <- matrix(0,

@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">eegUtils</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.5.0.9000</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.6.2.9000</span>
       </span>
     </div>
 
@@ -147,7 +147,7 @@
     <p>Function for creating an ERP image</p>
     </div>
 
-    <pre class="usage"><span class='fu'>create_erpimage</span><span class='op'>(</span><span class='va'>data</span>, <span class='va'>electrode</span>, <span class='va'>smoothing</span>, <span class='va'>clim</span>, interpolate <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>create_erpimage</span><span class='op'>(</span><span class='va'>data</span>, <span class='va'>electrode</span>, <span class='va'>smoothing</span>, <span class='va'>clim</span>, interpolate <span class='op'>=</span> <span class='cn'>FALSE</span>, <span class='va'>na.rm</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -171,7 +171,11 @@ e.g. c(-5,5). Defaults to min and max.</p></td>
     </tr>
     <tr>
       <th>interpolate</th>
-      <td><p>Turn on geom_raster() interpolation for smoother images.</p></td>
+      <td><p>Turn on <code>geom_raster()</code> interpolation for smoother images.</p></td>
+    </tr>
+    <tr>
+      <th>na.rm</th>
+      <td><p>Remove trials with NA amplitudes after smoothing. Defaults to TRUE.</p></td>
     </tr>
     </table>
 

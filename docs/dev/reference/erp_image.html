@@ -40,7 +40,7 @@
 
 
 <meta property="og:title" content="Plot ERP images — erp_image" />
-<meta property="og:description" content="Plot an ERP image from a single electrode. Smooths over a series of trials in
+<meta property="og:description" content="Plot an ERP image from a single electrode. Uses a boxcar smooth over a series of trials in
 order to make across-trial patterns more apparent." />
 
 
@@ -73,7 +73,7 @@ order to make across-trial patterns more apparent." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">eegUtils</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.6.1.9000</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.6.2.9000</span>
       </span>
     </div>
 
@@ -145,7 +145,7 @@ order to make across-trial patterns more apparent." />
     </div>
 
     <div class="ref-description">
-    <p>Plot an ERP image from a single electrode. Smooths over a series of trials in
+    <p>Plot an ERP image from a single electrode. Uses a boxcar smooth over a series of trials in
 order to make across-trial patterns more apparent.</p>
     </div>
 
@@ -159,6 +159,7 @@ order to make across-trial patterns more apparent.</p>
   smoothing <span class='op'>=</span> <span class='fl'>10</span>,
   clim <span class='op'>=</span> <span class='cn'>NULL</span>,
   interpolate <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  na.rm <span class='op'>=</span> <span class='cn'>TRUE</span>,
   <span class='va'>...</span>
 <span class='op'>)</span>
 
@@ -170,6 +171,7 @@ order to make across-trial patterns more apparent.</p>
   smoothing <span class='op'>=</span> <span class='fl'>10</span>,
   clim <span class='op'>=</span> <span class='cn'>NULL</span>,
   interpolate <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  na.rm <span class='op'>=</span> <span class='cn'>TRUE</span>,
   <span class='va'>...</span>
 <span class='op'>)</span>
 
@@ -180,6 +182,7 @@ order to make across-trial patterns more apparent.</p>
   smoothing <span class='op'>=</span> <span class='fl'>10</span>,
   clim <span class='op'>=</span> <span class='cn'>NULL</span>,
   interpolate <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  na.rm <span class='op'>=</span> <span class='cn'>TRUE</span>,
   <span class='va'>...</span>
 <span class='op'>)</span>
 
@@ -192,6 +195,7 @@ order to make across-trial patterns more apparent.</p>
   clim <span class='op'>=</span> <span class='cn'>NULL</span>,
   interpolate <span class='op'>=</span> <span class='cn'>FALSE</span>,
   freq_range <span class='op'>=</span> <span class='cn'>NULL</span>,
+  na.rm <span class='op'>=</span> <span class='cn'>TRUE</span>,
   <span class='va'>...</span>
 <span class='op'>)</span></pre>
 
@@ -200,7 +204,7 @@ order to make across-trial patterns more apparent.</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>data</th>
-      <td><p>Data frame to be plotted. Requires an amplitude column.</p></td>
+      <td><p>Data frame or <code>eegUtils</code> object to be plotted.</p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -208,15 +212,15 @@ order to make across-trial patterns more apparent.</p>
     </tr>
     <tr>
       <th>electrode</th>
-      <td><p>electrode at which to generate an ERP image.</p></td>
+      <td><p>Electrode for which to generate an ERP image.</p></td>
     </tr>
     <tr>
       <th>time_lim</th>
-      <td><p>Time limits of plot</p></td>
+      <td><p>Time limits of plot.</p></td>
     </tr>
     <tr>
       <th>smoothing</th>
-      <td><p>Number of trials to smooth over when generating image</p></td>
+      <td><p>Number of trials to smooth over when generating image.</p></td>
     </tr>
     <tr>
       <th>clim</th>
@@ -225,7 +229,12 @@ e.g. c(-5,5). Defaults to min and max.</p></td>
     </tr>
     <tr>
       <th>interpolate</th>
-      <td><p>Perform interpolation to produce smoother looking plots. Defaults to FALSE.</p></td>
+      <td><p>Perform interpolation to produce smoother looking plots.
+Defaults to FALSE.</p></td>
+    </tr>
+    <tr>
+      <th>na.rm</th>
+      <td><p>Remove trials with NA amplitudes after smoothing. Defaults to TRUE.</p></td>
     </tr>
     <tr>
       <th>component</th>
@@ -251,15 +260,18 @@ vector of length two will match average over frequencies within that range.</p><
 <li><p><code>eeg_ICA</code>: Plot component image from <code>eeg_ICA</code></p></li>
 <li><p><code>eeg_tfr</code>: Plot component image from <code>eeg_tfr</code></p></li>
 </ul>
+    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
+
+    <p>Matt craddock <a href='mailto:matt@mattcraddock.com'>matt@mattcraddock.com</a></p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'>erp_image</span><span class='op'>(</span><span class='va'>demo_epochs</span>, electrode <span class='op'>=</span> <span class='st'>"A31"</span><span class='op'>)</span>
 </div><div class='img'><img src='erp_image-1.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'>erp_image</span><span class='op'>(</span><span class='va'>demo_epochs</span>, electrode <span class='op'>=</span> <span class='st'>"A31"</span>, interpolate <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
 </div><div class='img'><img src='erp_image-2.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'>erp_image</span><span class='op'>(</span><span class='va'>demo_epochs</span>, electrode <span class='op'>=</span> <span class='st'>"A31"</span>, smoothing <span class='op'>=</span> <span class='fl'>5</span><span class='op'>)</span>
 </div><div class='img'><img src='erp_image-3.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'>erp_image</span><span class='op'>(</span><span class='fu'><a href='compute_tfr.html'>compute_tfr</a></span><span class='op'>(</span><span class='va'>demo_epochs</span>,
- foi <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>4</span>, <span class='fl'>30</span><span class='op'>)</span>, n_cycles <span class='op'>=</span> <span class='fl'>3</span>, n_freq <span class='op'>=</span> <span class='fl'>20</span>, keep_trials <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>,
+ foi <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>4</span>, <span class='fl'>30</span><span class='op'>)</span>, n_cycles <span class='op'>=</span> <span class='fl'>3</span>, n_freq <span class='op'>=</span> <span class='fl'>20</span>, verbose <span class='op'>=</span> <span class='cn'>FALSE</span>, keep_trials <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>,
  electrode <span class='op'>=</span> <span class='st'>"A31"</span>, freq_range <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>8</span>, <span class='fl'>12</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>Output frequencies: 4 5.37 6.74 8.11 9.47 10.84 12.21 13.58 14.95 16.32 17.68 19.05 20.42 21.79 23.16 24.53 25.89 27.26 28.63 30</span></div><div class='output co'>#&gt; <span class='message'>Removing channel means per epoch...</span></div><div class='img'><img src='erp_image-4.png' alt='' width='700' height='433' /></div></pre>
+</div><div class='img'><img src='erp_image-4.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

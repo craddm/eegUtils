@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Check if object is of class eeg_data. — is.eeg_data • eegUtils</title>
+<title>Print eeg_group summary — print.eeg_group • eegUtils</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Check if object is of class eeg_data. — is.eeg_data" />
-<meta property="og:description" content="Check if object is of class eeg_data." />
+<meta property="og:title" content="Print eeg_group summary — print.eeg_group" />
+<meta property="og:description" content="Print a basic summary of the contents of an eeg_group object" />
 
 
 
@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">eegUtils</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.2</span>
       </span>
     </div>
 
@@ -138,29 +138,31 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Check if object is of class <code>eeg_data</code>.</h1>
-    <small class="dont-index">Source: <a href='https://github.com/craddm/eegUtils/blob/master/R/class_handling.R'><code>R/class_handling.R</code></a></small>
-    <div class="hidden name"><code>is.eeg_data.Rd</code></div>
+    <h1>Print <code>eeg_group</code> summary</h1>
+    <small class="dont-index">Source: <a href='https://github.com/craddm/eegUtils/blob/master/R/print_functions.R'><code>R/print_functions.R</code></a></small>
+    <div class="hidden name"><code>print.eeg_group.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Check if object is of class <code>eeg_data</code>.</p>
+    <p>Print a basic summary of the contents of an <code>eeg_group</code> object</p>
     </div>
 
-    <pre class="usage"><span class='fu'>is.eeg_data</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='co'># S3 method for eeg_group</span>
+<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>Object to check.</p></td>
+      <td><p><code>eeg_group</code> object to be printed</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>Further arguments passed</p></td>
     </tr>
     </table>
 
-    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
-
-    <p>Matt Craddock <a href='mailto:matt@mattcraddock.com'>matt@mattcraddock.com</a></p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

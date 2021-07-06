@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">eegUtils</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.3</span>
       </span>
     </div>
 
@@ -94,13 +94,13 @@
 
       
 
-      </header><script src="data_structures_files/header-attrs-2.7/header-attrs.js"></script><div class="row">
+      </header><script src="data_structures_files/header-attrs-2.9/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>A guide to eegUtils data structures</h1>
                         <h4 class="author">Matt Craddock</h4>
             
-            <h4 class="date">2021-02-22</h4>
+            <h4 class="date">2021-07-06</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/craddm/eegUtils/blob/master/vignettes/data_structures.Rmd"><code>vignettes/data_structures.Rmd</code></a></small>
       <div class="hidden name"><code>data_structures.Rmd</code></div>
@@ -117,7 +117,7 @@
 <div id="eeg_data-objects" class="section level2">
 <h2 class="hasAnchor">
 <a href="#eeg_data-objects" class="anchor"></a><code>eeg_data</code> objects</h2>
-<p><code>eeg_data</code> objects are the base class used for continuous data. When raw data is imported, the output is this class. Currently, this class is a list constituting the following entries:</p>
+<p><code>eeg_data</code> objects are the base class used for continuous data. When raw data is imported, the output is this class. This class is a list constituting the following entries:</p>
 <ul>
 <li>
 <code>signals</code>
@@ -128,7 +128,7 @@
 <li>
 <code>srate</code>
 <ul>
-<li>A single integer giving the sampling rate of the data in Hz</li>
+<li>A single numeric value giving the sampling rate of the data in Hz</li>
 </ul>
 </li>
 <li>
@@ -148,7 +148,7 @@
 <li>
 <code>chan_info</code>
 <ul>
-<li>Often NULL on import, since BDF and CNT do not contain (useable) electrode locations.</li>
+<li>Often NULL on import, since BDF and CNT do not contain (usable) electrode locations.</li>
 <li>A data.frame/tibble containing channel location information can be added. Currently similar to EEGLAB style, with the following columns (may change):
 <ul>
 <li>
@@ -170,6 +170,17 @@
 <li>
 <code>y</code> - 2D Stereographic projection of the spherical coordinates</li>
 </ul>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="fu">eegUtils</span><span class="fu">:::</span><span class="va">electrodeLocs</span><span class="op">)</span>
+<span class="co">#&gt; # A tibble: 6 x 9</span>
+<span class="co">#&gt;   electrode radius theta   phi cart_x cart_y cart_z      x     y</span>
+<span class="co">#&gt;   &lt;fct&gt;      &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;</span>
+<span class="co">#&gt; 1 LPA            1  -119    13 -86.1   -20.0 -48.0  -116.  -26.8</span>
+<span class="co">#&gt; 2 RPA            1   119   -13  85.8   -20.0 -48.0   116.  -26.8</span>
+<span class="co">#&gt; 3 Nz             1   115    90   0.01   86.8 -40.0     0   115  </span>
+<span class="co">#&gt; 4 Fp1            1   -94   -71 -29.4    83.9  -6.99  -30.6  88.9</span>
+<span class="co">#&gt; 5 Fpz            1    91    90   0.11   88.2  -1.71    0    91  </span>
+<span class="co">#&gt; 6 Fp2            1    94    71  29.9    84.9  -7.08   30.6  88.9</span></code></pre></div>
 </li>
 </ul>
 </li>
@@ -182,7 +193,7 @@
 <li>
 <code>epochs</code>
 <ul>
-<li>A data.frame containing information about the epochs in the data, more relevant for epoched data</li>
+<li>A data.frame containing information about the epochs in the data, more relevant for epoched data.</li>
 </ul>
 </li>
 <li>
@@ -222,6 +233,22 @@
 </ul>
 </li>
 </ul>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/events.html">events</a></span><span class="op">(</span><span class="va">demo_epochs</span><span class="op">)</span>
+<span class="co">#&gt; # A tibble: 80 x 5</span>
+<span class="co">#&gt;    event_onset event_time event_type epoch  time</span>
+<span class="co">#&gt;          &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;</span>
+<span class="co">#&gt;  1        4128       8.06        208     1     0</span>
+<span class="co">#&gt;  2        7037      13.7         213     2     0</span>
+<span class="co">#&gt;  3       10043      19.6         215     3     0</span>
+<span class="co">#&gt;  4       12928      25.2         213     4     0</span>
+<span class="co">#&gt;  5       15868      31.0         207     5     0</span>
+<span class="co">#&gt;  6       18777      36.7         207     6     0</span>
+<span class="co">#&gt;  7       21578      42.1         213     7     0</span>
+<span class="co">#&gt;  8       24554      48.0         213     8     0</span>
+<span class="co">#&gt;  9       27379      53.5         222     9     0</span>
+<span class="co">#&gt; 10       30306      59.2         208    10     0</span>
+<span class="co">#&gt; # ... with 70 more rows</span></code></pre></div>
 </li>
 <li>
 <code>timings</code>
@@ -237,12 +264,39 @@
 </ul>
 </li>
 </ul>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">demo_epochs</span><span class="op">$</span><span class="va">timings</span><span class="op">)</span>
+<span class="co">#&gt; # A tibble: 6 x 3</span>
+<span class="co">#&gt;   epoch sample   time</span>
+<span class="co">#&gt;   &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;</span>
+<span class="co">#&gt; 1     1   4028 -0.197</span>
+<span class="co">#&gt; 2     1   4032 -0.189</span>
+<span class="co">#&gt; 3     1   4036 -0.182</span>
+<span class="co">#&gt; 4     1   4040 -0.174</span>
+<span class="co">#&gt; 5     1   4044 -0.166</span>
+<span class="co">#&gt; 6     1   4048 -0.158</span></code></pre></div>
 </li>
 <li>
 <code>epochs</code>
 <ul>
 <li>A data.frame containing information about the participant, and labels applied to any epochs</li>
 </ul>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/epochs.html">epochs</a></span><span class="op">(</span><span class="va">demo_epochs</span><span class="op">)</span>
+<span class="co">#&gt; # A tibble: 80 x 4</span>
+<span class="co">#&gt;    epoch recording epoch_label participant_id</span>
+<span class="co">#&gt;    &lt;dbl&gt; &lt;lgl&gt;     &lt;lgl&gt;       &lt;chr&gt;         </span>
+<span class="co">#&gt;  1     1 NA        NA          001           </span>
+<span class="co">#&gt;  2     2 NA        NA          001           </span>
+<span class="co">#&gt;  3     3 NA        NA          001           </span>
+<span class="co">#&gt;  4     4 NA        NA          001           </span>
+<span class="co">#&gt;  5     5 NA        NA          001           </span>
+<span class="co">#&gt;  6     6 NA        NA          001           </span>
+<span class="co">#&gt;  7     7 NA        NA          001           </span>
+<span class="co">#&gt;  8     8 NA        NA          001           </span>
+<span class="co">#&gt;  9     9 NA        NA          001           </span>
+<span class="co">#&gt; 10    10 NA        NA          001           </span>
+<span class="co">#&gt; # ... with 70 more rows</span></code></pre></div>
 </li>
 </ul>
 </div>
@@ -254,7 +308,7 @@
 <li>
 <code>signals</code>
 <ul>
-<li>a 4D matrix - time by electrode by frequency by epoch</li>
+<li>a 4D matrix - epoch by time by electrode by frequency</li>
 </ul>
 </li>
 <li>
@@ -268,7 +322,7 @@
 <div id="eeg_ica" class="section level2">
 <h2 class="hasAnchor">
 <a href="#eeg_ica" class="anchor"></a>eeg_ICA</h2>
-<p><code>eeg_ICA</code> objects contain the results of an ICA decomposition applied to an <code>eeg_epochs</code> object.</p>
+<p><code>eeg_ICA</code> objects contain the results of either an ICA or an SSD decomposition applied to an <code>eeg_epochs</code> object.</p>
 <ul>
 <li>
 <code>mixing_matrix</code>
