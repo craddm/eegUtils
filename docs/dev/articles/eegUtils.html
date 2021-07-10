@@ -32,7 +32,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">eegUtils</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.6.1.9000</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.6.3.9000</span>
       </span>
     </div>
 
@@ -95,13 +95,13 @@
 
       
 
-      </header><script src="eegUtils_files/header-attrs-2.7/header-attrs.js"></script><div class="row">
+      </header><script src="eegUtils_files/header-attrs-2.9/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>EEG Utils</h1>
                         <h4 class="author">Matt Craddock</h4>
             
-            <h4 class="date">2021-04-07</h4>
+            <h4 class="date">2021-07-10</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/craddm/eegUtils/blob/master/vignettes/eegUtils.Rmd"><code>vignettes/eegUtils.Rmd</code></a></small>
       <div class="hidden name"><code>eegUtils.Rmd</code></div>
@@ -173,7 +173,11 @@
 <code class="sourceCode R"><span class="fu"><a href="../reference/plot_psd.html">plot_psd</a></span><span class="op">(</span><span class="va">eeg_example</span>, 
          freq_range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">60</span><span class="op">)</span>,
          legend <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-<span class="co">#&gt; Removing channel means...</span></code></pre></div>
+<span class="co">#&gt; Removing channel means...</span>
+<span class="co">#&gt; Computing Power Spectral Density using Welch's method.</span>
+<span class="co">#&gt;  FFT length:  2048 </span>
+<span class="co">#&gt;  Segment length:  2048 </span>
+<span class="co">#&gt;  Overlapping points:  1024 ( 50 %)</span></code></pre></div>
 <p><img src="eegUtils_files/figure-html/filt-butter-1.png" width="700"></p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
@@ -188,7 +192,11 @@
 <span class="fu"><a href="../reference/plot_psd.html">plot_psd</a></span><span class="op">(</span><span class="va">eeg_example</span>, 
          freq_range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">60</span><span class="op">)</span>,
          legend <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-<span class="co">#&gt; Removing channel means...</span></code></pre></div>
+<span class="co">#&gt; Removing channel means...</span>
+<span class="co">#&gt; Computing Power Spectral Density using Welch's method.</span>
+<span class="co">#&gt;  FFT length:  2048 </span>
+<span class="co">#&gt;  Segment length:  2048 </span>
+<span class="co">#&gt;  Overlapping points:  1024 ( 50 %)</span></code></pre></div>
 <p><img src="eegUtils_files/figure-html/filt-butter-2.png" width="700"></p>
 </div>
 <div id="creating-epochs" class="section level2">
@@ -210,13 +218,16 @@
 <span class="co">#&gt; 9          25</span>
 <span class="co">#&gt; 10        132</span>
 <span class="co">#&gt; 11        130</span>
-<span class="va">epoched_example</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/epoch_data.html">epoch_data</a></span><span class="op">(</span><span class="va">eeg_example</span>,
-                              events <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">120</span>,
-                                         <span class="fl">122</span><span class="op">)</span>,
-                              epoch_labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"valid_left"</span>,
-                                               <span class="st">"valid_right"</span><span class="op">)</span>,
-                              time_lim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">.1</span>, <span class="fl">.4</span><span class="op">)</span>,
-                              baseline <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">.1</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span>
+<span class="va">epoched_example</span> <span class="op">&lt;-</span>
+  <span class="fu"><a href="../reference/epoch_data.html">epoch_data</a></span><span class="op">(</span>
+    <span class="va">eeg_example</span>,
+    events <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">120</span>,
+               <span class="fl">122</span><span class="op">)</span>,
+    epoch_labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"valid_left"</span>,
+                     <span class="st">"valid_right"</span><span class="op">)</span>,
+    time_lim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">.1</span>, <span class="fl">.4</span><span class="op">)</span>,
+    baseline <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">.1</span>, <span class="fl">0</span><span class="op">)</span>
+  <span class="op">)</span>
 <span class="co">#&gt; Adjusting output limits to match sampling rate.</span>
 <span class="co">#&gt; Output limits:  -0.1015625 0.3984375</span>
 <span class="co">#&gt; Creating 256 epochs.</span></code></pre></div>

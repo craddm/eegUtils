@@ -86,13 +86,16 @@ We can specify the length of epochs around the trigger using the `time_lim` argu
 
 ```{r epoch-eeg}
 list_events(eeg_example)
-epoched_example <- epoch_data(eeg_example,
-                              events = c(120,
-                                         122),
-                              epoch_labels = c("valid_left",
-                                               "valid_right"),
-                              time_lim = c(-.1, .4),
-                              baseline = c(-.1, 0))
+epoched_example <-
+  epoch_data(
+    eeg_example,
+    events = c(120,
+               122),
+    epoch_labels = c("valid_left",
+                     "valid_right"),
+    time_lim = c(-.1, .4),
+    baseline = c(-.1, 0)
+  )
 ```
 
 After epoching, use the `epochs()` function to check the meta-information for this data and its epochs.

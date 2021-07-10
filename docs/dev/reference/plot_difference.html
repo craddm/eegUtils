@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Articles • eegUtils</title>
+<title>Plot ERP difference waves — plot_difference • eegUtils</title>
 
 
 <!-- jquery -->
@@ -39,7 +39,8 @@
 
 
 
-<meta property="og:title" content="Articles" />
+<meta property="og:title" content="Plot ERP difference waves — plot_difference" />
+<meta property="og:description" content="Plots the dif" />
 
 
 <meta name="robots" content="noindex">
@@ -58,7 +59,7 @@
   </head>
 
   <body data-spy="scroll" data-target="#toc">
-    <div class="container template-article-index">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -137,28 +138,97 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Articles</h1>
+    <h1>Plot ERP difference waves</h1>
+    <small class="dont-index">Source: <a href='https://github.com/craddm/eegUtils/blob/master/R/plot_difference.R'><code>R/plot_difference.R</code></a></small>
+    <div class="hidden name"><code>plot_difference.Rd</code></div>
     </div>
 
-    <div class="section ">
-      <h3>All vignettes</h3>
-      <p class="section-desc"></p>
-
-      <dl>
-        <dt><a href="data_structures.html">A guide to eegUtils data structures</a></dt>
-        <dd></dt>
-        <dt><a href="eegUtils.html">EEG Utils</a></dt>
-        <dd></dt>
-        <dt><a href="epoch-handling.html">Event and epoch handling</a></dt>
-        <dd></dt>
-        <dt><a href="linear_modelling/linear_modelling.html">Linear Modelling</a></dt>
-        <dd></dt>
-        <dt><a href="time-frequency-analysis.html">Frequency analysis</a></dt>
-        <dd></dt>
-        <dt><a href="topoplot/topoplot.html">Building a topographical plot</a></dt>
-        <dd></dt>
-      </dl>
+    <div class="ref-description">
+    <p>Plots the dif</p>
     </div>
+
+    <pre class="usage"><span class='fu'>plot_difference</span><span class='op'>(</span><span class='va'>data</span>, <span class='va'>...</span><span class='op'>)</span>
+
+<span class='co'># S3 method for eeg_epochs</span>
+<span class='fu'>plot_difference</span><span class='op'>(</span>
+  <span class='va'>data</span>,
+  electrode <span class='op'>=</span> <span class='cn'>NULL</span>,
+  time_lim <span class='op'>=</span> <span class='cn'>NULL</span>,
+  baseline <span class='op'>=</span> <span class='cn'>NULL</span>,
+  colour <span class='op'>=</span> <span class='cn'>NULL</span>,
+  color <span class='op'>=</span> <span class='cn'>NULL</span>,
+  mapping <span class='op'>=</span> <span class='cn'>NULL</span>,
+  conditions <span class='op'>=</span> <span class='st'>"epoch_labels"</span>,
+  <span class='va'>...</span>
+<span class='op'>)</span></pre>
+
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>data</th>
+      <td><p>EEG dataset. Should have multiple timepoints.</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>Other arguments passed to methods.</p></td>
+    </tr>
+    <tr>
+      <th>electrode</th>
+      <td><p>Electrode(s) to plot.</p></td>
+    </tr>
+    <tr>
+      <th>time_lim</th>
+      <td><p>Character vector. Numbers in whatever time unit is used
+specifying beginning and end of time-range to plot. e.g. c(-.1, .3)</p></td>
+    </tr>
+    <tr>
+      <th>baseline</th>
+      <td><p>Character vector. Times to use as a baseline. Takes the mean
+over the specified period and subtracts. e.g. c(-.1,0)</p></td>
+    </tr>
+    <tr>
+      <th>colour</th>
+      <td><p>Variable to colour lines by. If no variable is passed, only one
+line is drawn.</p></td>
+    </tr>
+    <tr>
+      <th>color</th>
+      <td><p>Alias for colour.</p></td>
+    </tr>
+    <tr>
+      <th>mapping</th>
+      <td><p>A ggplot2 <code>aes()</code> mapping.</p></td>
+    </tr>
+    <tr>
+      <th>conditions</th>
+      <td><p>Defaults to "epoch_labels".</p></td>
+    </tr>
+    </table>
+
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>Returns a ggplot2 plot object</p>
+    <h2 class="hasAnchor" id="methods-by-class-"><a class="anchor" href="#methods-by-class-"></a>Methods (by class)</h2>
+
+    
+<ul>
+<li><p><code>eeg_epochs</code>: Plot an ERP difference wave from an <code>eeg_epochs</code> object</p></li>
+</ul>
+    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
+
+    <p>Matt Craddock, <a href='mailto:matt@mattcraddock.com'>matt@mattcraddock.com</a></p>
+
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='fu'><a href='plot_timecourse.html'>plot_timecourse</a></span><span class='op'>(</span><span class='va'>demo_epochs</span>, <span class='st'>"A29"</span><span class='op'>)</span>
+</div><div class='img'><img src='plot_difference-1.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'><a href='plot_timecourse.html'>plot_timecourse</a></span><span class='op'>(</span><span class='va'>demo_epochs</span>, <span class='st'>"A29"</span>, add_CI <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='warning'>Warning: Computation failed in `stat_summary()`:</span>
+#&gt; <span class='warning'>The `Hmisc` package is required.</span></div><div class='img'><img src='plot_difference-2.png' alt='' width='700' height='433' /></div></pre>
+  </div>
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+    <nav id="toc" data-toggle="toc" class="sticky-top">
+      <h2 data-toc-skip>Contents</h2>
+    </nav>
   </div>
 </div>
 

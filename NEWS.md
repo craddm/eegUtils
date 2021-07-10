@@ -1,4 +1,6 @@
-# eegUtils 0.6.2.9000
+# eegUtils 0.6.3.9000
+
+# eegUtils 0.6.3
 
 ### Function changes
 - Added log spaced frequencies to `compute_tfr()`, with the new `spacing` argument. `plot_tfr` automatically detects the spacing and plots the figure appropriately.
