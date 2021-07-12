@@ -52,10 +52,6 @@ Calculates the difference between the event-related potentials from two conditio
 \item \code{eeg_epochs}: Plot an ERP difference wave from an \code{eeg_epochs} object
 }}
 
-\examples{
-plot_timecourse(demo_epochs, "A29")
-plot_timecourse(demo_epochs, "A29", add_CI = TRUE)
-}
 \author{
 Matt Craddock, \email{matt@mattcraddock.com}
 }

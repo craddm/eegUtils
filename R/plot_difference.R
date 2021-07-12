@@ -4,9 +4,6 @@
 #'
 #' @author Matt Craddock, \email{matt@@mattcraddock.com}
 #'
-#' @examples
-#' plot_timecourse(demo_epochs, "A29")
-#' plot_timecourse(demo_epochs, "A29", add_CI = TRUE)
 #' @param data EEG dataset. Should have multiple timepoints.
 #' @param ... Other arguments passed to methods.
 #' @return Returns a ggplot2 plot object
@@ -22,6 +19,7 @@ plot_difference.default <- function(data,
   stop("plot_difference() doesn't handle objects of class ",
        class(data))
 }
+
 #'@param electrode Electrode(s) to plot.
 #'@param conditions Defaults to "epoch_labels".
 #'@param time_lim Character vector. Numbers in whatever time unit is used
@@ -75,7 +73,7 @@ plot_difference.eeg_epochs <-
     data
 
     tc_plot <- create_tc(data,
-                         add_CI = add_CI,
+                         add_CI = FALSE,
                          colour = colour,
                          mapping = mapping,
                          quantity = difference)

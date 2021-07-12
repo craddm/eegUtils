@@ -1,5 +1,8 @@
 # eegUtils 0.6.3.9000
 
+### Function changes
+- Add `imax` method to `run_ICA()`. This allows use of the `infomax` ICA algorithm from the `infomax` package, which is a reimplementation of the Infomax algorithm used in the `EEGLAB` Matlab toolbox.
+
 # eegUtils 0.6.3
 
 ### Function changes

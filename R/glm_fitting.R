@@ -145,12 +145,12 @@ fit_glm.eeg_epochs <- function(formula,
     # Try other way to see if any faster
     for (timepoint in (seq_along(split_data))) {
       for (chan in (seq_along(mod_mats))) {
-        tmp_mod <- .lm.fit(
+        tmp_mod <- stats::.lm.fit(
           mod_mats[[chan]],
           split_data[[timepoint]][[chan]]
         )
         tmp[[chan]] <- coef(tmp_mod)
-        tmp_res[[chan]] <- sum(resid(tmp_mod)^2)
+        tmp_res[[chan]] <- sum(stats::resid(tmp_mod)^2)
         tmp_se[[chan]] <- sqrt(diag(inverted_dm[[chan]] * (tmp_res[[chan]] / resid_df)))
       }
 
@@ -300,11 +300,10 @@ get_lm <- function(mdf,
                    inverted_dm,
                    resid_df,
                    robust = FALSE) {
+  tmp_mod <- stats::.lm.fit(mdf,
+                            x)
 
-  tmp_mod <- .lm.fit(mdf,
-                     x)
-
-  res_vars <- resid(tmp_mod)^2
+  res_vars <- stats::resid(tmp_mod) ^ 2
 
   if (robust) {
     out_se <- rob_se(mdf,
@@ -312,28 +311,37 @@ get_lm <- function(mdf,
                      inverted_dm)
   } else {
     out_se <- lapply(colSums(res_vars),
-                     function(x) sqrt(diag(inverted_dm * (x/resid_df))))
+                     function(x)
+                       sqrt(diag(inverted_dm * (x / resid_df))))
     out_se <- do.call(cbind, out_se)
 
   }
-  list("coefs" = coef(tmp_mod),
-       "ses" = out_se,
-       "res_vars" = colSums(res_vars))
+  list(
+    "coefs" = coef(tmp_mod),
+    "ses" = out_se,
+    "res_vars" = colSums(res_vars)
+  )
 }
 
-# robust standard error calculation
+#' robust standard error calculation
+#' @keywords internal
 rob_se <- function(mdf,
                    squared_resids,
                    inverted_dm) {
+
   hatvals <- stats::hat(mdf)
-  omega <- squared_resids / (1 - hatvals)^2
-  out_se <- apply(omega,
-                2,
-                function(x) diag(inverted_dm %*% crossprod(sweep(mdf,
-                                                                 1,
-                                                                 x,
-                                                                 "*"),
-                                                           mdf) %*% inverted_dm))
+  omega <- squared_resids / (1 - hatvals) ^ 2
+  out_se <-
+    apply(omega,
+          2,
+          function(x)
+            diag(inverted_dm %*%
+                   crossprod(sweep(mdf,
+                                   1,
+                                   x,
+                                   "*"),
+                             mdf) %*%
+                   inverted_dm))
   sqrt(out_se)
 }
 
