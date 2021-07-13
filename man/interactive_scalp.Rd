@@ -18,11 +18,18 @@ line is drawn for each electrode.}
 only 'biosemi64alpha' available other than default 10/20 system)}
 }
 \description{
-Launches a Shiny Gadget for an interactive version of erp_scalp, allowing
+Launches a Shiny Gadget for an interactive version of \code{erp_scalp}, allowing
 clicking of individual electrodes to plot them in a separate panel. In that
 panel, they can be averaged over or plotted as individual electrodes.
-Currently buggy with datasets with existing electrode co-ordinates.
+}
+\seealso{
+\code{\link[=erp_scalp]{erp_scalp()}} for non-interactive plots of ERPs in a scalp-based layout.
+
+Other scalp-based maps: 
+\code{\link{erp_scalp}()},
+\code{\link{topoplot}()}
 }
 \author{
 Matt Craddock, \email{matt@mattcraddock.com}
 }
+\concept{scalp-based maps}

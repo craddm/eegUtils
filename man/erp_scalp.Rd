@@ -2,57 +2,85 @@
 % Please edit documentation in R/erp_scalp.R
 \name{erp_scalp}
 \alias{erp_scalp}
-\title{Plot ERPs on the scalp}
+\alias{erp_scalp.default}
+\title{Plot event-related potentials using a scalp based layout}
 \usage{
-erp_scalp(
+erp_scalp(data, ...)
+
+\method{erp_scalp}{default}(
   data,
   electrode = "electrode",
   amplitude = "amplitude",
   time = "time",
   color = NULL,
+  colour = NULL,
   size = 0.8,
   baseline = NULL,
   show_guide = TRUE,
-  montage = NULL
+  chan_info = NULL,
+  montage = NULL,
+  ...
 )
 }
 \arguments{
 \item{data}{An EEG dataset.}
 
-\item{electrode}{Column name containing electrode names in data.
-Defaults to "electrode".}
+\item{...}{Various arguments passed to specific functions}
 
-\item{amplitude}{Column name containing amplitudes in data.
-Defaults to "amplitude".}
+\item{electrode}{Column name containing electrode names in data. Defaults to
+"electrode".}
+
+\item{amplitude}{Column name containing amplitudes in data. Defaults to
+"amplitude".}
 
 \item{time}{Column name containing time in data. Defaults to "time".}
 
-\item{color}{Variable to color lines by. If no variable is passed, only
-one line is drawn for each electrode.}
+\item{color}{Alias for \code{colour}.}
 
-\item{size}{Size of line(s).}
+\item{colour}{Variable to colour lines by. If no variable is passed, only one
+line is drawn for each electrode.}
+
+\item{size}{Size of the line(s) for the ERPs.}
 
 \item{baseline}{Character vector of times to subtract for baseline correct.}
 
-\item{show_guide}{Should a guide be shown.}
+\item{show_guide}{Should a guide showing the scale of the ERP plots be shown.
+Defaults to TRUE.}
 
-\item{montage}{Name of an existing montage set. Defaults to NULL; (currently
-only 'biosemi64alpha' available other than default 10/20 system)}
+\item{chan_info}{Pass channel information in the standard \code{eegUtils} format
+directly.}
+
+\item{montage}{Name of an existing montage set. Defaults to NULL, which will
+attempt to us locations from the data. If none are found, it will attempt
+to use standard 10-05 locations.}
 }
 \value{
 Returns a ggplot2 plot object.
 }
 \description{
-Creates an ERP figure for each electrode and layouts them on the scalp.
+Creates a \code{ggplot2} figure showing the ERP at each electrode, with each
+electrode placed according to its location on the scalp.
 }
-\details{
-The function uses default electrode names and locations contained
-in the package.
-}
+\section{Methods (by class)}{
+\itemize{
+\item \code{default}: Plot an ERP scalp map
+}}
+
 \examples{
 erp_scalp(demo_epochs, montage = "biosemi64alpha")
 
 }
+\seealso{
+\code{\link[=interactive_scalp]{interactive_scalp()}} for interactive plots of ERPs in a scalp-based
+layout.
+
+Other scalp-based maps: 
+\code{\link{interactive_scalp}()},
+\code{\link{topoplot}()}
+}
 \author{
 Matti Vuorre, \email{mv2521@columbia.edu}
+
+Matt Craddock, \email{matt@mattcraddock.com}
 }
+\concept{scalp-based maps}

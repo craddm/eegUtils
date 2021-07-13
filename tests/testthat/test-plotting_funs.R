@@ -73,3 +73,10 @@ test_that("erp_raster and erp_image function", {
             "data.frame")
 
 })
+
+test_that("erp_scalp runs", {
+  vdiffr::expect_doppelganger(
+    "scalp plot of ERPs from demo_epochs",
+    erp_scalp(demo_epochs)
+  )
+})
