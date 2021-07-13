@@ -56,7 +56,7 @@ compute_tfr.eeg_epochs <- function(data,
                                    verbose = TRUE,
                                    ...) {
   if (identical(output, "fourier") && keep_trials == FALSE) {
-    if (verbose == TRUE) {
+    if (verbose) {
       message("For fourier output, all trials are kept.")
     }
     keep_trials <- TRUE
@@ -95,6 +95,12 @@ compute_tfr.eeg_evoked <- function(data,
                                    downsample = 1,
                                    verbose = TRUE,
                                    ...) {
+  if (identical(output, "fourier") && keep_trials == FALSE) {
+    if (verbose) {
+      message("For fourier output, all trials are kept.")
+    }
+    keep_trials <- TRUE
+  }
   switch(
     method,
     "morlet" = tf_morlet(
@@ -109,7 +115,7 @@ compute_tfr.eeg_evoked <- function(data,
       verbose = verbose
     ),
     warning(
-      "Unknown method supplied. Currently supported method is 'morlet'"
+      "Unknown method supplied. Currently only supported method is 'morlet'"
     )
   )
 }
@@ -159,25 +165,43 @@ tf_morlet <- function(data,
                       demean = TRUE,
                       verbose) {
 
+  if (verbose) {
+    message("Computing TFR using Morlet wavelet convolution")
+  }
+
   frex <- parse_frex(foi,
                      n_freq,
                      verbose,
                      spacing = spacing)
 
+  if (downsample > 1 && verbose) {
+    message("Downsampling after transformation by a factor of ", downsample)
+  }
+
   n_freq <- length(unique(frex))
   # if a min and max n_cycles is specified, expand out to cycles per n_freq
   if (length(n_cycles) == 2) {
-    n_cycles <- seq(n_cycles[1],
-                    n_cycles[2],
-                    length.out = n_freq)
-  } else if (length(n_cycles) > 2) {
+    if (identical(spacing, "linear")) {
+      n_cycles <- seq(n_cycles[1],
+                      n_cycles[2],
+                      length.out = n_freq)
+    } else if (identical(spacing, "log")) {
+      n_cycles <- exp(
+        seq(log(n_cycles[1]),
+            log(n_cycles[2]),
+            length.out = n_freq)
+        )
+    }
+      } else if (length(n_cycles) > 2) {
     stop("n_cycles should be a vector of length 1 or length 2.")
   }
 
   #de-mean each epoch
   if (demean) {
-    data <- rm_baseline(data, verbose = verbose)
+    data <- rm_baseline(data,
+                        verbose = verbose)
   }
+
   elecs <- names(data$signals)
   #fft_points <- length(unique(data$timings$time))
   sigtime <- unique(data$timings$time)
@@ -271,9 +295,15 @@ tf_morlet <- function(data,
       dimensions = names(dimnames(data$signals)),
       epochs = data$epochs
     )
+    if (verbose) {
+      message("Returning single-trial data.")
+    }
     return(data)
   }
 
+  if (verbose) {
+    message("Returning signal averaged over all trials.")
+  }
   dims <-
     which(names(dimnames(data$signals)) %in% c("time", "frequency"))
 
@@ -423,7 +453,7 @@ conv_mor <- function(morlet_fam,
 
   for (i in 1:ncol(morlet_fam)) {
     tf_matrix[, , i] <- stats::mvfft(signal * morlet_fam[, i],
-                              inverse = TRUE) / n
+                                     inverse = TRUE) / n
   }
 
   nHfkn <- floor(n_kern / 2) + 1
@@ -596,7 +626,7 @@ parse_frex <- function(foi,
       seq(log(foi[1]),
           log(foi[2]),
           length.out = n_freq)
-      )
+    )
   } else {
     frex <- seq(foi[1],
                 foi[2],
@@ -606,7 +636,11 @@ parse_frex <- function(foi,
 
 
   if (verbose) {
-    message("Output frequencies: ", paste(round(frex, 2), collapse = " "))
+    message(
+      paste("Output frequencies using", spacing, "spacing:",
+            paste(round(frex, 2), collapse = " ")
+      )
+    )
   }
   frex
 }
@@ -644,7 +678,7 @@ run_tf <- function(tmp,
         for (ik in 1:n_epochs) {
           tfr_out[ik, , i, ] <- 2 *
             (2 * abs(mvfft(norm_mf * tmp_epo[, ik],
-                      inverse = TRUE)[all_times, ] / n_conv)) ^ 2
+                           inverse = TRUE)[all_times, ] / n_conv)) ^ 2
         }
       }
     } else {
@@ -657,8 +691,8 @@ run_tf <- function(tmp,
         tmp_epo <- fft_n(tmp[, , i, drop = FALSE], n_conv)
         for (ik in 1:n_epochs) {
           tfr_out[ik, , i, ] <-
-           2 * stats::mvfft(norm_mf * tmp_epo[, ik],
-                     inverse = TRUE)[all_times,] / n_conv
+            2 * stats::mvfft(norm_mf * tmp_epo[, ik],
+                             inverse = TRUE)[all_times,] / n_conv
         }
       }
     }
