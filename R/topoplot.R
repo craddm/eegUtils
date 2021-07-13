@@ -419,7 +419,7 @@ topoplot.eeg_epochs <- function(data,
            scaling = scaling,
            groups = groups,
            verbose = verbose
-           )
+  )
 }
 
 
@@ -556,7 +556,7 @@ topoplot.eeg_tfr <- function(data,
 set_palette <- function(topo, palette, limits = NULL) {
 
   if (palette %in% c("magma", "inferno", "plasma",
-                  "viridis", "A", "B", "C", "D")) {
+                     "viridis", "A", "B", "C", "D")) {
 
     topo <- topo +
       ggplot2::scale_fill_viridis_c(option = palette,
