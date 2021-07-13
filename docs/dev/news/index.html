@@ -144,22 +144,40 @@
     <div id="eegutils-0639000" class="section level1">
 <h1 class="page-header" data-toc-text="0.6.3.9000">
 <a href="#eegutils-0639000" class="anchor"></a>eegUtils 0.6.3.9000</h1>
+<div id="function-changes" class="section level3">
+<h3 class="hasAnchor">
+<a href="#function-changes" class="anchor"></a>Function changes</h3>
+<ul>
+<li>Add <code>imax</code> method to <code><a href="../reference/run_ICA.html">run_ICA()</a></code>. This allows use of the <code>infomax</code> ICA algorithm from the <code>infomax</code> package, which is a reimplementation of the Infomax algorithm used in the <code>EEGLAB</code> Matlab toolbox.</li>
+<li>
+<code><a href="../reference/erp_scalp.html">erp_scalp()</a></code> and <code><a href="../reference/interactive_scalp.html">interactive_scalp()</a></code> should now appropriately use channel locations included in the data.</li>
+</ul>
+</div>
+<div id="internal-changes--bug-fixes" class="section level3">
+<h3 class="hasAnchor">
+<a href="#internal-changes--bug-fixes" class="anchor"></a>Internal changes / bug fixes</h3>
+<ul>
+<li>
+<code><a href="../reference/erp_scalp.html">erp_scalp()</a></code> and <code><a href="../reference/interactive_scalp.html">interactive_scalp()</a></code> now use cleaner evaluation of the <code>colour</code> argument using <code>rlang</code>
+</li>
+</ul>
+</div>
 </div>
     <div id="eegutils-063" class="section level1">
 <h1 class="page-header" data-toc-text="0.6.3">
 <a href="#eegutils-063" class="anchor"></a>eegUtils 0.6.3</h1>
-<div id="function-changes" class="section level3">
+<div id="function-changes-1" class="section level3">
 <h3 class="hasAnchor">
-<a href="#function-changes" class="anchor"></a>Function changes</h3>
+<a href="#function-changes-1" class="anchor"></a>Function changes</h3>
 <ul>
 <li>Added log spaced frequencies to <code><a href="../reference/compute_tfr.html">compute_tfr()</a></code>, with the new <code>spacing</code> argument. <code>plot_tfr</code> automatically detects the spacing and plots the figure appropriately.</li>
 <li>Added <code>na.rm</code> option to <code><a href="../reference/erp_image.html">erp_image()</a></code> to either keep or plot trials with NA values due to smoothing. By default they’ll be removed.</li>
 <li>Added more informative messages for <code><a href="../reference/compute_psd.html">compute_psd()</a></code>.</li>
 </ul>
 </div>
-<div id="internal-changes--bug-fixes" class="section level3">
+<div id="internal-changes--bug-fixes-1" class="section level3">
 <h3 class="hasAnchor">
-<a href="#internal-changes--bug-fixes" class="anchor"></a>Internal changes / bug fixes</h3>
+<a href="#internal-changes--bug-fixes-1" class="anchor"></a>Internal changes / bug fixes</h3>
 <ul>
 <li>Some minor documentation fixes.</li>
 <li>
@@ -172,9 +190,9 @@
     <div id="eegutils-062" class="section level1">
 <h1 class="page-header" data-toc-text="0.6.2">
 <a href="#eegutils-062" class="anchor"></a>eegUtils 0.6.2</h1>
-<div id="function-changes-1" class="section level3">
+<div id="function-changes-2" class="section level3">
 <h3 class="hasAnchor">
-<a href="#function-changes-1" class="anchor"></a>Function changes</h3>
+<a href="#function-changes-2" class="anchor"></a>Function changes</h3>
 <ul>
 <li>added support for <code>EEGLAB</code> .set files saved in newer Matlab file formats.</li>
 <li>changed first argument of <code><a href="../reference/eeg_filter.html">eeg_filter()</a></code> to <code>data</code> instead of <code>.data</code>
@@ -184,9 +202,9 @@
 <code><a href="../reference/erp_image.html">erp_image()</a></code> now supports <code>eeg_tfr</code> objects.</li>
 </ul>
 </div>
-<div id="internal-changes--bug-fixes-1" class="section level3">
+<div id="internal-changes--bug-fixes-2" class="section level3">
 <h3 class="hasAnchor">
-<a href="#internal-changes--bug-fixes-1" class="anchor"></a>Internal changes / bug fixes</h3>
+<a href="#internal-changes--bug-fixes-2" class="anchor"></a>Internal changes / bug fixes</h3>
 <ul>
 <li>When combining three or more continuous <code>eeg_data</code> objects, <code><a href="../reference/eeg_combine.html">eeg_combine()</a></code> would substantially undercorrect the timing of events in the third file - this is now fixed.</li>
 <li>
@@ -207,9 +225,9 @@
     <div id="eegutils-061" class="section level1">
 <h1 class="page-header" data-toc-text="0.6.1">
 <a href="#eegutils-061" class="anchor"></a>eegUtils 0.6.1</h1>
-<div id="function-changes-2" class="section level3">
+<div id="function-changes-3" class="section level3">
 <h3 class="hasAnchor">
-<a href="#function-changes-2" class="anchor"></a>Function changes</h3>
+<a href="#function-changes-3" class="anchor"></a>Function changes</h3>
 <ul>
 <li>
 <code>ar_eogcor</code> now has a <code>bipolarize</code> argument which can be set to false when the HEOG/VEOG channels are already bipolarized.</li>
@@ -225,9 +243,9 @@
 <code><a href="../reference/compute_tfr.html">compute_tfr()</a></code> now works better with <code>eeg_evoked</code> objects that contain multiple conditions.</li>
 </ul>
 </div>
-<div id="internal-changes--bug-fixes-2" class="section level3">
+<div id="internal-changes--bug-fixes-3" class="section level3">
 <h3 class="hasAnchor">
-<a href="#internal-changes--bug-fixes-2" class="anchor"></a>Internal changes / bug fixes</h3>
+<a href="#internal-changes--bug-fixes-3" class="anchor"></a>Internal changes / bug fixes</h3>
 <ul>
 <li>
 <code>eeg_reference</code> now handles multiple reference channels better on rereferencing</li>
@@ -250,9 +268,9 @@
 <h1 class="page-header" data-toc-text="0.6.0">
 <a href="#eegutils-060" class="anchor"></a>eegUtils 0.6.0</h1>
 <p>IMPORTANT: There have been some changes to the logic of the <code><a href="../reference/topoplot.html">topoplot()</a></code> that may make their appearance quite different. Specifically, these changes are to the way the underlying interpolation grid is calculated and to how things like the diameter of the cartoon head is calculated. These changes often lead to different minimum or maximum amplitudes across the image, and thus changes in the appearance of the plot due to different scales- don’t be alarmed!</p>
-<div id="function-changes-3" class="section level3">
+<div id="function-changes-4" class="section level3">
 <h3 class="hasAnchor">
-<a href="#function-changes-3" class="anchor"></a>Function changes</h3>
+<a href="#function-changes-4" class="anchor"></a>Function changes</h3>
 <ul>
 <li>
 <code>epoch_data</code> baseline correction now defaults to <em>no</em> baseline correction</li>
@@ -269,7 +287,7 @@
 <li>
 <code><a href="../reference/view_artefacts.html">view_artefacts()</a></code>Shiny viewer for channel and epoch stats added.</li>
 <li>
-<code><a href="../reference/plot_timecourse.html">plot_timecourse()</a></code> now takes a mapping argument, which allows use of <code>ggplot2</code> <code><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes()</a></code> mappings</li>
+<code><a href="../reference/plot_timecourse.html">plot_timecourse()</a></code> now takes a mapping argument, which allows use of <code>ggplot2</code> <code>aes()</code> mappings</li>
 <li>
 <code><a href="../reference/eeg_average.html">eeg_average.eeg_tfr()</a></code> now follows behaviour of other <code><a href="../reference/eeg_average.html">eeg_average()</a></code> methods in respecting the <code>epochs</code> structure.<br>
 </li>
@@ -289,9 +307,9 @@
 <code><a href="../reference/plot_timecourse.html">plot_timecourse()</a></code> now allows CIs for <code>eeg_group</code> objects.</li>
 </ul>
 </div>
-<div id="internal-changes--bug-fixes-3" class="section level3">
+<div id="internal-changes--bug-fixes-4" class="section level3">
 <h3 class="hasAnchor">
-<a href="#internal-changes--bug-fixes-3" class="anchor"></a>Internal changes / bug fixes</h3>
+<a href="#internal-changes--bug-fixes-4" class="anchor"></a>Internal changes / bug fixes</h3>
 <ul>
 <li>
 <code><a href="../reference/plot_tfr.html">plot_tfr()</a></code> now always drops NA/NaN values and averages appropriately over electrodes and conditions.</li>
@@ -341,16 +359,16 @@
     <div id="eegutils-050" class="section level1">
 <h1 class="page-header" data-toc-text="0.5.0">
 <a href="#eegutils-050" class="anchor"></a>eegUtils 0.5.0</h1>
-<div id="function-changes-4" class="section level3">
+<div id="function-changes-5" class="section level3">
 <h3 class="hasAnchor">
-<a href="#function-changes-4" class="anchor"></a>Function changes</h3>
+<a href="#function-changes-5" class="anchor"></a>Function changes</h3>
 <ul>
 <li><p>Default settings for Infomax ICA changed to be similar to EEGLAB/Fieldtrip.</p></li>
 <li><p>Faster reading of bdf implemented. Old behaviour can be retained using <code>fast_bdf = FALSE</code> parameter to <code><a href="../reference/import_raw.html">import_raw()</a></code></p></li>
 <li><p><code>eeg_combine</code> now supports combining lists.</p></li>
 <li>
 <p><code>eeg_reference</code> now supports <code>eeg_epochs</code> and <code>eeg_evoked</code> objects.</p>
-<h3 id="internal-changes--bug-fixes-4">Internal changes / bug fixes</h3>
+<h3 id="internal-changes--bug-fixes-5">Internal changes / bug fixes</h3>
 </li>
 <li><p><code>plot_butterfly</code> should now be faster again.</p></li>
 <li><p>Much faster reader for BDF implemented.</p></li>
@@ -387,9 +405,9 @@
     <div id="eegutils-040" class="section level1">
 <h1 class="page-header" data-toc-text="0.4.0">
 <a href="#eegutils-040" class="anchor"></a>eegUtils 0.4.0</h1>
-<div id="function-changes-5" class="section level3">
+<div id="function-changes-6" class="section level3">
 <h3 class="hasAnchor">
-<a href="#function-changes-5" class="anchor"></a>Function changes</h3>
+<a href="#function-changes-6" class="anchor"></a>Function changes</h3>
 <ul>
 <li>Behaviour of <code>as.data.frame</code> methods changed.
 <ul>
@@ -440,9 +458,9 @@
 <li>Default <code>grid_res</code> for topography related plots increased to 200.</li>
 </ul>
 </div>
-<div id="internal-changes--bug-fixes-5" class="section level3">
+<div id="internal-changes--bug-fixes-6" class="section level3">
 <h3 class="hasAnchor">
-<a href="#internal-changes--bug-fixes-5" class="anchor"></a>Internal changes / bug fixes</h3>
+<a href="#internal-changes--bug-fixes-6" class="anchor"></a>Internal changes / bug fixes</h3>
 <ul>
 <li>
 <code>data.table</code> now used in the following functions internally:
@@ -472,9 +490,9 @@
     <div id="eegutils-030" class="section level1">
 <h1 class="page-header" data-toc-text="0.3.0">
 <a href="#eegutils-030" class="anchor"></a>eegUtils 0.3.0</h1>
-<div id="function-changes-6" class="section level3">
+<div id="function-changes-7" class="section level3">
 <h3 class="hasAnchor">
-<a href="#function-changes-6" class="anchor"></a>Function changes</h3>
+<a href="#function-changes-7" class="anchor"></a>Function changes</h3>
 <ul>
 <li>
 <code><a href="../reference/topoplot.html">topoplot()</a></code> now has a scaling parameter to scale the size of any lines or markers drawn on the plot.</li>
@@ -515,9 +533,9 @@
     <div id="eegutils-021" class="section level1">
 <h1 class="page-header" data-toc-text="0.2.1">
 <a href="#eegutils-021" class="anchor"></a>eegUtils 0.2.1</h1>
-<div id="function-changes-7" class="section level3">
+<div id="function-changes-8" class="section level3">
 <h3 class="hasAnchor">
-<a href="#function-changes-7" class="anchor"></a>Function changes</h3>
+<a href="#function-changes-8" class="anchor"></a>Function changes</h3>
 <ul>
 <li>
 <code><a href="../reference/topoplot.html">topoplot()</a></code> added highlights parameter to allow specific electrodes to be highlighted.</li>
@@ -594,9 +612,9 @@
     <div id="eegutils-020" class="section level1">
 <h1 class="page-header" data-toc-text="0.2.0">
 <a href="#eegutils-020" class="anchor"></a>eegUtils 0.2.0</h1>
-<div id="function-changes-8" class="section level3">
+<div id="function-changes-9" class="section level3">
 <h3 class="hasAnchor">
-<a href="#function-changes-8" class="anchor"></a>Function changes</h3>
+<a href="#function-changes-9" class="anchor"></a>Function changes</h3>
 <ul>
 <li>
 <code><a href="../reference/as.data.frame.eeg_epochs.html">as.data.frame.eeg_epochs()</a></code> now has a <code>cond_labels</code> parameter to select epochs with specific events and add the event label as an additional column.</li>
@@ -610,9 +628,9 @@
 <code><a href="../reference/ar_FASTER.html">eeg_FASTER()</a></code> - FASTER artefact rejection method now (mostly) implemented (<em>experimental</em>).</li>
 </ul>
 </div>
-<div id="internal-changes--bug-fixes-6" class="section level3">
+<div id="internal-changes--bug-fixes-7" class="section level3">
 <h3 class="hasAnchor">
-<a href="#internal-changes--bug-fixes-6" class="anchor"></a>Internal changes / bug fixes</h3>
+<a href="#internal-changes--bug-fixes-7" class="anchor"></a>Internal changes / bug fixes</h3>
 <ul>
 <li>
 <code><a href="../reference/plot_butterfly.html">plot_butterfly()</a></code> some <code>dplyr</code> use removed.</li>
@@ -641,9 +659,9 @@
     <div id="eegutils-0115" class="section level1">
 <h1 class="page-header" data-toc-text="0.1.15">
 <a href="#eegutils-0115" class="anchor"></a>eegUtils 0.1.15</h1>
-<div id="function-changes-9" class="section level3">
+<div id="function-changes-10" class="section level3">
 <h3 class="hasAnchor">
-<a href="#function-changes-9" class="anchor"></a>Function changes</h3>
+<a href="#function-changes-10" class="anchor"></a>Function changes</h3>
 <ul>
 <li>
 <code><a href="../reference/eeg_evoked.html">eeg_evoked()</a></code> class introduced to hold ERPS</li>
@@ -655,9 +673,9 @@
 <code><a href="../reference/as.data.frame.eeg_evoked.html">as.data.frame.eeg_evoked()</a></code> introduced to handle conversion of eeg_evoked objects to data frames.</li>
 </ul>
 </div>
-<div id="internal-changes--bug-fixes-7" class="section level3">
+<div id="internal-changes--bug-fixes-8" class="section level3">
 <h3 class="hasAnchor">
-<a href="#internal-changes--bug-fixes-7" class="anchor"></a>Internal changes / bug fixes</h3>
+<a href="#internal-changes--bug-fixes-8" class="anchor"></a>Internal changes / bug fixes</h3>
 <ul>
 <li>
 <code><a href="../reference/compute_psd.html">compute_psd()</a></code> function development, converted to S3method.</li>
@@ -681,9 +699,9 @@
     <div id="eegutils-0114" class="section level1">
 <h1 class="page-header" data-toc-text="0.1.14">
 <a href="#eegutils-0114" class="anchor"></a>eegUtils 0.1.14</h1>
-<div id="function-changes-10" class="section level3">
+<div id="function-changes-11" class="section level3">
 <h3 class="hasAnchor">
-<a href="#function-changes-10" class="anchor"></a>Function changes</h3>
+<a href="#function-changes-11" class="anchor"></a>Function changes</h3>
 <ul>
 <li>
 <code><a href="../reference/eeg_downsample.html">eeg_downsample()</a></code> function added to downsample EEG data by an integer factor.</li>
@@ -719,9 +737,9 @@
     <div id="eegutils-0113" class="section level1">
 <h1 class="page-header" data-toc-text="0.1.13">
 <a href="#eegutils-0113" class="anchor"></a>eegUtils 0.1.13</h1>
-<div id="function-changes-11" class="section level3">
+<div id="function-changes-12" class="section level3">
 <h3 class="hasAnchor">
-<a href="#function-changes-11" class="anchor"></a>Function changes</h3>
+<a href="#function-changes-12" class="anchor"></a>Function changes</h3>
 <ul>
 <li>
 <code><a href="../reference/interp_elecs.html">interp_elecs()</a></code> function to perform spherical spline interpolation of individual electrodes</li>
@@ -735,9 +753,9 @@
     <div id="eegutils-0112" class="section level1">
 <h1 class="page-header" data-toc-text="0.1.12">
 <a href="#eegutils-0112" class="anchor"></a>eegUtils 0.1.12</h1>
-<div id="function-changes-12" class="section level3">
+<div id="function-changes-13" class="section level3">
 <h3 class="hasAnchor">
-<a href="#function-changes-12" class="anchor"></a>Function changes</h3>
+<a href="#function-changes-13" class="anchor"></a>Function changes</h3>
 <ul>
 <li>
 <code><a href="../reference/iir_filt.html">iir_filt()</a></code> now also filters reference channels</li>
