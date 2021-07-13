@@ -256,7 +256,8 @@ convert_to_csd <- function(data,
   }
 
   # Convert data to average reference
-  data <- eeg_reference(data)
+  data <- eeg_reference(data,
+                        verbose = FALSE)
 
   if (all(c("cart_x", "cart_y", "cart_z") %in% names(data$chan_info))) {
     xyz_coords <- data$chan_info[, c("cart_x", "cart_y", "cart_z")]
@@ -292,7 +293,7 @@ convert_to_csd <- function(data,
                 function(x) colSums(x * h_mat)) / scaling)
   data$signals[, data_chans] <- as.data.frame(be)
   names(data$signals) <- orig_elecs
-  data$reference <- "CSD"
+  data$reference$ref_chans <- "CSD"
   data
 }
 
