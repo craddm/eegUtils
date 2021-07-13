@@ -151,6 +151,9 @@
 <li>Add <code>imax</code> method to <code><a href="../reference/run_ICA.html">run_ICA()</a></code>. This allows use of the <code>infomax</code> ICA algorithm from the <code>infomax</code> package, which is a reimplementation of the Infomax algorithm used in the <code>EEGLAB</code> Matlab toolbox.</li>
 <li>
 <code><a href="../reference/erp_scalp.html">erp_scalp()</a></code> and <code><a href="../reference/interactive_scalp.html">interactive_scalp()</a></code> should now appropriately use channel locations included in the data.</li>
+<li>More informative messages when using <code><a href="../reference/compute_tfr.html">compute_tfr()</a></code>.</li>
+<li>
+<code><a href="../reference/plot_tfr.html">plot_tfr()</a></code> now applies baseline correction on a single-trial basis where possible, which may show different results when using non-linear baseline correction (e.g. divide or dB)</li>
 </ul>
 </div>
 <div id="internal-changes--bug-fixes" class="section level3">
@@ -160,6 +163,9 @@
 <li>
 <code><a href="../reference/erp_scalp.html">erp_scalp()</a></code> and <code><a href="../reference/interactive_scalp.html">interactive_scalp()</a></code> now use cleaner evaluation of the <code>colour</code> argument using <code>rlang</code>
 </li>
+<li>Fixed adding CSD as new reference when using <code><a href="../reference/compute_csd.html">compute_csd()</a></code>
+</li>
+<li>When using a scaling number of cycles in <code><a href="../reference/compute_tfr.html">compute_tfr()</a></code>, they will now also use the <code>spacing</code> parameter to determine <code>log</code> or <code>linear</code> scaling.</li>
 </ul>
 </div>
 </div>

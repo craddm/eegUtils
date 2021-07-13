@@ -4,11 +4,13 @@
 - Add `imax` method to `run_ICA()`. This allows use of the `infomax` ICA algorithm from the `infomax` package, which is a reimplementation of the Infomax algorithm used in the `EEGLAB` Matlab toolbox.
 - `erp_scalp()` and `interactive_scalp()` should now appropriately use channel locations included in the data.
 - More informative messages when using `compute_tfr()`.
+- `plot_tfr()` now applies baseline correction on a single-trial basis where possible, which may show different results when using non-linear baseline correction (e.g. divide or dB)
 
 ### Internal changes / bug fixes
 
 - `erp_scalp()` and `interactive_scalp()` now use cleaner evaluation of the `colour` argument using `rlang` 
 - Fixed adding CSD as new reference when using `compute_csd()`
+- When using a scaling number of cycles in `compute_tfr()`, they will now also use the `spacing` parameter to determine `log` or `linear` scaling.
 
 # eegUtils 0.6.3
 
