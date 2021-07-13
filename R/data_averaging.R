@@ -1,11 +1,16 @@
 #' Calculate averages (e.g. ERPs) for single datasets
 #'
-#' This function is used to create an `eeg_evoked` object from
-#' `eeg_epochs`.
+#' This function is used to create an `eeg_evoked` object from `eeg_epochs`. By
+#' default, it will try to keep different conditions in the data separate using
+#' the `epochs` metadata from the object, thus yielding one average per
+#' condition. Alternatively, the user can specify which averages they want using
+#' the `cols` argument.
 #'
-#' @param data An `eeg_epochs` object.
+#' @param data An `eeg_epochs` of `eeg_tfr` object.
 #' @param ... Other arguments passed to the averaging functions
-#' @author Matt craddock \email{matt@@mattcraddock.com}
+#' @author Matt Craddock \email{matt@@mattcraddock.com}
+#' @returns An object of class `eeg_evoked` if applied to `eeg_epochs`;
+#'   `eeg_tfr` if applied to `eeg_tfr`.
 #' @export
 
 eeg_average <- function(data,
@@ -47,6 +52,13 @@ eeg_average.eeg_epochs <- function(data,
   data$signals <- dplyr::left_join(cbind(data$signals,
                                          data$timings),
                                    data$epochs, by = "epoch")
+
+  recording_id <- unique(data$signals$recording)
+
+  if (length(recording_id) > 1) {
+    recording_id <- recording_id[[1]]
+  }
+
   if (!is.null(cols)) {
     if (identical(cols, "everything")) {
       col_names <- "participant_id"
@@ -62,14 +74,39 @@ eeg_average.eeg_epochs <- function(data,
     col_names <- col_names[!(col_names %in% c("epoch", "recording", "event_type"))]
   }
 
+   # data$signals <-
+   #   dplyr::group_by_at(data$signals,
+   #                      .vars = vars(time, col_names)) %>%
+   #   dplyr::summarise_at(.vars = vars(elecs),
+   #                       mean) %>%
+   #   dplyr::group_by_at(.vars = col_names) %>%
+   #   dplyr::mutate(epoch = dplyr::cur_group_id()) %>%
+   #   dplyr::ungroup()
+
+  # break down into individual calls using updated syntax
   data$signals <-
-    dplyr::group_by_at(data$signals,
-                       .vars = vars(time, col_names)) %>%
-    dplyr::summarise_at(.vars = vars(elecs),
-                        mean) %>%
-    dplyr::group_by_at(.vars = col_names) %>%
-    dplyr::mutate(epoch = dplyr::cur_group_id()) %>%
-    dplyr::ungroup()
+    dplyr::group_by(
+      data$signals,
+      dplyr::across(c(time, dplyr::all_of(col_names)))
+    )
+
+  data$signals <-
+    dplyr::summarise(
+      data$signals,
+      dplyr::across(dplyr::all_of(elecs), mean)
+    )
+
+  data$signals <-
+    dplyr::group_by(
+      data$signals,
+      dplyr::across(dplyr::all_of(col_names))
+      )
+
+  data$signals <-
+    dplyr::mutate(data$signals,
+                  epoch = dplyr::cur_group_id())
+
+  data$signals <- dplyr::ungroup(data$signals)
 
   timings <- data$signals[, c("time", "epoch", col_names)]
 
@@ -79,6 +116,10 @@ eeg_average.eeg_epochs <- function(data,
   epochs <- unique(epochs)
   timings <- data$signals[, c("time", "epoch")]
   timings <- unique(timings)
+
+  if (!("recording" %in% colnames(epochs))) {
+    epochs$recording <- recording_id
+  }
 
   class(epochs) <- c("epoch_info",
                      "tbl_df",
