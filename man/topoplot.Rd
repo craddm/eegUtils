@@ -219,6 +219,12 @@ there are more than 40 electrodes.
 topoplot(demo_epochs)
 topoplot(demo_epochs, time_lim = c(.1, .2))
 }
+\seealso{
+Other scalp-based maps: 
+\code{\link{erp_scalp}()},
+\code{\link{interactive_scalp}()}
+}
 \author{
 Matt Craddock, \email{matt@mattcraddock.com}
 }
+\concept{scalp-based maps}

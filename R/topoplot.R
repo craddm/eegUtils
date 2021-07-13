@@ -74,8 +74,7 @@ topoplot.default <- function(data,
 #'   Defaults to TRUE.
 #' @import ggplot2
 #' @import tidyr
-#' @importFrom dplyr group_by summarise ungroup
-#' @import scales
+#' @family scalp-based maps
 #' @describeIn topoplot Topographical plotting of data.frames and other non
 #'   eeg_data objects.
 #' @export

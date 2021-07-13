@@ -34,7 +34,7 @@ test_that("ICA timecourses work", {
                               plot_timecourse(demo_fastic,
                                               component = "Comp002"))
   vdiffr::expect_doppelganger("fastica psd",
-                              plot_psd(demo_fastic))
+                              plot_psd(demo_fastic, verbose = FALSE))
 })
 
 test_that("component removal works", {

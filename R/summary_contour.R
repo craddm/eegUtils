@@ -68,7 +68,7 @@ StatSummarybyZ <- ggplot2::ggproto("StatSummaryByZ", Stat,
                          path_df <- iso_to_path(isolines, data$group[1])
 
                          path_df$level <- as.numeric(path_df$level)
-                         path_df$nlevel <- rescale_max(path_df$level)
+                         path_df$nlevel <- scales::rescale_max(path_df$level)
 
                          path_df
                        }
@@ -208,7 +208,7 @@ StatScalpContours <-
                      path_df <- iso_to_path(isolines, data$group[1])
 
                      path_df$level <- as.numeric(path_df$level)
-                     path_df$nlevel <- rescale_max(path_df$level)
+                     path_df$nlevel <- scales::rescale_max(path_df$level)
 
                      path_df
                    }

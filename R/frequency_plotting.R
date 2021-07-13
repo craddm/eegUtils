@@ -188,7 +188,7 @@ create_psd_plot <- function(psd_out,
 
   psd_out <-
     tidyr::pivot_longer(psd_out,
-                        cols = chan_names,
+                        cols = dplyr::all_of(chan_names),
                         names_to = "electrode",
                         values_to = "power")
   ggplot(psd_out,
