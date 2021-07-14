@@ -6,6 +6,8 @@
 #'
 #' @param data EEG dataset. Should have multiple timepoints.
 #' @param ... Other arguments passed to methods.
+#' @examples
+#' plot_difference(demo_spatial, conditions = "epoch_labels", electrode = "P8")
 #' @return Returns a ggplot2 plot object
 #' @export
 plot_difference <- function(data,
@@ -61,21 +63,25 @@ plot_difference.eeg_epochs <-
                     time,
                     electrode),
         names_from = conditions,
-        values_from = amplitude
+        values_from = amplitude,
+        values_fn = mean
         )
 
     if (length(cond_levels) == 2) {
       data$difference <- data[[cond_levels[1]]] - data[[cond_levels[2]]]
+      diff_label <- paste(cond_levels[1], "-", cond_levels[2])
     } else {
       stop("Can only currently plot differences for two levels")
     }
 
     data
 
-    tc_plot <- create_tc(data,
-                         add_CI = FALSE,
-                         colour = colour,
-                         mapping = mapping,
-                         quantity = difference)
+    tc_plot <-
+      create_tc(data,
+                add_CI = FALSE,
+                colour = colour,
+                mapping = mapping,
+                quantity = difference) +
+      labs(subtitle = diff_label)
     tc_plot
   }

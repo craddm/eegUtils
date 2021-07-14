@@ -32,6 +32,7 @@ topoplot(data, ...)
   scaling = 1,
   groups = NULL,
   verbose = TRUE,
+  k = 40,
   ...
 )
 
@@ -53,6 +54,7 @@ topoplot(data, ...)
   scaling = 1,
   verbose = TRUE,
   groups = NULL,
+  k = 40,
   ...
 )
 
@@ -74,6 +76,7 @@ topoplot(data, ...)
   scaling = 1,
   groups = NULL,
   verbose = TRUE,
+  k = 40,
   ...
 )
 
@@ -96,6 +99,7 @@ topoplot(data, ...)
   scaling = 1,
   verbose = TRUE,
   groups = NULL,
+  k = 40,
   ...
 )
 
@@ -118,6 +122,7 @@ topoplot(data, ...)
   freq_range = NULL,
   verbose = TRUE,
   groups = NULL,
+  k = 40,
   ...
 )
 }
@@ -179,6 +184,9 @@ Defaults to 1.}
 
 \item{verbose}{Warning messages when electrodes do not have locations.
 Defaults to TRUE.}
+
+\item{k}{Degrees of freedom used for spline when using \code{method = gam}.
+Defaults to 40.}
 
 \item{component}{Component to plot (numeric)}
 
