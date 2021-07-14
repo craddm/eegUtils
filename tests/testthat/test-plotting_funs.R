@@ -60,7 +60,7 @@ test_that("Topoplots", {
 test_that("erp_raster and erp_image function", {
   test_epo <- epoch_data(test_data, 255)
   expect_s3_class(erp_image(demo_epochs,
-                            electrode = "A13"),
+                            electrode = "A29"),
                   "gg")
   expect_s3_class(erp_raster(demo_epochs),
                   "gg")
@@ -76,7 +76,12 @@ test_that("erp_raster and erp_image function", {
 
 test_that("erp_scalp runs", {
   vdiffr::expect_doppelganger(
-    "scalp plot of ERPs from demo_epochs",
-    erp_scalp(demo_epochs)
+    "scalp plot of ERPs from demo_spatial",
+    erp_scalp(demo_spatial)
+  )
+  vdiffr::expect_doppelganger(
+    "scalp plot of ERPs from demo_spatial with conditions",
+    erp_scalp(demo_spatial,
+              colour = epoch_labels)
   )
 })

@@ -1,12 +1,10 @@
 context("ICA analyses")
-
 demo_epochs <- electrode_locations(demo_epochs,
                                    montage = "biosemi64alpha",
                                    overwrite = TRUE)
-
 demo_SOBI <- run_ICA(demo_epochs, pca = 10)
 demo_fastic <- run_ICA(demo_epochs, method = "fastica", pca = 10)
-demo_fica <- run_ICA(demo_epochs, method = "fica", pca = 10)
+demo_fica <- run_ICA(demo_spatial, method = "fica", pca = 15)
 
 test_that("topoplots for ICA work", {
 
@@ -22,6 +20,10 @@ test_that("topoplots for ICA work", {
   vdiffr::expect_doppelganger("topographical plot for fica",
                               topoplot(demo_fica,
                                        component = "Comp001",
+                                       limits = c(-4, 3.5)))
+  vdiffr::expect_doppelganger("topoplot multiple comps",
+                              topoplot(demo_fica,
+                                       component = c("Comp001", "Comp002"),
                                        limits = c(-4, 3.5)))
 })
 
@@ -48,8 +50,14 @@ test_that("component removal works", {
 
 test_that("artefact detect works", {
 
-  expect_equal(ar_acf(demo_SOBI, plot = FALSE), character(0))
-  expect_equal(ar_chanfoc(demo_fastic, plot = FALSE), "Comp006")
-  expect_equal(ar_trialfoc(demo_fica, plot = FALSE), "Comp006")
+  expect_equal(ar_acf(demo_fica, plot = FALSE), character(0))
+  expect_equal(ar_chanfoc(demo_fica, plot = FALSE), character(0))
+  expect_equal(ar_trialfoc(demo_fica, plot = FALSE), "Comp001")
+  expect_equal(ar_eogcor(demo_fica,
+                         demo_spatial,
+                         HEOG = c("EXG1", "EXG2"),
+                         VEOG = c("EXG3", "EXG4"),
+                         plot = FALSE),
+               character(0))
 
 })
