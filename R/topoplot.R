@@ -72,6 +72,8 @@ topoplot.default <- function(data,
 #' @param groups Column name for groups to retain. This is required to create facetted plots.
 #' @param verbose Warning messages when electrodes do not have locations.
 #'   Defaults to TRUE.
+#' @param k Degrees of freedom used for spline when using `method = gam`.
+#'   Defaults to 40.
 #' @import ggplot2
 #' @import tidyr
 #' @family scalp-based maps
@@ -96,6 +98,7 @@ topoplot.data.frame <- function(data,
                                 scaling = 1,
                                 groups = NULL,
                                 verbose = TRUE,
+                                k = 40,
                                 ...) {
 
   if (identical(method, "gam")) {
@@ -226,7 +229,8 @@ topoplot.data.frame <- function(data,
                                  method = method,
                                  grid_res = grid_res,
                                  r = r,
-                                 facets = {{groups}}),
+                                 facets = {{groups}},
+                                 k = k),
                     aes(x = x,
                         y = y,
                         fill = fill)) +
@@ -302,6 +306,11 @@ topoplot.data.frame <- function(data,
   topo <- set_palette(topo,
                       palette,
                       limits)
+  if (identical(groups, "component")) {
+    topo <-
+      topo +
+      facet_wrap(~component)
+  }
   topo
 }
 
@@ -324,6 +333,7 @@ topoplot.eeg_data <- function(data, time_lim = NULL,
                               scaling = 1,
                               verbose = TRUE,
                               groups = NULL,
+                              k = 40,
                               ...) {
 
   if (!is.null(data$chan_info)) {
@@ -361,7 +371,8 @@ topoplot.eeg_data <- function(data, time_lim = NULL,
            passed = TRUE,
            scaling = scaling,
            verbose = verbose,
-           groups = groups)
+           groups = groups,
+           k = k)
 }
 
 
@@ -385,6 +396,7 @@ topoplot.eeg_epochs <- function(data,
                                 scaling = 1,
                                 groups = NULL,
                                 verbose = TRUE,
+                                k = 40,
                                 ...) {
 
   if (!is.null(data$chan_info)) {
@@ -418,7 +430,8 @@ topoplot.eeg_epochs <- function(data,
            highlights = highlights,
            scaling = scaling,
            groups = groups,
-           verbose = verbose
+           verbose = verbose,
+           k = k
   )
 }
 
@@ -444,6 +457,7 @@ topoplot.eeg_ICA <- function(data,
                              scaling = 1,
                              verbose = TRUE,
                              groups = NULL,
+                             k = 40,
                              ...) {
   if (missing(component)) {
     stop("Component number must be specified for eeg_ICA objects.")
@@ -479,7 +493,8 @@ topoplot.eeg_ICA <- function(data,
            chan_marker = chan_marker,
            time_lim = NULL,
            verbose = verbose,
-           groups = groups)
+           groups = groups,
+           k = k)
 
 }
 
@@ -505,6 +520,7 @@ topoplot.eeg_tfr <- function(data,
                              freq_range = NULL,
                              verbose = TRUE,
                              groups = NULL,
+                             k = 40,
                              ...) {
 
   if (!is.null(data$chan_info)) {
@@ -542,7 +558,8 @@ topoplot.eeg_tfr <- function(data,
            scaling = scaling,
            passed = TRUE,
            verbose = verbose,
-           groups = groups)
+           groups = groups,
+           k = k)
 }
 
 #' Set palette and limits for topoplot

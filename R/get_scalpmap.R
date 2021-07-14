@@ -28,6 +28,8 @@ get_scalpmap.default <- function(data,
 #' @param quantity Quantity to be plotted. Defaults to "amplitude".
 #' @param facets Any facets you plan to use
 #' @param r Size of headshape
+#' @param k Degrees of freedom used for spline when using `method = gam`.
+#'   Defaults to -1, which attempts to automatically determine k.
 #' @describeIn get_scalpmap Get scalpmap from a `data.frame`
 #' @export
 get_scalpmap.data.frame <- function(data,
@@ -37,6 +39,7 @@ get_scalpmap.data.frame <- function(data,
                                     quantity = "amplitude",
                                     facets = NULL,
                                     r = 95,
+                                    k = -1,
                                     ...) {
 
   method <- match.arg(method,
@@ -65,7 +68,8 @@ get_scalpmap.data.frame <- function(data,
                                         gam = fit_gam_topo(.,
                                                            grid_res = grid_res,
                                                            interp_limit = interp_limit,
-                                                           r = r)
+                                                           r = r,
+                                                           k = k)
                                         )
                                 )
                     )
@@ -83,7 +87,8 @@ get_scalpmap.data.frame <- function(data,
              gam = fit_gam_topo(tmp,
                                 grid_res = grid_res,
                                 interp_limit = interp_limit,
-                                r = r)
+                                r = r,
+                                k = k)
       )
   }
   smooth
@@ -348,14 +353,15 @@ biharmonic <- function(data,
 fit_gam_topo <- function(data,
                          grid_res,
                          interp_limit,
-                         r) {
+                         r,
+                         k = -1) {
 
   max_elec <- calc_max_elec(data)
 
   spline_smooth <- mgcv::gam(fill ~ s(x,
                                       y,
-                                      bs = "ts",
-                                      k = 40),
+                                      bs = "tp",
+                                      k = k),
                              data = data)
 
   data <- expand.grid(x = seq(max_elec * -1.5,
