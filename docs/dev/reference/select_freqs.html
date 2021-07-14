@@ -73,7 +73,7 @@ selecting either single frequencies or anything within a range." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">eegUtils</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.5.0.9000</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.6.3.9000</span>
       </span>
     </div>
 
@@ -177,13 +177,13 @@ lower and upper bounds. (e.g. c(5, 30))</p></td>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='va'>demo_tfr</span> <span class='op'>&lt;-</span> <span class='fu'><a href='compute_tfr.html'>compute_tfr</a></span><span class='op'>(</span><span class='va'>demo_epochs</span>, foi <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>4</span>, <span class='fl'>30</span><span class='op'>)</span>, n_freq <span class='op'>=</span> <span class='fl'>10</span>, n_cycles <span class='op'>=</span> <span class='fl'>5</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>Output frequencies: 4 6.89 9.78 12.67 15.56 18.44 21.33 24.22 27.11 30</span></div><div class='output co'>#&gt; <span class='message'>Removing channel means per epoch...</span></div><div class='input'><span class='fu'>select_freqs</span><span class='op'>(</span><span class='va'>demo_tfr</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>8</span>, <span class='fl'>12</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>Computing TFR using Morlet wavelet convolution</span></div><div class='output co'>#&gt; <span class='message'>Output frequencies using linear spacing: 4 6.89 9.78 12.67 15.56 18.44 21.33 24.22 27.11 30</span></div><div class='output co'>#&gt; <span class='message'>Removing channel means per epoch...</span></div><div class='output co'>#&gt; <span class='message'>Returning signal averaged over all trials.</span></div><div class='input'><span class='fu'>select_freqs</span><span class='op'>(</span><span class='va'>demo_tfr</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>8</span>, <span class='fl'>12</span><span class='op'>)</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; Epoched EEG TFR data
 #&gt; 
 #&gt; Frequency range		:	 9.78 
 #&gt; Number of channels	:	 11 
 #&gt; Electrode names		:	 A5 A13 A21 A29 A31 B5 B6 B8 B16 B18 B26 
-#&gt; Number of epochs	:	 1 
+#&gt; Number of epochs	:	 80 
 #&gt; Epoch limits		:	 -0.197 - 0.451 seconds
 #&gt; Sampling rate		:	 128  Hz</div></pre>
   </div>

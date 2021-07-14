@@ -74,7 +74,7 @@ performed using convolution in the frequency domain." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">eegUtils</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.6.2.9000</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.6.3.9000</span>
       </span>
     </div>
 
@@ -258,7 +258,7 @@ performing time-frequency analysis on the full sampling rate data.</p></td>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='va'>out</span> <span class='op'>&lt;-</span> <span class='fu'>compute_tfr</span><span class='op'>(</span><span class='va'>demo_epochs</span>, method <span class='op'>=</span> <span class='st'>"morlet"</span>, foi <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>4</span>, <span class='fl'>30</span><span class='op'>)</span>, n_freq <span class='op'>=</span> <span class='fl'>10</span>, n_cycles <span class='op'>=</span> <span class='fl'>3</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>Output frequencies: 4 6.89 9.78 12.67 15.56 18.44 21.33 24.22 27.11 30</span></div><div class='output co'>#&gt; <span class='message'>Removing channel means per epoch...</span></div><div class='input'><span class='va'>out</span>
+</div><div class='output co'>#&gt; <span class='message'>Computing TFR using Morlet wavelet convolution</span></div><div class='output co'>#&gt; <span class='message'>Output frequencies using linear spacing: 4 6.89 9.78 12.67 15.56 18.44 21.33 24.22 27.11 30</span></div><div class='output co'>#&gt; <span class='message'>Removing channel means per epoch...</span></div><div class='output co'>#&gt; <span class='message'>Returning signal averaged over all trials.</span></div><div class='input'><span class='va'>out</span>
 </div><div class='output co'>#&gt; Epoched EEG TFR data
 #&gt; 
 #&gt; Frequency range		:	 4 6.89 9.78 12.67 15.56 18.44 21.33 24.22 27.11 30 
@@ -278,7 +278,7 @@ performing time-frequency analysis on the full sampling rate data.</p></td>
 #&gt; 8  24.222222  8.074074 0.01971185        3
 #&gt; 9  27.111111  9.037037 0.01761141        3
 #&gt; 10 30.000000 10.000000 0.01591549        3</div><div class='input'><span class='va'>out</span> <span class='op'>&lt;-</span> <span class='fu'>compute_tfr</span><span class='op'>(</span><span class='va'>demo_epochs</span>, method <span class='op'>=</span> <span class='st'>"morlet"</span>, foi <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>4</span>, <span class='fl'>30</span><span class='op'>)</span>, n_freq <span class='op'>=</span> <span class='fl'>10</span>, n_cycles <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>3</span>, <span class='fl'>10</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>Output frequencies: 4 6.89 9.78 12.67 15.56 18.44 21.33 24.22 27.11 30</span></div><div class='output co'>#&gt; <span class='message'>Removing channel means per epoch...</span></div><div class='input'><span class='va'>out</span><span class='op'>$</span><span class='va'>freq_info</span><span class='op'>$</span><span class='va'>morlet_resolution</span>
+</div><div class='output co'>#&gt; <span class='message'>Computing TFR using Morlet wavelet convolution</span></div><div class='output co'>#&gt; <span class='message'>Output frequencies using linear spacing: 4 6.89 9.78 12.67 15.56 18.44 21.33 24.22 27.11 30</span></div><div class='output co'>#&gt; <span class='message'>Removing channel means per epoch...</span></div><div class='output co'>#&gt; <span class='message'>Returning signal averaged over all trials.</span></div><div class='input'><span class='va'>out</span><span class='op'>$</span><span class='va'>freq_info</span><span class='op'>$</span><span class='va'>morlet_resolution</span>
 </div><div class='output co'>#&gt;    frequency  sigma_f    sigma_t  n_cycles
 #&gt; 1   4.000000 1.333333 0.11936621  3.000000
 #&gt; 2   6.888889 1.823529 0.08727852  3.777778

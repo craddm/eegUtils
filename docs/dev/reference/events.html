@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">eegUtils</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.6.1.9000</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.6.3.9000</span>
       </span>
     </div>
 
@@ -182,40 +182,40 @@
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'>events</span><span class='op'>(</span><span class='va'>demo_epochs</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 80 x 5</span><span>
+</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 80 x 5</span>
 #&gt;    event_onset event_time event_type epoch  time
-#&gt;          </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>      </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>      </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>
-#&gt; </span><span style='color: #BCBCBC;'> 1</span><span>        </span><span style='text-decoration: underline;'>4</span><span>128       8.06        208     1     0
-#&gt; </span><span style='color: #BCBCBC;'> 2</span><span>        </span><span style='text-decoration: underline;'>7</span><span>037      13.7         213     2     0
-#&gt; </span><span style='color: #BCBCBC;'> 3</span><span>       </span><span style='text-decoration: underline;'>10</span><span>043      19.6         215     3     0
-#&gt; </span><span style='color: #BCBCBC;'> 4</span><span>       </span><span style='text-decoration: underline;'>12</span><span>928      25.2         213     4     0
-#&gt; </span><span style='color: #BCBCBC;'> 5</span><span>       </span><span style='text-decoration: underline;'>15</span><span>868      31.0         207     5     0
-#&gt; </span><span style='color: #BCBCBC;'> 6</span><span>       </span><span style='text-decoration: underline;'>18</span><span>777      36.7         207     6     0
-#&gt; </span><span style='color: #BCBCBC;'> 7</span><span>       </span><span style='text-decoration: underline;'>21</span><span>578      42.1         213     7     0
-#&gt; </span><span style='color: #BCBCBC;'> 8</span><span>       </span><span style='text-decoration: underline;'>24</span><span>554      48.0         213     8     0
-#&gt; </span><span style='color: #BCBCBC;'> 9</span><span>       </span><span style='text-decoration: underline;'>27</span><span>379      53.5         222     9     0
-#&gt; </span><span style='color: #BCBCBC;'>10</span><span>       </span><span style='text-decoration: underline;'>30</span><span>306      59.2         208    10     0
-#&gt; </span><span style='color: #949494;'># ... with 70 more rows</span><span></div><div class='input'><span class='fu'>events</span><span class='op'>(</span><span class='va'>demo_epochs</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span><span class='op'>(</span><span class='fu'>events</span><span class='op'>(</span><span class='va'>demo_epochs</span><span class='op'>)</span>,
+#&gt;          <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>      <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>      <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>
+#&gt; <span style='color: #BCBCBC;'> 1</span>        <span style='text-decoration: underline;'>4</span>128       8.06        208     1     0
+#&gt; <span style='color: #BCBCBC;'> 2</span>        <span style='text-decoration: underline;'>7</span>037      13.7         213     2     0
+#&gt; <span style='color: #BCBCBC;'> 3</span>       <span style='text-decoration: underline;'>10</span>043      19.6         215     3     0
+#&gt; <span style='color: #BCBCBC;'> 4</span>       <span style='text-decoration: underline;'>12</span>928      25.2         213     4     0
+#&gt; <span style='color: #BCBCBC;'> 5</span>       <span style='text-decoration: underline;'>15</span>868      31.0         207     5     0
+#&gt; <span style='color: #BCBCBC;'> 6</span>       <span style='text-decoration: underline;'>18</span>777      36.7         207     6     0
+#&gt; <span style='color: #BCBCBC;'> 7</span>       <span style='text-decoration: underline;'>21</span>578      42.1         213     7     0
+#&gt; <span style='color: #BCBCBC;'> 8</span>       <span style='text-decoration: underline;'>24</span>554      48.0         213     8     0
+#&gt; <span style='color: #BCBCBC;'> 9</span>       <span style='text-decoration: underline;'>27</span>379      53.5         222     9     0
+#&gt; <span style='color: #BCBCBC;'>10</span>       <span style='text-decoration: underline;'>30</span>306      59.2         208    10     0
+#&gt; <span style='color: #949494;'># ... with 70 more rows</span></div><div class='input'><span class='fu'>events</span><span class='op'>(</span><span class='va'>demo_epochs</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span><span class='op'>(</span><span class='fu'>events</span><span class='op'>(</span><span class='va'>demo_epochs</span><span class='op'>)</span>,
  sf <span class='op'>=</span> <span class='fu'>dplyr</span><span class='fu'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/case_when.html'>case_when</a></span><span class='op'>(</span>
          <span class='va'>event_type</span> <span class='op'>%%</span> <span class='fl'>2</span> <span class='op'>==</span> <span class='fl'>0</span> <span class='op'>~</span> <span class='st'>"HSF"</span>,
          <span class='va'>event_type</span> <span class='op'>%%</span> <span class='fl'>2</span> <span class='op'>==</span> <span class='fl'>1</span> <span class='op'>~</span> <span class='st'>"LSF"</span>,
  <span class='op'>)</span><span class='op'>)</span>
 <span class='fu'>events</span><span class='op'>(</span><span class='va'>demo_epochs</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; </span><span style='color: #949494;'># A tibble: 80 x 6</span><span>
+</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 80 x 6</span>
 #&gt;    event_onset event_time event_type epoch  time sf   
-#&gt;          </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>      </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>      </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>
-#&gt; </span><span style='color: #BCBCBC;'> 1</span><span>        </span><span style='text-decoration: underline;'>4</span><span>128       8.06        208     1     0 HSF  
-#&gt; </span><span style='color: #BCBCBC;'> 2</span><span>        </span><span style='text-decoration: underline;'>7</span><span>037      13.7         213     2     0 LSF  
-#&gt; </span><span style='color: #BCBCBC;'> 3</span><span>       </span><span style='text-decoration: underline;'>10</span><span>043      19.6         215     3     0 LSF  
-#&gt; </span><span style='color: #BCBCBC;'> 4</span><span>       </span><span style='text-decoration: underline;'>12</span><span>928      25.2         213     4     0 LSF  
-#&gt; </span><span style='color: #BCBCBC;'> 5</span><span>       </span><span style='text-decoration: underline;'>15</span><span>868      31.0         207     5     0 LSF  
-#&gt; </span><span style='color: #BCBCBC;'> 6</span><span>       </span><span style='text-decoration: underline;'>18</span><span>777      36.7         207     6     0 LSF  
-#&gt; </span><span style='color: #BCBCBC;'> 7</span><span>       </span><span style='text-decoration: underline;'>21</span><span>578      42.1         213     7     0 LSF  
-#&gt; </span><span style='color: #BCBCBC;'> 8</span><span>       </span><span style='text-decoration: underline;'>24</span><span>554      48.0         213     8     0 LSF  
-#&gt; </span><span style='color: #BCBCBC;'> 9</span><span>       </span><span style='text-decoration: underline;'>27</span><span>379      53.5         222     9     0 HSF  
-#&gt; </span><span style='color: #BCBCBC;'>10</span><span>       </span><span style='text-decoration: underline;'>30</span><span>306      59.2         208    10     0 HSF  
-#&gt; </span><span style='color: #949494;'># ... with 70 more rows</span><span></div><div class='input'>
-</div></span></pre>
+#&gt;          <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>      <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>      <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>
+#&gt; <span style='color: #BCBCBC;'> 1</span>        <span style='text-decoration: underline;'>4</span>128       8.06        208     1     0 HSF  
+#&gt; <span style='color: #BCBCBC;'> 2</span>        <span style='text-decoration: underline;'>7</span>037      13.7         213     2     0 LSF  
+#&gt; <span style='color: #BCBCBC;'> 3</span>       <span style='text-decoration: underline;'>10</span>043      19.6         215     3     0 LSF  
+#&gt; <span style='color: #BCBCBC;'> 4</span>       <span style='text-decoration: underline;'>12</span>928      25.2         213     4     0 LSF  
+#&gt; <span style='color: #BCBCBC;'> 5</span>       <span style='text-decoration: underline;'>15</span>868      31.0         207     5     0 LSF  
+#&gt; <span style='color: #BCBCBC;'> 6</span>       <span style='text-decoration: underline;'>18</span>777      36.7         207     6     0 LSF  
+#&gt; <span style='color: #BCBCBC;'> 7</span>       <span style='text-decoration: underline;'>21</span>578      42.1         213     7     0 LSF  
+#&gt; <span style='color: #BCBCBC;'> 8</span>       <span style='text-decoration: underline;'>24</span>554      48.0         213     8     0 LSF  
+#&gt; <span style='color: #BCBCBC;'> 9</span>       <span style='text-decoration: underline;'>27</span>379      53.5         222     9     0 HSF  
+#&gt; <span style='color: #BCBCBC;'>10</span>       <span style='text-decoration: underline;'>30</span>306      59.2         208    10     0 HSF  
+#&gt; <span style='color: #949494;'># ... with 70 more rows</span></div><div class='input'>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

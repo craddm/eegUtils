@@ -73,7 +73,7 @@ PSD is calculated using Welch's method." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">eegUtils</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.6.1.9000</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.6.3.9000</span>
       </span>
     </div>
 
@@ -282,8 +282,14 @@ overlap between segments can be passed to Welch's FFT.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'> <span class='fu'>plot_psd</span><span class='op'>(</span><span class='va'>demo_epochs</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>Removing channel means per epoch...</span></div><div class='img'><img src='plot_psd-1.png' alt='' width='700' height='433' /></div><div class='input'> <span class='fu'>plot_psd</span><span class='op'>(</span><span class='va'>demo_epochs</span>, seg_length <span class='op'>=</span> <span class='fl'>256</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>Removing channel means per epoch...</span></div><div class='img'><img src='plot_psd-2.png' alt='' width='700' height='433' /></div></pre>
+</div><div class='output co'>#&gt; <span class='message'>Removing channel means per epoch...</span></div><div class='output co'>#&gt; <span class='message'>Computing Power Spectral Density using Welch's method.</span>
+#&gt; <span class='message'>FFT length: 256</span>
+#&gt; <span class='message'>Segment length: 84</span>
+#&gt; <span class='message'>Overlapping points: 42 (50% overlap)</span></div><div class='img'><img src='plot_psd-1.png' alt='' width='700' height='433' /></div><div class='input'> <span class='fu'>plot_psd</span><span class='op'>(</span><span class='va'>demo_epochs</span>, seg_length <span class='op'>=</span> <span class='fl'>256</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>Removing channel means per epoch...</span></div><div class='output co'>#&gt; <span class='message'>Computing Power Spectral Density using Welch's method.</span>
+#&gt; <span class='message'>FFT length: 256</span>
+#&gt; <span class='message'>Segment length: 84</span>
+#&gt; <span class='message'>Overlapping points: 42 (50% overlap)</span></div><div class='img'><img src='plot_psd-2.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

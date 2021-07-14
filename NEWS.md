@@ -5,6 +5,10 @@
 - `erp_scalp()` and `interactive_scalp()` should now appropriately use channel locations included in the data.
 - More informative messages when using `compute_tfr()`.
 - `plot_tfr()` now applies baseline correction on a single-trial basis where possible, which may show different results when using non-linear baseline correction (e.g. divide or dB)
+- `topoplot()` now allows you to provide multiple component numbers when plotting from an `eeg_ICA` object, and will automatically produce an appropriately facetted plot. 
+- `topoplot()` now has a `k` parameter to control the smoothing when using `method = "gam"`.
+- added additional `demo_spatial` data from a spatial cueing experiment.
+- `plot_difference()` function added for plotting ERP difference waves.
 
 ### Internal changes / bug fixes
 

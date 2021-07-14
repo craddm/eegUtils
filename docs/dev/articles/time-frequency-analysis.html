@@ -32,7 +32,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">eegUtils</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.6.1.9000</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.6.3.9000</span>
       </span>
     </div>
 
@@ -95,13 +95,13 @@
 
       
 
-      </header><script src="time-frequency-analysis_files/header-attrs-2.7/header-attrs.js"></script><div class="row">
+      </header><script src="time-frequency-analysis_files/header-attrs-2.9/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Frequency analysis</h1>
                         <h4 class="author">Matt Craddock</h4>
             
-            <h4 class="date">2021-04-07</h4>
+            <h4 class="date">2021-07-14</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/craddm/eegUtils/blob/master/vignettes/time-frequency-analysis.Rmd"><code>vignettes/time-frequency-analysis.Rmd</code></a></small>
       <div class="hidden name"><code>time-frequency-analysis.Rmd</code></div>
@@ -124,8 +124,16 @@
 <span class="co">#&gt;     filter</span>
 <span class="va">demo_psd</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compute_psd.html">compute_psd</a></span><span class="op">(</span><span class="va">demo_epochs</span><span class="op">)</span>
 <span class="co">#&gt; Removing channel means per epoch...</span>
+<span class="co">#&gt; Computing Power Spectral Density using Welch's method.</span>
+<span class="co">#&gt; FFT length: 256</span>
+<span class="co">#&gt; Segment length: 84</span>
+<span class="co">#&gt; Overlapping points: 42 (50% overlap)</span>
 <span class="fu"><a href="../reference/plot_psd.html">plot_psd</a></span><span class="op">(</span><span class="va">demo_epochs</span><span class="op">)</span>
-<span class="co">#&gt; Removing channel means per epoch...</span></code></pre></div>
+<span class="co">#&gt; Removing channel means per epoch...</span>
+<span class="co">#&gt; Computing Power Spectral Density using Welch's method.</span>
+<span class="co">#&gt; FFT length: 256</span>
+<span class="co">#&gt; Segment length: 84</span>
+<span class="co">#&gt; Overlapping points: 42 (50% overlap)</span></code></pre></div>
 <p><img src="time-frequency-analysis_files/figure-html/create-psd-1.png" width="700"></p>
 </div>
 <div id="time-frequency-analysis" class="section level2">
@@ -140,8 +148,10 @@
                         foi <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">30</span><span class="op">)</span>,
                         n_freq <span class="op">=</span> <span class="fl">12</span>,
                         n_cycles <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>
-<span class="co">#&gt; Output frequencies: 4 6.36 8.73 11.09 13.45 15.82 18.18 20.55 22.91 25.27 27.64 30</span>
+<span class="co">#&gt; Computing TFR using Morlet wavelet convolution</span>
+<span class="co">#&gt; Output frequencies using linear spacing: 4 6.36 8.73 11.09 13.45 15.82 18.18 20.55 22.91 25.27 27.64 30</span>
 <span class="co">#&gt; Removing channel means per epoch...</span>
+<span class="co">#&gt; Returning signal averaged over all trials.</span>
 <span class="va">demo_tfr</span>
 <span class="co">#&gt; Epoched EEG TFR data</span>
 <span class="co">#&gt; </span>

@@ -171,6 +171,7 @@
   scaling <span class='op'>=</span> <span class='fl'>1</span>,
   groups <span class='op'>=</span> <span class='cn'>NULL</span>,
   verbose <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  k <span class='op'>=</span> <span class='fl'>40</span>,
   <span class='va'>...</span>
 <span class='op'>)</span>
 
@@ -193,6 +194,7 @@
   scaling <span class='op'>=</span> <span class='fl'>1</span>,
   verbose <span class='op'>=</span> <span class='cn'>TRUE</span>,
   groups <span class='op'>=</span> <span class='cn'>NULL</span>,
+  k <span class='op'>=</span> <span class='fl'>40</span>,
   <span class='va'>...</span>
 <span class='op'>)</span>
 
@@ -215,6 +217,7 @@
   scaling <span class='op'>=</span> <span class='fl'>1</span>,
   groups <span class='op'>=</span> <span class='cn'>NULL</span>,
   verbose <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  k <span class='op'>=</span> <span class='fl'>40</span>,
   <span class='va'>...</span>
 <span class='op'>)</span>
 
@@ -238,6 +241,7 @@
   scaling <span class='op'>=</span> <span class='fl'>1</span>,
   verbose <span class='op'>=</span> <span class='cn'>TRUE</span>,
   groups <span class='op'>=</span> <span class='cn'>NULL</span>,
+  k <span class='op'>=</span> <span class='fl'>40</span>,
   <span class='va'>...</span>
 <span class='op'>)</span>
 
@@ -261,6 +265,7 @@
   freq_range <span class='op'>=</span> <span class='cn'>NULL</span>,
   verbose <span class='op'>=</span> <span class='cn'>TRUE</span>,
   groups <span class='op'>=</span> <span class='cn'>NULL</span>,
+  k <span class='op'>=</span> <span class='fl'>40</span>,
   <span class='va'>...</span>
 <span class='op'>)</span></pre>
 
@@ -360,6 +365,11 @@ Defaults to 1.</p></td>
       <th>verbose</th>
       <td><p>Warning messages when electrodes do not have locations.
 Defaults to TRUE.</p></td>
+    </tr>
+    <tr>
+      <th>k</th>
+      <td><p>Degrees of freedom used for spline when using <code>method = gam</code>.
+Defaults to 40.</p></td>
     </tr>
     <tr>
       <th>component</th>
