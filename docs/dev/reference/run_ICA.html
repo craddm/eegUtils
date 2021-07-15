@@ -42,7 +42,9 @@
 <meta property="og:title" content="Independent Component Analysis for EEG data — run_ICA" />
 <meta property="og:description" content="Performs Independent Component Analysis for electroencephalographic data.
 Currently only available with on epoched data. Implements three different
-methods of ICA - fastica, extended Infomax, and Second-Order Blind Identification (SOBI)." />
+methods of ICA - 'fastica', 'extended Infomax', and 'Second-Order Blind
+Identification (SOBI)'. The resulting eeg_ICA objects can be used largely
+like eeg_epochs objects." />
 
 
 <meta name="robots" content="noindex">
@@ -148,7 +150,9 @@ methods of ICA - fastica, extended Infomax, and Second-Order Blind Identificatio
     <div class="ref-description">
     <p>Performs Independent Component Analysis for electroencephalographic data.
 Currently only available with on epoched data. Implements three different
-methods of ICA - <code>fastica</code>, <code>extended Infomax</code>, and <code>Second-Order Blind Identification (SOBI)</code>.</p>
+methods of ICA - 'fastica', 'extended Infomax', and 'Second-Order Blind
+Identification (SOBI)'. The resulting <code>eeg_ICA</code> objects can be used largely
+like <code>eeg_epochs</code> objects.</p>
     </div>
 
     <pre class="usage"><span class='fu'>run_ICA</span><span class='op'>(</span><span class='va'>data</span>, <span class='va'>...</span><span class='op'>)</span>
@@ -252,18 +256,28 @@ centre on the channel means, not the epoch means.</p>
 <p>In addition, PCA will be required if the data is not full rank. This is
 typical when using average reference, when the data rank will be
 n_electrodes - 1.</p>
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <div class='dont-index'><p>Other decompositions: 
+<code><a href='eeg_decompose.html'>eeg_decompose</a>()</code></p></div>
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 
     <p>Matt Craddock <a href='mailto:matt@mattcraddock.com'>matt@mattcraddock.com</a></p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>run_ICA</span><span class='op'>(</span><span class='va'>demo_epochs</span>, pca <span class='op'>=</span> <span class='fl'>10</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>Reducing data to 10 dimensions using PCA.</span></div><div class='output co'>#&gt; <span class='message'>Running SOBI ICA.</span></div><div class='output co'>#&gt; <span class='message'>Setting tolerance to 0.0011</span></div><div class='output co'>#&gt; Epoched ICA decomposition
+    <pre class="examples"><div class='input'><span class='va'>sobi_demo</span> <span class='op'>&lt;-</span>
+  <span class='fu'>run_ICA</span><span class='op'>(</span><span class='va'>demo_epochs</span>,
+          pca <span class='op'>=</span> <span class='fl'>10</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>Reducing data to 10 dimensions using PCA.</span></div><div class='output co'>#&gt; <span class='message'>Running SOBI ICA.</span></div><div class='output co'>#&gt; <span class='message'>Setting tolerance to 0.0011</span></div><div class='input'> <span class='va'>sobi_demo</span>
+</div><div class='output co'>#&gt; Epoched ICA decomposition
 #&gt; 
 #&gt; Number of components	: 10 
 #&gt; Number of epochs	: 80 
 #&gt; Epoch limits		: -0.197 - 0.451 seconds
-#&gt; Sampling rate		: 128  Hz</div></pre>
+#&gt; Sampling rate		: 128  Hz</div><div class='input'> <span class='co'># We can plot the resulting spatial filters using `topoplot()`</span>
+ <span class='fu'><a href='topoplot.html'>topoplot</a></span><span class='op'>(</span><span class='va'>sobi_demo</span>, <span class='fl'>1</span><span class='op'>:</span><span class='fl'>2</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>Using electrode locations from data.</span></div><div class='img'><img src='run_ICA-1.png' alt='' width='700' height='433' /></div><div class='input'> <span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span>  <span class='fu'><a href='view_ica.html'>view_ica</a></span><span class='op'>(</span><span class='va'>sobi_demo</span><span class='op'>)</span> 
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
