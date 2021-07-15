@@ -5,11 +5,12 @@
 #'
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #' @import shiny
-#' @importFrom tidyr gather spread
 #' @import ggplot2
 #' @importFrom plotly plot_ly renderPlotly event_data
 #' @param data Object to be explored.
-#' @return None.
+#' @return Nothing.
+#' @examples
+#'   \dontrun{ view_artefacts(demo_epochs) }
 #' @export
 
 view_artefacts <- function(data) {

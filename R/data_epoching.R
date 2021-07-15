@@ -211,17 +211,19 @@ epoch_data.eeg_epochs <- function(data, ...) {
 
 #' Modify the epochs structure
 #'
-#' Get or set the epochs structure of an `eegUtils` object
+#' Get or set the epochs structure of an `eegUtils` object.
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
-#' @param .data `eegUtils` object to view
+#' @param data `eegUtils` object to view
+#' @examples
+#'   epochs(demo_spatial)
 #' @export
-epochs <- function(.data) {
-  if (any(class(.data) %in% c("eeg_data",
-                              "eeg_epochs",
-                              "eeg_ICA",
-                              "eeg_tfr",
-                              "eeg_evoked"))) {
-    .data$epochs
+epochs <- function(data) {
+  if (any(class(data) %in% c("eeg_data",
+                             "eeg_epochs",
+                             "eeg_ICA",
+                             "eeg_tfr",
+                             "eeg_evoked"))) {
+    data$epochs
   }
 }
 
@@ -229,15 +231,15 @@ epochs <- function(.data) {
 #' @param value Structure to replace `epochs` structure with.
 #' @rdname epochs
 #' @export
-`epochs<-` <- function(.data,
+`epochs<-` <- function(data,
                        value) {
 
-  if (any(class(.data) %in% c("eeg_data",
+  if (any(class(data) %in% c("eeg_data",
                               "eeg_epochs",
                               "eeg_ICA",
                               "eeg_tfr",
                               "eeg_evoked"))) {
-    .data$epochs <- value
+    data$epochs <- value
   }
-  .data
+  data
 }

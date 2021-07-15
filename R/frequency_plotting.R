@@ -345,7 +345,5 @@ plot_tfr <- function(data,
       scale_y_log10(expand = c(0, 0))
   }
 
-
-
   tfr_plot
 }

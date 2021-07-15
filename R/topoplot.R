@@ -149,7 +149,7 @@ topoplot.data.frame <- function(data,
   if (any(is.na(data$x))) {
     data <- data[!is.na(data$x), ]
     if (verbose) {
-      warning("Removing channels with no location.")
+      message("Removing channels with no location.")
     }
   }
 
