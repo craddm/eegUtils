@@ -5,7 +5,7 @@
 \alias{demo_epochs}
 \title{A demo \code{eeg_epochs} dataset}
 \format{
-A \code{eeg_epochs} object
+An \code{eeg_epochs} object
 }
 \usage{
 demo_epochs
