@@ -56,7 +56,7 @@ filters applied to the original, broadband data.
 # The default method is Spatio-Spectral Decomposition, which returns
 # spatially and temporally filtered source timecourses.
  decomposed <-
-   eeg_decompose(demo_spatial,
+   eeg_decompose(demo_epochs,
                  sig_range = c(9, 11),
                  noise_range = c(8, 12),
                  method = "ssd")
@@ -66,7 +66,7 @@ filters applied to the original, broadband data.
  plot_timecourse(decomposed, 1)
 # method = "ress" returns spatially but not temporally filtered timecourses.
  with_RESS <-
-   eeg_decompose(demo_spatial,
+   eeg_decompose(demo_epochs,
                  sig_range = c(9, 11),
                  noise_range = c(8, 12),
                  method = "ress")
