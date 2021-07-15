@@ -177,6 +177,10 @@ interp_chans <- function(.data,
 #' @examples
 #' csd_epochs <- compute_csd(demo_epochs)
 #' plot_butterfly(csd_epochs)
+#'
+#' # Compare the topographies of the CSD vs average referenced data
+#' topoplot(demo_epochs, c(.2, .21))
+#' topoplot(csd_epochs, c(.2, .21))
 #' @export
 compute_csd <- function(data,
                         ...) {
@@ -251,7 +255,8 @@ convert_to_csd <- function(data,
   if (any(missing_coords)) {
     stop("No coordinates for ",
          paste0(data$chan_info$electrode[missing_coords],
-                collapse = " ")
+                collapse = " "),
+         ". Remove channels before applying CSD."
          )
   }
 
