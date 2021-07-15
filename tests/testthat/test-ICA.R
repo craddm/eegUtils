@@ -4,7 +4,7 @@ demo_epochs <- electrode_locations(demo_epochs,
                                    overwrite = TRUE)
 demo_SOBI <- run_ICA(demo_epochs, pca = 10)
 demo_fastic <- run_ICA(demo_epochs, method = "fastica", pca = 10)
-demo_fica <- run_ICA(demo_spatial, method = "fica", pca = 15)
+demo_fica <- run_ICA(demo_spatial, method = "fica", pca = 20)
 
 test_that("topoplots for ICA work", {
 
@@ -50,8 +50,8 @@ test_that("component removal works", {
 
 test_that("artefact detect works", {
 
-  expect_equal(ar_acf(demo_fica, plot = FALSE), character(0))
-  expect_equal(ar_chanfoc(demo_fica, plot = FALSE), character(0))
+  expect_equal(ar_acf(demo_fica, plot = FALSE), "Comp005")
+  expect_equal(ar_chanfoc(demo_fica, plot = FALSE), "Comp002")
   expect_equal(ar_trialfoc(demo_fica, plot = FALSE), "Comp001")
   expect_equal(ar_eogcor(demo_fica,
                          demo_spatial,

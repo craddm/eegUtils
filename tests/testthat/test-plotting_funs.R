@@ -76,11 +76,11 @@ test_that("erp_raster and erp_image function", {
 
 test_that("erp_scalp runs", {
   vdiffr::expect_doppelganger(
-    "scalp plot of ERPs from demo_spatial",
+    "ERP-scalp-plot from demo_spatial",
     erp_scalp(demo_spatial)
   )
   vdiffr::expect_doppelganger(
-    "scalp plot of ERPs from demo_spatial with conditions",
+    "ERP scalp plot with colour",
     erp_scalp(demo_spatial,
               colour = epoch_labels)
   )
