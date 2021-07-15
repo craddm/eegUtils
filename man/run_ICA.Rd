@@ -59,7 +59,9 @@ An \code{eeg_ICA} object containing an ICA decomposition
 \description{
 Performs Independent Component Analysis for electroencephalographic data.
 Currently only available with on epoched data. Implements three different
-methods of ICA - \code{fastica}, \verb{extended Infomax}, and \verb{Second-Order Blind Identification (SOBI)}.
+methods of ICA - 'fastica', 'extended Infomax', and 'Second-Order Blind
+Identification (SOBI)'. The resulting \code{eeg_ICA} objects can be used largely
+like \code{eeg_epochs} objects.
 }
 \section{Methods (by class)}{
 \itemize{
@@ -85,8 +87,19 @@ n_electrodes - 1.
 }
 
 \examples{
-run_ICA(demo_epochs, pca = 10)
+sobi_demo <-
+  run_ICA(demo_epochs,
+          pca = 10)
+ sobi_demo
+ # We can plot the resulting spatial filters using `topoplot()`
+ topoplot(sobi_demo, 1:2)
+ \dontrun{ view_ica(sobi_demo) }
+}
+\seealso{
+Other decompositions: 
+\code{\link{eeg_decompose}()}
 }
 \author{
 Matt Craddock \email{matt@mattcraddock.com}
 }
+\concept{decompositions}
