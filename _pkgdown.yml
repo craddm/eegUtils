@@ -7,6 +7,12 @@ template:
   params:
     bootswatch: flatly
 
+navbar:
+  components:
+    twitter:
+      icon: "fab fa-twitter fa-lg"
+      href: https://www.twitter.com/matt_craddock
+
 reference:
   - title: IO
     desc: >
