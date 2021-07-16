@@ -7,6 +7,7 @@ demo_epochs <- electrode_locations(demo_epochs,
 demo_SOBI <- run_ICA(demo_epochs, pca = 10)
 
 test_that("Plotting of data with multiple epochs works as expected", {
+  skip_on_ci()
   vdiffr::expect_doppelganger("epochs plot",
                               plot_timecourse(demo_epochs))
   vdiffr::expect_doppelganger("A29 only epochs",
@@ -58,6 +59,7 @@ test_that("Topoplots", {
 
 
 test_that("erp_raster and erp_image function", {
+  skip_on_ci()
   test_epo <- epoch_data(test_data, 255)
   expect_s3_class(erp_image(demo_epochs,
                             electrode = "A29"),
@@ -75,6 +77,7 @@ test_that("erp_raster and erp_image function", {
 })
 
 test_that("erp_scalp runs", {
+  skip_on_ci()
   vdiffr::expect_doppelganger(
     "ERP-scalp-plot from demo_spatial",
     erp_scalp(demo_spatial)
