@@ -1062,12 +1062,14 @@ ft_raw <- function(data,
     chan_info <- ft_chan_info(data)
     chan_info$electrode <- sig_names
     chan_info <- validate_channels(chan_info)
+  } else if ("grad" %in% struct_names) {
+    message("MEG channel locations found; not currently supported.")
   } else {
     if (verbose) message("No EEG channel information found.")
     chan_info <- NULL
   }
 
-  chan_info$electrode <- sig_names
+  #chan_info$electrode <- sig_names
   eeg_epochs(data = signals,
              srate = srate,
              timings = timings,
