@@ -296,7 +296,7 @@ welch_fft <- function(data,
     }
   }
 
-  #select first half of spectrum and double amps, output is power - uV^2 / Hz
+  #select first half of spectrum, output is power - uV^2 / Hz
   final_out <- final_out[1:(n_fft / 2 + 1), , drop = FALSE]
   final_out <- data.frame(final_out,
                           frequency = freqs)
