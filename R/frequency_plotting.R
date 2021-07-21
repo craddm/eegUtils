@@ -331,18 +331,21 @@ plot_tfr <- function(data,
     labs(x = "Time (s)",
          y = "Frequency (Hz)",
          fill = fill_lab) +
-    scale_x_continuous(expand = c(0, 0)) +
+    scale_x_continuous(expand = c(0, 0),
+                       breaks = scales::pretty_breaks()) +
     theme_classic() +
     fill_colour
 
   if (is.unsorted(diff(unique(data$frequency)), strictly = TRUE)) {
     tfr_plot <-
       tfr_plot +
-      scale_y_continuous(expand = c(0, 0))
+      scale_y_continuous(expand = c(0, 0),
+                         breaks = scales::pretty_breaks())
   } else {
     tfr_plot <-
       tfr_plot +
-      scale_y_log10(expand = c(0, 0))
+      scale_y_log10(expand = c(0, 0),
+                    breaks = scales::pretty_breaks())
   }
 
   tfr_plot
