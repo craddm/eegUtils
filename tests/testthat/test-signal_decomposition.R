@@ -1,4 +1,3 @@
-context("ssd test")
 test_that("ssd runs", {
   skip_on_ci()
   ssd_demo <-

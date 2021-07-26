@@ -1,4 +1,3 @@
-context("Plotting functions")
 
 demo_epochs <- electrode_locations(demo_epochs,
                                    montage = "biosemi64alpha",

@@ -1,4 +1,3 @@
-context("Plotting functions")
 load("EEGdat.rda")
 test_data <- import_raw("Newtest17-256.bdf")
 demo_epochs <- electrode_locations(demo_epochs,
@@ -26,6 +25,7 @@ test_that("Plotting of data with multiple epochs works as expected", {
 })
 
 test_that("Plotting of butterfly plots from epochs", {
+  skip_on_ci()
   vdiffr::expect_doppelganger("butterfly epochs",
                               plot_butterfly(demo_epochs))
   vdiffr::expect_doppelganger("butterfly epochs baseline",

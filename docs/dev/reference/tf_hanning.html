@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Normalise Morlet wavelets — wavelet_norm • eegUtils</title>
+<title>Perform hanning time-frequency analysis — tf_hanning • eegUtils</title>
 
 
 <!-- jquery -->
@@ -39,12 +39,9 @@
 
 
 
-<meta property="og:title" content="Normalise Morlet wavelets — wavelet_norm" />
-<meta property="og:description" content="Normalise the FFT'd Morlet wavelet family as recommended by Mike X Cohen,
-dividing each wavelet by its absolute maximum. This should result in each
-frequency being passed at unit amplitude, and the resulting convolution with
-the signal should return units approximately on the original scale (i.e. uV^2
-/ Hz). an alternative would be Frobenius norm?" />
+<meta property="og:title" content="Perform hanning time-frequency analysis — tf_hanning" />
+<meta property="og:description" content="Internal function for performing hanning wavelet transforms using convolution
+in frequency domain" />
 
 
 <meta name="robots" content="noindex">
@@ -148,31 +145,72 @@ the signal should return units approximately on the original scale (i.e. uV^2
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Normalise Morlet wavelets</h1>
+    <h1>Perform hanning time-frequency analysis</h1>
     <small class="dont-index">Source: <a href='https://github.com/craddm/eegUtils/blob/master/R/tfr_analysis.R'><code>R/tfr_analysis.R</code></a></small>
-    <div class="hidden name"><code>wavelet_norm.Rd</code></div>
+    <div class="hidden name"><code>tf_hanning.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Normalise the FFT'd Morlet wavelet family as recommended by Mike X Cohen,
-dividing each wavelet by its absolute maximum. This should result in each
-frequency being passed at unit amplitude, and the resulting convolution with
-the signal should return units approximately on the original scale (i.e. uV^2
-/ Hz). an alternative would be Frobenius norm?</p>
+    <p>Internal function for performing hanning wavelet transforms using convolution
+in frequency domain</p>
     </div>
 
-    <pre class="usage"><span class='fu'>wavelet_norm</span><span class='op'>(</span><span class='va'>mf_zp</span>, <span class='va'>n_freq</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>tf_hanning</span><span class='op'>(</span>
+  <span class='va'>data</span>,
+  <span class='va'>foi</span>,
+  <span class='va'>n_freq</span>,
+  <span class='va'>spacing</span>,
+  <span class='va'>n_cycles</span>,
+  <span class='va'>keep_trials</span>,
+  <span class='va'>output</span>,
+  <span class='va'>downsample</span>,
+  demean <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  <span class='va'>verbose</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>mf_zp</th>
-      <td><p>A zero-padded, FFT'd morlet wavelet family</p></td>
+      <th>data</th>
+      <td><p>Data in <code>eeg_epochs</code> format.</p></td>
+    </tr>
+    <tr>
+      <th>foi</th>
+      <td><p>Frequencies of interest. Scalar or character vector of the lowest
+and highest frequency to resolve.</p></td>
     </tr>
     <tr>
       <th>n_freq</th>
-      <td><p>Number of frequencies</p></td>
+      <td><p>Number of frequencies to be resolved.</p></td>
+    </tr>
+    <tr>
+      <th>spacing</th>
+      <td><p>Use linear or log spacing for frequencies.</p></td>
+    </tr>
+    <tr>
+      <th>n_cycles</th>
+      <td><p>Number of cycles at each frequency.</p></td>
+    </tr>
+    <tr>
+      <th>keep_trials</th>
+      <td><p>Keep single trials or average over them before returning.</p></td>
+    </tr>
+    <tr>
+      <th>output</th>
+      <td><p>Sets whether output is power, phase, or fourier coefficients.</p></td>
+    </tr>
+    <tr>
+      <th>downsample</th>
+      <td><p>Downsampling factor (integer).</p></td>
+    </tr>
+    <tr>
+      <th>demean</th>
+      <td><p>Remove mean before transforming.</p></td>
+    </tr>
+    <tr>
+      <th>verbose</th>
+      <td><p>Print informative messages in console.</p></td>
     </tr>
     </table>
 

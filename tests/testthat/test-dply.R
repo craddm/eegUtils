@@ -1,4 +1,3 @@
-context("Test dplyr exports")
 demo_SOBI <- run_ICA(demo_epochs, pca = 10)
 demo_tfr <- compute_tfr(demo_epochs,
                         n_freq = 2,

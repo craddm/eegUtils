@@ -1,5 +1,3 @@
-context("Test utils.R")
-
 cond_labs_l <- "Light"
 cond_labs_nl <- "No light"
 cond_labs_lsf <- "LSF"
