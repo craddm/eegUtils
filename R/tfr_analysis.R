@@ -350,14 +350,17 @@ tf_morlet <- function(data,
 #' Generate Morlet wavelet family
 #'
 #' @param frex Frequency range of interest
+#' @param srate Sampling rate of signal
 #' @param n_cycles Length of wavelet in cycles
 #' @param n_freq number of frequencies to resolve
+#' @param gauss_width Size of filter kernel in standard deviations
 #' @keywords internal
 
 morlet <- function(frex,
                    srate,
                    n_cycles,
-                   n_freq) {
+                   n_freq,
+                   gauss_width = 3) {
 
   # calculate frequency and temporal std devs
   sigma_t <- morlet_res(frex, n_cycles)$sigma_t
@@ -367,15 +370,19 @@ morlet <- function(frex,
   # round the max SD to the next biggest number divisible by tstep
   round_sd <- max_sd_t + (tstep - (max_sd_t %% tstep))
 
-  # calculate length of kernel as 6 * maximum temporal SD
+  # calculate length of kernel as 3 standard deviations
   # TO DO - change this to do it for every frequency separately
-  wavtime <- seq(-round_sd * 3,
-                 round_sd * 3,
-                 by = tstep)
+  wavtime <-
+    seq(
+      -round_sd * gauss_width,
+      round_sd * gauss_width,
+      by = tstep
+    )
 
-  t_by_f <- matrix(wavtime,
-                   nrow = length(wavtime),
-                   ncol = length(frex))
+  t_by_f <-
+    matrix(wavtime,
+           nrow = length(wavtime),
+           ncol = length(frex))
 
   # Create sine waves at each frequency
   c_sine <- 2 * 1i * pi * sweep(t_by_f,
