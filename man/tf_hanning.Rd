@@ -2,7 +2,7 @@
 % Please edit documentation in R/tfr_analysis.R
 \name{tf_hanning}
 \alias{tf_hanning}
-\title{Perform hanning time-frequency analysis}
+\title{Perform Hanning time-frequency analysis}
 \usage{
 tf_hanning(
   data,
@@ -40,7 +40,7 @@ and highest frequency to resolve.}
 \item{verbose}{Print informative messages in console.}
 }
 \description{
-Internal function for performing hanning wavelet transforms using convolution
+Internal function for performing Hanning wavelet transforms using convolution
 in frequency domain
 }
 \keyword{internal}

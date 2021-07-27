@@ -670,12 +670,9 @@ run_tf <- function(tmp,
                          n_conv)
 
         for (ik in 1:n_epochs) {
-          # tfr_out[ik, , i, ] <- 2 *
-          #   (2 * abs(mvfft(norm_mf * tmp_epo[, ik],
-          #                  inverse = TRUE)[all_times, ] / n_conv)) ^ 2
           tfr_out[ik, , i, ] <-
-            abs(mvfft(norm_mf * tmp_epo[, ik],
-                      inverse = TRUE)[all_times, ] / n_conv) ^ 2
+            abs(stats::mvfft(norm_mf * tmp_epo[, ik],
+                             inverse = TRUE)[all_times, ] / n_conv) ^ 2
         }
       }
     } else {
@@ -687,9 +684,6 @@ run_tf <- function(tmp,
       for (i in 1:n_chans) {
         tmp_epo <- fft_n(tmp[, , i, drop = FALSE], n_conv)
         for (ik in 1:n_epochs) {
-          # tfr_out[ik, , i, ] <-
-          #   2 * stats::mvfft(norm_mf * tmp_epo[, ik],
-          #                    inverse = TRUE)[all_times,] / n_conv
           tfr_out[ik, , i, ] <-
             (stats::mvfft(norm_mf * tmp_epo[, ik],
                          inverse = TRUE)[all_times,] / n_conv)
@@ -704,9 +698,6 @@ run_tf <- function(tmp,
                        n_conv)
 
       for (ik in 1:n_epochs) {
-        # tfr_out[, i, ] <-
-        #   tfr_out[, i, ] +
-        #   (2 * abs(stats::mvfft(norm_mf * tmp_epo[, ik], inverse = TRUE)[all_times,] / n_conv)) ^ 2
         tfr_out[, i, ] <-
           tfr_out[, i, ] +
           abs(stats::mvfft(norm_mf * tmp_epo[, ik], inverse = TRUE)[all_times,] / n_conv) ^ 2
@@ -719,9 +710,9 @@ run_tf <- function(tmp,
 
 
 
-#' Perform hanning time-frequency analysis
+#' Perform Hanning time-frequency analysis
 #'
-#' Internal function for performing hanning wavelet transforms using convolution
+#' Internal function for performing Hanning wavelet transforms using convolution
 #' in frequency domain
 #'
 #' @param data Data in `eeg_epochs` format.
@@ -919,7 +910,7 @@ tf_hanning <- function(data,
                             participant_id = participant_id),
     chan_info = data$chan_info,
     reference = data$reference,
-    timings = unique(data$timings),#data$timings[1:length(sigtime), c("epoch", "time")],
+    timings = unique(data$timings),
     freq_info = data$freq_info,
     dimensions = c("epoch",
                    "time",
@@ -951,13 +942,6 @@ hann_family <- function(frex,
                     length.out = current_win)
 
       pi_seq <- pi_seq * 2 * pi /srate
-
-      # do frobenius norm too to make each window unit gain?
-      # window <-
-      #   window / norm(matrix(window),
-      #                 type = "F")
-      # or by absolute max for consistency
-
       prepad <- ceiling((max_win - length(window)) / 2)
       postpad <- floor((max_win - length(window)) / 2)
       win_times <- pi_seq * frex[[x]]
@@ -969,7 +953,6 @@ hann_family <- function(frex,
                        window * sin(win_times),
                        rep(0, postpad))
          )
-      # final_win <- final_win / final_win[which.max(abs(final_win))]
       final_win
       })
   windows

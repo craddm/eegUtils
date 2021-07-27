@@ -40,9 +40,10 @@
 
 
 <meta property="og:title" content="Compute Time-Frequency representation of EEG data — compute_tfr" />
-<meta property="og:description" content="This function creates a time frequency represention of EEG time series data.
-Currently, the only available method is a Morlet wavelet transformation
-performed using convolution in the frequency domain." />
+<meta property="og:description" content="This function creates a time frequency representation of EEG time series
+data. Currently, it is possible to use either Morlet wavelets or Hanning
+tapers during the decomposition, which uses convolution in the frequency
+domain." />
 
 
 <meta name="robots" content="noindex">
@@ -152,9 +153,10 @@ performed using convolution in the frequency domain." />
     </div>
 
     <div class="ref-description">
-    <p>This function creates a time frequency represention of EEG time series data.
-Currently, the only available method is a Morlet wavelet transformation
-performed using convolution in the frequency domain.</p>
+    <p>This function creates a time frequency representation of EEG time series
+data. Currently, it is possible to use either Morlet wavelets or Hanning
+tapers during the decomposition, which uses convolution in the frequency
+domain.</p>
     </div>
 
     <pre class="usage"><span class='fu'>compute_tfr</span><span class='op'>(</span><span class='va'>data</span>, <span class='va'>...</span><span class='op'>)</span>
