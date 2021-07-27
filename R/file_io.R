@@ -1059,11 +1059,21 @@ ft_raw <- function(data,
 
   if ("elec" %in% struct_names) {
     if (verbose) message("Importing channel information.")
-    chan_info <- ft_chan_info(data)
+    chan_info <- ft_chan_info(
+      unlist(data["elec", ,],
+             recursive = FALSE)
+      )
     chan_info$electrode <- sig_names
     chan_info <- validate_channels(chan_info)
   } else if ("grad" %in% struct_names) {
-    message("MEG channel locations found; not currently supported.")
+    message("MEG channel locations found; import of locations not currently supported.")
+    # chan_info <- ft_chan_info(
+    #   unlist(data["grad", ,],
+    #          recursive = FALSE)
+    #   )
+    chan_info <- data.frame(electrode = sig_names)
+    #chan_info$electrode <- sig_names
+    chan_info <- validate_channels(chan_info)
   } else {
     if (verbose) message("No EEG channel information found.")
     chan_info <- NULL
@@ -1147,7 +1157,10 @@ ft_freq <- function(data,
 
   if ("elec" %in% struct_names) {
     if (verbose) message("Importing channel information.")
-    chan_info <- ft_chan_info(data)
+    chan_info <- ft_chan_info(
+      unlist(data["elec", ,],
+             recursive = FALSE)
+      )
     chan_info$electrode <- sig_names
     chan_info <- validate_channels(chan_info)
   } else {
@@ -1168,9 +1181,9 @@ ft_freq <- function(data,
 
 
 ft_chan_info <- function(data) {
-  chan_info <- unlist(data["elec", ,],
-                      recursive = FALSE)
-  chan_info <- chan_info[[1]]
+  # chan_info <- unlist(data["elec", ,],
+  #                     recursive = FALSE)
+  chan_info <- data[[1]]
   colnames(chan_info) <- c("cart_x",
                            "cart_y",
                            "cart_z")
