@@ -1,8 +1,9 @@
 #' Compute Time-Frequency representation of EEG data
 #'
-#' This function creates a time frequency represention of EEG time series data.
-#' Currently, the only available method is a Morlet wavelet transformation
-#' performed using convolution in the frequency domain.
+#' This function creates a time frequency representation of EEG time series
+#' data. Currently, it is possible to use either Morlet wavelets or Hanning
+#' tapers during the decomposition, which uses convolution in the frequency
+#' domain.
 #'
 #' @param data An object of class `eeg_epochs`.
 #' @param ... Further TFR parameters
@@ -87,7 +88,7 @@ compute_tfr.eeg_epochs <- function(data,
       verbose = verbose
     ),
     warning(
-      "Unknown method supplied. Currently supported method is 'morlet'"
+      "Unknown method supplied. Currently supported methods are 'morlet', and 'hanning'"
     )
   )
   tfr_obj
@@ -125,8 +126,19 @@ compute_tfr.eeg_evoked <- function(data,
       downsample = downsample,
       verbose = verbose
     ),
+    "hanning" = tf_hanning(
+      data = data,
+      foi = foi,
+      n_freq = n_freq,
+      spacing = spacing,
+      n_cycles = n_cycles,
+      keep_trials = keep_trials,
+      output = output,
+      downsample = downsample,
+      verbose = verbose
+    ),
     warning(
-      "Unknown method supplied. Currently only supported method is 'morlet'"
+      "Unknown method supplied. Currently supported methods are 'morlet' and 'hanning'"
     )
   )
 }
@@ -445,42 +457,6 @@ fft_n <- function(signal, n) {
 
 }
 
-#' Convolve with morlets
-#'
-#' @author Matt Craddock \email{matt@@mattcraddock.com}
-#' @param morlet_fam family of morlet wavelets
-#' @param signal signal to be convolved
-#' @param n points for FFT
-#' @param n_kern Kernel length
-#' @importFrom stats mvfft
-#' @keywords internal
-
-conv_mor <- function(morlet_fam,
-                     signal,
-                     n,
-                     n_kern) {
-
-  n_chans <- ncol(signal)
-
-  signal <- fft_n(as.matrix(signal),
-                  n)
-
-  tf_matrix <- array(1i, dim = c(nrow(signal),
-                                 n_chans,
-                                 ncol(morlet_fam)))
-
-  for (i in 1:ncol(morlet_fam)) {
-    tf_matrix[, , i] <- stats::mvfft(signal * morlet_fam[, i],
-                                     inverse = TRUE) / n
-  }
-
-  nHfkn <- floor(n_kern / 2) + 1
-  tf_matrix <- tf_matrix[nHfkn:(nrow(tf_matrix) - nHfkn + 1), , , drop = FALSE]
-  tf_matrix
-}
-
-
-
 #' Remove convolution edges
 #'
 #' Create a matrix indicating which timepoints likely suffer from edge effects.
@@ -536,7 +512,7 @@ convert_tfr <- function(data,
                         output) {
 
   if (!is.eeg_tfr(data)) {
-    stop("This function requires an eeg_tfr object as input.")
+    stop("This function requires an `eeg_tfr` object as input.")
   }
 
   if (is.complex(data$signals[[1]])) {
@@ -564,7 +540,7 @@ convert_tfr <- function(data,
 compute_itc <- function(data) {
 
   if (!is.eeg_tfr(data)) {
-    stop("This function requires an eeg_tfr object as input.")
+    stop("This function requires an `eeg_tfr` object as input.")
   }
 
   if (!is.complex(data$signals[[1]])) {

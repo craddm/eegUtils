@@ -72,9 +72,10 @@ performing time-frequency analysis on the full sampling rate data.}
 An object of class \code{eeg_tfr}
 }
 \description{
-This function creates a time frequency represention of EEG time series data.
-Currently, the only available method is a Morlet wavelet transformation
-performed using convolution in the frequency domain.
+This function creates a time frequency representation of EEG time series
+data. Currently, it is possible to use either Morlet wavelets or Hanning
+tapers during the decomposition, which uses convolution in the frequency
+domain.
 }
 \section{Methods (by class)}{
 \itemize{
