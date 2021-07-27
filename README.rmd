@@ -73,7 +73,7 @@ plot_tfr(compute_tfr(demo_epochs,
                      n_cycles = 3))
 ```
 
-There are many potential processing steps that precede the production of plots like these. For more examples of how to import and process data, or import data from other sources, see the [eegUtils website](https://craddm.github.io/eegUtils)
+There are many potential processing steps that precede the production of plots like these. For more examples of how to import and process data, or import data from other sources, see the [eegUtils website](https://craddm.github.io/eegUtils)!
 
 ## Contributing
 

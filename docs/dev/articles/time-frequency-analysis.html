@@ -107,7 +107,7 @@
       <h1 data-toc-skip>Frequency analysis</h1>
                         <h4 class="author">Matt Craddock</h4>
             
-            <h4 class="date">2021-07-16</h4>
+            <h4 class="date">2021-07-27</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/craddm/eegUtils/blob/master/vignettes/time-frequency-analysis.Rmd"><code>vignettes/time-frequency-analysis.Rmd</code></a></small>
       <div class="hidden name"><code>time-frequency-analysis.Rmd</code></div>
@@ -120,7 +120,7 @@
 <div id="frequency-analysis" class="section level2">
 <h2 class="hasAnchor">
 <a href="#frequency-analysis" class="anchor"></a>Frequency analysis</h2>
-<p>In <code>eegUtils</code>, this can be achieved using <code><a href="../reference/compute_psd.html">compute_psd()</a></code> and <code><a href="../reference/plot_psd.html">plot_psd()</a></code>. With epoched data, <code><a href="../reference/compute_psd.html">compute_psd()</a></code> calculates the PSD for each trial separately. <code><a href="../reference/compute_psd.html">compute_psd()</a></code> returns a data.frame with spectral power at each resolved frequency and for each electrode. Note that <code><a href="../reference/plot_psd.html">plot_psd()</a></code> can be called directly on <code>eeg_data</code> or <code>eeg_epochs</code> objects without first having to <code><a href="../reference/compute_psd.html">compute_psd()</a></code>. With epoched data, it will average over epochs before plotting.</p>
+<p>In <code>eegUtils</code>, this can be achieved using <code><a href="../reference/compute_psd.html">compute_psd()</a></code> and <code><a href="../reference/plot_psd.html">plot_psd()</a></code>. With epoched data, <code><a href="../reference/compute_psd.html">compute_psd()</a></code> calculates the PSD for each trial separately. <code><a href="../reference/compute_psd.html">compute_psd()</a></code> returns a <code>data.frame</code> with spectral power at each resolved frequency and for each electrode. Note that <code><a href="../reference/plot_psd.html">plot_psd()</a></code> can be called directly on <code>eeg_data</code> or <code>eeg_epochs</code> objects without first having to <code><a href="../reference/compute_psd.html">compute_psd()</a></code>. With epoched data, it will compute the PSD for each epoch and then average over epochs before plotting.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/craddm/eegUtils">eegUtils</a></span><span class="op">)</span>
 <span class="co">#&gt; </span>
@@ -145,7 +145,7 @@
 <div id="time-frequency-analysis" class="section level2">
 <h2 class="hasAnchor">
 <a href="#time-frequency-analysis" class="anchor"></a>Time-frequency analysis</h2>
-<p>Frequency analysis necessarily discards temporal information. One problem is that it assumes stationarity - that the signal remains stable in terms of frequency and power across the whole analysed time window. However, this is rarely the case with EEG data;</p>
+<p>Frequency analysis necessarily discards temporal information. One problem is that it assumes stationarity - that the signal remains stable in terms of frequency and power across the whole analysed time window. However, this is rarely the case with EEG data, which exhibits dynamics across a wide range of timescales.</p>
 <p>Time-frequency analysis is a method of accounting for non-stationarity by decomposing the signal using a moving-window analysis, tiling the time-frequency space to resolve power over relatively shorter time-windows.</p>
 <p>In <code>eegUtils</code>, <code><a href="../reference/compute_tfr.html">compute_tfr()</a></code> can be used to calculate a time-frequency representation of <code><a href="../reference/eeg_epochs.html">eeg_epochs()</a></code>. Currently, this is achieved using Morlet wavelets. Morlet wavelets are used to window the signal, controlling spectral leakage and time-frequency specificity. Morlet wavelets have a user-defined temporal extent, which in turn determines the frequency extent. We define the temporal extent of our wavelets by <strong>cycles</strong>; we define it as an integer number of cycles at each frequency of interest.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
@@ -187,7 +187,7 @@
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/plot_tfr.html">plot_tfr</a></span><span class="op">(</span><span class="va">demo_tfr</span><span class="op">)</span></code></pre></div>
 <p><img src="time-frequency-analysis_files/figure-html/tfr-plot-1.png" width="700"></p>
-<p>Baseline correction is common in the literature. Several different methods are possible, both for plotting only, and as a modification to the  object using <code><a href="../reference/rm_baseline.html">rm_baseline()</a></code>.</p>
+<p>Baseline correction is common in the literature, which can serve two purposes. Several different methods are possible. both for plotting only, and as a modification to the  object using <code><a href="../reference/rm_baseline.html">rm_baseline()</a></code>.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/plot_tfr.html">plot_tfr</a></span><span class="op">(</span><span class="va">demo_tfr</span>, baseline_type <span class="op">=</span> <span class="st">"absolute"</span>, baseline <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">.1</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p><img src="time-frequency-analysis_files/figure-html/db-plot-1.png" width="700"></p>
