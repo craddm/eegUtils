@@ -1,5 +1,3 @@
-context("Test frequency analyses")
-
 test_data <- import_raw("Newtest17-256.bdf")
 test_data <- electrode_locations(test_data, montage = "biosemi64alpha")
 test_epo <- epoch_data(test_data, 255)
@@ -19,4 +17,28 @@ test_that("TFA works on epoched data", {
                           n_freq = 10,
                           n_cycles = 3)
   expect_s3_class(tfr_test, "eeg_tfr")
+})
+
+test_that("Hanning method works", {
+  tfr_test <- compute_tfr(demo_epochs,
+                          method = "hanning",
+                          foi = c(4, 30),
+                          n_freq = 10,
+                          n_cycles = 3)
+  tfr_log <- compute_tfr(demo_epochs,
+                         method = "hanning",
+                         spacing = "log",
+                         foi = c(4, 30),
+                         n_freq = 10,
+                         n_cycles = 3)
+  expect_s3_class(tfr_test, "eeg_tfr")
+  skip_on_ci()
+  vdiffr::expect_doppelganger(
+    "hanning tfr plot",
+    plot_tfr(tfr_test)
+    )
+  vdiffr::expect_doppelganger(
+    "hanning tfr log-spaced plot",
+    plot_tfr(tfr_log)
+  )
 })

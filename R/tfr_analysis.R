@@ -34,15 +34,16 @@ compute_tfr.default <- function(data, ...) {
 #'   of frequencies.
 #' @param n_cycles Number of cycles at each frequency. If a single integer, use
 #'   a constant number of cycles at each frequency. If a character vector of
-#'   length 2, use a linearly scaling number of cycles at each frequency.
-#' @param spacing Use "linear" or "log" spacing for the frequency vector.
+#'   length 2, the number of cycles will scale with frequency from the minimum
+#'   to the maximum.
+#' @param spacing Use "linear" or "log" spacing for the frequency vector and number of cycles.
 #' @param keep_trials Keep single trials or average over them before returning.
 #'   Defaults to FALSE.
 #' @param output Sets whether output is power, phase, or fourier coefficients.
 #' @param downsample Downsampling factor. Integer. Selects every n samples after
 #'   performing time-frequency analysis on the full sampling rate data.
 #' @param verbose Print informative messages in console.
-#' @describeIn compute_tfr Default method for compute_tfr
+#' @describeIn compute_tfr Default method for `compute_tfr`
 #' @export
 
 compute_tfr.eeg_epochs <- function(data,
@@ -966,4 +967,28 @@ win_samples <- function(frex,
   cycle_lengths <- 1 / frex
   win_lengths <- cycle_lengths * n_cycles # in seconds
   ceiling(win_lengths / samps_sec) # round samples up
+}
+
+
+#' Calculate cycles
+#'
+#' A helper function for calculating the appropriate min-max cycles for a fixed
+#' time window/frequency resolution for use with `compute_tfr`. For some
+#' analyses you may wish to keep a fixed frequency resolution across the range
+#' being analysed, which requires using a fixed time window. `compute_tfr`
+#' expects the minimum and maximum number of cycles to be supplied. Use this
+#' function to calculate the equivalent number of cycles at each frequency.
+#'
+#' @param time_win Time window in seconds.
+#' @param frex Frequencies of interest.
+#' @export
+#' @return the number of cycles for each frequency of interest
+#' @examples
+#' cycle_calc(.5, seq(3, 30, length.out = 10))
+#' no_scale_tfr <- compute_tfr(demo_epochs, foi = c(3, 30), n_cycles = range(cycle_calc(0.5, seq(3, 30, length.out = 10))), n_freq = 10)
+#' @seealso \code{\link{compute_tfr}}
+
+cycle_calc <- function(time_win,
+                       frex) {
+  time_win * frex
 }
