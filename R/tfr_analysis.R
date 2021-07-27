@@ -853,8 +853,8 @@ tf_hanning <- function(data,
 
 
   # # Normalise wavelets for FFT (as suggested by Mike X. Cohen):
-  # norm_mf <- wavelet_norm(mf_zp,
-  #                         n_freq)
+   norm_mf <- wavelet_norm(norm_mf,
+                           n_freq)
 
   # Run the FFT convolutions on each individual trial
 
@@ -976,10 +976,12 @@ hann_family <- function(frex,
 
       pi_seq <- pi_seq * 2 * pi /srate
 
-      # do frobenius norm too to make each window unit gain
-      window <-
-        window / norm(matrix(window),
-                      type = "F")
+      # do frobenius norm too to make each window unit gain?
+      # window <-
+      #   window / norm(matrix(window),
+      #                 type = "F")
+      # or by absolute max for consistency
+
       prepad <- ceiling((max_win - length(window)) / 2)
       postpad <- floor((max_win - length(window)) / 2)
       win_times <- pi_seq * frex[[x]]
@@ -991,7 +993,8 @@ hann_family <- function(frex,
                        window * sin(win_times),
                        rep(0, postpad))
          )
-      final_win#
+      # final_win <- final_win / final_win[which.max(abs(final_win))]
+      final_win
       })
   windows
 }
