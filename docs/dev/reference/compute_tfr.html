@@ -221,13 +221,14 @@ of frequencies.</p></td>
     </tr>
     <tr>
       <th>spacing</th>
-      <td><p>Use "linear" or "log" spacing for the frequency vector.</p></td>
+      <td><p>Use "linear" or "log" spacing for the frequency vector and number of cycles.</p></td>
     </tr>
     <tr>
       <th>n_cycles</th>
       <td><p>Number of cycles at each frequency. If a single integer, use
 a constant number of cycles at each frequency. If a character vector of
-length 2, use a linearly scaling number of cycles at each frequency.</p></td>
+length 2, the number of cycles will scale with frequency from the minimum
+to the maximum.</p></td>
     </tr>
     <tr>
       <th>keep_trials</th>
@@ -257,7 +258,7 @@ performing time-frequency analysis on the full sampling rate data.</p></td>
     
 <ul>
 <li><p><code>default</code>: Default method for compute_tfr</p></li>
-<li><p><code>eeg_epochs</code>: Default method for compute_tfr</p></li>
+<li><p><code>eeg_epochs</code>: Default method for <code>compute_tfr</code></p></li>
 <li><p><code>eeg_evoked</code>: Method for <code>eeg_evoked</code> objects.</p></li>
 </ul>
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
