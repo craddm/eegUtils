@@ -745,11 +745,14 @@ import_set <- function(file_name,
   colnames(event_table) <- dimnames(event_info)[[1]]
 
   event_table <- tibble::as_tibble(event_table)
-  event_table <- map_df(event_table,
-                        ~unlist(map(.,
-                                    ~ifelse(is.null(.),
-                                            NA,
-                                            .))))
+  event_table <-
+    purrr::map_df(event_table,
+                  ~unlist(
+                    purrr::map(.,
+                               ~ifelse(is.null(.),
+                                       NA,
+                                       .)))
+                  )
   event_table <- lapply(event_table,
                         unlist)
   empty_entries <- unlist(lapply(event_table,
@@ -768,10 +771,17 @@ import_set <- function(file_name,
   if (any(event_table$latency %% 1 > 0)) {
     message("Rounding non-integer event sample latencies...")
     event_table$latency <- round(event_table$latency)
+    # This can result in an event with a latency of zero in samples, which
+    # causes problems with subsequent import steps - fix that and turn it into
+    # sample 1
+    event_table$latency <- ifelse(event_table$latency == 0,
+                                  1,
+                                  event_table$latency)
   }
 
   # EEGLAB stores latencies in samples starting from 1, my event_time is in
   # seconds, starting from 0
+
   event_table$event_time <- (event_table$latency - 1) / srate
 
   std_cols <- c("latency",
@@ -861,14 +871,21 @@ parse_chaninfo <- function(chan_info,
                 "sph.radius", "sph.theta",
                 "theta", "type",
                 "urchan", "X", "Y", "Z")
-  if (!all(names(chan_info) == expected)) {
+
+
+  # Check for two things:
+  # 1) Missing expected columns.
+  # 2) Columns which are non-standard.
+  if (!all(expected %in% names(chan_info))) {
     if (drop) {
       warning("EEGLAB chan info has unexpected format, taking electrode names only.")
       out <- data.frame(chan_info["labels"])
       names(out) <- "electrode"
       return(validate_channels(out))
     } else {
-      warning("EEGLAB chan info has unexpected format, taking only expected columns.")
+      if (!all(names(chan_info) %in% expected)) warning("EEGLAB chan info has unexpected format, taking only expected columns.")
+      miss_cols <- expected[!(expected %in% names(chan_info))]
+      chan_info[miss_cols] <- NA
       chan_info <- chan_info[, expected]
     }
   }
