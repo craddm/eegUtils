@@ -348,8 +348,11 @@ create_tfrimage <- function(data,
 #' original order.
 #'
 #' @examples
+#' library(ggplot2)
 #' erp_raster(demo_epochs)
 #' erp_raster(demo_epochs, interpolate = TRUE)
+#' erp_raster(rm_baseline(demo_epochs, c(-.1, 0)), interpolate = TRUE)
+#' erp_raster(demo_spatial) + facet_wrap(~epoch_labels)
 #' @param data An `eeg_epochs` object
 #' @param anat_order Arrange the channels in a more anatomically representative
 #'   order. Defaults to TRUE.
