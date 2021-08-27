@@ -75,8 +75,6 @@ erp_image.data.frame <- function(data,
         )
   }
 
-
-
   if (all(electrode %in% data$electrode)) {
     sel_elec <- electrode
     data <-
@@ -393,34 +391,24 @@ erp_raster <- function(data,
   if (all(anat_order && !is.null(data$chan_info))) {
     chan_order <- arrange_chans(channels(data),
                                 channel_names(data))
-    data$signals <- data$signals[, chan_order]
+    chan_lab_order <- channel_names(data)[chan_order]
   }
 
-  data <- data.frame(data$signals,
-                     time = data$timings$time)
-  data <- split(data,
-                data$time)
-  data <- lapply(data,
-                 Matrix::colMeans)
-  data <- as.data.frame(
-    do.call(rbind,
-            data)
-    )
-  data <- tidyr::gather(data,
-                        electrode,
-                        amplitude,
-                        -time,
-                        factor_key = TRUE)
+  data <- as.data.frame(data,
+                        long = TRUE)
+  data$electrode <- factor(data$electrode,
+                           levels = chan_lab_order)
   if (is.null(clim)) {
-    clim <- c(min(data$amplitude),
-              max(data$amplitude))
+    clim_max <- max(abs(range(data$amplitude)))
+    clim <- c(-clim_max, clim_max) / 10
   }
 
   ggplot2::ggplot(data,
                   aes(x = time,
                       y = electrode,
                       fill = amplitude)) +
-    geom_raster(interpolate = interpolate) +
+    stat_summary_by_fill(interpolate = interpolate) +
+    #geom_raster(interpolate = interpolate) +
     geom_vline( xintercept = 0,
                 linetype = "dashed",
                 size = 2) +
