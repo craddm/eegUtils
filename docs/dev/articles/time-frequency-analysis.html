@@ -101,13 +101,13 @@
 
       
 
-      </header><script src="time-frequency-analysis_files/header-attrs-2.9/header-attrs.js"></script><div class="row">
+      </header><script src="time-frequency-analysis_files/header-attrs-2.10/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Frequency analysis</h1>
                         <h4 class="author">Matt Craddock</h4>
             
-            <h4 class="date">2021-07-27</h4>
+            <h4 class="date">2021-08-27</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/craddm/eegUtils/blob/master/vignettes/time-frequency-analysis.Rmd"><code>vignettes/time-frequency-analysis.Rmd</code></a></small>
       <div class="hidden name"><code>time-frequency-analysis.Rmd</code></div>
@@ -167,7 +167,7 @@
 <span class="co">#&gt; Number of epochs :    80 </span>
 <span class="co">#&gt; Epoch limits     :    -0.197 - 0.451 seconds</span>
 <span class="co">#&gt; Sampling rate        :    128  Hz</span></code></pre></div>
-<p>Note that the characteristics of the wavelets, in terms of temporal and frequency standard deviations, are stored inside the  object:</p>
+<p>Note that the characteristics of the wavelets, in terms of temporal and frequency standard deviations, are stored inside the <code>eeg_tfr</code> object:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">demo_tfr</span><span class="op">$</span><span class="va">freq_info</span><span class="op">$</span><span class="va">morlet_resolution</span>
 <span class="co">#&gt;    frequency   sigma_f    sigma_t n_cycles</span>
@@ -187,7 +187,7 @@
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/plot_tfr.html">plot_tfr</a></span><span class="op">(</span><span class="va">demo_tfr</span><span class="op">)</span></code></pre></div>
 <p><img src="time-frequency-analysis_files/figure-html/tfr-plot-1.png" width="700"></p>
-<p>Baseline correction is common in the literature, which can serve two purposes. Several different methods are possible. both for plotting only, and as a modification to the  object using <code><a href="../reference/rm_baseline.html">rm_baseline()</a></code>.</p>
+<p>Baseline correction is common in the literature, which can serve two purposes. Several different methods are possible. both for plotting only, and as a modification to the <code>eeg_tfr</code> object using <code><a href="../reference/rm_baseline.html">rm_baseline()</a></code>.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/plot_tfr.html">plot_tfr</a></span><span class="op">(</span><span class="va">demo_tfr</span>, baseline_type <span class="op">=</span> <span class="st">"absolute"</span>, baseline <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">.1</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p><img src="time-frequency-analysis_files/figure-html/db-plot-1.png" width="700"></p>

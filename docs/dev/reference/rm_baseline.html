@@ -185,9 +185,10 @@ column is always required; an epoch column is not.</p>
     </tr>
     <tr>
       <th>time_lim</th>
-      <td><p>Numeric character vector (e.g. time_lim &lt;- c(-.1, 0)). If
-none given, defaults to mean of the whole of each epoch if the data is
-epoched, or the channel mean if the data is continuous.</p></td>
+      <td><p>Numeric character vector (e.g. time_lim &lt;- c(-.1, 0))
+defining the time period to use as a baseline. If the value is NULL, it
+uses the mean of the whole of each epoch if the data is epoched, or the
+channel mean if the data is continuous.</p></td>
     </tr>
     <tr>
       <th>...</th>
