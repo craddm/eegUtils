@@ -124,10 +124,13 @@ select_times.eeg_tfr <- function(data,
   data$timings <- data$timings[keep_rows, ]
   if (length(data$dimensions) == 3) {
     data$signals <- data$signals[keep_rows, , , drop = FALSE]
-  } else {
+  } else if (length(data$dimensions) == 4) {
 
     keep_rows <- keep_rows[1:length(dimnames(data$signals)[["time"]])]
     data$signals <- data$signals[, keep_rows, , , drop = FALSE]
+  } else {
+    keep_rows <- keep_rows[1:length(dimnames(data$signals)[["time"]])]
+    data$signals <- data$signals[, keep_rows, , , , drop = FALSE]
   }
   data
 }
