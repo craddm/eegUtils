@@ -24,7 +24,9 @@ function to calculate the equivalent number of cycles at each frequency.
 }
 \examples{
 cycle_calc(.5, seq(3, 30, length.out = 10))
-no_scale_tfr <- compute_tfr(demo_epochs, foi = c(3, 30), n_cycles = range(cycle_calc(0.5, seq(3, 30, length.out = 10))), n_freq = 10)
+no_scale_tfr <- compute_tfr(demo_epochs, foi = c(3, 30),
+ n_cycles = range(cycle_calc(0.5, seq(3, 30, length.out = 10))),
+  n_freq = 10)
 }
 \seealso{
 \code{\link{compute_tfr}}
