@@ -24,9 +24,10 @@ rm_baseline(data, time_lim = NULL, ...)
 \arguments{
 \item{data}{Data to be baseline corrected.}
 
-\item{time_lim}{Numeric character vector (e.g. time_lim <- c(-.1, 0)). If
-none given, defaults to mean of the whole of each epoch if the data is
-epoched, or the channel mean if the data is continuous.}
+\item{time_lim}{Numeric character vector (e.g. time_lim <- c(-.1, 0))
+defining the time period to use as a baseline. If the value is NULL, it
+uses the mean of the whole of each epoch if the data is epoched, or the
+channel mean if the data is continuous.}
 
 \item{...}{other parameters to be passed to functions}
 
