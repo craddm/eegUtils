@@ -736,6 +736,7 @@ norm_sphere <- function(xyz_coords) {
 #' @keywords internal
 cart_to_spherical <- function(xyz_coords) {
 
+
   radius <- sqrt(rowSums(xyz_coords ^ 2))
   phi <- rad2deg(atan(xyz_coords$cart_y / xyz_coords$cart_x))
   theta <- rad2deg(acos(xyz_coords$cart_z / radius))

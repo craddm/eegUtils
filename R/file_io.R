@@ -865,30 +865,38 @@ import_set <- function(file_name,
 parse_chaninfo <- function(chan_info,
                            drop = FALSE) {
 
-  chan_info <- chan_info[, sort(names(chan_info))]
+  # chan_info <- chan_info[sort(names(chan_info),
+  #                             method = "shell")]
   expected <- c("labels", "radius",
                 "ref", "sph.phi",
                 "sph.radius", "sph.theta",
                 "theta", "type",
-                "urchan", "X", "Y", "Z")
-
-
+                "urchan", "X",
+                "Y", "Z")
   # Check for two things:
   # 1) Missing expected columns.
   # 2) Columns which are non-standard.
-  if (!all(expected %in% names(chan_info))) {
+  if (!all(names(chan_info) %in% expected)) {
     if (drop) {
       warning("EEGLAB chan info has unexpected format, taking electrode names only.")
       out <- data.frame(chan_info["labels"])
       names(out) <- "electrode"
       return(validate_channels(out))
     } else {
-      if (!all(names(chan_info) %in% expected)) warning("EEGLAB chan info has unexpected format, taking only expected columns.")
+      warning("EEGLAB chan info has unexpected format, taking only expected columns.")
       miss_cols <- expected[!(expected %in% names(chan_info))]
       chan_info[miss_cols] <- NA
-      chan_info <- chan_info[, expected]
     }
   }
+
+  if (!all(expected %in% names(chan_info))) {
+    miss_cols <- expected[!(expected %in% names(chan_info))]
+    chan_info[miss_cols] <- NA
+
+  }
+
+  chan_info <- chan_info[expected]
+
   names(chan_info) <- c("electrode",
                         "radius",
                         "ref",
@@ -902,6 +910,7 @@ parse_chaninfo <- function(chan_info,
                         "cart_y",
                         "cart_z"
                         )
+
   chan_info <- chan_info[c("electrode",
                            "cart_x",
                            "cart_y",
