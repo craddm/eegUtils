@@ -74,15 +74,6 @@ eeg_average.eeg_epochs <- function(data,
     col_names <- col_names[!(col_names %in% c("epoch", "recording", "event_type"))]
   }
 
-   # data$signals <-
-   #   dplyr::group_by_at(data$signals,
-   #                      .vars = vars(time, col_names)) %>%
-   #   dplyr::summarise_at(.vars = vars(elecs),
-   #                       mean) %>%
-   #   dplyr::group_by_at(.vars = col_names) %>%
-   #   dplyr::mutate(epoch = dplyr::cur_group_id()) %>%
-   #   dplyr::ungroup()
-
   # break down into individual calls using updated syntax
   data$signals <-
     dplyr::group_by(
@@ -140,7 +131,12 @@ eeg_average.eeg_epochs <- function(data,
 eeg_average.eeg_evoked <- function(data,
                                    cols = NULL,
                                    ...) {
-  message("Data is already averaged.")
+
+  if (is.null(cols)) {
+    message("Data is already averaged.")
+  } else {
+
+  }
   data
 }
 
@@ -171,10 +167,12 @@ average_tf <- function(data,
   orig_dims <- dimnames(data$signals)
 
   if ("participant_id" %in% names(orig_dims)) {
-    data$signals <- aperm(data$signals, c("participant_id",
-                                          "time",
-                                          "electrode",
-                                          "frequency"))
+    data$signals <- aperm(data$signals,
+                          c("participant_id",
+                            "epoch",
+                            "time",
+                            "electrode",
+                            "frequency"))
     orig_dims <- dimnames(data$signals)
   }
 
