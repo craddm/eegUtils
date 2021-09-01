@@ -16,6 +16,8 @@
 - `erp_scalp()` and `interactive_scalp()` now use cleaner evaluation of the `colour` argument using `rlang` 
 - Fixed adding CSD as new reference when using `compute_csd()`
 - When using a scaling number of cycles in `compute_tfr()`, they will now also use the `spacing` parameter to determine `log` or `linear` scaling.
+- Fixed bug with `eeg_average()` used on `c("eeg_group", "eeg_tfr")` objects.
+- Fixed bug with incorrect number of epochs calculated when epoching `eeg_data` objects if there were multiple "target" triggers appearing in an epoch.
 
 # eegUtils 0.6.3
 
