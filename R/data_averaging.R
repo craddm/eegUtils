@@ -186,10 +186,16 @@ average_tf <- function(data,
     }
   } else {
     col_names <- names(data$epochs)
-    col_names <- col_names[!(col_names %in% c("participant_id",
-                                              "epoch",
-                                              "recording",
-                                              "event_type"))]
+    if (is_group_df) {
+      col_names <- col_names[!(col_names %in% c("participant_id",
+                                                "epoch",
+                                                "recording",
+                                                "event_type"))]
+    } else {
+      col_names <- col_names[!(col_names %in% c("epoch",
+                                                "recording",
+                                                "event_type"))]
+    }
   }
 
   epo_types <- unique(epochs(data)[col_names])
