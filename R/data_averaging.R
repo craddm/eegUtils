@@ -166,6 +166,7 @@ average_tf <- function(data,
   # Need to find a way to make this respect epochs structure...
   orig_dims <- dimnames(data$signals)
 
+  is_group_df <- FALSE
   if ("participant_id" %in% names(orig_dims)) {
     data$signals <- aperm(data$signals,
                           c("participant_id",
@@ -174,8 +175,8 @@ average_tf <- function(data,
                             "electrode",
                             "frequency"))
     orig_dims <- dimnames(data$signals)
+    is_group_df <- TRUE
   }
-
 
   if (!is.null(cols)) {
     if ("participant_id" %in% cols) {
@@ -185,32 +186,52 @@ average_tf <- function(data,
     }
   } else {
     col_names <- names(data$epochs)
-    col_names <- col_names[!(col_names %in% c("epoch",
+    col_names <- col_names[!(col_names %in% c("participant_id",
+                                              "epoch",
                                               "recording",
                                               "event_type"))]
   }
 
   epo_types <- unique(epochs(data)[col_names])
   new_epos <- nrow(epo_types)
-  n_times <- dim(data$signals)[2]
+  n_times <- length(dimnames(data$signals)$time)
 
   # There must be a less hacky way of doing this
   epo_nums <-
     lapply(1:new_epos,
            function(x) dplyr::inner_join(epochs(data),
-                                         epo_types[x, ],
+                                         epo_types[x, , drop = FALSE],
                                          by = col_names)[["epoch"]])
 
   # convert epoch numbers from epochs() to positions in matrix
   epo_nums <- lapply(epo_nums,
                      function(x) which(orig_dims$epoch %in% x))
 
-  if (identical(data$freq_info$output, "phase")) {
-    data$signals <- apply(data$signals,
-                          c(2, 3, 4),
-                          circ_mean)
+  if (is_group_df) {
 
-  } else if (identical(data$freq_info$output, "power")) {
+    orig_dims <- dimnames(data$signals)
+    orig_dims[["participant_id"]] <- "grand_average"
+    data$signals <- colMeans(data$signals)
+    dim(data$signals) <- c(1,
+                           dim(data$signals))
+
+    dimnames(data$signals) <- orig_dims
+    data$dimensions <- c("participant_id",
+                         "epoch",
+                         "time",
+                         "electrode",
+                         "frequency")
+    epo_types$epoch <- 1:new_epos
+    epochs(data) <- epo_types
+
+  } else {
+    if (identical(data$freq_info$output,
+                  "phase")) {
+      data$signals <- apply(data$signals,
+                            c(2, 3, 4),
+                            circ_mean)
+    } else if (identical(data$freq_info$output,
+                         "power")) {
 
     # maybe one day try to calm this nested loop gore down
     # but it's pretty quick so hey
@@ -238,6 +259,7 @@ average_tf <- function(data,
     epochs(data) <- epo_types
     } else {
       stop("Averaging of fourier coefficients not supported.")
+    }
   }
   data$timings <-
     tibble::tibble(
