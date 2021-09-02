@@ -272,19 +272,48 @@ rm_baseline.eeg_evoked <- function(data,
 
   orig_cols <- channel_names(data)
   n_times <- length(unique(data$timings$time))
-  n_epochs <- nrow(data$epochs)
+  if (inherits(data, "eeg_group")) {
+    n_epochs <- length(unique(epochs(data)$epoch))
+    n_participants <- length(unique(epochs(data)$participant_id))
+    is_group_data <- TRUE
+  } else {
+    n_epochs <- length(unique(epochs(data)$epoch))
+    n_participants <- length(unique(epochs(data)$participant_id))
+    is_group_data <- FALSE
+  }
+
+  #n_epochs <- nrow(data$epochs)
   n_chans <- length(orig_cols)
   base_times <- get_epoch_baselines(data,
                                     time_lim)
 
   data$signals <- as.matrix(data$signals)
-  dim(data$signals) <- c(n_times,
-                         n_epochs,
-                         n_chans)
+  if (is_group_data) {
+    dim(data$signals) <- c(n_epochs,
+                           n_times,
+                           n_chans,
+                           n_participants)
+    data$signals <- aperm(data$signals,
+                          c(2, 1, 3, 4))
+    dim(data$signals) <- c(n_times,
+                           n_epochs * n_participants,
+                           n_chans)
+  } else {
+    dim(data$signals) <- c(n_times,
+                           n_epochs,
+                           n_chans)
+  }
+
   data$signals <- baseline_epo(data$signals, base_times)
 
-  data$signals <- array(data$signals,
-                        dim = c(n_epochs * n_times, n_chans))
+  if (is_group_data) {
+    dim(data$signals) <- c(n_times, n_epochs, n_chans, n_participants)
+    data$signals <- aperm(data$signals, c(2,1,3,4))
+    dim(data$signals) <- c(n_epochs*n_times * n_participants, n_chans)
+  } else {
+    data$signals <- array(data$signals,
+                          dim = c(n_epochs * n_times, n_chans))
+  }
   colnames(data$signals) <- orig_cols
   data$signals <- tibble::as_tibble(data$signals)
   data
@@ -303,27 +332,54 @@ get_epoch_baselines <- function(data,
                                 time_lim) {
 
   #n_epochs <- nrow(epochs(data))
-  n_epochs <- length(unique(epochs(data)$epoch))
+  if (inherits(data, "eeg_group")) {
+    #n_epochs <- nrow(epochs(data))
+    n_epochs <- length(unique(epochs(data)$epoch))
+    n_participants <- length(unique(epochs(data)$participant_id))
+    is_group_data <- TRUE
+  } else {
+    n_epochs <- length(unique(epochs(data)$epoch))
+    n_participants <- length(unique(epochs(data)$participant_id))
+    is_group_data <- FALSE
+  }
+
   n_chans <- length(channel_names(data))
   chan_names <- colnames(data$signals)
 
   if (is.null(time_lim)) {
     data$signals <- as.matrix(data$signals)
     n_times <- length(unique(data$timings$time))
+    if (is_group_data) {
+      dim(data$signals) <- c(n_epochs,
+                             n_times,
+                             n_chans,
+                             n_participants)
+    } else {
     dim(data$signals) <- c(n_times,
                            n_epochs,
                            n_chans)
+    }
     base_times <- colMeans(data$signals)
   } else {
     base_times <- select_times(data,
                                time_lim = time_lim)
     base_times$signals <- as.matrix(base_times$signals)
     n_bl_times <- length(unique(base_times$timings$time))
-    dim(base_times$signals) <- c(n_bl_times,
-                                 n_epochs,
-                                 n_chans)
+    if (is_group_data) {
+      dim(base_times$signals) <- c(n_epochs,
+                                   n_bl_times,
+                                   n_chans,
+                                   n_participants)
+      base_times$signals <- aperm(base_times$signals,
+                                  c(2,1,3,4))
+    } else {
+      dim(base_times$signals) <- c(n_bl_times,
+                                   n_epochs,
+                                   n_chans)
+    }
     base_times <- colMeans(base_times$signals)
   }
-    colnames(base_times) <- chan_names
-    base_times
+  dim(base_times) <- c(n_epochs* n_participants, n_chans)
+  colnames(base_times) <- chan_names
+  base_times
 }
