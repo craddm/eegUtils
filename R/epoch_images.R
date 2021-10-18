@@ -59,6 +59,9 @@ erp_image.data.frame <- function(data,
                      "amplitude",
                      "epoch")
 
+  if (length(electrode) > 1) {
+    stop("Currently, only one electrode can be plotted at a time.")
+  }
   col_names <- names(data)
 
   if (!all(required_cols %in% col_names)) {
@@ -105,6 +108,9 @@ erp_image.eeg_epochs <- function(data,
                                  interpolate = FALSE,
                                  na.rm = TRUE,
                                  ...) {
+  if (length(electrode) > 1) {
+    stop("Currently, only one electrode can be plotted at a time.")
+  }
 
   if (!electrode %in% names(data$signals)) {
     stop("Specified electrode not found.")
@@ -177,6 +183,10 @@ erp_image.eeg_tfr <- function(data,
     stop("`erp_image()` requires an `eeg_tfr` object with more than one trial.")
   }
 
+  if (length(electrode) > 1) {
+    stop("Currently, only one electrode can be plotted at a time.")
+  }
+
   data <- select_elecs(data,
                        electrode)
 
@@ -194,6 +204,9 @@ erp_image.eeg_tfr <- function(data,
   data <- as.data.frame(data,
                         long = TRUE,
                         coords = FALSE)
+
+
+
   create_tfrimage(data,
                   electrode = electrode,
                   smoothing = smoothing,
@@ -268,7 +281,7 @@ create_erpimage <- function(data,
     scale_x_continuous(expand = c(0, 0)) +
     theme_classic() +
     labs(x = "Time (s)", fill = "Amplitude", y = "Epoch number") +
-    ggtitle(paste("ERP Image for electrode", electrode))
+    ggtitle(paste("ERP Image for", electrode))
 }
 
 

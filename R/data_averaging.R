@@ -136,6 +136,7 @@ eeg_average.eeg_evoked <- function(data,
     message("Data is already averaged.")
   } else {
 
+
   }
   data
 }

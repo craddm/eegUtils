@@ -382,6 +382,7 @@ faster_epo_stat <- function(data,
 }
 
 #' @describeIn ar_FASTER Run FASTER on `eeg_group` objects
+#' @param EOG names of EOG channels to be used when computed maximum EOG values.
 #' @export
 ar_FASTER.eeg_group <- function(data,
                                 exclude = NULL,
@@ -420,11 +421,11 @@ ar_FASTER.eeg_group <- function(data,
 
   participant_mean <-
     all_data %>%
-    ungroup %>%
-    group_by(participant_id) %>%
-    summarise(
-      across(
-        all_of(data_chans),
+    dplyr::ungroup %>%
+    dplyr::group_by(participant_id) %>%
+    dplyr::summarise(
+      dplyr::across(
+        dplyr::all_of(data_chans),
         mean)
       )
 
@@ -438,11 +439,11 @@ ar_FASTER.eeg_group <- function(data,
 
   participant_var <-
     all_data %>%
-    ungroup %>%
-    group_by(participant_id) %>%
-    summarise(
-      across(
-        all_of(data_chans),
+    dplyr::ungroup %>%
+    dplyr::group_by(participant_id) %>%
+    dplyr::summarise(
+      dplyr::across(
+        dplyr::all_of(data_chans),
         var)
     )
 
@@ -456,11 +457,11 @@ ar_FASTER.eeg_group <- function(data,
 
   part_ranges <-
     all_data %>%
-    ungroup %>%
-    group_by(participant_id) %>%
-    summarise(
-      across(
-        all_of(data_chans),
+    dplyr::ungroup %>%
+    dplyr::group_by(participant_id) %>%
+    dplyr::summarise(
+      dplyr::across(
+        dplyr::all_of(data_chans),
         ~diff(range(.)))
     )
 
@@ -475,11 +476,11 @@ ar_FASTER.eeg_group <- function(data,
   if (!is.null(EOG)) {
     participant_eog <-
       all_data %>%
-      ungroup %>%
-      group_by(participant_id) %>%
-      summarise(
-        across(
-          all_of(EOG),
+      dplyr::ungroup %>%
+      dplyr::group_by(participant_id) %>%
+      dplyr::summarise(
+        dplyr::across(
+          dplyr::all_of(EOG),
           max)
       )
     scaled_eog <- abs(scale(matrixStats::rowMaxs(as.matrix(participant_eog[, EOG]))))

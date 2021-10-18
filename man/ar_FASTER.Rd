@@ -42,6 +42,8 @@ eeg_FASTER(data, ...)
 \item{test_epochs}{Logical. Run tests of globally bad epochs.}
 
 \item{test_cine}{Logical. Run tests for locally bad channels within epochs.}
+
+\item{EOG}{names of EOG channels to be used when computed maximum EOG values.}
 }
 \value{
 An \code{eeg_epochs} object with artefact correction applied.

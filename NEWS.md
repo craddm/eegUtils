@@ -10,6 +10,7 @@
 - added additional `demo_spatial` data from a spatial cueing experiment.
 - `plot_difference()` function added for plotting ERP difference waves.
 - Added `hanning` taper support for `compute_tfr`. Note that the scaling factors used for all `compute_tfr` calculations have been adjusted, so the exact numerical values returned will change. However, this is just a scaling factor - the relative distances between values remained unchanged.
+- `ar_FASTER()` has experimental support for `eeg_group` objects when those objects are `eeg_evoked` groups. It does not perform rejection but reports how many times each participants data breaks a threshold for a number of measures.
 
 ### Internal changes / bug fixes
 

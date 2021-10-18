@@ -168,6 +168,8 @@
 <li>
 <code><a href="../reference/plot_difference.html">plot_difference()</a></code> function added for plotting ERP difference waves.</li>
 <li>Added <code>hanning</code> taper support for <code>compute_tfr</code>. Note that the scaling factors used for all <code>compute_tfr</code> calculations have been adjusted, so the exact numerical values returned will change. However, this is just a scaling factor - the relative distances between values remained unchanged.</li>
+<li>
+<code><a href="../reference/ar_FASTER.html">ar_FASTER()</a></code> has experimental support for <code>eeg_group</code> objects when those objects are <code>eeg_evoked</code> groups. It does not perform rejection but reports how many times each participants data breaks a threshold for a number of measures.</li>
 </ul>
 </div>
 <div id="internal-changes--bug-fixes" class="section level3">
@@ -180,6 +182,8 @@
 <li>Fixed adding CSD as new reference when using <code><a href="../reference/compute_csd.html">compute_csd()</a></code>
 </li>
 <li>When using a scaling number of cycles in <code><a href="../reference/compute_tfr.html">compute_tfr()</a></code>, they will now also use the <code>spacing</code> parameter to determine <code>log</code> or <code>linear</code> scaling.</li>
+<li>Fixed bug with <code><a href="../reference/eeg_average.html">eeg_average()</a></code> used on <code><a href="https://rdrr.io/r/base/c.html">c("eeg_group", "eeg_tfr")</a></code> objects.</li>
+<li>Fixed bug with incorrect number of epochs calculated when epoching <code>eeg_data</code> objects if there were multiple “target” triggers appearing in an epoch.</li>
 </ul>
 </div>
 </div>
@@ -307,7 +311,7 @@
 <li>
 <code><a href="../reference/view_artefacts.html">view_artefacts()</a></code>Shiny viewer for channel and epoch stats added.</li>
 <li>
-<code><a href="../reference/plot_timecourse.html">plot_timecourse()</a></code> now takes a mapping argument, which allows use of <code>ggplot2</code> <code><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes()</a></code> mappings</li>
+<code><a href="../reference/plot_timecourse.html">plot_timecourse()</a></code> now takes a mapping argument, which allows use of <code>ggplot2</code> <code>aes()</code> mappings</li>
 <li>
 <code><a href="../reference/eeg_average.html">eeg_average.eeg_tfr()</a></code> now follows behaviour of other <code><a href="../reference/eeg_average.html">eeg_average()</a></code> methods in respecting the <code>epochs</code> structure.<br>
 </li>

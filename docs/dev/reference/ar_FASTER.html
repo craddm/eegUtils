@@ -169,6 +169,17 @@ EEG artifact Rejection. J Neurosci Methods.</p>
   <span class='va'>...</span>
 <span class='op'>)</span>
 
+<span class='co'># S3 method for eeg_group</span>
+<span class='fu'>ar_FASTER</span><span class='op'>(</span>
+  <span class='va'>data</span>,
+  exclude <span class='op'>=</span> <span class='cn'>NULL</span>,
+  test_chans <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  test_epochs <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  test_cine <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  EOG <span class='op'>=</span> <span class='cn'>NULL</span>,
+  <span class='va'>...</span>
+<span class='op'>)</span>
+
 <span class='fu'>eeg_FASTER</span><span class='op'>(</span><span class='va'>data</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -198,6 +209,10 @@ EEG artifact Rejection. J Neurosci Methods.</p>
       <th>test_cine</th>
       <td><p>Logical. Run tests for locally bad channels within epochs.</p></td>
     </tr>
+    <tr>
+      <th>EOG</th>
+      <td><p>names of EOG channels to be used when computed maximum EOG values.</p></td>
+    </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
@@ -208,6 +223,7 @@ EEG artifact Rejection. J Neurosci Methods.</p>
     
 <ul>
 <li><p><code>eeg_epochs</code>: Run FASTER on <code>eeg_epochs</code></p></li>
+<li><p><code>eeg_group</code>: Run FASTER on <code>eeg_group</code> objects</p></li>
 </ul>
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 

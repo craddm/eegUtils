@@ -73,18 +73,23 @@ ar_thresh.eeg_epochs <- function(data,
   crossed_thresh <- check_thresh(data, threshold)
 
   crossed_thresh <- rowSums(crossed_thresh) == 1
-  rej_epochs <- data.frame(
-    epoch = unique(data$timings$epoch[crossed_thresh]),
-    reason = "threshold")
-  message(paste(length(rej_epochs), "epochs contain samples above threshold."))
-  if (reject) {
-    message("Removing ", length(rej_epochs), " epochs.")
-    data <- select_epochs(data,
-                          epoch_no = rej_epochs,
-                          keep = FALSE)
+  if (!any(crossed_thresh)) {
+    message("No epochs contain samples above threshold.")
   } else {
-    data$reject$epochs <- rej_epochs
-    data$reject$timings <- data$timings[crossed_thresh,]
+    rej_epochs <- data.frame(
+      epoch = unique(data$timings$epoch[crossed_thresh]),
+      reason = "threshold")
+    message(paste(nrow(rej_epochs),
+                  "epochs contain samples above threshold."))
+    if (reject) {
+      message("Removing ", nrow(rej_epochs), " epochs.")
+      data <- select_epochs(data,
+                            epoch_no = rej_epochs,
+                            keep = FALSE)
+      } else {
+        data$reject$epochs <- rej_epochs
+        data$reject$timings <- data$timings[crossed_thresh,]
+      }
   }
   data
 }
