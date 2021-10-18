@@ -8,7 +8,7 @@ articles:
   linear_modelling/linear_modelling: linear_modelling.html
   time-frequency-analysis: time-frequency-analysis.html
   topoplot/topoplot: topoplot.html
-last_built: 2021-10-18T17:14Z
+last_built: 2021-10-18T17:24Z
 urls:
   reference: http://craddm.github.io/eegUtils/reference
   article: http://craddm.github.io/eegUtils/articles
