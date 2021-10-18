@@ -6,11 +6,7 @@
 \alias{eegUtils-package}
 \title{eegUtils: Utilities for Electroencephalographic (EEG) Analysis}
 \description{
-EEG processing and visualization tools. Includes import
-  functions for 'BioSemi' (.BDF), 'Neuroscan' (.CNT), 'Brain Vision Analyzer' (.VHDR),
-  'EEGLAB' (.set) and 'Fieldtrip' (.mat). Many preprocessing functions such as
-  referencing, epoching, filtering, and ICA are available. There are a variety 
-  of visualizations possible, including timecourse and topographical plotting.
+EEG processing and visualization tools. Includes import functions for 'BioSemi' (.BDF), 'Neuroscan' (.CNT), 'Brain Vision Analyzer' (.VHDR), 'EEGLAB' (.set) and 'Fieldtrip' (.mat). Many preprocessing functions such as referencing, epoching, filtering, and ICA are available. There are a variety of visualizations possible, including timecourse and topographical plotting.
 }
 \seealso{
 Useful links:

@@ -21,6 +21,14 @@ ar_thresh <- function(data,
   UseMethod("ar_thresh", data)
 }
 
+#' @export
+ar_thresh.default <- function(data,
+                              threshold,
+                              reject = FALSE) {
+  stop("Not implemented for objects of class ",
+       class(data))
+}
+
 #' @describeIn ar_thresh Reject data using a simple threshold.
 #' @export
 ar_thresh.eeg_data <- function(data,
@@ -31,7 +39,8 @@ ar_thresh.eeg_data <- function(data,
     threshold <- c(threshold, -threshold)
   }
 
-  crossed_thresh <- check_thresh(data, threshold)
+  crossed_thresh <- check_thresh(data,
+                                 threshold)
   crossed_thresh <- rowSums(crossed_thresh) == 0
 
   if (reject) {
@@ -64,7 +73,9 @@ ar_thresh.eeg_epochs <- function(data,
   crossed_thresh <- check_thresh(data, threshold)
 
   crossed_thresh <- rowSums(crossed_thresh) == 1
-  rej_epochs <- unique(data$timings$epoch[crossed_thresh])
+  rej_epochs <- data.frame(
+    epoch = unique(data$timings$epoch[crossed_thresh]),
+    reason = "threshold")
   message(paste(length(rej_epochs), "epochs contain samples above threshold."))
   if (reject) {
     message("Removing ", length(rej_epochs), " epochs.")
@@ -510,3 +521,11 @@ ar_trialfoc <- function(data,
   channel_names(data)[matrixStats::colMaxs(zmat) > threshold]
 }
 
+
+ar_check_rejections <- function(data) {
+  if (is.null(data$reject)) {
+    message("Nothing currently marked for rejection.")
+  } else {
+    data$reject
+  }
+}
