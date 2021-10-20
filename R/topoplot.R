@@ -166,7 +166,10 @@ topoplot.data.frame <- function(data,
     quantity <- as.name(quantity)
   }
 
-  if (!is.null(rlang::enexpr(groups))) {
+  #groups <- rlang::enexpr(groups)
+
+#  if (!is.null(rlang::enexpr(groups))) {
+  if (!rlang::is_null(groups)) {
     data <-
       dplyr::group_by(data,
                       x,
@@ -528,10 +531,11 @@ topoplot.eeg_tfr <- function(data,
   }
 
   if (!is.null(freq_range)) {
-    data <- select_freqs(data, freq_range)
+    data <- select_freqs(data,
+                         freq_range)
   }
 
-  if (data$freq_info$baseline == "none") {
+  if (identical(data$freq_info$baseline, "none")) {
     palette <- "viridis"
   }
 
