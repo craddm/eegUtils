@@ -8,7 +8,7 @@
 - `topoplot()` now allows you to provide multiple component numbers when plotting from an `eeg_ICA` object, and will automatically produce an appropriately facetted plot. 
 - `topoplot()` now has a `k` parameter to control the smoothing when using `method = "gam"`.
 - added additional `demo_spatial` data from a spatial cueing experiment.
-- `plot_difference()` function added for plotting ERP difference waves.
+- `plot_difference()` function added for plotting ERP difference waves. Only currently handles two levels.
 - Added `hanning` taper support for `compute_tfr`. Note that the scaling factors used for all `compute_tfr` calculations have been adjusted, so the exact numerical values returned will change. However, this is just a scaling factor - the relative distances between values remained unchanged.
 - `ar_FASTER()` has experimental support for `eeg_group` objects when those objects are `eeg_evoked` groups. It does not perform rejection but reports how many times each participants data breaks a threshold for a number of measures.
 
@@ -19,6 +19,7 @@
 - When using a scaling number of cycles in `compute_tfr()`, they will now also use the `spacing` parameter to determine `log` or `linear` scaling.
 - Fixed bug with `eeg_average()` used on `c("eeg_group", "eeg_tfr")` objects.
 - Fixed bug with incorrect number of epochs calculated when epoching `eeg_data` objects if there were multiple "target" triggers appearing in an epoch.
+- Fixed error with `erp_raster()` when `anat_order == FALSE`
 
 # eegUtils 0.6.3
 
