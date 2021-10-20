@@ -408,6 +408,8 @@ erp_raster <- function(data,
     chan_order <- arrange_chans(channels(data),
                                 channel_names(data))
     chan_lab_order <- channel_names(data)[chan_order]
+  } else {
+    chan_lab_order <- channel_names(data)
   }
 
   data <- as.data.frame(data,
