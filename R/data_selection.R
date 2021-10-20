@@ -218,6 +218,8 @@ select_elecs.default <- function(data,
 #'   than an `eeg_data` object.
 #' @return `eeg_data` object with selected electrodes removed/kept.
 #' @export
+#' @examples
+#' select_elecs(demo_epochs, c("A21", "A29"))
 #' @describeIn select_elecs Select electrodes from a `eeg_data` object.
 
 select_elecs.eeg_data <- function(data,
