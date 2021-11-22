@@ -11,7 +11,7 @@
 #' @param file_path Path to file name, if not included in filename.
 #' @param recording Name of the recording. By default, the filename will be
 #'   used.
-#' @param participant_id Identifier for the participant.
+#' @param participant_id Identifier for the participant. Defaults to NA.
 #' @param fast_bdf New, faster method for loading BDF files. Experimental.
 #' @import tools
 #' @importFrom purrr map_df is_empty
@@ -26,7 +26,7 @@
 import_raw <- function(file_name,
                        file_path = NULL,
                        recording = NULL,
-                       participant_id = character(1),
+                       participant_id = NA,
                        fast_bdf = TRUE) {
 
   file_type <- tools::file_ext(file_name)

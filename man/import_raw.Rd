@@ -8,7 +8,7 @@ import_raw(
   file_name,
   file_path = NULL,
   recording = NULL,
-  participant_id = character(1),
+  participant_id = NA,
   fast_bdf = TRUE
 )
 }
@@ -20,7 +20,7 @@ import_raw(
 \item{recording}{Name of the recording. By default, the filename will be
 used.}
 
-\item{participant_id}{Identifier for the participant.}
+\item{participant_id}{Identifier for the participant. Defaults to NA.}
 
 \item{fast_bdf}{New, faster method for loading BDF files. Experimental.}
 }
