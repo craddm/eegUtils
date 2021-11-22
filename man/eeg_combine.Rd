@@ -6,7 +6,7 @@
 \alias{eeg_combine.eeg_data}
 \alias{eeg_combine.eeg_epochs}
 \alias{eeg_combine.eeg_evoked}
-\title{Combine EEG objects}
+\title{Combine \code{eegUtils} objects}
 \usage{
 eeg_combine(data, ...)
 
@@ -19,8 +19,8 @@ eeg_combine(data, ...)
 \method{eeg_combine}{eeg_evoked}(data, ...)
 }
 \arguments{
-\item{data}{An \code{eeg_data} or \code{eeg_epochs} object, or a list of such
-objects.}
+\item{data}{An \code{eeg_data}, \code{eeg_epochs}, or \code{eeg_evoked} object, or a list of
+such objects.}
 
 \item{...}{additional \code{eeg_data} or \code{eeg_epochs} objects}
 
@@ -29,15 +29,18 @@ continuously ascending; if not, modify so that they are. Useful when, for
 example, combining epochs derived from multiple recording blocks. Defaults to TRUE}
 }
 \value{
-If all objects have the same participant_id, an object of the same
-class as the original input object. If the objects have different
-participant_id numbers, an object of class \code{eeg_group}.
+If all objects have the same \code{participant_id}, returns an object of
+the same class as the original input object. If the objects have different
+\code{participant_id} numbers, an object of both class \code{eeg_group} and the same
+class as the original input object.
 }
 \description{
-Combine multiple \code{eeg_epochs} or \code{eeg_data} objects into a single
-object. Note that this does not currently perform any sort of checking for
-internal consistency or duplication. It simply combines the objects in the
-order they are passed.
+Combine multiple \code{eeg_epochs}, \code{eeg_data}, or \code{eeg_evoked} objects into a
+single object. The function will try to check the \code{participant_id} entry in
+the \code{epochs} structure to see if the data comes from a single participant or
+from multiple participants. If the data is from a single participant, it will
+concatenate the objects and attempt to correct them so that the trial numbers
+and timings are correct.
 }
 \section{Methods (by class)}{
 \itemize{

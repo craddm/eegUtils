@@ -1,19 +1,22 @@
-#' Combine EEG objects
+#' Combine `eegUtils` objects
 #'
-#' Combine multiple `eeg_epochs` or `eeg_data` objects into a single
-#' object. Note that this does not currently perform any sort of checking for
-#' internal consistency or duplication. It simply combines the objects in the
-#' order they are passed.
+#' Combine multiple `eeg_epochs`, `eeg_data`, or `eeg_evoked` objects into a
+#' single object. The function will try to check the `participant_id` entry in
+#' the `epochs` structure to see if the data comes from a single participant or
+#' from multiple participants. If the data is from a single participant, it will
+#' concatenate the objects and attempt to correct them so that the trial numbers
+#' and timings are correct.
 #'
-#' @param data An `eeg_data` or `eeg_epochs` object, or a list of such
-#'   objects.
+#' @param data An `eeg_data`, `eeg_epochs`, or `eeg_evoked` object, or a list of
+#'   such objects.
 #' @param ... additional `eeg_data` or `eeg_epochs` objects
 #' @author Matt Craddock, \email{matt@@mattcraddock.com}
 #' @importFrom dplyr mutate bind_rows
 #' @importFrom purrr map_df
-#' @return If all objects have the same participant_id, an object of the same
-#'   class as the original input object. If the objects have different
-#'   participant_id numbers, an object of class `eeg_group`.
+#' @return If all objects have the same `participant_id`, returns an object of
+#'   the same class as the original input object. If the objects have different
+#'   `participant_id` numbers, an object of both class `eeg_group` and the same
+#'   class as the original input object.
 #' @export
 #'
 eeg_combine <- function(data,
@@ -64,9 +67,14 @@ eeg_combine.eeg_data <- function(data,
                                  check_timings = TRUE){
 
   args <- list(...)
+
   if (length(args) == 0) {
     stop("Nothing to combine.")
   }
+
+  check_participants(data,
+                     args)
+
   if (all(vapply(args,
                  is.eeg_data,
                  logical(1)))) {
@@ -125,6 +133,9 @@ eeg_combine.eeg_epochs <- function(data,
     stop("Nothing to combine.")
   }
 
+  check_participants(data,
+                     args)
+
   if (all(sapply(args, is.eeg_epochs))) {
     data$signals <- dplyr::bind_rows(data$signals,
                                      purrr::map_df(args,
@@ -166,6 +177,9 @@ eeg_combine.eeg_evoked <- function(data,
   if (length(args) == 0) {
     stop("Nothing to combine.")
   }
+
+  check_participants(data,
+                     args)
 
   if (check_classes(args)) {
 
@@ -437,4 +451,27 @@ check_dims <- function(x) {
                      function(y) dim(y$signals))
   length(unique(sig_dims)) == 1
   #add more informative error messages
+}
+
+
+check_participants <- function(data,
+                               args) {
+  part_ids <- c(get_participant_id(data),
+                sapply(args, get_participant_id))
+
+  if (any(is.na(part_ids))) {
+    stop(
+      "`participant_id` is missing from at least one object. ",
+      "Please ensure that the `participant_id` field is set in all `eeg_epochs` objects. ",
+      "See ?set_participant_id for assistance."
+    )
+  } else if (any(part_ids == "")) {
+    warning(
+      "`participant_id` is set to a default value of \"\" in at least one object. ",
+      "If your data is from multiple participants, ",
+      "please ensure that data from each participant has a unique ",
+      "`participant_id` field before using `eeg_combine`. ",
+      "See ?set_participant_id for assistance."
+    )
+  }
 }
