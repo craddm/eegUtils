@@ -145,7 +145,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Modify the epochs structure</h1>
-    <small class="dont-index">Source: <a href='https://github.com/craddm/eegUtils/blob/master/R/data_epoching.R'><code>R/data_epoching.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/craddm/eegUtils/blob/master/R/epoch_queries.R'><code>R/epoch_queries.R</code></a></small>
     <div class="hidden name"><code>epochs.Rd</code></div>
     </div>
 
@@ -175,21 +175,22 @@
     <p>Matt Craddock <a href='mailto:matt@mattcraddock.com'>matt@mattcraddock.com</a></p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'>  <span class='fu'>epochs</span><span class='op'>(</span><span class='va'>demo_spatial</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 80 x 5</span>
-#&gt;    epoch participant_id recording         event_type epoch_labels
-#&gt;    <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>          <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>                  <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>       
-#&gt; <span style='color: #BCBCBC;'> 1</span>     1 <span style='color: #949494;'>""</span>             Matt-task-spatcue        122 valid_right 
-#&gt; <span style='color: #BCBCBC;'> 2</span>     2 <span style='color: #949494;'>""</span>             Matt-task-spatcue        120 valid_left  
-#&gt; <span style='color: #BCBCBC;'> 3</span>     3 <span style='color: #949494;'>""</span>             Matt-task-spatcue        122 valid_right 
-#&gt; <span style='color: #BCBCBC;'> 4</span>     4 <span style='color: #949494;'>""</span>             Matt-task-spatcue        122 valid_right 
-#&gt; <span style='color: #BCBCBC;'> 5</span>     5 <span style='color: #949494;'>""</span>             Matt-task-spatcue        120 valid_left  
-#&gt; <span style='color: #BCBCBC;'> 6</span>     6 <span style='color: #949494;'>""</span>             Matt-task-spatcue        122 valid_right 
-#&gt; <span style='color: #BCBCBC;'> 7</span>     7 <span style='color: #949494;'>""</span>             Matt-task-spatcue        120 valid_left  
-#&gt; <span style='color: #BCBCBC;'> 8</span>     8 <span style='color: #949494;'>""</span>             Matt-task-spatcue        120 valid_left  
-#&gt; <span style='color: #BCBCBC;'> 9</span>     9 <span style='color: #949494;'>""</span>             Matt-task-spatcue        122 valid_right 
-#&gt; <span style='color: #BCBCBC;'>10</span>    10 <span style='color: #949494;'>""</span>             Matt-task-spatcue        122 valid_right 
-#&gt; <span style='color: #949494;'># ... with 70 more rows</span></div></pre>
+    <pre class="examples"><span class='r-in'>  <span class='fu'>epochs</span><span class='op'>(</span><span class='va'>demo_spatial</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'># A tibble: 80 x 5</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    epoch participant_id recording         event_type epoch_labels</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>          <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>                  <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>       </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 1</span>     1 <span style='color: #949494;'>""</span>             Matt-task-spatcue        122 valid_right </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 2</span>     2 <span style='color: #949494;'>""</span>             Matt-task-spatcue        120 valid_left  </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 3</span>     3 <span style='color: #949494;'>""</span>             Matt-task-spatcue        122 valid_right </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 4</span>     4 <span style='color: #949494;'>""</span>             Matt-task-spatcue        122 valid_right </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 5</span>     5 <span style='color: #949494;'>""</span>             Matt-task-spatcue        120 valid_left  </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 6</span>     6 <span style='color: #949494;'>""</span>             Matt-task-spatcue        122 valid_right </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 7</span>     7 <span style='color: #949494;'>""</span>             Matt-task-spatcue        120 valid_left  </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 8</span>     8 <span style='color: #949494;'>""</span>             Matt-task-spatcue        120 valid_left  </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 9</span>     9 <span style='color: #949494;'>""</span>             Matt-task-spatcue        122 valid_right </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>10</span>    10 <span style='color: #949494;'>""</span>             Matt-task-spatcue        122 valid_right </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'># ... with 70 more rows</span></span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

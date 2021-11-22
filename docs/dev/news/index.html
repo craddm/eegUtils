@@ -166,10 +166,14 @@
 <code><a href="../reference/topoplot.html">topoplot()</a></code> now has a <code>k</code> parameter to control the smoothing when using <code>method = "gam"</code>.</li>
 <li>added additional <code>demo_spatial</code> data from a spatial cueing experiment.</li>
 <li>
-<code><a href="../reference/plot_difference.html">plot_difference()</a></code> function added for plotting ERP difference waves.</li>
+<code><a href="../reference/plot_difference.html">plot_difference()</a></code> function added for plotting ERP difference waves. Only currently handles two levels.</li>
 <li>Added <code>hanning</code> taper support for <code>compute_tfr</code>. Note that the scaling factors used for all <code>compute_tfr</code> calculations have been adjusted, so the exact numerical values returned will change. However, this is just a scaling factor - the relative distances between values remained unchanged.</li>
 <li>
 <code><a href="../reference/ar_FASTER.html">ar_FASTER()</a></code> has experimental support for <code>eeg_group</code> objects when those objects are <code>eeg_evoked</code> groups. It does not perform rejection but reports how many times each participants data breaks a threshold for a number of measures.</li>
+<li>
+<code><a href="../reference/import_raw.html">import_raw()</a></code> default <code>participant_id</code> is now changed to <code>NA</code> instead of <code>character(1)</code>, to promote better use with <code><a href="../reference/eeg_combine.html">eeg_combine()</a></code>.</li>
+<li>
+<code><a href="../reference/eeg_combine.html">eeg_combine()</a></code> will now refuse to combine objects where <code>participant_id</code> is missing (i.e. is <code>NA</code>), and warn when combining objects with the previous default value ““. This is to prevent accidentally treating data from different participants as being from the same participant.</li>
 </ul>
 </div>
 <div id="internal-changes--bug-fixes" class="section level3">
@@ -182,8 +186,11 @@
 <li>Fixed adding CSD as new reference when using <code><a href="../reference/compute_csd.html">compute_csd()</a></code>
 </li>
 <li>When using a scaling number of cycles in <code><a href="../reference/compute_tfr.html">compute_tfr()</a></code>, they will now also use the <code>spacing</code> parameter to determine <code>log</code> or <code>linear</code> scaling.</li>
-<li>Fixed bug with <code><a href="../reference/eeg_average.html">eeg_average()</a></code> used on <code><a href="https://rdrr.io/r/base/c.html">c("eeg_group", "eeg_tfr")</a></code> objects.</li>
+<li>Fixed bug with <code><a href="../reference/eeg_average.html">eeg_average()</a></code> used on <code>c("eeg_group", "eeg_tfr")</code> objects.</li>
 <li>Fixed bug with incorrect number of epochs calculated when epoching <code>eeg_data</code> objects if there were multiple “target” triggers appearing in an epoch.</li>
+<li>Fixed error with <code><a href="../reference/erp_raster.html">erp_raster()</a></code> when <code>anat_order == FALSE</code>
+</li>
+<li>new <code>epoch_queries</code> file for functions for setting and getting the <code>epochs</code> structure</li>
 </ul>
 </div>
 </div>
