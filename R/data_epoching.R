@@ -207,39 +207,3 @@ epoch_data.eeg_data <- function(data,
 epoch_data.eeg_epochs <- function(data, ...) {
   stop("Data is already epoched, cannot currently re-epoch.")
 }
-
-
-#' Modify the epochs structure
-#'
-#' Get or set the epochs structure of an `eegUtils` object.
-#' @author Matt Craddock \email{matt@@mattcraddock.com}
-#' @param data `eegUtils` object to view
-#' @examples
-#'   epochs(demo_spatial)
-#' @export
-epochs <- function(data) {
-  if (any(class(data) %in% c("eeg_data",
-                             "eeg_epochs",
-                             "eeg_ICA",
-                             "eeg_tfr",
-                             "eeg_evoked"))) {
-    data$epochs
-  }
-}
-
-
-#' @param value Structure to replace `epochs` structure with.
-#' @rdname epochs
-#' @export
-`epochs<-` <- function(data,
-                       value) {
-
-  if (any(class(data) %in% c("eeg_data",
-                              "eeg_epochs",
-                              "eeg_ICA",
-                              "eeg_tfr",
-                              "eeg_evoked"))) {
-    data$epochs <- value
-  }
-  data
-}
