@@ -210,21 +210,26 @@ topoplot.data.frame <- function(data,
                         cols = c(data))
 
   # Find furthest electrode from origin
-  abs_x_max <- max(abs(data$x), na.rm = TRUE)
-  abs_y_max <- max(abs(data$y), na.rm = TRUE)
-  max_elec <- sqrt(abs_x_max^2 + abs_y_max^2)
+ #abs_x_max <- max(abs(data$x), na.rm = TRUE)
+ #abs_y_max <- max(abs(data$y), na.rm = TRUE)
+  #max_elec <- sqrt(abs_x_max^2 + abs_y_max^2)
+  max_elec <- sqrt(max(abs(data$x)^2 + abs(data$y)^2))
   if (is.null(r)) {
     # mm are expected for coords, 95 is good approx for Fpz - Oz radius
     r <- switch(interp_limit,
-                "head" = max_elec,
+                "head" = max_elec * 1.05,
                 "skirt" = 95)
+
   } else {
-    if (r < max_elec) {
-      if (verbose) message("r < most distant electrode from origin, adjusting r")
-      r <- max_elec
-    }
+     if (r < max_elec) {
+       if (verbose) message("r < most distant electrode from origin, consider adjusting to no lower than ",
+                            round(max_elec, 2))
+     }
   }
 
+  if (verbose) {
+    message(paste("Plotting head radius", round(r, 2), "mm"))
+  }
   # Create the actual plot -------------------------------
   topo <-
     ggplot2::ggplot(get_scalpmap(data,

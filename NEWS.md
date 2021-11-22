@@ -11,6 +11,9 @@
 - `plot_difference()` function added for plotting ERP difference waves. Only currently handles two levels.
 - Added `hanning` taper support for `compute_tfr`. Note that the scaling factors used for all `compute_tfr` calculations have been adjusted, so the exact numerical values returned will change. However, this is just a scaling factor - the relative distances between values remained unchanged.
 - `ar_FASTER()` has experimental support for `eeg_group` objects when those objects are `eeg_evoked` groups. It does not perform rejection but reports how many times each participants data breaks a threshold for a number of measures.
+- `import_raw()` default `participant_id` is now changed to `NA` instead of `character(1)`, to promote better use with `eeg_combine()`.
+- `eeg_combine()` will now refuse to combine objects where `participant_id` is missing (i.e. is `NA`), and warn when combining objects with the previous default value "". This is to prevent accidentally treating data from different participants as being from the same participant.
+- `topoplot()` now provides informative messages about the head radius used for plotting. The default calculation of `r` when using `interp_limit = "head"` has changed and should now be set at the outermost electrode's position + a 5% buffer. Smaller `r` can be set manually.
 
 ### Internal changes / bug fixes
 
@@ -20,6 +23,7 @@
 - Fixed bug with `eeg_average()` used on `c("eeg_group", "eeg_tfr")` objects.
 - Fixed bug with incorrect number of epochs calculated when epoching `eeg_data` objects if there were multiple "target" triggers appearing in an epoch.
 - Fixed error with `erp_raster()` when `anat_order == FALSE`
+- new `epoch_queries` file for functions for setting and getting the `epochs` structure
 
 # eegUtils 0.6.3
 
