@@ -95,17 +95,13 @@ epoch_data.eeg_data <- function(data,
   # i.e. if srate is 1000, a vector from -100 to 0 to 100 would be -.1 s before
   # to .1 s after event onset
 
-  samps <- seq(round(time_lim[[1]] * srate),
-               round(time_lim[[2]] * (srate - 1)),
-               by = samp_diff)
-
+  samps <- init_times / (1/srate)
   event_table <- data$events
 
   # go through all events and find which match those specified as the events to
   # epoch around
-  epoch_zero <-
-    sort(unlist(purrr::map(events,
-                           ~ event_table[which(event_table$event_type == .), ]$event_onset)))
+
+  epoch_zero <- event_table[which(event_table$event_type %in% events), ][["event_onset"]]
 
   # for each epoching event, create a vector of samples before and after that
   # are within the time limits
@@ -124,11 +120,26 @@ epoch_data.eeg_data <- function(data,
                                    epoched_data,
                                    by = c("event_onset" = "sample"))
 
-  epoched_data <- dplyr::left_join(epoched_data,
-                                   cbind(data$signals,
-                                         data$timings),
-                                   by = c("sample" = "sample"))
-
+   epoched_data <- dplyr::left_join(epoched_data,
+                                    cbind(data$signals,
+                                          data$timings),
+                                    by = c("sample" = "sample"))
+  # epoched_data <- data.frame(
+  #   epoch = rep(
+  #     1:length(epoch_zero),
+  #     each = length(samps)
+  #     ),
+  #   sample = rowSums(
+  #     expand.grid(
+  #       samps,
+  #       epoch_zero)
+  #     ),
+  #   time = init_times)
+  #
+  # epoched_data <- merge(epoched_data,
+  #                       cbind(data$signals,
+  #                             data$timings),
+  #                       by = "sample")
   # Check for any epochs that contain NAs
   epoched_data <- split(epoched_data,
                         epoched_data$epoch)
