@@ -1,14 +1,15 @@
 #' Plot ERP difference waves
 #'
-#' Calculates the difference between the event-related potentials from two conditions and plots it.
+#' Calculates the difference between the event-related potentials from two
+#' conditions and plots it.
 #'
 #' @author Matt Craddock, \email{matt@@mattcraddock.com}
 #'
-#' @param data EEG dataset. Should have multiple timepoints.
+#' @param data `eegUtils` object. Should have multiple timepoints.
 #' @param ... Other arguments passed to methods.
 #' @examples
 #' plot_difference(demo_spatial, conditions = "epoch_labels", electrode = "P8")
-#' @return Returns a ggplot2 plot object
+#' @return Returns a `ggplot2` plot object
 #' @export
 plot_difference <- function(data,
                             ...) {

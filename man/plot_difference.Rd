@@ -20,7 +20,7 @@ plot_difference(data, ...)
 )
 }
 \arguments{
-\item{data}{EEG dataset. Should have multiple timepoints.}
+\item{data}{\code{eegUtils} object. Should have multiple timepoints.}
 
 \item{...}{Other arguments passed to methods.}
 
@@ -42,10 +42,11 @@ line is drawn.}
 \item{conditions}{Defaults to "epoch_labels".}
 }
 \value{
-Returns a ggplot2 plot object
+Returns a \code{ggplot2} plot object
 }
 \description{
-Calculates the difference between the event-related potentials from two conditions and plots it.
+Calculates the difference between the event-related potentials from two
+conditions and plots it.
 }
 \section{Methods (by class)}{
 \itemize{
