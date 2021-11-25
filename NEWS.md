@@ -13,7 +13,8 @@
 - `ar_FASTER()` has experimental support for `eeg_group` objects when those objects are `eeg_evoked` groups. It does not perform rejection but reports how many times each participants data breaks a threshold for a number of measures.
 - `import_raw()` default `participant_id` is now changed to `NA` instead of `character(1)`, to promote better use with `eeg_combine()`.
 - `eeg_combine()` will now refuse to combine objects where `participant_id` is missing (i.e. is `NA`), and warn when combining objects with the previous default value "". This is to prevent accidentally treating data from different participants as being from the same participant.
-- `topoplot()` now provides informative messages about the head radius used for plotting. The default calculation of `r` when using `interp_limit = "head"` has changed and should now be set at the outermost electrode's position + a 5% buffer. Smaller `r` can be set manually.
+- `topoplot()` now provides informative messages about the head radius used for plotting. The default calculation of `r` when using `interp_limit = "head"` has changed and should now be set at the outermost electrode's position + a 10% buffer. Smaller `r` can be set manually.
+- added `get_participant_id`, `set_participant_id`, `get_recording` and `set_recording` to interact with the `epochs` metadata in each `eegUtils` object.
 
 ### Internal changes / bug fixes
 

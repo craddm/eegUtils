@@ -142,7 +142,7 @@ update_r <-
 
     max_elec <- calc_max_elec(data)
     r <- switch(interp_limit,
-                "head" = min(max_elec * 1.10, max_elec + 15),
+                "head" = min(max_elec * 1.10, max_elec + 10),
                 "skirt" = r) # mm are expected for coords, 95 is good approx for Fpz - Oz radius
     r
   }

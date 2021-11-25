@@ -216,10 +216,13 @@ topoplot.data.frame <- function(data,
   max_elec <- sqrt(max(abs(data$x)^2 + abs(data$y)^2))
   if (is.null(r)) {
     # mm are expected for coords, 95 is good approx for Fpz - Oz radius
-    r <- switch(interp_limit,
-                "head" = max_elec * 1.05,
-                "skirt" = 95)
+    # r <- switch(interp_limit,
+    #             "head" = max_elec * 1.05,
+    #             "skirt" = 95)
 
+    r <- update_r(r = 95,
+                  data = data,
+                  interp_limit = interp_limit)
   } else {
      if (r < max_elec) {
        if (verbose) message("r < most distant electrode from origin, consider adjusting to no lower than ",
@@ -228,7 +231,7 @@ topoplot.data.frame <- function(data,
   }
 
   if (verbose) {
-    message(paste("Plotting head radius", round(r, 2), "mm"))
+    message(paste("Plotting head r", round(r, 2), "mm"))
   }
   # Create the actual plot -------------------------------
   topo <-
