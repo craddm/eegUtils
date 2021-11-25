@@ -562,15 +562,15 @@ read_vmrk <- function(file_name) {
 #' Load `EEGLAB` .set files
 #'
 #' Load `EEGLAB` .set files and convert them to `eeg_epochs` objects. Supports
-#' import of files saved both in Matlab v6.5 and Matlab v7.3 formats. Currently,
+#' import of files saved in either Matlab v6.5 or Matlab v7.3 formats. Currently,
 #' any ICA weights or decompositions are discarded.
 #'
 #' @param file_name Filename (and path if not in present working directory)
-#' @param df_out Defaults to FALSE - outputs an object of class `eeg_data`. Set
+#' @param df_out Defaults to FALSE - outputs an object of class `eeg_epochs`. Set
 #'   to TRUE for a normal data frame.
-#' @param participant_id By default, the filename will be used as the id of the
+#' @param participant_id Character vector. By default, the filename will be used as the id of the
 #'   participant.
-#' @param recording By default, the filename will be used as the name of the
+#' @param recording Character vector. By default, the filename will be used as the name of the
 #'   recording.
 #' @param drop_custom Drop custom event fields. TRUE by default.
 #' @param verbose Print informative messages. TRUE by default.
@@ -580,7 +580,7 @@ read_vmrk <- function(file_name) {
 #' @importFrom purrr is_empty map_df
 #' @examples
 #' \dontrun{import_set("your_data.set")}
-#' @return An object of class `eeg_data`
+#' @return An object of class `eeg_epochs`
 #' @export
 
 import_set <- function(file_name,
@@ -1093,19 +1093,14 @@ ft_raw <- function(data,
     chan_info <- validate_channels(chan_info)
   } else if ("grad" %in% struct_names) {
     message("MEG channel locations found; import of locations not currently supported.")
-    # chan_info <- ft_chan_info(
-    #   unlist(data["grad", ,],
-    #          recursive = FALSE)
-    #   )
+
     chan_info <- data.frame(electrode = sig_names)
-    #chan_info$electrode <- sig_names
     chan_info <- validate_channels(chan_info)
   } else {
     if (verbose) message("No EEG channel information found.")
     chan_info <- NULL
   }
 
-  #chan_info$electrode <- sig_names
   eeg_epochs(data = signals,
              srate = srate,
              timings = timings,
