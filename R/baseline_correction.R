@@ -1,9 +1,11 @@
 #' Baseline correction
 #'
-#' Used to remove the mean of a specified time period from the data. Currently
-#' only performs subtractive baseline. With a data frame, searches for
-#' "electrode" and "epoch" columns, and groups on these when found. An electrode
-#' column is always required; an epoch column is not.
+#' Used to correct data the mean of a specified time period. For `eeg_tfr`
+#' objects, a variety of methods are available, including subtraction, and
+#' conversion to "dB" change. For anything else, baseline subtraction is
+#' performed. this With a data frame, searches for "electrode" and "epoch"
+#' columns, and groups on these when found. An electrode column is always
+#' required; an epoch column is not.
 #'
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #' @param data Data to be baseline corrected.
@@ -13,6 +15,7 @@
 #'   channel mean if the data is continuous.
 #' @param verbose Defaults to TRUE. Output descriptive messages to console.
 #' @param ... other parameters to be passed to functions
+#' @return An `eegUtils` object or a `data.frame`, depending on the input.
 #' @examples
 #' rm_baseline(demo_epochs)
 #' rm_baseline(demo_epochs, c(-.1, 0))
@@ -55,7 +58,7 @@ rm_baseline.eeg_data <- function(data,
   data
 }
 
-#' @describeIn rm_baseline Remove baseline from eeg_epochs
+#' @describeIn rm_baseline Remove baseline from `eeg_epochs`
 #' @export
 
 rm_baseline.eeg_epochs <- function(data,
@@ -63,6 +66,7 @@ rm_baseline.eeg_epochs <- function(data,
                                    verbose = TRUE,
                                    ...) {
 
+  # modify to handle group objects
   n_epochs <- length(unique(data$timings$epoch))
   n_times <- length(unique(data$timings$time))
   n_chans <- ncol(data$signals)

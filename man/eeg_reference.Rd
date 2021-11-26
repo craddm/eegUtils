@@ -38,7 +38,7 @@ reref_eeg(data, ...)
 \item{data}{Data to re-reference. Primarily meant for use with data of class
 \code{eeg_data}.}
 
-\item{...}{Further parameters to be passed to eeg_reference}
+\item{...}{Further parameters to be passed to \code{eeg_reference}}
 
 \item{ref_chans}{Channels to reference data to. Defaults to "average" i.e.
 average of all electrodes in data. Character vector of channel names or
@@ -51,7 +51,7 @@ Defaults to FALSE.}
 
 \item{implicit_ref}{Implicit reference channel - use this to add a channel
 back that was previously used as a reference. E.g. if the LM (left mastoid)
-channel were used in recording and is absent from the data, passing "LM"
+channel was used in recording and is absent from the data, passing "LM"
 adds an "LM" channel back to the data, populated with zeroes.}
 
 \item{verbose}{Print informative messages in console. Defaults to TRUE.}
@@ -82,6 +82,9 @@ eeg_reference(demo_epochs, exclude = "B5")
 # Reference data using the median of the reference channels rather than the mean
 eeg_reference(demo_epochs, robust = TRUE)
 
+eeg_reference(demo_spatial)
+eeg_reference(demo_spatial, ref_chans = "Fz")
+eeg_reference(demo_spatial, implicit_ref = "LM")
 }
 \author{
 Matt Craddock \email{matt@mattcraddock.com}

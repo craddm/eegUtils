@@ -16,7 +16,11 @@
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #' @param data Data to re-reference. Primarily meant for use with data of class
 #'   `eeg_data`.
-#' @param ... Further parameters to be passed to eeg_reference
+#' @param ... Further parameters to be passed to `eeg_reference`
+#' @examples
+#' eeg_reference(demo_spatial)
+#' eeg_reference(demo_spatial, ref_chans = "Fz")
+#' eeg_reference(demo_spatial, implicit_ref = "LM")
 #' @export
 
 eeg_reference <- function(data, ...) {
@@ -38,7 +42,7 @@ eeg_reference.default <- function(data, ...) {
 #'   Defaults to FALSE.
 #' @param implicit_ref Implicit reference channel - use this to add a channel
 #'   back that was previously used as a reference. E.g. if the LM (left mastoid)
-#'   channel were used in recording and is absent from the data, passing "LM"
+#'   channel was used in recording and is absent from the data, passing "LM"
 #'   adds an "LM" channel back to the data, populated with zeroes.
 #' @param verbose Print informative messages in console. Defaults to TRUE.
 #' @importFrom matrixStats rowMedians
