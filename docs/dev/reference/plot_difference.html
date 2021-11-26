@@ -40,7 +40,8 @@
 
 
 <meta property="og:title" content="Plot ERP difference waves — plot_difference" />
-<meta property="og:description" content="Calculates the difference between the event-related potentials from two conditions and plots it." />
+<meta property="og:description" content="Calculates the difference between the event-related potentials from two
+conditions and plots it." />
 
 
 <meta name="robots" content="noindex">
@@ -150,7 +151,8 @@
     </div>
 
     <div class="ref-description">
-    <p>Calculates the difference between the event-related potentials from two conditions and plots it.</p>
+    <p>Calculates the difference between the event-related potentials from two
+conditions and plots it.</p>
     </div>
 
     <pre class="usage"><span class='fu'>plot_difference</span><span class='op'>(</span><span class='va'>data</span>, <span class='va'>...</span><span class='op'>)</span>
@@ -173,7 +175,7 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>data</th>
-      <td><p>EEG dataset. Should have multiple timepoints.</p></td>
+      <td><p><code>eegUtils</code> object. Should have multiple timepoints.</p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -204,7 +206,7 @@ line is drawn.</p></td>
     </tr>
     <tr>
       <th>mapping</th>
-      <td><p>A ggplot2 <code><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes()</a></code> mapping.</p></td>
+      <td><p>A ggplot2 <code>aes()</code> mapping.</p></td>
     </tr>
     <tr>
       <th>conditions</th>
@@ -214,7 +216,7 @@ line is drawn.</p></td>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Returns a ggplot2 plot object</p>
+    <p>Returns a <code>ggplot2</code> plot object</p>
     <h2 class="hasAnchor" id="methods-by-class-"><a class="anchor" href="#methods-by-class-"></a>Methods (by class)</h2>
 
     
@@ -226,8 +228,9 @@ line is drawn.</p></td>
     <p>Matt Craddock, <a href='mailto:matt@mattcraddock.com'>matt@mattcraddock.com</a></p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>plot_difference</span><span class='op'>(</span><span class='va'>demo_spatial</span>, conditions <span class='op'>=</span> <span class='st'>"epoch_labels"</span>, electrode <span class='op'>=</span> <span class='st'>"P8"</span><span class='op'>)</span>
-</div><div class='img'><img src='plot_difference-1.png' alt='' width='700' height='433' /></div></pre>
+    <pre class="examples"><span class='r-in'><span class='fu'>plot_difference</span><span class='op'>(</span><span class='va'>demo_spatial</span>, conditions <span class='op'>=</span> <span class='st'>"epoch_labels"</span>, electrode <span class='op'>=</span> <span class='st'>"P8"</span><span class='op'>)</span></span>
+<span class='r-plt img'><img src='plot_difference-1.png' alt='' width='700' height='433' /></span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

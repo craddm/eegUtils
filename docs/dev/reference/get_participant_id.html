@@ -180,7 +180,7 @@ Note that the two <code>set_*</code> functions do not operate on <code>eeg_group
     <tr>
       <th>recording</th>
       <td><p>A character vector giving the name to use for the EEG
-recording</p></td>
+recording.</p></td>
     </tr>
     </table>
 
@@ -204,13 +204,27 @@ the <code>recording</code> from values of <code>recording</code> from the <code>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><span class='r-in'><span class='fu'>get_participant_id</span><span class='op'>(</span><span class='va'>demo_epochs</span><span class='op'>)</span></span>
-<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in get_participant_id(demo_epochs):</span> could not find function "get_participant_id"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "001"</span>
 <span class='r-in'><span class='fu'>get_recording</span><span class='op'>(</span><span class='va'>demo_epochs</span><span class='op'>)</span></span>
-<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in get_recording(demo_epochs):</span> could not find function "get_recording"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] NA</span>
 <span class='r-in'><span class='fu'>set_participant_id</span><span class='op'>(</span><span class='va'>demo_epochs</span>, <span class='st'>"002"</span><span class='op'>)</span></span>
-<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in set_participant_id(demo_epochs, "002"):</span> could not find function "set_participant_id"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Epoched EEG data</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Number of channels	: 11 </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Number of epochs	: 80 </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Epoch limits		: -0.197 - 0.451 seconds</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Electrode names		: A5 A13 A21 A29 A31 B5 B6 B8 B16 B18 B26 </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Sampling rate		: 128  Hz</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Reference		: average </span>
 <span class='r-in'><span class='fu'>set_recording</span><span class='op'>(</span><span class='va'>demo_epochs</span>, <span class='st'>"test_recording"</span><span class='op'>)</span></span>
-<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in set_recording(demo_epochs, "test_recording"):</span> could not find function "set_recording"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Epoched EEG data</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Number of channels	: 11 </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Number of epochs	: 80 </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Epoch limits		: -0.197 - 0.451 seconds</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Electrode names		: A5 A13 A21 A29 A31 B5 B6 B8 B16 B18 B26 </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Sampling rate		: 128  Hz</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Reference		: average </span>
 </pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

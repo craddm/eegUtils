@@ -84,3 +84,5 @@ reference:
       - epochs
       - events
       - channel_names
+      - get_participant_id
+      - get_recording

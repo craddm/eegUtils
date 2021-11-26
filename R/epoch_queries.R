@@ -83,7 +83,7 @@ set_participant_id <- function(data,
 
 #' @rdname get_participant_id
 #' @param recording A character vector giving the name to use for the EEG
-#'   recording
+#'   recording.
 #' @export
 set_recording <- function(data,
                           recording) {

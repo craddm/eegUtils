@@ -22,7 +22,7 @@ set_recording(data, recording)
 \code{participant_id} for a particular object.}
 
 \item{recording}{A character vector giving the name to use for the EEG
-recording}
+recording.}
 }
 \value{
 \itemize{

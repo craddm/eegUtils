@@ -174,6 +174,9 @@
 <code><a href="../reference/import_raw.html">import_raw()</a></code> default <code>participant_id</code> is now changed to <code>NA</code> instead of <code>character(1)</code>, to promote better use with <code><a href="../reference/eeg_combine.html">eeg_combine()</a></code>.</li>
 <li>
 <code><a href="../reference/eeg_combine.html">eeg_combine()</a></code> will now refuse to combine objects where <code>participant_id</code> is missing (i.e. is <code>NA</code>), and warn when combining objects with the previous default value ““. This is to prevent accidentally treating data from different participants as being from the same participant.</li>
+<li>
+<code><a href="../reference/topoplot.html">topoplot()</a></code> now provides informative messages about the head radius used for plotting. The default calculation of <code>r</code> when using <code>interp_limit = "head"</code> has changed and should now be set at the outermost electrode’s position + a 10% buffer. Smaller <code>r</code> can be set manually.</li>
+<li>added <code>get_participant_id</code>, <code>set_participant_id</code>, <code>get_recording</code> and <code>set_recording</code> to interact with the <code>epochs</code> metadata in each <code>eegUtils</code> object.</li>
 </ul>
 </div>
 <div id="internal-changes--bug-fixes" class="section level3">
