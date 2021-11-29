@@ -136,6 +136,9 @@ eeg_combine.eeg_epochs <- function(data,
   check_participants(data,
                      args)
 
+  participant_time <- get_time_rows(data,
+                                    args)
+
   if (all(sapply(args, is.eeg_epochs))) {
     data$signals <- dplyr::bind_rows(data$signals,
                                      purrr::map_df(args,
@@ -157,7 +160,7 @@ eeg_combine.eeg_epochs <- function(data,
     message("Multiple participant_ids; creating eeg_group...")
     class(data) <- c("eeg_group", class(data))
     p_ids <- rle(as.character(epochs(data)$participant_id))
-    p_ids$lengths <- p_ids$lengths * length(unique(data$timings$time))
+    p_ids$lengths <- participant_time#p_ids$lengths * length(unique(data$timings$time))
     data$timings$participant_id <- inverse.rle(p_ids)
   } else {
     #fix epoch numbering for combined objects, but only when there are single
@@ -180,6 +183,8 @@ eeg_combine.eeg_evoked <- function(data,
 
   check_participants(data,
                      args)
+  participant_time <- get_time_rows(data,
+                                    args)
 
   if (check_classes(args)) {
 
@@ -200,7 +205,7 @@ eeg_combine.eeg_evoked <- function(data,
     message("Multiple participant IDs, creating eeg_group.")
     class(data) <- c("eeg_group", "eeg_evoked", "eeg_epochs")
     p_ids <- rle(as.character(epochs(data)$participant_id))
-    p_ids$lengths <- p_ids$lengths * length(unique(data$timings$time))
+    p_ids$lengths <- participant_time #p_ids$lengths * participant_time#length(unique(data$timings$time))
     data$timings$participant_id <- inverse.rle(p_ids)
   }
 
@@ -474,4 +479,13 @@ check_participants <- function(data,
       "See ?set_participant_id for assistance."
     )
   }
+}
+
+get_time_rows <- function(data,
+                          args) {
+  c(nrow(data$timings),
+    vapply(args,
+           function(x) nrow(x$timings),
+           numeric(1))
+    )
 }
