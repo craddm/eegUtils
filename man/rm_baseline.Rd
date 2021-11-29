@@ -36,17 +36,22 @@ channel mean if the data is continuous.}
 \item{type}{Type of baseline correction to apply. Options are ("divide",
 "ratio", "absolute", "db", and "pc")}
 }
+\value{
+An \code{eegUtils} object or a \code{data.frame}, depending on the input.
+}
 \description{
-Used to remove the mean of a specified time period from the data. Currently
-only performs subtractive baseline. With a data frame, searches for
-"electrode" and "epoch" columns, and groups on these when found. An electrode
-column is always required; an epoch column is not.
+Used to correct data the mean of a specified time period. For \code{eeg_tfr}
+objects, a variety of methods are available, including subtraction, and
+conversion to "dB" change. For anything else, baseline subtraction is
+performed. this With a data frame, searches for "electrode" and "epoch"
+columns, and groups on these when found. An electrode column is always
+required; an epoch column is not.
 }
 \section{Methods (by class)}{
 \itemize{
 \item \code{eeg_data}: remove baseline from continuous \code{eeg_data}
 
-\item \code{eeg_epochs}: Remove baseline from eeg_epochs
+\item \code{eeg_epochs}: Remove baseline from \code{eeg_epochs}
 
 \item \code{data.frame}: Legacy method for data.frames
 
