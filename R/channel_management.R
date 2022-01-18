@@ -1,19 +1,32 @@
 #' Import channel locations from various file formats
 #'
-#' Currently only ASA .elc format with Cartesian x-y-z coordinates is supported.
+#' Currently only ASA `.elc` format with Cartesian x-y-z coordinates is
+#' supported.
 #'
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #' @param file_name Name and full path of file to be loaded.
-#' @param format If the file is not .elc format, "spherical", "geographic".
+#' @param format If the file is not `.elc` format, "spherical", "geographic".
 #'   Default is "spherical".
+#' @param file_format Default is `auto`, which will use the file extension to
+#'   determine file format. Other options include `ced`, `besa`, `elp`, `elc`
 #' @return A `tibble` containing electrode names and locations in several
 #'   different coordinate systems.
 #' @export
 
 import_chans <- function(file_name,
-                         format = "spherical") {
+                         format = "spherical",
+                         file_format = "auto") {
 
-  file_type <- tools::file_ext(file_name)
+  if (identical(file_format, "auto")) {
+    file_type <- tools::file_ext(file_name)
+  } else {
+    file_type <-
+      switch(file_format,
+             ced = "ced",
+             besa = "elp",
+             file_format)
+  }
+
 
   chan_locs <-
     switch(file_type,
@@ -21,6 +34,7 @@ import_chans <- function(file_name,
            txt = switch(format,
                         spherical = import_txt(file_name)),
            elp = import_elp(file_name),
+           ced = import_ced(file_name),
            stop("File type ", file_type, " is unknown.")
            )
 
@@ -76,14 +90,23 @@ import_elc <- function(file_name) {
 
 #' Import electrode locations from text
 #'
-#' Currently only supports locations given in spherical coordinates.
+#' Currently only supports locations given in spherical coordinates. Will
+#' attempt to check if the file is from EEGLAB
 #'
 #' @param file_name file name of .txt electrode locations to import.
 #' @return A data frame containing standard channel_info
 #' @keywords internal
 import_txt <- function(file_name) {
+
   raw_locs <- utils::read.delim(file_name,
                                 stringsAsFactors = FALSE)
+
+  if (any(names(raw_locs) %in% expected)) {
+    message("Possibly EEGLAB channel info, attempting import...")
+    final_locs <- parse_chaninfo(raw_locs)
+    return(final_locs)
+  }
+
   elec_labs <- grepl("electrode",
                      names(raw_locs),
                      ignore.case = TRUE)
@@ -155,6 +178,38 @@ import_elp <- function(file_name) {
                       cart_xyz,
                       xy)
   tibble::as_tibble(final_locs)
+}
+
+import_ced <- function(file_name) {
+  raw_locs <- utils::read.delim(file_name,
+                                stringsAsFactors = FALSE)
+  expected_ced <-
+    c("Number", "labels", "theta", "radius",
+      "X", "Y", "Z", "sph_theta",
+      "sph_phi", "sph_radius", "type")
+  raw_locs <- raw_locs[expected_ced]
+  names(raw_locs) <- c("number", "electrode",
+                       "theta", "radius",
+                       "cart_x", "cart_y",
+                       "cart_z", "sph_theta",
+                       "sph_phi", "sph_radius", "type")
+  chan_info <- raw_locs[c("electrode",
+                         "cart_x",
+                         "cart_y",
+                         "cart_z")]
+  # in EEGLAB, + y is towards left ear, + x towards nose + z towards vertex
+  # we want + y to be towards nose, + x to be towards right ear
+  names(chan_info) <- names(chan_info)[c(1, 3, 2, 4)]
+  chan_info <- chan_info[, c(1, 3, 2, 4)]
+  chan_info$cart_x <- -chan_info$cart_x
+  sph_coords <- cart_to_spherical(chan_info[, c("cart_x", "cart_y", "cart_z")])
+  xy <- project_elecs(sph_coords)
+  chan_info <- dplyr::bind_cols(electrode = as.character(chan_info$electrode),
+                                sph_coords,
+                                chan_info[, 2:4],
+                                xy)
+  chan_info
+
 }
 
 #' Convert topographical 2d to cartesian 2d
@@ -456,8 +511,8 @@ plot_electrodes.default <- function(data,
         ggplot2::geom_text() +
         ggplot2::theme_minimal() +
         ggplot2::coord_equal() +
-        ggplot2::labs(x = "y (mm)",
-                      y = "x (mm)")
+        ggplot2::labs(x = "x (mm)",
+                      y = "y (mm)")
     }
   } else {
     stop("No electrodes found.")
@@ -494,8 +549,8 @@ plot_electrodes.eeg_data <- function(data,
       geom_text() +
       theme_minimal() +
       coord_equal() +
-      ggplot2::labs(x = "y (mm)",
-                    y = "x (mm)")
+      ggplot2::labs(x = "x (mm)",
+                    y = "y (mm)")
   }
 }
 
