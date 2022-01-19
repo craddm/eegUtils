@@ -102,6 +102,10 @@ filter.eeg_evoked <- function(.data,
                          .data)
 
   .data$signals <- as.data.frame(.data)
+
+  is_group_df <- inherits(.data,
+                          "eeg_group")
+
   .data$signals <- dplyr::filter(.data$signals,
                                  ...)
   .data$signals <- .data$signals[, orig_cols]
@@ -125,6 +129,14 @@ filter.eeg_evoked <- function(.data,
   if (any(arg_list$in_epochs)) {
     .data$epochs <- dplyr::filter(.data$epochs,
                                   !!!args[arg_list$in_epochs])
+    if (is_group_df) {
+      part_epo_list <- paste0(.data$epochs$participant_id,
+                              .data$epochs$epoch)
+      timing_list <- paste0(.data$timings$participant_id,
+                            .data$timings$epoch)
+      .data$timings <- .data$timings[timing_list %in% part_epo_list, ]
+    }
+
   }
   .data
 }
