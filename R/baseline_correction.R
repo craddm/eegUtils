@@ -101,7 +101,8 @@ rm_baseline.eeg_epochs <- function(data,
   }
   #Reshape and turn back into data frame
   data$signals <- array(data$signals,
-                        dim = c(n_epochs * n_times, n_chans))
+                        dim = c(n_epochs * n_times,
+                                n_chans))
   colnames(data$signals) <- elecs
   data$signals <- tibble::as_tibble(data$signals)
   #names(data$signals) <- elecs
@@ -276,15 +277,17 @@ rm_baseline.eeg_evoked <- function(data,
 
   orig_cols <- channel_names(data)
   n_times <- length(unique(data$timings$time))
-  if (inherits(data, "eeg_group")) {
-    n_epochs <- length(unique(epochs(data)$epoch))
+  # if (inherits(data,
+  #              "eeg_group")) {
+  #   #n_epochs <- nrow(data$epochs)
+    n_epochs <- nrow(unique(epochs(data)[, c("epoch", "participant_id")]))
     n_participants <- length(unique(epochs(data)$participant_id))
-    is_group_data <- TRUE
-  } else {
-    n_epochs <- length(unique(epochs(data)$epoch))
-    n_participants <- length(unique(epochs(data)$participant_id))
-    is_group_data <- FALSE
-  }
+    # is_group_data <- TRUE
+  # } else {
+    # n_epochs <- length(unique(epochs(data)$epoch))
+    # n_participants <- length(unique(epochs(data)$participant_id))
+    # is_group_data <- FALSE
+  # }
 
   #n_epochs <- nrow(data$epochs)
   n_chans <- length(orig_cols)
@@ -292,36 +295,27 @@ rm_baseline.eeg_evoked <- function(data,
                                     time_lim)
 
   data$signals <- as.matrix(data$signals)
-  if (is_group_data) {
-    dim(data$signals) <- c(n_epochs,
-                           n_times,
-                           n_chans,
-                           n_participants)
-    data$signals <- aperm(data$signals,
-                          c(2, 1, 3, 4))
-    dim(data$signals) <- c(n_times,
-                           n_epochs * n_participants,
-                           n_chans)
-  } else {
-    dim(data$signals) <- c(n_times,
-                           n_epochs,
-                           n_chans)
-  }
+
+  dim(data$signals) <- c(n_times,
+                         n_epochs,
+                         n_chans)
 
   data$signals <- baseline_epo(data$signals, base_times)
 
-  if (is_group_data) {
-    dim(data$signals) <- c(n_times, n_epochs, n_chans, n_participants)
-    data$signals <- aperm(data$signals, c(2,1,3,4))
-    dim(data$signals) <- c(n_epochs*n_times * n_participants, n_chans)
-  } else {
     data$signals <- array(data$signals,
                           dim = c(n_epochs * n_times, n_chans))
-  }
   colnames(data$signals) <- orig_cols
   data$signals <- tibble::as_tibble(data$signals)
   data
 }
+
+#' @export
+rm_baseline.eeg_group <- function(data, ...) {
+  message("Baseline correction support for `eeg_group` objects is currently experimental, use at own risk...!")
+  NextMethod("rm_baseline")
+
+}
+
 
 #' Get epoch baselines
 #'
@@ -336,16 +330,8 @@ get_epoch_baselines <- function(data,
                                 time_lim) {
 
   #n_epochs <- nrow(epochs(data))
-  if (inherits(data, "eeg_group")) {
-    #n_epochs <- nrow(epochs(data))
-    n_epochs <- length(unique(epochs(data)$epoch))
-    n_participants <- length(unique(epochs(data)$participant_id))
-    is_group_data <- TRUE
-  } else {
-    n_epochs <- length(unique(epochs(data)$epoch))
-    n_participants <- length(unique(epochs(data)$participant_id))
-    is_group_data <- FALSE
-  }
+  n_epochs <- nrow(unique(epochs(data)[, c("epoch", "participant_id")]))
+  n_participants <- length(unique(epochs(data)$participant_id))
 
   n_chans <- length(channel_names(data))
   chan_names <- colnames(data$signals)
@@ -353,37 +339,20 @@ get_epoch_baselines <- function(data,
   if (is.null(time_lim)) {
     data$signals <- as.matrix(data$signals)
     n_times <- length(unique(data$timings$time))
-    if (is_group_data) {
-      dim(data$signals) <- c(n_epochs,
-                             n_times,
-                             n_chans,
-                             n_participants)
-    } else {
     dim(data$signals) <- c(n_times,
                            n_epochs,
                            n_chans)
-    }
     base_times <- colMeans(data$signals)
   } else {
     base_times <- select_times(data,
                                time_lim = time_lim)
     base_times$signals <- as.matrix(base_times$signals)
     n_bl_times <- length(unique(base_times$timings$time))
-    if (is_group_data) {
-      dim(base_times$signals) <- c(n_epochs,
-                                   n_bl_times,
-                                   n_chans,
-                                   n_participants)
-      base_times$signals <- aperm(base_times$signals,
-                                  c(2,1,3,4))
-    } else {
-      dim(base_times$signals) <- c(n_bl_times,
+    dim(base_times$signals) <- c(n_bl_times,
                                    n_epochs,
                                    n_chans)
-    }
     base_times <- colMeans(base_times$signals)
   }
-  dim(base_times) <- c(n_epochs* n_participants, n_chans)
   colnames(base_times) <- chan_names
   base_times
 }
