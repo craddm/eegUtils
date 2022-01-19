@@ -10,7 +10,25 @@ test_that("combining missing part should error", {
   epochs(part_missing)$participant_id <- NA
   expect_error(eeg_combine(part_001, part_missing))
   expect_warning(eeg_combine(demo_spatial, part_001))
-  expect_s3_class(eeg_combine(part_002, part_001,
-                              part_003),
-                  "eeg_group")
+  expect_s3_class(
+    eeg_combine(part_002,
+                part_001,
+                part_003),
+    "eeg_group")
+  expect_s3_class(eeg_combine(
+    list(
+      part_002,
+      part_001,
+      part_003
+      )
+    ),
+    "eeg_group")
+  expect_s3_class(eeg_combine(
+    list(
+      part1 = part_002,
+      part2 = part_001,
+      part3 = part_003
+    )
+  ),
+  "eeg_group")
 })

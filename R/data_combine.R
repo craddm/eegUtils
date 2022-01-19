@@ -42,6 +42,8 @@ eeg_combine.list <- function(data,
 
   list_classes <- lapply(data,
                          class)
+  # unname the list as the names mess with combining
+  data <- unname(data)
 
   if (any(is.list(unlist(list_classes)))) {
     stop("Cannot handle list of lists. Check class of list items.")
