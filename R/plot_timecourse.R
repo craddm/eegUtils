@@ -258,6 +258,7 @@ plot_timecourse.eeg_group <- function(data,
 }
 
 #' @describeIn plot_timecourse Plot timecourses from `eeg_tfr` objects.
+#' @param freq_range Choose a specific frequency range to plot
 #' @export
 plot_timecourse.eeg_tfr <- function(data,
                                     electrode = NULL,
