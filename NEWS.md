@@ -15,6 +15,7 @@
 - `eeg_combine()` will now refuse to combine objects where `participant_id` is missing (i.e. is `NA`), and warn when combining objects with the previous default value "". This is to prevent accidentally treating data from different participants as being from the same participant.
 - `topoplot()` now provides informative messages about the head radius used for plotting. The default calculation of `r` when using `interp_limit = "head"` has changed and should now be set at the outermost electrode's position + a 10% buffer. Smaller `r` can be set manually.
 - added `get_participant_id`, `set_participant_id`, `get_recording` and `set_recording` to interact with the `epochs` metadata in each `eegUtils` object.
+- `eeg_combine()` handles `eeg_tfr()` objects better, now returns an error when trying to combine single-trial data.
 
 ### Internal changes / bug fixes
 
@@ -25,6 +26,8 @@
 - Fixed bug with incorrect number of epochs calculated when epoching `eeg_data` objects if there were multiple "target" triggers appearing in an epoch.
 - Fixed error with `erp_raster()` when `anat_order == FALSE`
 - new `epoch_queries` file for functions for setting and getting the `epochs` structure
+- new `check_items` file for functions that check for consistency of various structures
+- `eeg_combine()` with `eeg_tfr()` no longer drops single dimensions, which was causing issues when there was only one channel or epoch in the object.
 
 # eegUtils 0.6.3
 
