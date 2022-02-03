@@ -276,32 +276,3 @@ average_tf <- function(data,
   data
 }
 
-#' Check that all classes in a list match
-#'
-#' @param data list of objects to check
-#' @keywords internal
-
-check_classes <- function(data) {
-
-  stopifnot(is.list(data))
-
-  dat_classes <- lapply(data,
-                        class)
-  check_class <- sapply(dat_classes,
-                        identical,
-                        dat_classes[[1]])
-  all(check_class)
-}
-
-#' Check that all conditions in a list match
-#' @noRd
-
-check_conds <- function(data_list) {
-
-  get_names <- lapply(data_list,
-                      function(x) names(x$signals))
-  check_names <- sapply(get_names,
-                        identical,
-                        get_names[[1]])
-  all(check_names)
-}
