@@ -347,7 +347,8 @@ parse_for_tc <- function(data,
 
   ## Select specified electrodes -----
   if (!is.null(electrode)) {
-    data <- select(data, electrode)
+    data <- select(data,
+                   dplyr::all_of(electrode))
   }
 
   ## Do baseline correction

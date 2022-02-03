@@ -276,3 +276,9 @@ average_tf <- function(data,
   data
 }
 
+#' @export
+
+eeg_average.eeg_group <- function(data,
+                                ...) {
+  stop("Not currently supported for `eeg_group` objects.")
+}

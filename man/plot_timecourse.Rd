@@ -81,6 +81,7 @@ plot_timecourse(data, ...)
   colour = NULL,
   color = NULL,
   mapping = NULL,
+  freq_range = NULL,
   ...
 )
 }
