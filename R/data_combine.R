@@ -34,6 +34,7 @@ eeg_combine.default <- function(data,
   )
 }
 
+
 #' @describeIn eeg_combine Method for combining lists of `eeg_data` and
 #'   `eeg_epochs` objects.
 #' @export
@@ -227,6 +228,15 @@ eeg_combine.eeg_tfr <- function(data,
 
     new_dim <- length(dim(data$signals)) + 1
     orig_dims <- dimnames(data$signals)
+
+    # issue here: only handles eeg_tfr when same n_epochs for each object
+    # assumes when combining that they are averages from different participants
+    # so won't work if combining within participants, for example
+
+    if (!check_epochs(append(list(data), args))) {
+      stop("Cannot combine `eeg_tfr` when n_epochs is different across objects.
+           You may need to average across single-trials first using `eeg_average()`")
+    }
 
     data$signals <- abind::abind(
       data$signals,
@@ -446,7 +456,7 @@ rearrange_tfr <- function(data,
            function(x) {
              epochs(full_list[[x]]) <- sort_list[[x]]
              epochs(full_list[[x]])$epoch <- 1:nrow(epochs(full_list[[x]]))
-             full_list[[x]]$signals <- full_list[[x]]$signals[new_orders[[x]], , ,]
+             full_list[[x]]$signals <- full_list[[x]]$signals[new_orders[[x]], , , , drop = FALSE]
              full_list[[x]]
            })
   sorted_list
