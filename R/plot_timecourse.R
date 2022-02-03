@@ -214,14 +214,27 @@ plot_timecourse.eeg_epochs <- function(data,
 #' @describeIn plot_timecourse Plot timecourses from `eeg_group` objects.
 #' @export
 plot_timecourse.eeg_group <- function(data,
-                                       electrode = NULL,
-                                       time_lim = NULL,
-                                       add_CI = FALSE,
-                                       baseline = NULL,
-                                       colour = NULL,
-                                       color = NULL,
-                                       mapping = NULL,
-                                       ...) {
+                                      electrode = NULL,
+                                      time_lim = NULL,
+                                      add_CI = FALSE,
+                                      baseline = NULL,
+                                      colour = NULL,
+                                      color = NULL,
+                                      mapping = NULL,
+                                      ...) {
+
+  if (inherits(data,
+               "eeg_tfr")) {
+    return(plot_timecourse.eeg_tfr(data,
+                                   electrode = electrode,
+                                   time_lim = time_lim,
+                                   add_CI = add_CI,
+                                   baseline = baseline,
+                                   colour = colour,
+                                   color = color,
+                                   mapping = mapping,
+                                   ...))
+  }
   data <- parse_for_tc(data,
                        time_lim,
                        electrode,
@@ -254,8 +267,15 @@ plot_timecourse.eeg_tfr <- function(data,
                                     colour = NULL,
                                     color = NULL,
                                     mapping = NULL,
+                                    freq_range = NULL,
                                     ...) {
 
+
+  if (!is.null(colour) | !is.null(color)) {
+    warning(
+      "colour argument is kept for compatability, please use the `mapping` argument and supply a `ggplot2` `aes()` mapping"
+    )
+  }
 
   if (!is.null(time_lim)) {
     data <- filter(data,
