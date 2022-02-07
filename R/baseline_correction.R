@@ -1,11 +1,16 @@
 #' Baseline correction
 #'
-#' Used to correct data the mean of a specified time period. For `eeg_tfr`
+#' Used to correct data using the mean of a specified time period. For
+#' time-domain data, this will subtract the mean from all data. For `eeg_tfr`
 #' objects, a variety of methods are available, including subtraction, and
-#' conversion to "dB" change. For anything else, baseline subtraction is
-#' performed. this With a data frame, searches for "electrode" and "epoch"
-#' columns, and groups on these when found. An electrode column is always
-#' required; an epoch column is not.
+#' conversion to "dB" change. With a data frame, it will search for "electrode"
+#' and "epoch" columns, and groups on these when found. An electrode column is
+#' always required; an epoch column is not. Note that baseline correction is
+#' always applied on single-trial basis. For baseline correction based on
+#' subtraction, this makes no difference compared to averaging first and then
+#' baseline correcting, but for divisive measures used with time-frequency data,
+#' this distinction can be very important, and can lead to counterintuitive
+#' results.
 #'
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #' @param data Data to be baseline corrected.
@@ -198,20 +203,38 @@ rm_baseline.eeg_tfr <- function(data,
   if (!is.null(time_lim)) {
     bline <- select_times(data,
                           time_lim)
+    no_bline <- FALSE
+  } else {
+    no_bline <- TRUE
   }
 
   if (epoched) {
 
     if (is_group_tfr) {
-      bline <- apply(bline$signals,
-                     c(1, 3, 4, 5),
-                     mean,
-                     na.rm = TRUE)
+      if (no_bline) {
+        bline <- apply(data$signals,
+                       c(1, 3, 4, 5),
+                       mean,
+                       na.rm = TRUE)
+      } else {
+        bline <- apply(bline$signals,
+                       c(1, 3, 4, 5),
+                       mean,
+                       na.rm = TRUE)
+      }
+
     } else {
-      bline <- apply(bline$signals,
-                     c(1, 3, 4),
-                     mean,
-                     na.rm = TRUE)
+      if (no_bline) {
+        bline <- apply(data$signals,
+                       c(1, 3, 4),
+                       mean,
+                       na.rm = TRUE)
+      } else {
+        bline <- apply(bline$signals,
+                       c(1, 3, 4),
+                       mean,
+                       na.rm = TRUE)
+      }
     }
   } else {
     bline <- colMeans(bline$signals,

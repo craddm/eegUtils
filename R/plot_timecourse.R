@@ -41,14 +41,14 @@ plot_timecourse.default <- function(data,
 #'@describeIn plot_timecourse Plot a data.frame timecourse
 #'@export
 plot_timecourse.data.frame <- function(data,
-                               electrode = NULL,
-                               time_lim = NULL,
-                               add_CI = FALSE,
-                               baseline = NULL,
-                               colour = NULL,
-                               color = NULL,
-                               mapping = NULL,
-                               ...) {
+                                       electrode = NULL,
+                                       time_lim = NULL,
+                                       add_CI = FALSE,
+                                       baseline = NULL,
+                                       colour = NULL,
+                                       color = NULL,
+                                       mapping = NULL,
+                                       ...) {
 
   if (!is.null(electrode)) {
     data <- select_elecs(data,
@@ -259,6 +259,7 @@ plot_timecourse.eeg_group <- function(data,
 
 #' @describeIn plot_timecourse Plot timecourses from `eeg_tfr` objects.
 #' @param freq_range Choose a specific frequency range to plot
+#' @param type Type of baseline correction to use for `eeg_tfr` objects
 #' @export
 plot_timecourse.eeg_tfr <- function(data,
                                     electrode = NULL,
@@ -269,6 +270,7 @@ plot_timecourse.eeg_tfr <- function(data,
                                     color = NULL,
                                     mapping = NULL,
                                     freq_range = NULL,
+                                    type = "divide",
                                     ...) {
 
 
@@ -276,6 +278,12 @@ plot_timecourse.eeg_tfr <- function(data,
     warning(
       "colour argument is kept for compatability, please use the `mapping` argument and supply a `ggplot2` `aes()` mapping"
     )
+  }
+
+  if (!is.null(baseline)) {
+    data <- rm_baseline(data,
+                        baseline = baseline,
+                        type = type)
   }
 
   if (!is.null(time_lim)) {
@@ -292,6 +300,16 @@ plot_timecourse.eeg_tfr <- function(data,
   data_f <- as.data.frame(data,
                           long = TRUE,
                           coords = FALSE)
+  yintercept <-
+    switch(type,
+           divide = 0,
+           db = 1,
+           absolute = 0,
+           pc = 0,
+           ratio = 1)
+  ylabel <-
+    switch(type,
+           divide = "Percent")
 
   tc_plot <-
     ggplot(data_f,
@@ -306,7 +324,9 @@ plot_timecourse.eeg_tfr <- function(data,
          fill = "") +
     geom_vline(xintercept = 0,
                linetype = "solid", size = 0.5) +
-    geom_hline(yintercept = 0, linetype = "solid", size = 0.5) +
+    geom_hline(yintercept = yintercept,
+               linetype = "solid",
+               size = 0.5) +
     scale_x_continuous(breaks = scales::pretty_breaks(n = 4),
                        expand = c(0, 0)) +
     scale_y_continuous(breaks = scales::pretty_breaks(n = 4),
