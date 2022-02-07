@@ -1,7 +1,7 @@
 Package: eegUtils
 Type: Package
 Title: Utilities for Electroencephalographic (EEG) Analysis 
-Version: 0.7.0
+Version: 0.7.0.9000
 Date: 2022-02-03
 Authors@R: c(
   person("Matt", "Craddock", role = c("aut", "cre", "cph"), email = "matt@mattcraddock.com"),

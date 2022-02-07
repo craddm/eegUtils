@@ -1,3 +1,5 @@
+# eegUtils (development version)
+
 # eegUtils 0.7.0
 
 ### Function changes
