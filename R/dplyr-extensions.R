@@ -179,7 +179,8 @@ filter.eeg_tfr <- function(.data, ...) {
                                    epoch %in% keep_epochs)
     .data$signals <- abind::asub(.data$signals,
                                  as.character(keep_epochs),
-                                 dims = which(.data$dimensions == "epoch"))
+                                 dims = which(.data$dimensions == "epoch"),
+                                 drop = FALSE)
     .data$events <- dplyr::filter(.data$events,
                                   epoch %in% keep_epochs)
     args_done[in_epochs] <- TRUE
@@ -352,3 +353,5 @@ rename.eeg_epochs <- function(.data,
   .data$chan_info$electrode <- names(.data$signals)
   .data
 }
+
+
