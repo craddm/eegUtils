@@ -4,7 +4,7 @@
 - Add `imax` method to `run_ICA()`. This allows use of the `infomax` ICA algorithm from the `infomax` package, which is a reimplementation of the Infomax algorithm used in the `EEGLAB` Matlab toolbox.
 - `erp_scalp()` and `interactive_scalp()` should now appropriately use channel locations included in the data.
 - More informative messages when using `compute_tfr()`.
-- `plot_tfr()` now applies baseline correction on a single-trial basis where possible, which may show different results when using non-linear baseline correction (e.g. divide or dB)
+- `plot_tfr()` now applies baseline correction on a single-trial basis where possible, which may show different results when using non-linear baseline correction (e.g. `divide` or `dB`)
 - `topoplot()` now allows you to provide multiple component numbers when plotting from an `eeg_ICA` object, and will automatically produce an appropriately facetted plot. 
 - `topoplot()` now has a `k` parameter to control the smoothing when using `method = "gam"`.
 - added additional `demo_spatial` data from a spatial cueing experiment.
@@ -16,6 +16,7 @@
 - `topoplot()` now provides informative messages about the head radius used for plotting. The default calculation of `r` when using `interp_limit = "head"` has changed and should now be set at the outermost electrode's position + a 10% buffer. Smaller `r` can be set manually.
 - added `get_participant_id`, `set_participant_id`, `get_recording` and `set_recording` to interact with the `epochs` metadata in each `eegUtils` object.
 - `eeg_combine()` handles `eeg_tfr()` objects better, now returns an error when trying to combine single-trial data.
+- `plot_timecourse()` now handles `eeg_tfr()` objects.
 
 ### Internal changes / bug fixes
 
@@ -28,6 +29,8 @@
 - new `epoch_queries` file for functions for setting and getting the `epochs` structure
 - new `check_items` file for functions that check for consistency of various structures
 - `eeg_combine()` with `eeg_tfr()` no longer drops single dimensions, which was causing issues when there was only one channel or epoch in the object.
+- `plot_timecourse.eeg_tfr` now correctly passes baseline period to `rm_baseline()`
+- `filter.eeg_tfr()` was sometimes dropping single dimensions when using `abind::asub()`, now fixed
 
 # eegUtils 0.6.3
 
@@ -60,6 +63,7 @@
 - `rm_baseline()` for `eeg_evoked` no longer uses `data.table`
 - `as.data.frame.eeg_evoked()` handles grouped data better.
 - `import_set()` now handles all EEGLAB formats better.
+
 
 # eegUtils 0.6.1
 

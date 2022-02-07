@@ -141,8 +141,8 @@ StatScalpContours <-
                    required_aes = c("x",
                                     "y",
                                     "z"),
-                   # if no z provided, can add fill as default, but then get a
-                   # different warning
+                   # if no z provided, can add z = "fill" as default, but then
+                   # get a different warning
                    default_aes = aes(order = after_stat(level),
                                      linetype = ggplot2::after_stat(level) < 0),
 

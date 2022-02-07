@@ -118,6 +118,11 @@
 <li>new <code>check_items</code> file for functions that check for consistency of various structures</li>
 <li>
 <code><a href="../reference/eeg_combine.html">eeg_combine()</a></code> with <code><a href="../reference/eeg_tfr.html">eeg_tfr()</a></code> no longer drops single dimensions, which was causing issues when there was only one channel or epoch in the object.</li>
+<li>
+<code>plot_timecourse.eeg_tfr</code> now correctly passes baseline period to <code><a href="../reference/rm_baseline.html">rm_baseline()</a></code>
+</li>
+<li>
+<code>filter.eeg_tfr()</code> was sometimes dropping single dimensions when using <code><a href="https://rdrr.io/pkg/abind/man/asub.html" class="external-link">abind::asub()</a></code>, now fixed</li>
 </ul></div>
 </div>
     <div class="section level2">
