@@ -4,6 +4,7 @@ demo_epochs <- electrode_locations(demo_epochs,
                                    montage = "biosemi64alpha",
                                    overwrite = TRUE)
 demo_SOBI <- run_ICA(demo_epochs, pca = 10)
+demo_tfr <- compute_tfr(demo_epochs, foi = c(4,30), n_freq = 10)
 
 test_that("Plotting of data with multiple epochs works as expected", {
   skip_on_ci()
@@ -12,16 +13,26 @@ test_that("Plotting of data with multiple epochs works as expected", {
   vdiffr::expect_doppelganger("A29 only epochs",
                               plot_timecourse(demo_epochs,
                                               electrode = "A29"))
-  vdiffr::expect_doppelganger("A29 baseline corr epochs",
-                              plot_timecourse(demo_epochs,
-                                              baseline = c(-.2, 0),
-                                              electrode = "A29"))
+  vdiffr::expect_doppelganger(
+    "A29 baseline corr epochs",
+    plot_timecourse(
+      demo_epochs,
+      baseline = c(-.2, 0),
+      electrode = "A29"
+    )
+  )
   vdiffr::expect_doppelganger("Plot timecourse of component",
                               plot_timecourse(demo_SOBI,
                                               2))
   vdiffr::expect_doppelganger("Plot timecourse of evoked",
                               plot_timecourse(eeg_average(demo_epochs),
                                               2))
+  vdiffr::expect_doppelganger("Plot timecourse of tfr",
+                              plot_timecourse(eeg_average(demo_tfr)))
+  vdiffr::expect_doppelganger("Plot timecourse of tfr in db",
+                              plot_timecourse(eeg_average(demo_tfr),
+                                              type = "db",
+                                              baseline = c(-.1, 0)))
 })
 
 test_that("Plotting of butterfly plots from epochs", {

@@ -57,7 +57,7 @@ plot_timecourse.data.frame <- function(data,
 
   if (!is.null(baseline)) {
     data <- rm_baseline(data,
-                        baseline)
+                        time_lim = baseline)
   }
 
   if (!is.null(time_lim)) {
@@ -273,16 +273,19 @@ plot_timecourse.eeg_tfr <- function(data,
                                     type = "divide",
                                     ...) {
 
-
   if (!is.null(colour) | !is.null(color)) {
     warning(
       "colour argument is kept for compatability, please use the `mapping` argument and supply a `ggplot2` `aes()` mapping"
     )
   }
 
+  if (add_CI) {
+    message("Confidence intervals are not currently supported for `eeg_tfr` objects.")
+  }
+
   if (!is.null(baseline)) {
     data <- rm_baseline(data,
-                        baseline = baseline,
+                        time_lim = baseline,
                         type = type)
   }
 
@@ -302,14 +305,18 @@ plot_timecourse.eeg_tfr <- function(data,
                           coords = FALSE)
   yintercept <-
     switch(type,
-           divide = 0,
-           db = 1,
+           divide = 1,
+           db = 0,
            absolute = 0,
            pc = 0,
            ratio = 1)
   ylabel <-
     switch(type,
-           divide = "Percent")
+           divide = "Power ratio",
+           db = "Decibels (dB)",
+           ratio = "Power ratio",
+           absolute = "Power (a.u.)",
+           pc = "Percent change (%)")
 
   tc_plot <-
     ggplot(data_f,
@@ -319,7 +326,7 @@ plot_timecourse.eeg_tfr <- function(data,
                  fun = mean,
                  na.rm = TRUE) +
     labs(x = "Time (s)",
-         y = expression(paste("Power (a.u.)")),
+         y = ylabel,
          colour = "",
          fill = "") +
     geom_vline(xintercept = 0,

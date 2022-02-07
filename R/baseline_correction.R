@@ -97,6 +97,9 @@ rm_baseline.eeg_epochs <- function(data,
                                  baseline_dat)
 
   } else {
+    if (verbose) {
+      message(paste("Baseline:", time_lim, "s"))
+    }
     base_times <- get_epoch_baselines(data,
                                       time_lim)
 
@@ -201,11 +204,17 @@ rm_baseline.eeg_tfr <- function(data,
   }
 
   if (!is.null(time_lim)) {
+    if (verbose) {
+      message(paste("Baseline:", time_lim[1], "-", time_lim[2], "s"))
+    }
     bline <- select_times(data,
                           time_lim)
     no_bline <- FALSE
   } else {
     no_bline <- TRUE
+    if (verbose) {
+      message(paste("Using whole epoch as baseline."))
+    }
   }
 
   if (epoched) {
@@ -247,8 +256,8 @@ rm_baseline.eeg_tfr <- function(data,
                        bline) {
     switch(
       type,
-      "divide" = ((data - bline) / bline) * 100,
-      "pc" = ((data - bline) / bline) * 100 - 100,
+      "divide" = data / bline,
+      "pc" = ((data - bline) / bline) * 100,
       "absolute" = data - bline,
       "db" = 10 * log10(data / bline),
       "ratio" = data / bline
