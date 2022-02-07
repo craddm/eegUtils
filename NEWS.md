@@ -1,3 +1,5 @@
+# eegUtils 0.7.0
+
 # eegUtils 0.6.3.9000
 
 ### Function changes
