@@ -11,7 +11,7 @@
 #' @param file_path Path to file name, if not included in filename.
 #' @param recording Name of the recording. By default, the filename will be
 #'   used.
-#' @param participant_id Identifier for the participant.
+#' @param participant_id Identifier for the participant. Defaults to NA.
 #' @param fast_bdf New, faster method for loading BDF files. Experimental.
 #' @import tools
 #' @importFrom purrr map_df is_empty
@@ -26,7 +26,7 @@
 import_raw <- function(file_name,
                        file_path = NULL,
                        recording = NULL,
-                       participant_id = character(1),
+                       participant_id = NA,
                        fast_bdf = TRUE) {
 
   file_type <- tools::file_ext(file_name)
@@ -439,7 +439,15 @@ read_vhdr <- function(file_name) {
   chan_labels <- lapply(header_info$`Channel Infos`,
                         function(x) unlist(strsplit(x = x, split = ",")))
   chan_names <- sapply(chan_labels, "[[", 1)
-  chan_scale <- as.numeric(sapply(chan_labels, "[[", 3))
+  #EEGLAB exported BVA files are missing the channel resolution, which occupies
+  #the 3rd position - check length of chan_labels elements first to cope with
+  #that. Probably always 1 microvolt anyway...
+  if (length(chan_labels[[1]]) == 3) {
+    chan_scale <- as.numeric(sapply(chan_labels, "[[", 3))
+  } else {
+    chan_scale <- rep(1, length(chan_labels))
+  }
+
   chan_info <- parse_vhdr_chans(chan_names,
                                 header_info$`Coordinates`)
 
@@ -562,15 +570,15 @@ read_vmrk <- function(file_name) {
 #' Load `EEGLAB` .set files
 #'
 #' Load `EEGLAB` .set files and convert them to `eeg_epochs` objects. Supports
-#' import of files saved both in Matlab v6.5 and Matlab v7.3 formats. Currently,
+#' import of files saved in either Matlab v6.5 or Matlab v7.3 formats. Currently,
 #' any ICA weights or decompositions are discarded.
 #'
 #' @param file_name Filename (and path if not in present working directory)
-#' @param df_out Defaults to FALSE - outputs an object of class `eeg_data`. Set
+#' @param df_out Defaults to FALSE - outputs an object of class `eeg_epochs`. Set
 #'   to TRUE for a normal data frame.
-#' @param participant_id By default, the filename will be used as the id of the
+#' @param participant_id Character vector. By default, the filename will be used as the id of the
 #'   participant.
-#' @param recording By default, the filename will be used as the name of the
+#' @param recording Character vector. By default, the filename will be used as the name of the
 #'   recording.
 #' @param drop_custom Drop custom event fields. TRUE by default.
 #' @param verbose Print informative messages. TRUE by default.
@@ -580,7 +588,7 @@ read_vmrk <- function(file_name) {
 #' @importFrom purrr is_empty map_df
 #' @examples
 #' \dontrun{import_set("your_data.set")}
-#' @return An object of class `eeg_data`
+#' @return An object of class `eeg_epochs`
 #' @export
 
 import_set <- function(file_name,
@@ -745,11 +753,14 @@ import_set <- function(file_name,
   colnames(event_table) <- dimnames(event_info)[[1]]
 
   event_table <- tibble::as_tibble(event_table)
-  event_table <- map_df(event_table,
-                        ~unlist(map(.,
-                                    ~ifelse(is.null(.),
-                                            NA,
-                                            .))))
+  event_table <-
+    purrr::map_df(event_table,
+                  ~unlist(
+                    purrr::map(.,
+                               ~ifelse(is.null(.),
+                                       NA,
+                                       .)))
+                  )
   event_table <- lapply(event_table,
                         unlist)
   empty_entries <- unlist(lapply(event_table,
@@ -768,10 +779,17 @@ import_set <- function(file_name,
   if (any(event_table$latency %% 1 > 0)) {
     message("Rounding non-integer event sample latencies...")
     event_table$latency <- round(event_table$latency)
+    # This can result in an event with a latency of zero in samples, which
+    # causes problems with subsequent import steps - fix that and turn it into
+    # sample 1
+    event_table$latency <- ifelse(event_table$latency == 0,
+                                  1,
+                                  event_table$latency)
   }
 
   # EEGLAB stores latencies in samples starting from 1, my event_time is in
   # seconds, starting from 0
+
   event_table$event_time <- (event_table$latency - 1) / srate
 
   std_cols <- c("latency",
@@ -855,13 +873,18 @@ import_set <- function(file_name,
 parse_chaninfo <- function(chan_info,
                            drop = FALSE) {
 
-  chan_info <- chan_info[, sort(names(chan_info))]
+  # chan_info <- chan_info[sort(names(chan_info),
+  #                             method = "shell")]
   expected <- c("labels", "radius",
                 "ref", "sph.phi",
                 "sph.radius", "sph.theta",
                 "theta", "type",
-                "urchan", "X", "Y", "Z")
-  if (!all(names(chan_info) == expected)) {
+                "urchan", "X",
+                "Y", "Z")
+  # Check for two things:
+  # 1) Missing expected columns.
+  # 2) Columns which are non-standard.
+  if (!all(names(chan_info) %in% expected)) {
     if (drop) {
       warning("EEGLAB chan info has unexpected format, taking electrode names only.")
       out <- data.frame(chan_info["labels"])
@@ -869,9 +892,22 @@ parse_chaninfo <- function(chan_info,
       return(validate_channels(out))
     } else {
       warning("EEGLAB chan info has unexpected format, taking only expected columns.")
-      chan_info <- chan_info[, expected]
+      miss_cols <- expected[!(expected %in% names(chan_info))]
+      #Why did I set this to NA? must have been a reason but it has unintended
+      #consequences. Remember to build a test when I end up back here with an
+      #example...
+      chan_info[miss_cols] <- NA
     }
   }
+
+  if (!all(expected %in% names(chan_info))) {
+    miss_cols <- expected[!(expected %in% names(chan_info))]
+    chan_info[miss_cols] <- NA
+
+  }
+
+  chan_info <- chan_info[expected]
+
   names(chan_info) <- c("electrode",
                         "radius",
                         "ref",
@@ -885,15 +921,16 @@ parse_chaninfo <- function(chan_info,
                         "cart_y",
                         "cart_z"
                         )
+
   chan_info <- chan_info[c("electrode",
                            "cart_x",
                            "cart_y",
                            "cart_z")]
   # EEGLAB co-ordinates are rotated 90 degrees compared to our coordinates,
   # and left-right flipped
-  #chan_info$cart_y <- -chan_info$cart_y
   names(chan_info) <- names(chan_info)[c(1, 3, 2, 4)]
   chan_info <- chan_info[, c(1, 3, 2, 4)]
+  chan_info$cart_x <- -chan_info$cart_x
   sph_coords <- cart_to_spherical(chan_info[, c("cart_x", "cart_y", "cart_z")])
   xy <- project_elecs(sph_coords)
   chan_info <- dplyr::bind_cols(electrode = as.character(chan_info$electrode),
@@ -1024,169 +1061,7 @@ import_ft <- function(file_name,
   }
 }
 
-ft_raw <- function(data,
-                   struct_names,
-                   participant_id,
-                   recording,
-                   verbose) {
 
-  if (verbose) message("Importing ft_raw (epoched) dataset.")
-
-  sig_names <- unlist(data["label", , ],
-                      use.names = FALSE)
-
-  times <- unlist(data["time", ,],
-                  use.names = FALSE)
-
-  if ("fsample" %in% struct_names) {
-    srate <- unlist(data["fsample", ,],
-                    use.names = FALSE)
-  } else {
-    srate <- NULL
-  }
-
-  n_trials <- length(data["trial", , ][[1]])
-  signals <- purrr::flatten(purrr::flatten(data["trial", ,]))
-  signals <- tibble::as_tibble(t(do.call(cbind, signals)))
-  names(signals) <- sig_names
-  timings <- tibble::tibble(epoch = rep(seq(1, n_trials),
-                                        each = length(unique(times))),
-                            time = times)
-
-  epochs <- tibble::tibble(epoch = 1:n_trials,
-                           participant_id = participant_id,
-                           recording = recording)
-
-  if ("elec" %in% struct_names) {
-    if (verbose) message("Importing channel information.")
-    chan_info <- ft_chan_info(data)
-    chan_info$electrode <- sig_names
-    chan_info <- validate_channels(chan_info)
-  } else {
-    if (verbose) message("No EEG channel information found.")
-    chan_info <- NULL
-  }
-
-  chan_info$electrode <- sig_names
-  eeg_epochs(data = signals,
-             srate = srate,
-             timings = timings,
-             chan_info = chan_info,
-             epochs = epochs)
-}
-
-ft_comp <- function(data) {
-  mixing_matrix <- unlist(data["topo", , ],
-                          use.names = FALSE)
-  unmixing_matrix <- unlist(data["unmixing", , ],
-                            use.names = FALSE)
-  chan_names <- unlist(data["topolabel", , ],
-                       use.names = FALSE)
-}
-
-ft_freq <- function(data,
-                    dimensions,
-                    struct_names,
-                    participant_id,
-                    recording,
-                    verbose) {
-
-  if (verbose) message("Importing ft_freq dataset.")
-
-  frequencies <- as.vector(unlist(data["freq", , ]))
-
-  if (!("powspctrm" %in% struct_names)) {
-    stop("Only import of power data currently supported from ft_freq data.")
-  }
-
-  if ("fsample" %in% struct_names) {
-    srate <- unlist(data["fsample", ,],
-                    use.names = FALSE)
-  } else {
-    srate <- NULL
-  }
-
-  signals <- data[[which(struct_names == "powspctrm")]]
-
-  sig_names <- unlist(data["label", , ],
-                      use.names = FALSE)
-
-  if ("time" %in% dimensions) {
-    times <- unlist(data["time", ,],
-                    use.names = FALSE)
-  }
-
-  freq_info <- list(freqs = frequencies,
-                    method = "unknown",
-                    output = "power",
-                    baseline = "none")
-
-  if (all(c("epoch", "time") %in% dimensions)) {
-    n_trials <- dim(signals)[[1]]
-    dimnames(signals) <- list(epoch = 1:n_trials,
-                              electrode = sig_names,
-                              frequency = frequencies,
-                              time = times)
-  } else {
-    n_trials <- 1
-    dimnames(signals) <- list(electrode = sig_names,
-                              frequency = frequencies,
-                              time = times)
-  }
-
-  epochs <- tibble::tibble(epoch = 1:n_trials,
-                           participant_id = participant_id,
-                           recording = recording)
-
-  timings <- tibble::tibble(epoch = rep(seq(1, n_trials),
-                                        each = length(unique(times))),
-                            time = rep(times,
-                                       n_trials))
-
-  if ("elec" %in% struct_names) {
-    if (verbose) message("Importing channel information.")
-    chan_info <- ft_chan_info(data)
-    chan_info$electrode <- sig_names
-    chan_info <- validate_channels(chan_info)
-  } else {
-    if (verbose) message("No EEG channel information found.")
-    chan_info <- NULL
-  }
-
-  eeg_tfr(data = signals,
-          dimensions = dimensions,
-          srate = srate,
-          events = NULL,
-          chan_info = chan_info,
-          reference = NULL,
-          timings = timings,
-          epochs = epochs,
-          freq_info = freq_info)
-}
-
-
-ft_chan_info <- function(data) {
-  chan_info <- unlist(data["elec", ,],
-                      recursive = FALSE)
-  chan_info <- chan_info[[1]]
-  colnames(chan_info) <- c("cart_x",
-                           "cart_y",
-                           "cart_z")
-  chan_info <- tibble::as_tibble(chan_info)
-  sph_coords <- cart_to_spherical(chan_info)
-  chan_info <- cbind(chan_info,
-                     sph_coords)
-  chan_info[, c("x", "y")] <- project_elecs(chan_info)
-  chan_info
-}
-
-proc_dimord <- function(dimord) {
-  dimord <- unlist(strsplit(dimord, "_"))
-  dimord <- gsub("rpt", "epoch", dimord)
-  dimord <- gsub("chan", "electrode", dimord)
-  dimord <- gsub("freq", "frequency", dimord)
-  dimord
-}
 
 read_bdf_header <- function(file_name) {
 

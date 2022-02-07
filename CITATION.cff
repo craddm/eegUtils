@@ -1,0 +1,65 @@
+# -----------------------------------------------------------
+# CITATION file created with {cffr} R package, v0.1.1
+# See also: https://docs.ropensci.org/cffr/
+# -----------------------------------------------------------
+ 
+cff-version: 1.2.0
+message: 'To cite package "eegUtils" in publications use:'
+type: software
+license: MIT
+title: 'eegUtils: Utilities for Electroencephalographic (EEG) Analysis'
+version: 0.6.3.9000
+abstract: EEG processing and visualization tools. Includes import functions for 'BioSemi'
+  (.BDF), 'Neuroscan' (.CNT), 'Brain Vision Analyzer' (.VHDR), 'EEGLAB' (.set) and
+  'Fieldtrip' (.mat). Many preprocessing functions such as referencing, epoching,
+  filtering, and ICA are available. There are a variety of visualizations possible,
+  including timecourse and topographical plotting.
+authors:
+- family-names: Craddock
+  given-names: Matt
+  email: matt@mattcraddock.com
+preferred-citation:
+  type: manual
+  title: 'eegUtils: Utilities for Electroencephalographic (EEG) Analysis'
+  authors:
+  - family-names: Craddock
+    given-names: Matt
+    email: matt@mattcraddock.com
+  version: 0.6.3.9000
+  abstract: EEG processing and visualization tools. Includes import functions for
+    'BioSemi' (.BDF), 'Neuroscan' (.CNT), 'Brain Vision Analyzer' (.VHDR), 'EEGLAB'
+    (.set) and 'Fieldtrip' (.mat). Many preprocessing functions such as referencing,
+    epoching, filtering, and ICA are available. There are a variety of visualizations
+    possible, including timecourse and topographical plotting.
+  repository-code: https://github.com/craddm/eegUtils
+  url: https://craddm.github.io/eegUtils
+  date-released: '2021-07-09'
+  contact:
+  - family-names: Craddock
+    given-names: Matt
+    email: matt@mattcraddock.com
+  keywords:
+  - eeg
+  - eeg-analysis
+  - eeg-data
+  - eeg-signals
+  - eeg-signals-processing
+  - r
+  - rstats
+  license: MIT
+  year: '2021'
+repository-code: https://github.com/craddm/eegUtils
+url: https://craddm.github.io/eegUtils
+date-released: '2021-07-09'
+contact:
+- family-names: Craddock
+  given-names: Matt
+  email: matt@mattcraddock.com
+keywords:
+- eeg
+- eeg-analysis
+- eeg-data
+- eeg-signals
+- eeg-signals-processing
+- r
+- rstats

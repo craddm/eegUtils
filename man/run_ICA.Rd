@@ -17,6 +17,7 @@ run_ICA(data, ...)
   alg = "gradient",
   rateanneal = c(60, 0.9),
   rate = 0.1,
+  verbose = TRUE,
   ...
 )
 }
@@ -25,7 +26,10 @@ run_ICA(data, ...)
 
 \item{...}{Other parameters passed to function.}
 
-\item{method}{"sobi" (default), "fastica", or "infomax".}
+\item{method}{"sobi" (default), "fastica", "infomax", or "imax". "infomax"
+uses the implementation from the \code{ica} package, whereas \code{imax} uses the
+implementation from the \code{infomax} package, which is based on the \code{EEGLAB}
+implementation.}
 
 \item{maxit}{Maximum number of iterations of the Infomax and Fastica ICA
 algorithms.}
@@ -46,14 +50,18 @@ Defaults to "gradient". Ignored if method != "infomax".}
 
 \item{rate}{Learning rate for extended infomax. Ignored if method !=
 "infomax".}
+
+\item{verbose}{Print informative messages to console.}
 }
 \value{
 An \code{eeg_ICA} object containing an ICA decomposition
 }
 \description{
-Performs Independent Component Analysis for EEG data. Currently only
-available with on epoched data. Implements three different methods of ICA -
-fastica, extended Infomax, and Second-Order Blind Identification (SOBI).
+Performs Independent Component Analysis for electroencephalographic data.
+Currently only available with on epoched data. Implements three different
+methods of ICA - 'fastica', 'extended Infomax', and 'Second-Order Blind
+Identification (SOBI)'. The resulting \code{eeg_ICA} objects can be used largely
+like \code{eeg_epochs} objects.
 }
 \section{Methods (by class)}{
 \itemize{
@@ -79,8 +87,19 @@ n_electrodes - 1.
 }
 
 \examples{
-run_ICA(demo_epochs, pca = 10)
+sobi_demo <-
+  run_ICA(demo_epochs,
+          pca = 10)
+ sobi_demo
+ # We can plot the resulting spatial filters using `topoplot()`
+ topoplot(sobi_demo, 1:2)
+ \dontrun{ view_ica(sobi_demo) }
+}
+\seealso{
+Other decompositions: 
+\code{\link{eeg_decompose}()}
 }
 \author{
 Matt Craddock \email{matt@mattcraddock.com}
 }
+\concept{decompositions}

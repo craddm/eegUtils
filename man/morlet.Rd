@@ -4,14 +4,18 @@
 \alias{morlet}
 \title{Morlet wavelet}
 \usage{
-morlet(frex, srate, n_cycles, n_freq)
+morlet(frex, srate, n_cycles, n_freq, gauss_width = 3)
 }
 \arguments{
 \item{frex}{Frequency range of interest}
 
+\item{srate}{Sampling rate of signal}
+
 \item{n_cycles}{Length of wavelet in cycles}
 
 \item{n_freq}{number of frequencies to resolve}
+
+\item{gauss_width}{Size of filter kernel in standard deviations}
 }
 \description{
 Generate Morlet wavelet family

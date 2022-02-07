@@ -13,8 +13,7 @@ knitr::opts_chunk$set(echo = TRUE,
 <!-- badges: start -->
 [![Repo Status](http://www.repostatus.org/badges/latest/wip.svg)](http://www.repostatus.org/#wip)
 [![Coverage Status](https://img.shields.io/codecov/c/github/craddm/eegUtils/master.svg)](https://codecov.io/github/craddm/eegUtils?branch=master) 
-[![AppVeyor build status](https://ci.appveyor.com/api/projects/status/github/craddm/eegUtils?branch=master&svg=true)](https://ci.appveyor.com/project/craddm/eegUtils)
-  [![R-CMD-check](https://github.com/craddm/eegUtils/workflows/R-CMD-check/badge.svg)](https://github.com/craddm/eegUtils/actions)
+[![R-CMD-check](https://github.com/craddm/eegUtils/workflows/R-CMD-check/badge.svg)](https://github.com/craddm/eegUtils/actions)
   <!-- badges: end -->
 [![DOI](https://zenodo.org/badge/85406871.svg)](https://zenodo.org/badge/latestdoi/85406871)
 
@@ -73,7 +72,7 @@ plot_tfr(compute_tfr(demo_epochs,
                      n_cycles = 3))
 ```
 
-There are many potential processing steps that precede the production of plots like these. For more examples of how to import and process data, or import data from other sources, see the [eegUtils website](https://craddm.github.io/eegUtils)
+There are many potential processing steps that precede the production of plots like these. For more examples of how to import and process data, or import data from other sources, see the [eegUtils website](https://craddm.github.io/eegUtils)!
 
 ## Contributing
 

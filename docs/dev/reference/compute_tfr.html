@@ -40,9 +40,10 @@
 
 
 <meta property="og:title" content="Compute Time-Frequency representation of EEG data — compute_tfr" />
-<meta property="og:description" content="This function creates a time frequency represention of EEG time series data.
-Currently, the only available method is a Morlet wavelet transformation
-performed using convolution in the frequency domain." />
+<meta property="og:description" content="This function creates a time frequency representation of EEG time series
+data. Currently, it is possible to use either Morlet wavelets or Hanning
+tapers during the decomposition, which uses convolution in the frequency
+domain." />
 
 
 <meta name="robots" content="noindex">
@@ -74,7 +75,7 @@ performed using convolution in the frequency domain." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">eegUtils</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.6.2.9000</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.6.3.9000</span>
       </span>
     </div>
 
@@ -119,6 +120,12 @@ performed using convolution in the frequency domain." />
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
+<li>
+  <a href="https://www.twitter.com/matt_craddock">
+    <span class="fab fa-twitter fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
@@ -146,9 +153,10 @@ performed using convolution in the frequency domain." />
     </div>
 
     <div class="ref-description">
-    <p>This function creates a time frequency represention of EEG time series data.
-Currently, the only available method is a Morlet wavelet transformation
-performed using convolution in the frequency domain.</p>
+    <p>This function creates a time frequency representation of EEG time series
+data. Currently, it is possible to use either Morlet wavelets or Hanning
+tapers during the decomposition, which uses convolution in the frequency
+domain.</p>
     </div>
 
     <pre class="usage"><span class='fu'>compute_tfr</span><span class='op'>(</span><span class='va'>data</span>, <span class='va'>...</span><span class='op'>)</span>
@@ -213,13 +221,14 @@ of frequencies.</p></td>
     </tr>
     <tr>
       <th>spacing</th>
-      <td><p>Use "linear" or "log" spacing for the frequency vector.</p></td>
+      <td><p>Use "linear" or "log" spacing for the frequency vector and number of cycles.</p></td>
     </tr>
     <tr>
       <th>n_cycles</th>
       <td><p>Number of cycles at each frequency. If a single integer, use
 a constant number of cycles at each frequency. If a character vector of
-length 2, use a linearly scaling number of cycles at each frequency.</p></td>
+length 2, the number of cycles will scale with frequency from the minimum
+to the maximum.</p></td>
     </tr>
     <tr>
       <th>keep_trials</th>
@@ -249,7 +258,7 @@ performing time-frequency analysis on the full sampling rate data.</p></td>
     
 <ul>
 <li><p><code>default</code>: Default method for compute_tfr</p></li>
-<li><p><code>eeg_epochs</code>: Default method for compute_tfr</p></li>
+<li><p><code>eeg_epochs</code>: Default method for <code>compute_tfr</code></p></li>
 <li><p><code>eeg_evoked</code>: Method for <code>eeg_evoked</code> objects.</p></li>
 </ul>
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
@@ -258,7 +267,7 @@ performing time-frequency analysis on the full sampling rate data.</p></td>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='va'>out</span> <span class='op'>&lt;-</span> <span class='fu'>compute_tfr</span><span class='op'>(</span><span class='va'>demo_epochs</span>, method <span class='op'>=</span> <span class='st'>"morlet"</span>, foi <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>4</span>, <span class='fl'>30</span><span class='op'>)</span>, n_freq <span class='op'>=</span> <span class='fl'>10</span>, n_cycles <span class='op'>=</span> <span class='fl'>3</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>Output frequencies: 4 6.89 9.78 12.67 15.56 18.44 21.33 24.22 27.11 30</span></div><div class='output co'>#&gt; <span class='message'>Removing channel means per epoch...</span></div><div class='input'><span class='va'>out</span>
+</div><div class='output co'>#&gt; <span class='message'>Computing TFR using Morlet wavelet convolution</span></div><div class='output co'>#&gt; <span class='message'>Output frequencies using linear spacing: 4 6.89 9.78 12.67 15.56 18.44 21.33 24.22 27.11 30</span></div><div class='output co'>#&gt; <span class='message'>Removing channel means per epoch...</span></div><div class='output co'>#&gt; <span class='message'>Returning signal averaged over all trials.</span></div><div class='input'><span class='va'>out</span>
 </div><div class='output co'>#&gt; Epoched EEG TFR data
 #&gt; 
 #&gt; Frequency range		:	 4 6.89 9.78 12.67 15.56 18.44 21.33 24.22 27.11 30 
@@ -278,7 +287,7 @@ performing time-frequency analysis on the full sampling rate data.</p></td>
 #&gt; 8  24.222222  8.074074 0.01971185        3
 #&gt; 9  27.111111  9.037037 0.01761141        3
 #&gt; 10 30.000000 10.000000 0.01591549        3</div><div class='input'><span class='va'>out</span> <span class='op'>&lt;-</span> <span class='fu'>compute_tfr</span><span class='op'>(</span><span class='va'>demo_epochs</span>, method <span class='op'>=</span> <span class='st'>"morlet"</span>, foi <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>4</span>, <span class='fl'>30</span><span class='op'>)</span>, n_freq <span class='op'>=</span> <span class='fl'>10</span>, n_cycles <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>3</span>, <span class='fl'>10</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>Output frequencies: 4 6.89 9.78 12.67 15.56 18.44 21.33 24.22 27.11 30</span></div><div class='output co'>#&gt; <span class='message'>Removing channel means per epoch...</span></div><div class='input'><span class='va'>out</span><span class='op'>$</span><span class='va'>freq_info</span><span class='op'>$</span><span class='va'>morlet_resolution</span>
+</div><div class='output co'>#&gt; <span class='message'>Computing TFR using Morlet wavelet convolution</span></div><div class='output co'>#&gt; <span class='message'>Output frequencies using linear spacing: 4 6.89 9.78 12.67 15.56 18.44 21.33 24.22 27.11 30</span></div><div class='output co'>#&gt; <span class='message'>Removing channel means per epoch...</span></div><div class='output co'>#&gt; <span class='message'>Returning signal averaged over all trials.</span></div><div class='input'><span class='va'>out</span><span class='op'>$</span><span class='va'>freq_info</span><span class='op'>$</span><span class='va'>morlet_resolution</span>
 </div><div class='output co'>#&gt;    frequency  sigma_f    sigma_t  n_cycles
 #&gt; 1   4.000000 1.333333 0.11936621  3.000000
 #&gt; 2   6.888889 1.823529 0.08727852  3.777778

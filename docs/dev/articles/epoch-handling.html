@@ -32,7 +32,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">eegUtils</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.5.0.9000</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.6.3.9000</span>
       </span>
     </div>
 
@@ -77,6 +77,12 @@
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
+<li>
+  <a href="https://www.twitter.com/matt_craddock">
+    <span class="fab fa-twitter fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
@@ -95,13 +101,13 @@
 
       
 
-      </header><script src="epoch-handling_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><script src="epoch-handling_files/header-attrs-2.9/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Event and epoch handling</h1>
                         <h4 class="author">Matt Craddock</h4>
             
-            <h4 class="date">2021-01-08</h4>
+            <h4 class="date">2021-07-16</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/craddm/eegUtils/blob/master/vignettes/epoch-handling.Rmd"><code>vignettes/epoch-handling.Rmd</code></a></small>
       <div class="hidden name"><code>epoch-handling.Rmd</code></div>
@@ -115,7 +121,8 @@
 #&gt; Number of channels   : 72 
 #&gt; Electrode names      : A1 A2 A3 A4 A5 A6 A7 A8 A9 A10 A11 A12 A13 A14 A15 A16 A17 A18 A19 A20 A21 A22 A23 A24 A25 A26 A27 A28 A29 A30 A31 A32 B1 B2 B3 B4 B5 B6 B7 B8 B9 B10 B11 B12 B13 B14 B15 B16 B17 B18 B19 B20 B21 B22 B23 B24 B25 B26 B27 B28 B29 B30 B31 B32 EXG1 EXG2 EXG3 EXG4 EXG5 EXG6 EXG7 EXG8 
 #&gt; Sampling rate        : 512 Hz
-#&gt; Reference        :</code></pre>
+#&gt; Reference        : 
+#&gt; Signal length: 0 443.998 seconds</code></pre>
 <p>In this example, we’re going to look at how to handle epoching and events. To start, we have continuous data from 70 channels sampled at 512 Hz, average referenced, and bandpass filtered from 0.1 to 40 Hz. There is a complete table of all of the events imported with the data. We can use that table to form epochs.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">eeg_example</span>
@@ -124,7 +131,8 @@
 <span class="co">#&gt; Number of channels   : 70 </span>
 <span class="co">#&gt; Electrode names      : A1 A2 A3 A4 A5 A6 A7 A8 A9 A10 A11 A12 A13 A14 A15 A16 A17 A18 A19 A20 A21 A22 A23 A24 A25 A26 A27 A28 A29 A30 A31 A32 B1 B2 B3 B4 B5 B6 B7 B8 B9 B10 B11 B12 B13 B14 B15 B16 B17 B18 B19 B20 B21 B22 B23 B24 B25 B26 B27 B28 B29 B30 B31 B32 EXG1 EXG2 EXG3 EXG4 EXG5 EXG6 </span>
 <span class="co">#&gt; Sampling rate        : 512 Hz</span>
-<span class="co">#&gt; Reference        : average</span>
+<span class="co">#&gt; Reference        : average </span>
+<span class="co">#&gt; Signal length: 0 443.998 seconds</span>
 <span class="fu"><a href="../reference/events.html">events</a></span><span class="op">(</span><span class="va">eeg_example</span><span class="op">)</span>
 <span class="co">#&gt; # A tibble: 468 x 3</span>
 <span class="co">#&gt;    event_onset event_time event_type</span>
@@ -219,12 +227,9 @@
                               <span class="st">"Nonsense/HSF"</span>,
                               <span class="st">"Nonsense/LSF"</span><span class="op">)</span>,
              time_lim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">.2</span>, <span class="fl">.6</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt; The current default value of baseline, NULL,</span>
-<span class="co">#&gt;             will change to 'none' in v0.6 of eegUtils,</span>
-<span class="co">#&gt;             performing no baseline correction.</span>
 <span class="co">#&gt; Adjusting output limits to match sampling rate.</span>
 <span class="co">#&gt; Output limits:  -0.19921875 0.599609375</span>
-<span class="co">#&gt; Removing channel means per epoch...</span>
+<span class="co">#&gt; No baseline removal performed.</span>
 <span class="co">#&gt; Creating 78 epochs.</span>
 <span class="fu"><a href="../reference/events.html">events</a></span><span class="op">(</span><span class="va">example_epochs</span><span class="op">)</span>
 <span class="co">#&gt; # A tibble: 78 x 6</span>
@@ -283,9 +288,7 @@
                legend <span class="op">=</span> <span class="cn">FALSE</span>,
                baseline <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">.1</span>, <span class="fl">0</span><span class="op">)</span>,
                allow_facets <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html">facet_wrap</a></span><span class="op">(</span><span class="op">~</span><span class="va">SF</span><span class="op">)</span>
-<span class="co">#&gt; Joining, by = c("epoch", "participant_id", "recording", "event_type", "Semantics", "SF")</span>
-<span class="co">#&gt; Joining, by = c("epoch", "participant_id", "recording", "event_type", "Semantics", "SF")</span></code></pre></div>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html">facet_wrap</a></span><span class="op">(</span><span class="op">~</span><span class="va">SF</span><span class="op">)</span></code></pre></div>
 <p><img src="epoch-handling_files/figure-html/unnamed-chunk-6-1.png" width="700"></p>
   </div>
 

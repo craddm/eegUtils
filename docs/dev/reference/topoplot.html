@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">eegUtils</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.6.2.9000</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.6.3.9000</span>
       </span>
     </div>
 
@@ -116,6 +116,12 @@
 </li>
 <li>
   <a href="../news/index.html">Changelog</a>
+</li>
+<li>
+  <a href="https://www.twitter.com/matt_craddock">
+    <span class="fab fa-twitter fa-lg"></span>
+     
+  </a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -171,6 +177,7 @@
   scaling <span class='op'>=</span> <span class='fl'>1</span>,
   groups <span class='op'>=</span> <span class='cn'>NULL</span>,
   verbose <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  k <span class='op'>=</span> <span class='fl'>40</span>,
   <span class='va'>...</span>
 <span class='op'>)</span>
 
@@ -193,6 +200,7 @@
   scaling <span class='op'>=</span> <span class='fl'>1</span>,
   verbose <span class='op'>=</span> <span class='cn'>TRUE</span>,
   groups <span class='op'>=</span> <span class='cn'>NULL</span>,
+  k <span class='op'>=</span> <span class='fl'>40</span>,
   <span class='va'>...</span>
 <span class='op'>)</span>
 
@@ -215,6 +223,7 @@
   scaling <span class='op'>=</span> <span class='fl'>1</span>,
   groups <span class='op'>=</span> <span class='cn'>NULL</span>,
   verbose <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  k <span class='op'>=</span> <span class='fl'>40</span>,
   <span class='va'>...</span>
 <span class='op'>)</span>
 
@@ -238,6 +247,7 @@
   scaling <span class='op'>=</span> <span class='fl'>1</span>,
   verbose <span class='op'>=</span> <span class='cn'>TRUE</span>,
   groups <span class='op'>=</span> <span class='cn'>NULL</span>,
+  k <span class='op'>=</span> <span class='fl'>40</span>,
   <span class='va'>...</span>
 <span class='op'>)</span>
 
@@ -261,6 +271,7 @@
   freq_range <span class='op'>=</span> <span class='cn'>NULL</span>,
   verbose <span class='op'>=</span> <span class='cn'>TRUE</span>,
   groups <span class='op'>=</span> <span class='cn'>NULL</span>,
+  k <span class='op'>=</span> <span class='fl'>40</span>,
   <span class='va'>...</span>
 <span class='op'>)</span></pre>
 
@@ -362,6 +373,11 @@ Defaults to 1.</p></td>
 Defaults to TRUE.</p></td>
     </tr>
     <tr>
+      <th>k</th>
+      <td><p>Degrees of freedom used for spline when using <code>method = gam</code>.
+Defaults to 40.</p></td>
+    </tr>
+    <tr>
       <th>component</th>
       <td><p>Component to plot (numeric)</p></td>
     </tr>
@@ -394,6 +410,11 @@ at each electrode do not necessarily match actual values in the data:
 high-frequency variation will tend to be smoothed out. Thus, the method
 should be used with caution. In addition the method can only be used when
 there are more than 40 electrodes.</p>
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <div class='dont-index'><p>Other scalp-based maps: 
+<code><a href='erp_scalp.html'>erp_scalp</a>()</code>,
+<code><a href='interactive_scalp.html'>interactive_scalp</a>()</code></p></div>
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 
     <p>Matt Craddock, <a href='mailto:matt@mattcraddock.com'>matt@mattcraddock.com</a></p>

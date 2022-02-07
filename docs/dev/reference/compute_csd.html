@@ -76,7 +76,7 @@ activity that emphasises more local spatial features" />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">eegUtils</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.6.1.9000</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.6.3.9000</span>
       </span>
     </div>
 
@@ -120,6 +120,12 @@ activity that emphasises more local spatial features" />
 </li>
 <li>
   <a href="../news/index.html">Changelog</a>
+</li>
+<li>
+  <a href="https://www.twitter.com/matt_craddock">
+    <span class="fab fa-twitter fa-lg"></span>
+     
+  </a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -224,8 +230,12 @@ research: A tutorial review. International Journal of Psycholphysiology,
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='va'>csd_epochs</span> <span class='op'>&lt;-</span> <span class='fu'>compute_csd</span><span class='op'>(</span><span class='va'>demo_epochs</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>You have used the existing reference channel(s), average again.</span></div><div class='input'><span class='fu'><a href='plot_butterfly.html'>plot_butterfly</a></span><span class='op'>(</span><span class='va'>csd_epochs</span><span class='op'>)</span>
-</div><div class='img'><img src='compute_csd-1.png' alt='' width='700' height='433' /></div></pre>
+<span class='fu'><a href='plot_butterfly.html'>plot_butterfly</a></span><span class='op'>(</span><span class='va'>csd_epochs</span><span class='op'>)</span>
+</div><div class='img'><img src='compute_csd-1.png' alt='' width='700' height='433' /></div><div class='input'>
+<span class='co'># Compare the topographies of the CSD vs average referenced data</span>
+<span class='fu'><a href='topoplot.html'>topoplot</a></span><span class='op'>(</span><span class='va'>demo_epochs</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>.2</span>, <span class='fl'>.21</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>Using electrode locations from data.</span></div><div class='img'><img src='compute_csd-2.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'><a href='topoplot.html'>topoplot</a></span><span class='op'>(</span><span class='va'>csd_epochs</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>.2</span>, <span class='fl'>.21</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>Using electrode locations from data.</span></div><div class='img'><img src='compute_csd-3.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

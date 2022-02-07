@@ -16,6 +16,7 @@ get_scalpmap(data, ...)
   quantity = "amplitude",
   facets = NULL,
   r = 95,
+  k = -1,
   ...
 )
 
@@ -46,6 +47,9 @@ get_scalpmap(data, ...)
 \item{facets}{Any facets you plan to use}
 
 \item{r}{Size of headshape}
+
+\item{k}{Degrees of freedom used for spline when using \code{method = gam}.
+Defaults to -1, which attempts to automatically determine k.}
 }
 \value{
 A \code{tibble} with the columns \code{x}, \code{y}, \code{fill}

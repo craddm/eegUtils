@@ -1,4 +1,3 @@
-context ("Test selection")
 
 test_dat <-
   data.frame(

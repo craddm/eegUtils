@@ -3,6 +3,7 @@
 \name{ar_FASTER}
 \alias{ar_FASTER}
 \alias{ar_FASTER.eeg_epochs}
+\alias{ar_FASTER.eeg_group}
 \alias{eeg_FASTER}
 \title{FASTER EEG artefact rejection}
 \usage{
@@ -14,6 +15,16 @@ ar_FASTER(data, ...)
   test_chans = TRUE,
   test_epochs = TRUE,
   test_cine = TRUE,
+  ...
+)
+
+\method{ar_FASTER}{eeg_group}(
+  data,
+  exclude = NULL,
+  test_chans = TRUE,
+  test_epochs = TRUE,
+  test_cine = TRUE,
+  EOG = NULL,
   ...
 )
 
@@ -31,6 +42,8 @@ eeg_FASTER(data, ...)
 \item{test_epochs}{Logical. Run tests of globally bad epochs.}
 
 \item{test_cine}{Logical. Run tests for locally bad channels within epochs.}
+
+\item{EOG}{names of EOG channels to be used when computed maximum EOG values.}
 }
 \value{
 An \code{eeg_epochs} object with artefact correction applied.
@@ -43,6 +56,8 @@ EEG artifact Rejection. J Neurosci Methods.
 \section{Methods (by class)}{
 \itemize{
 \item \code{eeg_epochs}: Run FASTER on \code{eeg_epochs}
+
+\item \code{eeg_group}: Run FASTER on \code{eeg_group} objects
 }}
 
 \examples{

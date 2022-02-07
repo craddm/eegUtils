@@ -40,8 +40,11 @@
 
 
 <meta property="og:title" content="Calculate averages (e.g. ERPs) for single datasets — eeg_average" />
-<meta property="og:description" content="This function is used to create an eeg_evoked object from
-eeg_epochs." />
+<meta property="og:description" content="This function is used to create an eeg_evoked object from eeg_epochs. By
+default, it will try to keep different conditions in the data separate using
+the epochs metadata from the object, thus yielding one average per
+condition. Alternatively, the user can specify which averages they want using
+the cols argument." />
 
 
 <meta name="robots" content="noindex">
@@ -73,7 +76,7 @@ eeg_epochs." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">eegUtils</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.6.2.9000</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.6.3.9000</span>
       </span>
     </div>
 
@@ -118,6 +121,12 @@ eeg_epochs." />
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
+<li>
+  <a href="https://www.twitter.com/matt_craddock">
+    <span class="fab fa-twitter fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
@@ -145,8 +154,11 @@ eeg_epochs." />
     </div>
 
     <div class="ref-description">
-    <p>This function is used to create an <code>eeg_evoked</code> object from
-<code>eeg_epochs</code>.</p>
+    <p>This function is used to create an <code>eeg_evoked</code> object from <code>eeg_epochs</code>. By
+default, it will try to keep different conditions in the data separate using
+the <code>epochs</code> metadata from the object, thus yielding one average per
+condition. Alternatively, the user can specify which averages they want using
+the <code>cols</code> argument.</p>
     </div>
 
     <pre class="usage"><span class='fu'>eeg_average</span><span class='op'>(</span><span class='va'>data</span>, <span class='va'>...</span><span class='op'>)</span>
@@ -168,7 +180,7 @@ eeg_epochs." />
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>data</th>
-      <td><p>An <code>eeg_epochs</code> object.</p></td>
+      <td><p>An <code>eeg_epochs</code> of <code>eeg_tfr</code> object.</p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -182,6 +194,10 @@ column.</p></td>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>An object of class <code>eeg_evoked</code> if applied to <code>eeg_epochs</code>;
+<code>eeg_tfr</code> if applied to <code>eeg_tfr</code>.</p>
     <h2 class="hasAnchor" id="methods-by-class-"><a class="anchor" href="#methods-by-class-"></a>Methods (by class)</h2>
 
     
@@ -193,7 +209,7 @@ column.</p></td>
 </ul>
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 
-    <p>Matt craddock <a href='mailto:matt@mattcraddock.com'>matt@mattcraddock.com</a></p>
+    <p>Matt Craddock <a href='mailto:matt@mattcraddock.com'>matt@mattcraddock.com</a></p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

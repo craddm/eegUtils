@@ -41,7 +41,9 @@ utils::globalVariables(c("time",
                          "model.matrix",
                          "resid",
                          ".lm.fit",
-                         "participant_id")
+                         "participant_id",
+                         "difference",
+                         "expected")
                        )
 
 ## usethis namespace: start

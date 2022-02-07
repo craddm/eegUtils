@@ -14,3 +14,4 @@
 ^Meta$
 ^\.zenodo\.json$
 ^\.github$
+^CITATION\.cff$

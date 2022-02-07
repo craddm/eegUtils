@@ -81,6 +81,8 @@ plot_timecourse(data, ...)
   colour = NULL,
   color = NULL,
   mapping = NULL,
+  freq_range = NULL,
+  type = "divide",
   ...
 )
 }
@@ -108,6 +110,10 @@ line is drawn.}
 \item{mapping}{A ggplot2 \code{aes()} mapping.}
 
 \item{component}{name or number of ICA component to plot}
+
+\item{freq_range}{Choose a specific frequency range to plot}
+
+\item{type}{Type of baseline correction to use for \code{eeg_tfr} objects}
 }
 \value{
 Returns a ggplot2 plot object

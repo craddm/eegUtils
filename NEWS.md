@@ -1,4 +1,40 @@
-# eegUtils 0.6.2.9000
+# eegUtils 0.7.0
+
+# eegUtils 0.6.3.9000
+
+### Function changes
+- Add `imax` method to `run_ICA()`. This allows use of the `infomax` ICA algorithm from the `infomax` package, which is a reimplementation of the Infomax algorithm used in the `EEGLAB` Matlab toolbox.
+- `erp_scalp()` and `interactive_scalp()` should now appropriately use channel locations included in the data.
+- More informative messages when using `compute_tfr()`.
+- `plot_tfr()` now applies baseline correction on a single-trial basis where possible, which may show different results when using non-linear baseline correction (e.g. `divide` or `dB`)
+- `topoplot()` now allows you to provide multiple component numbers when plotting from an `eeg_ICA` object, and will automatically produce an appropriately facetted plot. 
+- `topoplot()` now has a `k` parameter to control the smoothing when using `method = "gam"`.
+- added additional `demo_spatial` data from a spatial cueing experiment.
+- `plot_difference()` function added for plotting ERP difference waves. Only currently handles two levels.
+- Added `hanning` taper support for `compute_tfr`. Note that the scaling factors used for all `compute_tfr` calculations have been adjusted, so the exact numerical values returned will change. However, this is just a scaling factor - the relative distances between values remained unchanged.
+- `ar_FASTER()` has experimental support for `eeg_group` objects when those objects are `eeg_evoked` groups. It does not perform rejection but reports how many times each participants data breaks a threshold for a number of measures.
+- `import_raw()` default `participant_id` is now changed to `NA` instead of `character(1)`, to promote better use with `eeg_combine()`.
+- `eeg_combine()` will now refuse to combine objects where `participant_id` is missing (i.e. is `NA`), and warn when combining objects with the previous default value "". This is to prevent accidentally treating data from different participants as being from the same participant.
+- `topoplot()` now provides informative messages about the head radius used for plotting. The default calculation of `r` when using `interp_limit = "head"` has changed and should now be set at the outermost electrode's position + a 10% buffer. Smaller `r` can be set manually.
+- added `get_participant_id`, `set_participant_id`, `get_recording` and `set_recording` to interact with the `epochs` metadata in each `eegUtils` object.
+- `eeg_combine()` handles `eeg_tfr()` objects better, now returns an error when trying to combine single-trial data.
+- `plot_timecourse()` now handles `eeg_tfr()` objects.
+
+### Internal changes / bug fixes
+
+- `erp_scalp()` and `interactive_scalp()` now use cleaner evaluation of the `colour` argument using `rlang` 
+- Fixed adding CSD as new reference when using `compute_csd()`
+- When using a scaling number of cycles in `compute_tfr()`, they will now also use the `spacing` parameter to determine `log` or `linear` scaling.
+- Fixed bug with `eeg_average()` used on `c("eeg_group", "eeg_tfr")` objects.
+- Fixed bug with incorrect number of epochs calculated when epoching `eeg_data` objects if there were multiple "target" triggers appearing in an epoch.
+- Fixed error with `erp_raster()` when `anat_order == FALSE`
+- new `epoch_queries` file for functions for setting and getting the `epochs` structure
+- new `check_items` file for functions that check for consistency of various structures
+- `eeg_combine()` with `eeg_tfr()` no longer drops single dimensions, which was causing issues when there was only one channel or epoch in the object.
+- `plot_timecourse.eeg_tfr` now correctly passes baseline period to `rm_baseline()`
+- `filter.eeg_tfr()` was sometimes dropping single dimensions when using `abind::asub()`, now fixed
+
+# eegUtils 0.6.3
 
 ### Function changes
 - Added log spaced frequencies to `compute_tfr()`, with the new `spacing` argument. `plot_tfr` automatically detects the spacing and plots the figure appropriately.
@@ -29,6 +65,7 @@
 - `rm_baseline()` for `eeg_evoked` no longer uses `data.table`
 - `as.data.frame.eeg_evoked()` handles grouped data better.
 - `import_set()` now handles all EEGLAB formats better.
+
 
 # eegUtils 0.6.1
 

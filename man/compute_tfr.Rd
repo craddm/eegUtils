@@ -52,11 +52,12 @@ and highest frequency to resolve.}
 \item{n_freq}{Number of frequencies to be resolved. Must be an integer number
 of frequencies.}
 
-\item{spacing}{Use "linear" or "log" spacing for the frequency vector.}
+\item{spacing}{Use "linear" or "log" spacing for the frequency vector and number of cycles.}
 
 \item{n_cycles}{Number of cycles at each frequency. If a single integer, use
 a constant number of cycles at each frequency. If a character vector of
-length 2, use a linearly scaling number of cycles at each frequency.}
+length 2, the number of cycles will scale with frequency from the minimum
+to the maximum.}
 
 \item{keep_trials}{Keep single trials or average over them before returning.
 Defaults to FALSE.}
@@ -72,15 +73,16 @@ performing time-frequency analysis on the full sampling rate data.}
 An object of class \code{eeg_tfr}
 }
 \description{
-This function creates a time frequency represention of EEG time series data.
-Currently, the only available method is a Morlet wavelet transformation
-performed using convolution in the frequency domain.
+This function creates a time frequency representation of EEG time series
+data. Currently, it is possible to use either Morlet wavelets or Hanning
+tapers during the decomposition, which uses convolution in the frequency
+domain.
 }
 \section{Methods (by class)}{
 \itemize{
 \item \code{default}: Default method for compute_tfr
 
-\item \code{eeg_epochs}: Default method for compute_tfr
+\item \code{eeg_epochs}: Default method for \code{compute_tfr}
 
 \item \code{eeg_evoked}: Method for \code{eeg_evoked} objects.
 }}

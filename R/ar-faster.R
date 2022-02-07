@@ -381,57 +381,123 @@ faster_epo_stat <- function(data,
   bad_chans
 }
 
-
+#' @describeIn ar_FASTER Run FASTER on `eeg_group` objects
+#' @param EOG names of EOG channels to be used when computed maximum EOG values.
+#' @export
 ar_FASTER.eeg_group <- function(data,
                                 exclude = NULL,
                                 test_chans = TRUE,
                                 test_epochs = TRUE,
                                 test_cine = TRUE,
+                                EOG = NULL,
                                 ...) {
 
   if (!inherits(data, "eeg_evoked")) {
     stop("FASTER for grouped data only works for group ERPs.")
   }
 
+  n_epochs <- length(unique(epochs(data)$epoch))
+  n_participants <- length(unique(epochs(data)$participant_id))
+
+  orig_names <- channel_names(data)
+
+  data_chans <- orig_names[!(orig_names %in% data$reference$ref_chans)]
+  if (!is.null(exclude)) {
+    if (is.numeric(exclude)) {
+      exclude <- orig_names[exclude]
+    }
+    message("Excluding channel(s):",
+            paste(exclude, ""))
+    data_chans <- data_chans[!(data_chans %in% exclude)]
+  }
+
+  if (!is.null(EOG)) {
+    if (!all(EOG %in% orig_names)) {
+      stop("EOG channels not specified correctly, please double-check.")
+    }
+  }
 
   all_data <- as.data.frame(data)
-  all_data <- dplyr::group_by(all_data,
-                              participant_id,
-                              time)
-  chan_names <- channel_names(data)
-  all_data <-
+
+  participant_mean <-
+    all_data %>%
+    dplyr::ungroup %>%
+    dplyr::group_by(participant_id) %>%
     dplyr::summarise(
-      all_data,
       dplyr::across(
-        dplyr::all_of(
-          chan_names
-          ),
-        .fns = mean
-        )
+        dplyr::all_of(data_chans),
+        mean)
       )
 
-  channel_means <- colMeans(as.matrix(all_data[chan_names]))
+  channel_mean <-
+    colMeans(all_data[, data_chans])
 
-  all_data <-
-    group_by(all_data,
-             participant_id)
-  all_data <-
-    summarise(
-      all_data,
+  part_diffs <-
+    abs(sweep(participant_mean[, data_chans],
+              2,
+              channel_mean, "-"))
+
+  participant_var <-
+    all_data %>%
+    dplyr::ungroup %>%
+    dplyr::group_by(participant_id) %>%
+    dplyr::summarise(
       dplyr::across(
-        dplyr::all_of(chan_names),
-        list(vars = var,
-             maxdiff = ~diff(range(.x)),
-             mean = mean),
-        .names = "{.col}__{.fn}"
-        )
+        dplyr::all_of(data_chans),
+        var)
     )
-  tidyr::pivot_longer(
-    all_data,
-    cols = !participant_id,
-    names_to = c("electrode",
-                 "measure"),
-    values_to = "value",
-    names_sep = "__"
+
+  channel_vars <-
+    matrixStats::colVars(as.matrix(all_data[, data_chans]))
+
+  part_var_diffs <-
+    abs(sweep(participant_var[, data_chans],
+              2,
+              channel_vars, "-"))
+
+  part_ranges <-
+    all_data %>%
+    dplyr::ungroup %>%
+    dplyr::group_by(participant_id) %>%
+    dplyr::summarise(
+      dplyr::across(
+        dplyr::all_of(data_chans),
+        ~diff(range(.)))
     )
+
+
+
+  scaled_diffs <- abs(scale(part_diffs[, data_chans]))
+  scaled_vars <- abs(scale(part_var_diffs[, data_chans]))
+  scaled_ranges <- abs(scale(part_ranges[, data_chans]))
+
+  # to be added - checks of residual HEOG/VEOG
+
+  if (!is.null(EOG)) {
+    participant_eog <-
+      all_data %>%
+      dplyr::ungroup %>%
+      dplyr::group_by(participant_id) %>%
+      dplyr::summarise(
+        dplyr::across(
+          dplyr::all_of(EOG),
+          max)
+      )
+    scaled_eog <- abs(scale(matrixStats::rowMaxs(as.matrix(participant_eog[, EOG]))))
+    data.frame(
+      participant_id = unique(all_data$participant_id),
+      deviance = rowSums(scaled_diffs > 3),
+      variance = rowSums(scaled_vars > 3),
+      range = rowSums(scaled_ranges > 3),
+      eog = rowSums(scaled_eog > 3)
+    )
+  } else {
+    data.frame(
+      participant_id = unique(all_data$participant_id),
+      deviance = rowSums(scaled_diffs > 3),
+      variance = rowSums(scaled_vars > 3),
+      range = rowSums(scaled_ranges > 3)
+      )
+  }
+
 }

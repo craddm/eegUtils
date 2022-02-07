@@ -41,14 +41,14 @@ plot_timecourse.default <- function(data,
 #'@describeIn plot_timecourse Plot a data.frame timecourse
 #'@export
 plot_timecourse.data.frame <- function(data,
-                               electrode = NULL,
-                               time_lim = NULL,
-                               add_CI = FALSE,
-                               baseline = NULL,
-                               colour = NULL,
-                               color = NULL,
-                               mapping = NULL,
-                               ...) {
+                                       electrode = NULL,
+                                       time_lim = NULL,
+                                       add_CI = FALSE,
+                                       baseline = NULL,
+                                       colour = NULL,
+                                       color = NULL,
+                                       mapping = NULL,
+                                       ...) {
 
   if (!is.null(electrode)) {
     data <- select_elecs(data,
@@ -57,7 +57,7 @@ plot_timecourse.data.frame <- function(data,
 
   if (!is.null(baseline)) {
     data <- rm_baseline(data,
-                        baseline)
+                        time_lim = baseline)
   }
 
   if (!is.null(time_lim)) {
@@ -214,14 +214,27 @@ plot_timecourse.eeg_epochs <- function(data,
 #' @describeIn plot_timecourse Plot timecourses from `eeg_group` objects.
 #' @export
 plot_timecourse.eeg_group <- function(data,
-                                       electrode = NULL,
-                                       time_lim = NULL,
-                                       add_CI = FALSE,
-                                       baseline = NULL,
-                                       colour = NULL,
-                                       color = NULL,
-                                       mapping = NULL,
-                                       ...) {
+                                      electrode = NULL,
+                                      time_lim = NULL,
+                                      add_CI = FALSE,
+                                      baseline = NULL,
+                                      colour = NULL,
+                                      color = NULL,
+                                      mapping = NULL,
+                                      ...) {
+
+  if (inherits(data,
+               "eeg_tfr")) {
+    return(plot_timecourse.eeg_tfr(data,
+                                   electrode = electrode,
+                                   time_lim = time_lim,
+                                   add_CI = add_CI,
+                                   baseline = baseline,
+                                   colour = colour,
+                                   color = color,
+                                   mapping = mapping,
+                                   ...))
+  }
   data <- parse_for_tc(data,
                        time_lim,
                        electrode,
@@ -245,6 +258,8 @@ plot_timecourse.eeg_group <- function(data,
 }
 
 #' @describeIn plot_timecourse Plot timecourses from `eeg_tfr` objects.
+#' @param freq_range Choose a specific frequency range to plot
+#' @param type Type of baseline correction to use for `eeg_tfr` objects
 #' @export
 plot_timecourse.eeg_tfr <- function(data,
                                     electrode = NULL,
@@ -254,8 +269,25 @@ plot_timecourse.eeg_tfr <- function(data,
                                     colour = NULL,
                                     color = NULL,
                                     mapping = NULL,
+                                    freq_range = NULL,
+                                    type = "divide",
                                     ...) {
 
+  if (!is.null(colour) | !is.null(color)) {
+    warning(
+      "colour argument is kept for compatability, please use the `mapping` argument and supply a `ggplot2` `aes()` mapping"
+    )
+  }
+
+  if (add_CI) {
+    message("Confidence intervals are not currently supported for `eeg_tfr` objects.")
+  }
+
+  if (!is.null(baseline)) {
+    data <- rm_baseline(data,
+                        time_lim = baseline,
+                        type = type)
+  }
 
   if (!is.null(time_lim)) {
     data <- filter(data,
@@ -271,6 +303,20 @@ plot_timecourse.eeg_tfr <- function(data,
   data_f <- as.data.frame(data,
                           long = TRUE,
                           coords = FALSE)
+  yintercept <-
+    switch(type,
+           divide = 1,
+           db = 0,
+           absolute = 0,
+           pc = 0,
+           ratio = 1)
+  ylabel <-
+    switch(type,
+           divide = "Power ratio",
+           db = "Decibels (dB)",
+           ratio = "Power ratio",
+           absolute = "Power (a.u.)",
+           pc = "Percent change (%)")
 
   tc_plot <-
     ggplot(data_f,
@@ -280,12 +326,14 @@ plot_timecourse.eeg_tfr <- function(data,
                  fun = mean,
                  na.rm = TRUE) +
     labs(x = "Time (s)",
-         y = expression(paste("Power (a.u.)")),
+         y = ylabel,
          colour = "",
          fill = "") +
     geom_vline(xintercept = 0,
                linetype = "solid", size = 0.5) +
-    geom_hline(yintercept = 0, linetype = "solid", size = 0.5) +
+    geom_hline(yintercept = yintercept,
+               linetype = "solid",
+               size = 0.5) +
     scale_x_continuous(breaks = scales::pretty_breaks(n = 4),
                        expand = c(0, 0)) +
     scale_y_continuous(breaks = scales::pretty_breaks(n = 4),
@@ -327,7 +375,8 @@ parse_for_tc <- function(data,
 
   ## Select specified electrodes -----
   if (!is.null(electrode)) {
-    data <- select(data, electrode)
+    data <- select(data,
+                   dplyr::all_of(electrode))
   }
 
   ## Do baseline correction

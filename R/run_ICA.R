@@ -1,8 +1,10 @@
 #' Independent Component Analysis for EEG data
 #'
-#' Performs Independent Component Analysis for EEG data. Currently only
-#' available with on epoched data. Implements three different methods of ICA -
-#' fastica, extended Infomax, and Second-Order Blind Identification (SOBI).
+#' Performs Independent Component Analysis for electroencephalographic data.
+#' Currently only available with on epoched data. Implements three different
+#' methods of ICA - 'fastica', 'extended Infomax', and 'Second-Order Blind
+#' Identification (SOBI)'. The resulting `eeg_ICA` objects can be used largely
+#' like `eeg_epochs` objects.
 #'
 #' @section Notes on ICA usage:
 #'
@@ -26,8 +28,15 @@
 #' @return An `eeg_ICA` object containing an ICA decomposition
 #' @importFrom MASS ginv
 #' @importFrom Matrix rankMatrix
+#' @family decompositions
 #' @examples
-#' run_ICA(demo_epochs, pca = 10)
+#' sobi_demo <-
+#'   run_ICA(demo_epochs,
+#'           pca = 10)
+#'  sobi_demo
+#'  # We can plot the resulting spatial filters using `topoplot()`
+#'  topoplot(sobi_demo, 1:2)
+#'  \dontrun{ view_ica(sobi_demo) }
 #' @export
 
 run_ICA <- function(data, ...) {
@@ -40,7 +49,10 @@ run_ICA.default <- function(data,
   stop("Not supported for objects of this class.")
 }
 
-#' @param method "sobi" (default), "fastica", or "infomax".
+#' @param method "sobi" (default), "fastica", "infomax", or "imax". "infomax"
+#'   uses the implementation from the `ica` package, whereas `imax` uses the
+#'   implementation from the `infomax` package, which is based on the `EEGLAB`
+#'   implementation.
 #' @param maxit Maximum number of iterations of the Infomax and Fastica ICA
 #'   algorithms.
 #' @param tol Convergence tolerance for fastica and infomax. Defaults to 1e-06.
@@ -54,6 +66,7 @@ run_ICA.default <- function(data,
 #'   "infomax".
 #' @param rate Learning rate for extended infomax. Ignored if method !=
 #'   "infomax".
+#' @param verbose Print informative messages to console.
 #' @describeIn run_ICA Run ICA on an `eeg_epochs` object
 #' @importFrom stats cov
 #' @export
@@ -67,14 +80,17 @@ run_ICA.eeg_epochs <- function(data,
                                alg = "gradient",
                                rateanneal = c(60, .9),
                                rate = 0.1,
+                               verbose = TRUE,
                                ...) {
 
   orig_chans <- channel_names(data)
+
   if (!is.null(pca)) {
     message("Reducing data to ", pca,
             " dimensions using PCA.")
     pca_decomp <- eigen(stats::cov(data$signals))$vectors
-    data$signals <- as.data.frame(as.matrix(data$signals) %*% pca_decomp[, 1:pca])
+    data$signals <-
+      as.data.frame(as.matrix(data$signals) %*% pca_decomp[, 1:pca])
     pca_flag <- TRUE
   } else {
     pca <- ncol(data$signals)
@@ -84,24 +100,31 @@ run_ICA.eeg_epochs <- function(data,
   rank_check <- Matrix::rankMatrix(as.matrix(data$signals))
 
   if (rank_check < ncol(data$signals)) {
-    stop(paste("Data is rank deficient. PCA required. Detected rank: ", rank_check))
+    stop(paste(
+      "Data is rank deficient. PCA required. Detected rank: ",
+      rank_check
+    ))
   }
 
-  if (!(method %in% c("sobi", "fastica", "infomax", "fica"))) {
-    stop("Unknown method; available methods are sobi, fastica, infomax, and fica.")
+  if (!(method %in% c("sobi", "fastica", "infomax", "fica", "imax"))) {
+    stop("Unknown method; available methods are sobi, fastica, infomax, fica, and imax.")
   }
 
-  if (method == "fica") {
+  if (identical(method, "fica")) {
     if (!requireNamespace("fICA", quietly = TRUE)) {
-      stop("Package \"fICA\" needed to use the fICA implementation of fastica. Please install it.",
-           call. = FALSE)
+      stop(
+        "Package \"fICA\" needed to use the fICA implementation of fastica. Please install it.",
+        call. = FALSE
+      )
     }
     message("Running fastica (fICA).")
 
-    ICA_out <- fICA::fICA(as.matrix(data$signals),
-                          eps = tol,
-                          maxiter = maxit,
-                          method = "sym2")
+    ICA_out <- fICA::fICA(
+      as.matrix(data$signals),
+      eps = tol,
+      maxiter = maxit,
+      method = "sym2"
+    )
 
     ICA_out$W <- ICA_out$W[, 1:pca]
     mixing_matrix <- MASS::ginv(ICA_out$W, tol = 0)
@@ -116,7 +139,8 @@ run_ICA.eeg_epochs <- function(data,
 
     mixing_matrix <- mixing_matrix[, var_order]
 
-    unmixing_matrix <- as.data.frame(MASS::ginv(mixing_matrix, tol = 0))
+    unmixing_matrix <-
+      as.data.frame(MASS::ginv(mixing_matrix, tol = 0))
     mixing_matrix <- as.data.frame(mixing_matrix)
 
     names(mixing_matrix) <- sprintf("Comp%03d", 1:pca)
@@ -130,79 +154,108 @@ run_ICA.eeg_epochs <- function(data,
 
   } else {
 
-    if (method == "sobi") {
+    if (identical(method, "sobi")) {
       if (!requireNamespace("JADE", quietly = TRUE)) {
         if (!requireNamespace("whitening", quietly = TRUE)) {
-          stop("Packages \"JADE\" and \"whitening\" needed to use SOBI. Please install them.",
-             call. = FALSE)
+          stop(
+            "Packages \"JADE\" and \"whitening\" needed to use SOBI. Please install them.",
+            call. = FALSE
+          )
         }
         stop("Package \"JADE\" needed to use SOBI. Please install it.",
              call. = FALSE)
       }
 
       message("Running SOBI ICA.")
-      ICA_out <- sobi_ICA(data,
-                          maxiter = maxit,
-                          tol = tol,
-                          pca = pca,
-                          centre = centre)
-    } else {
-
+      ICA_out <- sobi_ICA(
+        data,
+        maxiter = maxit,
+        tol = tol,
+        pca = pca,
+        centre = centre
+      )
+    } else if (any(method %in% c("fastica", "infomax"))) {
       if (!requireNamespace("ica", quietly = TRUE)) {
         stop("Package \"ica\" needed to use infomax or fastica. Please install it.",
              call. = FALSE)
       }
 
-      if (method == "fastica") {
+      if (identical(method, "fastica")) {
         message("Running fastica (ica).")
-        ICA_out <- ica::icafast(data$signals,
-                                nc = rank_check,
-                                maxit = maxit,
-                                tol = tol,
-                                center = centre)
-      } else if (method == "infomax") {
+        ICA_out <- ica::icafast(
+          data$signals,
+          nc = rank_check,
+          maxit = maxit,
+          tol = tol,
+          center = centre
+        )
+      } else if (identical(method, "infomax")) {
         message("Running extended-Infomax (ica).")
-        ICA_out <- ica::icaimax(data$signals,
-                                nc = rank_check,
-                                maxit = maxit,
-                                fun = "ext",
-                                tol = tol,
-                                center = centre,
-                                alg = alg,
-                                rateanneal = rateanneal,
-                                rate = rate)
+        ICA_out <- ica::icaimax(
+          data$signals,
+          nc = rank_check,
+          maxit = maxit,
+          fun = "ext",
+          tol = tol,
+          center = centre,
+          alg = alg,
+          rateanneal = rateanneal,
+          rate = rate
+        )
       }
+
+
+    } else if (identical(method, "imax")) {
+      if (!requireNamespace("infomax", quietly = TRUE)) {
+        stop(
+          "Package \"infomax\" needed to use the \"imax\" method, please install it from https://github.com/eegverse/infomax"
+        )
+      }
+      message("Running extended-Infomax (infomax).")
+      ICA_out <-
+        infomax::run_infomax(
+          data$signals,
+          tol = tol,
+          centre = centre,
+          maxiter = maxit,
+          whiten = "sqrtm",
+          verbose = verbose
+          )
     }
 
-      ICA_out$S <- as.data.frame(ICA_out$S)
-      names(ICA_out$S) <- sprintf("Comp%03d", 1:ncol(ICA_out$S))
+    ICA_out$S <- as.data.frame(ICA_out$S)
+    names(ICA_out$S) <- sprintf("Comp%03d", 1:ncol(ICA_out$S))
 
-      if (pca_flag) {
-        mixing_matrix <- as.data.frame(pca_decomp[, 1:pca] %*% ICA_out$M)
-        unmixing_matrix <- as.data.frame(MASS::ginv(as.matrix(mixing_matrix), tol = 0))
-        names(mixing_matrix) <- sprintf("Comp%03d", 1:pca)
-        names(unmixing_matrix) <- orig_chans
-        mixing_matrix$electrode <- orig_chans
-        unmixing_matrix$Component <- sprintf("Comp%03d", 1:pca)
-      } else {
-        mixing_matrix <- as.data.frame(ICA_out$M)
-        names(mixing_matrix) <- sprintf("Comp%03d", 1:ncol(ICA_out$M))
-        mixing_matrix$electrode <- names(data$signals)
-        unmixing_matrix <- as.data.frame(ICA_out$W)
-        names(unmixing_matrix) <- names(data$signals)
-        unmixing_matrix$Component <- sprintf("Comp%03d", 1:ncol(ICA_out$S))
-      }
+    if (pca_flag) {
+      mixing_matrix <- as.data.frame(pca_decomp[, 1:pca] %*% ICA_out$M)
+      unmixing_matrix <-
+        as.data.frame(MASS::ginv(as.matrix(mixing_matrix), tol = 0))
+      names(mixing_matrix) <- sprintf("Comp%03d", 1:pca)
+      names(unmixing_matrix) <- orig_chans
+      mixing_matrix$electrode <- orig_chans
+      unmixing_matrix$Component <- sprintf("Comp%03d", 1:pca)
+    } else {
+      mixing_matrix <- as.data.frame(ICA_out$M)
+      names(mixing_matrix) <- sprintf("Comp%03d", 1:ncol(ICA_out$M))
+      mixing_matrix$electrode <- names(data$signals)
+      unmixing_matrix <- as.data.frame(ICA_out$W)
+      names(unmixing_matrix) <- names(data$signals)
+      unmixing_matrix$Component <-
+        sprintf("Comp%03d", 1:ncol(ICA_out$S))
+    }
   }
 
-  ica_obj <- eeg_ICA(mixing_matrix = mixing_matrix,
-                     unmixing_matrix = unmixing_matrix,
-                     signals = ICA_out$S,
-                     timings = data$timings,
-                     events = data$events,
-                     chan_info = data$chan_info,
-                     srate = data$srate,
-                     epochs = data$epochs,
-                     algorithm = method)
+  ica_obj <- eeg_ICA(
+    mixing_matrix = mixing_matrix,
+    unmixing_matrix = unmixing_matrix,
+    signals = ICA_out$S,
+    timings = data$timings,
+    events = data$events,
+    chan_info = data$chan_info,
+    srate = data$srate,
+    epochs = data$epochs,
+    algorithm = method
+  )
   ica_obj
 }
 

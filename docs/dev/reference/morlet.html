@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">eegUtils</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.5.0.9000</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.6.3.9000</span>
       </span>
     </div>
 
@@ -117,6 +117,12 @@
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
+<li>
+  <a href="https://www.twitter.com/matt_craddock">
+    <span class="fab fa-twitter fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
@@ -147,7 +153,7 @@
     <p>Generate Morlet wavelet family</p>
     </div>
 
-    <pre class="usage"><span class='fu'>morlet</span><span class='op'>(</span><span class='va'>frex</span>, <span class='va'>srate</span>, <span class='va'>n_cycles</span>, <span class='va'>n_freq</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>morlet</span><span class='op'>(</span><span class='va'>frex</span>, <span class='va'>srate</span>, <span class='va'>n_cycles</span>, <span class='va'>n_freq</span>, gauss_width <span class='op'>=</span> <span class='fl'>3</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -157,12 +163,20 @@
       <td><p>Frequency range of interest</p></td>
     </tr>
     <tr>
+      <th>srate</th>
+      <td><p>Sampling rate of signal</p></td>
+    </tr>
+    <tr>
       <th>n_cycles</th>
       <td><p>Length of wavelet in cycles</p></td>
     </tr>
     <tr>
       <th>n_freq</th>
       <td><p>number of frequencies to resolve</p></td>
+    </tr>
+    <tr>
+      <th>gauss_width</th>
+      <td><p>Size of filter kernel in standard deviations</p></td>
     </tr>
     </table>
 

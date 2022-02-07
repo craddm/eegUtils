@@ -16,13 +16,13 @@ import_set(
 \arguments{
 \item{file_name}{Filename (and path if not in present working directory)}
 
-\item{df_out}{Defaults to FALSE - outputs an object of class \code{eeg_data}. Set
+\item{df_out}{Defaults to FALSE - outputs an object of class \code{eeg_epochs}. Set
 to TRUE for a normal data frame.}
 
-\item{participant_id}{By default, the filename will be used as the id of the
+\item{participant_id}{Character vector. By default, the filename will be used as the id of the
 participant.}
 
-\item{recording}{By default, the filename will be used as the name of the
+\item{recording}{Character vector. By default, the filename will be used as the name of the
 recording.}
 
 \item{drop_custom}{Drop custom event fields. TRUE by default.}
@@ -30,11 +30,11 @@ recording.}
 \item{verbose}{Print informative messages. TRUE by default.}
 }
 \value{
-An object of class \code{eeg_data}
+An object of class \code{eeg_epochs}
 }
 \description{
 Load \code{EEGLAB} .set files and convert them to \code{eeg_epochs} objects. Supports
-import of files saved both in Matlab v6.5 and Matlab v7.3 formats. Currently,
+import of files saved in either Matlab v6.5 or Matlab v7.3 formats. Currently,
 any ICA weights or decompositions are discarded.
 }
 \examples{

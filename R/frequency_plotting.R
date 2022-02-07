@@ -188,7 +188,7 @@ create_psd_plot <- function(psd_out,
 
   psd_out <-
     tidyr::pivot_longer(psd_out,
-                        cols = chan_names,
+                        cols = dplyr::all_of(chan_names),
                         names_to = "electrode",
                         values_to = "power")
   ggplot(psd_out,
@@ -269,16 +269,18 @@ plot_tfr <- function(data,
     data$freq_info$output <- "power"
   }
 
-  if (!inherits(data, c("tfr_average",
-                        "eeg_group"))) {
-    data <- eeg_average(data)
-  }
-
   if (baseline_type != "none") {
     data <- rm_baseline(data,
                         time_lim = baseline,
                         type = baseline_type)
   }
+
+
+  if (!inherits(data, c("tfr_average",
+                        "eeg_group"))) {
+    data <- eeg_average(data)
+  }
+
 
   fill_lab <-
     switch(data$freq_info$baseline,
@@ -299,7 +301,7 @@ plot_tfr <- function(data,
   }
 
   # Use purrr::partial to save copy pasting the whole thing in every
-  fill_dist <- purrr::partial(scale_fill_distiller,
+  fill_dist <- purrr::partial(ggplot2::scale_fill_distiller,
                               palette = "RdBu",
                               limits = fill_lims,
                               oob = scales::squish)
@@ -329,21 +331,22 @@ plot_tfr <- function(data,
     labs(x = "Time (s)",
          y = "Frequency (Hz)",
          fill = fill_lab) +
-    scale_x_continuous(expand = c(0, 0)) +
+    scale_x_continuous(expand = c(0, 0),
+                       breaks = scales::pretty_breaks()) +
     theme_classic() +
     fill_colour
 
-  if (is.unsorted(diff(unique(data$frequency)))) {
+  if (is.unsorted(diff(unique(data$frequency)), strictly = TRUE)) {
     tfr_plot <-
       tfr_plot +
-      scale_y_continuous(expand = c(0, 0))
+      scale_y_continuous(expand = c(0, 0),
+                         breaks = scales::pretty_breaks())
   } else {
     tfr_plot <-
       tfr_plot +
-      scale_y_log10(expand = c(0, 0))
+      scale_y_log10(expand = c(0, 0),
+                    breaks = scales::pretty_breaks())
   }
-
-
 
   tfr_plot
 }

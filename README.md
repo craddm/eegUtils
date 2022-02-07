@@ -7,8 +7,6 @@ eegUtils
 Status](http://www.repostatus.org/badges/latest/wip.svg)](http://www.repostatus.org/#wip)
 [![Coverage
 Status](https://img.shields.io/codecov/c/github/craddm/eegUtils/master.svg)](https://codecov.io/github/craddm/eegUtils?branch=master)
-[![AppVeyor build
-status](https://ci.appveyor.com/api/projects/status/github/craddm/eegUtils?branch=master&svg=true)](https://ci.appveyor.com/project/craddm/eegUtils)
 [![R-CMD-check](https://github.com/craddm/eegUtils/workflows/R-CMD-check/badge.svg)](https://github.com/craddm/eegUtils/actions)
 <!-- badges: end -->
 [![DOI](https://zenodo.org/badge/85406871.svg)](https://zenodo.org/badge/latestdoi/85406871)
@@ -65,7 +63,6 @@ library(eegUtils)
 #> 
 #>     filter
 plot_butterfly(demo_epochs)
-#> Joining, by = c("epoch", "recording", "epoch_label", "participant_id")
 ```
 
 ![](man/figures/unnamed-chunk-3-1.png)<!-- -->
@@ -75,8 +72,8 @@ plot_butterfly(demo_epochs)
 ``` r
 topoplot(demo_epochs, 
          time_lim = c(.22, .25 ))
-#> Joining, by = c("epoch", "recording", "epoch_label", "participant_id")
 #> Using electrode locations from data.
+#> Plotting head r 95 mm
 ```
 
 ![](man/figures/unnamed-chunk-4-1.png)<!-- -->
@@ -86,6 +83,10 @@ topoplot(demo_epochs,
 ``` r
 plot_psd(demo_epochs)
 #> Removing channel means per epoch...
+#> Computing Power Spectral Density using Welch's method.
+#> FFT length: 256
+#> Segment length: 84
+#> Overlapping points: 42 (50% overlap)
 ```
 
 ![](man/figures/unnamed-chunk-5-1.png)<!-- -->
@@ -97,8 +98,10 @@ plot_tfr(compute_tfr(demo_epochs,
                      foi = c(4, 30),
                      n_freq = 20,
                      n_cycles = 3))
-#> Output frequencies: 4 5.37 6.74 8.11 9.47 10.84 12.21 13.58 14.95 16.32 17.68 19.05 20.42 21.79 23.16 24.53 25.89 27.26 28.63 30
+#> Computing TFR using Morlet wavelet convolution
+#> Output frequencies using linear spacing: 4 5.37 6.74 8.11 9.47 10.84 12.21 13.58 14.95 16.32 17.68 19.05 20.42 21.79 23.16 24.53 25.89 27.26 28.63 30
 #> Removing channel means per epoch...
+#> Returning signal averaged over all trials.
 ```
 
 ![](man/figures/unnamed-chunk-6-1.png)<!-- -->
@@ -106,7 +109,7 @@ plot_tfr(compute_tfr(demo_epochs,
 There are many potential processing steps that precede the production of
 plots like these. For more examples of how to import and process data,
 or import data from other sources, see the [eegUtils
-website](https://craddm.github.io/eegUtils)
+website](https://craddm.github.io/eegUtils)!
 
 ## Contributing
 

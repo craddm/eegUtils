@@ -1,8 +1,8 @@
 Package: eegUtils
 Type: Package
 Title: Utilities for Electroencephalographic (EEG) Analysis 
-Version: 0.6.3
-Date: 2021-06-08
+Version: 0.7.0
+Date: 2022-02-03
 Authors@R: c(
   person("Matt", "Craddock", role = c("aut", "cre", "cph"), email = "matt@mattcraddock.com"),
   person("Matti", "Vuorre", role = "ctb", email = "mv2521@columbia.edu"),
@@ -40,7 +40,7 @@ Imports:
     isoband
 Depends:
   R (>= 3.3.0)
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
 Suggests: 
     testthat,
     vdiffr,
@@ -56,7 +56,8 @@ Suggests:
     ini,
     R.matlab,
     hdf5r,
-    mgcv
+    mgcv,
+    infomax (>= 0.1.0)
 URL: https://github.com/craddm/eegUtils, https://craddm.github.io/eegUtils
 BugReports: https://github.com/craddm/eegUtils/issues
 VignetteBuilder: knitr
@@ -64,3 +65,5 @@ LinkingTo:
     Rcpp,
     RcppArmadillo
 Roxygen: list(markdown = TRUE)
+Remotes: 
+    eegverse/infomax

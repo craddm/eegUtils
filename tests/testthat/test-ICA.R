@@ -1,12 +1,10 @@
-context("ICA analyses")
-
 demo_epochs <- electrode_locations(demo_epochs,
                                    montage = "biosemi64alpha",
                                    overwrite = TRUE)
-
+set.seed(1000)
 demo_SOBI <- run_ICA(demo_epochs, pca = 10)
 demo_fastic <- run_ICA(demo_epochs, method = "fastica", pca = 10)
-demo_fica <- run_ICA(demo_epochs, method = "fica", pca = 10)
+demo_fica <- run_ICA(demo_spatial, method = "fica", pca = 14)
 
 test_that("topoplots for ICA work", {
 
@@ -23,6 +21,10 @@ test_that("topoplots for ICA work", {
                               topoplot(demo_fica,
                                        component = "Comp001",
                                        limits = c(-4, 3.5)))
+  vdiffr::expect_doppelganger("topoplot multiple comps",
+                              topoplot(demo_fica,
+                                       component = c("Comp001", "Comp002"),
+                                       limits = c(-4, 3.5)))
 })
 
 test_that("ICA timecourses work", {
@@ -34,7 +36,7 @@ test_that("ICA timecourses work", {
                               plot_timecourse(demo_fastic,
                                               component = "Comp002"))
   vdiffr::expect_doppelganger("fastica psd",
-                              plot_psd(demo_fastic))
+                              plot_psd(demo_fastic, verbose = FALSE))
 })
 
 test_that("component removal works", {
@@ -48,8 +50,14 @@ test_that("component removal works", {
 
 test_that("artefact detect works", {
 
-  expect_equal(ar_acf(demo_SOBI, plot = FALSE), character(0))
-  expect_equal(ar_chanfoc(demo_fastic, plot = FALSE), "Comp006")
-  expect_equal(ar_trialfoc(demo_fica, plot = FALSE), "Comp006")
+  expect_equal(ar_acf(demo_SOBI, plot = FALSE),character())
+  expect_equal(ar_chanfoc(demo_SOBI, plot = FALSE), character())
+  expect_equal(ar_trialfoc(demo_SOBI, plot = FALSE), "Comp009")
+  expect_equal(ar_eogcor(demo_fica,
+                         demo_spatial,
+                         HEOG = c("EXG1", "EXG2"),
+                         VEOG = c("EXG3", "EXG4"),
+                         plot = FALSE),
+               character(0))
 
 })

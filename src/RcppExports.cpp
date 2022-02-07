@@ -6,6 +6,11 @@
 
 using namespace Rcpp;
 
+#ifdef RCPP_USE_GLOBAL_ROSTREAM
+Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
+Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
+#endif
+
 // baseline_cont
 NumericMatrix baseline_cont(NumericMatrix& x, const NumericVector& y);
 RcppExport SEXP _eegUtils_baseline_cont(SEXP xSEXP, SEXP ySEXP) {

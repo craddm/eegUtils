@@ -518,7 +518,7 @@ gauss_filter <- function(data,
   fx <- exp(-.5 * (x / s)^2)
   fx <- fx / max(fx)
   filt_sig <- apply(data, 2, function(x) {
-    2 * Re(fft(fft(x) / srate * fx,
+    2 * Re(stats::fft(stats::fft(x) / srate * fx,
                inverse = TRUE))})
   as.data.frame(filt_sig)
 }

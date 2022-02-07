@@ -1,7 +1,7 @@
 # Parse channel locations from HDF5 formatted EEGLAB
 #'@keywords internal
-parse_locshdf5 <- function(x) {
-  chan_locs <- x[["chanlocs"]]
+parse_locshdf5 <- function(eeglab_chans) {
+  chan_locs <- eeglab_chans[["chanlocs"]]
   fields <- names(chan_locs)
   file_struct <-
     lapply(fields,

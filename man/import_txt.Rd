@@ -13,6 +13,7 @@ import_txt(file_name)
 A data frame containing standard channel_info
 }
 \description{
-Currently only supports locations given in spherical coordinates.
+Currently only supports locations given in spherical coordinates. Will
+attempt to check if the file is from EEGLAB
 }
 \keyword{internal}

@@ -63,6 +63,7 @@ names(demo_epochs$signals)
 keep_A5 <- select_elecs(demo_epochs, electrode = "A5")
 remove_A5 <- select_elecs(demo_epochs, electrode = "A5", keep = FALSE)
 
+select_elecs(demo_epochs, c("A21", "A29"))
 }
 \seealso{
 \code{\link[=select_times]{select_times()}} and \code{\link[=select_epochs]{select_epochs()}}

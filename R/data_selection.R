@@ -124,10 +124,13 @@ select_times.eeg_tfr <- function(data,
   data$timings <- data$timings[keep_rows, ]
   if (length(data$dimensions) == 3) {
     data$signals <- data$signals[keep_rows, , , drop = FALSE]
-  } else {
+  } else if (length(data$dimensions) == 4) {
 
     keep_rows <- keep_rows[1:length(dimnames(data$signals)[["time"]])]
     data$signals <- data$signals[, keep_rows, , , drop = FALSE]
+  } else {
+    keep_rows <- keep_rows[1:length(dimnames(data$signals)[["time"]])]
+    data$signals <- data$signals[, keep_rows, , , , drop = FALSE]
   }
   data
 }
@@ -215,6 +218,8 @@ select_elecs.default <- function(data,
 #'   than an `eeg_data` object.
 #' @return `eeg_data` object with selected electrodes removed/kept.
 #' @export
+#' @examples
+#' select_elecs(demo_epochs, c("A21", "A29"))
 #' @describeIn select_elecs Select electrodes from a `eeg_data` object.
 
 select_elecs.eeg_data <- function(data,

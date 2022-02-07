@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Combine EEG objects — eeg_combine • eegUtils</title>
+<title>Combine eegUtils objects — eeg_combine • eegUtils</title>
 
 
 <!-- jquery -->
@@ -39,11 +39,13 @@
 
 
 
-<meta property="og:title" content="Combine EEG objects — eeg_combine" />
-<meta property="og:description" content="Combine multiple eeg_epochs or eeg_data objects into a single
-object. Note that this does not currently perform any sort of checking for
-internal consistency or duplication. It simply combines the objects in the
-order they are passed." />
+<meta property="og:title" content="Combine eegUtils objects — eeg_combine" />
+<meta property="og:description" content="Combine multiple eeg_epochs, eeg_data, or eeg_evoked objects into a
+single object. The function will try to check the participant_id entry in
+the epochs structure to see if the data comes from a single participant or
+from multiple participants. If the data is from a single participant, it will
+concatenate the objects and attempt to correct them so that the trial numbers
+and timings are correct." />
 
 
 <meta name="robots" content="noindex">
@@ -75,7 +77,7 @@ order they are passed." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">eegUtils</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.6.1.9000</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.6.3.9000</span>
       </span>
     </div>
 
@@ -120,6 +122,12 @@ order they are passed." />
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
+<li>
+  <a href="https://www.twitter.com/matt_craddock">
+    <span class="fab fa-twitter fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
@@ -141,16 +149,18 @@ order they are passed." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Combine EEG objects</h1>
+    <h1>Combine <code>eegUtils</code> objects</h1>
     <small class="dont-index">Source: <a href='https://github.com/craddm/eegUtils/blob/master/R/data_combine.R'><code>R/data_combine.R</code></a></small>
     <div class="hidden name"><code>eeg_combine.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Combine multiple <code>eeg_epochs</code> or <code>eeg_data</code> objects into a single
-object. Note that this does not currently perform any sort of checking for
-internal consistency or duplication. It simply combines the objects in the
-order they are passed.</p>
+    <p>Combine multiple <code>eeg_epochs</code>, <code>eeg_data</code>, or <code>eeg_evoked</code> objects into a
+single object. The function will try to check the <code>participant_id</code> entry in
+the <code>epochs</code> structure to see if the data comes from a single participant or
+from multiple participants. If the data is from a single participant, it will
+concatenate the objects and attempt to correct them so that the trial numbers
+and timings are correct.</p>
     </div>
 
     <pre class="usage"><span class='fu'>eeg_combine</span><span class='op'>(</span><span class='va'>data</span>, <span class='va'>...</span><span class='op'>)</span>
@@ -172,8 +182,8 @@ order they are passed.</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>data</th>
-      <td><p>An <code>eeg_data</code> or <code>eeg_epochs</code> object, or a list of such
-objects.</p></td>
+      <td><p>An <code>eeg_data</code>, <code>eeg_epochs</code>, or <code>eeg_evoked</code> object, or a list of
+such objects.</p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -189,9 +199,10 @@ example, combining epochs derived from multiple recording blocks. Defaults to TR
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>If all objects have the same participant_id, an object of the same
-class as the original input object. If the objects have different
-participant_id numbers, an object of class <code>eeg_group</code>.</p>
+    <p>If all objects have the same <code>participant_id</code>, returns an object of
+the same class as the original input object. If the objects have different
+<code>participant_id</code> numbers, an object of both class <code>eeg_group</code> and the same
+class as the original input object.</p>
     <h2 class="hasAnchor" id="methods-by-class-"><a class="anchor" href="#methods-by-class-"></a>Methods (by class)</h2>
 
     

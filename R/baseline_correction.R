@@ -1,17 +1,26 @@
 #' Baseline correction
 #'
-#' Used to remove the mean of a specified time period from the data. Currently
-#' only performs subtractive baseline. With a data frame, searches for
-#' "electrode" and "epoch" columns, and groups on these when found. An electrode
-#' column is always required; an epoch column is not.
+#' Used to correct data using the mean of a specified time period. For
+#' time-domain data, this will subtract the mean from all data. For `eeg_tfr`
+#' objects, a variety of methods are available, including subtraction, and
+#' conversion to "dB" change. With a data frame, it will search for "electrode"
+#' and "epoch" columns, and groups on these when found. An electrode column is
+#' always required; an epoch column is not. Note that baseline correction is
+#' always applied on single-trial basis. For baseline correction based on
+#' subtraction, this makes no difference compared to averaging first and then
+#' baseline correcting, but for divisive measures used with time-frequency data,
+#' this distinction can be very important, and can lead to counterintuitive
+#' results.
 #'
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #' @param data Data to be baseline corrected.
-#' @param time_lim Numeric character vector (e.g. time_lim <- c(-.1, 0)). If
-#'   none given, defaults to mean of the whole of each epoch if the data is
-#'   epoched, or the channel mean if the data is continuous.
+#' @param time_lim Numeric character vector (e.g. time_lim <- c(-.1, 0))
+#'   defining the time period to use as a baseline. If the value is NULL, it
+#'   uses the mean of the whole of each epoch if the data is epoched, or the
+#'   channel mean if the data is continuous.
 #' @param verbose Defaults to TRUE. Output descriptive messages to console.
 #' @param ... other parameters to be passed to functions
+#' @return An `eegUtils` object or a `data.frame`, depending on the input.
 #' @examples
 #' rm_baseline(demo_epochs)
 #' rm_baseline(demo_epochs, c(-.1, 0))
@@ -54,7 +63,7 @@ rm_baseline.eeg_data <- function(data,
   data
 }
 
-#' @describeIn rm_baseline Remove baseline from eeg_epochs
+#' @describeIn rm_baseline Remove baseline from `eeg_epochs`
 #' @export
 
 rm_baseline.eeg_epochs <- function(data,
@@ -62,6 +71,7 @@ rm_baseline.eeg_epochs <- function(data,
                                    verbose = TRUE,
                                    ...) {
 
+  # modify to handle group objects
   n_epochs <- length(unique(data$timings$epoch))
   n_times <- length(unique(data$timings$time))
   n_chans <- ncol(data$signals)
@@ -87,6 +97,9 @@ rm_baseline.eeg_epochs <- function(data,
                                  baseline_dat)
 
   } else {
+    if (verbose) {
+      message(paste("Baseline:", time_lim, "s"))
+    }
     base_times <- get_epoch_baselines(data,
                                       time_lim)
 
@@ -96,7 +109,8 @@ rm_baseline.eeg_epochs <- function(data,
   }
   #Reshape and turn back into data frame
   data$signals <- array(data$signals,
-                        dim = c(n_epochs * n_times, n_chans))
+                        dim = c(n_epochs * n_times,
+                                n_chans))
   colnames(data$signals) <- elecs
   data$signals <- tibble::as_tibble(data$signals)
   #names(data$signals) <- elecs
@@ -178,34 +192,75 @@ rm_baseline.eeg_tfr <- function(data,
     stop("Unknown baseline type ", type)
   }
 
-  if (length(dim(data$signals)) == 4) {
+  is_group_tfr <- inherits(data,
+                           "eeg_group")
+
+  orig_dims <- dimnames(data$signals)
+
+  if ("epoch" %in% names(orig_dims)) {
     epoched <- TRUE
   } else {
     epoched <- FALSE
   }
 
-  bline <- select_times(data,
-                        time_lim)
+  if (!is.null(time_lim)) {
+    if (verbose) {
+      message(paste("Baseline:", time_lim[1], "-", time_lim[2], "s"))
+    }
+    bline <- select_times(data,
+                          time_lim)
+    no_bline <- FALSE
+  } else {
+    no_bline <- TRUE
+    if (verbose) {
+      message(paste("Using whole epoch as baseline."))
+    }
+  }
+
   if (epoched) {
-    #bline <- colMeans(colMeans(bline$signals, na.rm = TRUE), na.rm = TRUE)
-    bline <- apply(bline$signals,
-                   c(1, 3, 4),
-                   mean,
-                   na.rm = TRUE)
+
+    if (is_group_tfr) {
+      if (no_bline) {
+        bline <- apply(data$signals,
+                       c(1, 3, 4, 5),
+                       mean,
+                       na.rm = TRUE)
+      } else {
+        bline <- apply(bline$signals,
+                       c(1, 3, 4, 5),
+                       mean,
+                       na.rm = TRUE)
+      }
+
+    } else {
+      if (no_bline) {
+        bline <- apply(data$signals,
+                       c(1, 3, 4),
+                       mean,
+                       na.rm = TRUE)
+      } else {
+        bline <- apply(bline$signals,
+                       c(1, 3, 4),
+                       mean,
+                       na.rm = TRUE)
+      }
+    }
   } else {
     bline <- colMeans(bline$signals,
                       na.rm = TRUE)
   }
+
   # This function implements the various baseline correction types
   do_corrs <- function(data,
                        type,
                        bline) {
-    switch(type,
-           "divide" = ((data - bline) / bline) * 100,
-           "pc" = ((data - bline) / bline) * 100 - 100,
-           "absolute" = data - bline,
-           "db" = 10 * log10(data / bline),
-           "ratio" = data / bline
+    switch(
+      type,
+      "divide" = data / bline,
+      "pc" = ((data - bline) / bline) * 100,
+      "absolute" = data - bline,
+      "db" = 10 * log10(data / bline),
+      "ratio" = data / bline
     )
   }
 
@@ -214,23 +269,28 @@ rm_baseline.eeg_tfr <- function(data,
   orig_dimnames <- dimnames(data$signals)
 
   if (epoched) {
-
-    data$signals <- sweep(data$signals,
-                          c(1, 3, 4),
-                          bline,
-                          do_corrs,
-                          type = type)
-
-
+    if (is_group_tfr) {
+      data$signals <- sweep(data$signals,
+                            c(1, 3, 4, 5),
+                            bline,
+                            do_corrs,
+                            type = type)
     } else {
-      data$signals <- apply(data$signals,
-                        1,
-                        do_corrs,
-                        type = type,
-                        bline = bline)
-      data$signals <- aperm(data$signals,
-                            c(2, 1))
+      data$signals <- sweep(data$signals,
+                            c(1, 3, 4),
+                            bline,
+                            do_corrs,
+                            type = type)
     }
+  } else {
+    data$signals <- apply(data$signals,
+                          1,
+                          do_corrs,
+                          type = type,
+                          bline = bline)
+    data$signals <- aperm(data$signals,
+                          c(2, 1))
+  }
 
   dim(data$signals) <- orig_dims
 
@@ -249,24 +309,45 @@ rm_baseline.eeg_evoked <- function(data,
 
   orig_cols <- channel_names(data)
   n_times <- length(unique(data$timings$time))
-  n_epochs <- nrow(data$epochs)
+  # if (inherits(data,
+  #              "eeg_group")) {
+  #   #n_epochs <- nrow(data$epochs)
+    n_epochs <- nrow(unique(epochs(data)[, c("epoch", "participant_id")]))
+    n_participants <- length(unique(epochs(data)$participant_id))
+    # is_group_data <- TRUE
+  # } else {
+    # n_epochs <- length(unique(epochs(data)$epoch))
+    # n_participants <- length(unique(epochs(data)$participant_id))
+    # is_group_data <- FALSE
+  # }
+
+  #n_epochs <- nrow(data$epochs)
   n_chans <- length(orig_cols)
   base_times <- get_epoch_baselines(data,
                                     time_lim)
 
   data$signals <- as.matrix(data$signals)
+
   dim(data$signals) <- c(n_times,
                          n_epochs,
                          n_chans)
+
   data$signals <- baseline_epo(data$signals, base_times)
 
-  data$signals <- array(data$signals,
-                        dim = c(n_epochs * n_times, n_chans))
+    data$signals <- array(data$signals,
+                          dim = c(n_epochs * n_times, n_chans))
   colnames(data$signals) <- orig_cols
   data$signals <- tibble::as_tibble(data$signals)
-  #names(data$signals) <- elecs
   data
 }
+
+#' @export
+rm_baseline.eeg_group <- function(data, ...) {
+  message("Baseline correction support for `eeg_group` objects is currently experimental, use at own risk...!")
+  NextMethod("rm_baseline")
+
+}
+
 
 #' Get epoch baselines
 #'
@@ -280,7 +361,10 @@ rm_baseline.eeg_evoked <- function(data,
 get_epoch_baselines <- function(data,
                                 time_lim) {
 
-  n_epochs <- nrow(epochs(data))
+  #n_epochs <- nrow(epochs(data))
+  n_epochs <- nrow(unique(epochs(data)[, c("epoch", "participant_id")]))
+  n_participants <- length(unique(epochs(data)$participant_id))
+
   n_chans <- length(channel_names(data))
   chan_names <- colnames(data$signals)
 
@@ -297,10 +381,10 @@ get_epoch_baselines <- function(data,
     base_times$signals <- as.matrix(base_times$signals)
     n_bl_times <- length(unique(base_times$timings$time))
     dim(base_times$signals) <- c(n_bl_times,
-                                 n_epochs,
-                                 n_chans)
+                                   n_epochs,
+                                   n_chans)
     base_times <- colMeans(base_times$signals)
   }
-    colnames(base_times) <- chan_names
-    base_times
+  colnames(base_times) <- chan_names
+  base_times
 }

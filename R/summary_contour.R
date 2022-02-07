@@ -62,13 +62,16 @@ StatSummarybyZ <- ggplot2::ggproto("StatSummaryByZ", Stat,
                                      na.rm = na.rm,
                                      na.action = na.pass)
 
-                         breaks <- contour_breaks(z.range, bins, binwidth, breaks)
+                         breaks <- contour_breaks(z.range, bins,
+                                                  binwidth, breaks)
 
                          isolines <- xyz_to_isolines(data, breaks)
-                         path_df <- iso_to_path(isolines, data$group[1])
+
+                         path_df <- iso_to_path(isolines,
+                                                data$group[1])
 
                          path_df$level <- as.numeric(path_df$level)
-                         path_df$nlevel <- rescale_max(path_df$level)
+                         path_df$nlevel <- scales::rescale_max(path_df$level)
 
                          path_df
                        }
@@ -138,6 +141,8 @@ StatScalpContours <-
                    required_aes = c("x",
                                     "y",
                                     "z"),
+                   # if no z provided, can add z = "fill" as default, but then
+                   # get a different warning
                    default_aes = aes(order = after_stat(level),
                                      linetype = ggplot2::after_stat(level) < 0),
 
@@ -188,13 +193,6 @@ StatScalpContours <-
                                             r = r)
                      }
 
-                      # data <-
-                      #   aggregate(fill ~ x + y,
-                      #             data = data,
-                      #             FUN = mean,
-                      #             na.rm = na.rm,
-                      #             na.action = na.pass)
-
                      data <- dplyr::rename(data,
                                            z = fill)
 
@@ -202,13 +200,16 @@ StatScalpContours <-
                                       na.rm = TRUE,
                                       finite = TRUE)
 
-                     breaks <- contour_breaks(z.range, bins, binwidth, breaks)
+                     breaks <- contour_breaks(z.range, bins,
+                                              binwidth, breaks)
 
-                     isolines <- xyz_to_isolines(data, breaks)
-                     path_df <- iso_to_path(isolines, data$group[1])
+                     isolines <- xyz_to_isolines(data,
+                                                 breaks)
+                     path_df <- iso_to_path(isolines)#,
+                                            #data$group[1])
 
                      path_df$level <- as.numeric(path_df$level)
-                     path_df$nlevel <- rescale_max(path_df$level)
+                     path_df$nlevel <- scales::rescale_max(path_df$level)
 
                      path_df
                    }

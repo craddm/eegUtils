@@ -39,8 +39,11 @@ middle. If no locations are found, it simply displays the data in its
 original order.
 }
 \examples{
+library(ggplot2)
 erp_raster(demo_epochs)
 erp_raster(demo_epochs, interpolate = TRUE)
+erp_raster(rm_baseline(demo_epochs, c(-.1, 0)), interpolate = TRUE)
+erp_raster(demo_spatial) + facet_wrap(~epoch_labels)
 }
 \author{
 Matt Craddock, \email{matt@mattcraddock.com}

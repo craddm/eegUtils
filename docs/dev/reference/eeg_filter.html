@@ -74,7 +74,7 @@ ignored, which can result in minor edge artifacts." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">eegUtils</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.6.2.9000</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.6.3.9000</span>
       </span>
     </div>
 
@@ -118,6 +118,12 @@ ignored, which can result in minor edge artifacts." />
 </li>
 <li>
   <a href="../news/index.html">Changelog</a>
+</li>
+<li>
+  <a href="https://www.twitter.com/matt_craddock">
+    <span class="fab fa-twitter fa-lg"></span>
+     
+  </a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -266,9 +272,18 @@ purposes, use FIR filters.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'><a href='plot_psd.html'>plot_psd</a></span><span class='op'>(</span><span class='fu'>eeg_filter</span><span class='op'>(</span><span class='va'>demo_epochs</span>, low_freq <span class='op'>=</span> <span class='fl'>1</span>, high_freq <span class='op'>=</span> <span class='fl'>30</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>Band-pass FIR filter from 1 - 30 Hz</span></div><div class='output co'>#&gt; <span class='message'>Transition bandwidth: 1 Hz</span></div><div class='output co'>#&gt; <span class='message'>Filter order: 424</span></div><div class='output co'>#&gt; <span class='message'>Removing channel means per epoch...</span></div><div class='output co'>#&gt; <span class='message'>Removing channel means per epoch...</span></div><div class='img'><img src='eeg_filter-1.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'><a href='plot_psd.html'>plot_psd</a></span><span class='op'>(</span><span class='fu'>eeg_filter</span><span class='op'>(</span><span class='va'>demo_epochs</span>, low_freq <span class='op'>=</span> <span class='fl'>12</span>, high_freq <span class='op'>=</span> <span class='fl'>8</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>Band-stop FIR filter from 8 - 12 Hz.</span></div><div class='output co'>#&gt; <span class='message'>Transition bandwidth: 2 Hz</span></div><div class='output co'>#&gt; <span class='message'>Filter order: 212</span></div><div class='output co'>#&gt; <span class='message'>Removing channel means per epoch...</span></div><div class='output co'>#&gt; <span class='message'>Removing channel means per epoch...</span></div><div class='img'><img src='eeg_filter-2.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'><a href='plot_psd.html'>plot_psd</a></span><span class='op'>(</span><span class='fu'>eeg_filter</span><span class='op'>(</span><span class='va'>demo_epochs</span>, low_freq <span class='op'>=</span> <span class='fl'>12</span>, high_freq <span class='op'>=</span> <span class='fl'>8</span>, method <span class='op'>=</span> <span class='st'>"iir"</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>Band-stop IIR filter from 8 - 12 Hz.</span></div><div class='output co'>#&gt; <span class='message'>Effective filter order: 4 (two-pass)</span></div><div class='output co'>#&gt; <span class='message'>Removing channel means per epoch...</span></div><div class='output co'>#&gt; <span class='message'>Removing channel means per epoch...</span></div><div class='img'><img src='eeg_filter-3.png' alt='' width='700' height='433' /></div><div class='input'>
+</div><div class='output co'>#&gt; <span class='message'>Band-pass FIR filter from 1 - 30 Hz</span></div><div class='output co'>#&gt; <span class='message'>Transition bandwidth: 1 Hz</span></div><div class='output co'>#&gt; <span class='message'>Filter order: 424</span></div><div class='output co'>#&gt; <span class='message'>Removing channel means per epoch...</span></div><div class='output co'>#&gt; <span class='message'>Removing channel means per epoch...</span></div><div class='output co'>#&gt; <span class='message'>Computing Power Spectral Density using Welch's method.</span>
+#&gt; <span class='message'>FFT length: 256</span>
+#&gt; <span class='message'>Segment length: 84</span>
+#&gt; <span class='message'>Overlapping points: 42 (50% overlap)</span></div><div class='img'><img src='eeg_filter-1.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'><a href='plot_psd.html'>plot_psd</a></span><span class='op'>(</span><span class='fu'>eeg_filter</span><span class='op'>(</span><span class='va'>demo_epochs</span>, low_freq <span class='op'>=</span> <span class='fl'>12</span>, high_freq <span class='op'>=</span> <span class='fl'>8</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>Band-stop FIR filter from 8 - 12 Hz.</span></div><div class='output co'>#&gt; <span class='message'>Transition bandwidth: 2 Hz</span></div><div class='output co'>#&gt; <span class='message'>Filter order: 212</span></div><div class='output co'>#&gt; <span class='message'>Removing channel means per epoch...</span></div><div class='output co'>#&gt; <span class='message'>Removing channel means per epoch...</span></div><div class='output co'>#&gt; <span class='message'>Computing Power Spectral Density using Welch's method.</span>
+#&gt; <span class='message'>FFT length: 256</span>
+#&gt; <span class='message'>Segment length: 84</span>
+#&gt; <span class='message'>Overlapping points: 42 (50% overlap)</span></div><div class='img'><img src='eeg_filter-2.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'><a href='plot_psd.html'>plot_psd</a></span><span class='op'>(</span><span class='fu'>eeg_filter</span><span class='op'>(</span><span class='va'>demo_epochs</span>, low_freq <span class='op'>=</span> <span class='fl'>12</span>, high_freq <span class='op'>=</span> <span class='fl'>8</span>, method <span class='op'>=</span> <span class='st'>"iir"</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>Band-stop IIR filter from 8 - 12 Hz.</span></div><div class='output co'>#&gt; <span class='message'>Effective filter order: 4 (two-pass)</span></div><div class='output co'>#&gt; <span class='message'>Removing channel means per epoch...</span></div><div class='output co'>#&gt; <span class='message'>Removing channel means per epoch...</span></div><div class='output co'>#&gt; <span class='message'>Computing Power Spectral Density using Welch's method.</span>
+#&gt; <span class='message'>FFT length: 256</span>
+#&gt; <span class='message'>Segment length: 84</span>
+#&gt; <span class='message'>Overlapping points: 42 (50% overlap)</span></div><div class='img'><img src='eeg_filter-3.png' alt='' width='700' height='433' /></div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

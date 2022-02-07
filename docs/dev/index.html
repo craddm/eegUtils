@@ -24,6 +24,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-home">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -36,18 +38,12 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">eegUtils</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.6.2.9000</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.6.3.9000</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-<li>
-  <a href="index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
 <li>
   <a href="articles/eegUtils.html">Get started</a>
 </li>
@@ -84,7 +80,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/craddm/eegUtils/">
+  <a href="https://github.com/craddm/eegUtils/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -101,89 +97,94 @@
 
       </header><div class="row">
   <div class="contents col-md-9">
-<div id="eegutils" class="section level1">
-<div class="page-header"><h1 class="hasAnchor">
-<a href="#eegutils" class="anchor"></a>eegUtils</h1></div>
+<div class="section level1">
+<div class="page-header"><h1 id="eegutils">eegUtils<a class="anchor" aria-label="anchor" href="#eegutils"></a>
+</h1></div>
 <!-- badges: start -->
 
-<div id="overview" class="section level2">
-<h2 class="hasAnchor">
-<a href="#overview" class="anchor"></a>Overview</h2>
+<div class="section level2">
+<h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
+</h2>
 <p><em>eegUtils</em> is a package for the processing, manipulation, and plotting of EEG data. It includes functions for importing data from a variety of file formats (including Biosemi, Brain Vision Analyzer, and EEGLAB), many of the typical steps in pre-preprocessing (filtering, referencing, artefact rejection), more advanced processing techniques (time-frequency analysis, ICA), and several types of plot that are common in the field (ERP plots, time-frequency plots, topographical scalp maps). Although it uses custom object classes, it is designed such that these are always translatable to standard R <em>data.frames</em>, and thus can be used with any of the myriad packages and methods that support standard R formats.</p>
 </div>
-<div id="installation" class="section level2">
-<h2 class="hasAnchor">
-<a href="#installation" class="anchor"></a>Installation</h2>
+<div class="section level2">
+<h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
+</h2>
 <p>The package is very much under active development and is subject to a lot of changes. As such, it is not currently available on CRAN.</p>
 <p>Install the latest released version from Github as below.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co">#install.packages("remotes")</span>
-<span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"craddm/eegUtils"</span><span class="op">)</span></code></pre></div>
+<span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"craddm/eegUtils"</span><span class="op">)</span></code></pre></div>
 <p>To install the latest development version, install from the <em>develop</em> branch as below.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"craddm/eegUtils@develop"</span><span class="op">)</span></code></pre></div>
-<p>You can also find the package on <a href="https://neuroconductor.org">Neuroconductor</a> - for more information about installing packages from Neuroconductor, see the <a href="https://neuroconductor.org/tutorials/install">Neuroconductor installation tutorial</a></p>
+<code class="sourceCode R"><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"craddm/eegUtils@develop"</span><span class="op">)</span></code></pre></div>
+<p>You can also find the package on <a href="https://neuroconductor.org" class="external-link">Neuroconductor</a> - for more information about installing packages from Neuroconductor, see the <a href="https://neuroconductor.org/tutorials/install" class="external-link">Neuroconductor installation tutorial</a></p>
 </div>
-<div id="usage" class="section level2">
-<h2 class="hasAnchor">
-<a href="#usage" class="anchor"></a>Usage</h2>
+<div class="section level2">
+<h2 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a>
+</h2>
 <p>The following examples show how to use <code>eegUtils</code> to produce a few common plots of EEG data from some simple included example data.</p>
-<div id="erp-butterfly-plots" class="section level3">
-<h3 class="hasAnchor">
-<a href="#erp-butterfly-plots" class="anchor"></a>ERP butterfly plots</h3>
+<div class="section level3">
+<h3 id="erp-butterfly-plots">ERP butterfly plots<a class="anchor" aria-label="anchor" href="#erp-butterfly-plots"></a>
+</h3>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/craddm/eegUtils">eegUtils</a></span><span class="op">)</span>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/craddm/eegUtils" class="external-link">eegUtils</a></span><span class="op">)</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Attaching package: 'eegUtils'</span>
 <span class="co">#&gt; The following object is masked from 'package:stats':</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt;     filter</span>
-<span class="fu"><a href="reference/plot_butterfly.html">plot_butterfly</a></span><span class="op">(</span><span class="va">demo_epochs</span><span class="op">)</span>
-<span class="co">#&gt; Joining, by = c("epoch", "recording", "epoch_label", "participant_id")</span></code></pre></div>
+<span class="fu"><a href="reference/plot_butterfly.html">plot_butterfly</a></span><span class="op">(</span><span class="va">demo_epochs</span><span class="op">)</span></code></pre></div>
 <p><img src="reference/figures/unnamed-chunk-3-1.png"><!-- --></p>
 </div>
-<div id="topographical-plots" class="section level3">
-<h3 class="hasAnchor">
-<a href="#topographical-plots" class="anchor"></a>Topographical plots</h3>
+<div class="section level3">
+<h3 id="topographical-plots">Topographical plots<a class="anchor" aria-label="anchor" href="#topographical-plots"></a>
+</h3>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="reference/topoplot.html">topoplot</a></span><span class="op">(</span><span class="va">demo_epochs</span>, 
-         time_lim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">.22</span>, <span class="fl">.25</span> <span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt; Joining, by = c("epoch", "recording", "epoch_label", "participant_id")</span>
-<span class="co">#&gt; Using electrode locations from data.</span></code></pre></div>
+         time_lim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">.22</span>, <span class="fl">.25</span> <span class="op">)</span><span class="op">)</span>
+<span class="co">#&gt; Using electrode locations from data.</span>
+<span class="co">#&gt; Plotting head r 95 mm</span></code></pre></div>
 <p><img src="reference/figures/unnamed-chunk-4-1.png"><!-- --></p>
 </div>
-<div id="power-spectral-density" class="section level3">
-<h3 class="hasAnchor">
-<a href="#power-spectral-density" class="anchor"></a>Power spectral density</h3>
+<div class="section level3">
+<h3 id="power-spectral-density">Power spectral density<a class="anchor" aria-label="anchor" href="#power-spectral-density"></a>
+</h3>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="reference/plot_psd.html">plot_psd</a></span><span class="op">(</span><span class="va">demo_epochs</span><span class="op">)</span>
-<span class="co">#&gt; Removing channel means per epoch...</span></code></pre></div>
+<span class="co">#&gt; Removing channel means per epoch...</span>
+<span class="co">#&gt; Computing Power Spectral Density using Welch's method.</span>
+<span class="co">#&gt; FFT length: 256</span>
+<span class="co">#&gt; Segment length: 84</span>
+<span class="co">#&gt; Overlapping points: 42 (50% overlap)</span></code></pre></div>
 <p><img src="reference/figures/unnamed-chunk-5-1.png"><!-- --></p>
 </div>
-<div id="time-frequency-analysis" class="section level3">
-<h3 class="hasAnchor">
-<a href="#time-frequency-analysis" class="anchor"></a>Time-frequency analysis</h3>
+<div class="section level3">
+<h3 id="time-frequency-analysis">Time-frequency analysis<a class="anchor" aria-label="anchor" href="#time-frequency-analysis"></a>
+</h3>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="reference/plot_tfr.html">plot_tfr</a></span><span class="op">(</span><span class="fu"><a href="reference/compute_tfr.html">compute_tfr</a></span><span class="op">(</span><span class="va">demo_epochs</span>,
-                     foi <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">30</span><span class="op">)</span>,
+                     foi <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">30</span><span class="op">)</span>,
                      n_freq <span class="op">=</span> <span class="fl">20</span>,
                      n_cycles <span class="op">=</span> <span class="fl">3</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt; Output frequencies: 4 5.37 6.74 8.11 9.47 10.84 12.21 13.58 14.95 16.32 17.68 19.05 20.42 21.79 23.16 24.53 25.89 27.26 28.63 30</span>
-<span class="co">#&gt; Removing channel means per epoch...</span></code></pre></div>
+<span class="co">#&gt; Computing TFR using Morlet wavelet convolution</span>
+<span class="co">#&gt; Output frequencies using linear spacing: 4 5.37 6.74 8.11 9.47 10.84 12.21 13.58 14.95 16.32 17.68 19.05 20.42 21.79 23.16 24.53 25.89 27.26 28.63 30</span>
+<span class="co">#&gt; Removing channel means per epoch...</span>
+<span class="co">#&gt; Returning signal averaged over all trials.</span></code></pre></div>
 <p><img src="reference/figures/unnamed-chunk-6-1.png"><!-- --></p>
-<p>There are many potential processing steps that precede the production of plots like these. For more examples of how to import and process data, or import data from other sources, see the <a href="https://craddm.github.io/eegUtils">eegUtils website</a></p>
+<p>There are many potential processing steps that precede the production of plots like these. For more examples of how to import and process data, or import data from other sources, see the <a href="https://craddm.github.io/eegUtils" class="external-link">eegUtils website</a>!</p>
 </div>
 </div>
-<div id="contributing" class="section level2">
-<h2 class="hasAnchor">
-<a href="#contributing" class="anchor"></a>Contributing</h2>
-<p>If you have any bug reports or feature requests, please report them using the <a href="https://github.com/craddm/eegUtils/issues">Github issue tracker</a>.</p>
-<p>If you would like to contribute any code, be that anything from a documentation fix to a whole new feature, then please begin by raising an <a href="https://github.com/craddm/eegUtils/issues">issue</a> before moving on to file a <a href="https://github.com/craddm/eegUtils/pulls">Github pull request</a>.</p>
-<p>You can find a guide to <a href="https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/about-pull-requests">how Github issues and pull requests work here</a>.</p>
+<div class="section level2">
+<h2 id="contributing">Contributing<a class="anchor" aria-label="anchor" href="#contributing"></a>
+</h2>
+<p>If you have any bug reports or feature requests, please report them using the <a href="https://github.com/craddm/eegUtils/issues" class="external-link">Github issue tracker</a>.</p>
+<p>If you would like to contribute any code, be that anything from a documentation fix to a whole new feature, then please begin by raising an <a href="https://github.com/craddm/eegUtils/issues" class="external-link">issue</a> before moving on to file a <a href="https://github.com/craddm/eegUtils/pulls" class="external-link">Github pull request</a>.</p>
+<p>You can find a guide to <a href="https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/about-pull-requests" class="external-link">how Github issues and pull requests work here</a>.</p>
 </div>
-<div id="code-of-conduct" class="section level2">
-<h2 class="hasAnchor">
-<a href="#code-of-conduct" class="anchor"></a>Code of Conduct</h2>
+<div class="section level2">
+<h2 id="code-of-conduct">Code of Conduct<a class="anchor" aria-label="anchor" href="#code-of-conduct"></a>
+</h2>
 <p>Please note that the <code>eegUtils</code> project is released with a <a href="CODE_OF_CONDUCT.html">Contributor Code of Conduct</a>. By contributing to this project, you agree to abide by its terms.</p>
 </div>
 </div>
@@ -191,56 +192,66 @@
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <div class="links">
-<h2>Links</h2>
+<h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
-<li>Browse source code at <br><a href="https://github.com/craddm/eegUtils/">https://​github.com/​craddm/​eegUtils/​</a>
-</li>
-<li>Report a bug at <br><a href="https://github.com/craddm/eegUtils/issues">https://​github.com/​craddm/​eegUtils/​issues</a>
-</li>
+<li><a href="https://github.com/craddm/eegUtils/" class="external-link">Browse source code</a></li>
+<li><a href="https://github.com/craddm/eegUtils/issues" class="external-link">Report a bug</a></li>
 </ul>
 </div>
+
 <div class="license">
-<h2>License</h2>
+<h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
 <li>
-<a href="https://opensource.org/licenses/mit-license.php">MIT</a> + file <a href="LICENSE-text.html">LICENSE</a>
+<a href="https://opensource.org/licenses/mit-license.php" class="external-link">MIT</a> + file <a href="LICENSE-text.html">LICENSE</a>
 </li>
 </ul>
 </div>
+
 <div class="community">
-<h2>Community</h2>
+<h2 data-toc-skip>Community</h2>
 <ul class="list-unstyled">
 <li><a href="CODE_OF_CONDUCT.html">Code of conduct</a></li>
 </ul>
 </div>
-<div class="developers">
-<h2>Developers</h2>
+
+<div class="citation">
+<h2 data-toc-skip>Citation</h2>
 <ul class="list-unstyled">
-<li>Matt Craddock <br><small class="roles"> Author, maintainer, copyright holder </small>  </li>
-<li><a href="authors.html">All authors...</a></li>
+<li><a href="authors.html#citation">Citing eegUtils</a></li>
 </ul>
 </div>
 
-  <div class="dev-status">
-<h2>Dev status</h2>
+<div class="developers">
+<h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
-<li><a href="http://www.repostatus.org/#wip"><img src="http://www.repostatus.org/badges/latest/wip.svg" alt="Repo Status"></a></li>
-<li><a href="https://codecov.io/github/craddm/eegUtils?branch=master"><img src="https://img.shields.io/codecov/c/github/craddm/eegUtils/master.svg" alt="Coverage Status"></a></li>
-<li><a href="https://ci.appveyor.com/project/craddm/eegUtils"><img src="https://ci.appveyor.com/api/projects/status/github/craddm/eegUtils?branch=master&amp;svg=true" alt="AppVeyor build status"></a></li>
-<li><a href="https://github.com/craddm/eegUtils/actions"><img src="https://github.com/craddm/eegUtils/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"></a></li>
-<li><a href="https://zenodo.org/badge/latestdoi/85406871"><img src="https://zenodo.org/badge/85406871.svg" alt="DOI"></a></li>
+<li>Matt Craddock <br><small class="roles"> Author, maintainer, copyright holder </small>  </li>
+<li><a href="authors.html">More about authors...</a></li>
 </ul>
 </div>
+
+<div class="dev-status">
+<h2 data-toc-skip>Dev status</h2>
+<ul class="list-unstyled">
+<li><a href="http://www.repostatus.org/#wip" class="external-link"><img src="http://www.repostatus.org/badges/latest/wip.svg" alt="Repo Status"></a></li>
+<li><a href="https://codecov.io/github/craddm/eegUtils?branch=master" class="external-link"><img src="https://img.shields.io/codecov/c/github/craddm/eegUtils/master.svg" alt="Coverage Status"></a></li>
+<li><a href="https://github.com/craddm/eegUtils/actions" class="external-link"><img src="https://github.com/craddm/eegUtils/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"></a></li>
+<li><a href="https://zenodo.org/badge/latestdoi/85406871" class="external-link"><img src="https://zenodo.org/badge/85406871.svg" alt="DOI"></a></li>
+</ul>
 </div>
+
+  </div>
 </div>
 
 
       <footer><div class="copyright">
-  <p>Developed by Matt Craddock.</p>
+  <p></p>
+<p>Developed by Matt Craddock.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
 </div>
 
       </footer>
@@ -248,6 +259,8 @@
 
   
 
+
+  
 
   </body>
 </html>

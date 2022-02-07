@@ -1,8 +1,9 @@
 #' Compute Time-Frequency representation of EEG data
 #'
-#' This function creates a time frequency represention of EEG time series data.
-#' Currently, the only available method is a Morlet wavelet transformation
-#' performed using convolution in the frequency domain.
+#' This function creates a time frequency representation of EEG time series
+#' data. Currently, it is possible to use either Morlet wavelets or Hanning
+#' tapers during the decomposition, which uses convolution in the frequency
+#' domain.
 #'
 #' @param data An object of class `eeg_epochs`.
 #' @param ... Further TFR parameters
@@ -33,15 +34,16 @@ compute_tfr.default <- function(data, ...) {
 #'   of frequencies.
 #' @param n_cycles Number of cycles at each frequency. If a single integer, use
 #'   a constant number of cycles at each frequency. If a character vector of
-#'   length 2, use a linearly scaling number of cycles at each frequency.
-#' @param spacing Use "linear" or "log" spacing for the frequency vector.
+#'   length 2, the number of cycles will scale with frequency from the minimum
+#'   to the maximum.
+#' @param spacing Use "linear" or "log" spacing for the frequency vector and number of cycles.
 #' @param keep_trials Keep single trials or average over them before returning.
 #'   Defaults to FALSE.
 #' @param output Sets whether output is power, phase, or fourier coefficients.
 #' @param downsample Downsampling factor. Integer. Selects every n samples after
 #'   performing time-frequency analysis on the full sampling rate data.
 #' @param verbose Print informative messages in console.
-#' @describeIn compute_tfr Default method for compute_tfr
+#' @describeIn compute_tfr Default method for `compute_tfr`
 #' @export
 
 compute_tfr.eeg_epochs <- function(data,
@@ -56,7 +58,7 @@ compute_tfr.eeg_epochs <- function(data,
                                    verbose = TRUE,
                                    ...) {
   if (identical(output, "fourier") && keep_trials == FALSE) {
-    if (verbose == TRUE) {
+    if (verbose) {
       message("For fourier output, all trials are kept.")
     }
     keep_trials <- TRUE
@@ -74,9 +76,20 @@ compute_tfr.eeg_epochs <- function(data,
       output = output,
       downsample = downsample,
       verbose = verbose
+      ),
+    "hanning" = tf_hanning(
+      data = data,
+      foi = foi,
+      n_freq = n_freq,
+      spacing = spacing,
+      n_cycles = n_cycles,
+      keep_trials = keep_trials,
+      output = output,
+      downsample = downsample,
+      verbose = verbose
     ),
     warning(
-      "Unknown method supplied. Currently supported method is 'morlet'"
+      "Unknown method supplied. Currently supported methods are 'morlet', and 'hanning'"
     )
   )
   tfr_obj
@@ -95,6 +108,12 @@ compute_tfr.eeg_evoked <- function(data,
                                    downsample = 1,
                                    verbose = TRUE,
                                    ...) {
+  if (identical(output, "fourier") && keep_trials == FALSE) {
+    if (verbose) {
+      message("For fourier output, all trials are kept.")
+    }
+    keep_trials <- TRUE
+  }
   switch(
     method,
     "morlet" = tf_morlet(
@@ -108,8 +127,19 @@ compute_tfr.eeg_evoked <- function(data,
       downsample = downsample,
       verbose = verbose
     ),
+    "hanning" = tf_hanning(
+      data = data,
+      foi = foi,
+      n_freq = n_freq,
+      spacing = spacing,
+      n_cycles = n_cycles,
+      keep_trials = keep_trials,
+      output = output,
+      downsample = downsample,
+      verbose = verbose
+    ),
     warning(
-      "Unknown method supplied. Currently supported method is 'morlet'"
+      "Unknown method supplied. Currently supported methods are 'morlet' and 'hanning'"
     )
   )
 }
@@ -159,25 +189,43 @@ tf_morlet <- function(data,
                       demean = TRUE,
                       verbose) {
 
+  if (verbose) {
+    message("Computing TFR using Morlet wavelet convolution")
+  }
+
   frex <- parse_frex(foi,
                      n_freq,
                      verbose,
                      spacing = spacing)
 
+  if (downsample > 1 && verbose) {
+    message("Downsampling after transformation by a factor of ", downsample)
+  }
+
   n_freq <- length(unique(frex))
   # if a min and max n_cycles is specified, expand out to cycles per n_freq
   if (length(n_cycles) == 2) {
-    n_cycles <- seq(n_cycles[1],
-                    n_cycles[2],
-                    length.out = n_freq)
-  } else if (length(n_cycles) > 2) {
+    if (identical(spacing, "linear")) {
+      n_cycles <- seq(n_cycles[1],
+                      n_cycles[2],
+                      length.out = n_freq)
+    } else if (identical(spacing, "log")) {
+      n_cycles <- exp(
+        seq(log(n_cycles[1]),
+            log(n_cycles[2]),
+            length.out = n_freq)
+        )
+    }
+      } else if (length(n_cycles) > 2) {
     stop("n_cycles should be a vector of length 1 or length 2.")
   }
 
   #de-mean each epoch
   if (demean) {
-    data <- rm_baseline(data, verbose = verbose)
+    data <- rm_baseline(data,
+                        verbose = verbose)
   }
+
   elecs <- names(data$signals)
   #fft_points <- length(unique(data$timings$time))
   sigtime <- unique(data$timings$time)
@@ -271,9 +319,15 @@ tf_morlet <- function(data,
       dimensions = names(dimnames(data$signals)),
       epochs = data$epochs
     )
+    if (verbose) {
+      message("Returning single-trial data.")
+    }
     return(data)
   }
 
+  if (verbose) {
+    message("Returning signal averaged over all trials.")
+  }
   dims <-
     which(names(dimnames(data$signals)) %in% c("time", "frequency"))
 
@@ -309,14 +363,17 @@ tf_morlet <- function(data,
 #' Generate Morlet wavelet family
 #'
 #' @param frex Frequency range of interest
+#' @param srate Sampling rate of signal
 #' @param n_cycles Length of wavelet in cycles
 #' @param n_freq number of frequencies to resolve
+#' @param gauss_width Size of filter kernel in standard deviations
 #' @keywords internal
 
 morlet <- function(frex,
                    srate,
                    n_cycles,
-                   n_freq) {
+                   n_freq,
+                   gauss_width = 3) {
 
   # calculate frequency and temporal std devs
   sigma_t <- morlet_res(frex, n_cycles)$sigma_t
@@ -326,15 +383,19 @@ morlet <- function(frex,
   # round the max SD to the next biggest number divisible by tstep
   round_sd <- max_sd_t + (tstep - (max_sd_t %% tstep))
 
-  # calculate length of kernel as 6 * maximum temporal SD
+  # calculate length of kernel as 3 standard deviations
   # TO DO - change this to do it for every frequency separately
-  wavtime <- seq(-round_sd * 3,
-                 round_sd * 3,
-                 by = tstep)
+  wavtime <-
+    seq(
+      -round_sd * gauss_width,
+      round_sd * gauss_width,
+      by = tstep
+    )
 
-  t_by_f <- matrix(wavtime,
-                   nrow = length(wavtime),
-                   ncol = length(frex))
+  t_by_f <-
+    matrix(wavtime,
+           nrow = length(wavtime),
+           ncol = length(frex))
 
   # Create sine waves at each frequency
   c_sine <- 2 * 1i * pi * sweep(t_by_f,
@@ -397,42 +458,6 @@ fft_n <- function(signal, n) {
 
 }
 
-#' Convolve with morlets
-#'
-#' @author Matt Craddock \email{matt@@mattcraddock.com}
-#' @param morlet_fam family of morlet wavelets
-#' @param signal signal to be convolved
-#' @param n points for FFT
-#' @param n_kern Kernel length
-#' @importFrom stats mvfft
-#' @keywords internal
-
-conv_mor <- function(morlet_fam,
-                     signal,
-                     n,
-                     n_kern) {
-
-  n_chans <- ncol(signal)
-
-  signal <- fft_n(as.matrix(signal),
-                  n)
-
-  tf_matrix <- array(1i, dim = c(nrow(signal),
-                                 n_chans,
-                                 ncol(morlet_fam)))
-
-  for (i in 1:ncol(morlet_fam)) {
-    tf_matrix[, , i] <- stats::mvfft(signal * morlet_fam[, i],
-                              inverse = TRUE) / n
-  }
-
-  nHfkn <- floor(n_kern / 2) + 1
-  tf_matrix <- tf_matrix[nHfkn:(nrow(tf_matrix) - nHfkn + 1), , , drop = FALSE]
-  tf_matrix
-}
-
-
-
 #' Remove convolution edges
 #'
 #' Create a matrix indicating which timepoints likely suffer from edge effects.
@@ -488,7 +513,7 @@ convert_tfr <- function(data,
                         output) {
 
   if (!is.eeg_tfr(data)) {
-    stop("This function requires an eeg_tfr object as input.")
+    stop("This function requires an `eeg_tfr` object as input.")
   }
 
   if (is.complex(data$signals[[1]])) {
@@ -516,7 +541,7 @@ convert_tfr <- function(data,
 compute_itc <- function(data) {
 
   if (!is.eeg_tfr(data)) {
-    stop("This function requires an eeg_tfr object as input.")
+    stop("This function requires an `eeg_tfr` object as input.")
   }
 
   if (!is.complex(data$signals[[1]])) {
@@ -555,7 +580,7 @@ compute_itc <- function(data) {
 #' dividing each wavelet by its absolute maximum. This should result in each
 #' frequency being passed at unit amplitude, and the resulting convolution with
 #' the signal should return units approximately on the original scale (i.e. uV^2
-#' / Hz)
+#' / Hz). an alternative would be Frobenius norm?
 #'
 #' @param mf_zp A zero-padded, FFT'd morlet wavelet family
 #' @param n_freq Number of frequencies
@@ -596,7 +621,7 @@ parse_frex <- function(foi,
       seq(log(foi[1]),
           log(foi[2]),
           length.out = n_freq)
-      )
+    )
   } else {
     frex <- seq(foi[1],
                 foi[2],
@@ -606,7 +631,11 @@ parse_frex <- function(foi,
 
 
   if (verbose) {
-    message("Output frequencies: ", paste(round(frex, 2), collapse = " "))
+    message(
+      paste("Output frequencies using", spacing, "spacing:",
+            paste(round(frex, 2), collapse = " ")
+      )
+    )
   }
   frex
 }
@@ -642,9 +671,9 @@ run_tf <- function(tmp,
                          n_conv)
 
         for (ik in 1:n_epochs) {
-          tfr_out[ik, , i, ] <- 2 *
-            (2 * abs(mvfft(norm_mf * tmp_epo[, ik],
-                      inverse = TRUE)[all_times, ] / n_conv)) ^ 2
+          tfr_out[ik, , i, ] <-
+            abs(stats::mvfft(norm_mf * tmp_epo[, ik],
+                             inverse = TRUE)[all_times, ] / n_conv) ^ 2
         }
       }
     } else {
@@ -657,8 +686,8 @@ run_tf <- function(tmp,
         tmp_epo <- fft_n(tmp[, , i, drop = FALSE], n_conv)
         for (ik in 1:n_epochs) {
           tfr_out[ik, , i, ] <-
-           2 * stats::mvfft(norm_mf * tmp_epo[, ik],
-                     inverse = TRUE)[all_times,] / n_conv
+            (stats::mvfft(norm_mf * tmp_epo[, ik],
+                         inverse = TRUE)[all_times,] / n_conv)
         }
       }
     }
@@ -672,10 +701,296 @@ run_tf <- function(tmp,
       for (ik in 1:n_epochs) {
         tfr_out[, i, ] <-
           tfr_out[, i, ] +
-          (2 * abs(stats::mvfft(norm_mf * tmp_epo[, ik], inverse = TRUE)[all_times,] / n_conv)) ^ 2
+          abs(stats::mvfft(norm_mf * tmp_epo[, ik], inverse = TRUE)[all_times,] / n_conv) ^ 2
       }
     }
     tfr_out <- tfr_out / n_epochs
   }
   tfr_out
+}
+
+
+
+#' Perform Hanning time-frequency analysis
+#'
+#' Internal function for performing Hanning wavelet transforms using convolution
+#' in frequency domain
+#'
+#' @param data Data in `eeg_epochs` format.
+#' @param foi Frequencies of interest. Scalar or character vector of the lowest
+#'   and highest frequency to resolve.
+#' @param n_freq Number of frequencies to be resolved.
+#' @param spacing Use linear or log spacing for frequencies.
+#' @param n_cycles Number of cycles at each frequency.
+#' @param keep_trials Keep single trials or average over them before returning.
+#' @param output Sets whether output is power, phase, or fourier coefficients.
+#' @param downsample Downsampling factor (integer).
+#' @param demean Remove mean before transforming.
+#' @param verbose Print informative messages in console.
+#' @importFrom abind abind
+#' @importFrom stats nextn
+#' @keywords internal
+
+tf_hanning <- function(data,
+                      foi,
+                      n_freq,
+                      spacing,
+                      n_cycles,
+                      keep_trials,
+                      output,
+                      downsample,
+                      demean = TRUE,
+                      verbose) {
+
+  if (verbose) {
+    message("Computing TFR using Hanning windows convolution")
+  }
+
+  frex <- parse_frex(foi,
+                     n_freq,
+                     verbose,
+                     spacing = spacing)
+
+  if (downsample > 1 && verbose) {
+    message("Downsampling after transformation by a factor of ", downsample)
+  }
+
+  n_freq <- length(unique(frex))
+  # if a min and max n_cycles is specified, expand out to cycles per n_freq
+  if (length(n_cycles) == 2) {
+    if (identical(spacing, "linear")) {
+      n_cycles <- seq(n_cycles[1],
+                      n_cycles[2],
+                      length.out = n_freq)
+    } else if (identical(spacing, "log")) {
+      n_cycles <- exp(
+        seq(log(n_cycles[1]),
+            log(n_cycles[2]),
+            length.out = n_freq)
+      )
+    }
+  } else if (length(n_cycles) > 2) {
+    stop("n_cycles should be a vector of length 1 or length 2.")
+  }
+
+  #de-mean each epoch
+  if (demean) {
+    data <- rm_baseline(data,
+                        verbose = verbose)
+  }
+
+  elecs <- names(data$signals)
+  #fft_points <- length(unique(data$timings$time))
+  sigtime <- unique(data$timings$time)
+
+  #Create a family of morlet wavelets (unscaled)
+   hann_windows <-
+     hann_family(
+       frex = frex,
+       srate = data$srate,
+       n_cycles = n_cycles
+       )
+
+  # Create a list of metadata about the TFR
+  data$freq_info <- list(
+    freqs = frex,
+    window_resolution = morlet_res(frex,
+                                   n_cycles),
+    morlet_res = "compatibility only, please check window_resolution",
+    method = "hanning",
+    output = output,
+    baseline = "none"
+  )
+
+  #n_kern <- nrow(hann_windows)
+  max_length <- length(unique(data$timings$time))
+  n_kern <- length(hann_windows[[1]])
+  n_conv <- max_length + n_kern - 1
+  n_conv <- stats::nextn(n_conv, 2)
+
+  # zero-pad and run FFTs on morlets
+   norm_mf <- lapply(
+     hann_windows,
+     fft_n,
+     n = n_conv
+   )
+
+   norm_mf <- matrix(unlist(norm_mf),
+                     ncol = length(norm_mf))
+                    #byrow = TRUE)
+
+
+  # # Normalise wavelets for FFT (as suggested by Mike X. Cohen):
+   norm_mf <- wavelet_norm(norm_mf,
+                           n_freq)
+
+  # Run the FFT convolutions on each individual trial
+
+  # generate a vector for selection of specific timepoints
+  time_sel <- seq(1,
+                  length(unique(data$timings$time)),
+                  by = downsample)
+
+  data$signals <- run_tf(data,
+                         norm_mf,
+                         n_conv,
+                         n_kern,
+                         keep_trials,
+                         time_sel,
+                         output)
+
+  sigtime <- sigtime[time_sel]
+  data$timings <- data$timings[data$timings$time %in% sigtime,]
+
+  if (keep_trials == TRUE) {
+    dimnames(data$signals) <- list(
+      epoch = unique(data$timings$epoch),
+      time = sigtime,
+      electrode = elecs,
+      frequency = data$freq_info$freqs
+    )
+  } else {
+    data$signals <- array(data$signals,
+                          dim = c(1, dim(data$signals)))
+    dimnames(data$signals) <- list(
+      epoch = "1",
+      time = sigtime,
+      electrode = elecs,
+      frequency = data$freq_info$freqs
+    )
+  }
+
+  # Remove edges of the TFR'd data, where edge effects would be expected.
+  edge_mat <- remove_edges(sigtime,
+                           data$freq_info$window_resolution$sigma_t)
+
+  if (keep_trials == TRUE) {
+    dims <-
+      which(names(dimnames(data$signals)) %in% c("time", "frequency"))
+    data$signals <- sweep(data$signals,
+                          dims,
+                          edge_mat,
+                          "*")
+    data <- eeg_tfr(
+      data$signals,
+      srate = data$srate,
+      events = data$events,
+      chan_info = data$chan_info,
+      reference = data$reference,
+      timings = data$timings,
+      freq_info = data$freq_info,
+      dimensions = names(dimnames(data$signals)),
+      epochs = data$epochs
+    )
+    if (verbose) {
+      message("Returning single-trial data.")
+    }
+    return(data)
+  }
+
+  if (verbose) {
+    message("Returning signal averaged over all trials.")
+  }
+  dims <-
+    which(names(dimnames(data$signals)) %in% c("time", "frequency"))
+
+  data$signals <- sweep(data$signals,
+                        dims,
+                        edge_mat,
+                        "*")
+
+  recording_id <- epochs(data)$recording[[1]]
+  participant_id <- epochs(data)$participant_id[[1]]
+
+  data <- eeg_tfr(
+    data$signals,
+    srate = data$srate,
+    events = NULL,
+    epochs = tibble::tibble(epoch = 1,
+                            recording = recording_id,
+                            participant_id = participant_id),
+    chan_info = data$chan_info,
+    reference = data$reference,
+    timings = unique(data$timings),
+    freq_info = data$freq_info,
+    dimensions = c("epoch",
+                   "time",
+                   "electrode",
+                   "frequency")
+  )
+  data
+}
+
+
+hann_family <- function(frex,
+                        srate,
+                        n_cycles) {
+
+  # calculate frequency and temporal std devs
+  win_sizes <- win_samples(frex = frex,
+                           n_cycles = n_cycles,
+                           srate = srate)
+
+  max_win <- max(win_sizes) * 3
+
+    windows <- lapply(
+    seq_along(frex),
+    function(x) {
+      current_win <- win_sizes[[x]]
+      window <- signal::hanning(win_sizes[[x]])
+      pi_seq <- seq(from = -(current_win - 1) / 2,
+                    to = (current_win - 1)/ 2,
+                    length.out = current_win)
+
+      pi_seq <- pi_seq * 2 * pi /srate
+      prepad <- ceiling((max_win - length(window)) / 2)
+      postpad <- floor((max_win - length(window)) / 2)
+      win_times <- pi_seq * frex[[x]]
+      final_win <- complex(
+         real = c(rep(0, prepad),
+                  window * cos(win_times),
+                  rep(0, postpad)),
+         imaginary = c(rep(0, prepad),
+                       window * sin(win_times),
+                       rep(0, postpad))
+         )
+      final_win
+      })
+  windows
+}
+
+win_samples <- function(frex,
+                        n_cycles,
+                        srate) {
+
+  samps_sec <- (1 / srate)
+  cycle_lengths <- 1 / frex
+  win_lengths <- cycle_lengths * n_cycles # in seconds
+  ceiling(win_lengths / samps_sec) # round samples up
+}
+
+
+#' Calculate cycles
+#'
+#' A helper function for calculating the appropriate min-max cycles for a fixed
+#' time window/frequency resolution for use with `compute_tfr`. For some
+#' analyses you may wish to keep a fixed frequency resolution across the range
+#' being analysed, which requires using a fixed time window. `compute_tfr`
+#' expects the minimum and maximum number of cycles to be supplied. Use this
+#' function to calculate the equivalent number of cycles at each frequency.
+#'
+#' @param time_win Time window in seconds.
+#' @param frex Frequencies of interest.
+#' @export
+#' @return the number of cycles for each frequency of interest
+#' @examples
+#' cycle_calc(.5, seq(3, 30, length.out = 10))
+#' no_scale_tfr <- compute_tfr(demo_epochs, foi = c(3, 30),
+#'  n_cycles = range(cycle_calc(0.5, seq(3, 30, length.out = 10))),
+#'   n_freq = 10)
+#' @seealso \code{\link{compute_tfr}}
+
+cycle_calc <- function(time_win,
+                       frex) {
+  time_win * frex
 }

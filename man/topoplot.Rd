@@ -32,6 +32,7 @@ topoplot(data, ...)
   scaling = 1,
   groups = NULL,
   verbose = TRUE,
+  k = 40,
   ...
 )
 
@@ -53,6 +54,7 @@ topoplot(data, ...)
   scaling = 1,
   verbose = TRUE,
   groups = NULL,
+  k = 40,
   ...
 )
 
@@ -74,6 +76,7 @@ topoplot(data, ...)
   scaling = 1,
   groups = NULL,
   verbose = TRUE,
+  k = 40,
   ...
 )
 
@@ -96,6 +99,7 @@ topoplot(data, ...)
   scaling = 1,
   verbose = TRUE,
   groups = NULL,
+  k = 40,
   ...
 )
 
@@ -118,6 +122,7 @@ topoplot(data, ...)
   freq_range = NULL,
   verbose = TRUE,
   groups = NULL,
+  k = 40,
   ...
 )
 }
@@ -180,6 +185,9 @@ Defaults to 1.}
 \item{verbose}{Warning messages when electrodes do not have locations.
 Defaults to TRUE.}
 
+\item{k}{Degrees of freedom used for spline when using \code{method = gam}.
+Defaults to 40.}
+
 \item{component}{Component to plot (numeric)}
 
 \item{freq_range}{Range of frequencies to average over.}
@@ -219,6 +227,12 @@ there are more than 40 electrodes.
 topoplot(demo_epochs)
 topoplot(demo_epochs, time_lim = c(.1, .2))
 }
+\seealso{
+Other scalp-based maps: 
+\code{\link{erp_scalp}()},
+\code{\link{interactive_scalp}()}
+}
 \author{
 Matt Craddock, \email{matt@mattcraddock.com}
 }
+\concept{scalp-based maps}

@@ -1,19 +1,22 @@
-#' Combine EEG objects
+#' Combine `eegUtils` objects
 #'
-#' Combine multiple `eeg_epochs` or `eeg_data` objects into a single
-#' object. Note that this does not currently perform any sort of checking for
-#' internal consistency or duplication. It simply combines the objects in the
-#' order they are passed.
+#' Combine multiple `eeg_epochs`, `eeg_data`, or `eeg_evoked` objects into a
+#' single object. The function will try to check the `participant_id` entry in
+#' the `epochs` structure to see if the data comes from a single participant or
+#' from multiple participants. If the data is from a single participant, it will
+#' concatenate the objects and attempt to correct them so that the trial numbers
+#' and timings are correct.
 #'
-#' @param data An `eeg_data` or `eeg_epochs` object, or a list of such
-#'   objects.
+#' @param data An `eeg_data`, `eeg_epochs`, or `eeg_evoked` object, or a list of
+#'   such objects.
 #' @param ... additional `eeg_data` or `eeg_epochs` objects
 #' @author Matt Craddock, \email{matt@@mattcraddock.com}
 #' @importFrom dplyr mutate bind_rows
 #' @importFrom purrr map_df
-#' @return If all objects have the same participant_id, an object of the same
-#'   class as the original input object. If the objects have different
-#'   participant_id numbers, an object of class `eeg_group`.
+#' @return If all objects have the same `participant_id`, returns an object of
+#'   the same class as the original input object. If the objects have different
+#'   `participant_id` numbers, an object of both class `eeg_group` and the same
+#'   class as the original input object.
 #' @export
 #'
 eeg_combine <- function(data,
@@ -31,6 +34,7 @@ eeg_combine.default <- function(data,
   )
 }
 
+
 #' @describeIn eeg_combine Method for combining lists of `eeg_data` and
 #'   `eeg_epochs` objects.
 #' @export
@@ -39,6 +43,8 @@ eeg_combine.list <- function(data,
 
   list_classes <- lapply(data,
                          class)
+  # unname the list as the names mess with combining
+  data <- unname(data)
 
   if (any(is.list(unlist(list_classes)))) {
     stop("Cannot handle list of lists. Check class of list items.")
@@ -64,9 +70,14 @@ eeg_combine.eeg_data <- function(data,
                                  check_timings = TRUE){
 
   args <- list(...)
+
   if (length(args) == 0) {
     stop("Nothing to combine.")
   }
+
+  check_participants(data,
+                     args)
+
   if (all(vapply(args,
                  is.eeg_data,
                  logical(1)))) {
@@ -125,6 +136,12 @@ eeg_combine.eeg_epochs <- function(data,
     stop("Nothing to combine.")
   }
 
+  check_participants(data,
+                     args)
+
+  participant_time <- get_time_rows(data,
+                                    args)
+
   if (all(sapply(args, is.eeg_epochs))) {
     data$signals <- dplyr::bind_rows(data$signals,
                                      purrr::map_df(args,
@@ -146,7 +163,7 @@ eeg_combine.eeg_epochs <- function(data,
     message("Multiple participant_ids; creating eeg_group...")
     class(data) <- c("eeg_group", class(data))
     p_ids <- rle(as.character(epochs(data)$participant_id))
-    p_ids$lengths <- p_ids$lengths * length(unique(data$timings$time))
+    p_ids$lengths <- participant_time#p_ids$lengths * length(unique(data$timings$time))
     data$timings$participant_id <- inverse.rle(p_ids)
   } else {
     #fix epoch numbering for combined objects, but only when there are single
@@ -167,6 +184,11 @@ eeg_combine.eeg_evoked <- function(data,
     stop("Nothing to combine.")
   }
 
+  check_participants(data,
+                     args)
+  participant_time <- get_time_rows(data,
+                                    args)
+
   if (check_classes(args)) {
 
     data$signals <- dplyr::bind_rows(data$signals,
@@ -186,7 +208,7 @@ eeg_combine.eeg_evoked <- function(data,
     message("Multiple participant IDs, creating eeg_group.")
     class(data) <- c("eeg_group", "eeg_evoked", "eeg_epochs")
     p_ids <- rle(as.character(epochs(data)$participant_id))
-    p_ids$lengths <- p_ids$lengths * length(unique(data$timings$time))
+    p_ids$lengths <- participant_time #p_ids$lengths * participant_time#length(unique(data$timings$time))
     data$timings$participant_id <- inverse.rle(p_ids)
   }
 
@@ -206,6 +228,15 @@ eeg_combine.eeg_tfr <- function(data,
 
     new_dim <- length(dim(data$signals)) + 1
     orig_dims <- dimnames(data$signals)
+
+    # issue here: only handles eeg_tfr when same n_epochs for each object
+    # assumes when combining that they are averages from different participants
+    # so won't work if combining within participants, for example
+
+    if (!check_epochs(append(list(data), args))) {
+      stop("Cannot combine `eeg_tfr` when n_epochs is different across objects.
+           You may need to average across single-trials first using `eeg_average()`")
+    }
 
     data$signals <- abind::abind(
       data$signals,
@@ -425,7 +456,7 @@ rearrange_tfr <- function(data,
            function(x) {
              epochs(full_list[[x]]) <- sort_list[[x]]
              epochs(full_list[[x]])$epoch <- 1:nrow(epochs(full_list[[x]]))
-             full_list[[x]]$signals <- full_list[[x]]$signals[new_orders[[x]], , ,]
+             full_list[[x]]$signals <- full_list[[x]]$signals[new_orders[[x]], , , , drop = FALSE]
              full_list[[x]]
            })
   sorted_list
@@ -437,4 +468,36 @@ check_dims <- function(x) {
                      function(y) dim(y$signals))
   length(unique(sig_dims)) == 1
   #add more informative error messages
+}
+
+
+check_participants <- function(data,
+                               args) {
+  part_ids <- c(get_participant_id(data),
+                sapply(args, get_participant_id))
+
+  if (any(is.na(part_ids))) {
+    stop(
+      "`participant_id` is missing from at least one object. ",
+      "Please ensure that the `participant_id` field is set in all `eeg_epochs` objects. ",
+      "See ?set_participant_id for assistance."
+    )
+  } else if (any(part_ids == "")) {
+    warning(
+      "`participant_id` is set to a default value of \"\" in at least one object. ",
+      "If your data is from multiple participants, ",
+      "please ensure that data from each participant has a unique ",
+      "`participant_id` field before using `eeg_combine`. ",
+      "See ?set_participant_id for assistance."
+    )
+  }
+}
+
+get_time_rows <- function(data,
+                          args) {
+  c(nrow(data$timings),
+    vapply(args,
+           function(x) nrow(x$timings),
+           numeric(1))
+    )
 }

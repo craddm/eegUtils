@@ -10,11 +10,14 @@ view_artefacts(data)
 \item{data}{Object to be explored.}
 }
 \value{
-None.
+Nothing.
 }
 \description{
 An interactive Shiny app that allows exploration of channel and epoch
 statistics.
+}
+\examples{
+  \dontrun{ view_artefacts(demo_epochs) }
 }
 \author{
 Matt Craddock \email{matt@mattcraddock.com}

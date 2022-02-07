@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Detect high correlation with EOG channels — ar_eogcor • eegUtils</title>
+<title>Detect high component correlation with eye channels — ar_eogcor • eegUtils</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,9 @@
 
 
 
-<meta property="og:title" content="Detect high correlation with EOG channels — ar_eogcor" />
-<meta property="og:description" content="Detect high correlation with EOG channels" />
+<meta property="og:title" content="Detect high component correlation with eye channels — ar_eogcor" />
+<meta property="og:description" content="Checks the correlation between individual components of an eeg_ICA
+decomposition and the electrooculogram channels of an eeg_epochs dataset." />
 
 
 <meta name="robots" content="noindex">
@@ -72,7 +73,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">eegUtils</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.6.1.9000</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.6.3.9000</span>
       </span>
     </div>
 
@@ -117,6 +118,12 @@
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
+<li>
+  <a href="https://www.twitter.com/matt_craddock">
+    <span class="fab fa-twitter fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
@@ -138,13 +145,14 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Detect high correlation with EOG channels</h1>
-    <small class="dont-index">Source: <a href='https://github.com/craddm/eegUtils/blob/master/R/artefact_rejection.R'><code>R/artefact_rejection.R</code></a></small>
+    <h1>Detect high component correlation with eye channels</h1>
+    <small class="dont-index">Source: <a href='https://github.com/craddm/eegUtils/blob/master/R/ar_for_ica.R'><code>R/ar_for_ica.R</code></a></small>
     <div class="hidden name"><code>ar_eogcor.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Detect high correlation with EOG channels</p>
+    <p>Checks the correlation between individual components of an <code>eeg_ICA</code>
+decomposition and the electrooculogram channels of an <code>eeg_epochs</code> dataset.</p>
     </div>
 
     <pre class="usage"><span class='fu'>ar_eogcor</span><span class='op'>(</span><span class='va'>decomp</span>, <span class='va'>data</span>, <span class='va'>...</span><span class='op'>)</span>
@@ -208,6 +216,12 @@ automatically determining a threshold.</p></td>
 <ul>
 <li><p><code>eeg_ICA</code>: Method for eeg_ICA objects.</p></li>
 </ul>
+    <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
+
+    <p>Chaumon, M., Bishop, D.V., Busch, N.A. (2015). A practical guide
+to the selection of independent components of the electroencephalogram for
+artifact correction. J Neurosci Methods. Jul 30;250:47-63. doi:
+10.1016/j.jneumeth.2015.02.025</p>
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 
     <p>Matt Craddock, <a href='mailto:matt@mattcraddock.com'>matt@mattcraddock.com</a></p>

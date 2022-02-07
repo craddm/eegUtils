@@ -72,10 +72,11 @@ topoplot.default <- function(data,
 #' @param groups Column name for groups to retain. This is required to create facetted plots.
 #' @param verbose Warning messages when electrodes do not have locations.
 #'   Defaults to TRUE.
+#' @param k Degrees of freedom used for spline when using `method = gam`.
+#'   Defaults to 40.
 #' @import ggplot2
 #' @import tidyr
-#' @importFrom dplyr group_by summarise ungroup
-#' @import scales
+#' @family scalp-based maps
 #' @describeIn topoplot Topographical plotting of data.frames and other non
 #'   eeg_data objects.
 #' @export
@@ -97,6 +98,7 @@ topoplot.data.frame <- function(data,
                                 scaling = 1,
                                 groups = NULL,
                                 verbose = TRUE,
+                                k = 40,
                                 ...) {
 
   if (identical(method, "gam")) {
@@ -147,7 +149,7 @@ topoplot.data.frame <- function(data,
   if (any(is.na(data$x))) {
     data <- data[!is.na(data$x), ]
     if (verbose) {
-      warning("Removing channels with no location.")
+      message("Removing channels with no location.")
     }
   }
 
@@ -164,7 +166,10 @@ topoplot.data.frame <- function(data,
     quantity <- as.name(quantity)
   }
 
-  if (!is.null(rlang::enexpr(groups))) {
+  #groups <- rlang::enexpr(groups)
+
+#  if (!is.null(rlang::enexpr(groups))) {
+  if (!rlang::is_null(groups)) {
     data <-
       dplyr::group_by(data,
                       x,
@@ -205,21 +210,29 @@ topoplot.data.frame <- function(data,
                         cols = c(data))
 
   # Find furthest electrode from origin
-  abs_x_max <- max(abs(data$x), na.rm = TRUE)
-  abs_y_max <- max(abs(data$y), na.rm = TRUE)
-  max_elec <- sqrt(abs_x_max^2 + abs_y_max^2)
+ #abs_x_max <- max(abs(data$x), na.rm = TRUE)
+ #abs_y_max <- max(abs(data$y), na.rm = TRUE)
+  #max_elec <- sqrt(abs_x_max^2 + abs_y_max^2)
+  max_elec <- sqrt(max(abs(data$x)^2 + abs(data$y)^2))
   if (is.null(r)) {
     # mm are expected for coords, 95 is good approx for Fpz - Oz radius
-    r <- switch(interp_limit,
-                "head" = max_elec,
-                "skirt" = 95)
+    # r <- switch(interp_limit,
+    #             "head" = max_elec * 1.05,
+    #             "skirt" = 95)
+
+    r <- update_r(r = 95,
+                  data = data,
+                  interp_limit = interp_limit)
   } else {
-    if (r < max_elec) {
-      if (verbose) message("r < most distant electrode from origin, adjusting r")
-      r <- max_elec
-    }
+     if (r < max_elec) {
+       if (verbose) message("r < most distant electrode from origin, consider adjusting to no lower than ",
+                            round(max_elec, 2))
+     }
   }
 
+  if (verbose) {
+    message(paste("Plotting head r", round(r, 2), "mm"))
+  }
   # Create the actual plot -------------------------------
   topo <-
     ggplot2::ggplot(get_scalpmap(data,
@@ -227,7 +240,8 @@ topoplot.data.frame <- function(data,
                                  method = method,
                                  grid_res = grid_res,
                                  r = r,
-                                 facets = {{groups}}),
+                                 facets = {{groups}},
+                                 k = k),
                     aes(x = x,
                         y = y,
                         fill = fill)) +
@@ -303,6 +317,11 @@ topoplot.data.frame <- function(data,
   topo <- set_palette(topo,
                       palette,
                       limits)
+  if (identical(groups, "component")) {
+    topo <-
+      topo +
+      facet_wrap(~component)
+  }
   topo
 }
 
@@ -325,6 +344,7 @@ topoplot.eeg_data <- function(data, time_lim = NULL,
                               scaling = 1,
                               verbose = TRUE,
                               groups = NULL,
+                              k = 40,
                               ...) {
 
   if (!is.null(data$chan_info)) {
@@ -362,7 +382,8 @@ topoplot.eeg_data <- function(data, time_lim = NULL,
            passed = TRUE,
            scaling = scaling,
            verbose = verbose,
-           groups = groups)
+           groups = groups,
+           k = k)
 }
 
 
@@ -386,6 +407,7 @@ topoplot.eeg_epochs <- function(data,
                                 scaling = 1,
                                 groups = NULL,
                                 verbose = TRUE,
+                                k = 40,
                                 ...) {
 
   if (!is.null(data$chan_info)) {
@@ -419,8 +441,9 @@ topoplot.eeg_epochs <- function(data,
            highlights = highlights,
            scaling = scaling,
            groups = groups,
-           verbose = verbose
-           )
+           verbose = verbose,
+           k = k
+  )
 }
 
 
@@ -445,6 +468,7 @@ topoplot.eeg_ICA <- function(data,
                              scaling = 1,
                              verbose = TRUE,
                              groups = NULL,
+                             k = 40,
                              ...) {
   if (missing(component)) {
     stop("Component number must be specified for eeg_ICA objects.")
@@ -480,7 +504,8 @@ topoplot.eeg_ICA <- function(data,
            chan_marker = chan_marker,
            time_lim = NULL,
            verbose = verbose,
-           groups = groups)
+           groups = groups,
+           k = k)
 
 }
 
@@ -506,6 +531,7 @@ topoplot.eeg_tfr <- function(data,
                              freq_range = NULL,
                              verbose = TRUE,
                              groups = NULL,
+                             k = 40,
                              ...) {
 
   if (!is.null(data$chan_info)) {
@@ -513,10 +539,11 @@ topoplot.eeg_tfr <- function(data,
   }
 
   if (!is.null(freq_range)) {
-    data <- select_freqs(data, freq_range)
+    data <- select_freqs(data,
+                         freq_range)
   }
 
-  if (data$freq_info$baseline == "none") {
+  if (identical(data$freq_info$baseline, "none")) {
     palette <- "viridis"
   }
 
@@ -543,7 +570,8 @@ topoplot.eeg_tfr <- function(data,
            scaling = scaling,
            passed = TRUE,
            verbose = verbose,
-           groups = groups)
+           groups = groups,
+           k = k)
 }
 
 #' Set palette and limits for topoplot
@@ -557,7 +585,7 @@ topoplot.eeg_tfr <- function(data,
 set_palette <- function(topo, palette, limits = NULL) {
 
   if (palette %in% c("magma", "inferno", "plasma",
-                  "viridis", "A", "B", "C", "D")) {
+                     "viridis", "A", "B", "C", "D")) {
 
     topo <- topo +
       ggplot2::scale_fill_viridis_c(option = palette,

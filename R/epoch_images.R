@@ -59,6 +59,9 @@ erp_image.data.frame <- function(data,
                      "amplitude",
                      "epoch")
 
+  if (length(electrode) > 1) {
+    stop("Currently, only one electrode can be plotted at a time.")
+  }
   col_names <- names(data)
 
   if (!all(required_cols %in% col_names)) {
@@ -74,8 +77,6 @@ erp_image.data.frame <- function(data,
         time < time_lim[2]
         )
   }
-
-
 
   if (all(electrode %in% data$electrode)) {
     sel_elec <- electrode
@@ -107,6 +108,9 @@ erp_image.eeg_epochs <- function(data,
                                  interpolate = FALSE,
                                  na.rm = TRUE,
                                  ...) {
+  if (length(electrode) > 1) {
+    stop("Currently, only one electrode can be plotted at a time.")
+  }
 
   if (!electrode %in% names(data$signals)) {
     stop("Specified electrode not found.")
@@ -179,6 +183,10 @@ erp_image.eeg_tfr <- function(data,
     stop("`erp_image()` requires an `eeg_tfr` object with more than one trial.")
   }
 
+  if (length(electrode) > 1) {
+    stop("Currently, only one electrode can be plotted at a time.")
+  }
+
   data <- select_elecs(data,
                        electrode)
 
@@ -196,6 +204,9 @@ erp_image.eeg_tfr <- function(data,
   data <- as.data.frame(data,
                         long = TRUE,
                         coords = FALSE)
+
+
+
   create_tfrimage(data,
                   electrode = electrode,
                   smoothing = smoothing,
@@ -270,7 +281,7 @@ create_erpimage <- function(data,
     scale_x_continuous(expand = c(0, 0)) +
     theme_classic() +
     labs(x = "Time (s)", fill = "Amplitude", y = "Epoch number") +
-    ggtitle(paste("ERP Image for electrode", electrode))
+    ggtitle(paste("ERP Image for", electrode))
 }
 
 
@@ -350,8 +361,11 @@ create_tfrimage <- function(data,
 #' original order.
 #'
 #' @examples
+#' library(ggplot2)
 #' erp_raster(demo_epochs)
 #' erp_raster(demo_epochs, interpolate = TRUE)
+#' erp_raster(rm_baseline(demo_epochs, c(-.1, 0)), interpolate = TRUE)
+#' erp_raster(demo_spatial) + facet_wrap(~epoch_labels)
 #' @param data An `eeg_epochs` object
 #' @param anat_order Arrange the channels in a more anatomically representative
 #'   order. Defaults to TRUE.
@@ -393,34 +407,26 @@ erp_raster <- function(data,
   if (all(anat_order && !is.null(data$chan_info))) {
     chan_order <- arrange_chans(channels(data),
                                 channel_names(data))
-    data$signals <- data$signals[, chan_order]
+    chan_lab_order <- channel_names(data)[chan_order]
+  } else {
+    chan_lab_order <- channel_names(data)
   }
 
-  data <- data.frame(data$signals,
-                     time = data$timings$time)
-  data <- split(data,
-                data$time)
-  data <- lapply(data,
-                 Matrix::colMeans)
-  data <- as.data.frame(
-    do.call(rbind,
-            data)
-    )
-  data <- tidyr::gather(data,
-                        electrode,
-                        amplitude,
-                        -time,
-                        factor_key = TRUE)
+  data <- as.data.frame(data,
+                        long = TRUE)
+  data$electrode <- factor(data$electrode,
+                           levels = chan_lab_order)
   if (is.null(clim)) {
-    clim <- c(min(data$amplitude),
-              max(data$amplitude))
+    clim_max <- max(abs(range(data$amplitude)))
+    clim <- c(-clim_max, clim_max) / 10
   }
 
   ggplot2::ggplot(data,
                   aes(x = time,
                       y = electrode,
                       fill = amplitude)) +
-    geom_raster(interpolate = interpolate) +
+    stat_summary_by_fill(interpolate = interpolate) +
+    #geom_raster(interpolate = interpolate) +
     geom_vline( xintercept = 0,
                 linetype = "dashed",
                 size = 2) +
