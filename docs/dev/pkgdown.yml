@@ -6,9 +6,10 @@ articles:
   eegUtils: eegUtils.html
   epoch-handling: epoch-handling.html
   linear_modelling: linear_modelling/linear_modelling.html
+  N170_single_subject: single_subj_N170/N170_single_subject.html
   time-frequency-analysis: time-frequency-analysis.html
   topoplot: topoplot/topoplot.html
-last_built: 2022-02-07T16:05Z
+last_built: 2022-02-10T12:47Z
 urls:
   reference: http://craddm.github.io/eegUtils/reference
   article: http://craddm.github.io/eegUtils/articles

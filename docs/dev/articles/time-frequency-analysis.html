@@ -20,6 +20,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -32,18 +34,12 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">eegUtils</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.6.3.9000</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.7.0.9000</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-<li>
-  <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
 <li>
   <a href="../articles/eegUtils.html">Get started</a>
 </li>
@@ -77,16 +73,10 @@
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
-<li>
-  <a href="https://www.twitter.com/matt_craddock">
-    <span class="fab fa-twitter fa-lg"></span>
-     
-  </a>
-</li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/craddm/eegUtils/">
+  <a href="https://github.com/craddm/eegUtils/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -101,15 +91,15 @@
 
       
 
-      </header><script src="time-frequency-analysis_files/header-attrs-2.10/header-attrs.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Frequency analysis</h1>
-                        <h4 class="author">Matt Craddock</h4>
+                        <h4 data-toc-skip class="author">Matt Craddock</h4>
             
-            <h4 class="date">2021-08-27</h4>
+            <h4 data-toc-skip class="date">2022-02-07</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/craddm/eegUtils/blob/master/vignettes/time-frequency-analysis.Rmd"><code>vignettes/time-frequency-analysis.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/craddm/eegUtils/blob/HEAD/vignettes/time-frequency-analysis.Rmd" class="external-link"><code>vignettes/time-frequency-analysis.Rmd</code></a></small>
       <div class="hidden name"><code>time-frequency-analysis.Rmd</code></div>
 
     </div>
@@ -117,12 +107,12 @@
     
     
 <p>Periodicity is commonly observed in EEG signals. For example, oscillations in the alpha frequency range (approximately 8-13 Hz) were one of the first signals observed in the human EEG. One method of analysing this periodicity is to calculate the Power Spectral Density using a method such as Welch’s FFT.</p>
-<div id="frequency-analysis" class="section level2">
-<h2 class="hasAnchor">
-<a href="#frequency-analysis" class="anchor"></a>Frequency analysis</h2>
+<div class="section level2">
+<h2 id="frequency-analysis">Frequency analysis<a class="anchor" aria-label="anchor" href="#frequency-analysis"></a>
+</h2>
 <p>In <code>eegUtils</code>, this can be achieved using <code><a href="../reference/compute_psd.html">compute_psd()</a></code> and <code><a href="../reference/plot_psd.html">plot_psd()</a></code>. With epoched data, <code><a href="../reference/compute_psd.html">compute_psd()</a></code> calculates the PSD for each trial separately. <code><a href="../reference/compute_psd.html">compute_psd()</a></code> returns a <code>data.frame</code> with spectral power at each resolved frequency and for each electrode. Note that <code><a href="../reference/plot_psd.html">plot_psd()</a></code> can be called directly on <code>eeg_data</code> or <code>eeg_epochs</code> objects without first having to <code><a href="../reference/compute_psd.html">compute_psd()</a></code>. With epoched data, it will compute the PSD for each epoch and then average over epochs before plotting.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/craddm/eegUtils">eegUtils</a></span><span class="op">)</span>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/craddm/eegUtils" class="external-link">eegUtils</a></span><span class="op">)</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Attaching package: 'eegUtils'</span>
 <span class="co">#&gt; The following object is masked from 'package:stats':</span>
@@ -142,16 +132,16 @@
 <span class="co">#&gt; Overlapping points: 42 (50% overlap)</span></code></pre></div>
 <p><img src="time-frequency-analysis_files/figure-html/create-psd-1.png" width="700"></p>
 </div>
-<div id="time-frequency-analysis" class="section level2">
-<h2 class="hasAnchor">
-<a href="#time-frequency-analysis" class="anchor"></a>Time-frequency analysis</h2>
+<div class="section level2">
+<h2 id="time-frequency-analysis">Time-frequency analysis<a class="anchor" aria-label="anchor" href="#time-frequency-analysis"></a>
+</h2>
 <p>Frequency analysis necessarily discards temporal information. One problem is that it assumes stationarity - that the signal remains stable in terms of frequency and power across the whole analysed time window. However, this is rarely the case with EEG data, which exhibits dynamics across a wide range of timescales.</p>
 <p>Time-frequency analysis is a method of accounting for non-stationarity by decomposing the signal using a moving-window analysis, tiling the time-frequency space to resolve power over relatively shorter time-windows.</p>
 <p>In <code>eegUtils</code>, <code><a href="../reference/compute_tfr.html">compute_tfr()</a></code> can be used to calculate a time-frequency representation of <code><a href="../reference/eeg_epochs.html">eeg_epochs()</a></code>. Currently, this is achieved using Morlet wavelets. Morlet wavelets are used to window the signal, controlling spectral leakage and time-frequency specificity. Morlet wavelets have a user-defined temporal extent, which in turn determines the frequency extent. We define the temporal extent of our wavelets by <strong>cycles</strong>; we define it as an integer number of cycles at each frequency of interest.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">demo_tfr</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compute_tfr.html">compute_tfr</a></span><span class="op">(</span><span class="va">demo_epochs</span>,
                         method <span class="op">=</span> <span class="st">"morlet"</span>,
-                        foi <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">30</span><span class="op">)</span>,
+                        foi <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">30</span><span class="op">)</span>,
                         n_freq <span class="op">=</span> <span class="fl">12</span>,
                         n_cycles <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>
 <span class="co">#&gt; Computing TFR using Morlet wavelet convolution</span>
@@ -189,10 +179,12 @@
 <p><img src="time-frequency-analysis_files/figure-html/tfr-plot-1.png" width="700"></p>
 <p>Baseline correction is common in the literature, which can serve two purposes. Several different methods are possible. both for plotting only, and as a modification to the <code>eeg_tfr</code> object using <code><a href="../reference/rm_baseline.html">rm_baseline()</a></code>.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/plot_tfr.html">plot_tfr</a></span><span class="op">(</span><span class="va">demo_tfr</span>, baseline_type <span class="op">=</span> <span class="st">"absolute"</span>, baseline <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">.1</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="../reference/plot_tfr.html">plot_tfr</a></span><span class="op">(</span><span class="va">demo_tfr</span>, baseline_type <span class="op">=</span> <span class="st">"absolute"</span>, baseline <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">.1</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span>
+<span class="co">#&gt; Baseline: -0.1 - 0 s</span></code></pre></div>
 <p><img src="time-frequency-analysis_files/figure-html/db-plot-1.png" width="700"></p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/plot_tfr.html">plot_tfr</a></span><span class="op">(</span><span class="va">demo_tfr</span>, baseline_type <span class="op">=</span> <span class="st">"db"</span>, baseline <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">.1</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="../reference/plot_tfr.html">plot_tfr</a></span><span class="op">(</span><span class="va">demo_tfr</span>, baseline_type <span class="op">=</span> <span class="st">"db"</span>, baseline <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">.1</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span>
+<span class="co">#&gt; Baseline: -0.1 - 0 s</span></code></pre></div>
 <p><img src="time-frequency-analysis_files/figure-html/db-plot-2.png" width="700"></p>
 </div>
   </div>
@@ -208,11 +200,13 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by Matt Craddock.</p>
+  <p></p>
+<p>Developed by Matt Craddock.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
 </div>
 
       </footer>
@@ -220,6 +214,8 @@
 
   
 
+
+  
 
   </body>
 </html>
