@@ -67,8 +67,7 @@ eeg_combine.list <- function(data,
 
 eeg_combine.eeg_data <- function(data,
                                  ...,
-                                 check_timings = TRUE){
-
+                                 check_timings = TRUE) {
   args <- list(...)
 
   if (length(args) == 0) {
@@ -85,11 +84,9 @@ eeg_combine.eeg_data <- function(data,
                    is.eeg_epochs))) {
       stop("All objects must be unepoched eeg_data objects.")
     } else {
-
       nsamps <- samples(data)
 
       if (length(args) > 1) {
-
         nsamps <- c(nsamps,
                     vapply(args,
                            samples,
@@ -99,20 +96,22 @@ eeg_combine.eeg_data <- function(data,
 
       data$signals <- dplyr::bind_rows(data$signals,
                                        purrr::map_df(args,
-                                                     ~.$signals))
+                                                     ~ .$signals))
       for (i in 1:length(args)) {
         events(args[[i]]) <-
-          dplyr::mutate(events(args[[i]]),
-                        event_onset = event_onset + nsamps[[i]],
-                        event_time = (event_onset - 1) / data$srate)
-        }
+          dplyr::mutate(
+            events(args[[i]]),
+            event_onset = event_onset + nsamps[[i]],
+            event_time = (event_onset - 1) / data$srate
+          )
+      }
 
       data$events  <- dplyr::bind_rows(data$events,
                                        purrr::map_df(args,
-                                                     ~.$events))
+                                                     ~ .$events))
       data$timings <- dplyr::bind_rows(data$timings,
                                        purrr::map_df(args,
-                                                     ~.$timings))
+                                                     ~ .$timings))
       message("Taking first dataset's recording name.")
     }
   }
@@ -201,7 +200,7 @@ eeg_combine.eeg_evoked <- function(data,
                                      purrr::map_df(args,
                                                    ~.$epochs))
   } else {
-    stop("All inputs must be eeg_evoked objects.")
+    stop("All inputs must be `eeg_evoked` objects.")
   }
 
   if (length(unique(epochs(data)$participant_id)) > 1) {
