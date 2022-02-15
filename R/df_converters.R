@@ -11,7 +11,7 @@
 #' @param coords Include electrode coordinates in output. Only possible when
 #'   long = TRUE.
 #' @param ... arguments for other as.data.frame commands
-#' @importFrom tidyr gather
+#' @importFrom tidyr pivot_longer
 #' @importFrom dplyr left_join
 #' @export
 
@@ -22,16 +22,17 @@ as.data.frame.eeg_data <- function(x,
                                    events = FALSE,
                                    coords = FALSE,
                                    ...) {
+  chan_names <- channel_names(x)
   df <- data.frame(x$signals,
                    x$timings)
 
   if (long) {
-    df <- tidyr::gather(df,
-                        electrode,
-                        amplitude,
-                        -time,
-                        -sample,
-                        factor_key = TRUE)
+    df <- tidyr::pivot_longer(
+      df,
+      cols = chan_names,
+      names_to = "electrode",
+      values_to = "amplitude"
+      )
   }
 
   if (events) {
@@ -44,16 +45,16 @@ as.data.frame.eeg_data <- function(x,
 }
 
 
-#' Convert `eeg_tfr` objects to data frames
+#' Convert `eeg_tfr` objects to a `data.frame`
 #'
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #' @param x Object of class `eeg_tfr`
 #' @param row.names Kept for compatability with S3 generic, ignored.
 #' @param optional Kept for compatability with S3 generic, ignored.
 #' @param long Convert to long format. Defaults to FALSE.
-#' @param ... arguments for other as.data.frame commands
+#' @param ... arguments for other `as.data.frame` commands
 #'
-#' @importFrom tidyr gather
+#' @importFrom tidyr pivot_longer
 #' @export
 as.data.frame.eeg_tfr <- function(x,
                                   row.names = NULL,
@@ -144,7 +145,7 @@ as.data.frame.eeg_tfr <- function(x,
 
 
 
-#' Convert `eeg_lm` to data.frame
+#' Convert `eeg_lm` to `data.frame`
 #'
 #' Convert an object of class `eeg_data` into a standard `data.frame`.
 #'
@@ -221,7 +222,6 @@ as.data.frame.eeg_lm <- function(x,
 #' @param coords Include electrode coordinates in output (ignored if long = FALSE)
 #' @param ... arguments for other as.data.frame commands
 #'
-#' @importFrom tidyr spread
 #' @export
 
 as.data.frame.eeg_stats <- function(x,
@@ -338,37 +338,43 @@ as.data.frame.eeg_evoked <- function(x,
                                      coords = TRUE,
                                      ...) {
 
+  is_group_df <- inherits(x, "eeg_group")
+  chan_info <- channels(x)
+  chan_names <- channel_names(x)
+  epoch_info <- epochs(x)
+  x <- cbind(x$signals,
+             x$timings)
 
-
-  df <- cbind(x$signals,
-              x$timings)
-
-  if (inherits(x, "eeg_group")) {
-    df <- dplyr::left_join(df,
-                           epochs(x),
-                           by = c("participant_id",
-                                  "epoch",
-                                  "recording"))
+  if (is_group_df) {
+    x <- dplyr::left_join(x,
+                          epoch_info,
+                          by = c("participant_id",
+                                 "epoch"))
   } else {
-    df <- dplyr::left_join(df,
-                           epochs(x),
-                           by = "epoch")
+    x <- dplyr::left_join(x,
+                          epoch_info,
+                          by = "epoch")
   }
 
   if (long) {
-    df <- tidyr::pivot_longer(df,
-                              cols = channel_names(x),
-                              names_to = "electrode",
-                              values_to = "amplitude")
+    x <- tidyr::pivot_longer(x,
+                             cols = chan_names,
+                             names_to = "electrode",
+                             values_to = "amplitude")
 
-    if (coords && !is.null(channels(x))) {
-      df <- dplyr::left_join(df,
-                             channels(x)[, c("electrode", "x", "y")],
+    if (coords && !is.null(chan_info)) {
+      # wut_tho <- dplyr::left_join(x,
+      #                             chan_info[, c("electrode", "x", "y")],
+      #                             by = "electrode")
+       x <- dplyr::left_join(x,
+                             chan_info[, c("electrode", "x", "y")],
                              by = "electrode")
+      # x <- wut_tho
+      # rm(wut_tho)
     }
   }
 
-  df
+  x
 }
 
 #' Convert `eeg_ICA` object to data frame
