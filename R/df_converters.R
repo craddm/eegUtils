@@ -266,7 +266,7 @@ as.data.frame.eeg_stats <- function(x,
 #' @param coords Include electrode coordinates in output. Ignored if long == FALSE.
 #' @param ... arguments for other as.data.frame commands
 #'
-#' @importFrom tidyr gather
+#' @importFrom tidyr pivot_longer
 #' @importFrom dplyr left_join
 #' @export
 
@@ -294,11 +294,10 @@ as.data.frame.eeg_epochs <- function(x, row.names = NULL,
 
     # When converting to long, use factor_key to keep channels in same order,
     # then convert back to character.
-    df <- tidyr::gather(df,
-                        electrode,
-                        amplitude,
-                        channel_names(x),
-                        factor_key = TRUE)
+    df <- tidyr::pivot_longer(df,
+                              names_to = "electrode",
+                              values_to = "amplitude",
+                              cols = channel_names(x))
 
     df$electrode <- as.character(df$electrode)
 
@@ -328,7 +327,8 @@ as.data.frame.eeg_epochs <- function(x, row.names = NULL,
 #' @param coords include electrode coordinates in output. Ignored if long = FALSE.
 #' @param ... arguments for other as.data.frame commands
 #'
-#' @importFrom tidyr gather
+#' @importFrom tidyr pivot_longer
+#' @importFrm dplyr left_join
 #' @export
 
 as.data.frame.eeg_evoked <- function(x,
@@ -347,7 +347,8 @@ as.data.frame.eeg_evoked <- function(x,
     df <- dplyr::left_join(df,
                            epochs(x),
                            by = c("participant_id",
-                                  "epoch"))
+                                  "epoch",
+                                  "recording"))
   } else {
     df <- dplyr::left_join(df,
                            epochs(x),
@@ -355,17 +356,15 @@ as.data.frame.eeg_evoked <- function(x,
   }
 
   if (long) {
-    df <- tidyr::gather(df,
-                        "electrode",
-                        "amplitude",
-                        channel_names(x),
-                        factor_key = TRUE)
-    df$electrode <- as.character(df$electrode)
+    df <- tidyr::pivot_longer(df,
+                              cols = channel_names(x),
+                              names_to = "electrode",
+                              values_to = "amplitude")
 
     if (coords && !is.null(channels(x))) {
-      df <- left_join(df,
-                      channels(x)[, c("electrode", "x", "y")],
-                      by = "electrode")
+      df <- dplyr::left_join(df,
+                             channels(x)[, c("electrode", "x", "y")],
+                             by = "electrode")
     }
   }
 
@@ -384,7 +383,7 @@ as.data.frame.eeg_evoked <- function(x,
 #' @param coords Adds electrode coordinates if TRUE; only if long data and the mixing matrix are requested.
 #' @param ... arguments for other as.data.frame commands
 #'
-#' @importFrom tidyr gather
+#' @importFrom tidyr pivot_longer
 #' @export
 
 as.data.frame.eeg_ICA <- function(x,
@@ -426,15 +425,11 @@ as.data.frame.eeg_ICA <- function(x,
   }
 
   if (long) {
-    df <- tidyr::gather(df,
-                        component,
-                        amplitude,
-                        channel_names(x),
-                        factor_key = TRUE)
-    df$component <- as.character(df$component)
+    df <- tidyr::pivot_longer(df,
+                              names_to = "component",
+                              values_to = "amplitude",
+                              cols = channel_names(x))
   }
-
-
   df
 }
 
