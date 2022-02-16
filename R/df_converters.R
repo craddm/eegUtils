@@ -328,7 +328,7 @@ as.data.frame.eeg_epochs <- function(x, row.names = NULL,
 #' @param ... arguments for other as.data.frame commands
 #'
 #' @importFrom tidyr pivot_longer
-#' @importFrm dplyr left_join
+#' @importFrom dplyr left_join
 #' @export
 
 as.data.frame.eeg_evoked <- function(x,
@@ -363,14 +363,9 @@ as.data.frame.eeg_evoked <- function(x,
                              values_to = "amplitude")
 
     if (coords && !is.null(chan_info)) {
-      # wut_tho <- dplyr::left_join(x,
-      #                             chan_info[, c("electrode", "x", "y")],
-      #                             by = "electrode")
        x <- dplyr::left_join(x,
                              chan_info[, c("electrode", "x", "y")],
                              by = "electrode")
-      # x <- wut_tho
-      # rm(wut_tho)
     }
   }
 

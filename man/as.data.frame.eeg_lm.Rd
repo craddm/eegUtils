@@ -2,7 +2,7 @@
 % Please edit documentation in R/df_converters.R
 \name{as.data.frame.eeg_lm}
 \alias{as.data.frame.eeg_lm}
-\title{Convert \code{eeg_lm} to data.frame}
+\title{Convert \code{eeg_lm} to \code{data.frame}}
 \usage{
 \method{as.data.frame}{eeg_lm}(
   x,
