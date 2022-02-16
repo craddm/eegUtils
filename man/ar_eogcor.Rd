@@ -15,6 +15,7 @@ ar_eogcor(decomp, data, ...)
   threshold = NULL,
   plot = TRUE,
   bipolarize = TRUE,
+  verbose = TRUE,
   ...
 )
 }
@@ -35,6 +36,8 @@ automatically determining a threshold.}
 \item{plot}{Plot correlation coefficient for all components}
 
 \item{bipolarize}{Bipolarize the HEOG and VEOG channels?}
+
+\item{verbose}{Print informative messages. Defaults to TRUE.}
 }
 \value{
 A character vector of component names that break the threshold.

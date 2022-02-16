@@ -27,6 +27,7 @@ ar_eogcor <- function(decomp,
 #'   automatically determining a threshold.
 #' @param plot Plot correlation coefficient for all components
 #' @param bipolarize Bipolarize the HEOG and VEOG channels?
+#' @param verbose Print informative messages. Defaults to TRUE.
 #' @describeIn ar_eogcor Method for eeg_ICA objects.
 #' @export
 ar_eogcor.eeg_ICA <- function(decomp,
@@ -36,6 +37,7 @@ ar_eogcor.eeg_ICA <- function(decomp,
                               threshold = NULL,
                               plot = TRUE,
                               bipolarize = TRUE,
+                              verbose = TRUE,
                               ...) {
 
   if (!is.null(threshold)) {
@@ -77,6 +79,9 @@ ar_eogcor.eeg_ICA <- function(decomp,
   above_thresh <- apply(crossed_thresh,
                         1, any)
   above_thresh <- channel_names(decomp)[above_thresh]
+  if (verbose) {
+    message("Components with high EOG correlation: ", paste0(above_thresh, sep = " "))
+  }
   above_thresh
 }
 
@@ -251,5 +256,11 @@ ar_trialfoc <- function(data,
     graphics::abline(h = threshold)
   }
 
-  channel_names(data)[matrixStats::colMaxs(zmat) > threshold]
+  trial_foc <- channel_names(data)[matrixStats::colMaxs(zmat) > threshold]
+
+  if (verbose) {
+    message("Components with high trial focality: ", paste0(trial_foc, sep = " "))
+  }
+
+  trial_foc
 }
