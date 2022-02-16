@@ -52,7 +52,13 @@ rm_baseline.eeg_data <- function(data,
                                time_lim = time_lim)
     baseline_dat <- colMeans(base_times$signals)
     if (verbose) {
-      message(paste("Baseline:", time_lim, "s"))
+      message(paste0(
+        "Baseline: ",
+        time_lim[1],
+        " - ",
+        time_lim[2],
+        "s")
+        )
     }
     data$signals <- as.matrix(data$signals)
   }
@@ -98,7 +104,12 @@ rm_baseline.eeg_epochs <- function(data,
 
   } else {
     if (verbose) {
-      message(paste("Baseline:", time_lim, "s"))
+      message(paste0(
+        "Baseline: ",
+        time_lim[1],
+        " - ",
+        time_lim[2],
+        "s"))
     }
     base_times <- get_epoch_baselines(data,
                                       time_lim)
@@ -205,7 +216,11 @@ rm_baseline.eeg_tfr <- function(data,
 
   if (!is.null(time_lim)) {
     if (verbose) {
-      message(paste("Baseline:", time_lim[1], "-", time_lim[2], "s"))
+      message(paste0("Baseline: ",
+                     time_lim[1],
+                     "-",
+                     time_lim[2],
+                     " s"))
     }
     bline <- select_times(data,
                           time_lim)
