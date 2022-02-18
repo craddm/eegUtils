@@ -44,6 +44,9 @@
       <a href="../articles/linear_modelling/linear_modelling.html">Linear Modelling</a>
     </li>
     <li>
+      <a href="../articles/single_subj_N170/N170_single_subject.html">Getting started with eegUtils and the N170</a>
+    </li>
+    <li>
       <a href="../articles/time-frequency-analysis.html">Frequency analysis</a>
     </li>
     <li>
@@ -210,9 +213,9 @@ co-ordinates), amplitude is amplitude.</p></dd>
 <dt>...</dt>
 <dd><p>Various arguments passed to specific functions</p></dd>
 <dt>time_lim</dt>
-<dd><p>Timepoint(s) to plot. Can be one time or a range to average
-over. If none is supplied, the function will average across all timepoints
-in the supplied data.</p></dd>
+<dd><p>Timepoint(s) to plot. Can be one time, a range to average
+over, or a list of individual times. If none is supplied, the function will
+average across all timepoints in the supplied data.</p></dd>
 <dt>limits</dt>
 <dd><p>Limits of the fill scale - should be given as a character
 vector with two values specifying the start and endpoints e.g. limits =
@@ -257,7 +260,8 @@ only 'biosemi64alpha' available other than default 10/20 system)</p></dd>
 <dd><p>Scaling multiplication factor for labels and any plot lines.
 Defaults to 1.</p></dd>
 <dt>groups</dt>
-<dd><p>Column name for groups to retain. This is required to create facetted plots.</p></dd>
+<dd><p>Column name for groups to retain. This is required to create
+facetted plots.</p></dd>
 <dt>verbose</dt>
 <dd><p>Warning messages when electrodes do not have locations.
 Defaults to TRUE.</p></dd>
@@ -313,6 +317,11 @@ there are more than 40 electrodes.</p>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Using electrode locations from data.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Plotting head r 95 mm</span>
 <span class="r-plt img"><img src="topoplot-2.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span class="fu">topoplot</span><span class="op">(</span><span class="va">demo_spatial</span>, time_lim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">.1</span>, <span class="fl">.2</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Using electrode locations from data.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Removing channels with no location.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Plotting head r 95 mm</span>
+<span class="r-plt img"><img src="topoplot-3.png" alt="" width="700" height="433"></span>
 </code></pre></div>
     </div>
   </div>

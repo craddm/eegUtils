@@ -63,7 +63,7 @@ select_times.eeg_data <- function(data,
     remaining_times <- unique(data$timings$time)
     event_rows <- data$events$time %in% remaining_times
   } else {
-    event_rows <- data$events$time > time_lim[1] & data$events$time < time_lim[2]
+    event_rows <- data$events$event_time > time_lim[1] & data$events$event_time < time_lim[2]
   }
   data$events <- data$events[event_rows, , drop = FALSE]
 
