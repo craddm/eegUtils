@@ -133,9 +133,9 @@ co-ordinates), amplitude is amplitude.}
 
 \item{...}{Various arguments passed to specific functions}
 
-\item{time_lim}{Timepoint(s) to plot. Can be one time or a range to average
-over. If none is supplied, the function will average across all timepoints
-in the supplied data.}
+\item{time_lim}{Timepoint(s) to plot. Can be one time, a range to average
+over, or a list of individual times. If none is supplied, the function will
+average across all timepoints in the supplied data.}
 
 \item{limits}{Limits of the fill scale - should be given as a character
 vector with two values specifying the start and endpoints e.g. limits =
@@ -180,7 +180,8 @@ only 'biosemi64alpha' available other than default 10/20 system)}
 \item{scaling}{Scaling multiplication factor for labels and any plot lines.
 Defaults to 1.}
 
-\item{groups}{Column name for groups to retain. This is required to create facetted plots.}
+\item{groups}{Column name for groups to retain. This is required to create
+facetted plots.}
 
 \item{verbose}{Warning messages when electrodes do not have locations.
 Defaults to TRUE.}
@@ -226,6 +227,7 @@ there are more than 40 electrodes.
 \examples{
 topoplot(demo_epochs)
 topoplot(demo_epochs, time_lim = c(.1, .2))
+topoplot(demo_spatial, time_lim = list(0, .1, .2))
 }
 \seealso{
 Other scalp-based maps: 

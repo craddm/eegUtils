@@ -11,6 +11,8 @@
 #' demo_epochs
 #' short_epochs <- select_times(demo_epochs, time_lim = c(-.1, .3))
 #' short_epochs
+#' short_epochs <- select_times(demo_epochs, time_lim = list(-.1, .15, .3))
+#' head(short_epochs$timings)
 #'
 #' @author Matt Craddock, \email{matt@@mattcraddock.com}
 #'
@@ -25,7 +27,7 @@ select_times <- function(data, ...) {
 }
 
 #' @param time_lim A character vector of two numbers indicating the time range
-#'   to be selected e.g. c(min, max)
+#'   to be selected e.g. c(min, max), or a list to select specific times.
 #' @return Data frame with only data from within the specified range.
 #' @export
 #' @describeIn select_times Default select times function
@@ -35,12 +37,7 @@ select_times.default <- function(data,
                                  ...) {
 
   if ("time" %in% colnames(data)) {
-    if (length(time_lim) == 1) {
-      stop("Must enter two timepoints when selecting a time range.")
-    } else if (length(time_lim) == 2) {
-      data <- data[data$time > time_lim[1] &
-                     data$time < time_lim[2], ]
-    }
+    data <- data[find_times(data, time_lim), ]
   } else {
     warning("No time column found.")
   }
@@ -62,9 +59,13 @@ select_times.eeg_data <- function(data,
   keep_rows <- find_times(data$timings, time_lim)
   data$signals <- data$signals[keep_rows, ]
   data$timings <- data$timings[keep_rows, ]
-  event_rows <- data$events$event_time > time_lim[1] &
-        data$events$event_time < time_lim[2]
-  data$events <- data$events[event_rows, ]
+  if (is.list(time_lim)) {
+    remaining_times <- unique(data$timings$time)
+    event_rows <- data$events$time %in% remaining_times
+  } else {
+    event_rows <- data$events$time > time_lim[1] & data$events$time < time_lim[2]
+  }
+  data$events <- data$events[event_rows, , drop = FALSE]
 
   if (df_out) {
     return(as.data.frame(data))
@@ -81,12 +82,16 @@ select_times.eeg_epochs <- function(data,
                                     ...) {
 
   keep_rows <- find_times(data$timings,
-                         time_lim)
+                          time_lim)
 
   data$signals <- data$signals[keep_rows, , drop = FALSE]
   data$timings <- data$timings[keep_rows, , drop = FALSE]
-  event_rows <- data$events$time > time_lim[1] &
-    data$events$time < time_lim[2]
+  if (is.list(time_lim)) {
+    remaining_times <- unique(data$timings$time)
+    event_rows <- data$events$time %in% remaining_times
+  } else {
+    event_rows <- data$events$time > time_lim[1] & data$events$time < time_lim[2]
+  }
   data$events <- data$events[event_rows, , drop = FALSE]
   if (df_out) {
     return(as.data.frame(data))
@@ -146,12 +151,33 @@ select_times.eeg_tfr <- function(data,
 find_times <- function(timings,
                        time_lim) {
 
+  if (is.list(time_lim)) {
+    closest_time <-
+      vapply(time_lim, FUN = function(x) min(abs(timings$time - x)), numeric(1))
+
+    keep_rows <- logical(length(timings$time))
+
+    for (i_times in 1:length(closest_time)) {
+      keep_rows <- keep_rows + (abs(timings$time - time_lim[[i_times]]) == closest_time[[i_times]]);
+    }
+    keep_rows <- as.logical(keep_rows)
+    if (any(closest_time > 0)) {
+      message("Returning closest time points to those requested: ",
+              paste0(
+                signif(unique(timings$time[keep_rows]),
+                       3),
+                sep = " ")
+      )
+    }
+    return(keep_rows)
+  }
   if (length(time_lim) == 2) {
     keep_rows <- timings$time > time_lim[1] & timings$time < time_lim[2]
   } else {
   warning("Must enter two timepoints when selecting a time range;
           using whole range.")
-    keep_rows <- rep(TRUE, length = length(timings$time))
+    keep_rows <- rep(TRUE,
+                     length = length(timings$time))
   }
   keep_rows
 }

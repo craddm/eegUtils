@@ -27,7 +27,7 @@ select_times(data, ...)
 \item{...}{Further arguments passed to or from other methods.}
 
 \item{time_lim}{A character vector of two numbers indicating the time range
-to be selected e.g. c(min, max)}
+to be selected e.g. c(min, max), or a list to select specific times.}
 
 \item{df_out}{Returns a data frame rather than an object of the same type
 that was passed in.}
@@ -62,6 +62,8 @@ than that requested.
 demo_epochs
 short_epochs <- select_times(demo_epochs, time_lim = c(-.1, .3))
 short_epochs
+short_epochs <- select_times(demo_epochs, time_lim = list(-.1, .15, .3))
+head(short_epochs$timings)
 
 }
 \seealso{

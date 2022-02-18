@@ -10,6 +10,7 @@
 #' @examples
 #' topoplot(demo_epochs)
 #' topoplot(demo_epochs, time_lim = c(.1, .2))
+#' topoplot(demo_spatial, time_lim = list(0, .1, .2))
 #' @export
 #'
 #' @section Notes on usage of Generalized Additive Models for interpolation: The
@@ -36,9 +37,9 @@ topoplot.default <- function(data,
        paste(class(data), collapse = "/"))
 }
 
-#' @param time_lim Timepoint(s) to plot. Can be one time or a range to average
-#'   over. If none is supplied, the function will average across all timepoints
-#'   in the supplied data.
+#' @param time_lim Timepoint(s) to plot. Can be one time, a range to average
+#'   over, or a list of individual times. If none is supplied, the function will
+#'   average across all timepoints in the supplied data.
 #' @param limits Limits of the fill scale - should be given as a character
 #'   vector with two values specifying the start and endpoints e.g. limits =
 #'   c(-2,-2). Will ignore anything else. Defaults to the range of the data.
@@ -69,7 +70,8 @@ topoplot.default <- function(data,
 #' @param highlights Electrodes to highlight (in white).
 #' @param scaling Scaling multiplication factor for labels and any plot lines.
 #'   Defaults to 1.
-#' @param groups Column name for groups to retain. This is required to create facetted plots.
+#' @param groups Column name for groups to retain. This is required to create
+#'   facetted plots.
 #' @param verbose Warning messages when electrodes do not have locations.
 #'   Defaults to TRUE.
 #' @param k Degrees of freedom used for spline when using `method = gam`.
@@ -115,6 +117,9 @@ topoplot.data.frame <- function(data,
    if (!is.null(time_lim)) {
     data <- select_times(data,
                          time_lim)
+    if (is.list(time_lim)) {
+      groups <- c(groups, "time")
+    }
    }
 
   # Check for x and y co-ordinates, try to add if not found
@@ -158,17 +163,11 @@ topoplot.data.frame <- function(data,
   x <- NULL
   y <- NULL
   electrode <- NULL
-  # if (is.character(groups)) {
-  #   groups <- as.name(groups)
-  # }
 
   if (is.character(quantity)) {
     quantity <- as.name(quantity)
   }
 
-  #groups <- rlang::enexpr(groups)
-
-#  if (!is.null(rlang::enexpr(groups))) {
   if (!rlang::is_null(groups)) {
     data <-
       dplyr::group_by(data,
@@ -210,15 +209,8 @@ topoplot.data.frame <- function(data,
                         cols = c(data))
 
   # Find furthest electrode from origin
- #abs_x_max <- max(abs(data$x), na.rm = TRUE)
- #abs_y_max <- max(abs(data$y), na.rm = TRUE)
-  #max_elec <- sqrt(abs_x_max^2 + abs_y_max^2)
   max_elec <- sqrt(max(abs(data$x)^2 + abs(data$y)^2))
   if (is.null(r)) {
-    # mm are expected for coords, 95 is good approx for Fpz - Oz radius
-    # r <- switch(interp_limit,
-    #             "head" = max_elec * 1.05,
-    #             "skirt" = 95)
 
     r <- update_r(r = 95,
                   data = data,
@@ -322,6 +314,14 @@ topoplot.data.frame <- function(data,
       topo +
       facet_wrap(~component)
   }
+
+  if (is.list(time_lim)) {
+    topo <-
+      topo +
+      facet_wrap(~time,
+                 labeller = labeller(time = function(x) round(as.numeric(x), 3)))
+  }
+
   topo
 }
 
@@ -351,14 +351,15 @@ topoplot.eeg_data <- function(data, time_lim = NULL,
     chanLocs <- channels(data)
   }
 
+  chan_names <- channel_names(data)
+
   if (is.null(time_lim)) {
     data <- as.data.frame(data)
     data <- as.data.frame(t(colMeans(data)))
-    data <- tidyr::gather(data,
-                          electrode,
-                          amplitude,
-                          -sample,
-                          -time)
+    data <- tidyr::pivot_longer(data,
+                                cols = chan_names,
+                                names_to = "electrode",
+                                values_to = "amplitude")
   } else {
     data <- select_times(data,
                          time_lim)
