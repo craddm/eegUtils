@@ -123,6 +123,7 @@ eeg_average.eeg_epochs <- function(data,
       chan_info = data$chan_info,
       srate = data$srate,
       timings = timings,
+      reference = data$reference,
       epochs = epochs
     )
   data

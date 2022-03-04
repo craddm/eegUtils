@@ -263,12 +263,14 @@ eeg_evoked <- function(data,
                        timings,
                        srate,
                        epochs,
+                       reference = NULL,
                        ...) {
   value <- list(signals = data,
                 chan_info = chan_info,
                 timings = timings,
                 srate = srate,
                 epochs = epochs,
+                reference = reference,
                 version = utils::packageVersion("eegUtils"))
   class(value) <- c("eeg_evoked", "eeg_epochs")
   value
