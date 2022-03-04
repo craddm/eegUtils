@@ -15,6 +15,7 @@ electrode_locations(data, ...)
   electrode = "electrode",
   drop = FALSE,
   montage = NULL,
+  overwrite = TRUE,
   ...
 )
 

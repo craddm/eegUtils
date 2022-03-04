@@ -318,52 +318,57 @@ electrode_locations.data.frame <- function(data,
                                            electrode = "electrode",
                                            drop = FALSE,
                                            montage = NULL,
+                                           overwrite = TRUE,
                                            ...) {
 
   #if a montage supplied, check if it matches known montages
-  if (!is.null(montage)) {
-    electrodeLocs <- montage_check(montage)
-  }
-
-  data[, electrode] <- toupper(data[[electrode]])
-  electrodeLocs[, electrode] <- toupper(electrodeLocs[[electrode]])
-
-  if (tibble::is_tibble(data)) {
-    elecs <-
-      dplyr::pull(unique(data[, electrode])) %in%
-      dplyr::pull(electrodeLocs[, electrode])
-
-    if (!all(elecs)) {
-      message(paste("Electrode locations not found: ",
-                    paste(unique(data[, electrode])[!elecs, ],
-                          sep = ",")))
-    } else if (!any(elecs)) {
-      stop("No matching electrode locations found.")
-    }
-  } else {
-    elecs <-
-      unique(data[, electrode]) %in% electrodeLocs[, electrode,
-                                                   drop = TRUE]
-    if (!all(elecs)) {
-      message("Electrodes locations not found: ",
-              paste(unique(data[, electrode])[!elecs], collapse = " "))
-    } else if (!any(elecs)) {
-      stop("No matching electrode locations found.")
-    }
-
-  }
-
-  if (drop) {
-    data <- dplyr::inner_join(data,
-                              electrodeLocs,
-                              by = electrode)
-  } else {
-    data <- dplyr::left_join(data,
-                             electrodeLocs,
-                             by = electrode)
-  }
-
-  data
+  # if (!is.null(montage)) {
+  #   electrodeLocs <- montage_check(montage)
+  # }
+  #
+  # data[, electrode] <- toupper(data[[electrode]])
+  # electrodeLocs[, electrode] <- toupper(electrodeLocs[[electrode]])
+  #
+  # if (tibble::is_tibble(data)) {
+  #   elecs <-
+  #     dplyr::pull(unique(data[, electrode])) %in%
+  #     dplyr::pull(electrodeLocs[, electrode])
+  #
+  #   if (!all(elecs)) {
+  #     message(paste("Electrode locations not found: ",
+  #                   paste(unique(data[, electrode])[!elecs, ],
+  #                         sep = ",")))
+  #   } else if (!any(elecs)) {
+  #     stop("No matching electrode locations found.")
+  #   }
+  # } else {
+  #   elecs <-
+  #     unique(data[, electrode]) %in% electrodeLocs[, electrode,
+  #                                                  drop = TRUE]
+  #   if (!all(elecs)) {
+  #     message("Electrodes locations not found: ",
+  #             paste(unique(data[, electrode])[!elecs], collapse = " "))
+  #   } else if (!any(elecs)) {
+  #     stop("No matching electrode locations found.")
+  #   }
+  #
+  # }
+  #
+  # if (drop) {
+  #   data <- dplyr::inner_join(data,
+  #                             electrodeLocs,
+  #                             by = electrode)
+  # } else {
+  #   data <- dplyr::left_join(data,
+  #                            electrodeLocs,
+  #                            by = electrode)
+  # }
+  #
+  # data
+  add_elocs(data,
+            drop = drop,
+            montage = montage,
+            overwrite = overwrite)
 }
 
 #' @param overwrite Overwrite existing channel info. Defaults to FALSE.
@@ -418,8 +423,13 @@ add_elocs <- function(data,
                       overwrite = FALSE,
                       ...) {
 
-  chan_info <- channels(data)
-  chan_names <- channel_names(data)
+  if (inherits(data, "data.frame")) {
+    chan_info <- data
+    chan_names <- data[["electrode"]]
+  } else {
+    chan_info <- channels(data)
+    chan_names <- channel_names(data)
+  }
 
   if (!is.null(chan_info) & !overwrite) {
     stop("Channel info already present, set overwrite to TRUE to replace.")
@@ -451,6 +461,10 @@ add_elocs <- function(data,
                           keep = FALSE)
   }
 
+  if (inherits(data, "data.frame")) {
+    data <- dplyr::left_join(data, chan_info, by = "electrode")
+    return(data)
+  }
   channels(data) <- validate_channels(chan_info,
                                       channel_names(data))
   data
