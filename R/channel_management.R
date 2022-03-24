@@ -462,7 +462,11 @@ add_elocs <- function(data,
   }
 
   if (inherits(data, "data.frame")) {
-    data <- dplyr::left_join(data, chan_info, by = "electrode")
+    data$electrode <- toupper(data$electrode)
+    data <- dplyr::left_join(data,
+                             chan_info,
+                             by = "electrode")
+    data$electrode <- chan_names
     return(data)
   }
   channels(data) <- validate_channels(chan_info,
