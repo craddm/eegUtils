@@ -420,8 +420,7 @@ ar_FASTER.eeg_group <- function(data,
   all_data <- as.data.frame(data)
 
   participant_mean <-
-    all_data %>%
-    dplyr::ungroup %>%
+    dplyr::ungroup(all_data) %>%
     dplyr::group_by(participant_id) %>%
     dplyr::summarise(
       dplyr::across(
@@ -438,8 +437,7 @@ ar_FASTER.eeg_group <- function(data,
               channel_mean, "-"))
 
   participant_var <-
-    all_data %>%
-    dplyr::ungroup %>%
+    dplyr::ungroup(all_data) %>%
     dplyr::group_by(participant_id) %>%
     dplyr::summarise(
       dplyr::across(
@@ -456,16 +454,13 @@ ar_FASTER.eeg_group <- function(data,
               channel_vars, "-"))
 
   part_ranges <-
-    all_data %>%
-    dplyr::ungroup %>%
+    dplyr::ungroup(all_data) %>%
     dplyr::group_by(participant_id) %>%
     dplyr::summarise(
       dplyr::across(
         dplyr::all_of(data_chans),
         ~diff(range(.)))
     )
-
-
 
   scaled_diffs <- abs(scale(part_diffs[, data_chans]))
   scaled_vars <- abs(scale(part_var_diffs[, data_chans]))
@@ -475,8 +470,7 @@ ar_FASTER.eeg_group <- function(data,
 
   if (!is.null(EOG)) {
     participant_eog <-
-      all_data %>%
-      dplyr::ungroup %>%
+      dplyr::ungroup(all_data) %>%
       dplyr::group_by(participant_id) %>%
       dplyr::summarise(
         dplyr::across(

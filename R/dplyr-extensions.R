@@ -233,13 +233,18 @@ filter.eeg_tfr <- function(.data, ...) {
 parse_args <- function(arg_list,
                        data) {
 
-  which_calls <- vapply(arg_list,
-                        is.call,
-                        logical(1),
-                        USE.NAMES = FALSE)
+  # which_calls <- vapply(arg_list,
+  #                       is.call,
+  #                       logical(1),
+  #                       USE.NAMES = FALSE)
+  #
+  # lhs_args <- unlist(lapply(arg_list[which_calls],
+  #                           function(x) as.character(x[[2]])))
 
-  lhs_args <- unlist(lapply(arg_list[which_calls],
-                            function(x) as.character(x[[2]])))
+  lhs_args <- unlist(
+    lapply(arg_list,
+           all.vars)
+    )
 
   in_epochs <- lhs_args %in% names(epochs(data))
   in_timings <- lhs_args %in% names(data$timings)
