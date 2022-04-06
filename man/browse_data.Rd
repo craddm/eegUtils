@@ -29,7 +29,7 @@ implemented)}
 
 \item{downsample}{Only works on \code{eeg_data} or \code{eeg_epochs} objects.
 Reduces size of data by only plotting every 4th point, speeding up plotting
-considerably. Defaults to TRUE for eeg_data, FALSE for eeg_epochs}
+considerably. Defaults to TRUE for \code{eeg_data}, FALSE for \code{eeg_epochs}}
 }
 \description{
 A Shiny gadget for browsing EEG data and ICA decompositions interactively.

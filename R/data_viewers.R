@@ -115,7 +115,7 @@ browse_data.eeg_stats <- function(data, ...) {
 #'  implemented)
 #'@param downsample Only works on `eeg_data` or `eeg_epochs` objects.
 #'  Reduces size of data by only plotting every 4th point, speeding up plotting
-#'  considerably. Defaults to TRUE for eeg_data, FALSE for eeg_epochs
+#'  considerably. Defaults to TRUE for `eeg_data`, FALSE for `eeg_epochs`
 #'
 #'@export
 #'@describeIn browse_data Browse continuous EEG data.
@@ -137,7 +137,7 @@ browse_data.eeg_data <- function(data,
       gadgetTitleBar("Continous data browser"),
       miniTabstripPanel(
         miniTabPanel(title = "Butterfly",
-                     icon = icon("line-chart"),
+                     icon = icon("chart-line"),
                      miniContentPanel(
                        fillCol(
                          flex = c(4, NA, 1),
@@ -284,7 +284,7 @@ browse_data.eeg_epochs <- function(data,
     gadgetTitleBar("Epoched data browser"),
     miniTabstripPanel(
       miniTabPanel(title = "Butterfly",
-                   icon = icon("line-chart"),
+                   icon = icon("chart-line"),
                    miniContentPanel(
                      fillCol(
                        flex = c(4, NA, 1),
@@ -314,7 +314,7 @@ browse_data.eeg_epochs <- function(data,
                    miniContentPanel(
                      wellPanel(
                        plotOutput("time_plot"),
-                       style = "overflow-y:scroll; max-height: 800px"
+                       style = "overflow-y:scroll; max-height: 800px;overflow-x:scroll"
                        ),
                      fillPage(
                        fillCol(
@@ -328,7 +328,7 @@ browse_data.eeg_epochs <- function(data,
                                      width = "100%"),
                          fillRow(
                            numericInput("sig_time_ind",
-                                        "Display length",
+                                        "Display length (epochs)",
                                         sig_length,
                                         min = 1, max = 60),
                            #numericInput("elecs_per_page_ind", "Electrodes per
@@ -348,19 +348,20 @@ browse_data.eeg_epochs <- function(data,
                        output,
                        session) {
 
-      tmp_dat <- reactive({
+      tmp_dat <- shiny::reactive({
         select_epochs(data,
                       epoch_no = seq(input$time_range,
                                      input$time_range + input$sig_time - 1))
       })
 
-      tmp_data <- debounce(tmp_dat,
-                           800)
+      tmp_data <- shiny::debounce(tmp_dat,
+                                  400)
 
-      output$butterfly <- renderPlot({
+      output$butterfly <- shiny::renderPlot({
 
         if (input$dc_offset) {
-          tmp_data <- rm_baseline(tmp_data(), verbose = FALSE)
+          tmp_data <- rm_baseline(tmp_data(),
+                                  verbose = FALSE)
         } else {
           tmp_data <- tmp_data()
         }
@@ -390,7 +391,7 @@ browse_data.eeg_epochs <- function(data,
                                      input$time_range_ind + input$sig_time_ind - 1))
       })
 
-      tmp_data_ind <- debounce(tmp_dat_ind, 800)
+      tmp_data_ind <- debounce(tmp_dat_ind, 600)
 
       output$time_plot <- renderPlot({
 
