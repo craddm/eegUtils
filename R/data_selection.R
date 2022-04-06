@@ -57,15 +57,15 @@ select_times.eeg_data <- function(data,
 
   #data$signals <- as.data.frame(data)
   keep_rows <- find_times(data$timings, time_lim)
-  data$signals <- data$signals[keep_rows, ]
-  data$timings <- data$timings[keep_rows, ]
+  data$signals <- data$signals[keep_rows, , drop = FALSE]
+  data$timings <- data$timings[keep_rows, , drop = FALSE]
   if (is.list(time_lim)) {
     remaining_times <- unique(data$timings$time)
     event_rows <- data$events$time %in% remaining_times
   } else {
     event_rows <- data$events$event_time > time_lim[1] & data$events$event_time < time_lim[2]
   }
-  data$events <- data$events[event_rows, , drop = FALSE]
+  data$events <- data$events[event_rows, ]
 
   if (df_out) {
     return(as.data.frame(data))
@@ -109,8 +109,8 @@ select_times.eeg_evoked <- function(data,
   keep_rows <- find_times(data$timings,
                           time_lim)
 
-  data$signals <- data$signals[keep_rows, ]
-  data$timings <- data$timings[keep_rows, ]
+  data$signals <- data$signals[keep_rows, , drop = FALSE]
+  data$timings <- data$timings[keep_rows, , drop = FALSE]
 
   if (df_out) {
     return(data$signals)
@@ -126,7 +126,7 @@ select_times.eeg_tfr <- function(data,
                                  ...){
 
   keep_rows <- find_times(data$timings, time_lim)
-  data$timings <- data$timings[keep_rows, ]
+  data$timings <- data$timings[keep_rows, , drop = FALSE]
   if (length(data$dimensions) == 3) {
     data$signals <- data$signals[keep_rows, , , drop = FALSE]
   } else if (length(data$dimensions) == 4) {
@@ -219,9 +219,9 @@ select_elecs.default <- function(data,
   if ("electrode" %in% names(data)) {
     if (all(electrode %in% data$electrode)) {
       if (keep) {
-        data <- data[data$electrode %in% electrode, ]
+        data <- data[data$electrode %in% electrode, , drop = FALSE]
       } else {
-        data <- data[!data$electrode %in% electrode, ]
+        data <- data[!data$electrode %in% electrode, , drop = FALSE]
       }
     } else {
       warning(paste("Electrode(s) not found:",
@@ -262,7 +262,7 @@ select_elecs.eeg_data <- function(data,
     }
 
     if (!is.null(data$chan_info)) {
-      data$chan_info <- data$chan_info[data$chan_info$electrode %in% names(data$signals), ]
+      data$chan_info <- data$chan_info[data$chan_info$electrode %in% names(data$signals), , drop = FALSE]
     }
 
   } else {
