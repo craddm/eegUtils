@@ -358,7 +358,7 @@ as.data.frame.eeg_evoked <- function(x,
 
   if (long) {
     x <- tidyr::pivot_longer(x,
-                             cols = chan_names,
+                             cols = dplyr::all_of(chan_names),
                              names_to = "electrode",
                              values_to = "amplitude")
 
@@ -429,7 +429,7 @@ as.data.frame.eeg_ICA <- function(x,
     df <- tidyr::pivot_longer(df,
                               names_to = "component",
                               values_to = "amplitude",
-                              cols = channel_names(x))
+                              cols = dplyr::all_of(channel_names(x)))
   }
   df
 }
