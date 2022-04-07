@@ -51,7 +51,8 @@ import_raw <- function(file_name,
       colnames(sigs) <- bdf_header$chan_labels
       sigs <- tibble::as_tibble(sigs)
       if ("BDFAnnotations" %in% colnames(sigs)) {
-        sigs <- subset(sigs, select = -BDFAnnotations)
+        sigs <- subset(sigs,
+                       select = -BDFAnnotations)
       }
       srate <- bdf_header$srate[[1]]
     } else {

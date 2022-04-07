@@ -43,7 +43,8 @@ utils::globalVariables(c("time",
                          ".lm.fit",
                          "participant_id",
                          "difference",
-                         "expected")
+                         "expected",
+                         "BDFAnnotations")
                        )
 
 ## usethis namespace: start
