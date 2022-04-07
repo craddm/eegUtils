@@ -15,7 +15,8 @@
 #' plot_gfp(demo_spatial, cols = "epoch_labels")
 #' plot_gfp(demo_spatial, cols = "epoch_labels", keep_trials = TRUE)
 plot_gfp <- function(data,
-                     ...) {
+                     cols = NULL,
+                     keep_trials = FALSE) {
   UseMethod("plot_gfp", data)
 }
 

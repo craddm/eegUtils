@@ -4,7 +4,7 @@
 \alias{plot_gfp}
 \title{Plot Global Field Power of EEG Signals}
 \usage{
-plot_gfp(data, ...)
+plot_gfp(data, cols = NULL, keep_trials = FALSE)
 }
 \arguments{
 \item{data}{An \code{eeg_epochs} object}
