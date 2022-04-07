@@ -111,7 +111,10 @@ line is drawn.}
 
 \item{component}{name or number of ICA component to plot}
 
-\item{freq_range}{Choose a specific frequency range to plot}
+\item{freq_range}{Choose a specific frequency range to plot. If NULL,
+calculates the mean over all frequencies. Note that this does not imply
+that there is power at an included frequency. For example, lower
+frequencies will have shorter timecourses than high frequencies.}
 
 \item{type}{Type of baseline correction to use for \code{eeg_tfr} objects}
 }

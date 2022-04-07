@@ -33,6 +33,11 @@ test_that("Plotting of data with multiple epochs works as expected", {
                               plot_timecourse(eeg_average(demo_tfr),
                                               type = "db",
                                               baseline = c(-.1, 0)))
+  vdiffr::expect_doppelganger("Plot timecourse of tfr in db at specific freq_range",
+                              plot_timecourse(eeg_average(demo_tfr),
+                                              type = "db",
+                                              baseline = c(-.1, 0),
+                                              freq_range = c(6, 12)))
 })
 
 test_that("Plotting of butterfly plots from epochs", {

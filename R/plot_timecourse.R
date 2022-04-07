@@ -258,7 +258,10 @@ plot_timecourse.eeg_group <- function(data,
 }
 
 #' @describeIn plot_timecourse Plot timecourses from `eeg_tfr` objects.
-#' @param freq_range Choose a specific frequency range to plot
+#' @param freq_range Choose a specific frequency range to plot. If NULL,
+#'   calculates the mean over all frequencies. Note that this does not imply
+#'   that there is power at an included frequency. For example, lower
+#'   frequencies will have shorter timecourses than high frequencies.
 #' @param type Type of baseline correction to use for `eeg_tfr` objects
 #' @export
 plot_timecourse.eeg_tfr <- function(data,
@@ -300,6 +303,11 @@ plot_timecourse.eeg_tfr <- function(data,
                          electrode)
   }
 
+  if (!is.null(freq_range)) {
+    data <- select_freqs(data,
+                         freq_range)
+  }
+
   data_f <- as.data.frame(data,
                           long = TRUE,
                           coords = FALSE)
@@ -323,8 +331,7 @@ plot_timecourse.eeg_tfr <- function(data,
            aes(x = time,
                y = power)) +
     stat_summary(geom = "line",
-                 fun = mean,
-                 na.rm = TRUE) +
+                 fun = mean) +
     labs(x = "Time (s)",
          y = ylabel,
          colour = "",

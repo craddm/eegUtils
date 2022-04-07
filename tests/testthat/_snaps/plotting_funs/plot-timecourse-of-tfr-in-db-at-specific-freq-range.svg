@@ -1,0 +1,40 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' class='svglite' data-engine-version='2.0' width='720.00pt' height='576.00pt' viewBox='0 0 720.00 576.00'>
+<defs>
+  <style type='text/css'><![CDATA[
+    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {
+      fill: none;
+      stroke: #000000;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-miterlimit: 10.00;
+    }
+  ]]></style>
+</defs>
+<rect width='100%' height='100%' style='stroke: none; fill: #FFFFFF;'/>
+<defs>
+  <clipPath id='cpMC4wMHw3MjAuMDB8MC4wMHw1NzYuMDA='>
+    <rect x='0.00' y='0.00' width='720.00' height='576.00' />
+  </clipPath>
+</defs>
+<g clip-path='url(#cpMC4wMHw3MjAuMDB8MC4wMHw1NzYuMDA=)'>
+</g>
+<defs>
+  <clipPath id='cpMzAuNDR8NzE0LjAyfDI0Ljg1fDU0Mi4zMA=='>
+    <rect x='30.44' y='24.85' width='683.59' height='517.45' />
+  </clipPath>
+</defs>
+<g clip-path='url(#cpMzAuNDR8NzE0LjAyfDI0Ljg1fDU0Mi4zMA==)'>
+<line x1='372.23' y1='283.58' x2='372.23' y2='283.58' style='stroke-width: 1.07; stroke-linecap: butt;' />
+<line x1='372.23' y1='283.58' x2='372.23' y2='283.58' style='stroke-width: 1.07; stroke-linecap: butt;' />
+</g>
+<g clip-path='url(#cpMC4wMHw3MjAuMDB8MC4wMHw1NzYuMDA=)'>
+<text x='25.06' y='286.88' text-anchor='end' style='font-size: 9.60px; fill: #4D4D4D; font-family: sans;' textLength='5.34px' lengthAdjust='spacingAndGlyphs'>0</text>
+<polyline points='27.45,283.58 30.44,283.58 ' style='stroke-width: 1.07; stroke-linecap: butt;' />
+<polyline points='372.23,545.29 372.23,542.30 ' style='stroke-width: 1.07; stroke-linecap: butt;' />
+<text x='372.23' y='554.29' text-anchor='middle' style='font-size: 9.60px; fill: #4D4D4D; font-family: sans;' textLength='5.34px' lengthAdjust='spacingAndGlyphs'>0</text>
+<text x='372.23' y='567.53' text-anchor='middle' style='font-size: 12.00px; font-family: sans;' textLength='44.00px' lengthAdjust='spacingAndGlyphs'>Time (s)</text>
+<text transform='translate(14.24,283.58) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: sans;' textLength='72.04px' lengthAdjust='spacingAndGlyphs'>Decibels (dB)</text>
+<text x='30.44' y='15.89' style='font-size: 14.40px; font-family: sans;' textLength='308.98px' lengthAdjust='spacingAndGlyphs'>Plot timecourse of tfr in db at specific freq_range</text>
+</g>
+</svg>
