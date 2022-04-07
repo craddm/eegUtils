@@ -1,4 +1,4 @@
-#' Calculate averages (e.g. ERPs) for single datasets
+#' Calculate averages (e.g. event-related potentials) for single datasets
 #'
 #' This function is used to create an `eeg_evoked` object from `eeg_epochs`. By
 #' default, it will try to keep different conditions in the data separate using

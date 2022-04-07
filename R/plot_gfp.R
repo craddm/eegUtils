@@ -5,8 +5,9 @@
 #' timepoint. It corresponds to the spatial standard deviation.
 #'
 #' @param data An `eeg_epochs` object
-#' @param cols condition columns
-#' @param keep_trials calculate GFP for each epoch separately, then average over
+#' @param cols Condition columns from the `epochs` metadata to calculate GFP
+#'   separately for different conditions.
+#' @param keep_trials Calculate GFP for each epoch separately, then average over
 #'   epochs.
 #' @export
 #' @examples
