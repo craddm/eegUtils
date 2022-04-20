@@ -155,7 +155,7 @@ compute_psd.eeg_epochs <- function(data,
           "Computing Power Spectral Density using Welch's method.\n",
           "FFT length: ", n_fft, "\n",
           "Segment length: ", seg_length, "\n",
-          "Overlapping points: ", noverlap, " (", noverlap / seg_length * 100, "% overlap)"
+          "Overlapping points: ", noverlap, " (", round(noverlap / seg_length * 100, 2), "% overlap)"
         )
       )
     }
@@ -215,9 +215,10 @@ compute_psd.eeg_group <- function(data,
   stop("Cannot compute psd for `eeg_group` objects.")
 }
 
-#' Welch fft
+#' Welch FFT
 #'
-#' Internal function for calculating the PSD using Welch's method
+#' Internal function for calculating the PSD using Welch's method. Hardcoded to
+#' use Hamming window.
 #'
 #' @param data Object to perform FFT on.
 #' @param seg_length length of each segment of data.
@@ -254,13 +255,20 @@ welch_fft <- function(data,
     data_segs <- lapply(data_segs,
                         function(x) lapply(x,
                                            function(y) y * win))
+    # final_out <- lapply(data_segs,
+    #                     function(x) {
+    #                       tmp <- fft_n(matrix(unlist(x),
+    #                                           ncol = length(x)),
+    #                                       n = n_fft)
+    #                       abs(tmp * Conj(tmp)) / U
+    #                     })
 
-    data_fft <- lapply(data_segs,
-                       function(x) lapply(x,
-                                          fft_n, n = n_fft))
-    final_out <- lapply(data_fft,
-                        function(x) sapply(x,
-                                           function(y) abs(y * Conj(y)) / U))
+     data_fft <- lapply(data_segs,
+                        function(x) lapply(x,
+                                           fft_n, n = n_fft))
+     final_out <- lapply(data_fft,
+                         function(x) sapply(x,
+                                            function(y) abs(y * Conj(y)) / U))
     # Normalize by sampling rate or by signal length if no sampling rate
     if (is.null(srate)) {
       final_out <- rowMeans(as.data.frame(final_out)) / (2 * pi)
@@ -275,16 +283,11 @@ welch_fft <- function(data,
     data_segs <- as.matrix(data)
     n_segs <- 1
 
-    data_segs <- sweep(data_segs,
-                       1,
-                       win, "*")
+    data_segs <- sweep(data_segs, 1, win, "*")
 
-    data_fft <- fft_n(data_segs,
-                      n_fft)
+    data_fft <- fft_n(data_segs, n_fft)
     colnames(data_fft) <- colnames(data_segs)
-    final_out <- apply(data_fft,
-                       2,
-                       function(x) abs(x * Conj(x)) / U)
+    final_out <- abs(data_fft * Conj(data_fft)) / U
 
     # Normalize by sampling rate
     if (is.null(srate)) {
@@ -338,5 +341,4 @@ split_vec <- function(vec,
     segs <- lapply(segs, function(x) x - mean(x))
   }
   segs
-
 }
