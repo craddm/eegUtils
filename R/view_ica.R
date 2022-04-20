@@ -35,28 +35,32 @@ view_ica <- function(data) {
                   coords = FALSE)
   ica_butter <- plot_butterfly(ica_erps)
 
+  ica_topoplots <-
+    topoplot(data,
+             1:length(names(data$signals)),
+             grid_res = 67,
+             chan_marker = "none",
+             limits = c(-3, 3),
+             verbose = FALSE)
+
   ui <-
     navbarPage(
       "ICA viewer",
+      id = "main_page",
       tabPanel(
-        "Topographies",
-        plotOutput("comp_topos",
-                   dblclick = "topo_click")
-      ),
+        "Topographies", plotOutput("comp_topos", dblclick = "topo_click")
+        ),
       tabPanel(
         "Timecourses",
-        plotOutput(
-          "ica_butters",
-          hover = "butter_click",
-          brush = brushOpts(id = "butter_brush",
-                            resetOnNew = TRUE),
-          dblclick = "butter_dbl"
-        ),
+        plotOutput("ica_butters",
+                   hover = "butter_click",
+                   brush = brushOpts(id = "butter_brush",
+                                     resetOnNew = TRUE),
+                   dblclick = "butter_dbl"),
         tableOutput("info"),
         tags$p(span("Hover over lines to see component details.")),
         tags$p("To zoom, drag-click to highlight where you want to zoom, then double-click to zoom. Double-click again to zoom back out.")
-
-      ),
+        ),
       tabPanel(
         "PSDs",
         plotOutput(
@@ -65,19 +69,19 @@ view_ica <- function(data) {
           brush = brushOpts(id = "psd_brush",
                             resetOnNew = TRUE),
           dblclick = "psd_dbl"
-        ),
+          ),
         tableOutput("psd_info"),
         tags$p(span("Hover over lines to see component details.")),
         tags$p("To zoom, drag-click to highlight where you want to zoom, then double-click to zoom. Double-click again to zoom back out.")
-      ),
+        ),
       tabPanel("Individual",
                sidebarLayout(
                  sidebarPanel(selectInput(
                    "comp_no",
                    "Component:",
                    channel_names(data)
-                 ),
-                 width = 3),
+                   ),
+                   width = 3),
                  mainPanel(
                    fluidRow(
                      column(width = 6,
@@ -92,23 +96,26 @@ view_ica <- function(data) {
                             plotOutput("indiv_tc"))
                      ),
                    width = 9)
-               ))
-    )
+                 )
+               )
+      )
 
   server <- function(input,
                      output,
                      session) {
+
     ranges <- reactiveValues(x = NULL,
                              y = NULL)
     b_ranges <- reactiveValues(x = NULL,
                                y = NULL)
 
-    output$comp_topos <- shiny::renderPlot(
-      ica_topos(data),
-      height = function() {
-        .8 * session$clientData$output_comp_topos_width
-      }
-    )
+    output$comp_topos <-
+      shiny::renderPlot(
+        ica_topoplots,
+        height = function() {
+          .6 * session$clientData$output_comp_topos_width
+          }
+        )
 
     output$ica_butters <-
       renderPlot(
@@ -228,6 +235,20 @@ view_ica <- function(data) {
         b_ranges$x <- NULL
         b_ranges$y <- NULL
       }
+    })
+
+    observeEvent(input$topo_click, {
+      selected_topo <- as.data.frame(
+        shiny::nearPoints(ica_topoplots$data,
+                          input$topo_click,
+                          threshold = 20,
+                          maxpoints = 1)
+        )
+      print(selected_topo)
+      updateNavbarPage(inputId = "main_page",
+                       selected = "Individual")
+      updateSelectInput(inputId = "comp_no",
+                        selected = selected_topo$component)
     })
 
   }
