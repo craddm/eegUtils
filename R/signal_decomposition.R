@@ -144,12 +144,10 @@ run_SSD <- function(data,
   cov_sig <- cov_epochs(signal)
   cov_noise <- cov_epochs(noise)
 
-
-
   eig_sigs <- base::eigen(cov_sig)
   # Get the rank of the covariance matrix and select only as many components as
   # there are ranks
-  rank_sig <- Matrix::rankMatrix(cov_sig)
+  rank_sig <- qr(cov_sig)$rank#Matrix::rankMatrix(cov_sig)
 
   if (verbose) {
     if (rank_sig < ncol(cov_sig)) {

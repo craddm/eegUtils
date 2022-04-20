@@ -27,7 +27,6 @@
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #' @return An `eeg_ICA` object containing an ICA decomposition
 #' @importFrom MASS ginv
-#' @importFrom Matrix rankMatrix
 #' @family decompositions
 #' @examples
 #' sobi_demo <-
@@ -97,7 +96,7 @@ run_ICA.eeg_epochs <- function(data,
     pca_flag <- FALSE
   }
 
-  rank_check <- Matrix::rankMatrix(as.matrix(data$signals))
+  rank_check <- qr(data$signals)$rank #Matrix::rankMatrix(as.matrix(data$signals))
 
   if (rank_check < ncol(data$signals)) {
     stop(paste(

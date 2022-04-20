@@ -13,6 +13,7 @@
 - `plot_timecourse.eeg_tfr` now correctly uses the `freq_range` parameter.
 - Improvements to internal processing logic in `view_ica()` to improve performance.
 - `import_raw(..., fast_bdf = TRUE)` will now discard Annotations rather than fail to import BDF files with Annotations.
+- removed dependency on `Matrix` - now using `qr()$rank` in `run_ICA` rather than using `Matrix::rankMatrix()` to determine rank of input signals.
 
 # eegUtils 0.7.0
 
