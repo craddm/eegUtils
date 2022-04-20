@@ -1,17 +1,18 @@
-#'Browse EEG data.
+#'Browse EEG data
 #'
 #'A Shiny gadget for browsing EEG data and ICA decompositions interactively.
 #'With EEG data (epoched or continuous), data can be viewed as a butterfly plot
 #'(all electrodes overlaid) or as individual traces (electrodes "stacked").
 #'Currently, the scale cannot be manually set and is determined by the range of
-#'the viewable data. With
+#'the viewable data. For `eeg_ICA` objects, you will instead be shown a
+#'composite of multiple properties of the decomposition - a topography, an ERP
+#'image, an ERP, and a power spectral density plot from 4-50 Hz.
 #'
 #'@author Matt Craddock \email{matt@@mattcraddock.com}
 #'@import ggplot2
 #'@import shiny
 #'@import miniUI
-#'@param data `eeg_data`, `eeg_epochs`, or `eeg_ICA` object to be
-#'  plotted.
+#'@param data `eeg_data`, `eeg_epochs`, or `eeg_ICA` object to be plotted.
 #'@param ... Other parameters passed to browsing functions.
 #'@export
 
@@ -20,6 +21,7 @@ browse_data <- function(data, ...) {
 }
 
 #' @export
+#' @return A character vector of component names selected for rejection.
 #' @describeIn browse_data View `eeg_ICA` component properties
 browse_data.eeg_ICA <- function(data,
                                 ...) {
@@ -27,47 +29,65 @@ browse_data.eeg_ICA <- function(data,
   ui <- miniUI::miniPage(
     gadgetTitleBar("ICA dashboard"),
     miniUI::miniContentPanel(
-      fillRow(
-        fillCol(
-          plotOutput("topo_ica",
-                     height = "100%"),
-          plotOutput("comp_psd",
-                     height = "100%")),
-        fillCol(plotOutput("comp_img",
-                           height = "100%"),
-                plotOutput("comp_tc",
-                           height = "100%"),
-                shiny::selectInput("icomp",
-                                   "Component",
-                                   names(data$signals)))
+      fillPage(
+        fillRow(
+          fillCol(
+            shiny::selectInput("icomp",
+                               label = NULL, #"Component",
+                               names(data$signals))
+          ),
+          fillCol(
+            shiny::radioButtons("reject_comps",
+                                label = NULL,
+                                choices = c("Keep", "Reject"),
+                                inline = TRUE)
+          ),
+        height = "15%"),
+        fillRow(
+          fillCol(
+            plotOutput("topo_ica", height = "100%"),
+            plotOutput("comp_psd", height = "100%"),
+            ),
+          fillCol(
+            plotOutput("comp_img", height = "100%"),
+            plotOutput("comp_tc", height = "100%")
+            ),
+          height = "85%"
+          )
         )
       )
-    )
+  )
+
+  # comp_names <- as.list(rep("Keep",
+  #                           length(names(data$signals))))
+  # names(comp_names) <- names(data$signals)
 
   server <- function(input,
                      output,
                      session) {
+
+    # comp_status <- do.call("reactiveValues",
+    #                        comp_names)
+    comp_status <- reactiveValues()
 
     output$topo_ica <- renderCachedPlot({
       comp_no <- which(names(data$signals) == input$icomp)
       topoplot(data,
                component = comp_no,
                verbose = FALSE,
-               grid_res = 67)
+               grid_res = 70)
       },
       cacheKeyExpr = {input$icomp})
 
     output$comp_img <- renderCachedPlot({
-      erp_image(data,
-                component = input$icomp)
-    },
-    cacheKeyExpr = {input$icomp})
+      erp_image(data, component = input$icomp)
+      },
+      cacheKeyExpr = {input$icomp})
 
     output$comp_tc <- renderCachedPlot({
-      plot_timecourse(data,
-                      component = input$icomp)
-    },
-    cacheKeyExpr = {input$icomp})
+      plot_timecourse(data, component = input$icomp)
+      },
+      cacheKeyExpr = {input$icomp})
 
     output$comp_psd <- renderCachedPlot({
       tmp_psd <-
@@ -93,10 +113,31 @@ browse_data.eeg_ICA <- function(data,
         },
       cacheKeyExpr = {input$icomp})
 
-    observeEvent(input$done, {
-      returnValue <- ""
-      stopApp(returnValue)
+
+
+    observeEvent(input$icomp, {
+      updateRadioButtons(inputId = "reject_comps",
+                         choices = c("Keep", "Reject"),
+                         selected = comp_status[[input$icomp]],
+                         inline = TRUE)
     })
+
+    observeEvent(
+      input$reject_comps,
+      {
+        comp_status[[isolate(input$icomp)]] <- input$reject_comps
+        comp_status
+      })
+     observeEvent(input$done, {
+       #returnValue <- meh()
+       returnValue <- reactiveValuesToList(comp_status)
+       returnValue <-
+         names(returnValue)[vapply(returnValue,
+                                   function(x) identical(x, "Reject"),
+                                   logical(1))]
+       stopApp(returnValue)
+     })
+
     session$onSessionEnded(stopApp)
   }
   runGadget(ui,
@@ -106,13 +147,11 @@ browse_data.eeg_ICA <- function(data,
 
 #' @export
 browse_data.eeg_stats <- function(data, ...) {
-  warning("Not currently implemented for eeg_stats objects.")
+  warning("Not currently implemented for `eeg_stats` objects.")
 }
 
 #'@param sig_length Length of signal to be plotted initially (seconds if
 #'  continuous, epochs if epoched).
-#'@param n_elecs Number of electrodes to be plotted on a single screen. (not yet
-#'  implemented)
 #'@param downsample Only works on `eeg_data` or `eeg_epochs` objects.
 #'  Reduces size of data by only plotting every 4th point, speeding up plotting
 #'  considerably. Defaults to TRUE for `eeg_data`, FALSE for `eeg_epochs`
@@ -122,7 +161,6 @@ browse_data.eeg_stats <- function(data, ...) {
 
 browse_data.eeg_data <- function(data,
                                  sig_length = 5,
-                                 n_elecs = NULL,
                                  downsample = TRUE,
                                  ...) {
 
@@ -186,8 +224,6 @@ browse_data.eeg_data <- function(data,
                                           "Display length",
                                           sig_length,
                                           min = 1, max = 60),
-                             #numericInput("elecs_per_page_ind", "Electrodes per
-                             #page", n_elecs, min = 1, max = 30),
                              checkboxInput("dc_offset_ind",
                                            "Remove DC offset",
                                            value = TRUE)
@@ -271,7 +307,6 @@ browse_data.eeg_data <- function(data,
 
 browse_data.eeg_epochs <- function(data,
                                    sig_length = 5,
-                                   n_elecs = NULL,
                                    downsample = FALSE,
                                    ...) {
 
@@ -331,8 +366,6 @@ browse_data.eeg_epochs <- function(data,
                                         "Display length (epochs)",
                                         sig_length,
                                         min = 1, max = 60),
-                           #numericInput("elecs_per_page_ind", "Electrodes per
-                           #page", n_elecs, min = 1, max = 30),
                            checkboxInput("dc_offset_ind",
                                          "Remove DC offset",
                                          value = FALSE)
