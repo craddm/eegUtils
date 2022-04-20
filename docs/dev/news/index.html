@@ -84,6 +84,8 @@
 <code><a href="../reference/topoplot.html">topoplot()</a></code> now supports plotting of multiple timepoints - pass a list of times to the <code>time_lim</code> argument.</li>
 <li>
 <code><a href="../reference/browse_data.html">browse_data.eeg_ICA()</a></code> now provides the option to select components for rejection, and returns a character vector of selected components.</li>
+<li>
+<code><a href="../reference/view_ica.html">view_ica()</a></code> now allows you to select components for rejection, to double-click on topographies to inspect them individually, and to return cleaned data.</li>
 </ul></div>
 <div class="section level4">
 <h4 id="internal-changesbug-fixes-development-version">Internal changes/bug fixes<a class="anchor" aria-label="anchor" href="#internal-changesbug-fixes-development-version"></a></h4>
@@ -100,13 +102,14 @@
 <li>Improvements to internal processing logic in <code><a href="../reference/view_ica.html">view_ica()</a></code> to improve performance.</li>
 <li>
 <code>import_raw(..., fast_bdf = TRUE)</code> will now discard Annotations rather than fail to import BDF files with Annotations.</li>
+<li>removed dependency on <code>Matrix</code> - now using <code>qr()$rank</code> in <code>run_ICA</code> rather than using <code><a href="https://rdrr.io/pkg/Matrix/man/rankMatrix.html" class="external-link">Matrix::rankMatrix()</a></code> to determine rank of input signals.</li>
 </ul></div>
 </div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.7.0" id="eegutils-070">eegUtils 0.7.0<a class="anchor" aria-label="anchor" href="#eegutils-070"></a></h2>
 <div class="section level4">
 <h4 id="function-changes-0-7-0">Function changes<a class="anchor" aria-label="anchor" href="#function-changes-0-7-0"></a></h4>
-<ul><li>Add <code>imax</code> method to <code><a href="../reference/run_ICA.html">run_ICA()</a></code>. This allows use of the <code>infomax</code> ICA algorithm from the <code>infomax</code> package, which is a reimplementation of the Infomax algorithm used in the <code>EEGLAB</code> Matlab toolbox.</li>
+<ul><li>Add <code>imax</code> method to <code><a href="../reference/run_ICA.html">run_ICA()</a></code>. This allows use of the <code>infomax</code> ICA algorithm from the <code>infomax</code> package, which is a reimplementation of the extended-Infomax algorithm used in the <code>EEGLAB</code> Matlab toolbox.</li>
 <li>
 <code><a href="../reference/erp_scalp.html">erp_scalp()</a></code> and <code><a href="../reference/interactive_scalp.html">interactive_scalp()</a></code> should now appropriately use channel locations included in the data.</li>
 <li>More informative messages when using <code><a href="../reference/compute_tfr.html">compute_tfr()</a></code>.</li>

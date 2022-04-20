@@ -22,8 +22,8 @@ components marked for rejection removed.
 A Shiny viewer for Independent Component Analysis or Spatio-spectral
 Decomposition/RESS components that provides an interface for looking at
 topographies, timecourses, and power spectral densities of all or individual
-components.
+components. Can be used to select and reject artefactual components.
 }
 \author{
-Matt craddock \email{matt@mattcraddock.com}
+Matt Craddock \email{matt@mattcraddock.com}
 }

@@ -4,6 +4,7 @@
 - Added new `plot_gfp()` function for calculating and plotting Global Field Power.
 - `topoplot()` now supports plotting of multiple timepoints - pass a list of times to the `time_lim` argument.
 - `browse_data.eeg_ICA()` now provides the option to select components for rejection, and returns a character vector of selected components.
+- `view_ica()` now allows you to select components for rejection, to double-click on topographies to inspect them individually, and to return cleaned data.
 
 ### Internal changes/bug fixes
 - Using `electrode_locations()` on a `data.frame` would return a data frame with the electrode names in full upper case. Now returns with the electrodes in their original case.
@@ -18,7 +19,7 @@
 # eegUtils 0.7.0
 
 ### Function changes
-- Add `imax` method to `run_ICA()`. This allows use of the `infomax` ICA algorithm from the `infomax` package, which is a reimplementation of the Infomax algorithm used in the `EEGLAB` Matlab toolbox.
+- Add `imax` method to `run_ICA()`. This allows use of the `infomax` ICA algorithm from the `infomax` package, which is a reimplementation of the extended-Infomax algorithm used in the `EEGLAB` Matlab toolbox.
 - `erp_scalp()` and `interactive_scalp()` should now appropriately use channel locations included in the data.
 - More informative messages when using `compute_tfr()`.
 - `plot_tfr()` now applies baseline correction on a single-trial basis where possible, which may show different results when using non-linear baseline correction (e.g. `divide` or `dB`)
