@@ -38,7 +38,7 @@ Imports:
     Rcpp,
     isoband
 Depends:
-  R (>= 3.3.0)
+  R (>= 3.4.0)
 RoxygenNote: 7.1.2
 Suggests: 
     testthat,
