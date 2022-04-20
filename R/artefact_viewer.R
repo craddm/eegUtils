@@ -31,6 +31,7 @@ view_artefacts <- function(data) {
 
   ui <-
     navbarPage("Artefact checks",
+               inverse = TRUE,
                tabPanel("Channel stats",
                         sidebarLayout(
                           sidebarPanel(selectInput("chan_meas",
@@ -142,8 +143,8 @@ view_artefacts <- function(data) {
 
   }
 
-  shiny::shinyApp(ui,
-                  server)
+  shiny::runGadget(ui,
+                   server)
 
 }
 
