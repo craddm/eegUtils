@@ -58,19 +58,13 @@ browse_data.eeg_ICA <- function(data,
       )
   )
 
-  # comp_names <- as.list(rep("Keep",
-  #                           length(names(data$signals))))
-  # names(comp_names) <- names(data$signals)
 
   server <- function(input,
                      output,
                      session) {
 
-    # comp_status <- do.call("reactiveValues",
-    #                        comp_names)
-    comp_status <- reactiveValues()
-
-    output$topo_ica <- renderCachedPlot({
+    comp_status <- shiny::reactiveValues()
+    output$topo_ica <- shiny::renderCachedPlot({
       comp_no <- which(names(data$signals) == input$icomp)
       topoplot(data,
                component = comp_no,
@@ -79,17 +73,17 @@ browse_data.eeg_ICA <- function(data,
       },
       cacheKeyExpr = {input$icomp})
 
-    output$comp_img <- renderCachedPlot({
+    output$comp_img <- shiny::renderCachedPlot({
       erp_image(data, component = input$icomp)
       },
       cacheKeyExpr = {input$icomp})
 
-    output$comp_tc <- renderCachedPlot({
+    output$comp_tc <- shiny::renderCachedPlot({
       plot_timecourse(data, component = input$icomp)
       },
       cacheKeyExpr = {input$icomp})
 
-    output$comp_psd <- renderCachedPlot({
+    output$comp_psd <- shiny::renderCachedPlot({
       tmp_psd <-
         compute_psd(select(data, input$icomp),
                     n_fft = data$srate,
@@ -113,29 +107,25 @@ browse_data.eeg_ICA <- function(data,
         },
       cacheKeyExpr = {input$icomp})
 
-
-
-    observeEvent(input$icomp, {
-      updateRadioButtons(inputId = "reject_comps",
-                         choices = c("Keep", "Reject"),
-                         selected = comp_status[[input$icomp]],
-                         inline = TRUE)
-    })
-
-    observeEvent(
-      input$reject_comps,
-      {
-        comp_status[[isolate(input$icomp)]] <- input$reject_comps
-        comp_status
+    shiny::observeEvent(input$icomp, {
+      shiny::updateRadioButtons(
+        inputId = "reject_comps",
+        choices = c("Keep", "Reject"),
+        selected = comp_status[[input$icomp]],
+        inline = TRUE)
       })
-     observeEvent(input$done, {
-       #returnValue <- meh()
-       returnValue <- reactiveValuesToList(comp_status)
-       returnValue <-
-         names(returnValue)[vapply(returnValue,
-                                   function(x) identical(x, "Reject"),
-                                   logical(1))]
-       stopApp(returnValue)
+
+    shiny::observeEvent(input$reject_comps, {
+      comp_status[[shiny::isolate(input$icomp)]] <- input$reject_comps
+      comp_status
+      })
+    shiny::observeEvent(input$done, {
+      returnValue <- reactiveValuesToList(comp_status)
+      returnValue <-
+        names(returnValue)[vapply(returnValue,
+                                  function(x) identical(x, "Reject"),
+                                  logical(1))]
+       shiny::stopApp(returnValue)
      })
 
     session$onSessionEnded(stopApp)

@@ -1,12 +1,17 @@
-#' EEG component viewer
+#' EEG decomposition viewer
 #'
-#' A Shiny viewer for ICA or SSD/RESS components that provides an interface for
-#' looking at topographies, timecourses, and power spectral densities of all or
-#' individual components.
+#' A Shiny viewer for Independent Component Analysis or Spatio-spectral
+#' Decomposition/RESS components that provides an interface for looking at
+#' topographies, timecourses, and power spectral densities of all or individual
+#' components. Can be used to select and reject artefactual components.
 #'
-#' @author Matt craddock \email{matt@@mattcraddock.com}
+#' @author Matt Craddock \email{matt@@mattcraddock.com}
 #' @param data An `eeg_ICA` object
-#' @return NULL
+#' @return A list consisting (optionally) of
+#' * A character vector of components marked for rejection
+#' * A character vector of components marked to be kept
+#' * An `eeg_epochs` object reconstructed from the `eeg_ICA` object, with
+#'   components marked for rejection removed.
 #' @export
 
 view_ica <- function(data) {
@@ -45,8 +50,9 @@ view_ica <- function(data) {
 
   ui <-
     navbarPage(
-      "ICA viewer",
+      title = "ICA viewer",
       id = "main_page",
+      inverse = TRUE,
       tabPanel(
         "Topographies", plotOutput("comp_topos", dblclick = "topo_click")
         ),
@@ -76,34 +82,47 @@ view_ica <- function(data) {
         ),
       tabPanel("Individual",
                sidebarLayout(
-                 sidebarPanel(selectInput(
-                   "comp_no",
-                   "Component:",
-                   channel_names(data)
+                 sidebarPanel(
+                   selectInput(
+                     "comp_no", "Component:",
+                     channel_names(data)
                    ),
+                   shiny::radioButtons("reject_comps",
+                                       label = NULL,
+                                       choices = c("Keep", "Reject"),
+                                       inline = TRUE),
                    width = 3),
                  mainPanel(
                    fluidRow(
-                     column(width = 6,
-                            plotOutput("indiv_topo")),
-                     column(width = 6,
-                            plotOutput("indiv_erpim"))
+                     column(plotOutput("indiv_topo"), width = 6),
+                     column(plotOutput("indiv_erpim"), width = 6)
                      ),
                    fluidRow(
-                     column(width = 6,
-                            plotOutput("indiv_psd")),
-                     column(width = 6,
-                            plotOutput("indiv_tc"))
+                     column(plotOutput("indiv_psd"), width = 6),
+                     column(plotOutput("indiv_tc"), width = 6)
                      ),
                    width = 9)
                  )
-               )
+               ),
+      tabPanel("Output",
+               tableOutput("reject_table"),
+               checkboxGroupInput("output_choices",
+                                  label = "Output to return",
+                                  choices = list(
+                                    "Components to reject" = "reject",
+                                    "Components to keep" = "keep",
+                                    "Reconstructed data" = "data")
+                                  ),
+               actionButton("done",
+                            "Press to close app and return to console"))
+
       )
 
   server <- function(input,
                      output,
                      session) {
 
+    comp_status <- reactiveValues()
     ranges <- reactiveValues(x = NULL,
                              y = NULL)
     b_ranges <- reactiveValues(x = NULL,
@@ -113,7 +132,7 @@ view_ica <- function(data) {
       shiny::renderPlot(
         ica_topoplots,
         height = function() {
-          .6 * session$clientData$output_comp_topos_width
+          .75 * session$clientData$output_comp_topos_width
           }
         )
 
@@ -244,17 +263,72 @@ view_ica <- function(data) {
                           threshold = 20,
                           maxpoints = 1)
         )
-      print(selected_topo)
       updateNavbarPage(inputId = "main_page",
                        selected = "Individual")
       updateSelectInput(inputId = "comp_no",
                         selected = selected_topo$component)
     })
 
-  }
-  shiny::shinyApp(ui,
-                  server)
 
+    observeEvent(input$comp_no, {
+      updateRadioButtons(inputId = "reject_comps",
+                         choices = c("Keep", "Reject"),
+                         selected = comp_status[[input$comp_no]],
+                         inline = TRUE)
+    })
+
+    observeEvent(input$reject_comps, {
+      comp_status[[isolate(input$comp_no)]] <- input$reject_comps
+      comp_status
+    })
+
+    output$reject_table <- renderTable({
+      rejects <- reactiveValuesToList(comp_status)
+      rejects <-
+        names(rejects)[vapply(rejects,
+                              function(x) identical(x, "Reject"),
+                              logical(1))]
+      data.frame("Rejected" = rejects)}
+    )
+
+    observeEvent(input$done, {
+      outputs <- isolate(input$output_choices)
+
+      if (is.null(outputs)) {
+        message("No output requested.")
+        shiny::stopApp()
+      } else {
+        returnValue <- vector(
+          "list",
+          length(outputs)
+          )
+        names(returnValue) <- outputs
+        rejects <- reactiveValuesToList(isolate(comp_status))
+        rejects <-
+          names(rejects)[vapply(rejects,
+                                function(x) identical(x, "Reject"),
+                                logical(1))]
+        if ("reject" %in% outputs) {
+          returnValue$reject <- rejects
+        }
+
+        if ("data" %in% outputs) {
+          returnValue$data <-
+            apply_ica(data,
+                      rejects)
+        }
+
+        if ("keep" %in% outputs) {
+          returnValue$keep <-
+            channel_names(data)[!(channel_names(data) %in% rejects)]
+        }
+      }
+      shiny::stopApp(returnValue)
+
+    })
+  }
+  shiny::runGadget(ui,
+                   server)
 }
 
 
