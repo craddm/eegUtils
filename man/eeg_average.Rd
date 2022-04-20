@@ -6,7 +6,7 @@
 \alias{eeg_average.eeg_epochs}
 \alias{eeg_average.eeg_evoked}
 \alias{eeg_average.eeg_tfr}
-\title{Calculate averages (e.g. ERPs) for single datasets}
+\title{Calculate averages (e.g. event-related potentials) for single datasets}
 \usage{
 eeg_average(data, ...)
 

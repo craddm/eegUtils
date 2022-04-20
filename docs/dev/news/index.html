@@ -29,7 +29,7 @@
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -77,6 +77,30 @@
 
     <div class="section level2">
 <h2 class="page-header" data-toc-text="development version" id="eegutils-development-version">eegUtils (development version)<a class="anchor" aria-label="anchor" href="#eegutils-development-version"></a></h2>
+<div class="section level4">
+<h4 id="function-changes-development-version">Function changes<a class="anchor" aria-label="anchor" href="#function-changes-development-version"></a></h4>
+<ul><li>Added new <code><a href="../reference/plot_gfp.html">plot_gfp()</a></code> function for calculating and plotting Global Field Power.</li>
+<li>
+<code><a href="../reference/topoplot.html">topoplot()</a></code> now supports plotting of multiple timepoints - pass a list of times to the <code>time_lim</code> argument.</li>
+<li>
+<code><a href="../reference/browse_data.html">browse_data.eeg_ICA()</a></code> now provides the option to select components for rejection, and returns a character vector of selected components.</li>
+</ul></div>
+<div class="section level4">
+<h4 id="internal-changesbug-fixes-development-version">Internal changes/bug fixes<a class="anchor" aria-label="anchor" href="#internal-changesbug-fixes-development-version"></a></h4>
+<ul><li>Using <code><a href="../reference/electrode_locations.html">electrode_locations()</a></code> on a <code>data.frame</code> would return a data frame with the electrode names in full upper case. Now returns with the electrodes in their original case.</li>
+<li>
+<code>eeg_evoked</code> objects should now contain reference information.</li>
+<li>
+<code>ar_for_ica</code> file started, moving some functions from <code>artefact_rejection.R</code>
+</li>
+<li>
+<code>select_times</code> prevented from converting single column data.frames to vectors after subsetting.</li>
+<li>
+<code>plot_timecourse.eeg_tfr</code> now correctly uses the <code>freq_range</code> parameter.</li>
+<li>Improvements to internal processing logic in <code><a href="../reference/view_ica.html">view_ica()</a></code> to improve performance.</li>
+<li>
+<code>import_raw(..., fast_bdf = TRUE)</code> will now discard Annotations rather than fail to import BDF files with Annotations.</li>
+</ul></div>
 </div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.7.0" id="eegutils-070">eegUtils 0.7.0<a class="anchor" aria-label="anchor" href="#eegutils-070"></a></h2>

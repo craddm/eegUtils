@@ -31,7 +31,7 @@ electrodes. Output is a ggplot2 object."><meta name="robots" content="noindex"><
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -44,6 +44,9 @@ electrodes. Output is a ggplot2 object."><meta name="robots" content="noindex"><
     </li>
     <li>
       <a href="../articles/linear_modelling/linear_modelling.html">Linear Modelling</a>
+    </li>
+    <li>
+      <a href="../articles/single_subj_N170/N170_single_subject.html">Getting started with eegUtils and the N170</a>
     </li>
     <li>
       <a href="../articles/time-frequency-analysis.html">Frequency analysis</a>
@@ -188,11 +191,14 @@ line is drawn.</p></dd>
 <dt>color</dt>
 <dd><p>Alias for colour.</p></dd>
 <dt>mapping</dt>
-<dd><p>A ggplot2 <code><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes()</a></code> mapping.</p></dd>
+<dd><p>A ggplot2 <code>aes()</code> mapping.</p></dd>
 <dt>component</dt>
 <dd><p>name or number of ICA component to plot</p></dd>
 <dt>freq_range</dt>
-<dd><p>Choose a specific frequency range to plot</p></dd>
+<dd><p>Choose a specific frequency range to plot. If NULL,
+calculates the mean over all frequencies. Note that this does not imply
+that there is power at an included frequency. For example, lower
+frequencies will have shorter timecourses than high frequencies.</p></dd>
 <dt>type</dt>
 <dd><p>Type of baseline correction to use for <code>eeg_tfr</code> objects</p></dd>
 </dl></div>

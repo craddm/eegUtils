@@ -9,9 +9,10 @@ plot_gfp(data, cols = NULL, keep_trials = FALSE)
 \arguments{
 \item{data}{An \code{eeg_epochs} object}
 
-\item{cols}{condition columns}
+\item{cols}{Condition columns from the \code{epochs} metadata to calculate GFP
+separately for different conditions.}
 
-\item{keep_trials}{calculate GFP for each epoch separately, then average over
+\item{keep_trials}{Calculate GFP for each epoch separately, then average over
 epochs.}
 }
 \description{

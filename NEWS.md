@@ -3,14 +3,16 @@
 ### Function changes
 - Added new `plot_gfp()` function for calculating and plotting Global Field Power.
 - `topoplot()` now supports plotting of multiple timepoints - pass a list of times to the `time_lim` argument.
-- `import_raw(..., fast_bdf = TRUE)` will now discard Annotations rather than fail to import BDF files with Annotations.
+- `browse_data.eeg_ICA()` now provides the option to select components for rejection, and returns a character vector of selected components.
 
 ### Internal changes/bug fixes
 - Using `electrode_locations()` on a `data.frame` would return a data frame with the electrode names in full upper case. Now returns with the electrodes in their original case.
 - `eeg_evoked` objects should now contain reference information.
-- `ar_for_ica` file started, moving some functions from artefact_rejection
+- `ar_for_ica` file started, moving some functions from `artefact_rejection.R`
 - `select_times` prevented from converting single column data.frames to vectors after subsetting.
 - `plot_timecourse.eeg_tfr` now correctly uses the `freq_range` parameter.
+- Improvements to internal processing logic in `view_ica()` to improve performance.
+- `import_raw(..., fast_bdf = TRUE)` will now discard Annotations rather than fail to import BDF files with Annotations.
 
 # eegUtils 0.7.0
 
