@@ -15,6 +15,26 @@ view_ica <- function(data) {
     stop("This function requires an eeg_ICA object.")
   }
 
+  psd_ica <- compute_psd(data,
+                         verbose = FALSE,
+                         keep_trials = FALSE)
+
+  psd_ica <- tidyr::pivot_longer(
+     psd_ica,
+     cols = channel_names(data),
+     names_to = "component",
+     values_to = "power"
+   )
+
+  psd_ica$power <- 10 * log10(psd_ica$power)
+
+  ica_erps <-
+    as.data.frame(eeg_average(data,
+                              cols = "participant_id"),
+                  long = TRUE,
+                  coords = FALSE)
+  ica_butter <- plot_butterfly(ica_erps)
+
   ui <-
     navbarPage(
       "ICA viewer",
@@ -32,7 +52,7 @@ view_ica <- function(data) {
                             resetOnNew = TRUE),
           dblclick = "butter_dbl"
         ),
-        verbatimTextOutput("info"),
+        tableOutput("info"),
         tags$p(span("Hover over lines to see component details.")),
         tags$p("To zoom, drag-click to highlight where you want to zoom, then double-click to zoom. Double-click again to zoom back out.")
 
@@ -46,7 +66,7 @@ view_ica <- function(data) {
                             resetOnNew = TRUE),
           dblclick = "psd_dbl"
         ),
-        verbatimTextOutput("psd_info"),
+        tableOutput("psd_info"),
         tags$p(span("Hover over lines to see component details.")),
         tags$p("To zoom, drag-click to highlight where you want to zoom, then double-click to zoom. Double-click again to zoom back out.")
       ),
@@ -58,19 +78,20 @@ view_ica <- function(data) {
                    channel_names(data)
                  ),
                  width = 3),
-                 mainPanel(fluidRow(
-                   column(width = 6,
-                          plotOutput("indiv_topo")),
-                   column(width = 6,
-                          plotOutput("indiv_erpim"))
-                 ),
-                 fluidRow(
-                   column(width = 6,
-                          plotOutput("indiv_psd")),
-                   column(width = 6,
-                          plotOutput("indiv_tc"))
-                 ),
-                 width = 9)
+                 mainPanel(
+                   fluidRow(
+                     column(width = 6,
+                            plotOutput("indiv_topo")),
+                     column(width = 6,
+                            plotOutput("indiv_erpim"))
+                     ),
+                   fluidRow(
+                     column(width = 6,
+                            plotOutput("indiv_psd")),
+                     column(width = 6,
+                            plotOutput("indiv_tc"))
+                     ),
+                   width = 9)
                ))
     )
 
@@ -82,34 +103,6 @@ view_ica <- function(data) {
     b_ranges <- reactiveValues(x = NULL,
                                y = NULL)
 
-    ica_erps <-
-      as.data.frame(eeg_average(data),
-                    long = TRUE)
-
-    ica_erps <-
-      dplyr::group_by(ica_erps,
-                      electrode,
-                      time)
-
-    ica_erps <- dplyr::summarise(ica_erps,
-                                 amplitude = mean(amplitude))
-
-    psd_ica <- compute_psd(data,
-                           verbose = FALSE)
-
-    psd_ica <- tidyr::pivot_longer(
-      psd_ica,
-      cols = channel_names(data),
-      names_to = "component",
-      values_to = "power"
-    )
-
-    psd_ica <- dplyr::group_by(psd_ica,
-                               component,
-                               frequency)
-    psd_ica <- dplyr::summarise(psd_ica,
-                                power = mean(10 * log10(power)))
-
     output$comp_topos <- shiny::renderPlot(
       ica_topos(data),
       height = function() {
@@ -119,9 +112,10 @@ view_ica <- function(data) {
 
     output$ica_butters <-
       renderPlot(
-        plot_butterfly(data) +
+        ica_butter +
           coord_cartesian(xlim = b_ranges$x,
-                          ylim = b_ranges$y))
+                          ylim = b_ranges$y)
+        )
 
     output$ica_psd <-
       renderPlot({
@@ -136,16 +130,18 @@ view_ica <- function(data) {
                           expand = FALSE)
     })
 
-    output$info <- renderPrint({
+    output$info <- renderTable({
       as.data.frame(
         shiny::nearPoints(ica_erps,
                           input$butter_click,
                           threshold = 20,
-                          maxpoints = 1)
+                          maxpoints = 1,
+                          xvar = "time",
+                          yvar = "amplitude")
       )
     })
 
-    output$psd_info <- renderPrint({
+    output$psd_info <- renderTable({
       as.data.frame(
         shiny::nearPoints(psd_ica,
                           input$psd_click,
@@ -192,12 +188,11 @@ view_ica <- function(data) {
       tmp_psd <- dplyr::filter(tmp_psd,
                                frequency >= 3,
                                frequency <= 50)
-
       ggplot(tmp_psd,
              aes(x = frequency,
                  y = 10 * log10((power)))) +
         stat_summary(geom = "ribbon",
-                     fun.data = mean_se,
+                     fun.data = mean_cl_normal,
                      alpha = 0.5) +
         stat_summary(geom = "line",
                      fun = mean) +
@@ -244,7 +239,7 @@ view_ica <- function(data) {
 
 ica_topos <- function(data) {
   ggplot2::ggplot(get_scalpmap(data,
-                               grid_res = 80),
+                               grid_res = 50),
                   aes(
                     x = x,
                     y = y,
