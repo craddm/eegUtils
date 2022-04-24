@@ -8,7 +8,6 @@ Status](http://www.repostatus.org/badges/latest/wip.svg)](http://www.repostatus.
 [![Coverage
 Status](https://img.shields.io/codecov/c/github/craddm/eegUtils/master.svg)](https://codecov.io/github/craddm/eegUtils?branch=master)
 [![R-CMD-check](https://github.com/craddm/eegUtils/workflows/R-CMD-check/badge.svg)](https://github.com/craddm/eegUtils/actions)
-
 [![DOI](https://zenodo.org/badge/85406871.svg)](https://zenodo.org/badge/latestdoi/85406871)
 <!-- badges: end -->
 
