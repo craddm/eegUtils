@@ -1,9 +1,9 @@
 #' Compute power spectral density
 #'
 #' `compute_psd` returns the PSD calculated using Welch's method for every
-#' channel in the data. The output is in  microvolts ^2 / Hz. If the object has
-#' multiple epochs, it will perform Welch's FFT separately for each epoch and
-#' then average them afterwards.
+#' channel in the data. The output is in microvolts-squared divided by Hertz -
+#' \eqn{\muV^2 / Hz}. If the object has multiple epochs, it will perform Welch's
+#' FFT separately for each epoch and then average them afterwards.
 #'
 #' Welch's FFT splits the data into multiple segments, calculates the FFT
 #' separately for each segment, and then averages over segments. Each segment is
@@ -11,11 +11,10 @@
 #' Welch's FFT is calculated separately for each trial.
 #'
 #' The number of sampling points used for the FFT can be specified using n_fft.
-#' n_fft defaults to 256 sampling points for `eeg_epochs` data, or the
-#' minimum of 2048 or the length of the signal for continuous `eeg_data`.
+#' n_fft defaults to 256 sampling points for `eeg_epochs` data, or the minimum
+#' of 2048 or the length of the signal for continuous `eeg_data`.
 #'
-#' `seg_length` defaults to be `n_fft`, and must be less than or equal
-#' to it.
+#' `seg_length` defaults to be `n_fft`, and must be less than or equal to it.
 #'
 #' `noverlap` specifies the amount of overlap between windows in sampling
 #' points. If NULL, it defaults to 50\% overlap between segments.

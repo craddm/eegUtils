@@ -70,9 +70,9 @@ Currently, a data frame with the PSD for each channel separately.
 }
 \description{
 \code{compute_psd} returns the PSD calculated using Welch's method for every
-channel in the data. The output is in  microvolts ^2 / Hz. If the object has
-multiple epochs, it will perform Welch's FFT separately for each epoch and
-then average them afterwards.
+channel in the data. The output is in microvolts-squared divided by Hertz -
+\eqn{\muV^2 / Hz}. If the object has multiple epochs, it will perform Welch's
+FFT separately for each epoch and then average them afterwards.
 }
 \details{
 Welch's FFT splits the data into multiple segments, calculates the FFT
@@ -81,11 +81,10 @@ windowed with a Hanning window to counter spectral leakage. For epoched data,
 Welch's FFT is calculated separately for each trial.
 
 The number of sampling points used for the FFT can be specified using n_fft.
-n_fft defaults to 256 sampling points for \code{eeg_epochs} data, or the
-minimum of 2048 or the length of the signal for continuous \code{eeg_data}.
+n_fft defaults to 256 sampling points for \code{eeg_epochs} data, or the minimum
+of 2048 or the length of the signal for continuous \code{eeg_data}.
 
-\code{seg_length} defaults to be \code{n_fft}, and must be less than or equal
-to it.
+\code{seg_length} defaults to be \code{n_fft}, and must be less than or equal to it.
 
 \code{noverlap} specifies the amount of overlap between windows in sampling
 points. If NULL, it defaults to 50\\% overlap between segments.
