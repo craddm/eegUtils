@@ -162,7 +162,7 @@ browse_data.eeg_data <- function(data,
   }
 
   ui <- miniPage(
-      gadgetTitleBar("Continous data browser"),
+      gadgetTitleBar("Continuous data browser"),
       miniTabstripPanel(
         miniTabPanel(title = "Butterfly",
                      icon = icon("chart-line"),
