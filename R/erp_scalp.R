@@ -315,7 +315,7 @@ interactive_scalp <- function(data,
         ),
       miniTabPanel(
         "Selected electrodes",
-        icon = icon("line-chart"),
+        icon = icon("chart-line"),
         miniContentPanel(plotOutput("Selected", height = "100%")),
         miniButtonBlock(
           actionButton("avg", "Mean"),
