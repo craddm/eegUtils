@@ -36,6 +36,7 @@ eeg_average.default <- function(data,
 eeg_average.eeg_epochs <- function(data,
                                    cols = NULL,
                                    ...) {
+
   elecs <- channel_names(data)
 
   if (is.null(data$epochs)) {
@@ -147,10 +148,57 @@ eeg_average.eeg_evoked <- function(data,
       if ("participant_id" %in% cols) {
         col_names <- cols
       } else {
-        col_names <- c("participant_id",
-                       cols)
+        col_names <- c("participant_id", cols)
       }
     }
+
+    elecs <- channel_names(data)
+    data$signals <- as.data.frame(data)
+    data$signals <-
+      dplyr::group_by(data$signals,
+                      dplyr::across(
+                        c(time,
+                          dplyr::all_of(col_names))
+                        )
+                      )
+    data$signals <-
+      dplyr::summarise(data$signals,
+                       dplyr::across(dplyr::all_of(elecs),
+                                     mean))
+    # We want to end up with a unique epoch number for each level of the main
+    # variable we are grouping by - so not by participant_id or by time. e.g.
+    # each participant should have an epoch 1, and it be the same epoch 1. So if
+    # grouping by 2 categories, each combination should have a unique epoch number.
+    # Only a concern for group data.
+    data$signals <-
+      dplyr::group_by(data$signals,
+                      dplyr::across(
+                        dplyr::all_of(cols)
+                        )
+                      )
+    data$signals <-
+      dplyr::mutate(data$signals,
+                    epoch = dplyr::cur_group_id())
+
+    data$signals <- dplyr::ungroup(data$signals)
+    timings <- data$signals[, c("time", "epoch", "participant_id", col_names)]
+
+    epochs <- dplyr::select(timings,
+                            epoch,
+                            !!col_names)
+    epochs <- unique(epochs)
+    if (is_group_df) {
+      timings <- data$signals[, c("time", "epoch", "participant_id")]
+    } else {
+      timings <- data$signals[, c("time", "epoch")]
+    }
+    timings <- unique(timings)
+
+    # if (!("recording" %in% colnames(epochs))) {
+    #   epochs$recording <- recording_id
+    # }
+    data$timings <- timings
+    data$epochs <- epochs
   }
 
   data
