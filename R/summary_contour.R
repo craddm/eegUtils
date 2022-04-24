@@ -7,6 +7,7 @@
 #'
 #' The original code was released under an MIT license, and remains copyright of
 #' the ggplot2 authors.
+#' @noRd
 NULL
 
 #' @noRd
