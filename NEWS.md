@@ -5,6 +5,7 @@
 - `topoplot()` now supports plotting of multiple timepoints - pass a list of times to the `time_lim` argument.
 - `browse_data.eeg_ICA()` now provides the option to select components for rejection, and returns a character vector of selected components.
 - `view_ica()` now allows you to select components for rejection, to double-click on topographies to inspect them individually, and to return cleaned data.
+- `eeg_average` now supports averaging over conditions in `eeg_evoked` files
 
 ### Internal changes/bug fixes
 - Using `electrode_locations()` on a `data.frame` would return a data frame with the electrode names in full upper case. Now returns with the electrodes in their original case.
