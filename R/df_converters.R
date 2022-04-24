@@ -346,8 +346,11 @@ as.data.frame.eeg_evoked <- function(x,
              x$timings)
 
   if (is_group_df) {
+    unique_cols <-
+      c(names(epoch_info)[!(names(epoch_info) %in% names(x))],
+        "participant_id", "epoch")
     x <- dplyr::left_join(x,
-                          epoch_info,
+                          epoch_info[unique_cols],
                           by = c("participant_id",
                                  "epoch"))
   } else {
