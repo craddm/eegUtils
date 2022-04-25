@@ -9,7 +9,7 @@ articles:
   N170_single_subject: single_subj_N170/N170_single_subject.html
   time-frequency-analysis: time-frequency-analysis.html
   topoplot: topoplot/topoplot.html
-last_built: 2022-04-24T22:57Z
+last_built: 2022-04-25T16:55Z
 urls:
   reference: http://craddm.github.io/eegUtils/reference
   article: http://craddm.github.io/eegUtils/articles
