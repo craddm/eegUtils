@@ -4,20 +4,12 @@ demo_tagged <-
   eegUtils::tag_epochs(
     eegUtils::tag_events(
       eegUtils::demo_epochs,
-      c(208,
-                                       213,
-                                       215,
-                                       207,
-                                       222,
-                                       219),
-                                     event_label = c("Match",
-                                                     "Match",
-                                                     "Match",
-                                                     "Mismatch",
-                                                     "Mismatch",
-                                                     "Mismatch")),
-                          event_label = c("Match",
-                                          "Mismatch"))
+      c(208, 213, 215,
+        207, 222, 219),
+      event_label = c("Match", "Match", "Match",
+                      "Mismatch", "Mismatch", "Mismatch")),
+    event_label = c("Match",
+                    "Mismatch"))
 
 test_that("glm fitting works", {
   test_glm <- fit_glm(~event_label,
