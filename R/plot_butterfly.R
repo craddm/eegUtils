@@ -11,7 +11,8 @@
 #'   made when not all categorical variables are reflected in the facets. e.g.
 #'   if there are two variables with two levels each, but you want to average
 #'   over one of those variables, `stat_summary()` is required. However,
-#'   `stat_summary()` is extremely slow.
+#'   `stat_summary()` can be extremely slow with a large number of timepoints,
+#'   electrodes, and epochs.
 #'
 #' @author Matt Craddock, \email{matt@@mattcraddock.com}
 #' @param data EEG dataset. Should have multiple timepoints.
@@ -21,7 +22,8 @@
 #' plot_butterfly(demo_epochs,
 #' time_lim = c(-.1, .4),
 #' legend = FALSE)
-#' @return A ggplot object
+#' @return ggplot2 object showing ERPs for all electrodes overlaid on a single
+#'   plot.
 #' @export
 
 plot_butterfly <- function(data, ...) {
@@ -32,15 +34,12 @@ plot_butterfly <- function(data, ...) {
 #'   specifying beginning and end of time-range to plot. e.g. c(-.1,.3)
 #' @param baseline  Character vector. Times to use as a baseline. Takes the mean
 #'   over the specified period and subtracts. e.g. c(-.1, 0)
-#' @param colourmap Attempt to plot using a different colourmap (from
-#'   RColorBrewer). (Not yet implemented)
 #' @param legend Include plot legend. Defaults to TRUE.
 #' @param allow_facets Allow use of ggplot2 facetting. See note below. Defaults
 #'   to FALSE.
 #' @param continuous Is the data continuous or not (I.e. epoched)
-#' @param browse_mode Custom theme for use with browse_data.
-#' @return ggplot2 object showing ERPs for all electrodes overlaid on a single
-#'   plot.
+#' @param browse_mode Applies custom theme used with `browse_data()`.
+
 #' @import ggplot2
 #' @importFrom dplyr group_by ungroup summarise
 #' @importFrom tidyr gather
@@ -51,7 +50,6 @@ plot_butterfly <- function(data, ...) {
 plot_butterfly.default <- function(data,
                                    time_lim = NULL,
                                    baseline = NULL,
-                                   colourmap = NULL,
                                    legend = TRUE,
                                    continuous = FALSE,
                                    browse_mode = FALSE,
@@ -92,7 +90,6 @@ plot_butterfly.default <- function(data,
 plot_butterfly.eeg_evoked <- function(data,
                                       time_lim = NULL,
                                       baseline = NULL,
-                                      colourmap = NULL,
                                       legend = TRUE,
                                       continuous = FALSE,
                                       browse_mode = FALSE,

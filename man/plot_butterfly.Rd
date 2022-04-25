@@ -89,14 +89,11 @@ specifying beginning and end of time-range to plot. e.g. c(-.1,.3)}
 \item{baseline}{Character vector. Times to use as a baseline. Takes the mean
 over the specified period and subtracts. e.g. c(-.1, 0)}
 
-\item{colourmap}{Attempt to plot using a different colourmap (from
-RColorBrewer). (Not yet implemented)}
-
 \item{legend}{Include plot legend. Defaults to TRUE.}
 
 \item{continuous}{Is the data continuous or not (I.e. epoched)}
 
-\item{browse_mode}{Custom theme for use with browse_data.}
+\item{browse_mode}{Applies custom theme used with \code{browse_data()}.}
 
 \item{allow_facets}{Allow use of ggplot2 facetting. See note below. Defaults
 to FALSE.}
@@ -105,8 +102,6 @@ to FALSE.}
 applies to \code{eeg_lm} objects}
 }
 \value{
-A ggplot object
-
 ggplot2 object showing ERPs for all electrodes overlaid on a single
 plot.
 }
@@ -139,7 +134,8 @@ In order for ggplot2 facetting to work, the data has to be plotted using
 made when not all categorical variables are reflected in the facets. e.g.
 if there are two variables with two levels each, but you want to average
 over one of those variables, \code{stat_summary()} is required. However,
-\code{stat_summary()} is extremely slow.
+\code{stat_summary()} can be extremely slow with a large number of timepoints,
+electrodes, and epochs.
 }
 
 \examples{
