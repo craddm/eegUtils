@@ -293,9 +293,8 @@ plot_timecourse.eeg_tfr <- function(data,
   }
 
   if (!is.null(time_lim)) {
-    data <- filter(data,
-                   time >= time_lim[[1]],
-                   time <= time_lim[[2]])
+    data <- select_times(data,
+                         time_lim)
   }
 
   if (!is.null(electrode)) {
