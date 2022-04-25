@@ -27,7 +27,6 @@ import_chans <- function(file_name,
              file_format)
   }
 
-
   chan_locs <-
     switch(file_type,
            elc = import_elc(file_name),
@@ -508,30 +507,10 @@ plot_electrodes.default <- function(data,
   if ("electrode" %in% names(data)) {
     data <- data.frame(electrode = unique(data$electrode))
     data <- electrode_locations(data)
+    data <- list(chan_info = data)
 
-    if (interact) {
-      if (!requireNamespace("plotly", quietly = TRUE)) {
-        stop("Package \"plotly\" needed for interactive electrode plots. Please install it.",
-             call. = FALSE)
-      }
-      plotly::plot_ly(data,
-                      x = ~cart_x,
-                      y = ~cart_y,
-                      z = ~cart_z,
-                      text = ~electrode,
-                      type = "scatter3d",
-                      mode = "text+markers")
-    } else {
-      ggplot2::ggplot(data,
-                      ggplot2::aes(x = x,
-                                   y = y,
-                                   label = electrode)) +
-        ggplot2::geom_text() +
-        ggplot2::theme_minimal() +
-        ggplot2::coord_equal() +
-        ggplot2::labs(x = "x (mm)",
-                      y = "y (mm)")
-    }
+    create_electrode_layout_plot(data,
+                                 interact)
   } else {
     stop("No electrodes found.")
   }
@@ -546,6 +525,31 @@ plot_electrodes.eeg_data <- function(data,
     stop("No channel locations found.")
   }
 
+  create_electrode_layout_plot(data,
+                               interact)
+}
+
+
+#' @describeIn plot_electrodes Plot electrodes associated with an `eeg_data` object.
+#' @export
+plot_electrodes.eeg_tfr <- function(data,
+                                     interact = FALSE) {
+
+  if (is.null(channels(data))) {
+    stop("No channel locations found.")
+  }
+
+  create_electrode_layout_plot(data,
+                               interact)
+}
+
+#' Create a ggplot or plotly plot showing electrode positions
+#'
+#' @param data The data from which to extract channel locations
+#' @param interact If TRUE, use `plotly` to create a 3D interactive plot, otherwise create a 2D `ggplot`.
+#' @keywords internal
+create_electrode_layout_plot <-  function(data,
+                                          interact)
   if (interact) {
     if (!requireNamespace("plotly", quietly = TRUE)) {
       stop("Package \"plotly\" needed for interactive electrode plots. Please install it.",
@@ -570,42 +574,7 @@ plot_electrodes.eeg_data <- function(data,
       ggplot2::labs(x = "x (mm)",
                     y = "y (mm)")
   }
-}
 
-#' @describeIn plot_electrodes Plot electrodes associated with an `eeg_data` object.
-#' @export
-plot_electrodes.eeg_tfr <- function(data,
-                                     interact = FALSE) {
-
-  if (is.null(channels(data))) {
-    stop("No channel locations found.")
-  }
-
-  if (interact) {
-    if (!requireNamespace("plotly", quietly = TRUE)) {
-      stop("Package \"plotly\" needed for interactive electrode plots. Please install it.",
-           call. = FALSE)
-    }
-
-    plotly::plot_ly(data$chan_info,
-                    x = ~cart_x,
-                    y = ~cart_y,
-                    z = ~cart_z,
-                    text = ~electrode,
-                    type = "scatter3d",
-                    mode = "text+markers")
-  } else {
-    ggplot2::ggplot(data$chan_info,
-                    aes(x = x,
-                        y = y,
-                        label = electrode)) +
-      geom_text() +
-      theme_minimal() +
-      coord_equal() +
-      ggplot2::labs(x = "y (mm)",
-                    y = "x (mm)")
-  }
-}
 
 #' Montage check
 #'
