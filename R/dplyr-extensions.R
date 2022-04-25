@@ -78,6 +78,7 @@ filter.eeg_data <- function(.data, ...) {
     .data$events$time <- .data$events$event_time
     .data$events <- dplyr::filter(.data$events,
                                   ...)
+    .data$events$time <- NULL
   }
 
   # # ensure this also handles the epoch structure correctly
@@ -88,6 +89,7 @@ filter.eeg_data <- function(.data, ...) {
     .data$epochs <- dplyr::filter(.data$epochs,
                                   !!!args[arg_list$in_epochs])
   }
+  .data$signals <- tibble::as_tibble(.data$signals)
   .data
 }
 
@@ -232,14 +234,6 @@ filter.eeg_tfr <- function(.data, ...) {
 #' @keywords internal
 parse_args <- function(arg_list,
                        data) {
-
-  # which_calls <- vapply(arg_list,
-  #                       is.call,
-  #                       logical(1),
-  #                       USE.NAMES = FALSE)
-  #
-  # lhs_args <- unlist(lapply(arg_list[which_calls],
-  #                           function(x) as.character(x[[2]])))
 
   lhs_args <- unlist(
     lapply(arg_list,

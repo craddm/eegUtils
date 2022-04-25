@@ -4,6 +4,7 @@ demo_tfr <- compute_tfr(demo_epochs,
                         n_cycles = 3,
                         foi = c(8, 12),
                         keep_trials = TRUE)
+test_data <- import_raw("Newtest17-256.bdf")
 
 test_that("selection of electrodes and times works as expected", {
 
@@ -37,4 +38,14 @@ test_that("selection of electrodes and times works as expected", {
 test_that("filter returns tibble when only 1 channel in data", {
   one_chan <- select(demo_epochs, 1)
   expect_s3_class(filter(one_chan, time > .1)$signals, "data.frame")
+})
+
+test_that("dplyr extension work on continuous data", {
+  expect_equivalent(select(test_data,
+                           1:5),
+                    select_elecs(test_data,
+                                 c("A1", "A2", "A3", "A4", "A5")))
+  expect_equivalent(filter(test_data, time < 10),
+                    select_times(test_data, c(-.05, 10)))
+
 })
