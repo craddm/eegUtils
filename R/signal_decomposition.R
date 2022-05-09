@@ -198,6 +198,8 @@ run_SSD <- function(data,
 
   data$signals <- as.data.frame(as.matrix(signal$signals) %*% W)
   names(data$signals) <- sprintf("Comp%03d", 1:ncol(W))
+  data$algorithm <- list(algorithm = if (RESS) "ress" else "ssd")
+  data$contents <- "full"
   data
 
 }
