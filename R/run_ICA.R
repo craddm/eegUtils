@@ -66,6 +66,9 @@ run_ICA.default <- function(data,
 #' @param rate Learning rate for extended infomax. Ignored if method !=
 #'   "infomax".
 #' @param verbose Print informative messages to console.
+#' @param return "full" or "weights". "full" returns the mixing and unmixing
+#'   matrices and the source timecourses. "weights" returns only the mixing and
+#'   unmixing matrices. Defaults to "full".
 #' @describeIn run_ICA Run ICA on an `eeg_epochs` object
 #' @importFrom stats cov
 #' @export
@@ -80,6 +83,7 @@ run_ICA.eeg_epochs <- function(data,
                                rateanneal = c(60, .9),
                                rate = 0.1,
                                verbose = TRUE,
+                               return = c("full", "weights"),
                                ...) {
 
   orig_chans <- channel_names(data)
@@ -202,8 +206,6 @@ run_ICA.eeg_epochs <- function(data,
           rate = rate
         )
       }
-
-
     } else if (identical(method, "imax")) {
       if (!requireNamespace("infomax", quietly = TRUE)) {
         stop(
@@ -253,7 +255,10 @@ run_ICA.eeg_epochs <- function(data,
     chan_info = data$chan_info,
     srate = data$srate,
     epochs = data$epochs,
-    algorithm = method
+    algorithm = list(algorithm = method,
+                     tol = tol,
+                     max_iterations = maxit),
+    contents = return
   )
   ica_obj
 }
@@ -346,16 +351,6 @@ sobi_ICA <- function(data,
   mixing_matrix <- mixing_matrix[, var_order]
 
   unmixing_matrix <- MASS::ginv(mixing_matrix, tol = 0)
-  # rescale vecs
-  # scaling <- sqrt(colMeans(mixing_matrix^2))
-  #
-  # unmixing_matrix <- sweep(unmixing_matrix,
-  #                          MARGIN = 1,
-  #                          scaling,
-  #                          `*`) # scaled weights
-
-  # mixing_matrix <- MASS::ginv(unmixing_matrix %*% diag(ncol(unmixing_matrix)),
-  #                             tol = 0)
 
   dim(amp_matrix) <- c(n_channels,
                        n_times * n_epochs)
@@ -436,15 +431,13 @@ apply_ica.eeg_epochs <- function(data,
 
   if (is.character(comps)) {
     comps_missing <- which(!(comps %in% channel_names(decomp)))
-    #comps <- which(channel_names(decomp) %in% comps)
     keep_comps <- which(!channel_names(decomp) %in% comps)
   } else {
-     keep_comps <- seq(1, ncomps)[-comps]
+    keep_comps <- seq(1, ncomps)[-comps]
   }
 
   sources <- unmix(data$signals,
                    decomp$unmixing_matrix[, 1:nelecs])
-  #keep_comps <- names(decomp$mixing_matrix[, 1:ncomps])[-comps]
   new_sigs <- mix(sources[, keep_comps],
                   decomp$mixing_matrix[, keep_comps])
   colnames(new_sigs) <- data$chan_info$electrode
