@@ -50,9 +50,10 @@ view_ica <- function(data) {
 
   ui <-
     navbarPage(
-      title = "ICA viewer",
+      title = "EEG decomposition viewer",
       id = "main_page",
       inverse = TRUE,
+      collapsible = TRUE,
       tabPanel(
         "Topographies", plotOutput("comp_topos", dblclick = "topo_click")
         ),
