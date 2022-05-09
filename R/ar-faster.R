@@ -425,11 +425,12 @@ ar_FASTER.eeg_group <- function(data,
     dplyr::summarise(
       dplyr::across(
         dplyr::all_of(data_chans),
-        mean)
+        mean,
+        na.rm = TRUE)
       )
 
   channel_mean <-
-    colMeans(all_data[, data_chans])
+    colMeans(all_data[, data_chans], na.rm = TRUE)
 
   part_diffs <-
     abs(sweep(participant_mean[, data_chans],
@@ -442,11 +443,12 @@ ar_FASTER.eeg_group <- function(data,
     dplyr::summarise(
       dplyr::across(
         dplyr::all_of(data_chans),
-        var)
+        var,
+        na.rm = TRUE)
     )
 
   channel_vars <-
-    matrixStats::colVars(as.matrix(all_data[, data_chans]))
+    matrixStats::colVars(as.matrix(all_data[, data_chans]), na.rm = TRUE)
 
   part_var_diffs <-
     abs(sweep(participant_var[, data_chans],
@@ -459,7 +461,7 @@ ar_FASTER.eeg_group <- function(data,
     dplyr::summarise(
       dplyr::across(
         dplyr::all_of(data_chans),
-        ~diff(range(.)))
+        ~diff(range(., na.rm = TRUE)))
     )
 
   scaled_diffs <- abs(scale(part_diffs[, data_chans]))
@@ -475,7 +477,7 @@ ar_FASTER.eeg_group <- function(data,
       dplyr::summarise(
         dplyr::across(
           dplyr::all_of(EOG),
-          max)
+          max, na.rm = TRUE)
       )
     scaled_eog <- abs(scale(matrixStats::rowMaxs(as.matrix(participant_eog[, EOG]))))
     data.frame(
