@@ -529,6 +529,18 @@ plot_electrodes.eeg_data <- function(data,
                                interact)
 }
 
+#' @describeIn plot_electrodes Plot electrodes associated with an `eeg_evoked` object.
+#' @export
+plot_electrodes.eeg_evoked <- function(data,
+                                       interact = FALSE) {
+
+  if (is.null(channels(data))) {
+    stop("No channel locations found.")
+  }
+
+  create_electrode_layout_plot(data,
+                               interact)
+}
 
 #' @describeIn plot_electrodes Plot electrodes associated with an `eeg_data` object.
 #' @export

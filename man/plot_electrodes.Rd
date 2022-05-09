@@ -4,6 +4,7 @@
 \alias{plot_electrodes}
 \alias{plot_electrodes.default}
 \alias{plot_electrodes.eeg_data}
+\alias{plot_electrodes.eeg_evoked}
 \alias{plot_electrodes.eeg_tfr}
 \title{Plot electrode locations}
 \usage{
@@ -12,6 +13,8 @@ plot_electrodes(data, interact = FALSE)
 \method{plot_electrodes}{default}(data, interact = FALSE)
 
 \method{plot_electrodes}{eeg_data}(data, interact = FALSE)
+
+\method{plot_electrodes}{eeg_evoked}(data, interact = FALSE)
 
 \method{plot_electrodes}{eeg_tfr}(data, interact = FALSE)
 }
@@ -34,6 +37,8 @@ of electrode locations in 3D space.
 \item \code{default}: generic plot electrodes function
 
 \item \code{eeg_data}: Plot electrodes associated with an \code{eeg_data} object.
+
+\item \code{eeg_evoked}: Plot electrodes associated with an \code{eeg_evoked} object.
 
 \item \code{eeg_tfr}: Plot electrodes associated with an \code{eeg_data} object.
 }}
