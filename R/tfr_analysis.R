@@ -301,60 +301,10 @@ tf_morlet <- function(data,
   edge_mat <- remove_edges(sigtime,
                            data$freq_info$morlet_resolution$sigma_t)
 
-  if (keep_trials == TRUE) {
-    dims <-
-      which(names(dimnames(data$signals)) %in% c("time", "frequency"))
-    data$signals <- sweep(data$signals,
-                          dims,
-                          edge_mat,
-                          "*")
-    data <- eeg_tfr(
-      data$signals,
-      srate = data$srate,
-      events = data$events,
-      chan_info = data$chan_info,
-      reference = data$reference,
-      timings = data$timings,
-      freq_info = data$freq_info,
-      dimensions = names(dimnames(data$signals)),
-      epochs = data$epochs
-    )
-    if (verbose) {
-      message("Returning single-trial data.")
-    }
-    return(data)
-  }
-
-  if (verbose) {
-    message("Returning signal averaged over all trials.")
-  }
-  dims <-
-    which(names(dimnames(data$signals)) %in% c("time", "frequency"))
-
-  data$signals <- sweep(data$signals,
-                        dims,
-                        edge_mat,
-                        "*")
-
-  recording_id <- epochs(data)$recording[[1]]
-  participant_id <- epochs(data)$participant_id[[1]]
-
-  data <- eeg_tfr(
-    data$signals,
-    srate = data$srate,
-    events = NULL,
-    epochs = tibble::tibble(epoch = 1,
-                            recording = recording_id,
-                            participant_id = participant_id),
-    chan_info = data$chan_info,
-    reference = data$reference,
-    timings = unique(data$timings),#data$timings[1:length(sigtime), c("epoch", "time")],
-    freq_info = data$freq_info,
-    dimensions = c("epoch",
-                   "time",
-                   "electrode",
-                   "frequency")
-  )
+  data <- finalize_tfr(keep_trials = keep_trials,
+                       data = data,
+                       edge_mat = edge_mat,
+                       verbose = verbose)
   data
 }
 
@@ -864,60 +814,10 @@ tf_hanning <- function(data,
   edge_mat <- remove_edges(sigtime,
                            data$freq_info$window_resolution$sigma_t)
 
-  if (keep_trials == TRUE) {
-    dims <-
-      which(names(dimnames(data$signals)) %in% c("time", "frequency"))
-    data$signals <- sweep(data$signals,
-                          dims,
-                          edge_mat,
-                          "*")
-    data <- eeg_tfr(
-      data$signals,
-      srate = data$srate,
-      events = data$events,
-      chan_info = data$chan_info,
-      reference = data$reference,
-      timings = data$timings,
-      freq_info = data$freq_info,
-      dimensions = names(dimnames(data$signals)),
-      epochs = data$epochs
-    )
-    if (verbose) {
-      message("Returning single-trial data.")
-    }
-    return(data)
-  }
-
-  if (verbose) {
-    message("Returning signal averaged over all trials.")
-  }
-  dims <-
-    which(names(dimnames(data$signals)) %in% c("time", "frequency"))
-
-  data$signals <- sweep(data$signals,
-                        dims,
-                        edge_mat,
-                        "*")
-
-  recording_id <- epochs(data)$recording[[1]]
-  participant_id <- epochs(data)$participant_id[[1]]
-
-  data <- eeg_tfr(
-    data$signals,
-    srate = data$srate,
-    events = NULL,
-    epochs = tibble::tibble(epoch = 1,
-                            recording = recording_id,
-                            participant_id = participant_id),
-    chan_info = data$chan_info,
-    reference = data$reference,
-    timings = unique(data$timings),
-    freq_info = data$freq_info,
-    dimensions = c("epoch",
-                   "time",
-                   "electrode",
-                   "frequency")
-  )
+  data <- finalize_tfr(keep_trials = keep_trials,
+                       data = data,
+                       edge_mat = edge_mat,
+                       verbose = verbose)
   data
 }
 
@@ -993,4 +893,80 @@ win_samples <- function(frex,
 cycle_calc <- function(time_win,
                        frex) {
   time_win * frex
+}
+
+finalize_tfr <- function(keep_trials,
+                         data,
+                         edge_mat,
+                         verbose) {
+
+  if (keep_trials == TRUE) {
+    dims <-
+      which(names(dimnames(data$signals)) %in% c("time", "frequency"))
+    data$signals <- sweep(data$signals,
+                          dims,
+                          edge_mat,
+                          "*")
+
+    final_times <- as.numeric(dimnames(data$signals)$time)
+    final_epochs <- as.numeric(dimnames(data$signals)$epoch)
+    data$timings <- tibble::tibble(
+      epoch = rep(final_epochs, each = length(final_times)),
+      time = rep(final_times, length(final_epochs))
+      )
+
+    data <- eeg_tfr(
+      data$signals,
+      srate = data$srate,
+      events = data$events,
+      chan_info = data$chan_info,
+      reference = data$reference,
+      timings = data$timings,
+      freq_info = data$freq_info,
+      dimensions = names(dimnames(data$signals)),
+      epochs = data$epochs
+    )
+    if (verbose) {
+      message("Returning single-trial data.")
+    }
+    return(data)
+  }
+
+  if (verbose) {
+    message("Returning signal averaged over all trials.")
+  }
+  dims <-
+    which(names(dimnames(data$signals)) %in% c("time", "frequency"))
+
+  data$signals <- sweep(data$signals,
+                        dims,
+                        edge_mat,
+                        "*")
+
+  recording_id <- epochs(data)$recording[[1]]
+  participant_id <- epochs(data)$participant_id[[1]]
+
+  final_times <- as.numeric(dimnames(data$signals)$time)
+
+  data$timings <- tibble::tibble(
+    epoch = rep(1, length(final_times)),
+    time = final_times)
+
+  data <- eeg_tfr(
+    data$signals,
+    srate = data$srate,
+    events = NULL,
+    epochs = tibble::tibble(epoch = 1,
+                            recording = recording_id,
+                            participant_id = participant_id),
+    chan_info = data$chan_info,
+    reference = data$reference,
+    timings = data$timings,
+    freq_info = data$freq_info,
+    dimensions = c("epoch",
+                   "time",
+                   "electrode",
+                   "frequency")
+  )
+  data
 }
