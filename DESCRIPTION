@@ -24,7 +24,7 @@ Imports:
     shiny,
     tidyr (>= 1.0.0),
     miniUI,
-    rlang (>= 0.4.0),
+    rlang (>= 1.0.0),
     MASS,
     signal,
     tibble,
@@ -32,10 +32,10 @@ Imports:
     matrixStats,
     pracma,
     abind,
-    data.table,
     plotly,
     future.apply,
     Rcpp,
+    data.table,
     isoband
 Depends:
   R (>= 3.4.0)
