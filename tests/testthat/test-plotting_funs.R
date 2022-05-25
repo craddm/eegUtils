@@ -84,9 +84,11 @@ test_that("erp_raster and erp_image function", {
                   "gg")
 
   expect_error(electrode_locations(test_epo,
-                                   montage = "bio2"))
+                                   montage = "bio2",
+                                   overwrite = TRUE))
   test_epo <- electrode_locations(test_epo,
-                                  montage = "biosemi64alpha")
+                                  montage = "biosemi64alpha",
+                                  overwrite = TRUE)
   expect_is(test_epo$chan_info,
             "data.frame")
 

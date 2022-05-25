@@ -57,9 +57,8 @@ test_that("Filtering works for eeg_* objects", {
 test_that("Interpolation works for eeg_* objects", {
 
   skip_on_cran()
-
-  expect_error(interp_elecs(test_data, "A2"))
-  test_elecs <- electrode_locations(test_data, montage = "biosemi64alpha")
+  test_elecs <- electrode_locations(test_data, montage = "biosemi64alpha",
+                                    overwrite = TRUE)
   test_elecs <- interp_elecs(test_elecs, "A2")
   expect_false(identical(test_elecs$signals$A2, test_data$signals$A2))
 

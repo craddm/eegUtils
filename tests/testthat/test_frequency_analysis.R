@@ -1,5 +1,6 @@
 test_data <- import_raw("Newtest17-256.bdf")
-test_data <- electrode_locations(test_data, montage = "biosemi64alpha")
+test_data <- electrode_locations(test_data, montage = "biosemi64alpha",
+                                 overwrite = TRUE)
 test_epo <- epoch_data(test_data, 255)
 tmp_psd <- "psd_output.Rdata"
 
