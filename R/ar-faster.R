@@ -194,33 +194,39 @@ faster_chans <- function(data,
 #' @keywords internal
 
 faster_epochs <- function(data, sds = 3, ...) {
-  chans <- channel_names(data)
-  data <- data.table::as.data.table(data)
-  chan_means <- data[, lapply(.SD, mean), .SDcols = chans]
-  epoch_range <- data[, lapply(.SD, function(x) max(x) - min(x)),
-                      .SDcols = chans,
-                      by = epoch]
-  epoch_range <- epoch_range[, .(Mean = rowMeans(.SD)), by = epoch]
-  epoch_range <- abs(scale(epoch_range$Mean)) > sds
+  chan_means <- colMeans(data$signals)
+  data$signals <- split(data$signals, data$timings$epoch)
+  data$signals <- lapply(data$signals, as.matrix)
+  epoch_ranges <- lapply(data$signals,
+                         function(x) matrixStats::rowDiffs(
+                           matrixStats::colRanges(x)
+                           )
+                         )
+  epoch_ranges <- matrix(unlist(epoch_ranges),
+                         ncol = length(epoch_ranges))
+  epoch_ranges <- colMeans(epoch_ranges)
 
-  epoch_diffs <- data[, lapply(.SD, mean),
-                      .SDcols = chans,
-                      by = epoch][, lapply(.SD, function(x) x - mean(x)),
-                                  .SDcols = chans][ ,
-                                                    .(Mean = rowMeans(.SD))]
-  epoch_diffs <- abs(scale(epoch_diffs$Mean)) > sds
+  epoch_diffs <- lapply(data$signals,
+                        colMeans)
+  epoch_diffs <- matrix(unlist(epoch_diffs),
+                        ncol = length(epoch_diffs))
+  epoch_diffs <- epoch_diffs - chan_means
+  epoch_diffs <- colMeans(abs(epoch_diffs))
 
-  epoch_vars <- data[, lapply(.SD, var), .SDcols = chans,
-                     by = epoch][, apply(.SD, 1, mean),
-                                 .SDcols = chans]
-  epoch_vars <- abs(scale(epoch_vars)) > sds
+  epoch_vars <- lapply(data$signals,
+                       function(x) matrixStats::colVars(x))
+  epoch_vars <- matrix(unlist(epoch_vars),
+                       ncol = length(epoch_vars))
+  epoch_vars <- colMeans(epoch_vars)
 
-  bad_epochs <- matrix(c(rowSums(epoch_vars) > 0,
-                         rowSums(epoch_range) > 0,
-                         rowSums(epoch_diffs) > 0),
-                       ncol = 3)
-  bad_epochs <- apply(bad_epochs, 1, any)
-  bad_epochs
+  measures <- matrix(c(epoch_ranges,
+                       epoch_diffs,
+                       epoch_vars),
+                     ncol = 3)
+
+  measures <- abs(scale(measures)) >= sds
+  measures <- rowSums(measures) > 0
+  measures
 }
 
 #' FASTER detection of bad channels in single epochs
