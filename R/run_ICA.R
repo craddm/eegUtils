@@ -331,7 +331,7 @@ sobi_ICA <- function(data,
   epsil <- 1 / sqrt(N) / 100
 
   if (epsil > tol) {
-    message("Setting tolerance to ", round(epsil, 4))
+    message("Setting tolerance to ", signif(epsil, 2))
     tol <- epsil
   }
 
