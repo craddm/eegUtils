@@ -45,7 +45,7 @@ import_raw <- function(file_name,
                   "as",
                   toupper(file_type)))
 
-    if (fast_bdf && file_type == "bdf") {
+    if (fast_bdf & file_type == "bdf") {
       bdf_header <- read_bdf_header(file_name)
       sigs <- read_bdf_data(file_name, bdf_header)
       colnames(sigs) <- bdf_header$chan_labels
@@ -122,9 +122,10 @@ import_raw <- function(file_name,
                      srate = srate,
                      events = event_table,
                      timings = timings,
-                     epochs = epochs)
+                     epochs = epochs,
+                     chan_info = validate_channels(data.frame(electrode = names(sigs))))
     data
-  } else if (identical(file_type,"cnt")) {
+  } else if (identical(file_type, "cnt")) {
     message(paste("Importing Neuroscan", toupper(file_type), file_name))
     message(paste("Note: if this is 16-bit or an ANT Neuro .CNT file, reading will fail."))
     data <- import_cnt(file_name)
@@ -1048,7 +1049,6 @@ read_bdf_data <- function(file_name, headers) {
   sig_out <- sig_out - bitwShiftL(bitwShiftR(sig_out,
                                              23),
                                   24)
-  #sig_out[, 1:(n_chans - 1)] <- sig_out[, 1:(n_chans - 1)] * gains[1] + offsets[1]
   sig_out <- sweep(sig_out, 2, gains, "*")
   sig_out <- sweep(sig_out, 2, offsets, "+")
   close(sig_file)
