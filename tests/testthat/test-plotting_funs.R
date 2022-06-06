@@ -4,15 +4,21 @@ demo_epochs <- electrode_locations(demo_epochs,
                                    montage = "biosemi64alpha",
                                    overwrite = TRUE)
 demo_SOBI <- run_ICA(demo_epochs, pca = 10)
-demo_tfr <- compute_tfr(demo_epochs, foi = c(4,30), n_freq = 10)
+demo_tfr <- compute_tfr(demo_epochs,
+                        foi = c(4,30),
+                        n_freq = 10)
 
 test_that("Plotting of data with multiple epochs works as expected", {
   skip_on_ci()
-  vdiffr::expect_doppelganger("epochs plot",
-                              plot_timecourse(demo_epochs))
-  vdiffr::expect_doppelganger("A29 only epochs",
-                              plot_timecourse(demo_epochs,
-                                              electrode = "A29"))
+  vdiffr::expect_doppelganger(
+    "epochs plot",
+    plot_timecourse(demo_epochs)
+    )
+  vdiffr::expect_doppelganger(
+    "A29 only epochs",
+    plot_timecourse(demo_epochs,
+                    electrode = "A29")
+    )
   vdiffr::expect_doppelganger(
     "A29 baseline corr epochs",
     plot_timecourse(
@@ -21,23 +27,26 @@ test_that("Plotting of data with multiple epochs works as expected", {
       electrode = "A29"
     )
   )
-  vdiffr::expect_doppelganger("Plot timecourse of component",
-                              plot_timecourse(demo_SOBI,
-                                              2))
-  vdiffr::expect_doppelganger("Plot timecourse of evoked",
-                              plot_timecourse(eeg_average(demo_epochs),
-                                              2))
-  vdiffr::expect_doppelganger("Plot timecourse of tfr",
-                              plot_timecourse(eeg_average(demo_tfr)))
-  vdiffr::expect_doppelganger("Plot timecourse of tfr in db",
-                              plot_timecourse(eeg_average(demo_tfr),
-                                              type = "db",
-                                              baseline = c(-.1, 0)))
-  vdiffr::expect_doppelganger("Plot timecourse of tfr in db at specific freq_range",
-                              plot_timecourse(eeg_average(demo_tfr),
-                                              type = "db",
-                                              baseline = c(-.1, 0),
-                                              freq_range = c(12, 20)))
+  vdiffr::expect_doppelganger(
+    "Plot timecourse of component",
+    plot_timecourse(demo_SOBI, 2))
+  vdiffr::expect_doppelganger(
+    "Plot timecourse of evoked",
+    plot_timecourse(eeg_average(demo_epochs), 2))
+  vdiffr::expect_doppelganger(
+    "Plot timecourse of tfr",
+    plot_timecourse(eeg_average(demo_tfr)))
+  vdiffr::expect_doppelganger(
+    "Plot timecourse of tfr in db",
+    plot_timecourse(eeg_average(demo_tfr),
+                    type = "db",
+                    baseline = c(-.1, 0)))
+  vdiffr::expect_doppelganger(
+    "Plot timecourse of tfr in db at specific freq_range",
+    plot_timecourse(eeg_average(demo_tfr),
+                    type = "db",
+                    baseline = c(-.1, 0),
+                    freq_range = c(12, 20)))
 })
 
 test_that("Plotting of butterfly plots from epochs", {
@@ -51,28 +60,6 @@ test_that("Plotting of butterfly plots from epochs", {
   vdiffr::expect_doppelganger("butterfly evoked",
                               plot_butterfly(eeg_average(demo_epochs)))
 })
-
-test_that("Topoplots", {
-  skip_on_ci()
-  vdiffr::expect_doppelganger("topoplot of epochs",
-                              topoplot(demo_epochs,
-                                       limits = c(-2.87, 4.69)))
-  vdiffr::expect_doppelganger("topoplot of epochs 150-200ms",
-                              topoplot(demo_epochs,
-                                       time_lim = c(.150, .200),
-                                       limits = c(-4, 4)))
-  vdiffr::expect_doppelganger("GAM topo",
-                              topoplot(EEGdat,
-                                       time_lim = c(150, 200),
-                                       method = "gam",
-                                       limits = c(-2.25, 2.75)))
-  vdiffr::expect_doppelganger("head limit",
-                              topoplot(demo_epochs,
-                                       time_lim = c(.15, .20),
-                                       interp_limit = "head",
-                                       limits = c(-3, 3)))
-})
-
 
 test_that("erp_raster and erp_image function", {
   skip_on_ci()
@@ -91,7 +78,6 @@ test_that("erp_raster and erp_image function", {
                                   overwrite = TRUE)
   expect_is(test_epo$chan_info,
             "data.frame")
-
 })
 
 test_that("erp_scalp runs", {
