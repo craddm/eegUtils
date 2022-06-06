@@ -16,7 +16,7 @@
 #' channel means or by-channel epoch means.
 #'
 #' The function allows parallelization using the `future` package, e.g. using
-#' `plan(multiprocess)`
+#' `plan(multisession)`
 #'
 #' @section FIR versus IIR filtering: Finite Impulse Response (FIR) filtering is
 #'   performed using an overlap-add FFT method. Note that this only performs a
@@ -113,11 +113,11 @@ eeg_filter.eeg_data <- function(data,
 
   if (identical(method, "iir")) {
     data <- run_iir_n(data,
-                       filt_coef)
+                      filt_coef)
   } else {
     data <- run_fir(data,
-                     filt_coef,
-                     filter_order)
+                    filt_coef,
+                    filter_order)
   }
   data$signals <- tibble::as_tibble(data$signals)
   data

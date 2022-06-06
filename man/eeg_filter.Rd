@@ -90,7 +90,7 @@ Note that it is recommended to first zero-mean the signal using either
 channel means or by-channel epoch means.
 
 The function allows parallelization using the \code{future} package, e.g. using
-\code{plan(multiprocess)}
+\code{plan(multisession)}
 }
 \section{FIR versus IIR filtering}{
  Finite Impulse Response (FIR) filtering is
