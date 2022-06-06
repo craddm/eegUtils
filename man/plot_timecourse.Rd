@@ -124,7 +124,9 @@ Returns a ggplot2 plot object
 \description{
 Typically event-related potentials/fields, but could also be timecourses from
 frequency analyses for single frequencies. Averages over all submitted
-electrodes. Output is a ggplot2 object.
+electrodes. Currently displays unweighted means, and thus for \code{eeg_evoked}
+objects may produce different results than expected when the numbers of trials
+per condition differ. Output is a ggplot2 object.
 }
 \section{Methods (by class)}{
 \itemize{
@@ -142,8 +144,10 @@ electrodes. Output is a ggplot2 object.
 }}
 
 \examples{
+library(ggplot2)
 plot_timecourse(demo_epochs, "A29")
 plot_timecourse(demo_epochs, "A29", add_CI = TRUE)
+plot_timecourse(demo_spatial, "Oz", mapping = aes(colour = epoch_labels))
 }
 \author{
 Matt Craddock, \email{matt@mattcraddock.com}

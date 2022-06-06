@@ -2,19 +2,22 @@
 #'
 #'Typically event-related potentials/fields, but could also be timecourses from
 #'frequency analyses for single frequencies. Averages over all submitted
-#'electrodes. Output is a ggplot2 object.
+#'electrodes. Currently displays unweighted means, and thus for `eeg_evoked`
+#'objects may produce different results than expected when the numbers of trials
+#'per condition differ. Output is a ggplot2 object.
 #'
-#' @author Matt Craddock, \email{matt@@mattcraddock.com}
+#'@author Matt Craddock, \email{matt@@mattcraddock.com}
 #'
 #' @examples
+#' library(ggplot2)
 #' plot_timecourse(demo_epochs, "A29")
 #' plot_timecourse(demo_epochs, "A29", add_CI = TRUE)
-#' @param data EEG dataset. Should have multiple timepoints.
-#' @param ... Other arguments passed to methods.
-#' @importFrom dplyr summarise group_by ungroup
-#' @import ggplot2
-#' @return Returns a ggplot2 plot object
-#' @export
+#' plot_timecourse(demo_spatial, "Oz", mapping = aes(colour = epoch_labels))
+#'@param data EEG dataset. Should have multiple timepoints.
+#'@param ... Other arguments passed to methods.
+#'@import ggplot2
+#'@return Returns a ggplot2 plot object
+#'@export
 plot_timecourse <- function(data,
                             ...) {
   UseMethod("plot_timecourse", data)
@@ -123,14 +126,14 @@ plot_timecourse.eeg_evoked <- function(data,
 #' @param component name or number of ICA component to plot
 #' @export
 plot_timecourse.eeg_ICA <- function(data,
-                            component = NULL,
-                            time_lim = NULL,
-                            add_CI = FALSE,
-                            baseline = NULL,
-                            colour = NULL,
-                            color = NULL,
-                            mapping = NULL,
-                            ...) {
+                                    component = NULL,
+                                    time_lim = NULL,
+                                    add_CI = FALSE,
+                                    baseline = NULL,
+                                    colour = NULL,
+                                    color = NULL,
+                                    mapping = NULL,
+                                    ...) {
 
 
   # Select specifed times

@@ -26,7 +26,6 @@
 #' @param ... Other parameters passed to function.
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #' @return An `eeg_ICA` object containing an ICA decomposition
-#' @importFrom MASS ginv
 #' @family decompositions
 #' @examples
 #' sobi_demo <-

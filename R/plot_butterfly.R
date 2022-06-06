@@ -269,8 +269,6 @@ create_bf <- function(data,
     data <- dplyr::summarise_at(data,
                                 vars({{quantity}}),
                                 mean)
-    # data <- dplyr::summarise(data,
-    #                          !!quo_name(quantity) := mean({{quantity}}))
     data$epoch <- 1
   }
 
