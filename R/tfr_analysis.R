@@ -15,6 +15,9 @@
 #' out$freq_info$morlet_resolution
 #' out <- compute_tfr(demo_epochs, method = "morlet", foi = c(4, 30), n_freq = 10, n_cycles = c(3, 10))
 #' out$freq_info$morlet_resolution
+#' plot_tfr(out)
+#' out <- compute_tfr(demo_epochs, method = "morlet", foi = c(4, 30), n_freq = 10, n_cycles = c(3, 10), trim_edges = FALSE)
+#' plot_tfr(out)
 #' @export
 
 compute_tfr <- function(data, ...) {
@@ -36,12 +39,16 @@ compute_tfr.default <- function(data, ...) {
 #'   a constant number of cycles at each frequency. If a character vector of
 #'   length 2, the number of cycles will scale with frequency from the minimum
 #'   to the maximum.
-#' @param spacing Use "linear" or "log" spacing for the frequency vector and number of cycles.
+#' @param spacing Use "linear" or "log" spacing for the frequency vector and
+#'   number of cycles.
 #' @param keep_trials Keep single trials or average over them before returning.
 #'   Defaults to FALSE.
 #' @param output Sets whether output is power, phase, or fourier coefficients.
 #' @param downsample Downsampling factor. Integer. Selects every n samples after
 #'   performing time-frequency analysis on the full sampling rate data.
+#' @param trim_edges Remove edges of time-frequency representation to avoid edge
+#'   effects from overlap of wavelet with timepoints outside the epochs.
+#'   Defaults to TRUE.
 #' @param verbose Print informative messages in console.
 #' @describeIn compute_tfr Default method for `compute_tfr`
 #' @export
@@ -55,9 +62,10 @@ compute_tfr.eeg_epochs <- function(data,
                                    keep_trials = FALSE,
                                    output = "power",
                                    downsample = 1,
+                                   trim_edges = TRUE,
                                    verbose = TRUE,
                                    ...) {
-  if (identical(output, "fourier") && keep_trials == FALSE) {
+  if (identical(output, "fourier") & keep_trials == FALSE) {
     if (verbose) {
       message("For fourier output, all trials are kept.")
     }
@@ -75,6 +83,7 @@ compute_tfr.eeg_epochs <- function(data,
       keep_trials = keep_trials,
       output = output,
       downsample = downsample,
+      trim_edges = trim_edges,
       verbose = verbose
       ),
     "hanning" = tf_hanning(
@@ -86,6 +95,7 @@ compute_tfr.eeg_epochs <- function(data,
       keep_trials = keep_trials,
       output = output,
       downsample = downsample,
+      trim_edges = trim_edges,
       verbose = verbose
     ),
     warning(
@@ -106,6 +116,7 @@ compute_tfr.eeg_evoked <- function(data,
                                    keep_trials = FALSE,
                                    output = "power",
                                    downsample = 1,
+                                   trim_edges = TRUE,
                                    verbose = TRUE,
                                    ...) {
   if (identical(output, "fourier") && keep_trials == FALSE) {
@@ -125,6 +136,7 @@ compute_tfr.eeg_evoked <- function(data,
       keep_trials = keep_trials,
       output = output,
       downsample = downsample,
+      trim_edges = trim_edges,
       verbose = verbose
     ),
     "hanning" = tf_hanning(
@@ -136,6 +148,7 @@ compute_tfr.eeg_evoked <- function(data,
       keep_trials = keep_trials,
       output = output,
       downsample = downsample,
+      trim_edges = trim_edges,
       verbose = verbose
     ),
     warning(
@@ -187,6 +200,7 @@ tf_morlet <- function(data,
                       output,
                       downsample,
                       demean = TRUE,
+                      trim_edges = trim_edges,
                       verbose) {
 
   if (verbose) {
@@ -204,21 +218,7 @@ tf_morlet <- function(data,
 
   n_freq <- length(unique(frex))
   # if a min and max n_cycles is specified, expand out to cycles per n_freq
-  if (length(n_cycles) == 2) {
-    if (identical(spacing, "linear")) {
-      n_cycles <- seq(n_cycles[1],
-                      n_cycles[2],
-                      length.out = n_freq)
-    } else if (identical(spacing, "log")) {
-      n_cycles <- exp(
-        seq(log(n_cycles[1]),
-            log(n_cycles[2]),
-            length.out = n_freq)
-        )
-    }
-      } else if (length(n_cycles) > 2) {
-    stop("n_cycles should be a vector of length 1 or length 2.")
-  }
+  n_cycles <- parse_cycles(n_cycles, spacing, n_freq)
 
   #de-mean each epoch
   if (demean) {
@@ -298,8 +298,12 @@ tf_morlet <- function(data,
   }
 
   # Remove edges of the TFR'd data, where edge effects would be expected.
-  edge_mat <- remove_edges(sigtime,
-                           data$freq_info$morlet_resolution$sigma_t)
+  if (trim_edges) {
+    edge_mat <- remove_edges(sigtime,
+                             data$freq_info$morlet_resolution$sigma_t)
+  } else {
+    edge_mat <- NULL
+  }
 
   data <- finalize_tfr(keep_trials = keep_trials,
                        data = data,
@@ -677,7 +681,6 @@ run_tf <- function(tmp,
 #' @param downsample Downsampling factor (integer).
 #' @param demean Remove mean before transforming.
 #' @param verbose Print informative messages in console.
-#' @importFrom abind abind
 #' @importFrom stats nextn
 #' @keywords internal
 
@@ -689,6 +692,7 @@ tf_hanning <- function(data,
                       keep_trials,
                       output,
                       downsample,
+                      trim_edges = trim_edges,
                       demean = TRUE,
                       verbose) {
 
@@ -707,21 +711,7 @@ tf_hanning <- function(data,
 
   n_freq <- length(unique(frex))
   # if a min and max n_cycles is specified, expand out to cycles per n_freq
-  if (length(n_cycles) == 2) {
-    if (identical(spacing, "linear")) {
-      n_cycles <- seq(n_cycles[1],
-                      n_cycles[2],
-                      length.out = n_freq)
-    } else if (identical(spacing, "log")) {
-      n_cycles <- exp(
-        seq(log(n_cycles[1]),
-            log(n_cycles[2]),
-            length.out = n_freq)
-      )
-    }
-  } else if (length(n_cycles) > 2) {
-    stop("n_cycles should be a vector of length 1 or length 2.")
-  }
+  n_cycles <- parse_cycles(n_cycles, spacing, n_freq)
 
   #de-mean each epoch
   if (demean) {
@@ -895,18 +885,41 @@ cycle_calc <- function(time_win,
   time_win * frex
 }
 
+
+parse_cycles <- function(n_cycles, spacing, n_freq) {
+  if (length(n_cycles) == 2) {
+    if (identical(spacing, "linear")) {
+      n_cycles <- seq(n_cycles[1],
+                      n_cycles[2],
+                      length.out = n_freq)
+    } else if (identical(spacing, "log")) {
+      n_cycles <- exp(
+        seq(log(n_cycles[1]),
+            log(n_cycles[2]),
+            length.out = n_freq)
+      )
+    }
+  } else if (length(n_cycles) > 2) {
+    stop("n_cycles should be a vector of length 1 or length 2.")
+  }
+  n_cycles
+}
+
 finalize_tfr <- function(keep_trials,
                          data,
                          edge_mat,
                          verbose) {
+  dims <-
+    which(names(dimnames(data$signals)) %in% c("time", "frequency"))
 
-  if (keep_trials == TRUE) {
-    dims <-
-      which(names(dimnames(data$signals)) %in% c("time", "frequency"))
+  if (!is.null(edge_mat)) {
     data$signals <- sweep(data$signals,
                           dims,
                           edge_mat,
                           "*")
+  }
+
+  if (keep_trials) {
 
     final_times <- as.numeric(dimnames(data$signals)$time)
     final_epochs <- as.numeric(dimnames(data$signals)$epoch)
@@ -935,13 +948,6 @@ finalize_tfr <- function(keep_trials,
   if (verbose) {
     message("Returning signal averaged over all trials.")
   }
-  dims <-
-    which(names(dimnames(data$signals)) %in% c("time", "frequency"))
-
-  data$signals <- sweep(data$signals,
-                        dims,
-                        edge_mat,
-                        "*")
 
   recording_id <- epochs(data)$recording[[1]]
   participant_id <- epochs(data)$participant_id[[1]]

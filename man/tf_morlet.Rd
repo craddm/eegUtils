@@ -14,6 +14,7 @@ tf_morlet(
   output,
   downsample,
   demean = TRUE,
+  trim_edges = trim_edges,
   verbose
 )
 }
