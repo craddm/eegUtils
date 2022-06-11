@@ -45,7 +45,6 @@ eeg_reference.default <- function(data, ...) {
 #'   channel was used in recording and is absent from the data, passing "LM"
 #'   adds an "LM" channel back to the data, populated with zeroes.
 #' @param verbose Print informative messages in console. Defaults to TRUE.
-#' @importFrom matrixStats rowMedians
 #' @import data.table
 #' @return object of class `eeg_data`, re-referenced as requested.
 #' @describeIn eeg_reference Rereference objects of class `eeg_data`

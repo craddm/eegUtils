@@ -254,20 +254,12 @@ welch_fft <- function(data,
     data_segs <- lapply(data_segs,
                         function(x) lapply(x,
                                            function(y) y * win))
-    # final_out <- lapply(data_segs,
-    #                     function(x) {
-    #                       tmp <- fft_n(matrix(unlist(x),
-    #                                           ncol = length(x)),
-    #                                       n = n_fft)
-    #                       abs(tmp * Conj(tmp)) / U
-    #                     })
-
-     data_fft <- lapply(data_segs,
-                        function(x) lapply(x,
-                                           fft_n, n = n_fft))
-     final_out <- lapply(data_fft,
-                         function(x) sapply(x,
-                                            function(y) abs(y * Conj(y)) / U))
+    data_fft <- lapply(data_segs,
+                       function(x) lapply(x,
+                                          fft_n, n = n_fft))
+    final_out <- lapply(data_fft,
+                        function(x) sapply(x,
+                                           function(y) abs(y * Conj(y)) / U))
     # Normalize by sampling rate or by signal length if no sampling rate
     if (is.null(srate)) {
       final_out <- rowMeans(as.data.frame(final_out)) / (2 * pi)

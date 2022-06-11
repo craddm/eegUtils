@@ -44,7 +44,8 @@ utils::globalVariables(c("time",
                          "participant_id",
                          "difference",
                          "expected",
-                         "BDFAnnotations")
+                         "BDFAnnotations",
+                         "weight")
                        )
 
 ## usethis namespace: start
