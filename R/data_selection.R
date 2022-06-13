@@ -152,21 +152,18 @@ find_times <- function(timings,
                        time_lim) {
 
   if (is.list(time_lim)) {
-    closest_time <-
-      vapply(time_lim, FUN = function(x) min(abs(timings$time - x)), numeric(1))
+    closest_times <- findInterval(unlist(time_lim), unique(timings$time))
+    closest_times <- unique(timings$time)[closest_times]
+    keep_rows <- timings$time %in% closest_times
 
-    keep_rows <- logical(length(timings$time))
+    time_diffs <- unlist(time_lim) - closest_times
 
-    for (i_times in 1:length(closest_time)) {
-      keep_rows <- keep_rows + (abs(timings$time - time_lim[[i_times]]) == closest_time[[i_times]]);
-    }
-    keep_rows <- as.logical(keep_rows)
-    if (any(closest_time > 0)) {
-      message("Returning closest time points to those requested: ",
-              paste0(
-                signif(unique(timings$time[keep_rows]),
-                       3),
-                sep = " ")
+    if (any(time_diffs > 0)) {
+      message(
+        "Returning closest time points to those requested: ",
+        paste0(
+          signif(closest_times, 3),
+          sep = " ")
       )
     }
     return(keep_rows)
