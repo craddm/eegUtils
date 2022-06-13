@@ -52,7 +52,10 @@ plot_difference.eeg_epochs <-
         time_lim = time_lim,
         electrode = electrode,
         baseline = baseline,
-        add_CI = FALSE
+        add_CI = FALSE,
+        mapping = mapping,
+        facets = conditions,
+        colour = NULL
       )
 
     cond_levels <- unique(data[[conditions]])
