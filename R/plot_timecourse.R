@@ -1,10 +1,10 @@
-#'Plot 1-D timecourse data.
+#'Plot one-dimensional timecourse data.
 #'
 #'Typically event-related potentials/fields, but could also be timecourses from
 #'frequency analyses for single frequencies. Averages over all submitted
-#'electrodes. Currently displays unweighted means, and thus for `eeg_evoked`
-#'objects may produce different results than expected when the numbers of trials
-#'per condition differ. Output is a ggplot2 object.
+#'electrodes. For group data, `plot_timecourse` will average within-participants
+#'first, using weighted averaging where possible, then across participants using unweighted
+#'averaging. Output is a `ggplot2` object.
 #'
 #'@author Matt Craddock, \email{matt@@mattcraddock.com}
 #'
@@ -13,6 +13,7 @@
 #' plot_timecourse(demo_epochs, "A29")
 #' plot_timecourse(demo_epochs, "A29", add_CI = TRUE)
 #' plot_timecourse(demo_spatial, "Oz", mapping = aes(colour = epoch_labels))
+#' plot_timecourse(demo_spatial, "Oz", facets = ~epoch_labels)
 #'@param data EEG dataset. Should have multiple timepoints.
 #'@param ... Other arguments passed to methods.
 #'@import ggplot2
@@ -40,7 +41,9 @@ plot_timecourse.default <- function(data,
 #'@param colour Variable to colour lines by. If no variable is passed, only one
 #'  line is drawn.
 #'@param color Alias for colour.
-#'@param mapping A ggplot2 `aes()` mapping.
+#'@param mapping A `ggplot2` `aes()` mapping.
+#'@param facets A right-hand-side only formula specifying which variables should
+#'  be used to create facets.
 #'@describeIn plot_timecourse Plot a data.frame timecourse
 #'@export
 plot_timecourse.data.frame <- function(data,
@@ -51,6 +54,7 @@ plot_timecourse.data.frame <- function(data,
                                        colour = NULL,
                                        color = NULL,
                                        mapping = NULL,
+                                       facets = NULL,
                                        ...) {
 
   if (!is.null(electrode)) {
@@ -79,7 +83,8 @@ plot_timecourse.data.frame <- function(data,
   tc_plot <- create_tc(data,
                        add_CI = FALSE,
                        colour = colour,
-                       mapping = mapping)
+                       mapping = mapping,
+                       facets = facets)
   tc_plot
 }
 
@@ -93,6 +98,7 @@ plot_timecourse.eeg_evoked <- function(data,
                                colour = NULL,
                                color = NULL,
                                mapping = NULL,
+                               facets = NULL,
                                ...) {
 
   if (add_CI) {
@@ -101,10 +107,13 @@ plot_timecourse.eeg_evoked <- function(data,
   }
 
   data <- parse_for_tc(data,
-                       time_lim,
-                       electrode,
-                       baseline,
-                       add_CI)
+                       time_lim = time_lim,
+                       electrode = electrode,
+                       baseline = baseline,
+                       add_CI = add_CI,
+                       facets = facets,
+                       mapping = mapping,
+                       colour = colour)
 
   if (is.null(colour)) {
     if (!is.null(color)) {
@@ -117,7 +126,8 @@ plot_timecourse.eeg_evoked <- function(data,
   tc_plot <- create_tc(data,
                        add_CI = add_CI,
                        colour = colour,
-                       mapping = mapping)
+                       mapping = mapping,
+                       facets = facets)
 
   tc_plot
 }
@@ -133,6 +143,7 @@ plot_timecourse.eeg_ICA <- function(data,
                                     colour = NULL,
                                     color = NULL,
                                     mapping = NULL,
+                                    facets = NULL,
                                     ...) {
 
 
@@ -174,7 +185,8 @@ plot_timecourse.eeg_ICA <- function(data,
   tc_plot <- create_tc(data,
                        add_CI = add_CI,
                        colour = colour,
-                       mapping = mapping)
+                       mapping = mapping,
+                       facets = facets)
 
   tc_plot
   }
@@ -189,13 +201,17 @@ plot_timecourse.eeg_epochs <- function(data,
                                        colour = NULL,
                                        color = NULL,
                                        mapping = NULL,
+                                       facets = NULL,
                                        ...) {
 
   data <- parse_for_tc(data,
                        time_lim = time_lim,
                        electrode = electrode,
                        baseline = baseline,
-                       add_CI = add_CI)
+                       add_CI = add_CI,
+                       facets = facets,
+                       mapping = mapping,
+                       colour = colour)
 
   ## check for US spelling of colour...
   if (is.null(colour)) {
@@ -209,7 +225,8 @@ plot_timecourse.eeg_epochs <- function(data,
   tc_plot <- create_tc(data,
                        add_CI = add_CI,
                        colour = colour,
-                       mapping = mapping)
+                       mapping = mapping,
+                       facets = facets)
 
   tc_plot
 }
@@ -224,6 +241,7 @@ plot_timecourse.eeg_group <- function(data,
                                       colour = NULL,
                                       color = NULL,
                                       mapping = NULL,
+                                      facets = NULL,
                                       ...) {
 
   if (inherits(data,
@@ -236,13 +254,17 @@ plot_timecourse.eeg_group <- function(data,
                                    colour = colour,
                                    color = color,
                                    mapping = mapping,
+                                   facets = facets,
                                    ...))
   }
   data <- parse_for_tc(data,
-                       time_lim,
-                       electrode,
-                       baseline,
-                       add_CI)
+                       time_lim = time_lim,
+                       electrode = electrode,
+                       baseline = baseline,
+                       add_CI = add_CI,
+                       facets = facets,
+                       mapping = mapping,
+                       colour = colour)
 
   if (is.null(colour)) {
     if (!is.null(color)) {
@@ -255,7 +277,8 @@ plot_timecourse.eeg_group <- function(data,
   tc_plot <- create_tc(data,
                        add_CI = add_CI,
                        colour = colour,
-                       mapping = mapping)
+                       mapping = mapping,
+                       facets = facets)
 
   tc_plot
 }
@@ -281,7 +304,7 @@ plot_timecourse.eeg_tfr <- function(data,
 
   if (!is.null(colour) | !is.null(color)) {
     warning(
-      "colour argument is kept for compatability, please use the `mapping` argument and supply a `ggplot2` `aes()` mapping"
+      "colour argument is kept for compatability, please use the `mapping` argument and supply a `ggplot2` `aes()` mapping. the colour parameter will be deprectated in v0.9.0 of eegUtils"
     )
   }
 
@@ -371,16 +394,24 @@ plot_timecourse.eeg_tfr <- function(data,
 #' @param electrode electrodes to be selected
 #' @param baseline baseline times to be average and subtracted
 #' @param add_CI Logical for whether CIS are required
+#' @param facets A RHS-only formula for use with `ggplot2::facet_wrap`
+#' @param colour A character vector indicating which variable to use for colour.
+#' @param mapping A `ggplot2` `aes()` call with axis mappings
 #' @keywords internal
 parse_for_tc <- function(data,
                          time_lim,
                          electrode,
                          baseline,
-                         add_CI) {
+                         add_CI,
+                         facets,
+                         mapping,
+                         colour) {
 
   if (is.eeg_ICA(data) && is.null(electrode)) {
     stop("Component number must be supplied for ICA.")
   }
+
+  col_names <- NULL
 
   ## Select specified electrodes -----
   if (!is.null(electrode)) {
@@ -400,8 +431,29 @@ parse_for_tc <- function(data,
                          time_lim = time_lim)
   }
 
-  if (!is.eeg_stats(data) && !is.eeg_evoked(data) && !add_CI) {
-    data <- eeg_average(data)
+  if (!is.null(mapping)) {
+    col_names <- unname(
+      vapply(mapping,
+             rlang::as_label,
+             character(1))
+      )
+  }
+
+  if (!is.null(colour)) {
+    warning(
+      "colour argument is kept for compatability, please use the `mapping` argument and supply a `ggplot2` `aes()` mapping. the colour parameter will be deprectated in v0.9.0 of eegUtils"
+    )
+    col_names <- c(col_names, colour)
+  }
+
+  if (is.character(facets)) facets <- stats::reformulate(facets)
+
+  col_names <- c(col_names, all.vars(facets))
+
+  #if (!is.eeg_stats(data) && !is.eeg_evoked(data) && !add_CI) {
+  if (!is.eeg_stats(data) && !add_CI){
+    data <- eeg_average(data,
+                        cols = col_names)#all.vars(facets))
   }
 
   data <- as.data.frame(data,
@@ -421,7 +473,8 @@ create_tc <- function(data,
                       add_CI,
                       colour,
                       quantity = amplitude,
-                      mapping = NULL) {
+                      mapping = NULL,
+                      facets = NULL) {
 
   if (is.null(colour)) {
     tc_plot <- ggplot2::ggplot(data,
@@ -479,6 +532,12 @@ create_tc <- function(data,
     tc_plot <-
       tc_plot +
       mapping
+  }
+
+  if (!is.null(facets)) {
+    tc_plot <-
+      tc_plot +
+      facet_wrap(facets)
   }
 
   tc_plot +

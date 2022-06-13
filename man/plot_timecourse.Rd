@@ -8,7 +8,7 @@
 \alias{plot_timecourse.eeg_epochs}
 \alias{plot_timecourse.eeg_group}
 \alias{plot_timecourse.eeg_tfr}
-\title{Plot 1-D timecourse data.}
+\title{Plot one-dimensional timecourse data.}
 \usage{
 plot_timecourse(data, ...)
 
@@ -21,6 +21,7 @@ plot_timecourse(data, ...)
   colour = NULL,
   color = NULL,
   mapping = NULL,
+  facets = NULL,
   ...
 )
 
@@ -33,6 +34,7 @@ plot_timecourse(data, ...)
   colour = NULL,
   color = NULL,
   mapping = NULL,
+  facets = NULL,
   ...
 )
 
@@ -45,6 +47,7 @@ plot_timecourse(data, ...)
   colour = NULL,
   color = NULL,
   mapping = NULL,
+  facets = NULL,
   ...
 )
 
@@ -57,6 +60,7 @@ plot_timecourse(data, ...)
   colour = NULL,
   color = NULL,
   mapping = NULL,
+  facets = NULL,
   ...
 )
 
@@ -69,6 +73,7 @@ plot_timecourse(data, ...)
   colour = NULL,
   color = NULL,
   mapping = NULL,
+  facets = NULL,
   ...
 )
 
@@ -107,7 +112,10 @@ line is drawn.}
 
 \item{color}{Alias for colour.}
 
-\item{mapping}{A ggplot2 \code{aes()} mapping.}
+\item{mapping}{A \code{ggplot2} \code{aes()} mapping.}
+
+\item{facets}{A right-hand-side only formula specifying which variables should
+be used to create facets.}
 
 \item{component}{name or number of ICA component to plot}
 
@@ -124,9 +132,9 @@ Returns a ggplot2 plot object
 \description{
 Typically event-related potentials/fields, but could also be timecourses from
 frequency analyses for single frequencies. Averages over all submitted
-electrodes. Currently displays unweighted means, and thus for \code{eeg_evoked}
-objects may produce different results than expected when the numbers of trials
-per condition differ. Output is a ggplot2 object.
+electrodes. For group data, \code{plot_timecourse} will average within-participants
+first, using weighted averaging where possible, then across participants using unweighted
+averaging. Output is a \code{ggplot2} object.
 }
 \section{Methods (by class)}{
 \itemize{
@@ -148,6 +156,7 @@ library(ggplot2)
 plot_timecourse(demo_epochs, "A29")
 plot_timecourse(demo_epochs, "A29", add_CI = TRUE)
 plot_timecourse(demo_spatial, "Oz", mapping = aes(colour = epoch_labels))
+plot_timecourse(demo_spatial, "Oz", facets = ~epoch_labels)
 }
 \author{
 Matt Craddock, \email{matt@mattcraddock.com}

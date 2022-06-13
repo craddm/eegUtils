@@ -4,7 +4,16 @@
 \alias{parse_for_tc}
 \title{Parse data for timecourses}
 \usage{
-parse_for_tc(data, time_lim, electrode, baseline, add_CI)
+parse_for_tc(
+  data,
+  time_lim,
+  electrode,
+  baseline,
+  add_CI,
+  facets,
+  mapping,
+  colour
+)
 }
 \arguments{
 \item{data}{data to be parsed}
@@ -16,6 +25,12 @@ parse_for_tc(data, time_lim, electrode, baseline, add_CI)
 \item{baseline}{baseline times to be average and subtracted}
 
 \item{add_CI}{Logical for whether CIS are required}
+
+\item{facets}{A RHS-only formula for use with \code{ggplot2::facet_wrap}}
+
+\item{mapping}{A \code{ggplot2} \code{aes()} call with axis mappings}
+
+\item{colour}{A character vector indicating which variable to use for colour.}
 }
 \description{
 Internal command for parsing various data structures into a suitable format
