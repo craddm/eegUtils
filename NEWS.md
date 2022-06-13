@@ -1,13 +1,19 @@
 # eegUtils (development version)
 
 ### Function changes
+- `plot_timecourse()` now requires facets and mappings to be explicitly stated during the call, rather than added afterwards. This allows it to use weighted averages when required.
 - Added new `plot_gfp()` function for calculating and plotting Global Field Power.
 - `topoplot()` now supports plotting of multiple timepoints - pass a list of times to the `time_lim` argument.
 - `browse_data.eeg_ICA()` now provides the option to select components for rejection, and returns a character vector of selected components.
 - `view_ica()` now allows you to select components for rejection, to double-click on topographies to inspect them individually, and to return cleaned data.
-- `eeg_average` now supports averaging over conditions in `eeg_evoked` files
+- `eeg_average()` now supports averaging over conditions in `eeg_evoked` files
+- `eeg_average()` now records weights - the number of epochs that went into an average - and uses those in subsequent steps where possible for `eeg_epochs`/`eeg_evoked` objects. Currently only partially implemented for `eeg_tfr` objects.
+- `compute_tfr()` now has an argument `trim_edges` which allows users to switch off automatic removal of epoch edges after transformation. Defaults to TRUE.
+- `rm_baseline()` now adds a record of the baseline period 
 
 ### Internal changes/bug fixes
+- Recoded `faster_epochs()` to no longer use `data.table`.
+- added `parse_cycles()` function for use during `compute_tfr()`
 - Using `electrode_locations()` on a `data.frame` would return a data frame with the electrode names in full upper case. Now returns with the electrodes in their original case.
 - `eeg_evoked` objects should now contain reference information.
 - `ar_for_ica` file started, moving some functions from `artefact_rejection.R`
