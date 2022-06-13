@@ -49,6 +49,37 @@ test_that("Plotting of data with multiple epochs works as expected", {
                     freq_range = c(12, 20)))
 })
 
+
+test_that("Facetting works as expected", {
+  skip_on_ci()
+  vdiffr::expect_doppelganger(
+    "spatial GA plot",
+    plot_timecourse(demo_spatial)
+  )
+
+  vdiffr::expect_doppelganger(
+    "spatial GA plot facetted",
+    plot_timecourse(demo_spatial, "Oz", facets = ~epoch_labels)
+  )
+
+  vdiffr::expect_doppelganger(
+    "spatial GA plot mapping",
+    plot_timecourse(demo_spatial, "Oz",
+                    mapping = aes(colour = epoch_labels))
+  )
+
+  vdiffr::expect_doppelganger(
+    "spatial GA plot colour",
+    plot_timecourse(demo_spatial, "Oz",
+                    colour = "epoch_labels")
+  )
+
+  vdiffr::expect_doppelganger(
+    "spatial difference plot",
+    plot_difference(demo_spatial, electrode = "Oz", conditions = "epoch_labels")
+  )
+})
+
 test_that("Plotting of butterfly plots from epochs", {
   skip_on_ci()
   vdiffr::expect_doppelganger("butterfly epochs",
