@@ -79,7 +79,9 @@
 <h2 class="page-header" data-toc-text="development version" id="eegutils-development-version">eegUtils (development version)<a class="anchor" aria-label="anchor" href="#eegutils-development-version"></a></h2>
 <div class="section level4">
 <h4 id="function-changes-development-version">Function changes<a class="anchor" aria-label="anchor" href="#function-changes-development-version"></a></h4>
-<ul><li>Added new <code><a href="../reference/plot_gfp.html">plot_gfp()</a></code> function for calculating and plotting Global Field Power.</li>
+<ul><li>
+<code><a href="../reference/plot_timecourse.html">plot_timecourse()</a></code> now requires facets and mappings to be explicitly stated during the call, rather than added afterwards. This allows it to use weighted averages when required.</li>
+<li>Added new <code><a href="../reference/plot_gfp.html">plot_gfp()</a></code> function for calculating and plotting Global Field Power.</li>
 <li>
 <code><a href="../reference/topoplot.html">topoplot()</a></code> now supports plotting of multiple timepoints - pass a list of times to the <code>time_lim</code> argument.</li>
 <li>
@@ -87,11 +89,20 @@
 <li>
 <code><a href="../reference/view_ica.html">view_ica()</a></code> now allows you to select components for rejection, to double-click on topographies to inspect them individually, and to return cleaned data.</li>
 <li>
-<code>eeg_average</code> now supports averaging over conditions in <code>eeg_evoked</code> files</li>
+<code><a href="../reference/eeg_average.html">eeg_average()</a></code> now supports averaging over conditions in <code>eeg_evoked</code> files</li>
+<li>
+<code><a href="../reference/eeg_average.html">eeg_average()</a></code> now records weights - the number of epochs that went into an average - and uses those in subsequent steps where possible for <code>eeg_epochs</code>/<code>eeg_evoked</code> objects. Currently only partially implemented for <code>eeg_tfr</code> objects.</li>
+<li>
+<code><a href="../reference/compute_tfr.html">compute_tfr()</a></code> now has an argument <code>trim_edges</code> which allows users to switch off automatic removal of epoch edges after transformation. Defaults to TRUE.</li>
+<li>
+<code><a href="../reference/rm_baseline.html">rm_baseline()</a></code> now adds a record of the baseline period</li>
 </ul></div>
 <div class="section level4">
 <h4 id="internal-changesbug-fixes-development-version">Internal changes/bug fixes<a class="anchor" aria-label="anchor" href="#internal-changesbug-fixes-development-version"></a></h4>
-<ul><li>Using <code><a href="../reference/electrode_locations.html">electrode_locations()</a></code> on a <code>data.frame</code> would return a data frame with the electrode names in full upper case. Now returns with the electrodes in their original case.</li>
+<ul><li>Recoded <code><a href="../reference/faster_epochs.html">faster_epochs()</a></code> to no longer use <code>data.table</code>.</li>
+<li>added <code>parse_cycles()</code> function for use during <code><a href="../reference/compute_tfr.html">compute_tfr()</a></code>
+</li>
+<li>Using <code><a href="../reference/electrode_locations.html">electrode_locations()</a></code> on a <code>data.frame</code> would return a data frame with the electrode names in full upper case. Now returns with the electrodes in their original case.</li>
 <li>
 <code>eeg_evoked</code> objects should now contain reference information.</li>
 <li>
@@ -260,7 +271,7 @@
 <li>
 <code><a href="../reference/view_artefacts.html">view_artefacts()</a></code>Shiny viewer for channel and epoch stats added.</li>
 <li>
-<code><a href="../reference/plot_timecourse.html">plot_timecourse()</a></code> now takes a mapping argument, which allows use of <code>ggplot2</code> <code>aes()</code> mappings</li>
+<code><a href="../reference/plot_timecourse.html">plot_timecourse()</a></code> now takes a mapping argument, which allows use of <code>ggplot2</code> <code><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes()</a></code> mappings</li>
 <li>
 <code><a href="../reference/eeg_average.html">eeg_average.eeg_tfr()</a></code> now follows behaviour of other <code><a href="../reference/eeg_average.html">eeg_average()</a></code> methods in respecting the <code>epochs</code> structure.<br></li>
 <li>
@@ -697,7 +708,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
       </footer></div>

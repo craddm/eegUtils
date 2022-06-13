@@ -47,7 +47,7 @@
   <a href="../../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -98,7 +98,8 @@
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Getting started with eegUtils and the N170</h1>
-                        <h4 data-toc-skip class="author">Matt Craddock</h4>
+                        <h4 data-toc-skip class="author">Matt
+Craddock</h4>
             
             <h4 data-toc-skip class="date">09/02/2022</h4>
       
@@ -111,14 +112,14 @@
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org" class="external-link">tidyverse</a></span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## -- <span style="font-weight: bold;">Attaching packages</span> --------------------------------------- tidyverse 1.3.1 --</span></code></pre>
-<pre><code><span class="co">## <span style="color: #00BB00;">v</span> <span style="color: #0000BB;">ggplot2</span> 3.3.5     <span style="color: #00BB00;">v</span> <span style="color: #0000BB;">purrr  </span> 0.3.4</span>
-<span class="co">## <span style="color: #00BB00;">v</span> <span style="color: #0000BB;">tibble </span> 3.1.6     <span style="color: #00BB00;">v</span> <span style="color: #0000BB;">dplyr  </span> 1.0.8</span>
-<span class="co">## <span style="color: #00BB00;">v</span> <span style="color: #0000BB;">tidyr  </span> 1.2.0     <span style="color: #00BB00;">v</span> <span style="color: #0000BB;">stringr</span> 1.4.0</span>
-<span class="co">## <span style="color: #00BB00;">v</span> <span style="color: #0000BB;">readr  </span> 2.1.2     <span style="color: #00BB00;">v</span> <span style="color: #0000BB;">forcats</span> 0.5.1</span></code></pre>
-<pre><code><span class="co">## -- <span style="font-weight: bold;">Conflicts</span> ------------------------------------------ tidyverse_conflicts() --</span>
-<span class="co">## <span style="color: #BB0000;">x</span> <span style="color: #0000BB;">dplyr</span>::<span style="color: #00BB00;">filter()</span> masks <span style="color: #0000BB;">stats</span>::filter()</span>
-<span class="co">## <span style="color: #BB0000;">x</span> <span style="color: #0000BB;">dplyr</span>::<span style="color: #00BB00;">lag()</span>    masks <span style="color: #0000BB;">stats</span>::lag()</span></code></pre>
+<pre><code><span class="co">## ── <span style="font-weight: bold;">Attaching packages</span> ─────────────────────────────────────── tidyverse 1.3.1 ──</span></code></pre>
+<pre><code><span class="co">## <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">ggplot2</span> 3.3.6     <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">purrr  </span> 0.3.4</span>
+<span class="co">## <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">tibble </span> 3.1.7     <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">dplyr  </span> 1.0.9</span>
+<span class="co">## <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">tidyr  </span> 1.2.0     <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">stringr</span> 1.4.0</span>
+<span class="co">## <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">readr  </span> 2.1.2     <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">forcats</span> 0.5.1</span></code></pre>
+<pre><code><span class="co">## ── <span style="font-weight: bold;">Conflicts</span> ────────────────────────────────────────── tidyverse_conflicts() ──</span>
+<span class="co">## <span style="color: #BB0000;">✖</span> <span style="color: #0000BB;">dplyr</span>::<span style="color: #00BB00;">filter()</span> masks <span style="color: #0000BB;">stats</span>::filter()</span>
+<span class="co">## <span style="color: #BB0000;">✖</span> <span style="color: #0000BB;">dplyr</span>::<span style="color: #00BB00;">lag()</span>    masks <span style="color: #0000BB;">stats</span>::lag()</span></code></pre>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/craddm/eegUtils" class="external-link">eegUtils</a></span><span class="op">)</span></code></pre></div>
 <pre><code><span class="co">## </span>
@@ -126,13 +127,22 @@
 <pre><code><span class="co">## The following object is masked from 'package:stats':</span>
 <span class="co">## </span>
 <span class="co">##     filter</span></code></pre>
-<p>In this tutorial, we’ll be going through the analysis of a single dataset from the <a href="https://erpinfo.org/erp-core" class="external-link">ERP Core</a> N170 data.</p>
-<p>We’ll be using the data from a single subject. If you don’t have the data already, you can download it from the <a href="https://osf.io/thsqg/" class="external-link">Open Science Framework</a> or alternatively download all of the data using the <a href="https://eegverse.github.io/erpcore" class="external-link">erpcore</a> package.</p>
-<p>Note that some understanding of EEG processing is assumed - we won’t go through the justification for many of the steps or reasons for choosing particular parameters, just the mechanics of actually doing them.</p>
+<p>In this tutorial, we’ll be going through the analysis of a single
+dataset from the <a href="https://erpinfo.org/erp-core" class="external-link">ERP Core</a>
+N170 data.</p>
+<p>We’ll be using the data from a single subject. If you don’t have the
+data already, you can download it from the <a href="https://osf.io/thsqg/" class="external-link">Open Science Framework</a> or alternatively
+download all of the data using the <a href="https://eegverse.github.io/erpcore" class="external-link">erpcore</a> package.</p>
+<p>Note that some understanding of EEG processing is assumed - we won’t
+go through the justification for many of the steps or reasons for
+choosing particular parameters, just the mechanics of actually doing
+them.</p>
 <div class="section level2">
 <h2 id="standard-preprocessing">Standard preprocessing<a class="anchor" aria-label="anchor" href="#standard-preprocessing"></a>
 </h2>
-<p>Let’s consider the steps we need to take to process our dataset. We will broadly follow the steps taken by the ERP Core team in their analysis of this data.</p>
+<p>Let’s consider the steps we need to take to process our dataset. We
+will broadly follow the steps taken by the ERP Core team in their
+analysis of this data.</p>
 <ol style="list-style-type: decimal">
 <li>Importing the data</li>
 <li>Downsampling from 1024 Hz to 256 Hz.</li>
@@ -144,7 +154,11 @@
 <div class="section level3">
 <h3 id="importing-the-data">Importing the data<a class="anchor" aria-label="anchor" href="#importing-the-data"></a>
 </h3>
-<p>The data is stored in <em>EEGLAB</em>’s <strong>.set</strong> format. We can import that using the <code><a href="../../reference/import_set.html">import_set()</a></code> function. After importing, we add some standard channel locations - we overwrite those included in the original file, which are actually all missing values rather than coordinates!</p>
+<p>The data is stored in <em>EEGLAB</em>’s <strong>.set</strong> format.
+We can import that using the <code><a href="../../reference/import_set.html">import_set()</a></code> function. After
+importing, we add some standard channel locations - we overwrite those
+included in the original file, which are actually all missing values
+rather than coordinates!</p>
 <p>We’ll use the data from “sub-003”.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Set up basic file locations</span>
@@ -158,27 +172,38 @@
                                    overwrite <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <pre><code><span class="co">## Electrodes not found: HEOG_left HEOG_right VEOG_lower</span></code></pre>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">single_data</span></code></pre></div>
-<pre><code><span class="co">## EEG data</span>
-<span class="co">## </span>
-<span class="co">## Number of channels   : 33 </span>
-<span class="co">## Electrode names      : FP1 F3 F7 FC3 C3 C5 P3 P7 P9 PO7 PO3 O1 Oz Pz CPz FP2 Fz F4 F8 FC4 FCz Cz C4 C6 P4 P8 P10 PO8 PO4 O2 HEOG_left HEOG_right VEOG_lower </span>
-<span class="co">## Sampling rate        : 1024 Hz</span>
-<span class="co">## Reference        : </span>
-<span class="co">## Signal length: 0 565.999 seconds</span></code></pre>
-<p>The function informs us that some electrodes don’t have matching locations in our standard set. These are the HEOG and VEOG electrodes. This isn’t something to worry about.</p>
-<p>Since the <strong>.set</strong> file only contained data with a single epoch, it’s imported as a continuous, <code>eeg_data</code> object. It has 33 electrodes, and a sampling rate of 1024 Hz. It is also unreferenced.</p>
-<p>We could start our preprocessing now, but before we do anything else, we have to attend to something important. According to the ERP Core documentation, there was a delay of 26 ms between the onset of the trigger and the onset of the visual stimulus. We need to modify the event codes stored in the data to compensate for this delay.</p>
+<code class="sourceCode R"><span class="co"># browse_data(single_data) uncomment this line to use the data browser!</span></code></pre></div>
+<p>The function informs us that some electrodes don’t have matching
+locations in our standard set. These are the HEOG and VEOG electrodes.
+This isn’t something to worry about.</p>
+<p>Since the <strong>.set</strong> file only contained data with a
+single epoch, it’s imported as a continuous, <code>eeg_data</code>
+object. It has 33 electrodes, and a sampling rate of 1024 Hz. It is also
+unreferenced.</p>
+<p>We could start our preprocessing now, but before we do anything else,
+we have to attend to something important. According to the ERP Core
+documentation, there was a delay of 26 ms between the onset of the
+trigger and the onset of the visual stimulus. We need to modify the
+event codes stored in the data to compensate for this delay.</p>
 </div>
 <div class="section level3">
 <h3 id="fixing-the-event-codes-">Fixing the event codes.<a class="anchor" aria-label="anchor" href="#fixing-the-event-codes-"></a>
 </h3>
-<p>To make sure our ERPs are correctly timed, we need to modify the triggers, shifting them 26 ms later in time. The safest way to do that is going to be shift everything by whatever number of samples corresponds closest to 26 ms. The sampling rate of this data is 1024 Hz, which translates to one sample every 0.977 ms. Divide 26 by this, and we have 26.624 samples. It works out nicely around a sample per ms, given that we have a 1024 Hz sampling rate, but of course that would differ if we had a different sampling rate!</p>
-<p>In the ERP Core scripts, they take the <code>floor</code> of this, so shift the triggers by 26 samples.</p>
-<p>Events coded in the data can be inspected directly using the <code><a href="../../reference/events.html">events()</a></code> function. Let’s take a look.</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<p>To make sure our ERPs are correctly timed, we need to modify the
+triggers, shifting them 26 ms later in time. The safest way to do that
+is going to be shift everything by whatever number of samples
+corresponds closest to 26 ms. The sampling rate of this data is 1024 Hz,
+which translates to one sample every 0.977 ms. Divide 26 by this, and we
+have 26.624 samples. It works out nicely around a sample per ms, given
+that we have a 1024 Hz sampling rate, but of course that would differ if
+we had a different sampling rate!</p>
+<p>In the ERP Core scripts, they take the <code>floor</code> of this, so
+shift the triggers by 26 samples.</p>
+<p>Events coded in the data can be inspected directly using the
+<code><a href="../../reference/events.html">events()</a></code> function. Let’s take a look.</p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../../reference/events.html">events</a></span><span class="op">(</span><span class="va">single_data</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## <span style="color: #949494;"># A tibble: 642 x 4</span></span>
+<pre><code><span class="co">## <span style="color: #949494;"># A tibble: 642 × 4</span></span>
 <span class="co">##    event_type event_onset urevent event_time</span>
 <span class="co">##         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
 <span class="co">## <span style="color: #BCBCBC;"> 1</span>        202        <span style="text-decoration: underline;">3</span>101       1       3.03</span>
@@ -191,10 +216,17 @@
 <span class="co">## <span style="color: #BCBCBC;"> 8</span>        201       <span style="text-decoration: underline;">12</span>620       8      12.3 </span>
 <span class="co">## <span style="color: #BCBCBC;"> 9</span>         71       <span style="text-decoration: underline;">13</span>711       9      13.4 </span>
 <span class="co">## <span style="color: #BCBCBC;">10</span>        201       <span style="text-decoration: underline;">14</span>094      10      13.8 </span>
-<span class="co">## <span style="color: #949494;"># ... with 632 more rows</span></span></code></pre>
-<p>The important one here is <code>event_onset</code>. This tells us in <em>samples</em> when the event code was sent, while <code>event_type</code> tells us what the code was. <code>event_time</code> is the time in <em>seconds</em> from the start of the recording that the event code was sent.</p>
-<p>Note that they only shift the stimulus onset triggers. We’ll do the same here, using some base R code to modify only those triggers with values from 1 to 80 or from 100 to 180, which correspond to stimulus onset triggers.</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<span class="co">## <span style="color: #949494;"># … with 632 more rows</span></span></code></pre>
+<p>The important one here is <code>event_onset</code>. This tells us in
+<em>samples</em> when the event code was sent, while
+<code>event_type</code> tells us what the code was.
+<code>event_time</code> is the time in <em>seconds</em> from the start
+of the recording that the event code was sent.</p>
+<p>Note that they only shift the stimulus onset triggers. We’ll do the
+same here, using some base R code to modify only those triggers with
+values from 1 to 80 or from 100 to 180, which correspond to stimulus
+onset triggers.</p>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">sample_shift</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">floor</a></span><span class="op">(</span><span class="fl">26</span> <span class="op">/</span> <span class="op">(</span><span class="fl">1000</span><span class="op">/</span><span class="va">single_data</span><span class="op">$</span><span class="va">srate</span><span class="op">)</span><span class="op">)</span> <span class="co"># round down</span>
 <span class="va">orig_events</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/events.html">events</a></span><span class="op">(</span><span class="va">single_data</span><span class="op">)</span>
 <span class="va">orig_events</span><span class="op">$</span><span class="va">event_onset</span> <span class="op">&lt;-</span>
@@ -206,7 +238,7 @@
 <span class="va">orig_events</span><span class="op">$</span><span class="va">event_time</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">orig_events</span><span class="op">$</span><span class="va">event_onset</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span> <span class="op">*</span> <span class="op">(</span><span class="fl">1</span><span class="op">/</span><span class="fl">1024</span><span class="op">)</span>
 <span class="fu"><a href="../../reference/events.html">events</a></span><span class="op">(</span><span class="va">single_data</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">orig_events</span>
 <span class="fu"><a href="../../reference/events.html">events</a></span><span class="op">(</span><span class="va">single_data</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## <span style="color: #949494;"># A tibble: 642 x 4</span></span>
+<pre><code><span class="co">## <span style="color: #949494;"># A tibble: 642 × 4</span></span>
 <span class="co">##    event_type event_onset urevent event_time</span>
 <span class="co">##         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
 <span class="co">## <span style="color: #BCBCBC;"> 1</span>        202        <span style="text-decoration: underline;">3</span>101       1       3.03</span>
@@ -219,18 +251,30 @@
 <span class="co">## <span style="color: #BCBCBC;"> 8</span>        201       <span style="text-decoration: underline;">12</span>620       8      12.3 </span>
 <span class="co">## <span style="color: #BCBCBC;"> 9</span>         71       <span style="text-decoration: underline;">13</span>737       9      13.4 </span>
 <span class="co">## <span style="color: #BCBCBC;">10</span>        201       <span style="text-decoration: underline;">14</span>094      10      13.8 </span>
-<span class="co">## <span style="color: #949494;"># ... with 632 more rows</span></span></code></pre>
-<p>Now that we’ve done that initial step, let’s look at what else we need to.</p>
+<span class="co">## <span style="color: #949494;"># … with 632 more rows</span></span></code></pre>
+<p>Now that we’ve done that initial step, let’s look at what else we
+need to.</p>
 </div>
 <div class="section level3">
 <h3 id="downsampling">Downsampling<a class="anchor" aria-label="anchor" href="#downsampling"></a>
 </h3>
-<p>ERP Core downsample from 1024 Hz to 256 Hz. We can use the <code><a href="../../reference/eeg_downsample.html">eeg_downsample()</a></code> for that. We need to tell it how much to downsample. We pass the <code>q</code> argument to give it a downsampling factor. 1024 / 4 is 256. We’ll do this first to speed up subsequent steps.</p>
-<p>Note that for this step, we probably want to use multiple processor threads or cores to speed things up. We can do that via the <code>future</code> library. Simply load the <code>future</code> library, then make an appropriate <code><a href="https://future.futureverse.org/reference/plan.html" class="external-link">plan()</a></code> to use your computer’s parallel processing capabilities. We only need to do this once - all subsequent steps will use parallel processing where they can. You definitely want to do this before filtering or downsampling, which can take quite a long time otherwise.</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<p>ERP Core downsample from 1024 Hz to 256 Hz. We can use the
+<code><a href="../../reference/eeg_downsample.html">eeg_downsample()</a></code> for that. We need to tell it how much to
+downsample. We pass the <code>q</code> argument to give it a
+downsampling factor. 1024 / 4 is 256. We’ll do this first to speed up
+subsequent steps.</p>
+<p>Note that for this step, we probably want to use multiple processor
+threads or cores to speed things up. We can do that via the
+<code>future</code> library. Simply load the <code>future</code>
+library, then make an appropriate <code><a href="https://future.futureverse.org/reference/plan.html" class="external-link">plan()</a></code> to use your
+computer’s parallel processing capabilities. We only need to do this
+once - all subsequent steps will use parallel processing where they can.
+You definitely want to do this before filtering or downsampling, which
+can take quite a long time otherwise.</p>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://future.futureverse.org" class="external-link">future</a></span><span class="op">)</span>
-<span class="fu"><a href="https://future.futureverse.org/reference/plan.html" class="external-link">plan</a></span><span class="op">(</span><span class="va">multisession</span><span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<span class="fu"><a href="https://future.futureverse.org/reference/plan.html" class="external-link">plan</a></span><span class="op">(</span><span class="va">multisession</span>, workers <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">single_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/eeg_downsample.html">eeg_downsample</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">single_data</span>,
                               q <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></code></pre></div>
 <pre><code><span class="co">## Downsampling from 1024Hz to 256Hz.</span></code></pre>
@@ -238,18 +282,38 @@
 <div class="section level3">
 <h3 id="referencing">Referencing<a class="anchor" aria-label="anchor" href="#referencing"></a>
 </h3>
-<p>ERP Core reference to the average of all EEG electrodes. We can do this with the <code><a href="../../reference/eeg_reference.html">eeg_reference()</a></code> function. We can specify which electrodes to reference to using the <code>ref_chans</code> argument. By default, the function will use the average of all electrodes if we don’t tell it otherwise, but we can also be explicit and use the special keyword “average”.</p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<p>ERP Core reference to the average of all EEG electrodes. We can do
+this with the <code><a href="../../reference/eeg_reference.html">eeg_reference()</a></code> function. We can specify
+which electrodes to reference to using the <code>ref_chans</code>
+argument. By default, the function will use the average of all
+electrodes if we don’t tell it otherwise, but we can also be explicit
+and use the special keyword “average”.</p>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">single_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/eeg_reference.html">eeg_reference</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">single_data</span>,
                              ref_chans <span class="op">=</span> <span class="st">"average"</span><span class="op">)</span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="filtering">Filtering<a class="anchor" aria-label="anchor" href="#filtering"></a>
 </h3>
-<p>The ERP Core perform a high-pass Butterworth IIR filter at .1 Hz, with a 12 dB/octave roll-off (filter order 2). It removes very low-frequency activity, long slow drifts, from the data. This is applied as a non-causal filter - run forwards and then backwards - to prevent temporal shifts in the data.</p>
-<p>The <code><a href="../../reference/eeg_filter.html">eeg_filter()</a></code> function can be used for high-pass, low-pass, bandpass or bandstop filtering. Which one is used depends on the <code>low_freq</code> and <code>high_freq</code> arguments. These mark the low and high passband edges respectively. If we supply only the <code>low_freq</code> argument, we are asking for a high-pass filter - everything above that low edge is passed. The frequency we specify is the half-amplitude, 3 dB cutoff point. We can ask for <code>iir</code> or <code>fir</code> filters using the <code>method</code> argument. In addition, we probably want to <code>demean</code> the data before high-pass filtering.</p>
-<p>Note that this is done to the continuous data to prevent edge artefacts creeping in, which can be a problem when the data is epoched.</p>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<p>The ERP Core perform a high-pass Butterworth IIR filter at .1 Hz,
+with a 12 dB/octave roll-off (filter order 2). It removes very
+low-frequency activity, long slow drifts, from the data. This is applied
+as a non-causal filter - run forwards and then backwards - to prevent
+temporal shifts in the data.</p>
+<p>The <code><a href="../../reference/eeg_filter.html">eeg_filter()</a></code> function can be used for high-pass,
+low-pass, bandpass or bandstop filtering. Which one is used depends on
+the <code>low_freq</code> and <code>high_freq</code> arguments. These
+mark the low and high passband edges respectively. If we supply only the
+<code>low_freq</code> argument, we are asking for a high-pass filter -
+everything above that low edge is passed. The frequency we specify is
+the half-amplitude, 3 dB cutoff point. We can ask for <code>iir</code>
+or <code>fir</code> filters using the <code>method</code> argument. In
+addition, we probably want to <code>demean</code> the data before
+high-pass filtering.</p>
+<p>Note that this is done to the continuous data to prevent edge
+artefacts creeping in, which can be a problem when the data is
+epoched.</p>
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">single_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/eeg_filter.html">eeg_filter</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">single_data</span>,
                           low_freq <span class="op">=</span> <span class="fl">.1</span>,
                           method <span class="op">=</span> <span class="st">"iir"</span>,
@@ -262,10 +326,29 @@
 <div class="section level3">
 <h3 id="epoching">Epoching<a class="anchor" aria-label="anchor" href="#epoching"></a>
 </h3>
-<p>Now we have our high-pass filtered, continuous data. Our next step will be to epoch it. Here we diverge from the ERP Core pipeline. At this point, they perform an Independent Component Analysis on the data and use it for artefact rejection. We’ll hold back on that until <em>after</em> epoching.</p>
-<p>We can use the <code><a href="../../reference/epoch_data.html">epoch_data()</a></code> function to create epochs. We need to supply the function with the relevant timelocking events. In this case, those are event codes from 1 to 80 and from 101 to 180. These codes tell us exactly which stimulus was presented on each trial. The stimuli from 1 to 40 are Intact Faces, from 41 to 80 are Intact Cars, from 101 to 140 are Scrambled Faces, and from 141 to 180 are Scrambled Cars.</p>
-<p>Let’s use <code><a href="../../reference/epoch_data.html">epoch_data()</a></code> to create epochs that last from 200 ms before stimulus onset until 800 ms after stimulus onset. We won’t perform baseline correction just yet. Note that it is possible to label the epochs when using <code><a href="../../reference/epoch_data.html">epoch_data()</a></code> using the <code>epoch_labels</code> argument. You have to supply one label for each event code. Here, there are 160 event codes. Fortunately, it is quite easy to construct an appropriate character vector using the <code><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep()</a></code> function. I use it here to create a vector with 40 of each combination of the two variables - Intact_Faces, Intact_Cars, Scrambled_Faces, Scrambled_Cars.</p>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<p>Now we have our high-pass filtered, continuous data. Our next step
+will be to epoch it. Here we diverge from the ERP Core pipeline. At this
+point, they perform an Independent Component Analysis on the data and
+use it for artefact rejection. We’ll hold back on that until
+<em>after</em> epoching.</p>
+<p>We can use the <code><a href="../../reference/epoch_data.html">epoch_data()</a></code> function to create epochs.
+We need to supply the function with the relevant timelocking events. In
+this case, those are event codes from 1 to 80 and from 101 to 180. These
+codes tell us exactly which stimulus was presented on each trial. The
+stimuli from 1 to 40 are Intact Faces, from 41 to 80 are Intact Cars,
+from 101 to 140 are Scrambled Faces, and from 141 to 180 are Scrambled
+Cars.</p>
+<p>Let’s use <code><a href="../../reference/epoch_data.html">epoch_data()</a></code> to create epochs that last from
+200 ms before stimulus onset until 800 ms after stimulus onset. We won’t
+perform baseline correction just yet. Note that it is possible to label
+the epochs when using <code><a href="../../reference/epoch_data.html">epoch_data()</a></code> using the
+<code>epoch_labels</code> argument. You have to supply one label for
+each event code. Here, there are 160 event codes. Fortunately, it is
+quite easy to construct an appropriate character vector using the
+<code><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep()</a></code> function. I use it here to create a vector with 40 of
+each combination of the two variables - Intact_Faces, Intact_Cars,
+Scrambled_Faces, Scrambled_Cars.</p>
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">epoched_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/epoch_data.html">epoch_data</a></span><span class="op">(</span><span class="va">single_data</span>,
                            events <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">80</span>,
                                       <span class="fl">101</span><span class="op">:</span><span class="fl">180</span><span class="op">)</span>,
@@ -282,7 +365,7 @@
 <pre><code><span class="co">## Output limits:  -0.19921875 0.80078125</span></code></pre>
 <pre><code><span class="co">## No baseline removal performed.</span></code></pre>
 <pre><code><span class="co">## Creating 320 epochs.</span></code></pre>
-<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">epoched_data</span></code></pre></div>
 <pre><code><span class="co">## Epoched EEG data</span>
 <span class="co">## </span>
@@ -292,10 +375,16 @@
 <span class="co">## Electrode names      : FP1 F3 F7 FC3 C3 C5 P3 P7 P9 PO7 PO3 O1 Oz Pz CPz FP2 Fz F4 F8 FC4 FCz Cz C4 C6 P4 P8 P10 PO8 PO4 O2 HEOG_left HEOG_right VEOG_lower </span>
 <span class="co">## Sampling rate        : 256  Hz</span>
 <span class="co">## Reference        : average</span></code></pre>
-<p>This creates 320 epochs. We can inspect metadata for the epochs using the <code><a href="../../reference/epochs.html">epochs()</a></code> function, which will show us information like the <code>participant_id</code> and the label for each epoch. This is an important structure, as it allows us to easily compare different conditions later on using functions like <code><a href="../../reference/plot_timecourse.html">plot_timecourse()</a></code>, and helps us keep track of which data belongs to which participant when we have group data.</p>
-<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<p>This creates 320 epochs. We can inspect metadata for the epochs using
+the <code><a href="../../reference/epochs.html">epochs()</a></code> function, which will show us information like
+the <code>participant_id</code> and the label for each epoch. This is an
+important structure, as it allows us to easily compare different
+conditions later on using functions like <code><a href="../../reference/plot_timecourse.html">plot_timecourse()</a></code>,
+and helps us keep track of which data belongs to which participant when
+we have group data.</p>
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../../reference/epochs.html">epochs</a></span><span class="op">(</span><span class="va">epoched_data</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## <span style="color: #949494;"># A tibble: 320 x 5</span></span>
+<pre><code><span class="co">## <span style="color: #949494;"># A tibble: 320 × 5</span></span>
 <span class="co">##    epoch participant_id recording             event_type epoch_labels   </span>
 <span class="co">##    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          </span>
 <span class="co">## <span style="color: #BCBCBC;"> 1</span>     1 sub-003        sub-003_task-N170_eeg         56 Intact_Cars    </span>
@@ -308,10 +397,15 @@
 <span class="co">## <span style="color: #BCBCBC;"> 8</span>     8 sub-003        sub-003_task-N170_eeg        124 Scrambled_Faces</span>
 <span class="co">## <span style="color: #BCBCBC;"> 9</span>     9 sub-003        sub-003_task-N170_eeg        178 Scrambled_Cars </span>
 <span class="co">## <span style="color: #BCBCBC;">10</span>    10 sub-003        sub-003_task-N170_eeg         23 Intact_Faces   </span>
-<span class="co">## <span style="color: #949494;"># ... with 310 more rows</span></span></code></pre>
-<p>Now, we know our design is a <span class="math inline">\(2 \times 2\)</span> design. We have two variables: Intact or Scrambled stimuli, and images of Faces or Cars.</p>
-<p>Let’s use some <code>tidyverse</code> magic to split our <code>epoch_labels</code> column into two variables that code for this structure. This is straightforward, since the values of the column use <code>_</code> to separate the values of each factor.</p>
-<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
+<span class="co">## <span style="color: #949494;"># … with 310 more rows</span></span></code></pre>
+<p>Now, we know our design is a <span class="math inline">\(2 \times
+2\)</span> design. We have two variables: Intact or Scrambled stimuli,
+and images of Faces or Cars.</p>
+<p>Let’s use some <code>tidyverse</code> magic to split our
+<code>epoch_labels</code> column into two variables that code for this
+structure. This is straightforward, since the values of the column use
+<code>_</code> to separate the values of each factor.</p>
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../../reference/epochs.html">epochs</a></span><span class="op">(</span><span class="va">epoched_data</span><span class="op">)</span> <span class="op">&lt;-</span>
   <span class="fu"><a href="https://tidyr.tidyverse.org/reference/separate.html" class="external-link">separate</a></span><span class="op">(</span>
     <span class="fu"><a href="../../reference/epochs.html">epochs</a></span><span class="op">(</span><span class="va">epoched_data</span><span class="op">)</span>,
@@ -320,7 +414,7 @@
              <span class="st">"Type"</span><span class="op">)</span>
     <span class="op">)</span>
 <span class="fu"><a href="../../reference/epochs.html">epochs</a></span><span class="op">(</span><span class="va">epoched_data</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## <span style="color: #949494;"># A tibble: 320 x 6</span></span>
+<pre><code><span class="co">## <span style="color: #949494;"># A tibble: 320 × 6</span></span>
 <span class="co">##    epoch participant_id recording             event_type Intact    Type </span>
 <span class="co">##    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span>
 <span class="co">## <span style="color: #BCBCBC;"> 1</span>     1 sub-003        sub-003_task-N170_eeg         56 Intact    Cars </span>
@@ -333,70 +427,103 @@
 <span class="co">## <span style="color: #BCBCBC;"> 8</span>     8 sub-003        sub-003_task-N170_eeg        124 Scrambled Faces</span>
 <span class="co">## <span style="color: #BCBCBC;"> 9</span>     9 sub-003        sub-003_task-N170_eeg        178 Scrambled Cars </span>
 <span class="co">## <span style="color: #BCBCBC;">10</span>    10 sub-003        sub-003_task-N170_eeg         23 Intact    Faces</span>
-<span class="co">## <span style="color: #949494;"># ... with 310 more rows</span></span></code></pre>
-<p>And BOOM! We have our nicely epoched dataset for a single participant. We’re not quite finished, as we should do some artefact rejection. But let’s quickly do a few exploratory plots with this data.</p>
+<span class="co">## <span style="color: #949494;"># … with 310 more rows</span></span></code></pre>
+<p>And BOOM! We have our nicely epoched dataset for a single
+participant. We’re not quite finished, as we should do some artefact
+rejection. But let’s quickly do a few exploratory plots with this
+data.</p>
 </div>
 <div class="section level3">
 <h3 id="exploratory-plots">Exploratory plots<a class="anchor" aria-label="anchor" href="#exploratory-plots"></a>
 </h3>
-<p>We’ll start off with some topographical plots. We know this data is meant to show the N170, and from the ERP Core papers we know this is maximal in this data from approximately 130-150 ms after stimulus onset. So let’s plot the topography for each condition at that time. <code>eegUtils</code> represents time in seconds.</p>
-<p>The <code><a href="../../reference/topoplot.html">topoplot()</a></code> function produces a <code>ggplot2</code> object. Here we’ll use facetting to display different topographies for each condition. Note that we have to explicitly enable this by adding a <code>groups</code> argument and specifying which variables we want to group on.</p>
-<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
+<p>We’ll start off with some topographical plots. We know this data is
+meant to show the N170, and from the ERP Core papers we know this is
+maximal in this data from approximately 130-150 ms after stimulus onset.
+So let’s plot the topography for each condition at that time.
+<code>eegUtils</code> represents time in seconds.</p>
+<p>The <code><a href="../../reference/topoplot.html">topoplot()</a></code> function produces a <code>ggplot2</code>
+object. Here we’ll use facetting to display different topographies for
+each condition. Note that we have to explicitly enable this by adding a
+<code>groups</code> argument and specifying which variables we want to
+group on.</p>
+<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">epoched_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/rm_baseline.html">rm_baseline</a></span><span class="op">(</span><span class="va">epoched_data</span>,
                             <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">.1</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## Baseline: -0.1 sBaseline: 0 s</span></code></pre>
-<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
+<pre><code><span class="co">## Baseline: -0.1 - 0s</span></code></pre>
+<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../../reference/topoplot.html">topoplot</a></span><span class="op">(</span><span class="va">epoched_data</span>,
          time_lim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">.13</span>, <span class="fl">.15</span><span class="op">)</span>,
          groups <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Intact"</span>,
                     <span class="st">"Type"</span><span class="op">)</span>, 
          limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">10</span>, <span class="fl">10</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_grid.html" class="external-link">facet_grid</a></span><span class="op">(</span><span class="va">Intact</span><span class="op">~</span><span class="va">Type</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## Creating epochs based on combinations of variables: participant_id Intact Type</span></code></pre>
 <pre><code><span class="co">## Using electrode locations from data.</span></code></pre>
 <pre><code><span class="co">## Removing channels with no location.</span></code></pre>
 <pre><code><span class="co">## Plotting head r 95 mm</span></code></pre>
 <p><img src="N170_single_subject_files/figure-html/uncorr-topo-1.png" width="576"></p>
-<p>It’s a little tricky to make out much of a difference between conditions, although it’s clear that amplitudes are higher over the occipital electrodes.</p>
-<p>Let’s create a butterfly plot showing the ERP for every channel, all at once. We can use the <code><a href="../../reference/plot_butterfly.html">plot_butterfly()</a></code> function to do that.</p>
+<p>It’s a little tricky to make out much of a difference between
+conditions, although it’s clear that amplitudes are higher over the
+occipital electrodes.</p>
+<p>Let’s create a butterfly plot showing the ERP for every channel, all
+at once. We can use the <code><a href="../../reference/plot_butterfly.html">plot_butterfly()</a></code> function to do
+that.</p>
 <div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../../reference/plot_butterfly.html">plot_butterfly</a></span><span class="op">(</span><span class="va">epoched_data</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## Creating epochs based on combinations of variables: participant_id Intact Type</span></code></pre>
 <p><img src="N170_single_subject_files/figure-html/butterfly-epo-1.png" width="576"></p>
-<p>You can clearly see some channels have great big signals relative to everything else. These channels are capturing blinks and saccades. We’d expect that on the HEOG and VEOG related channels, which are closest to the eyes.</p>
+<p>You can clearly see some channels have great big signals relative to
+everything else. These channels are capturing blinks and saccades. We’d
+expect that on the HEOG and VEOG related channels, which are closest to
+the eyes.</p>
 <p>Let’s plot one of the VEOG and one of the HEOG channels.</p>
-<div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../../reference/plot_timecourse.html">plot_timecourse</a></span><span class="op">(</span>
   <span class="va">epoched_data</span>, 
   electrode <span class="op">=</span> <span class="st">"VEOG_lower"</span>,
   baseline <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">.1</span>, <span class="fl">0</span><span class="op">)</span>
   <span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## Baseline: -0.1 sBaseline: 0 s</span></code></pre>
-<p><img src="N170_single_subject_files/figure-html/unnamed-chunk-13-1.png" width="576"></p>
-<div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
+<pre><code><span class="co">## Baseline: -0.1 - 0s</span></code></pre>
+<pre><code><span class="co">## Creating epochs based on combinations of variables: participant_id Intact Type</span></code></pre>
+<p><img src="N170_single_subject_files/figure-html/plot-tcs-1.png" width="576"></p>
+<div class="sourceCode" id="cb49"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../../reference/plot_timecourse.html">plot_timecourse</a></span><span class="op">(</span>
   <span class="va">epoched_data</span>, 
   electrode <span class="op">=</span> <span class="st">"HEOG_left"</span>,
   baseline <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">.1</span>, <span class="fl">0</span><span class="op">)</span>
   <span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## Baseline: -0.1 sBaseline: 0 s</span></code></pre>
-<p><img src="N170_single_subject_files/figure-html/unnamed-chunk-13-2.png" width="576"></p>
-<p>From these two plots, it’s very clear that there is a big vertical eye movement signal. But HEOG looks much less clear - the signals don’t show typical eye-movement patterns and look much more <em>ERP-like</em>.</p>
-<p>Let’s restrict our butterly plot to the first 30 channels, which are the scalp channels.</p>
-<div class="sourceCode" id="cb49"><pre class="downlit sourceCode r">
+<pre><code><span class="co">## Baseline: -0.1 - 0s</span>
+<span class="co">## Creating epochs based on combinations of variables: participant_id Intact Type</span></code></pre>
+<p><img src="N170_single_subject_files/figure-html/plot-tcs-2.png" width="576"></p>
+<p>From these two plots, it’s very clear that there is a big vertical
+eye movement signal. But HEOG looks much less clear - the signals don’t
+show typical eye-movement patterns and look much more
+<em>ERP-like</em>.</p>
+<p>Let’s restrict our butterly plot to the first 30 channels, which are
+the scalp channels.</p>
+<div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../../reference/plot_butterfly.html">plot_butterfly</a></span><span class="op">(</span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">epoched_data</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">30</span><span class="op">)</span>
   <span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## Creating epochs based on combinations of variables: participant_id Intact Type</span></code></pre>
 <p><img src="N170_single_subject_files/figure-html/epo-bf-scalp-1.png" width="576"></p>
-<p>There are still a couple of channels clearly dominated by eye movements - likely channels FP1 and FP2, which are over the eyes. And we can clearly see the effect of the eye movements on the topography around that time.</p>
-<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
+<p>There are still a couple of channels clearly dominated by eye
+movements - likely channels FP1 and FP2, which are over the eyes. And we
+can clearly see the effect of the eye movements on the topography around
+that time.</p>
+<div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../../reference/topoplot.html">topoplot</a></span><span class="op">(</span>
   <span class="va">epoched_data</span>, 
   time_lim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">.6</span>, <span class="fl">.8</span><span class="op">)</span>
   <span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## Creating epochs based on combinations of variables: participant_id Intact Type</span></code></pre>
 <pre><code><span class="co">## Using electrode locations from data.</span></code></pre>
 <pre><code><span class="co">## Removing channels with no location.</span></code></pre>
 <pre><code><span class="co">## Plotting head r 95 mm</span></code></pre>
-<p><img src="N170_single_subject_files/figure-html/unnamed-chunk-14-1.png" width="576"></p>
-<p>We’d probably want to do something about that - either removal of contaminated trials or some sort of eye movement correction using <strong>Independent Component Analysis</strong></p>
+<p><img src="N170_single_subject_files/figure-html/unnamed-chunk-9-1.png" width="576"></p>
+<p>We’d probably want to do something about that - either removal of
+contaminated trials or some sort of eye movement correction using
+<strong>Independent Component Analysis</strong></p>
 </div>
 </div>
 <div class="section level2">
@@ -405,21 +532,50 @@
 <div class="section level3">
 <h3 id="independent-component-analysis">Independent Component Analysis<a class="anchor" aria-label="anchor" href="#independent-component-analysis"></a>
 </h3>
-<p>In the ERP Core, <strong>Independent Component Analysis</strong> is used to isolate and correct for artefactual contributions to the EEG signal from eye movements. They run ICA on the continuous data, after performing a few artefact rejection steps based on amplitude thresholds to remove particuarly low quality data segments, as well as removing data from between blocks.</p>
-<p>We’ll do it a little differently - we’ve already arrived at our epoched data, and will run ICA on that. We could do some artefact rejection on the epoched data before running the ICA (for example, we could use <code><a href="../../reference/ar_FASTER.html">ar_FASTER()</a></code> to automatically detect bad channels and epochs), but this time we’ll skip that and go straight to ICA. We’ll use the <strong>extended Infomax</strong> algorithm for our decomposition. Note that since the data is average referenced, it is not <em>full rank</em> - the signals are not fully linearly independent of each other, but dependent on the <em>reference</em> signal. We’ll use the <code>pca</code> argument to reduce our data to 32 components, one fewer than the number of channels, and then run ICA.</p>
-<div class="sourceCode" id="cb54"><pre class="downlit sourceCode r">
+<p>In the ERP Core, <strong>Independent Component Analysis</strong> is
+used to isolate and correct for artefactual contributions to the EEG
+signal from eye movements. They run ICA on the continuous data, after
+performing a few artefact rejection steps based on amplitude thresholds
+to remove particuarly low quality data segments, as well as removing
+data from between blocks.</p>
+<p>We’ll do it a little differently - we’ve already arrived at our
+epoched data, and will run ICA on that. We could do some artefact
+rejection on the epoched data before running the ICA (for example, we
+could use <code><a href="../../reference/ar_FASTER.html">ar_FASTER()</a></code> to automatically detect bad channels
+and epochs), but this time we’ll skip that and go straight to ICA. We’ll
+use the <strong>extended Infomax</strong> algorithm for our
+decomposition. Note that since the data is average referenced, it is not
+<em>full rank</em> - the signals are not fully linearly independent of
+each other, but dependent on the <em>reference</em> signal. We’ll use
+the <code>pca</code> argument to reduce our data to 32 components, one
+fewer than the number of channels, and then run ICA.</p>
+<div class="sourceCode" id="cb58"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">ica_imax</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/run_ICA.html">run_ICA</a></span><span class="op">(</span><span class="va">epoched_data</span>,
                     pca <span class="op">=</span> <span class="fl">32</span>,
                     method <span class="op">=</span> <span class="st">"infomax"</span><span class="op">)</span></code></pre></div>
 <pre><code><span class="co">## Reducing data to 32 dimensions using PCA.</span></code></pre>
 <pre><code><span class="co">## Running extended-Infomax (ica).</span></code></pre>
-<p>There are several interactive tools built in, like <code><a href="../../reference/view_ica.html">view_ica()</a></code> and <code><a href="../../reference/browse_data.html">browse_data()</a></code>, that allow you to visually inspect the results of the ICA decomposition, displaying features such as topographies and ERPs. With experience, you will learn to discriminate between different typres of component. Some capture genuine brain activity, while some capture artefacts. For this tutorial, we will use an automatic method to help us detect eye movement related components.</p>
+<p>There are several interactive tools built in, like
+<code><a href="../../reference/view_ica.html">view_ica()</a></code> and <code><a href="../../reference/browse_data.html">browse_data()</a></code>, that allow you
+to visually inspect the results of the ICA decomposition, displaying
+features such as topographies and ERPs. With experience, you will learn
+to discriminate between different types of component. Some capture
+genuine brain activity, while some capture artefacts. For this tutorial,
+we will use an automatic method to help us detect eye movement related
+components.</p>
 </div>
 <div class="section level3">
 <h3 id="automatically-rejecting-eye-movement-components">Automatically rejecting eye movement components<a class="anchor" aria-label="anchor" href="#automatically-rejecting-eye-movement-components"></a>
 </h3>
-<p>There are also some <code>ar_*</code> functions for detecting particular artefactual types of component automatically. One of those is <code><a href="../../reference/ar_eogcor.html">ar_eogcor()</a></code>. Given the decomposition and the original data, this function searches for components that have a high correlation with the eye channels. We construct bipolarized channels from the two HEOG channels - <code>HEOG_left</code> and <code>HEOG_right</code> - and for VEOG, the <code>VEOG_lower</code> and <code>FP2</code> channels, since there was no <code>VEOG_upper</code>.</p>
-<div class="sourceCode" id="cb57"><pre class="downlit sourceCode r">
+<p>There are also some <code>ar_*</code> functions for detecting
+particular artefactual types of component automatically. One of those is
+<code><a href="../../reference/ar_eogcor.html">ar_eogcor()</a></code>. Given the decomposition and the original data,
+this function searches for components that have a high correlation with
+the eye channels. We construct bipolarized channels from the two HEOG
+channels - <code>HEOG_left</code> and <code>HEOG_right</code> - and for
+VEOG, the <code>VEOG_lower</code> and <code>FP2</code> channels, since
+there was no <code>VEOG_upper</code>.</p>
+<div class="sourceCode" id="cb61"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">high_cor</span> <span class="op">&lt;-</span> 
   <span class="fu"><a href="../../reference/ar_eogcor.html">ar_eogcor</a></span><span class="op">(</span>decomp <span class="op">=</span> <span class="va">ica_imax</span>,
             data <span class="op">=</span> <span class="va">epoched_data</span>,
@@ -427,116 +583,186 @@
             VEOG <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"VEOG_lower"</span>, <span class="st">"FP2"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <pre><code><span class="co">## Estimated HEOG threshold: 0.64</span></code></pre>
 <pre><code><span class="co">## Estimated VEOG threshold: 0.74</span></code></pre>
-<p><img src="N170_single_subject_files/figure-html/unnamed-chunk-15-1.png" width="576"></p>
-<div class="sourceCode" id="cb60"><pre class="downlit sourceCode r">
+<pre><code><span class="co">## Components with high EOG correlation: Comp001</span></code></pre>
+<p><img src="N170_single_subject_files/figure-html/unnamed-chunk-10-1.png" width="576"></p>
+<div class="sourceCode" id="cb65"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">high_cor</span></code></pre></div>
 <pre><code><span class="co">## [1] "Comp001"</span></code></pre>
-<p>A lot of channels show some correlation with HEOG, but nothing particularly striking - horizontal eye movements are often much harder to separate than blinks or vertical eye movements, and are possibly spread across many components here.</p>
-<p>For most components, the correlation was very low for VEOG. But Component 1 crosses the (automatically determined) threshold, so we should inspect it further. Let’s look at a few plots.</p>
-<div class="sourceCode" id="cb62"><pre class="downlit sourceCode r">
+<p>A lot of channels show some correlation with HEOG, but nothing
+particularly striking - horizontal eye movements are often much harder
+to separate than blinks or vertical eye movements, and are possibly
+spread across many components here.</p>
+<p>For most components, the correlation was very low for VEOG. But
+Component 1 crosses the (automatically determined) threshold, so we
+should inspect it further. Let’s look at a few plots.</p>
+<div class="sourceCode" id="cb67"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../../reference/topoplot.html">topoplot</a></span><span class="op">(</span><span class="va">ica_imax</span>,
          <span class="fl">1</span><span class="op">)</span></code></pre></div>
 <pre><code><span class="co">## Using electrode locations from data.</span></code></pre>
 <pre><code><span class="co">## Removing channels with no location.</span></code></pre>
 <pre><code><span class="co">## Plotting head r 95 mm</span></code></pre>
-<p><img src="N170_single_subject_files/figure-html/unnamed-chunk-16-1.png" width="576"></p>
-<div class="sourceCode" id="cb66"><pre class="downlit sourceCode r">
+<p><img src="N170_single_subject_files/figure-html/unnamed-chunk-11-1.png" width="576"></p>
+<div class="sourceCode" id="cb71"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../../reference/plot_timecourse.html">plot_timecourse</a></span><span class="op">(</span><span class="va">ica_imax</span>,
                 <span class="fl">1</span><span class="op">)</span></code></pre></div>
-<p><img src="N170_single_subject_files/figure-html/unnamed-chunk-16-2.png" width="576"></p>
-<div class="sourceCode" id="cb67"><pre class="downlit sourceCode r">
+<pre><code><span class="co">## Creating epochs based on combinations of variables: participant_id Intact Type</span></code></pre>
+<p><img src="N170_single_subject_files/figure-html/unnamed-chunk-11-2.png" width="576"></p>
+<div class="sourceCode" id="cb73"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../../reference/erp_image.html">erp_image</a></span><span class="op">(</span><span class="va">ica_imax</span>,
           <span class="st">"Comp001"</span><span class="op">)</span></code></pre></div>
-<p><img src="N170_single_subject_files/figure-html/unnamed-chunk-16-3.png" width="576"></p>
-<p>The topoplot shows the classic vertical eye movement topography - large signal at frontal electrodes and a front-to-back gradient. The ERP seems to show this component captures an eye movement or blink toward the end of the trial, and this is also clear on the ERP image. These are late movements, after stimulus offset.</p>
-<p>So having identified a strong candidate for a component that captures eye movements, what next? Well, we can recreate the data <em>without</em> that component using the <code><a href="../../reference/apply_ica.html">apply_ica()</a></code> function!</p>
-<p>We can either do that directly from the <code>eeg_ICA</code> object, which includes all the relevant parts of the decomposition, or by applying the weights from our ICA to another dataset. This is sometimes useful - for example, sometimes ICA provides much better decompositions on data filtered with a 1 Hz high-pass filter. But a 1 Hz high-pass filter is much too strong to use for ERPs - it seriously messes with the waveforms. So one possibility is to filter the data at 1 Hz, run ICA on the filtered data, then apply the weights to a dataset with a more reasonable high-pass filter, such as .1 Hz.</p>
-<p>Here, we’ll just go ahead and reconstruct from the <code>eeg_ICA</code> object directly. We specify which components to <em>remove</em>, rather than which to <em>keep</em>, as that’s what we typically want to do.</p>
-<div class="sourceCode" id="cb68"><pre class="downlit sourceCode r">
+<p><img src="N170_single_subject_files/figure-html/unnamed-chunk-11-3.png" width="576"></p>
+<p>The topoplot shows the classic vertical eye movement topography -
+large signal at frontal electrodes and a front-to-back gradient. The ERP
+seems to show this component captures an eye movement or blink toward
+the end of the trial, and this is also clear on the ERP image. These are
+late movements, after stimulus offset.</p>
+<p>So having identified a strong candidate for a component that captures
+eye movements, what next? Well, we can recreate the data
+<em>without</em> that component using the <code><a href="../../reference/apply_ica.html">apply_ica()</a></code>
+function!</p>
+<p>We can either do that directly from the <code>eeg_ICA</code> object,
+which includes all the relevant parts of the decomposition, or by
+applying the weights from our ICA to another dataset. This is sometimes
+useful - for example, sometimes ICA provides much better decompositions
+on data filtered with a 1 Hz high-pass filter. But a 1 Hz high-pass
+filter is much too strong to use for ERPs - it seriously messes with the
+waveforms. So one possibility is to filter the data at 1 Hz, run ICA on
+the filtered data, then apply the weights to a dataset with a more
+reasonable high-pass filter, such as .1 Hz.</p>
+<p>Here, we’ll just go ahead and reconstruct from the
+<code>eeg_ICA</code> object directly. We specify which components to
+<em>remove</em>, rather than which to <em>keep</em>, as that’s what we
+typically want to do.</p>
+<div class="sourceCode" id="cb74"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">corrected_data</span> <span class="op">&lt;-</span> 
   <span class="fu"><a href="../../reference/apply_ica.html">apply_ica</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">ica_imax</span>,
             comps <span class="op">=</span> <span class="st">"Comp001"</span><span class="op">)</span></code></pre></div>
-<p>We can now plot our <code>VEOG_lower</code> and <code>HEOG_left</code> channels again, to see what difference it made.</p>
-<div class="sourceCode" id="cb69"><pre class="downlit sourceCode r">
+<p>We can now plot our <code>VEOG_lower</code> and
+<code>HEOG_left</code> channels again, to see what difference it
+made.</p>
+<div class="sourceCode" id="cb75"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../../reference/plot_timecourse.html">plot_timecourse</a></span><span class="op">(</span>
   <span class="va">corrected_data</span>, 
   electrode <span class="op">=</span> <span class="st">"VEOG_lower"</span>,
   baseline <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">.1</span>, <span class="fl">0</span><span class="op">)</span>
   <span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## Baseline: -0.1 sBaseline: 0 s</span></code></pre>
-<p><img src="N170_single_subject_files/figure-html/unnamed-chunk-18-1.png" width="576"></p>
-<div class="sourceCode" id="cb71"><pre class="downlit sourceCode r">
+<pre><code><span class="co">## Baseline: -0.1 - 0s</span></code></pre>
+<pre><code><span class="co">## Creating epochs based on combinations of variables: participant_id Intact Type</span></code></pre>
+<p><img src="N170_single_subject_files/figure-html/unnamed-chunk-13-1.png" width="576"></p>
+<div class="sourceCode" id="cb78"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../../reference/plot_timecourse.html">plot_timecourse</a></span><span class="op">(</span>
   <span class="va">corrected_data</span>, 
   electrode <span class="op">=</span> <span class="st">"HEOG_left"</span>,
   baseline <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">.1</span>, <span class="fl">0</span><span class="op">)</span>
   <span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## Baseline: -0.1 sBaseline: 0 s</span></code></pre>
-<p><img src="N170_single_subject_files/figure-html/unnamed-chunk-18-2.png" width="576"></p>
-<p>There was a big impact on the VEOG channel, but very little impact on HEOG. This is what we’d expect - the ICA clearly captured vertical eye movements, but didn’t find anything clear for horizontal eye movements.</p>
-<p>Let’s have a look at the butterfly plot and topographies from our corrected data. We’ll baseline correct the data first.</p>
-<div class="sourceCode" id="cb73"><pre class="downlit sourceCode r">
+<pre><code><span class="co">## Baseline: -0.1 - 0s</span>
+<span class="co">## Creating epochs based on combinations of variables: participant_id Intact Type</span></code></pre>
+<p><img src="N170_single_subject_files/figure-html/unnamed-chunk-13-2.png" width="576"></p>
+<p>There was a big impact on the VEOG channel, but very little impact on
+HEOG. This is what we’d expect - the ICA clearly captured vertical eye
+movements, but didn’t find anything clear for horizontal eye
+movements.</p>
+<p>Let’s have a look at the butterfly plot and topographies from our
+corrected data. We’ll baseline correct the data first.</p>
+<div class="sourceCode" id="cb80"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">corrected_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/rm_baseline.html">rm_baseline</a></span><span class="op">(</span><span class="va">corrected_data</span>, 
                               time_lim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">.1</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## Baseline: -0.1 sBaseline: 0 s</span></code></pre>
-<div class="sourceCode" id="cb75"><pre class="downlit sourceCode r">
+<pre><code><span class="co">## Baseline: -0.1 - 0s</span></code></pre>
+<div class="sourceCode" id="cb82"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../../reference/plot_butterfly.html">plot_butterfly</a></span><span class="op">(</span><span class="va">corrected_data</span><span class="op">)</span></code></pre></div>
-<p><img src="N170_single_subject_files/figure-html/unnamed-chunk-19-1.png" width="576"></p>
-<div class="sourceCode" id="cb76"><pre class="downlit sourceCode r">
+<pre><code><span class="co">## Creating epochs based on combinations of variables: participant_id Intact Type</span></code></pre>
+<p><img src="N170_single_subject_files/figure-html/unnamed-chunk-14-1.png" width="576"></p>
+<div class="sourceCode" id="cb84"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../../reference/topoplot.html">topoplot</a></span><span class="op">(</span><span class="va">epoched_data</span>, 
          time_lim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">.6</span>, <span class="fl">.8</span><span class="op">)</span>,
          limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">5</span>, <span class="fl">5</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Original data"</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## Creating epochs based on combinations of variables: participant_id Intact Type</span></code></pre>
 <pre><code><span class="co">## Using electrode locations from data.</span></code></pre>
 <pre><code><span class="co">## Removing channels with no location.</span></code></pre>
 <pre><code><span class="co">## Plotting head r 95 mm</span></code></pre>
-<p><img src="N170_single_subject_files/figure-html/unnamed-chunk-19-2.png" width="576"></p>
-<div class="sourceCode" id="cb80"><pre class="downlit sourceCode r">
+<p><img src="N170_single_subject_files/figure-html/unnamed-chunk-14-2.png" width="576"></p>
+<div class="sourceCode" id="cb89"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../../reference/topoplot.html">topoplot</a></span><span class="op">(</span><span class="va">corrected_data</span>, 
          time_lim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">.6</span>, <span class="fl">.8</span><span class="op">)</span>,
          limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">5</span>, <span class="fl">5</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Corrected data"</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## Creating epochs based on combinations of variables: participant_id Intact Type</span></code></pre>
 <pre><code><span class="co">## Using electrode locations from data.</span></code></pre>
 <pre><code><span class="co">## Removing channels with no location.</span></code></pre>
 <pre><code><span class="co">## Plotting head r 95 mm</span></code></pre>
-<p><img src="N170_single_subject_files/figure-html/unnamed-chunk-19-3.png" width="576"></p>
-<p>You can see a huge difference between the two. I’ve deliberately kept the colour range the same so that you can see the true extent of the difference. The large eye movement related artefacts seem to be mostly gone after correction. It’s not perfect - there is still some residual noise - but it still removed a huge amount of noise.</p>
+<p><img src="N170_single_subject_files/figure-html/unnamed-chunk-14-3.png" width="576"></p>
+<p>You can see a huge difference between the two. I’ve deliberately kept
+the colour range the same so that you can see the true extent of the
+difference. The large eye movement related artefacts seem to be mostly
+gone after correction. It’s not perfect - there is still some residual
+noise - but it still removed a huge amount of noise.</p>
 <p>Now let’s see the topographies in the N170 window.</p>
-<div class="sourceCode" id="cb84"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb94"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../../reference/topoplot.html">topoplot</a></span><span class="op">(</span><span class="va">corrected_data</span>,
          time_lim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">.13</span>, <span class="fl">.15</span><span class="op">)</span>,
          groups <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Intact"</span>,
                     <span class="st">"Type"</span><span class="op">)</span>, 
          limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">10</span>, <span class="fl">10</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_grid.html" class="external-link">facet_grid</a></span><span class="op">(</span><span class="va">Intact</span> <span class="op">~</span> <span class="va">Type</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## Creating epochs based on combinations of variables: participant_id Intact Type</span></code></pre>
 <pre><code><span class="co">## Using electrode locations from data.</span></code></pre>
 <pre><code><span class="co">## Removing channels with no location.</span></code></pre>
 <pre><code><span class="co">## Plotting head r 95 mm</span></code></pre>
-<p><img src="N170_single_subject_files/figure-html/unnamed-chunk-20-1.png" width="576"></p>
-<p>Oddly, the topographies in our period of interest might look a little <em>worse</em> at a glance, as now there seems to be small positive signal around the eye frontal channels. But that’s because a substantial <em>negative</em> signal from eye movements has been removed.</p>
+<p><img src="N170_single_subject_files/figure-html/unnamed-chunk-15-1.png" width="576"></p>
+<p>Oddly, the topographies in our period of interest might look a little
+<em>worse</em> at a glance, as now there seems to be small positive
+signal around the eye frontal channels. But that’s because a substantial
+<em>negative</em> signal from eye movements has been removed.</p>
 </div>
 <div class="section level3">
 <h3 id="automated-rejection-and-correction-of-channels-and-epochs">Automated rejection and correction of channels and epochs<a class="anchor" aria-label="anchor" href="#automated-rejection-and-correction-of-channels-and-epochs"></a>
 </h3>
-<p>As one last step, let’s try running the FASTER algorithm using <code><a href="../../reference/ar_FASTER.html">ar_FASTER()</a></code>. This is an automated method of checking for a variety of issues with signal quality: 1) It checks for globally bad individual channels - i.e. channels that are consistently bad compared to other channels across the whole recording - and removes or interpolates those. 2) It checks for globally bad epochs - epochs which are very noisy compared to other epochs - and removes those. 3) It also checks for bad channels within each epoch, and interpolates those. This is helpful because noise is frequently intermittent. A given channel isn’t necessarily bad all the time - it may just be noisy on a few epochs. By interpolating it during only those time periods, you preserve the relatively clean data from that channel at other time periods. Similarly, the noise on a given trial may be restricted to only a few electrodes, so it is better to simply interpolate that electrode than remove the entire trial.</p>
-<div class="sourceCode" id="cb88"><pre class="downlit sourceCode r">
+<p>As one last step, let’s try running the FASTER algorithm using
+<code><a href="../../reference/ar_FASTER.html">ar_FASTER()</a></code>. This is an automated method of checking for a
+variety of issues with signal quality: 1) It checks for globally bad
+individual channels - i.e. channels that are consistently bad compared
+to other channels across the whole recording - and removes or
+interpolates those. 2) It checks for globally bad epochs - epochs which
+are very noisy compared to other epochs - and removes those. 3) It also
+checks for bad channels within each epoch, and interpolates those. This
+is helpful because noise is frequently intermittent. A given channel
+isn’t necessarily bad all the time - it may just be noisy on a few
+epochs. By interpolating it during only those time periods, you preserve
+the relatively clean data from that channel at other time periods.
+Similarly, the noise on a given trial may be restricted to only a few
+electrodes, so it is better to simply interpolate that electrode than
+remove the entire trial.</p>
+<div class="sourceCode" id="cb99"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">autorej_data</span> <span class="op">&lt;-</span> 
   <span class="fu"><a href="../../reference/ar_FASTER.html">ar_FASTER</a></span><span class="op">(</span><span class="va">corrected_data</span>,
             exclude <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">31</span><span class="op">:</span><span class="fl">33</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <pre><code><span class="co">## Excluding channel(s):HEOG_left HEOG_right VEOG_lower</span></code></pre>
 <pre><code><span class="co">## Globally bad channels: P8</span></code></pre>
 <pre><code><span class="co">## Coords missing for electrodes HEOG_left HEOG_right VEOG_lower</span></code></pre>
-<pre><code><span class="co">## Globally bad epochs: 51 56 76 122 123 125 182 195 220 221 225 233 236 276</span></code></pre>
-<pre><code><span class="co">## 224 of 306 epochs had at least one channel interpolated.</span></code></pre>
+<pre><code><span class="co">## Globally bad epochs: 56 76 122 123 125 134 161 195 233 236 253 262</span></code></pre>
+<pre><code><span class="co">## 226 of 308 epochs had at least one channel interpolated.</span></code></pre>
 <pre><code><span class="co">## Max number of channels interpolated in one epoch: 3</span></code></pre>
-<p>The algorithm picked out P8 as a globally bad channel, and interpolates it completely. It also picked out a number of epochs which could not be saved, removing them automatically. In addition, if found 220 epochs where it was worth interpolating some channels rather than removing the epoch entirely.</p>
+<p>The algorithm picked out <em>P8</em> as a globally bad channel, and
+interpolates it completely. It also picked out a number of epochs which
+could not be saved, removing them automatically. In addition, if found
+220 epochs where it was worth interpolating some channels rather than
+removing the epoch entirely.</p>
 </div>
 <div class="section level3">
 <h3 id="comparing-the-original-and-corrected-data">Comparing the original and corrected data<a class="anchor" aria-label="anchor" href="#comparing-the-original-and-corrected-data"></a>
 </h3>
-<p>Let’s focus in on one specific channel. We can use the <code><a href="../../reference/plot_timecourse.html">plot_timecourse()</a></code> function, and tell it which electrode we want to plot. <code>P10</code> is a good candidate for looking for a face-specific N170 - it’s over posterior lateral occipital cortex, where the Fusiform Face Area is located. We’ll focus in on a specific time range from -.1 s to .3 s around stimulus onset, and we’ll do baseline correction. With some <code>ggplot2</code> magic, we’ll use different colours for Cars and Faces, and different linetypes for Intact and Scrambled images.</p>
+<p>Let’s focus in on one specific channel. We can use the
+<code><a href="../../reference/plot_timecourse.html">plot_timecourse()</a></code> function, and tell it which electrode we
+want to plot. <em>P10</em> is a good candidate for looking for a
+face-specific N170 - it’s over posterior lateral occipital cortex, where
+the Fusiform Face Area is located. We’ll focus in on a specific time
+range from -.1 s to .3 s around stimulus onset, and we’ll do baseline
+correction. With some <code>ggplot2</code> magic, we’ll use different
+colours for Cars and Faces, and different linetypes for Intact and
+Scrambled images.</p>
 <p>First, let’s look at the uncorrected data.</p>
-<div class="sourceCode" id="cb95"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb106"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../../reference/plot_timecourse.html">plot_timecourse</a></span><span class="op">(</span>
   <span class="va">epoched_data</span>, 
   electrode <span class="op">=</span> <span class="st">"P10"</span>,
@@ -545,12 +771,17 @@
   baseline <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">.1</span>, <span class="fl">0</span><span class="op">)</span>,
   time_lim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">.1</span>, <span class="fl">.3</span><span class="op">)</span>
   <span class="op">)</span> </code></pre></div>
-<pre><code><span class="co">## Baseline: -0.1 sBaseline: 0 s</span></code></pre>
-<p><img src="N170_single_subject_files/figure-html/unnamed-chunk-22-1.png" width="576"></p>
-<p>It’s quite noisy - it is from a single participant after all, and we haven’t done any artefact rejection yet.</p>
-<p>But even with the noise, there’s a noticeable decline in amplitudes for both intact faces and cars - slightly later, for the latter - relative to scrambled faces and cars.</p>
-<p>Let’s now compare the ERPs at P10 for our original, ICA corrected, and FASTER corrected data.</p>
-<div class="sourceCode" id="cb97"><pre class="downlit sourceCode r">
+<pre><code><span class="co">## Baseline: -0.1 - 0s</span></code></pre>
+<pre><code><span class="co">## Creating epochs based on combinations of variables: participant_id Intact Type</span></code></pre>
+<p><img src="N170_single_subject_files/figure-html/unnamed-chunk-17-1.png" width="576"></p>
+<p>It’s quite noisy - it is from a single participant after all, and we
+haven’t done any artefact rejection yet.</p>
+<p>But even with the noise, there’s a noticeable decline in amplitudes
+for both intact faces and cars - slightly later, for the latter -
+relative to scrambled faces and cars.</p>
+<p>Let’s now compare the ERPs at <em>P10</em> for our original, ICA
+corrected, and FASTER corrected data.</p>
+<div class="sourceCode" id="cb109"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../../reference/plot_timecourse.html">plot_timecourse</a></span><span class="op">(</span>
   <span class="va">epoched_data</span>, 
   electrode <span class="op">=</span> <span class="st">"P10"</span>,
@@ -560,9 +791,10 @@
   time_lim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">.1</span>, <span class="fl">.5</span><span class="op">)</span>
   <span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Original data"</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## Baseline: -0.1 sBaseline: 0 s</span></code></pre>
-<p><img src="N170_single_subject_files/figure-html/unnamed-chunk-23-1.png" width="576"></p>
-<div class="sourceCode" id="cb99"><pre class="downlit sourceCode r">
+<pre><code><span class="co">## Baseline: -0.1 - 0s</span></code></pre>
+<pre><code><span class="co">## Creating epochs based on combinations of variables: participant_id Intact Type</span></code></pre>
+<p><img src="N170_single_subject_files/figure-html/unnamed-chunk-18-1.png" width="576"></p>
+<div class="sourceCode" id="cb112"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../../reference/plot_timecourse.html">plot_timecourse</a></span><span class="op">(</span>
   <span class="va">corrected_data</span>, 
   electrode <span class="op">=</span> <span class="st">"P10"</span>,
@@ -572,9 +804,10 @@
   time_lim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">.1</span>, <span class="fl">.5</span><span class="op">)</span>
   <span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"ICA corrected data"</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## Baseline: -0.1 sBaseline: 0 s</span></code></pre>
-<p><img src="N170_single_subject_files/figure-html/unnamed-chunk-23-2.png" width="576"></p>
-<div class="sourceCode" id="cb101"><pre class="downlit sourceCode r">
+<pre><code><span class="co">## Baseline: -0.1 - 0s</span>
+<span class="co">## Creating epochs based on combinations of variables: participant_id Intact Type</span></code></pre>
+<p><img src="N170_single_subject_files/figure-html/unnamed-chunk-18-2.png" width="576"></p>
+<div class="sourceCode" id="cb114"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../../reference/plot_timecourse.html">plot_timecourse</a></span><span class="op">(</span>
   <span class="va">autorej_data</span>, 
   electrode <span class="op">=</span> <span class="st">"P10"</span>,
@@ -584,17 +817,26 @@
   time_lim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">.1</span>, <span class="fl">.5</span><span class="op">)</span>
   <span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"ICA and FASTER corrected data"</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## Baseline: -0.1 sBaseline: 0 s</span></code></pre>
-<p><img src="N170_single_subject_files/figure-html/unnamed-chunk-23-3.png" width="576"></p>
-<p>We can see straight away that our original data was heavily affected by eye movements, which are clearly in evidence towards the end of the ERP. ICA correction of eye movements had the biggest effect in reducing those artefacts.</p>
+<pre><code><span class="co">## Baseline: -0.1 - 0s</span>
+<span class="co">## Creating epochs based on combinations of variables: participant_id Intact Type</span></code></pre>
+<p><img src="N170_single_subject_files/figure-html/unnamed-chunk-18-3.png" width="576"></p>
+<p>We can see straight away that our original data was heavily affected
+by eye movements, which are clearly in evidence towards the end of the
+ERP. ICA correction of eye movements had the biggest effect in reducing
+those artefacts.</p>
 </div>
 </div>
 <div class="section level2">
 <h2 id="what-next">What next?<a class="anchor" aria-label="anchor" href="#what-next"></a>
 </h2>
-<p>This tutorial covered the processing of a single dataset, going from continuous data to an epoched, artefact-corrected dataset, ready for further use.</p>
-<p>One thing you could do is convert the data to a <code>data.frame</code> using <code><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame()</a></code>. This makes it easy to get the data in a standard format for use with just about any R function you could imagine.</p>
-<div class="sourceCode" id="cb103"><pre class="downlit sourceCode r">
+<p>This tutorial covered the processing of a single dataset, going from
+continuous data to an epoched, artefact-corrected dataset, ready for
+further use.</p>
+<p>One thing you could do is convert the data to a
+<code>data.frame</code> using <code><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame()</a></code>. This makes
+it easy to get the data in a standard format for use with just about any
+R function you could imagine.</p>
+<div class="sourceCode" id="cb116"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span>
   <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">corrected_data</span><span class="op">)</span>
   <span class="op">)</span></code></pre></div>
@@ -640,37 +882,43 @@
 <span class="co">## 4        sub-003 sub-003_task-N170_eeg         56 Intact Cars</span>
 <span class="co">## 5        sub-003 sub-003_task-N170_eeg         56 Intact Cars</span>
 <span class="co">## 6        sub-003 sub-003_task-N170_eeg         56 Intact Cars</span></code></pre>
-<p>You can also request that the data be output directly in <strong>long</strong> format.</p>
-<div class="sourceCode" id="cb105"><pre class="downlit sourceCode r">
+<p>You can also request that the data be output directly in
+<strong>long</strong> format.</p>
+<div class="sourceCode" id="cb118"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span>
   <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">corrected_data</span>, 
                 long <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 <span class="op">)</span></code></pre></div>
-<pre><code><span class="co">##         time epoch electrode amplitude     x     y participant_id</span>
-<span class="co">## 1 -0.1992188     1       FP1 -4.918215 -30.6 88.88        sub-003</span>
-<span class="co">## 2 -0.1953125     1       FP1  3.284854 -30.6 88.88        sub-003</span>
-<span class="co">## 3 -0.1914062     1       FP1  7.634606 -30.6 88.88        sub-003</span>
-<span class="co">## 4 -0.1875000     1       FP1  9.557865 -30.6 88.88        sub-003</span>
-<span class="co">## 5 -0.1835938     1       FP1  1.271142 -30.6 88.88        sub-003</span>
-<span class="co">## 6 -0.1796875     1       FP1 -7.672153 -30.6 88.88        sub-003</span>
-<span class="co">##               recording event_type Intact Type</span>
-<span class="co">## 1 sub-003_task-N170_eeg         56 Intact Cars</span>
-<span class="co">## 2 sub-003_task-N170_eeg         56 Intact Cars</span>
-<span class="co">## 3 sub-003_task-N170_eeg         56 Intact Cars</span>
-<span class="co">## 4 sub-003_task-N170_eeg         56 Intact Cars</span>
-<span class="co">## 5 sub-003_task-N170_eeg         56 Intact Cars</span>
-<span class="co">## 6 sub-003_task-N170_eeg         56 Intact Cars</span></code></pre>
-<p>Of course, this includes data for every single trial. If you just wanted the ERPs, you could first average the epoched data to create an <code>eeg_evoked</code> file:</p>
-<div class="sourceCode" id="cb107"><pre class="downlit sourceCode r">
+<pre><code><span class="co">## <span style="color: #949494;"># A tibble: 6 × 11</span></span>
+<span class="co">##     time epoch electrode amplitude     x      y participant_id recording        </span>
+<span class="co">##    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            </span>
+<span class="co">## <span style="color: #BCBCBC;">1</span> -<span style="color: #BB0000;">0.199</span>     1 FP1           -<span style="color: #BB0000;">4.92</span> -<span style="color: #BB0000;">30.6</span>  88.9  sub-003        sub-003_task-N17…</span>
+<span class="co">## <span style="color: #BCBCBC;">2</span> -<span style="color: #BB0000;">0.199</span>     1 F3             2.61 -<span style="color: #BB0000;">40.9</span>  43.9  sub-003        sub-003_task-N17…</span>
+<span class="co">## <span style="color: #BCBCBC;">3</span> -<span style="color: #BB0000;">0.199</span>     1 F7            12.9  -<span style="color: #BB0000;">84</span>    50.5  sub-003        sub-003_task-N17…</span>
+<span class="co">## <span style="color: #BCBCBC;">4</span> -<span style="color: #BB0000;">0.199</span>     1 FC3          -<span style="color: #BB0000;">11.8</span>  -<span style="color: #BB0000;">45.8</span>  17.6  sub-003        sub-003_task-N17…</span>
+<span class="co">## <span style="color: #BCBCBC;">5</span> -<span style="color: #BB0000;">0.199</span>     1 C3            -<span style="color: #BB0000;">2.93</span> -<span style="color: #BB0000;">45.3</span>  -<span style="color: #BB0000;">7.99</span> sub-003        sub-003_task-N17…</span>
+<span class="co">## <span style="color: #BCBCBC;">6</span> -<span style="color: #BB0000;">0.199</span>     1 C5            -<span style="color: #BB0000;">2.10</span> -<span style="color: #BB0000;">68.9</span> -<span style="color: #BB0000;">12.2</span>  sub-003        sub-003_task-N17…</span>
+<span class="co">## <span style="color: #949494;"># … with 3 more variables: event_type &lt;dbl&gt;, Intact &lt;chr&gt;, Type &lt;chr&gt;</span></span></code></pre>
+<p>Of course, this includes data for every single trial. If you just
+wanted the ERPs, you could first average the epoched data to create an
+<code>eeg_evoked</code> object:</p>
+<div class="sourceCode" id="cb120"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../../reference/eeg_average.html">eeg_average</a></span><span class="op">(</span><span class="va">corrected_data</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## Creating epochs based on combinations of variables: participant_id Intact Type</span></code></pre>
 <pre><code><span class="co">## Evoked EEG data</span>
 <span class="co">## </span>
 <span class="co">## Number of channels   :    33 </span>
 <span class="co">## Epoch limits     : -0.199 - 0.801 seconds</span>
 <span class="co">## Electrode names      :    FP1 F3 F7 FC3 C3 C5 P3 P7 P9 PO7 PO3 O1 Oz Pz CPz FP2 Fz F4 F8 FC4 FCz Cz C4 C6 P4 P8 P10 PO8 PO4 O2 HEOG_left HEOG_right VEOG_lower </span>
 <span class="co">## Sampling rate        :    256  Hz</span></code></pre>
-<p>By default, this will give you an ERP for each unique condition, based on the variables stored in the <code><a href="../../reference/epochs.html">epochs()</a></code>.</p>
-<p>From here, you’d most likely want to combine it with <em>other</em> datasets to create group level data. You can of course do that by converting them all into their own <code>data.frame</code> and combining them afterwards. But you can also combine the individual <code>eeg_epochs</code> objects into <code>eeg_group</code> objects. We’ll cover that in a later tutorial.</p>
+<p>By default, this will give you an ERP for each unique condition,
+based on the variables stored in the <code><a href="../../reference/epochs.html">epochs()</a></code>.</p>
+<p>From here, you’d most likely want to combine it with <em>other</em>
+datasets to create group level data. You can of course do that by
+converting them all into their own <code>data.frame</code> and combining
+them afterwards. But you can also combine the individual
+<code>eeg_epochs</code> objects into <code>eeg_group</code> objects.
+We’ll cover that in a later tutorial.</p>
 </div>
   </div>
 
@@ -691,7 +939,7 @@
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
 </div>
 
       </footer>

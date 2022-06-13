@@ -29,7 +29,7 @@
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -42,6 +42,9 @@
     </li>
     <li>
       <a href="../articles/linear_modelling/linear_modelling.html">Linear Modelling</a>
+    </li>
+    <li>
+      <a href="../articles/single_subj_N170/N170_single_subject.html">Getting started with eegUtils and the N170</a>
     </li>
     <li>
       <a href="../articles/time-frequency-analysis.html">Frequency analysis</a>
@@ -87,7 +90,8 @@
   <span class="va">chan_info</span>,
   <span class="va">srate</span>,
   <span class="va">epochs</span>,
-  <span class="va">algorithm</span>
+  <span class="va">algorithm</span>,
+  <span class="va">contents</span>
 <span class="op">)</span></code></pre></div>
     </div>
 
@@ -113,6 +117,9 @@ contained in the data, such as participant ID label and condition labels
 for epochs.</p></dd>
 <dt>algorithm</dt>
 <dd><p>The method used to calculate the decomposition.</p></dd>
+<dt>contents</dt>
+<dd><p>Whether the object contains only the mixing and unmixing
+matrices ("weights") or source timecourses as well ("full")</p></dd>
 </dl></div>
     <div id="value">
     <h2>Value</h2>
@@ -121,7 +128,6 @@ for epochs.</p></dd>
     <div id="author">
     <h2>Author</h2>
     <p>Matt Craddock <a href="mailto:matt@mattcraddock.com">matt@mattcraddock.com</a></p>
-<p>Matt Craddock <a href="mailto:matt@mattcraddock.com">matt@mattcraddock.com</a></p>
     </div>
 
   </div>
@@ -136,7 +142,7 @@ for epochs.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
 </div>
 
       </footer></div>

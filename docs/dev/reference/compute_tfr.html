@@ -32,7 +32,7 @@ domain."><meta name="robots" content="noindex"><!-- mathjax --><script src="http
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -45,6 +45,9 @@ domain."><meta name="robots" content="noindex"><!-- mathjax --><script src="http
     </li>
     <li>
       <a href="../articles/linear_modelling/linear_modelling.html">Linear Modelling</a>
+    </li>
+    <li>
+      <a href="../articles/single_subj_N170/N170_single_subject.html">Getting started with eegUtils and the N170</a>
     </li>
     <li>
       <a href="../articles/time-frequency-analysis.html">Frequency analysis</a>
@@ -100,6 +103,7 @@ domain.</p>
   keep_trials <span class="op">=</span> <span class="cn">FALSE</span>,
   output <span class="op">=</span> <span class="st">"power"</span>,
   downsample <span class="op">=</span> <span class="fl">1</span>,
+  trim_edges <span class="op">=</span> <span class="cn">TRUE</span>,
   verbose <span class="op">=</span> <span class="cn">TRUE</span>,
   <span class="va">...</span>
 <span class="op">)</span>
@@ -115,6 +119,7 @@ domain.</p>
   keep_trials <span class="op">=</span> <span class="cn">FALSE</span>,
   output <span class="op">=</span> <span class="st">"power"</span>,
   downsample <span class="op">=</span> <span class="fl">1</span>,
+  trim_edges <span class="op">=</span> <span class="cn">TRUE</span>,
   verbose <span class="op">=</span> <span class="cn">TRUE</span>,
   <span class="va">...</span>
 <span class="op">)</span></code></pre></div>
@@ -135,7 +140,8 @@ and highest frequency to resolve.</p></dd>
 <dd><p>Number of frequencies to be resolved. Must be an integer number
 of frequencies.</p></dd>
 <dt>spacing</dt>
-<dd><p>Use "linear" or "log" spacing for the frequency vector and number of cycles.</p></dd>
+<dd><p>Use "linear" or "log" spacing for the frequency vector and
+number of cycles.</p></dd>
 <dt>n_cycles</dt>
 <dd><p>Number of cycles at each frequency. If a single integer, use
 a constant number of cycles at each frequency. If a character vector of
@@ -149,6 +155,10 @@ Defaults to FALSE.</p></dd>
 <dt>downsample</dt>
 <dd><p>Downsampling factor. Integer. Selects every n samples after
 performing time-frequency analysis on the full sampling rate data.</p></dd>
+<dt>trim_edges</dt>
+<dd><p>Remove edges of time-frequency representation to avoid edge
+effects from overlap of wavelet with timepoints outside the epochs.
+Defaults to TRUE.</p></dd>
 <dt>verbose</dt>
 <dd><p>Print informative messages in console.</p></dd>
 </dl></div>
@@ -181,7 +191,7 @@ performing time-frequency analysis on the full sampling rate data.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Frequency range		:	 4 6.89 9.78 12.67 15.56 18.44 21.33 24.22 27.11 30 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Number of channels	:	 11 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Electrode names		:	 A5 A13 A21 A29 A31 B5 B6 B8 B16 B18 B26 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Number of epochs	:	 80 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Number of epochs	:	 1 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Epoch limits		:	 -0.197 - 0.451 seconds</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Sampling rate		:	 128  Hz</span>
 <span class="r-in"><span class="va">out</span><span class="op">$</span><span class="va">freq_info</span><span class="op">$</span><span class="va">morlet_resolution</span></span>
@@ -213,6 +223,15 @@ performing time-frequency analysis on the full sampling rate data.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 8  24.222222 2.868421 0.05548521  8.444444</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 9  27.111111 2.939759 0.05413877  9.222222</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 10 30.000000 3.000000 0.05305165 10.000000</span>
+<span class="r-in"><span class="fu"><a href="plot_tfr.html">plot_tfr</a></span><span class="op">(</span><span class="va">out</span><span class="op">)</span></span>
+<span class="r-plt img"><img src="compute_tfr-1.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span class="va">out</span> <span class="op">&lt;-</span> <span class="fu">compute_tfr</span><span class="op">(</span><span class="va">demo_epochs</span>, method <span class="op">=</span> <span class="st">"morlet"</span>, foi <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">30</span><span class="op">)</span>, n_freq <span class="op">=</span> <span class="fl">10</span>, n_cycles <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">10</span><span class="op">)</span>, trim_edges <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Computing TFR using Morlet wavelet convolution</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Output frequencies using linear spacing: 4 6.89 9.78 12.67 15.56 18.44 21.33 24.22 27.11 30</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Removing channel means per epoch...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Returning signal averaged over all trials.</span>
+<span class="r-in"><span class="fu"><a href="plot_tfr.html">plot_tfr</a></span><span class="op">(</span><span class="va">out</span><span class="op">)</span></span>
+<span class="r-plt img"><img src="compute_tfr-2.png" alt="" width="700" height="433"></span>
 </code></pre></div>
     </div>
   </div>
@@ -227,7 +246,7 @@ performing time-frequency analysis on the full sampling rate data.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
 </div>
 
       </footer></div>

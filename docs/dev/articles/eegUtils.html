@@ -47,7 +47,7 @@
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -61,6 +61,9 @@
     </li>
     <li>
       <a href="../articles/linear_modelling/linear_modelling.html">Linear Modelling</a>
+    </li>
+    <li>
+      <a href="../articles/single_subj_N170/N170_single_subject.html">Getting started with eegUtils and the N170</a>
     </li>
     <li>
       <a href="../articles/time-frequency-analysis.html">Frequency analysis</a>
@@ -95,9 +98,10 @@
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>EEG Utils</h1>
-                        <h4 data-toc-skip class="author">Matt Craddock</h4>
+                        <h4 data-toc-skip class="author">Matt
+Craddock</h4>
             
-            <h4 data-toc-skip class="date">2022-02-07</h4>
+            <h4 data-toc-skip class="date">2022-06-06</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/craddm/eegUtils/blob/HEAD/vignettes/eegUtils.Rmd" class="external-link"><code>vignettes/eegUtils.Rmd</code></a></small>
       <div class="hidden name"><code>eegUtils.Rmd</code></div>
@@ -106,13 +110,37 @@
 
     
     
-<p><code>eegUtils</code> is a package for performing basic EEG preprocessing and plotting of EEG data. Many of these functions are wrappers around existing R functions to make them behave in consistent ways and produce output that is more amenable to many of the subsequent steps in EEG analysis.</p>
-<p>The package implements custom objects to contain EEG data and associated metadata. Some of its functions depend on data being stored in this format, but part of the philosophy of the package is that any object stored in the custom <code>eeg_data</code> and associated formats will always be convertible to a standard data.frame or tibble for subsequent use in whatever way the user desires. Plotting functions will typically work on both <code>eeg_data</code> objects and standard formats, while more complex processing functions will require an <code>eeg_data</code> or related custom object (such as <code>eeg_tfr</code>).</p>
+<p><code>eegUtils</code> is a package for performing basic EEG
+preprocessing and plotting of EEG data. Many of these functions are
+wrappers around existing R functions to make them behave in consistent
+ways and produce output that is more amenable to many of the subsequent
+steps in EEG analysis.</p>
+<p>The package implements custom objects to contain EEG data and
+associated metadata. Some of its functions depend on data being stored
+in this format, but part of the philosophy of the package is that any
+object stored in the custom <code>eeg_data</code> and associated formats
+will always be convertible to a standard data.frame or tibble for
+subsequent use in whatever way the user desires. Plotting functions will
+typically work on both <code>eeg_data</code> objects and standard
+formats, while more complex processing functions will require an
+<code>eeg_data</code> or related custom object (such as
+<code>eeg_tfr</code>).</p>
 <div class="section level2">
 <h2 id="basic-eeg-processing">Basic EEG processing<a class="anchor" aria-label="anchor" href="#basic-eeg-processing"></a>
 </h2>
-<p>There is currently suport for loading raw data in the .BDF (typically BioSemi), .CNT (32-bit; associated with Neuroscan), and .vhdr/.vmrk/.dat Brain Vision Analyzer 2.0 file formats using the <code><a href="../reference/import_raw.html">import_raw()</a></code> command. Loading data in these formats results in an <code>eeg_data</code> object - a structure that contains the raw data and a variety of metadata.</p>
-<p>In this experiment, participants had to covertly attend to either the left or right visual field as indicated by a visual cue (an arrow pointing left or right). Around 1-1.5 seconds after the cue, a target - a Gabor patch - could appear in either the left or right visual field. The task was to determing whether the target patch showed a vertical or a horizontal grating. 80% of the time, the target appeared in the cued location.</p>
+<p>There is currently suport for loading raw data in the .BDF (typically
+BioSemi), .CNT (32-bit; associated with Neuroscan), and .vhdr/.vmrk/.dat
+Brain Vision Analyzer 2.0 file formats using the
+<code><a href="../reference/import_raw.html">import_raw()</a></code> command. Loading data in these formats results
+in an <code>eeg_data</code> object - a structure that contains the raw
+data and a variety of metadata.</p>
+<p>In this experiment, participants had to covertly attend to either the
+left or right visual field as indicated by a visual cue (an arrow
+pointing left or right). Around 1-1.5 seconds after the cue, a target -
+a Gabor patch - could appear in either the left or right visual field.
+The task was to determing whether the target patch showed a vertical or
+a horizontal grating. 80% of the time, the target appeared in the cued
+location.</p>
 <p>You can find the file “Matt-task-spatcue.bdf” on <a href="https://osf.io/dxhjb/" class="external-link">Open Science Framework</a>.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/craddm/eegUtils" class="external-link">eegUtils</a></span><span class="op">)</span>
@@ -140,12 +168,23 @@
 <span class="co">#&gt; Sampling rate        : 256 Hz</span>
 <span class="co">#&gt; Reference        : </span>
 <span class="co">#&gt; Signal length: 0 1468.996 seconds</span></code></pre></div>
-<p>This data was recorded at 1024 Hz (downsampled here already to 256 Hz) using a BioSemi ActiveTwo amplifier and active electrodes. There were 64 electrodes positioned and named according to the 10-05 international system. A few additional electrodes (EXG1-EXG4) placed around the eyes to record eye movements, and two further reference electrodes placed on the left and right mastoids (EXG5 and EXG6). EXG7 and EXG8 are empty channels, with no electrodes attached.</p>
+<p>This data was recorded at 1024 Hz (downsampled here already to 256
+Hz) using a BioSemi ActiveTwo amplifier and active electrodes. There
+were 64 electrodes positioned and named according to the 10-05
+international system. A few additional electrodes (EXG1-EXG4) placed
+around the eyes to record eye movements, and two further reference
+electrodes placed on the left and right mastoids (EXG5 and EXG6). EXG7
+and EXG8 are empty channels, with no electrodes attached.</p>
 </div>
 <div class="section level2">
 <h2 id="referencing">Referencing<a class="anchor" aria-label="anchor" href="#referencing"></a>
 </h2>
-<p>A common first step would be to rereference the data, which can be done using the <code><a href="../reference/eeg_reference.html">eeg_reference()</a></code> command. By default, if no electrodes are specified, the data will be referenced to a common average, calculated from all the electrodes in the data. First we’ll remove the two empty channels, EXG7 and EXG8, using the <code><a href="../reference/select_elecs.html">select_elecs()</a></code> function.</p>
+<p>A common first step would be to rereference the data, which can be
+done using the <code><a href="../reference/eeg_reference.html">eeg_reference()</a></code> command. By default, if no
+electrodes are specified, the data will be referenced to a common
+average, calculated from all the electrodes in the data. First we’ll
+remove the two empty channels, EXG7 and EXG8, using the
+<code><a href="../reference/select_elecs.html">select_elecs()</a></code> function.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">eeg_example</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/select_elecs.html">select_elecs</a></span><span class="op">(</span><span class="va">eeg_example</span>,
                             electrode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"EXG7"</span>, <span class="st">"EXG8"</span><span class="op">)</span>,
@@ -164,7 +203,13 @@
 <div class="section level2">
 <h2 id="filtering">Filtering<a class="anchor" aria-label="anchor" href="#filtering"></a>
 </h2>
-<p>Filtering can be performed using the <code><a href="../reference/eeg_filter.html">eeg_filter()</a></code> command. This uses IIR or FIR filters to modify the frequency response of the signal, removing low or high frequency fluctuations as requested. For speed, we’ll use “iir” filtering here to perform bandpass filtering with a high-pass filter at .1 Hz and a low-pass filter at 40 Hz. We’ll also plot the power spectral density of the data before and after filtering, using the <code><a href="../reference/plot_psd.html">plot_psd()</a></code> function.</p>
+<p>Filtering can be performed using the <code><a href="../reference/eeg_filter.html">eeg_filter()</a></code>
+command. This uses IIR or FIR filters to modify the frequency response
+of the signal, removing low or high frequency fluctuations as requested.
+For speed, we’ll use “iir” filtering here to perform bandpass filtering
+with a high-pass filter at .1 Hz and a low-pass filter at 40 Hz. We’ll
+also plot the power spectral density of the data before and after
+filtering, using the <code><a href="../reference/plot_psd.html">plot_psd()</a></code> function.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/plot_psd.html">plot_psd</a></span><span class="op">(</span><span class="va">eeg_example</span>, 
          freq_range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">60</span><span class="op">)</span>,
@@ -198,8 +243,20 @@
 <div class="section level2">
 <h2 id="creating-epochs">Creating epochs<a class="anchor" aria-label="anchor" href="#creating-epochs"></a>
 </h2>
-<p>Data can be epoched around events/triggers using <code><a href="../reference/epoch_data.html">epoch_data()</a></code>, which outputs an <code>eeg_epochs</code> object. A list of the event triggers found in the data can be retrieved using <code>list_events(eeg_example)</code>, or more comprehensively, the events structure can be retrieved using <code>events(eeg_example)</code>. In this case, we’ll epoch around events <code>120</code> and <code>122</code>. These events correspond to the onset of a visual target on the left and right of fixation respectively, for validly cued trials only.</p>
-<p>We can specify the length of epochs around the trigger using the <code>time_lim</code> argument, and label each epoch using <code>epoch_labels</code>. Here we also specify that the data should be baseline corrected using the average of the timepoints from -.1s to 0s (stimulus onset).</p>
+<p>Data can be epoched around events/triggers using
+<code><a href="../reference/epoch_data.html">epoch_data()</a></code>, which outputs an <code>eeg_epochs</code>
+object. A list of the event triggers found in the data can be retrieved
+using <code>list_events(eeg_example)</code>, or more comprehensively,
+the events structure can be retrieved using
+<code>events(eeg_example)</code>. In this case, we’ll epoch around
+events <code>120</code> and <code>122</code>. These events correspond to
+the onset of a visual target on the left and right of fixation
+respectively, for validly cued trials only.</p>
+<p>We can specify the length of epochs around the trigger using the
+<code>time_lim</code> argument, and label each epoch using
+<code>epoch_labels</code>. Here we also specify that the data should be
+baseline corrected using the average of the timepoints from -.1s to 0s
+(stimulus onset).</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/list_events.html">list_events</a></span><span class="op">(</span><span class="va">eeg_example</span><span class="op">)</span>
 <span class="co">#&gt;    event_type</span>
@@ -226,12 +283,13 @@
   <span class="op">)</span>
 <span class="co">#&gt; Adjusting output limits to match sampling rate.</span>
 <span class="co">#&gt; Output limits:  -0.1015625 0.3984375</span>
-<span class="co">#&gt; Baseline: -0.1 sBaseline: 0 s</span>
+<span class="co">#&gt; Baseline: -0.1 - 0s</span>
 <span class="co">#&gt; Creating 256 epochs.</span></code></pre></div>
-<p>After epoching, use the <code><a href="../reference/epochs.html">epochs()</a></code> function to check the meta-information for this data and its epochs.</p>
+<p>After epoching, use the <code><a href="../reference/epochs.html">epochs()</a></code> function to check the
+meta-information for this data and its epochs.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/epochs.html">epochs</a></span><span class="op">(</span><span class="va">epoched_example</span><span class="op">)</span>
-<span class="co">#&gt; <span style="color: #949494;"># A tibble: 256 x 5</span></span>
+<span class="co">#&gt; <span style="color: #949494;"># A tibble: 256 × 5</span></span>
 <span class="co">#&gt;    epoch participant_id recording         event_type epoch_labels</span>
 <span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       </span>
 <span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>     1 <span style="color: #BB0000;">NA</span>             Matt-task-spatcue        122 valid_right </span>
@@ -244,37 +302,58 @@
 <span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>     8 <span style="color: #BB0000;">NA</span>             Matt-task-spatcue        120 valid_left  </span>
 <span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>     9 <span style="color: #BB0000;">NA</span>             Matt-task-spatcue        122 valid_right </span>
 <span class="co">#&gt; <span style="color: #BCBCBC;">10</span>    10 <span style="color: #BB0000;">NA</span>             Matt-task-spatcue        122 valid_right </span>
-<span class="co">#&gt; <span style="color: #949494;"># ... with 246 more rows</span></span></code></pre></div>
+<span class="co">#&gt; <span style="color: #949494;"># … with 246 more rows</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="plotting">Plotting<a class="anchor" aria-label="anchor" href="#plotting"></a>
 </h2>
-<p><code>eeg_epochs</code> can then be plotted using <code><a href="../reference/plot_butterfly.html">plot_butterfly()</a></code> or <code><a href="../reference/plot_timecourse.html">plot_timecourse()</a></code>. Both <code><a href="../reference/plot_butterfly.html">plot_butterfly()</a></code> and <code><a href="../reference/plot_timecourse.html">plot_timecourse()</a></code> average over epochs. <code><a href="../reference/plot_timecourse.html">plot_timecourse()</a></code> will also average over electrodes - all electrodes if none are specified, or over any specified electrodes. Baseline correction can also be applied for plotting only using the <code>baseline</code> parameter in the plotting call.</p>
+<p><code>eeg_epochs</code> can then be plotted using
+<code><a href="../reference/plot_butterfly.html">plot_butterfly()</a></code> or <code><a href="../reference/plot_timecourse.html">plot_timecourse()</a></code>. Both
+<code><a href="../reference/plot_butterfly.html">plot_butterfly()</a></code> and <code><a href="../reference/plot_timecourse.html">plot_timecourse()</a></code> average
+over epochs. <code><a href="../reference/plot_timecourse.html">plot_timecourse()</a></code> will also average over
+electrodes - all electrodes if none are specified, or over any specified
+electrodes. Baseline correction can also be applied for plotting only
+using the <code>baseline</code> parameter in the plotting call.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/plot_butterfly.html">plot_butterfly</a></span><span class="op">(</span><span class="va">epoched_example</span>,
-               legend <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+               legend <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
+<span class="co">#&gt; Creating epochs based on combinations of variables: participant_id epoch_labels</span></code></pre></div>
 <p><img src="eegUtils_files/figure-html/do-plots-1.png" width="700"></p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/plot_butterfly.html">plot_butterfly</a></span><span class="op">(</span><span class="va">epoched_example</span>,
                time_lim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">.1</span>, <span class="fl">.3</span><span class="op">)</span>,
-               legend <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+               legend <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
+<span class="co">#&gt; Creating epochs based on combinations of variables: participant_id epoch_labels</span></code></pre></div>
 <p><img src="eegUtils_files/figure-html/do-plots-2.png" width="700"></p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/plot_timecourse.html">plot_timecourse</a></span><span class="op">(</span><span class="va">epoched_example</span>,
-                electrode <span class="op">=</span> <span class="st">"POz"</span><span class="op">)</span> <span class="co"># Plot POz</span></code></pre></div>
+                electrode <span class="op">=</span> <span class="st">"POz"</span><span class="op">)</span> <span class="co"># Plot POz</span>
+<span class="co">#&gt; Creating epochs based on combinations of variables: participant_id epoch_labels</span></code></pre></div>
 <p><img src="eegUtils_files/figure-html/do-plots-3.png" width="700"></p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/plot_timecourse.html">plot_timecourse</a></span><span class="op">(</span><span class="va">epoched_example</span>,
-                electrode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"POz"</span>, <span class="st">"Oz"</span>, <span class="st">"O1"</span>, <span class="st">"O2"</span><span class="op">)</span><span class="op">)</span> <span class="co"># average over four occipital electrodes</span></code></pre></div>
+                electrode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"POz"</span>, <span class="st">"Oz"</span>, <span class="st">"O1"</span>, <span class="st">"O2"</span><span class="op">)</span><span class="op">)</span> <span class="co"># average over four occipital electrodes</span>
+<span class="co">#&gt; Creating epochs based on combinations of variables: participant_id epoch_labels</span></code></pre></div>
 <p><img src="eegUtils_files/figure-html/do-plots-4.png" width="700"></p>
-<p>Standard channel locations can be added using the <code><a href="../reference/electrode_locations.html">electrode_locations()</a></code> command. This function supplies default locations for over 300 typical locations accroding to the 10-05 system. There are several specific montages provided that can be specified using the <code>montage</code> parameter.</p>
-<p>You can inspect the added locations using <code><a href="../reference/channels.html">channels()</a></code>.</p>
-<p><code><a href="../reference/topoplot.html">topoplot()</a></code> can then be used to plot a topographical representation of selected data. Note that it is not compulsory to use locations from <code><a href="../reference/electrode_locations.html">electrode_locations()</a></code>; if the data has x and y columns when it is a data frame, or added to <code>chan_info</code> element of the <code>eeg_data</code>/<code>eeg_epochs</code> object, then those will be used.</p>
+<p>Standard channel locations can be added using the
+<code><a href="../reference/electrode_locations.html">electrode_locations()</a></code> command. This function supplies
+default locations for over 300 typical locations accroding to the 10-05
+system. There are several specific montages provided that can be
+specified using the <code>montage</code> parameter.</p>
+<p>You can inspect the added locations using
+<code><a href="../reference/channels.html">channels()</a></code>.</p>
+<p><code><a href="../reference/topoplot.html">topoplot()</a></code> can then be used to plot a topographical
+representation of selected data. Note that it is not compulsory to use
+locations from <code><a href="../reference/electrode_locations.html">electrode_locations()</a></code>; if the data has x and
+y columns when it is a data frame, or added to <code>chan_info</code>
+element of the <code>eeg_data</code>/<code>eeg_epochs</code> object,
+then those will be used.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">epoched_example</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/electrode_locations.html">electrode_locations</a></span><span class="op">(</span><span class="va">epoched_example</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">epoched_example</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/electrode_locations.html">electrode_locations</a></span><span class="op">(</span><span class="va">epoched_example</span>,
+                                       overwrite <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 <span class="co">#&gt; Electrodes not found: EXG1 EXG2 EXG3 EXG4 EXG5 EXG6</span>
 <span class="fu"><a href="../reference/channels.html">channels</a></span><span class="op">(</span><span class="va">epoched_example</span><span class="op">)</span>
-<span class="co">#&gt; <span style="color: #949494;"># A tibble: 70 x 9</span></span>
+<span class="co">#&gt; <span style="color: #949494;"># A tibble: 70 × 9</span></span>
 <span class="co">#&gt;    electrode radius theta   phi cart_x cart_y cart_z     x     y</span>
 <span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
 <span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> Fp1            1   -<span style="color: #BB0000;">94</span>   -<span style="color: #BB0000;">71</span>  -<span style="color: #BB0000;">29.4</span>   83.9  -<span style="color: #BB0000;">6.99</span> -<span style="color: #BB0000;">30.6</span>  88.9</span>
@@ -287,14 +366,16 @@
 <span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> FT7            1   -<span style="color: #BB0000;">98</span>   -<span style="color: #BB0000;">10</span>  -<span style="color: #BB0000;">80.8</span>   14.1 -<span style="color: #BB0000;">11.1</span>  -<span style="color: #BB0000;">96.5</span>  17.0</span>
 <span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> FC5            1   -<span style="color: #BB0000;">73</span>   -<span style="color: #BB0000;">14</span>  -<span style="color: #BB0000;">77.2</span>   18.6  24.5  -<span style="color: #BB0000;">70.8</span>  17.7</span>
 <span class="co">#&gt; <span style="color: #BCBCBC;">10</span> FC3            1   -<span style="color: #BB0000;">49</span>   -<span style="color: #BB0000;">21</span>  -<span style="color: #BB0000;">60.2</span>   22.7  55.5  -<span style="color: #BB0000;">45.8</span>  17.6</span>
-<span class="co">#&gt; <span style="color: #949494;"># ... with 60 more rows</span></span>
+<span class="co">#&gt; <span style="color: #949494;"># … with 60 more rows</span></span>
 <span class="fu"><a href="../reference/topoplot.html">topoplot</a></span><span class="op">(</span><span class="va">epoched_example</span>,
          time_lim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">.22</span>, <span class="fl">.24</span><span class="op">)</span><span class="op">)</span>
+<span class="co">#&gt; Creating epochs based on combinations of variables: participant_id epoch_labels</span>
 <span class="co">#&gt; Using electrode locations from data.</span>
 <span class="co">#&gt; Removing channels with no location.</span>
 <span class="co">#&gt; Plotting head r 95 mm</span></code></pre></div>
 <p><img src="eegUtils_files/figure-html/do-topo-1.png" width="700"></p>
-<p>At any point, <code>eegUtils</code> objects can be transformed into data frames for use with functions that don’t natively support them.</p>
+<p>At any point, <code>eegUtils</code> objects can be transformed into
+data frames for use with functions that don’t natively support them.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span>
@@ -324,7 +405,13 @@
 <div class="section level2">
 <h2 id="tidyverse-functions">Tidyverse functions<a class="anchor" aria-label="anchor" href="#tidyverse-functions"></a>
 </h2>
-<p>In addition, there are overloaded versions of some <code>dplyr</code> functions that operate on the <code>signals</code> element of <code>eeg_data</code> and <code>eeg_epochs</code> objects. For example, <code><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select()</a></code> can be used to choose particular electrodes, and <code><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter()</a></code> can be used to filter out epochs or timepoints. <code><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate()</a></code> can be used to add new columns (e.g. creating ROIs from multiple electrodes).</p>
+<p>In addition, there are overloaded versions of some <code>dplyr</code>
+functions that operate on the <code>signals</code> element of
+<code>eeg_data</code> and <code>eeg_epochs</code> objects. For example,
+<code><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select()</a></code> can be used to choose particular electrodes, and
+<code><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter()</a></code> can be used to filter out epochs or timepoints.
+<code><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate()</a></code> can be used to add new columns (e.g. creating ROIs
+from multiple electrodes).</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">epoched_example</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
   <span class="fu"><a href="../reference/rm_baseline.html">rm_baseline</a></span><span class="op">(</span>time_lim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">.1</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
@@ -341,7 +428,7 @@
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span><span class="va">electrode</span><span class="op">)</span> <span class="op">+</span> 
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_viridis.html" class="external-link">scale_colour_viridis_d</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_classic</a></span><span class="op">(</span><span class="op">)</span>
-<span class="co">#&gt; Baseline: -0.1 sBaseline: 0 s</span></code></pre></div>
+<span class="co">#&gt; Baseline: -0.1 - 0s</span></code></pre></div>
 <p><img src="eegUtils_files/figure-html/unnamed-chunk-3-1.png" width="700"></p>
 </div>
   </div>
@@ -363,7 +450,7 @@
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
 </div>
 
       </footer>

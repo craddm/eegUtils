@@ -33,7 +33,7 @@ like eeg_epochs objects."><meta name="robots" content="noindex"><!-- mathjax -->
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -46,6 +46,9 @@ like eeg_epochs objects."><meta name="robots" content="noindex"><!-- mathjax -->
     </li>
     <li>
       <a href="../articles/linear_modelling/linear_modelling.html">Linear Modelling</a>
+    </li>
+    <li>
+      <a href="../articles/single_subj_N170/N170_single_subject.html">Getting started with eegUtils and the N170</a>
     </li>
     <li>
       <a href="../articles/time-frequency-analysis.html">Frequency analysis</a>
@@ -100,6 +103,7 @@ like <code>eeg_epochs</code> objects.</p>
   rateanneal <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">60</span>, <span class="fl">0.9</span><span class="op">)</span>,
   rate <span class="op">=</span> <span class="fl">0.1</span>,
   verbose <span class="op">=</span> <span class="cn">TRUE</span>,
+  return <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"full"</span>, <span class="st">"weights"</span><span class="op">)</span>,
   <span class="va">...</span>
 <span class="op">)</span></code></pre></div>
     </div>
@@ -137,6 +141,10 @@ Defaults to "gradient". Ignored if method != "infomax".</p></dd>
 "infomax".</p></dd>
 <dt>verbose</dt>
 <dd><p>Print informative messages to console.</p></dd>
+<dt>return</dt>
+<dd><p>"full" or "weights". "full" returns the mixing and unmixing
+matrices and the source timecourses. "weights" returns only the mixing and
+unmixing matrices. Defaults to "full".</p></dd>
 </dl></div>
     <div id="value">
     <h2>Value</h2>
@@ -210,7 +218,7 @@ n_electrodes - 1.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
 </div>
 
       </footer></div>
