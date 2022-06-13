@@ -14,7 +14,7 @@ eeg_average(data, ...)
 
 \method{eeg_average}{eeg_epochs}(data, cols = NULL, ...)
 
-\method{eeg_average}{eeg_evoked}(data, cols = NULL, ...)
+\method{eeg_average}{eeg_evoked}(data, cols = NULL, weighted = TRUE, ...)
 
 \method{eeg_average}{eeg_tfr}(data, cols = NULL, ...)
 }
@@ -26,6 +26,10 @@ eeg_average(data, ...)
 \item{cols}{Columns from the \code{epochs} structure that the average should
 group on. NULL, the default, uses all columns other than the \code{epoch}
 column.}
+
+\item{weighted}{Produce a weighted average over epochs, which accounts for
+upstream differences in the number of epochs that contribute to each
+average.}
 }
 \value{
 An object of class \code{eeg_evoked} if applied to \code{eeg_epochs};
@@ -42,13 +46,17 @@ the \code{cols} argument.
 \itemize{
 \item \code{default}: Default method for averaging EEG objects
 
-\item \code{eeg_epochs}: Create evoked data from \code{eeg_epochs}
+\item \code{eeg_epochs}: Create evoked data from \code{eeg_epochs}objects
 
 \item \code{eeg_evoked}: average an \code{eeg_evoked} object over epochs.
 
 \item \code{eeg_tfr}: average an \code{eeg_tfr} object over epochs.
 }}
 
+\examples{
+eeg_average(demo_spatial)
+eeg_average(demo_spatial, cols = "everything")
+}
 \author{
 Matt Craddock \email{matt@mattcraddock.com}
 }
