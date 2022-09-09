@@ -1,23 +1,20 @@
 {
-  "@context": [
-    "https://doi.org/10.5063/schema/codemeta-2.0",
-    "http://schema.org"
-  ],
+  "@context": "https://doi.org/10.5063/schema/codemeta-2.0",
   "@type": "SoftwareSourceCode",
   "identifier": "eegUtils",
-  "description": "A collection of functions for EEG processing. Includes import\n  functions for Biosemi (BDF) and Neuroscan (CNT), topographical plotting, referencing, and epoching.",
-  "name": "eegUtils: A collection of utilities for EEG analysis ",
+  "description": "EEG processing and visualization tools. Includes import functions for 'BioSemi' (.BDF), 'Neuroscan' (.CNT), 'Brain Vision Analyzer' (.VHDR), 'EEGLAB' (.set) and 'Fieldtrip' (.mat). Many preprocessing functions such as referencing, epoching, filtering, and ICA are available. There are a variety of visualizations possible, including timecourse and topographical plotting.",
+  "name": "eegUtils: Utilities for Electroencephalographic (EEG) Analysis ",
+  "relatedLink": "https://craddm.github.io/eegUtils",
   "codeRepository": "https://github.com/craddm/eegUtils",
   "issueTracker": "https://github.com/craddm/eegUtils/issues",
   "license": "https://spdx.org/licenses/MIT",
-  "version": "0.5.0",
+  "version": "0.7.0.9000",
   "programmingLanguage": {
     "@type": "ComputerLanguage",
     "name": "R",
-    "version": "3.6.0",
     "url": "https://r-project.org"
   },
-  "runtimePlatform": "R version 3.6.0 (2019-04-26)",
+  "runtimePlatform": "R version 4.2.1 (2022-06-23)",
   "author": [
     {
       "@type": "Person",
@@ -32,6 +29,22 @@
       "givenName": "Matti",
       "familyName": "Vuorre",
       "email": "mv2521@columbia.edu"
+    },
+    {
+      "@type": "Organization",
+      "name": "ggplot2 authors"
+    }
+  ],
+  "copyrightHolder": [
+    {
+      "@type": "Person",
+      "givenName": "Matt",
+      "familyName": "Craddock",
+      "email": "matt@mattcraddock.com"
+    },
+    {
+      "@type": "Organization",
+      "name": "ggplot2 authors"
     }
   ],
   "maintainer": [
@@ -141,6 +154,18 @@
     },
     {
       "@type": "SoftwareApplication",
+      "identifier": "whitening",
+      "name": "whitening",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=whitening"
+    },
+    {
+      "@type": "SoftwareApplication",
       "identifier": "fICA",
       "name": "fICA",
       "provider": {
@@ -150,142 +175,6 @@
         "url": "https://cran.r-project.org"
       },
       "sameAs": "https://CRAN.R-project.org/package=fICA"
-    }
-  ],
-  "softwareRequirements": [
-    {
-      "@type": "SoftwareApplication",
-      "identifier": "ggplot2",
-      "name": "ggplot2",
-      "provider": {
-        "@id": "https://cran.r-project.org",
-        "@type": "Organization",
-        "name": "Comprehensive R Archive Network (CRAN)",
-        "url": "https://cran.r-project.org"
-      },
-      "sameAs": "https://CRAN.R-project.org/package=ggplot2"
-    },
-    {
-      "@type": "SoftwareApplication",
-      "identifier": "dplyr",
-      "name": "dplyr",
-      "provider": {
-        "@id": "https://cran.r-project.org",
-        "@type": "Organization",
-        "name": "Comprehensive R Archive Network (CRAN)",
-        "url": "https://cran.r-project.org"
-      },
-      "sameAs": "https://CRAN.R-project.org/package=dplyr"
-    },
-    {
-      "@type": "SoftwareApplication",
-      "identifier": "scales",
-      "name": "scales",
-      "provider": {
-        "@id": "https://cran.r-project.org",
-        "@type": "Organization",
-        "name": "Comprehensive R Archive Network (CRAN)",
-        "url": "https://cran.r-project.org"
-      },
-      "sameAs": "https://CRAN.R-project.org/package=scales"
-    },
-    {
-      "@type": "SoftwareApplication",
-      "identifier": "mgcv",
-      "name": "mgcv",
-      "provider": {
-        "@id": "https://cran.r-project.org",
-        "@type": "Organization",
-        "name": "Comprehensive R Archive Network (CRAN)",
-        "url": "https://cran.r-project.org"
-      },
-      "sameAs": "https://CRAN.R-project.org/package=mgcv"
-    },
-    {
-      "@type": "SoftwareApplication",
-      "identifier": "purrr",
-      "name": "purrr",
-      "provider": {
-        "@id": "https://cran.r-project.org",
-        "@type": "Organization",
-        "name": "Comprehensive R Archive Network (CRAN)",
-        "url": "https://cran.r-project.org"
-      },
-      "sameAs": "https://CRAN.R-project.org/package=purrr"
-    },
-    {
-      "@type": "SoftwareApplication",
-      "identifier": "shiny",
-      "name": "shiny",
-      "provider": {
-        "@id": "https://cran.r-project.org",
-        "@type": "Organization",
-        "name": "Comprehensive R Archive Network (CRAN)",
-        "url": "https://cran.r-project.org"
-      },
-      "sameAs": "https://CRAN.R-project.org/package=shiny"
-    },
-    {
-      "@type": "SoftwareApplication",
-      "identifier": "tidyr",
-      "name": "tidyr",
-      "version": ">= 1.0.0",
-      "provider": {
-        "@id": "https://cran.r-project.org",
-        "@type": "Organization",
-        "name": "Comprehensive R Archive Network (CRAN)",
-        "url": "https://cran.r-project.org"
-      },
-      "sameAs": "https://CRAN.R-project.org/package=tidyr"
-    },
-    {
-      "@type": "SoftwareApplication",
-      "identifier": "miniUI",
-      "name": "miniUI",
-      "provider": {
-        "@id": "https://cran.r-project.org",
-        "@type": "Organization",
-        "name": "Comprehensive R Archive Network (CRAN)",
-        "url": "https://cran.r-project.org"
-      },
-      "sameAs": "https://CRAN.R-project.org/package=miniUI"
-    },
-    {
-      "@type": "SoftwareApplication",
-      "identifier": "rlang",
-      "name": "rlang",
-      "version": ">= 0.4.0",
-      "provider": {
-        "@id": "https://cran.r-project.org",
-        "@type": "Organization",
-        "name": "Comprehensive R Archive Network (CRAN)",
-        "url": "https://cran.r-project.org"
-      },
-      "sameAs": "https://CRAN.R-project.org/package=rlang"
-    },
-    {
-      "@type": "SoftwareApplication",
-      "identifier": "MASS",
-      "name": "MASS",
-      "provider": {
-        "@id": "https://cran.r-project.org",
-        "@type": "Organization",
-        "name": "Comprehensive R Archive Network (CRAN)",
-        "url": "https://cran.r-project.org"
-      },
-      "sameAs": "https://CRAN.R-project.org/package=MASS"
-    },
-    {
-      "@type": "SoftwareApplication",
-      "identifier": "Matrix",
-      "name": "Matrix",
-      "provider": {
-        "@id": "https://cran.r-project.org",
-        "@type": "Organization",
-        "name": "Comprehensive R Archive Network (CRAN)",
-        "url": "https://cran.r-project.org"
-      },
-      "sameAs": "https://CRAN.R-project.org/package=Matrix"
     },
     {
       "@type": "SoftwareApplication",
@@ -301,44 +190,15 @@
     },
     {
       "@type": "SoftwareApplication",
-      "identifier": "signal",
-      "name": "signal",
+      "identifier": "ini",
+      "name": "ini",
       "provider": {
         "@id": "https://cran.r-project.org",
         "@type": "Organization",
         "name": "Comprehensive R Archive Network (CRAN)",
         "url": "https://cran.r-project.org"
       },
-      "sameAs": "https://CRAN.R-project.org/package=signal"
-    },
-    {
-      "@type": "SoftwareApplication",
-      "identifier": "tibble",
-      "name": "tibble",
-      "provider": {
-        "@id": "https://cran.r-project.org",
-        "@type": "Organization",
-        "name": "Comprehensive R Archive Network (CRAN)",
-        "url": "https://cran.r-project.org"
-      },
-      "sameAs": "https://CRAN.R-project.org/package=tibble"
-    },
-    {
-      "@type": "SoftwareApplication",
-      "identifier": "stats",
-      "name": "stats"
-    },
-    {
-      "@type": "SoftwareApplication",
-      "identifier": "matrixStats",
-      "name": "matrixStats",
-      "provider": {
-        "@id": "https://cran.r-project.org",
-        "@type": "Organization",
-        "name": "Comprehensive R Archive Network (CRAN)",
-        "url": "https://cran.r-project.org"
-      },
-      "sameAs": "https://CRAN.R-project.org/package=matrixStats"
+      "sameAs": "https://CRAN.R-project.org/package=ini"
     },
     {
       "@type": "SoftwareApplication",
@@ -354,17 +214,190 @@
     },
     {
       "@type": "SoftwareApplication",
-      "identifier": "viridis",
-      "name": "viridis",
+      "identifier": "hdf5r",
+      "name": "hdf5r",
       "provider": {
         "@id": "https://cran.r-project.org",
         "@type": "Organization",
         "name": "Comprehensive R Archive Network (CRAN)",
         "url": "https://cran.r-project.org"
       },
-      "sameAs": "https://CRAN.R-project.org/package=viridis"
+      "sameAs": "https://CRAN.R-project.org/package=hdf5r"
     },
     {
+      "@type": "SoftwareApplication",
+      "identifier": "mgcv",
+      "name": "mgcv",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=mgcv"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "identifier": "infomax",
+      "name": "infomax",
+      "version": ">= 0.1.0",
+      "sameAs": "https://github.com/eegverse/infomax"
+    }
+  ],
+  "softwareRequirements": {
+    "1": {
+      "@type": "SoftwareApplication",
+      "identifier": "ggplot2",
+      "name": "ggplot2",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=ggplot2"
+    },
+    "2": {
+      "@type": "SoftwareApplication",
+      "identifier": "dplyr",
+      "name": "dplyr",
+      "version": ">= 1.0.0",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=dplyr"
+    },
+    "3": {
+      "@type": "SoftwareApplication",
+      "identifier": "scales",
+      "name": "scales",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=scales"
+    },
+    "4": {
+      "@type": "SoftwareApplication",
+      "identifier": "purrr",
+      "name": "purrr",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=purrr"
+    },
+    "5": {
+      "@type": "SoftwareApplication",
+      "identifier": "shiny",
+      "name": "shiny",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=shiny"
+    },
+    "6": {
+      "@type": "SoftwareApplication",
+      "identifier": "tidyr",
+      "name": "tidyr",
+      "version": ">= 1.0.0",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=tidyr"
+    },
+    "7": {
+      "@type": "SoftwareApplication",
+      "identifier": "miniUI",
+      "name": "miniUI",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=miniUI"
+    },
+    "8": {
+      "@type": "SoftwareApplication",
+      "identifier": "rlang",
+      "name": "rlang",
+      "version": ">= 1.0.0",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=rlang"
+    },
+    "9": {
+      "@type": "SoftwareApplication",
+      "identifier": "MASS",
+      "name": "MASS",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=MASS"
+    },
+    "10": {
+      "@type": "SoftwareApplication",
+      "identifier": "signal",
+      "name": "signal",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=signal"
+    },
+    "11": {
+      "@type": "SoftwareApplication",
+      "identifier": "tibble",
+      "name": "tibble",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=tibble"
+    },
+    "12": {
+      "@type": "SoftwareApplication",
+      "identifier": "stats",
+      "name": "stats"
+    },
+    "13": {
+      "@type": "SoftwareApplication",
+      "identifier": "matrixStats",
+      "name": "matrixStats",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=matrixStats"
+    },
+    "14": {
       "@type": "SoftwareApplication",
       "identifier": "pracma",
       "name": "pracma",
@@ -376,7 +409,7 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=pracma"
     },
-    {
+    "15": {
       "@type": "SoftwareApplication",
       "identifier": "abind",
       "name": "abind",
@@ -388,43 +421,7 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=abind"
     },
-    {
-      "@type": "SoftwareApplication",
-      "identifier": "data.table",
-      "name": "data.table",
-      "provider": {
-        "@id": "https://cran.r-project.org",
-        "@type": "Organization",
-        "name": "Comprehensive R Archive Network (CRAN)",
-        "url": "https://cran.r-project.org"
-      },
-      "sameAs": "https://CRAN.R-project.org/package=data.table"
-    },
-    {
-      "@type": "SoftwareApplication",
-      "identifier": "ini",
-      "name": "ini",
-      "provider": {
-        "@id": "https://cran.r-project.org",
-        "@type": "Organization",
-        "name": "Comprehensive R Archive Network (CRAN)",
-        "url": "https://cran.r-project.org"
-      },
-      "sameAs": "https://CRAN.R-project.org/package=ini"
-    },
-    {
-      "@type": "SoftwareApplication",
-      "identifier": "shinydashboard",
-      "name": "shinydashboard",
-      "provider": {
-        "@id": "https://cran.r-project.org",
-        "@type": "Organization",
-        "name": "Comprehensive R Archive Network (CRAN)",
-        "url": "https://cran.r-project.org"
-      },
-      "sameAs": "https://CRAN.R-project.org/package=shinydashboard"
-    },
-    {
+    "16": {
       "@type": "SoftwareApplication",
       "identifier": "plotly",
       "name": "plotly",
@@ -436,7 +433,7 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=plotly"
     },
-    {
+    "17": {
       "@type": "SoftwareApplication",
       "identifier": "future.apply",
       "name": "future.apply",
@@ -448,7 +445,7 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=future.apply"
     },
-    {
+    "18": {
       "@type": "SoftwareApplication",
       "identifier": "Rcpp",
       "name": "Rcpp",
@@ -460,31 +457,41 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=Rcpp"
     },
-    {
+    "19": {
+      "@type": "SoftwareApplication",
+      "identifier": "data.table",
+      "name": "data.table",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=data.table"
+    },
+    "20": {
+      "@type": "SoftwareApplication",
+      "identifier": "isoband",
+      "name": "isoband",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=isoband"
+    },
+    "21": {
       "@type": "SoftwareApplication",
       "identifier": "R",
       "name": "R",
-      "version": ">= 3.2.0"
-    }
-  ],
-  "releaseNotes": "https://github.com/craddm/eegUtils/blob/master/NEWS.md",
+      "version": ">= 3.4.0"
+    },
+    "SystemRequirements": null
+  },
+  "fileSize": "16224.846KB",
   "readme": "https://github.com/craddm/eegUtils/blob/master/README.md",
-  "fileSize": "75965.192KB",
-  "contIntegration": [
-    "https://codecov.io/github/craddm/eegUtils?branch=master",
-    "https://travis-ci.org/craddm/eegUtils",
-    "https://ci.appveyor.com/project/craddm/eegUtils"
-  ],
+  "contIntegration": ["https://codecov.io/github/craddm/eegUtils?branch=master", "https://github.com/craddm/eegUtils/actions"],
   "developmentStatus": "http://www.repostatus.org/#wip",
-  "copyrightHolder": {},
-  "funder": {},
-  "keywords": [
-    "eeg",
-    "eeg-signals-processing",
-    "eeg-analysis",
-    "eeg-signals",
-    "eeg-data",
-    "r",
-    "rstats"
-  ]
+  "keywords": ["eeg", "eeg-signals-processing", "eeg-analysis", "eeg-signals", "eeg-data", "r", "rstats"]
 }
