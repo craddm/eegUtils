@@ -18,8 +18,9 @@
 #'   regression formula for a GLM. See ?formula and notes on use below
 #' @param data An `eegUtils` object.
 #' @param ... Any other arguments passed to (LM/GLM)
-#' @importFrom tibble as_tibble
-#' @importFrom dplyr mutate
+#' @examples
+#' fit_glm(~epoch_labels, demo_spatial)
+#' fit_glm(~epoch_labels + baseline, demo_spatial, baseline = c(-.1, 0))
 #' @export
 
 fit_glm <- function(formula,
@@ -35,13 +36,13 @@ fit_glm.default <- function(formula,
   stop(paste("Objects of class", class(data), "not currently supported"))
 }
 
-#' @param time_lim Numeric vector of length 2 specifying time period to be used
+#' @param baseline Numeric vector of length 2 specifying time period to be used
 #'   as a baseline.
 #' @describeIn fit_glm GLM fitting for `eeg_epochs`
 #' @export
 fit_glm.eeg_epochs <- function(formula,
                                data,
-                               time_lim = NULL,
+                               baseline = NULL,
                                ...) {
 
   n_chans <- ncol(data$signals)
@@ -69,13 +70,13 @@ fit_glm.eeg_epochs <- function(formula,
 
   if ("baseline" %in% mod_terms) {
 
-    if (is.null(time_lim)) {
-      stop("time_lim must be specified if using baseline fitting")
+    if (is.null(baseline)) {
+      stop("`baseline` must be specified if using baseline fitting.")
     }
 
     base_times <- get_epoch_baselines(
       data,
-      time_lim
+      baseline
     )
 
     # basic design matrix with dummy baseline column
