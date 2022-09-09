@@ -67,13 +67,13 @@ removed from the data. Meta-data about the referencing scheme is held in the
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{default}: Default method
+\item \code{eeg_reference(default)}: Default method
 
-\item \code{eeg_data}: Rereference objects of class \code{eeg_data}
+\item \code{eeg_reference(eeg_data)}: Rereference objects of class \code{eeg_data}
 
-\item \code{eeg_epochs}: Rereference objects of class \code{eeg_epochs}
+\item \code{eeg_reference(eeg_epochs)}: Rereference objects of class \code{eeg_epochs}
+
 }}
-
 \examples{
 # demo_epochs is average referenced by default
 demo_epochs

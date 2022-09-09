@@ -39,7 +39,7 @@ Imports:
     isoband
 Depends:
   R (>= 3.4.0)
-RoxygenNote: 7.2.0
+RoxygenNote: 7.2.1
 Suggests: 
     testthat,
     vdiffr,

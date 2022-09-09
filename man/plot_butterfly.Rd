@@ -110,20 +110,20 @@ not possible.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{default}: Default \code{plot_butterfly} method for data.frames,
+\item \code{plot_butterfly(default)}: Default \code{plot_butterfly} method for data.frames,
 \code{eeg_data}
 
-\item \code{eeg_evoked}: Plot butterfly for \code{eeg_evoked} objects
+\item \code{plot_butterfly(eeg_evoked)}: Plot butterfly for \code{eeg_evoked} objects
 
-\item \code{eeg_data}: Create butterfly plot for \code{eeg_data} objects
+\item \code{plot_butterfly(eeg_data)}: Create butterfly plot for \code{eeg_data} objects
 
-\item \code{eeg_epochs}: Create butterfly plot for \code{eeg_epochs} objects
+\item \code{plot_butterfly(eeg_epochs)}: Create butterfly plot for \code{eeg_epochs} objects
 
-\item \code{eeg_stats}: Create butterfly plot for \code{eeg_stats} objects
+\item \code{plot_butterfly(eeg_stats)}: Create butterfly plot for \code{eeg_stats} objects
 
-\item \code{eeg_lm}: Create butterfly plot for \code{eeg_lm} objects
+\item \code{plot_butterfly(eeg_lm)}: Create butterfly plot for \code{eeg_lm} objects
+
 }}
-
 \section{Notes on ggplot2 facetting}{
 
 

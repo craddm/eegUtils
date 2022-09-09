@@ -49,9 +49,9 @@ filters applied to the original, broadband data.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{eeg_epochs}: method for \code{eeg_epochs} objects
-}}
+\item \code{eeg_decompose(eeg_epochs)}: method for \code{eeg_epochs} objects
 
+}}
 \examples{
 # The default method is Spatio-Spectral Decomposition, which returns
 # spatially and temporally filtered source timecourses.

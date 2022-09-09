@@ -44,15 +44,15 @@ the \code{cols} argument.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{default}: Default method for averaging EEG objects
+\item \code{eeg_average(default)}: Default method for averaging EEG objects
 
-\item \code{eeg_epochs}: Create evoked data from \code{eeg_epochs}objects
+\item \code{eeg_average(eeg_epochs)}: Create evoked data from \code{eeg_epochs}objects
 
-\item \code{eeg_evoked}: average an \code{eeg_evoked} object over epochs.
+\item \code{eeg_average(eeg_evoked)}: average an \code{eeg_evoked} object over epochs.
 
-\item \code{eeg_tfr}: average an \code{eeg_tfr} object over epochs.
+\item \code{eeg_average(eeg_tfr)}: average an \code{eeg_tfr} object over epochs.
+
 }}
-
 \examples{
 eeg_average(demo_spatial)
 eeg_average(demo_spatial, cols = "everything")

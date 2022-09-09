@@ -63,9 +63,9 @@ electrode placed according to its location on the scalp.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{default}: Plot an ERP scalp map
-}}
+\item \code{erp_scalp(default)}: Plot an ERP scalp map
 
+}}
 \examples{
 erp_scalp(demo_epochs, montage = "biosemi64alpha")
 

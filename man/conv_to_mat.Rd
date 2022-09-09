@@ -19,7 +19,7 @@ Convert to 3d matrix
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{eeg_epochs}: Convert eeg_epochs to 3D matrix
-}}
+\item \code{conv_to_mat(eeg_epochs)}: Convert eeg_epochs to 3D matrix
 
+}}
 \keyword{internal}

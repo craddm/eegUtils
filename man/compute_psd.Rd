@@ -91,13 +91,13 @@ points. If NULL, it defaults to 50\\% overlap between segments.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{eeg_data}: Compute PSD for an \code{eeg_data} object
+\item \code{compute_psd(eeg_data)}: Compute PSD for an \code{eeg_data} object
 
-\item \code{eeg_epochs}: Compute PSD for an \code{eeg_epochs} object
+\item \code{compute_psd(eeg_epochs)}: Compute PSD for an \code{eeg_epochs} object
 
-\item \code{eeg_evoked}: Compute PSD for an \code{eeg_evoked} object
+\item \code{compute_psd(eeg_evoked)}: Compute PSD for an \code{eeg_evoked} object
+
 }}
-
 \examples{
 out <- compute_psd(demo_epochs)
 

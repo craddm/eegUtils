@@ -198,20 +198,20 @@ Allows topographical plotting of functional data. Output is a ggplot2 object.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{default}: Default method for data frames.
+\item \code{topoplot(default)}: Default method for data frames.
 
-\item \code{data.frame}: Topographical plotting of data.frames and other non
+\item \code{topoplot(data.frame)}: Topographical plotting of data.frames and other non
 eeg_data objects.
 
-\item \code{eeg_data}: Topographical plotting of \code{eeg_data} objects.
+\item \code{topoplot(eeg_data)}: Topographical plotting of \code{eeg_data} objects.
 
-\item \code{eeg_epochs}: Topographical plotting of \code{eeg_epochs} objects.
+\item \code{topoplot(eeg_epochs)}: Topographical plotting of \code{eeg_epochs} objects.
 
-\item \code{eeg_ICA}: Topographical plot for \code{eeg_ICA} objects
+\item \code{topoplot(eeg_ICA)}: Topographical plot for \code{eeg_ICA} objects
 
-\item \code{eeg_tfr}: Topographical plotting of \code{eeg_tfr} objects.
+\item \code{topoplot(eeg_tfr)}: Topographical plotting of \code{eeg_tfr} objects.
+
 }}
-
 \section{Notes on usage of Generalized Additive Models for interpolation}{
  The
 function fits a GAM using the \code{gam} function from \code{mgcv}. Specifically, it

@@ -33,9 +33,9 @@ noise.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{eeg_ICA}: Autocorrelation checker for \code{eeg_ICA} objects
-}}
+\item \code{ar_acf(eeg_ICA)}: Autocorrelation checker for \code{eeg_ICA} objects
 
+}}
 \examples{
 demo_sobi <- run_ICA(demo_epochs, pca = 10)
 ar_acf(demo_sobi)

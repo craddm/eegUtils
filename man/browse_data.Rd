@@ -41,13 +41,13 @@ image, an ERP, and a power spectral density plot from 4-50 Hz.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{eeg_ICA}: View \code{eeg_ICA} component properties
+\item \code{browse_data(eeg_ICA)}: View \code{eeg_ICA} component properties
 
-\item \code{eeg_data}: Browse continuous EEG data.
+\item \code{browse_data(eeg_data)}: Browse continuous EEG data.
 
-\item \code{eeg_epochs}: Browse epoched EEG data.
+\item \code{browse_data(eeg_epochs)}: Browse epoched EEG data.
+
 }}
-
 \author{
 Matt Craddock \email{matt@mattcraddock.com}
 }

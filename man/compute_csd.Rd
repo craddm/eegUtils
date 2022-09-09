@@ -36,13 +36,13 @@ activity that emphasises more local spatial features
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{default}: Default method to detect unknown classes.
+\item \code{compute_csd(default)}: Default method to detect unknown classes.
 
-\item \code{eeg_data}: Transform \code{eeg_data} to CSD
+\item \code{compute_csd(eeg_data)}: Transform \code{eeg_data} to CSD
 
-\item \code{eeg_epochs}: Transform \code{eeg_data} to CSD
+\item \code{compute_csd(eeg_epochs)}: Transform \code{eeg_data} to CSD
+
 }}
-
 \examples{
 csd_epochs <- compute_csd(demo_epochs)
 plot_butterfly(csd_epochs)

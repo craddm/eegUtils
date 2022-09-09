@@ -71,13 +71,13 @@ by-channel epoch means.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{data.frame}: Filter a data frame
+\item \code{iir_filt(data.frame)}: Filter a data frame
 
-\item \code{eeg_data}: Filter \code{eeg_data} objects
+\item \code{iir_filt(eeg_data)}: Filter \code{eeg_data} objects
 
-\item \code{eeg_epochs}: Filter \code{eeg_epochs} objects.
+\item \code{iir_filt(eeg_epochs)}: Filter \code{eeg_epochs} objects.
+
 }}
-
 \examples{
 plot_psd(iir_filt(demo_epochs, low_freq = 1, high_freq = 30))
 plot_psd(iir_filt(demo_epochs, low_freq = 12, high_freq = 8))

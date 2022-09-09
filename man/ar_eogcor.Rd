@@ -48,9 +48,9 @@ decomposition and the electrooculogram channels of an \code{eeg_epochs} dataset.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{eeg_ICA}: Method for eeg_ICA objects.
-}}
+\item \code{ar_eogcor(eeg_ICA)}: Method for eeg_ICA objects.
 
+}}
 \references{
 Chaumon, M., Bishop, D.V., Busch, N.A. (2015). A practical guide
 to the selection of independent components of the electroencephalogram for

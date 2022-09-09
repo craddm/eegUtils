@@ -44,16 +44,16 @@ and timings are correct.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{list}: Method for combining lists of \code{eeg_data} and
+\item \code{eeg_combine(list)}: Method for combining lists of \code{eeg_data} and
 \code{eeg_epochs} objects.
 
-\item \code{eeg_data}: Method for combining \code{eeg_data} objects.
+\item \code{eeg_combine(eeg_data)}: Method for combining \code{eeg_data} objects.
 
-\item \code{eeg_epochs}: Method for combining \code{eeg_epochs} objects
+\item \code{eeg_combine(eeg_epochs)}: Method for combining \code{eeg_epochs} objects
 
-\item \code{eeg_evoked}: Method for combining \code{eeg_evoked} objects
+\item \code{eeg_combine(eeg_evoked)}: Method for combining \code{eeg_evoked} objects
+
 }}
-
 \author{
 Matt Craddock, \email{matt@mattcraddock.com}
 }

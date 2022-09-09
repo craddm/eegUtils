@@ -56,16 +56,16 @@ BioSemi systems included. These can be added using the montage parameter:
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{data.frame}: Adds standard locations to a data frame in
+\item \code{electrode_locations(data.frame)}: Adds standard locations to a data frame in
 long format
 
-\item \code{eeg_data}: Adds standard locations to the chan_info field of an eeg_data object.
+\item \code{electrode_locations(eeg_data)}: Adds standard locations to the chan_info field of an eeg_data object.
 
-\item \code{eeg_epochs}: Adds standard locations to the chan_info field of an \code{eeg_data} object.
+\item \code{electrode_locations(eeg_epochs)}: Adds standard locations to the chan_info field of an \code{eeg_data} object.
 
-\item \code{eeg_tfr}: Adds standard locations to the chan_info field of an \code{eeg_tfr} object.
+\item \code{electrode_locations(eeg_tfr)}: Adds standard locations to the chan_info field of an \code{eeg_tfr} object.
+
 }}
-
 \examples{
 channels(demo_epochs)
 electrode_locations(demo_epochs, overwrite = TRUE, montage = "biosemi64alpha")

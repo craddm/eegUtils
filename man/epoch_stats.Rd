@@ -19,9 +19,9 @@ Calculate various statistics for each epoch in the data
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{eeg_epochs}: Calculate statistics for each epoch.
-}}
+\item \code{epoch_stats(eeg_epochs)}: Calculate statistics for each epoch.
 
+}}
 \examples{
 epoch_stats(demo_epochs)
 }

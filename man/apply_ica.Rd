@@ -29,12 +29,12 @@ dataset.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{eeg_ICA}: From given \code{eeg_ICA} object, recreate channel timecourses.
+\item \code{apply_ica(eeg_ICA)}: From given \code{eeg_ICA} object, recreate channel timecourses.
 
-\item \code{eeg_epochs}: Combine a specific set of ICA weights with any
+\item \code{apply_ica(eeg_epochs)}: Combine a specific set of ICA weights with any
 \code{eeg_epochs} object.
-}}
 
+}}
 \examples{
 test_ica <- run_ICA(demo_epochs, pca = 10)
 plot_butterfly(demo_epochs)

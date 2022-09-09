@@ -18,7 +18,7 @@ test_that("glm fitting works", {
                       "test_glm.Rdata")
   test_glm_bl <- fit_glm(~event_label + baseline,
                          data = demo_tagged,
-                         time_lim = c(-.1, 0))
+                         baseline = c(-.1, 0))
   expect_known_output(test_glm_bl,
                       "test_glm_bl.Rdata")
 })

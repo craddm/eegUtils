@@ -22,9 +22,9 @@ data must have channel locations attached.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{eeg_data}: Interpolate EEG channel(s)
-}}
+\item \code{interp_elecs(eeg_data)}: Interpolate EEG channel(s)
 
+}}
 \references{
 \itemize{
 \item Perrin, F., Pernier, J., Bertrand, O., & Echallier, J. F.

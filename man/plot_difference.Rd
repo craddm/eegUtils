@@ -50,9 +50,9 @@ conditions and plots it.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{eeg_epochs}: Plot an ERP difference wave from an \code{eeg_epochs} object
-}}
+\item \code{plot_difference(eeg_epochs)}: Plot an ERP difference wave from an \code{eeg_epochs} object
 
+}}
 \examples{
 plot_difference(demo_spatial, conditions = "epoch_labels", electrode = "P8")
 }

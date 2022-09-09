@@ -34,15 +34,15 @@ of electrode locations in 3D space.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{default}: generic plot electrodes function
+\item \code{plot_electrodes(default)}: generic plot electrodes function
 
-\item \code{eeg_data}: Plot electrodes associated with an \code{eeg_data} object.
+\item \code{plot_electrodes(eeg_data)}: Plot electrodes associated with an \code{eeg_data} object.
 
-\item \code{eeg_evoked}: Plot electrodes associated with an \code{eeg_evoked} object.
+\item \code{plot_electrodes(eeg_evoked)}: Plot electrodes associated with an \code{eeg_evoked} object.
 
-\item \code{eeg_tfr}: Plot electrodes associated with an \code{eeg_data} object.
+\item \code{plot_electrodes(eeg_tfr)}: Plot electrodes associated with an \code{eeg_data} object.
+
 }}
-
 \examples{
 
 plot_electrodes(demo_epochs)

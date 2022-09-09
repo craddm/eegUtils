@@ -46,17 +46,17 @@ than that requested.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{default}: Default select times function
+\item \code{select_times(default)}: Default select times function
 
-\item \code{eeg_data}: Select times from an eeg_data object
+\item \code{select_times(eeg_data)}: Select times from an eeg_data object
 
-\item \code{eeg_epochs}: Select times in \code{eeg_epochs} objects
+\item \code{select_times(eeg_epochs)}: Select times in \code{eeg_epochs} objects
 
-\item \code{eeg_evoked}: Select times in \code{eeg_evoked} objects
+\item \code{select_times(eeg_evoked)}: Select times in \code{eeg_evoked} objects
 
-\item \code{eeg_tfr}: Select times from an \code{eeg_tfr} object
+\item \code{select_times(eeg_tfr)}: Select times from an \code{eeg_tfr} object
+
 }}
-
 \examples{
 ## Select timepoints from -.1 to .3
 demo_epochs

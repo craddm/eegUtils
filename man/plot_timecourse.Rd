@@ -138,19 +138,19 @@ averaging. Output is a \code{ggplot2} object.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{data.frame}: Plot a data.frame timecourse
+\item \code{plot_timecourse(data.frame)}: Plot a data.frame timecourse
 
-\item \code{eeg_evoked}: plot \code{eeg_evoked} timecourses
+\item \code{plot_timecourse(eeg_evoked)}: plot \code{eeg_evoked} timecourses
 
-\item \code{eeg_ICA}: Plot individual components from \code{eeg_ICA} components
+\item \code{plot_timecourse(eeg_ICA)}: Plot individual components from \code{eeg_ICA} components
 
-\item \code{eeg_epochs}: Plot timecourses from \code{eeg_epochs} objects.
+\item \code{plot_timecourse(eeg_epochs)}: Plot timecourses from \code{eeg_epochs} objects.
 
-\item \code{eeg_group}: Plot timecourses from \code{eeg_group} objects.
+\item \code{plot_timecourse(eeg_group)}: Plot timecourses from \code{eeg_group} objects.
 
-\item \code{eeg_tfr}: Plot timecourses from \code{eeg_tfr} objects.
+\item \code{plot_timecourse(eeg_tfr)}: Plot timecourses from \code{eeg_tfr} objects.
+
 }}
-
 \examples{
 library(ggplot2)
 plot_timecourse(demo_epochs, "A29")

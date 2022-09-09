@@ -22,10 +22,10 @@ Channel statistics
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{eeg_data}: Calculate channel statistics for \code{eeg_data}
+\item \code{channel_stats(eeg_data)}: Calculate channel statistics for \code{eeg_data}
 objects.
-}}
 
+}}
 \examples{
 channel_stats(demo_epochs)
 }
