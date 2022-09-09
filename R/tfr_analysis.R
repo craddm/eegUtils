@@ -13,10 +13,12 @@
 #' out <- compute_tfr(demo_epochs, method = "morlet", foi = c(4, 30), n_freq = 10, n_cycles = 3)
 #' out
 #' out$freq_info$morlet_resolution
-#' out <- compute_tfr(demo_epochs, method = "morlet", foi = c(4, 30), n_freq = 10, n_cycles = c(3, 10))
+#' out <- compute_tfr(demo_epochs, method = "morlet", foi = c(4, 30),
+#'  n_freq = 10, n_cycles = c(3, 10))
 #' out$freq_info$morlet_resolution
 #' plot_tfr(out)
-#' out <- compute_tfr(demo_epochs, method = "morlet", foi = c(4, 30), n_freq = 10, n_cycles = c(3, 10), trim_edges = FALSE)
+#' out <- compute_tfr(demo_epochs, method = "morlet", foi = c(4, 30),
+#'  n_freq = 10, n_cycles = c(3, 10), trim_edges = FALSE)
 #' plot_tfr(out)
 #' @export
 
