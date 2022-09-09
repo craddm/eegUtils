@@ -33,7 +33,7 @@ than that requested."><meta name="robots" content="noindex"><!-- mathjax --><scr
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -89,50 +89,61 @@ than that requested.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">select_times</span><span class="op">(</span><span class="va">data</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S3 method for default</span>
-<span class="fu">select_times</span><span class="op">(</span><span class="va">data</span>, time_lim <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S3 method for eeg_data</span>
-<span class="fu">select_times</span><span class="op">(</span><span class="va">data</span>, time_lim <span class="op">=</span> <span class="cn">NULL</span>, df_out <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S3 method for eeg_epochs</span>
-<span class="fu">select_times</span><span class="op">(</span><span class="va">data</span>, <span class="va">time_lim</span>, df_out <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S3 method for eeg_evoked</span>
-<span class="fu">select_times</span><span class="op">(</span><span class="va">data</span>, <span class="va">time_lim</span>, df_out <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S3 method for eeg_tfr</span>
-<span class="fu">select_times</span><span class="op">(</span><span class="va">data</span>, time_lim <span class="op">=</span> <span class="cn">NULL</span>, df_out <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">select_times</span><span class="op">(</span><span class="va">data</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for default</span></span>
+<span><span class="fu">select_times</span><span class="op">(</span><span class="va">data</span>, time_lim <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for eeg_data</span></span>
+<span><span class="fu">select_times</span><span class="op">(</span><span class="va">data</span>, time_lim <span class="op">=</span> <span class="cn">NULL</span>, df_out <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for eeg_epochs</span></span>
+<span><span class="fu">select_times</span><span class="op">(</span><span class="va">data</span>, <span class="va">time_lim</span>, df_out <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for eeg_evoked</span></span>
+<span><span class="fu">select_times</span><span class="op">(</span><span class="va">data</span>, <span class="va">time_lim</span>, df_out <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for eeg_tfr</span></span>
+<span><span class="fu">select_times</span><span class="op">(</span><span class="va">data</span>, time_lim <span class="op">=</span> <span class="cn">NULL</span>, df_out <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>data</dt>
 <dd><p>Data from which to select</p></dd>
+
+
 <dt>...</dt>
 <dd><p>Further arguments passed to or from other methods.</p></dd>
+
+
 <dt>time_lim</dt>
 <dd><p>A character vector of two numbers indicating the time range
 to be selected e.g. c(min, max), or a list to select specific times.</p></dd>
+
+
 <dt>df_out</dt>
 <dd><p>Returns a data frame rather than an object of the same type
 that was passed in.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>Data frame with only data from within the specified range.
-<code>eeg_data</code> object</p>
+    
+
+<p>Data frame with only data from within the specified range.</p>
+
+
+<p><code>eeg_data</code> object</p>
     </div>
     <div id="methods-by-class-">
     <h2>Methods (by class)</h2>
     
-<ul><li><p><code>default</code>: Default select times function</p></li>
-<li><p><code>eeg_data</code>: Select times from an eeg_data object</p></li>
-<li><p><code>eeg_epochs</code>: Select times in <code>eeg_epochs</code> objects</p></li>
-<li><p><code>eeg_evoked</code>: Select times in <code>eeg_evoked</code> objects</p></li>
-<li><p><code>eeg_tfr</code>: Select times from an <code>eeg_tfr</code> object</p></li>
+<ul><li><p><code>select_times(default)</code>: Default select times function</p></li>
+<li><p><code>select_times(eeg_data)</code>: Select times from an eeg_data object</p></li>
+<li><p><code>select_times(eeg_epochs)</code>: Select times in <code>eeg_epochs</code> objects</p></li>
+<li><p><code>select_times(eeg_evoked)</code>: Select times in <code>eeg_evoked</code> objects</p></li>
+<li><p><code>select_times(eeg_tfr)</code>: Select times from an <code>eeg_tfr</code> object</p></li>
 </ul></div>
     <div id="see-also">
     <h2>See also</h2>
@@ -147,8 +158,8 @@ that was passed in.</p></dd>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co">## Select timepoints from -.1 to .3</span></span>
-<span class="r-in"><span class="va">demo_epochs</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co">## Select timepoints from -.1 to .3</span></span></span>
+<span class="r-in"><span><span class="va">demo_epochs</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Epoched EEG data</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Number of channels	: 11 </span>
@@ -157,8 +168,8 @@ that was passed in.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Electrode names		: A5 A13 A21 A29 A31 B5 B6 B8 B16 B18 B26 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Sampling rate		: 128  Hz</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Reference		: average </span>
-<span class="r-in"><span class="va">short_epochs</span> <span class="op">&lt;-</span> <span class="fu">select_times</span><span class="op">(</span><span class="va">demo_epochs</span>, time_lim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">.1</span>, <span class="fl">.3</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">short_epochs</span></span>
+<span class="r-in"><span><span class="va">short_epochs</span> <span class="op">&lt;-</span> <span class="fu">select_times</span><span class="op">(</span><span class="va">demo_epochs</span>, time_lim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">.1</span>, <span class="fl">.3</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">short_epochs</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Epoched EEG data</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Number of channels	: 11 </span>
@@ -167,20 +178,19 @@ that was passed in.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Electrode names		: A5 A13 A21 A29 A31 B5 B6 B8 B16 B18 B26 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Sampling rate		: 128  Hz</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Reference		: average </span>
-<span class="r-in"><span class="va">short_epochs</span> <span class="op">&lt;-</span> <span class="fu">select_times</span><span class="op">(</span><span class="va">demo_epochs</span>, time_lim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">-</span><span class="fl">.1</span>, <span class="fl">.15</span>, <span class="fl">.3</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Must enter two timepoints when selecting a time range;</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span>           using whole range.</span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">short_epochs</span><span class="op">$</span><span class="va">timings</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 6 x 3</span></span>
+<span class="r-in"><span><span class="va">short_epochs</span> <span class="op">&lt;-</span> <span class="fu">select_times</span><span class="op">(</span><span class="va">demo_epochs</span>, time_lim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">-</span><span class="fl">.1</span>, <span class="fl">.15</span>, <span class="fl">.3</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Returning closest time points to those requested: -0.104 0.146 0.295 </span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">short_epochs</span><span class="op">$</span><span class="va">timings</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 6 × 3</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   epoch sample   time</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>     1   <span style="text-decoration: underline;">4</span>028 -<span style="color: #BB0000;">0.197</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>     1   <span style="text-decoration: underline;">4</span>032 -<span style="color: #BB0000;">0.189</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>     1   <span style="text-decoration: underline;">4</span>036 -<span style="color: #BB0000;">0.182</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span>     1   <span style="text-decoration: underline;">4</span>040 -<span style="color: #BB0000;">0.174</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span>     1   <span style="text-decoration: underline;">4</span>044 -<span style="color: #BB0000;">0.166</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">6</span>     1   <span style="text-decoration: underline;">4</span>048 -<span style="color: #BB0000;">0.158</span></span>
-<span class="r-in"></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>     1   <span style="text-decoration: underline;">4</span>076 -<span style="color: #BB0000;">0.104</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>     1   <span style="text-decoration: underline;">4</span>204  0.146</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>     1   <span style="text-decoration: underline;">4</span>280  0.295</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span>     2   <span style="text-decoration: underline;">6</span>985 -<span style="color: #BB0000;">0.104</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span>     2   <span style="text-decoration: underline;">7</span>113  0.146</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">6</span>     2   <span style="text-decoration: underline;">7</span>189  0.295</span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -195,7 +205,7 @@ that was passed in.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

@@ -33,7 +33,7 @@ activity that emphasises more local spatial features"><meta name="robots" conten
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -46,6 +46,9 @@ activity that emphasises more local spatial features"><meta name="robots" conten
     </li>
     <li>
       <a href="../articles/linear_modelling/linear_modelling.html">Linear Modelling</a>
+    </li>
+    <li>
+      <a href="../articles/single_subj_N170/N170_single_subject.html">Getting started with eegUtils and the N170</a>
     </li>
     <li>
       <a href="../articles/time-frequency-analysis.html">Frequency analysis</a>
@@ -86,38 +89,47 @@ activity that emphasises more local spatial features</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">compute_csd</span><span class="op">(</span><span class="va">data</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S3 method for default</span>
-<span class="fu">compute_csd</span><span class="op">(</span><span class="va">data</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S3 method for eeg_data</span>
-<span class="fu">compute_csd</span><span class="op">(</span><span class="va">data</span>, m <span class="op">=</span> <span class="fl">4</span>, smoothing <span class="op">=</span> <span class="fl">1e-05</span>, scaling <span class="op">=</span> <span class="fl">1</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S3 method for eeg_epochs</span>
-<span class="fu">compute_csd</span><span class="op">(</span><span class="va">data</span>, m <span class="op">=</span> <span class="fl">4</span>, smoothing <span class="op">=</span> <span class="fl">1e-05</span>, scaling <span class="op">=</span> <span class="fl">1</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">compute_csd</span><span class="op">(</span><span class="va">data</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for default</span></span>
+<span><span class="fu">compute_csd</span><span class="op">(</span><span class="va">data</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for eeg_data</span></span>
+<span><span class="fu">compute_csd</span><span class="op">(</span><span class="va">data</span>, m <span class="op">=</span> <span class="fl">4</span>, smoothing <span class="op">=</span> <span class="fl">1e-05</span>, scaling <span class="op">=</span> <span class="fl">1</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for eeg_epochs</span></span>
+<span><span class="fu">compute_csd</span><span class="op">(</span><span class="va">data</span>, m <span class="op">=</span> <span class="fl">4</span>, smoothing <span class="op">=</span> <span class="fl">1e-05</span>, scaling <span class="op">=</span> <span class="fl">1</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>data</dt>
 <dd><p><code>eeg_data</code> or <code>eeg_epochs</code> object</p></dd>
+
+
 <dt>...</dt>
 <dd><p>Other parameters</p></dd>
+
+
 <dt>m</dt>
 <dd><p>smoothing constraint (higher = more rigid splines)</p></dd>
+
+
 <dt>smoothing</dt>
 <dd><p>lambda constant. Added to the Defaults to 1e-05</p></dd>
+
+
 <dt>scaling</dt>
 <dd><p>Default scaling (1) is uV / m^2. Note that this depends on the
 units of the electrode co-ordinates.</p></dd>
+
 </dl></div>
     <div id="methods-by-class-">
     <h2>Methods (by class)</h2>
     
-<ul><li><p><code>default</code>: Default method to detect unknown classes.</p></li>
-<li><p><code>eeg_data</code>: Transform <code>eeg_data</code> to CSD</p></li>
-<li><p><code>eeg_epochs</code>: Transform <code>eeg_data</code> to CSD</p></li>
+<ul><li><p><code>compute_csd(default)</code>: Default method to detect unknown classes.</p></li>
+<li><p><code>compute_csd(eeg_data)</code>: Transform <code>eeg_data</code> to CSD</p></li>
+<li><p><code>compute_csd(eeg_epochs)</code>: Transform <code>eeg_data</code> to CSD</p></li>
 </ul></div>
     <div id="references">
     <h2>References</h2>
@@ -142,16 +154,19 @@ research: A tutorial review. International Journal of Psycholphysiology,
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">csd_epochs</span> <span class="op">&lt;-</span> <span class="fu">compute_csd</span><span class="op">(</span><span class="va">demo_epochs</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="plot_butterfly.html">plot_butterfly</a></span><span class="op">(</span><span class="va">csd_epochs</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">csd_epochs</span> <span class="op">&lt;-</span> <span class="fu">compute_csd</span><span class="op">(</span><span class="va">demo_epochs</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="plot_butterfly.html">plot_butterfly</a></span><span class="op">(</span><span class="va">csd_epochs</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Creating epochs based on combinations of variables: epoch_label participant_id </span>
 <span class="r-plt img"><img src="compute_csd-1.png" alt="" width="700" height="433"></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Compare the topographies of the CSD vs average referenced data</span></span>
-<span class="r-in"><span class="fu"><a href="topoplot.html">topoplot</a></span><span class="op">(</span><span class="va">demo_epochs</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">.2</span>, <span class="fl">.21</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Compare the topographies of the CSD vs average referenced data</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="topoplot.html">topoplot</a></span><span class="op">(</span><span class="va">demo_epochs</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">.2</span>, <span class="fl">.21</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Creating epochs based on combinations of variables: epoch_label participant_id </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Using electrode locations from data.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Plotting head r 95 mm</span>
 <span class="r-plt img"><img src="compute_csd-2.png" alt="" width="700" height="433"></span>
-<span class="r-in"><span class="fu"><a href="topoplot.html">topoplot</a></span><span class="op">(</span><span class="va">csd_epochs</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">.2</span>, <span class="fl">.21</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu"><a href="topoplot.html">topoplot</a></span><span class="op">(</span><span class="va">csd_epochs</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">.2</span>, <span class="fl">.21</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Creating epochs based on combinations of variables: epoch_label participant_id </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Using electrode locations from data.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Plotting head r 95 mm</span>
 <span class="r-plt img"><img src="compute_csd-3.png" alt="" width="700" height="433"></span>
@@ -169,7 +184,7 @@ research: A tutorial review. International Journal of Psycholphysiology,
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

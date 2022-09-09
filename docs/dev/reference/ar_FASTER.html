@@ -31,7 +31,7 @@ EEG artifact Rejection. J Neurosci Methods."><meta name="robots" content="noinde
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -44,6 +44,9 @@ EEG artifact Rejection. J Neurosci Methods."><meta name="robots" content="noinde
     </li>
     <li>
       <a href="../articles/linear_modelling/linear_modelling.html">Linear Modelling</a>
+    </li>
+    <li>
+      <a href="../articles/single_subj_N170/N170_single_subject.html">Getting started with eegUtils and the N170</a>
     </li>
     <li>
       <a href="../articles/time-frequency-analysis.html">Frequency analysis</a>
@@ -82,58 +85,73 @@ EEG artifact Rejection. J Neurosci Methods.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">ar_FASTER</span><span class="op">(</span><span class="va">data</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S3 method for eeg_epochs</span>
-<span class="fu">ar_FASTER</span><span class="op">(</span>
-  <span class="va">data</span>,
-  exclude <span class="op">=</span> <span class="cn">NULL</span>,
-  test_chans <span class="op">=</span> <span class="cn">TRUE</span>,
-  test_epochs <span class="op">=</span> <span class="cn">TRUE</span>,
-  test_cine <span class="op">=</span> <span class="cn">TRUE</span>,
-  <span class="va">...</span>
-<span class="op">)</span>
-
-<span class="co"># S3 method for eeg_group</span>
-<span class="fu">ar_FASTER</span><span class="op">(</span>
-  <span class="va">data</span>,
-  exclude <span class="op">=</span> <span class="cn">NULL</span>,
-  test_chans <span class="op">=</span> <span class="cn">TRUE</span>,
-  test_epochs <span class="op">=</span> <span class="cn">TRUE</span>,
-  test_cine <span class="op">=</span> <span class="cn">TRUE</span>,
-  EOG <span class="op">=</span> <span class="cn">NULL</span>,
-  <span class="va">...</span>
-<span class="op">)</span>
-
-<span class="fu">eeg_FASTER</span><span class="op">(</span><span class="va">data</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">ar_FASTER</span><span class="op">(</span><span class="va">data</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for eeg_epochs</span></span>
+<span><span class="fu">ar_FASTER</span><span class="op">(</span></span>
+<span>  <span class="va">data</span>,</span>
+<span>  exclude <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  test_chans <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  test_epochs <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  test_cine <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for eeg_group</span></span>
+<span><span class="fu">ar_FASTER</span><span class="op">(</span></span>
+<span>  <span class="va">data</span>,</span>
+<span>  exclude <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  test_chans <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  test_epochs <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  test_cine <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  EOG <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">eeg_FASTER</span><span class="op">(</span><span class="va">data</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>data</dt>
 <dd><p>An object of class <code>eeg_epochs</code></p></dd>
+
+
 <dt>...</dt>
 <dd><p>Parameters passed to FASTER</p></dd>
+
+
 <dt>exclude</dt>
 <dd><p>Channels to be ignored by FASTER.</p></dd>
+
+
 <dt>test_chans</dt>
 <dd><p>Logical. Run tests of global channel statistics</p></dd>
+
+
 <dt>test_epochs</dt>
 <dd><p>Logical. Run tests of globally bad epochs.</p></dd>
+
+
 <dt>test_cine</dt>
 <dd><p>Logical. Run tests for locally bad channels within epochs.</p></dd>
+
+
 <dt>EOG</dt>
 <dd><p>names of EOG channels to be used when computed maximum EOG values.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>An <code>eeg_epochs</code> object with artefact correction applied.</p>
+    
+
+<p>An <code>eeg_epochs</code> object with artefact correction applied.</p>
     </div>
     <div id="methods-by-class-">
     <h2>Methods (by class)</h2>
     
-<ul><li><p><code>eeg_epochs</code>: Run FASTER on <code>eeg_epochs</code></p></li>
-<li><p><code>eeg_group</code>: Run FASTER on <code>eeg_group</code> objects</p></li>
+<ul><li><p><code>ar_FASTER(eeg_epochs)</code>: Run FASTER on <code>eeg_epochs</code></p></li>
+<li><p><code>ar_FASTER(eeg_group)</code>: Run FASTER on <code>eeg_group</code> objects</p></li>
 </ul></div>
     <div id="references">
     <h2>References</h2>
@@ -147,13 +165,13 @@ EEG artifact Rejection. J Neurosci Methods.</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu">ar_FASTER</span><span class="op">(</span><span class="va">demo_epochs</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">ar_FASTER</span><span class="op">(</span><span class="va">demo_epochs</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Globally bad channels: </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Globally bad epochs: 26 65</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Globally bad epochs: 1 26 65</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Epoched EEG data</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Number of channels	: 11 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Number of epochs	: 78 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Number of epochs	: 77 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Epoch limits		: -0.197 - 0.451 seconds</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Electrode names		: A5 A13 A21 A29 A31 B5 B6 B8 B16 B18 B26 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Sampling rate		: 128  Hz</span>
@@ -172,7 +190,7 @@ EEG artifact Rejection. J Neurosci Methods.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

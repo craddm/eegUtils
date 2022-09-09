@@ -85,119 +85,138 @@ not possible.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">plot_butterfly</span><span class="op">(</span><span class="va">data</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S3 method for default</span>
-<span class="fu">plot_butterfly</span><span class="op">(</span>
-  <span class="va">data</span>,
-  time_lim <span class="op">=</span> <span class="cn">NULL</span>,
-  baseline <span class="op">=</span> <span class="cn">NULL</span>,
-  legend <span class="op">=</span> <span class="cn">TRUE</span>,
-  continuous <span class="op">=</span> <span class="cn">FALSE</span>,
-  browse_mode <span class="op">=</span> <span class="cn">FALSE</span>,
-  allow_facets <span class="op">=</span> <span class="cn">FALSE</span>,
-  <span class="va">...</span>
-<span class="op">)</span>
-
-<span class="co"># S3 method for eeg_evoked</span>
-<span class="fu">plot_butterfly</span><span class="op">(</span>
-  <span class="va">data</span>,
-  time_lim <span class="op">=</span> <span class="cn">NULL</span>,
-  baseline <span class="op">=</span> <span class="cn">NULL</span>,
-  legend <span class="op">=</span> <span class="cn">TRUE</span>,
-  continuous <span class="op">=</span> <span class="cn">FALSE</span>,
-  browse_mode <span class="op">=</span> <span class="cn">FALSE</span>,
-  allow_facets <span class="op">=</span> <span class="cn">FALSE</span>,
-  <span class="va">...</span>
-<span class="op">)</span>
-
-<span class="co"># S3 method for eeg_data</span>
-<span class="fu">plot_butterfly</span><span class="op">(</span>
-  <span class="va">data</span>,
-  time_lim <span class="op">=</span> <span class="cn">NULL</span>,
-  baseline <span class="op">=</span> <span class="cn">NULL</span>,
-  legend <span class="op">=</span> <span class="cn">TRUE</span>,
-  allow_facets <span class="op">=</span> <span class="cn">FALSE</span>,
-  browse_mode <span class="op">=</span> <span class="cn">FALSE</span>,
-  <span class="va">...</span>
-<span class="op">)</span>
-
-<span class="co"># S3 method for eeg_epochs</span>
-<span class="fu">plot_butterfly</span><span class="op">(</span>
-  <span class="va">data</span>,
-  time_lim <span class="op">=</span> <span class="cn">NULL</span>,
-  baseline <span class="op">=</span> <span class="cn">NULL</span>,
-  legend <span class="op">=</span> <span class="cn">TRUE</span>,
-  allow_facets <span class="op">=</span> <span class="cn">FALSE</span>,
-  browse_mode <span class="op">=</span> <span class="cn">FALSE</span>,
-  <span class="va">...</span>
-<span class="op">)</span>
-
-<span class="co"># S3 method for eeg_stats</span>
-<span class="fu">plot_butterfly</span><span class="op">(</span>
-  <span class="va">data</span>,
-  time_lim <span class="op">=</span> <span class="cn">NULL</span>,
-  baseline <span class="op">=</span> <span class="cn">NULL</span>,
-  legend <span class="op">=</span> <span class="cn">TRUE</span>,
-  allow_facets <span class="op">=</span> <span class="cn">FALSE</span>,
-  browse_mode <span class="op">=</span> <span class="cn">FALSE</span>,
-  quantity <span class="op">=</span> <span class="st">"statistic"</span>,
-  <span class="va">...</span>
-<span class="op">)</span>
-
-<span class="co"># S3 method for eeg_lm</span>
-<span class="fu">plot_butterfly</span><span class="op">(</span>
-  <span class="va">data</span>,
-  time_lim <span class="op">=</span> <span class="cn">NULL</span>,
-  baseline <span class="op">=</span> <span class="cn">NULL</span>,
-  legend <span class="op">=</span> <span class="cn">TRUE</span>,
-  allow_facets <span class="op">=</span> <span class="cn">FALSE</span>,
-  browse_mode <span class="op">=</span> <span class="cn">FALSE</span>,
-  quantity <span class="op">=</span> <span class="st">"coefficients"</span>,
-  <span class="va">...</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">plot_butterfly</span><span class="op">(</span><span class="va">data</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for default</span></span>
+<span><span class="fu">plot_butterfly</span><span class="op">(</span></span>
+<span>  <span class="va">data</span>,</span>
+<span>  time_lim <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  baseline <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  legend <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  continuous <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  browse_mode <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  allow_facets <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for eeg_evoked</span></span>
+<span><span class="fu">plot_butterfly</span><span class="op">(</span></span>
+<span>  <span class="va">data</span>,</span>
+<span>  time_lim <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  baseline <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  legend <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  continuous <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  browse_mode <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  allow_facets <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for eeg_data</span></span>
+<span><span class="fu">plot_butterfly</span><span class="op">(</span></span>
+<span>  <span class="va">data</span>,</span>
+<span>  time_lim <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  baseline <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  legend <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  allow_facets <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  browse_mode <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for eeg_epochs</span></span>
+<span><span class="fu">plot_butterfly</span><span class="op">(</span></span>
+<span>  <span class="va">data</span>,</span>
+<span>  time_lim <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  baseline <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  legend <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  allow_facets <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  browse_mode <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for eeg_stats</span></span>
+<span><span class="fu">plot_butterfly</span><span class="op">(</span></span>
+<span>  <span class="va">data</span>,</span>
+<span>  time_lim <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  baseline <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  legend <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  allow_facets <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  browse_mode <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  quantity <span class="op">=</span> <span class="st">"statistic"</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for eeg_lm</span></span>
+<span><span class="fu">plot_butterfly</span><span class="op">(</span></span>
+<span>  <span class="va">data</span>,</span>
+<span>  time_lim <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  baseline <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  legend <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  allow_facets <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  browse_mode <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  quantity <span class="op">=</span> <span class="st">"coefficients"</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>data</dt>
 <dd><p>EEG dataset. Should have multiple timepoints.</p></dd>
+
+
 <dt>...</dt>
 <dd><p>Other parameters passed to plot_butterfly</p></dd>
+
+
 <dt>time_lim</dt>
 <dd><p>Character vector. Numbers in whatever time unit is used
 specifying beginning and end of time-range to plot. e.g. c(-.1,.3)</p></dd>
+
+
 <dt>baseline</dt>
 <dd><p>Character vector. Times to use as a baseline. Takes the mean
 over the specified period and subtracts. e.g. c(-.1, 0)</p></dd>
+
+
 <dt>legend</dt>
 <dd><p>Include plot legend. Defaults to TRUE.</p></dd>
+
+
 <dt>continuous</dt>
 <dd><p>Is the data continuous or not (I.e. epoched)</p></dd>
+
+
 <dt>browse_mode</dt>
 <dd><p>Applies custom theme used with <code><a href="browse_data.html">browse_data()</a></code>.</p></dd>
+
+
 <dt>allow_facets</dt>
 <dd><p>Allow use of ggplot2 facetting. See note below. Defaults
 to FALSE.</p></dd>
+
+
 <dt>quantity</dt>
 <dd><p>Which aspect of the linear model you want to be plotted. only
 applies to <code>eeg_lm</code> objects</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>ggplot2 object showing ERPs for all electrodes overlaid on a single
+    
+
+<p>ggplot2 object showing ERPs for all electrodes overlaid on a single
 plot.</p>
     </div>
     <div id="methods-by-class-">
     <h2>Methods (by class)</h2>
     
-<ul><li><p><code>default</code>: Default <code>plot_butterfly</code> method for data.frames,
+<ul><li><p><code>plot_butterfly(default)</code>: Default <code>plot_butterfly</code> method for data.frames,
 <code>eeg_data</code></p></li>
-<li><p><code>eeg_evoked</code>: Plot butterfly for <code>eeg_evoked</code> objects</p></li>
-<li><p><code>eeg_data</code>: Create butterfly plot for <code>eeg_data</code> objects</p></li>
-<li><p><code>eeg_epochs</code>: Create butterfly plot for <code>eeg_epochs</code> objects</p></li>
-<li><p><code>eeg_stats</code>: Create butterfly plot for <code>eeg_stats</code> objects</p></li>
-<li><p><code>eeg_lm</code>: Create butterfly plot for <code>eeg_lm</code> objects</p></li>
+<li><p><code>plot_butterfly(eeg_evoked)</code>: Plot butterfly for <code>eeg_evoked</code> objects</p></li>
+<li><p><code>plot_butterfly(eeg_data)</code>: Create butterfly plot for <code>eeg_data</code> objects</p></li>
+<li><p><code>plot_butterfly(eeg_epochs)</code>: Create butterfly plot for <code>eeg_epochs</code> objects</p></li>
+<li><p><code>plot_butterfly(eeg_stats)</code>: Create butterfly plot for <code>eeg_stats</code> objects</p></li>
+<li><p><code>plot_butterfly(eeg_lm)</code>: Create butterfly plot for <code>eeg_lm</code> objects</p></li>
 </ul></div>
     <div id="notes-on-ggplot-facetting">
     <h2>Notes on ggplot2 facetting</h2>
@@ -219,12 +238,12 @@ electrodes, and epochs.</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu">plot_butterfly</span><span class="op">(</span><span class="va">demo_epochs</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">plot_butterfly</span><span class="op">(</span><span class="va">demo_epochs</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Creating epochs based on combinations of variables: epoch_label participant_id </span>
 <span class="r-plt img"><img src="plot_butterfly-1.png" alt="" width="700" height="433"></span>
-<span class="r-in"><span class="fu">plot_butterfly</span><span class="op">(</span><span class="va">demo_epochs</span>,</span>
-<span class="r-in">time_lim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">.1</span>, <span class="fl">.4</span><span class="op">)</span>,</span>
-<span class="r-in">legend <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu">plot_butterfly</span><span class="op">(</span><span class="va">demo_epochs</span>,</span></span>
+<span class="r-in"><span>time_lim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">.1</span>, <span class="fl">.4</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>legend <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Creating epochs based on combinations of variables: epoch_label participant_id </span>
 <span class="r-plt img"><img src="plot_butterfly-2.png" alt="" width="700" height="433"></span>
 </code></pre></div>
@@ -241,7 +260,7 @@ electrodes, and epochs.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

@@ -32,7 +32,7 @@ eeg_data structure."><meta name="robots" content="noindex"><!-- mathjax --><scri
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -45,6 +45,9 @@ eeg_data structure."><meta name="robots" content="noindex"><!-- mathjax --><scri
     </li>
     <li>
       <a href="../articles/linear_modelling/linear_modelling.html">Linear Modelling</a>
+    </li>
+    <li>
+      <a href="../articles/single_subj_N170/N170_single_subject.html">Getting started with eegUtils and the N170</a>
     </li>
     <li>
       <a href="../articles/time-frequency-analysis.html">Frequency analysis</a>
@@ -84,34 +87,34 @@ removed from the data. Meta-data about the referencing scheme is held in the
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">eeg_reference</span><span class="op">(</span><span class="va">data</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S3 method for default</span>
-<span class="fu">eeg_reference</span><span class="op">(</span><span class="va">data</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S3 method for eeg_data</span>
-<span class="fu">eeg_reference</span><span class="op">(</span>
-  <span class="va">data</span>,
-  ref_chans <span class="op">=</span> <span class="st">"average"</span>,
-  exclude <span class="op">=</span> <span class="cn">NULL</span>,
-  robust <span class="op">=</span> <span class="cn">FALSE</span>,
-  implicit_ref <span class="op">=</span> <span class="cn">NULL</span>,
-  verbose <span class="op">=</span> <span class="cn">TRUE</span>,
-  <span class="va">...</span>
-<span class="op">)</span>
-
-<span class="co"># S3 method for eeg_epochs</span>
-<span class="fu">eeg_reference</span><span class="op">(</span>
-  <span class="va">data</span>,
-  ref_chans <span class="op">=</span> <span class="st">"average"</span>,
-  exclude <span class="op">=</span> <span class="cn">NULL</span>,
-  robust <span class="op">=</span> <span class="cn">FALSE</span>,
-  implicit_ref <span class="op">=</span> <span class="cn">NULL</span>,
-  verbose <span class="op">=</span> <span class="cn">TRUE</span>,
-  <span class="va">...</span>
-<span class="op">)</span>
-
-<span class="fu">reref_eeg</span><span class="op">(</span><span class="va">data</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">eeg_reference</span><span class="op">(</span><span class="va">data</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for default</span></span>
+<span><span class="fu">eeg_reference</span><span class="op">(</span><span class="va">data</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for eeg_data</span></span>
+<span><span class="fu">eeg_reference</span><span class="op">(</span></span>
+<span>  <span class="va">data</span>,</span>
+<span>  ref_chans <span class="op">=</span> <span class="st">"average"</span>,</span>
+<span>  exclude <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  robust <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  implicit_ref <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for eeg_epochs</span></span>
+<span><span class="fu">eeg_reference</span><span class="op">(</span></span>
+<span>  <span class="va">data</span>,</span>
+<span>  ref_chans <span class="op">=</span> <span class="st">"average"</span>,</span>
+<span>  exclude <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  robust <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  implicit_ref <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">reref_eeg</span><span class="op">(</span><span class="va">data</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -119,35 +122,50 @@ removed from the data. Meta-data about the referencing scheme is held in the
     <dl><dt>data</dt>
 <dd><p>Data to re-reference. Primarily meant for use with data of class
 <code>eeg_data</code>.</p></dd>
+
+
 <dt>...</dt>
 <dd><p>Further parameters to be passed to <code>eeg_reference</code></p></dd>
+
+
 <dt>ref_chans</dt>
 <dd><p>Channels to reference data to. Defaults to "average" i.e.
 average of all electrodes in data. Character vector of channel names or
 numbers.</p></dd>
+
+
 <dt>exclude</dt>
 <dd><p>Electrodes to exclude from average reference calculation.</p></dd>
+
+
 <dt>robust</dt>
 <dd><p>Use median instead of mean; only used for average reference.
 Defaults to FALSE.</p></dd>
+
+
 <dt>implicit_ref</dt>
 <dd><p>Implicit reference channel - use this to add a channel
 back that was previously used as a reference. E.g. if the LM (left mastoid)
 channel was used in recording and is absent from the data, passing "LM"
 adds an "LM" channel back to the data, populated with zeroes.</p></dd>
+
+
 <dt>verbose</dt>
 <dd><p>Print informative messages in console. Defaults to TRUE.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>object of class <code>eeg_data</code>, re-referenced as requested.</p>
+    
+
+<p>object of class <code>eeg_data</code>, re-referenced as requested.</p>
     </div>
     <div id="methods-by-class-">
     <h2>Methods (by class)</h2>
     
-<ul><li><p><code>default</code>: Default method</p></li>
-<li><p><code>eeg_data</code>: Rereference objects of class <code>eeg_data</code></p></li>
-<li><p><code>eeg_epochs</code>: Rereference objects of class <code>eeg_epochs</code></p></li>
+<ul><li><p><code>eeg_reference(default)</code>: Default method</p></li>
+<li><p><code>eeg_reference(eeg_data)</code>: Rereference objects of class <code>eeg_data</code></p></li>
+<li><p><code>eeg_reference(eeg_epochs)</code>: Rereference objects of class <code>eeg_epochs</code></p></li>
 </ul></div>
     <div id="author">
     <h2>Author</h2>
@@ -156,8 +174,8 @@ adds an "LM" channel back to the data, populated with zeroes.</p></dd>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># demo_epochs is average referenced by default</span></span>
-<span class="r-in"><span class="va">demo_epochs</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># demo_epochs is average referenced by default</span></span></span>
+<span class="r-in"><span><span class="va">demo_epochs</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Epoched EEG data</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Number of channels	: 11 </span>
@@ -166,8 +184,8 @@ adds an "LM" channel back to the data, populated with zeroes.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Electrode names		: A5 A13 A21 A29 A31 B5 B6 B8 B16 B18 B26 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Sampling rate		: 128  Hz</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Reference		: average </span>
-<span class="r-in"><span class="co"># Rereference it but exclude B5 from calculation of the average</span></span>
-<span class="r-in"><span class="fu">eeg_reference</span><span class="op">(</span><span class="va">demo_epochs</span>, exclude <span class="op">=</span> <span class="st">"B5"</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="co"># Rereference it but exclude B5 from calculation of the average</span></span></span>
+<span class="r-in"><span><span class="fu">eeg_reference</span><span class="op">(</span><span class="va">demo_epochs</span>, exclude <span class="op">=</span> <span class="st">"B5"</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> You have used the existing reference channel(s), average again.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Epoched EEG data</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -177,8 +195,8 @@ adds an "LM" channel back to the data, populated with zeroes.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Electrode names		: A5 A13 A21 A29 A31 B5 B6 B8 B16 B18 B26 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Sampling rate		: 128  Hz</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Reference		: average </span>
-<span class="r-in"><span class="co"># Reference data using the median of the reference channels rather than the mean</span></span>
-<span class="r-in"><span class="fu">eeg_reference</span><span class="op">(</span><span class="va">demo_epochs</span>, robust <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="co"># Reference data using the median of the reference channels rather than the mean</span></span></span>
+<span class="r-in"><span><span class="fu">eeg_reference</span><span class="op">(</span><span class="va">demo_epochs</span>, robust <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> You have used the existing reference channel(s), average again.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Epoched EEG data</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -188,8 +206,8 @@ adds an "LM" channel back to the data, populated with zeroes.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Electrode names		: A5 A13 A21 A29 A31 B5 B6 B8 B16 B18 B26 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Sampling rate		: 128  Hz</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Reference		: average </span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu">eeg_reference</span><span class="op">(</span><span class="va">demo_spatial</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">eeg_reference</span><span class="op">(</span><span class="va">demo_spatial</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> You have used the existing reference channel(s), average again.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Epoched EEG data</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -199,7 +217,7 @@ adds an "LM" channel back to the data, populated with zeroes.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Electrode names		: Fp1 Fp2 Fz Cz Pz P3 P4 C3 C4 P7 P8 F3 F4 T7 T8 F7 F8 Oz Fpz EXG1 EXG2 EXG3 EXG4 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Sampling rate		: 128  Hz</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Reference		: average </span>
-<span class="r-in"><span class="fu">eeg_reference</span><span class="op">(</span><span class="va">demo_spatial</span>, ref_chans <span class="op">=</span> <span class="st">"Fz"</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu">eeg_reference</span><span class="op">(</span><span class="va">demo_spatial</span>, ref_chans <span class="op">=</span> <span class="st">"Fz"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Epoched EEG data</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Number of channels	: 22 </span>
@@ -208,7 +226,7 @@ adds an "LM" channel back to the data, populated with zeroes.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Electrode names		: Fp1 Fp2 Cz Pz P3 P4 C3 C4 P7 P8 F3 F4 T7 T8 F7 F8 Oz Fpz EXG1 EXG2 EXG3 EXG4 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Sampling rate		: 128  Hz</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Reference		: Fz </span>
-<span class="r-in"><span class="fu">eeg_reference</span><span class="op">(</span><span class="va">demo_spatial</span>, implicit_ref <span class="op">=</span> <span class="st">"LM"</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu">eeg_reference</span><span class="op">(</span><span class="va">demo_spatial</span>, implicit_ref <span class="op">=</span> <span class="st">"LM"</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> You have used the existing reference channel(s), average again.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Epoched EEG data</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -232,7 +250,7 @@ adds an "LM" channel back to the data, populated with zeroes.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

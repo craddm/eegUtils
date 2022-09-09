@@ -83,41 +83,46 @@ of electrode locations in 3D space.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">plot_electrodes</span><span class="op">(</span><span class="va">data</span>, interact <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-
-<span class="co"># S3 method for default</span>
-<span class="fu">plot_electrodes</span><span class="op">(</span><span class="va">data</span>, interact <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-
-<span class="co"># S3 method for eeg_data</span>
-<span class="fu">plot_electrodes</span><span class="op">(</span><span class="va">data</span>, interact <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-
-<span class="co"># S3 method for eeg_evoked</span>
-<span class="fu">plot_electrodes</span><span class="op">(</span><span class="va">data</span>, interact <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-
-<span class="co"># S3 method for eeg_tfr</span>
-<span class="fu">plot_electrodes</span><span class="op">(</span><span class="va">data</span>, interact <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">plot_electrodes</span><span class="op">(</span><span class="va">data</span>, interact <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for default</span></span>
+<span><span class="fu">plot_electrodes</span><span class="op">(</span><span class="va">data</span>, interact <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for eeg_data</span></span>
+<span><span class="fu">plot_electrodes</span><span class="op">(</span><span class="va">data</span>, interact <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for eeg_evoked</span></span>
+<span><span class="fu">plot_electrodes</span><span class="op">(</span><span class="va">data</span>, interact <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for eeg_tfr</span></span>
+<span><span class="fu">plot_electrodes</span><span class="op">(</span><span class="va">data</span>, interact <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>data</dt>
 <dd><p>Data with associated electrode locations to be plotted.</p></dd>
+
+
 <dt>interact</dt>
 <dd><p>Choose 2D cartesian layout, or, if set to TRUE, an
 interactive 3D plot of electrode locations. Defaults to FALSE.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A <code>ggplot</code> or <code>plotly</code> figure showing the locations of the
+    
+
+<p>A <code>ggplot</code> or <code>plotly</code> figure showing the locations of the
 electrodes</p>
     </div>
     <div id="methods-by-class-">
     <h2>Methods (by class)</h2>
     
-<ul><li><p><code>default</code>: generic plot electrodes function</p></li>
-<li><p><code>eeg_data</code>: Plot electrodes associated with an <code>eeg_data</code> object.</p></li>
-<li><p><code>eeg_evoked</code>: Plot electrodes associated with an <code>eeg_evoked</code> object.</p></li>
-<li><p><code>eeg_tfr</code>: Plot electrodes associated with an <code>eeg_data</code> object.</p></li>
+<ul><li><p><code>plot_electrodes(default)</code>: generic plot electrodes function</p></li>
+<li><p><code>plot_electrodes(eeg_data)</code>: Plot electrodes associated with an <code>eeg_data</code> object.</p></li>
+<li><p><code>plot_electrodes(eeg_evoked)</code>: Plot electrodes associated with an <code>eeg_evoked</code> object.</p></li>
+<li><p><code>plot_electrodes(eeg_tfr)</code>: Plot electrodes associated with an <code>eeg_data</code> object.</p></li>
 </ul></div>
     <div id="author">
     <h2>Author</h2>
@@ -126,10 +131,10 @@ electrodes</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"></span>
-<span class="r-in"><span class="fu">plot_electrodes</span><span class="op">(</span><span class="va">demo_epochs</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">plot_electrodes</span><span class="op">(</span><span class="va">demo_epochs</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="plot_electrodes-1.png" alt="" width="700" height="433"></span>
-<span class="r-in"></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -144,7 +149,7 @@ electrodes</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

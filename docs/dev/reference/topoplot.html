@@ -29,7 +29,7 @@
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -81,127 +81,127 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">topoplot</span><span class="op">(</span><span class="va">data</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S3 method for default</span>
-<span class="fu">topoplot</span><span class="op">(</span><span class="va">data</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S3 method for data.frame</span>
-<span class="fu">topoplot</span><span class="op">(</span>
-  <span class="va">data</span>,
-  time_lim <span class="op">=</span> <span class="cn">NULL</span>,
-  limits <span class="op">=</span> <span class="cn">NULL</span>,
-  chanLocs <span class="op">=</span> <span class="cn">NULL</span>,
-  method <span class="op">=</span> <span class="st">"Biharmonic"</span>,
-  r <span class="op">=</span> <span class="cn">NULL</span>,
-  grid_res <span class="op">=</span> <span class="fl">200</span>,
-  palette <span class="op">=</span> <span class="st">"RdBu"</span>,
-  interp_limit <span class="op">=</span> <span class="st">"skirt"</span>,
-  contour <span class="op">=</span> <span class="cn">TRUE</span>,
-  chan_marker <span class="op">=</span> <span class="st">"point"</span>,
-  quantity <span class="op">=</span> <span class="st">"amplitude"</span>,
-  montage <span class="op">=</span> <span class="cn">NULL</span>,
-  highlights <span class="op">=</span> <span class="cn">NULL</span>,
-  scaling <span class="op">=</span> <span class="fl">1</span>,
-  groups <span class="op">=</span> <span class="cn">NULL</span>,
-  verbose <span class="op">=</span> <span class="cn">TRUE</span>,
-  k <span class="op">=</span> <span class="fl">40</span>,
-  <span class="va">...</span>
-<span class="op">)</span>
-
-<span class="co"># S3 method for eeg_data</span>
-<span class="fu">topoplot</span><span class="op">(</span>
-  <span class="va">data</span>,
-  time_lim <span class="op">=</span> <span class="cn">NULL</span>,
-  limits <span class="op">=</span> <span class="cn">NULL</span>,
-  chanLocs <span class="op">=</span> <span class="cn">NULL</span>,
-  method <span class="op">=</span> <span class="st">"Biharmonic"</span>,
-  r <span class="op">=</span> <span class="cn">NULL</span>,
-  grid_res <span class="op">=</span> <span class="fl">200</span>,
-  palette <span class="op">=</span> <span class="st">"RdBu"</span>,
-  interp_limit <span class="op">=</span> <span class="st">"skirt"</span>,
-  contour <span class="op">=</span> <span class="cn">TRUE</span>,
-  chan_marker <span class="op">=</span> <span class="st">"point"</span>,
-  quantity <span class="op">=</span> <span class="st">"amplitude"</span>,
-  montage <span class="op">=</span> <span class="cn">NULL</span>,
-  highlights <span class="op">=</span> <span class="cn">NULL</span>,
-  scaling <span class="op">=</span> <span class="fl">1</span>,
-  verbose <span class="op">=</span> <span class="cn">TRUE</span>,
-  groups <span class="op">=</span> <span class="cn">NULL</span>,
-  k <span class="op">=</span> <span class="fl">40</span>,
-  <span class="va">...</span>
-<span class="op">)</span>
-
-<span class="co"># S3 method for eeg_epochs</span>
-<span class="fu">topoplot</span><span class="op">(</span>
-  <span class="va">data</span>,
-  time_lim <span class="op">=</span> <span class="cn">NULL</span>,
-  limits <span class="op">=</span> <span class="cn">NULL</span>,
-  chanLocs <span class="op">=</span> <span class="cn">NULL</span>,
-  method <span class="op">=</span> <span class="st">"Biharmonic"</span>,
-  r <span class="op">=</span> <span class="cn">NULL</span>,
-  grid_res <span class="op">=</span> <span class="fl">200</span>,
-  palette <span class="op">=</span> <span class="st">"RdBu"</span>,
-  interp_limit <span class="op">=</span> <span class="st">"skirt"</span>,
-  contour <span class="op">=</span> <span class="cn">TRUE</span>,
-  chan_marker <span class="op">=</span> <span class="st">"point"</span>,
-  quantity <span class="op">=</span> <span class="st">"amplitude"</span>,
-  montage <span class="op">=</span> <span class="cn">NULL</span>,
-  highlights <span class="op">=</span> <span class="cn">NULL</span>,
-  scaling <span class="op">=</span> <span class="fl">1</span>,
-  groups <span class="op">=</span> <span class="cn">NULL</span>,
-  verbose <span class="op">=</span> <span class="cn">TRUE</span>,
-  k <span class="op">=</span> <span class="fl">40</span>,
-  <span class="va">...</span>
-<span class="op">)</span>
-
-<span class="co"># S3 method for eeg_ICA</span>
-<span class="fu">topoplot</span><span class="op">(</span>
-  <span class="va">data</span>,
-  <span class="va">component</span>,
-  time_lim <span class="op">=</span> <span class="cn">NULL</span>,
-  limits <span class="op">=</span> <span class="cn">NULL</span>,
-  chanLocs <span class="op">=</span> <span class="cn">NULL</span>,
-  method <span class="op">=</span> <span class="st">"Biharmonic"</span>,
-  r <span class="op">=</span> <span class="cn">NULL</span>,
-  grid_res <span class="op">=</span> <span class="fl">200</span>,
-  palette <span class="op">=</span> <span class="st">"RdBu"</span>,
-  interp_limit <span class="op">=</span> <span class="st">"skirt"</span>,
-  contour <span class="op">=</span> <span class="cn">TRUE</span>,
-  chan_marker <span class="op">=</span> <span class="st">"point"</span>,
-  quantity <span class="op">=</span> <span class="st">"amplitude"</span>,
-  montage <span class="op">=</span> <span class="cn">NULL</span>,
-  highlights <span class="op">=</span> <span class="cn">NULL</span>,
-  scaling <span class="op">=</span> <span class="fl">1</span>,
-  verbose <span class="op">=</span> <span class="cn">TRUE</span>,
-  groups <span class="op">=</span> <span class="cn">NULL</span>,
-  k <span class="op">=</span> <span class="fl">40</span>,
-  <span class="va">...</span>
-<span class="op">)</span>
-
-<span class="co"># S3 method for eeg_tfr</span>
-<span class="fu">topoplot</span><span class="op">(</span>
-  <span class="va">data</span>,
-  time_lim <span class="op">=</span> <span class="cn">NULL</span>,
-  limits <span class="op">=</span> <span class="cn">NULL</span>,
-  chanLocs <span class="op">=</span> <span class="cn">NULL</span>,
-  method <span class="op">=</span> <span class="st">"Biharmonic"</span>,
-  r <span class="op">=</span> <span class="cn">NULL</span>,
-  grid_res <span class="op">=</span> <span class="fl">200</span>,
-  palette <span class="op">=</span> <span class="st">"RdBu"</span>,
-  interp_limit <span class="op">=</span> <span class="st">"skirt"</span>,
-  contour <span class="op">=</span> <span class="cn">TRUE</span>,
-  chan_marker <span class="op">=</span> <span class="st">"point"</span>,
-  quantity <span class="op">=</span> <span class="st">"power"</span>,
-  montage <span class="op">=</span> <span class="cn">NULL</span>,
-  highlights <span class="op">=</span> <span class="cn">NULL</span>,
-  scaling <span class="op">=</span> <span class="fl">1</span>,
-  freq_range <span class="op">=</span> <span class="cn">NULL</span>,
-  verbose <span class="op">=</span> <span class="cn">TRUE</span>,
-  groups <span class="op">=</span> <span class="cn">NULL</span>,
-  k <span class="op">=</span> <span class="fl">40</span>,
-  <span class="va">...</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">topoplot</span><span class="op">(</span><span class="va">data</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for default</span></span>
+<span><span class="fu">topoplot</span><span class="op">(</span><span class="va">data</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for data.frame</span></span>
+<span><span class="fu">topoplot</span><span class="op">(</span></span>
+<span>  <span class="va">data</span>,</span>
+<span>  time_lim <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  limits <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  chanLocs <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  method <span class="op">=</span> <span class="st">"Biharmonic"</span>,</span>
+<span>  r <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  grid_res <span class="op">=</span> <span class="fl">200</span>,</span>
+<span>  palette <span class="op">=</span> <span class="st">"RdBu"</span>,</span>
+<span>  interp_limit <span class="op">=</span> <span class="st">"skirt"</span>,</span>
+<span>  contour <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  chan_marker <span class="op">=</span> <span class="st">"point"</span>,</span>
+<span>  quantity <span class="op">=</span> <span class="st">"amplitude"</span>,</span>
+<span>  montage <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  highlights <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  scaling <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  groups <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  k <span class="op">=</span> <span class="fl">40</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for eeg_data</span></span>
+<span><span class="fu">topoplot</span><span class="op">(</span></span>
+<span>  <span class="va">data</span>,</span>
+<span>  time_lim <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  limits <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  chanLocs <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  method <span class="op">=</span> <span class="st">"Biharmonic"</span>,</span>
+<span>  r <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  grid_res <span class="op">=</span> <span class="fl">200</span>,</span>
+<span>  palette <span class="op">=</span> <span class="st">"RdBu"</span>,</span>
+<span>  interp_limit <span class="op">=</span> <span class="st">"skirt"</span>,</span>
+<span>  contour <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  chan_marker <span class="op">=</span> <span class="st">"point"</span>,</span>
+<span>  quantity <span class="op">=</span> <span class="st">"amplitude"</span>,</span>
+<span>  montage <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  highlights <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  scaling <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  groups <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  k <span class="op">=</span> <span class="fl">40</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for eeg_epochs</span></span>
+<span><span class="fu">topoplot</span><span class="op">(</span></span>
+<span>  <span class="va">data</span>,</span>
+<span>  time_lim <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  limits <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  chanLocs <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  method <span class="op">=</span> <span class="st">"Biharmonic"</span>,</span>
+<span>  r <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  grid_res <span class="op">=</span> <span class="fl">200</span>,</span>
+<span>  palette <span class="op">=</span> <span class="st">"RdBu"</span>,</span>
+<span>  interp_limit <span class="op">=</span> <span class="st">"skirt"</span>,</span>
+<span>  contour <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  chan_marker <span class="op">=</span> <span class="st">"point"</span>,</span>
+<span>  quantity <span class="op">=</span> <span class="st">"amplitude"</span>,</span>
+<span>  montage <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  highlights <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  scaling <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  groups <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  k <span class="op">=</span> <span class="fl">40</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for eeg_ICA</span></span>
+<span><span class="fu">topoplot</span><span class="op">(</span></span>
+<span>  <span class="va">data</span>,</span>
+<span>  <span class="va">component</span>,</span>
+<span>  time_lim <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  limits <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  chanLocs <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  method <span class="op">=</span> <span class="st">"Biharmonic"</span>,</span>
+<span>  r <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  grid_res <span class="op">=</span> <span class="fl">200</span>,</span>
+<span>  palette <span class="op">=</span> <span class="st">"RdBu"</span>,</span>
+<span>  interp_limit <span class="op">=</span> <span class="st">"skirt"</span>,</span>
+<span>  contour <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  chan_marker <span class="op">=</span> <span class="st">"point"</span>,</span>
+<span>  quantity <span class="op">=</span> <span class="st">"amplitude"</span>,</span>
+<span>  montage <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  highlights <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  scaling <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  groups <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  k <span class="op">=</span> <span class="fl">40</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for eeg_tfr</span></span>
+<span><span class="fu">topoplot</span><span class="op">(</span></span>
+<span>  <span class="va">data</span>,</span>
+<span>  time_lim <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  limits <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  chanLocs <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  method <span class="op">=</span> <span class="st">"Biharmonic"</span>,</span>
+<span>  r <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  grid_res <span class="op">=</span> <span class="fl">200</span>,</span>
+<span>  palette <span class="op">=</span> <span class="st">"RdBu"</span>,</span>
+<span>  interp_limit <span class="op">=</span> <span class="st">"skirt"</span>,</span>
+<span>  contour <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  chan_marker <span class="op">=</span> <span class="st">"point"</span>,</span>
+<span>  quantity <span class="op">=</span> <span class="st">"power"</span>,</span>
+<span>  montage <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  highlights <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  scaling <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  freq_range <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  groups <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  k <span class="op">=</span> <span class="fl">40</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -210,79 +210,120 @@
 <dd><p>An EEG dataset. If the input is a data.frame, then it must have
 columns x, y, and amplitude at present. x and y are (Cartesian) electrode
 co-ordinates), amplitude is amplitude.</p></dd>
+
+
 <dt>...</dt>
 <dd><p>Various arguments passed to specific functions</p></dd>
+
+
 <dt>time_lim</dt>
 <dd><p>Timepoint(s) to plot. Can be one time, a range to average
 over, or a list of individual times. If none is supplied, the function will
 average across all timepoints in the supplied data.</p></dd>
+
+
 <dt>limits</dt>
 <dd><p>Limits of the fill scale - should be given as a character
 vector with two values specifying the start and endpoints e.g. limits =
 c(-2,-2). Will ignore anything else. Defaults to the range of the data.</p></dd>
+
+
 <dt>chanLocs</dt>
 <dd><p>Allows passing of channel locations (see
 <code>electrode_locations</code>)</p></dd>
+
+
 <dt>method</dt>
 <dd><p>Interpolation method. "Biharmonic" or "gam". "Biharmonic"
 implements the same method used in Matlab's EEGLAB. "gam" fits a
 Generalized Additive Model with k = 40 knots. Defaults to biharmonic spline
 interpolation.</p></dd>
+
+
 <dt>r</dt>
 <dd><p>Radius of cartoon head_shape in mm. Default value is 95 (mm) when
 using <code>interp_limit = "skirt"</code>.</p></dd>
+
+
 <dt>grid_res</dt>
 <dd><p>Resolution of the interpolated grid. Higher = smoother but
 slower. Defaults to 200 points per edge.</p></dd>
+
+
 <dt>palette</dt>
 <dd><p>Defaults to RdBu if none supplied. Can be any palette from
 RColorBrewer or viridis. If an unsupported palette is specified, switches
 to Greens.</p></dd>
+
+
 <dt>interp_limit</dt>
 <dd><p>"skirt" or "head". Defaults to "skirt". "skirt"
 interpolates just past the farthest electrode and does not respect the
 boundary of the head_shape. "head" interpolates up to the radius of the
 plotted head, and moves all electrodes inside the head.</p></dd>
+
+
 <dt>contour</dt>
 <dd><p>Plot contour lines on topography (defaults to TRUE)</p></dd>
+
+
 <dt>chan_marker</dt>
 <dd><p>Set marker for electrode locations. "point" = point,
 "name" = electrode name, "none" = no marker. Defaults to "point".</p></dd>
+
+
 <dt>quantity</dt>
 <dd><p>Allows plotting of an arbitrary quantitative column. Defaults
 to amplitude. Use quoted column names. E.g. "p.value", "t_statistic".</p></dd>
+
+
 <dt>montage</dt>
 <dd><p>Name of an existing montage set. Defaults to NULL; (currently
 only 'biosemi64alpha' available other than default 10/20 system)</p></dd>
+
+
 <dt>highlights</dt>
 <dd><p>Electrodes to highlight (in white).</p></dd>
+
+
 <dt>scaling</dt>
 <dd><p>Scaling multiplication factor for labels and any plot lines.
 Defaults to 1.</p></dd>
+
+
 <dt>groups</dt>
 <dd><p>Column name for groups to retain. This is required to create
 facetted plots.</p></dd>
+
+
 <dt>verbose</dt>
 <dd><p>Warning messages when electrodes do not have locations.
 Defaults to TRUE.</p></dd>
+
+
 <dt>k</dt>
 <dd><p>Degrees of freedom used for spline when using <code>method = gam</code>.
 Defaults to 40.</p></dd>
+
+
 <dt>component</dt>
 <dd><p>Component to plot (numeric)</p></dd>
+
+
 <dt>freq_range</dt>
 <dd><p>Range of frequencies to average over.</p></dd>
+
 </dl></div>
     <div id="methods-by-class-">
     <h2>Methods (by class)</h2>
     
-<ul><li><p><code>default</code>: Default method for data frames.</p></li>
-<li><p><code>data.frame</code>: Topographical plotting of data.frames and other non
+<ul><li><p><code>topoplot(default)</code>: Default method for data frames.</p></li>
+<li><p><code>topoplot(data.frame)</code>: Topographical plotting of data.frames and other non
 eeg_data objects.</p></li>
-<li><p><code>eeg_data</code>: Topographical plotting of <code>eeg_data</code> objects.</p></li>
-<li><p><code>eeg_epochs</code>: Topographical plotting of <code>eeg_epochs</code> objects.</p></li>
-<li><p><code>eeg_ICA</code>: Topographical plot for <code>eeg_ICA</code> objects</p></li>
-<li><p><code>eeg_tfr</code>: Topographical plotting of <code>eeg_tfr</code> objects.</p></li>
+<li><p><code>topoplot(eeg_data)</code>: Topographical plotting of <code>eeg_data</code> objects.</p></li>
+<li><p><code>topoplot(eeg_epochs)</code>: Topographical plotting of <code>eeg_epochs</code> objects.</p></li>
+<li><p><code>topoplot(eeg_ICA)</code>: Topographical plot for <code>eeg_ICA</code> objects</p></li>
+<li><p><code>topoplot(eeg_tfr)</code>: Topographical plotting of <code>eeg_tfr</code> objects.</p></li>
 </ul></div>
     <div id="notes-on-usage-of-generalized-additive-models-for-interpolation">
     <h2>Notes on usage of Generalized Additive Models for interpolation</h2>
@@ -309,15 +350,19 @@ there are more than 40 electrodes.</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu">topoplot</span><span class="op">(</span><span class="va">demo_epochs</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">topoplot</span><span class="op">(</span><span class="va">demo_epochs</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Creating epochs based on combinations of variables: epoch_label participant_id </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Using electrode locations from data.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Plotting head r 95 mm</span>
 <span class="r-plt img"><img src="topoplot-1.png" alt="" width="700" height="433"></span>
-<span class="r-in"><span class="fu">topoplot</span><span class="op">(</span><span class="va">demo_epochs</span>, time_lim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">.1</span>, <span class="fl">.2</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu">topoplot</span><span class="op">(</span><span class="va">demo_epochs</span>, time_lim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">.1</span>, <span class="fl">.2</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Creating epochs based on combinations of variables: epoch_label participant_id </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Using electrode locations from data.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Plotting head r 95 mm</span>
 <span class="r-plt img"><img src="topoplot-2.png" alt="" width="700" height="433"></span>
-<span class="r-in"><span class="fu">topoplot</span><span class="op">(</span><span class="va">demo_spatial</span>, time_lim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">.1</span>, <span class="fl">.2</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu">topoplot</span><span class="op">(</span><span class="va">demo_spatial</span>, time_lim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">.1</span>, <span class="fl">.2</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Creating epochs based on combinations of variables: participant_id epoch_labels </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Returning closest time points to those requested: -0.00391 0.0977 0.199 </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Using electrode locations from data.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Removing channels with no location.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Plotting head r 95 mm</span>
@@ -336,7 +381,7 @@ there are more than 40 electrodes.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

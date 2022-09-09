@@ -93,42 +93,51 @@ image, an ERP, and a power spectral density plot from 4-50 Hz.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">browse_data</span><span class="op">(</span><span class="va">data</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S3 method for eeg_ICA</span>
-<span class="fu">browse_data</span><span class="op">(</span><span class="va">data</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S3 method for eeg_data</span>
-<span class="fu">browse_data</span><span class="op">(</span><span class="va">data</span>, sig_length <span class="op">=</span> <span class="fl">5</span>, downsample <span class="op">=</span> <span class="cn">TRUE</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S3 method for eeg_epochs</span>
-<span class="fu">browse_data</span><span class="op">(</span><span class="va">data</span>, sig_length <span class="op">=</span> <span class="fl">5</span>, downsample <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">browse_data</span><span class="op">(</span><span class="va">data</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for eeg_ICA</span></span>
+<span><span class="fu">browse_data</span><span class="op">(</span><span class="va">data</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for eeg_data</span></span>
+<span><span class="fu">browse_data</span><span class="op">(</span><span class="va">data</span>, sig_length <span class="op">=</span> <span class="fl">5</span>, downsample <span class="op">=</span> <span class="cn">TRUE</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for eeg_epochs</span></span>
+<span><span class="fu">browse_data</span><span class="op">(</span><span class="va">data</span>, sig_length <span class="op">=</span> <span class="fl">5</span>, downsample <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>data</dt>
 <dd><p><code>eeg_data</code>, <code>eeg_epochs</code>, or <code>eeg_ICA</code> object to be plotted.</p></dd>
+
+
 <dt>...</dt>
 <dd><p>Other parameters passed to browsing functions.</p></dd>
+
+
 <dt>sig_length</dt>
 <dd><p>Length of signal to be plotted initially (seconds if
 continuous, epochs if epoched).</p></dd>
+
+
 <dt>downsample</dt>
 <dd><p>Only works on <code>eeg_data</code> or <code>eeg_epochs</code> objects.
 Reduces size of data by only plotting every 4th point, speeding up plotting
 considerably. Defaults to TRUE for <code>eeg_data</code>, FALSE for <code>eeg_epochs</code></p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A character vector of component names selected for rejection.</p>
+    
+
+<p>A character vector of component names selected for rejection.</p>
     </div>
     <div id="methods-by-class-">
     <h2>Methods (by class)</h2>
     
-<ul><li><p><code>eeg_ICA</code>: View <code>eeg_ICA</code> component properties</p></li>
-<li><p><code>eeg_data</code>: Browse continuous EEG data.</p></li>
-<li><p><code>eeg_epochs</code>: Browse epoched EEG data.</p></li>
+<ul><li><p><code>browse_data(eeg_ICA)</code>: View <code>eeg_ICA</code> component properties</p></li>
+<li><p><code>browse_data(eeg_data)</code>: Browse continuous EEG data.</p></li>
+<li><p><code>browse_data(eeg_epochs)</code>: Browse epoched EEG data.</p></li>
 </ul></div>
     <div id="author">
     <h2>Author</h2>
@@ -147,7 +156,7 @@ considerably. Defaults to TRUE for <code>eeg_data</code>, FALSE for <code>eeg_ep
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

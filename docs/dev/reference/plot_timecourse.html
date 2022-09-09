@@ -89,92 +89,92 @@ averaging. Output is a <code>ggplot2</code> object.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">plot_timecourse</span><span class="op">(</span><span class="va">data</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S3 method for data.frame</span>
-<span class="fu">plot_timecourse</span><span class="op">(</span>
-  <span class="va">data</span>,
-  electrode <span class="op">=</span> <span class="cn">NULL</span>,
-  time_lim <span class="op">=</span> <span class="cn">NULL</span>,
-  add_CI <span class="op">=</span> <span class="cn">FALSE</span>,
-  baseline <span class="op">=</span> <span class="cn">NULL</span>,
-  colour <span class="op">=</span> <span class="cn">NULL</span>,
-  color <span class="op">=</span> <span class="cn">NULL</span>,
-  mapping <span class="op">=</span> <span class="cn">NULL</span>,
-  facets <span class="op">=</span> <span class="cn">NULL</span>,
-  <span class="va">...</span>
-<span class="op">)</span>
-
-<span class="co"># S3 method for eeg_evoked</span>
-<span class="fu">plot_timecourse</span><span class="op">(</span>
-  <span class="va">data</span>,
-  electrode <span class="op">=</span> <span class="cn">NULL</span>,
-  time_lim <span class="op">=</span> <span class="cn">NULL</span>,
-  add_CI <span class="op">=</span> <span class="cn">FALSE</span>,
-  baseline <span class="op">=</span> <span class="cn">NULL</span>,
-  colour <span class="op">=</span> <span class="cn">NULL</span>,
-  color <span class="op">=</span> <span class="cn">NULL</span>,
-  mapping <span class="op">=</span> <span class="cn">NULL</span>,
-  facets <span class="op">=</span> <span class="cn">NULL</span>,
-  <span class="va">...</span>
-<span class="op">)</span>
-
-<span class="co"># S3 method for eeg_ICA</span>
-<span class="fu">plot_timecourse</span><span class="op">(</span>
-  <span class="va">data</span>,
-  component <span class="op">=</span> <span class="cn">NULL</span>,
-  time_lim <span class="op">=</span> <span class="cn">NULL</span>,
-  add_CI <span class="op">=</span> <span class="cn">FALSE</span>,
-  baseline <span class="op">=</span> <span class="cn">NULL</span>,
-  colour <span class="op">=</span> <span class="cn">NULL</span>,
-  color <span class="op">=</span> <span class="cn">NULL</span>,
-  mapping <span class="op">=</span> <span class="cn">NULL</span>,
-  facets <span class="op">=</span> <span class="cn">NULL</span>,
-  <span class="va">...</span>
-<span class="op">)</span>
-
-<span class="co"># S3 method for eeg_epochs</span>
-<span class="fu">plot_timecourse</span><span class="op">(</span>
-  <span class="va">data</span>,
-  electrode <span class="op">=</span> <span class="cn">NULL</span>,
-  time_lim <span class="op">=</span> <span class="cn">NULL</span>,
-  add_CI <span class="op">=</span> <span class="cn">FALSE</span>,
-  baseline <span class="op">=</span> <span class="cn">NULL</span>,
-  colour <span class="op">=</span> <span class="cn">NULL</span>,
-  color <span class="op">=</span> <span class="cn">NULL</span>,
-  mapping <span class="op">=</span> <span class="cn">NULL</span>,
-  facets <span class="op">=</span> <span class="cn">NULL</span>,
-  <span class="va">...</span>
-<span class="op">)</span>
-
-<span class="co"># S3 method for eeg_group</span>
-<span class="fu">plot_timecourse</span><span class="op">(</span>
-  <span class="va">data</span>,
-  electrode <span class="op">=</span> <span class="cn">NULL</span>,
-  time_lim <span class="op">=</span> <span class="cn">NULL</span>,
-  add_CI <span class="op">=</span> <span class="cn">FALSE</span>,
-  baseline <span class="op">=</span> <span class="cn">NULL</span>,
-  colour <span class="op">=</span> <span class="cn">NULL</span>,
-  color <span class="op">=</span> <span class="cn">NULL</span>,
-  mapping <span class="op">=</span> <span class="cn">NULL</span>,
-  facets <span class="op">=</span> <span class="cn">NULL</span>,
-  <span class="va">...</span>
-<span class="op">)</span>
-
-<span class="co"># S3 method for eeg_tfr</span>
-<span class="fu">plot_timecourse</span><span class="op">(</span>
-  <span class="va">data</span>,
-  electrode <span class="op">=</span> <span class="cn">NULL</span>,
-  time_lim <span class="op">=</span> <span class="cn">NULL</span>,
-  add_CI <span class="op">=</span> <span class="cn">FALSE</span>,
-  baseline <span class="op">=</span> <span class="cn">NULL</span>,
-  colour <span class="op">=</span> <span class="cn">NULL</span>,
-  color <span class="op">=</span> <span class="cn">NULL</span>,
-  mapping <span class="op">=</span> <span class="cn">NULL</span>,
-  freq_range <span class="op">=</span> <span class="cn">NULL</span>,
-  type <span class="op">=</span> <span class="st">"divide"</span>,
-  <span class="va">...</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">plot_timecourse</span><span class="op">(</span><span class="va">data</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for data.frame</span></span>
+<span><span class="fu">plot_timecourse</span><span class="op">(</span></span>
+<span>  <span class="va">data</span>,</span>
+<span>  electrode <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  time_lim <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  add_CI <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  baseline <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  colour <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  color <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  mapping <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  facets <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for eeg_evoked</span></span>
+<span><span class="fu">plot_timecourse</span><span class="op">(</span></span>
+<span>  <span class="va">data</span>,</span>
+<span>  electrode <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  time_lim <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  add_CI <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  baseline <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  colour <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  color <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  mapping <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  facets <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for eeg_ICA</span></span>
+<span><span class="fu">plot_timecourse</span><span class="op">(</span></span>
+<span>  <span class="va">data</span>,</span>
+<span>  component <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  time_lim <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  add_CI <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  baseline <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  colour <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  color <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  mapping <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  facets <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for eeg_epochs</span></span>
+<span><span class="fu">plot_timecourse</span><span class="op">(</span></span>
+<span>  <span class="va">data</span>,</span>
+<span>  electrode <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  time_lim <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  add_CI <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  baseline <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  colour <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  color <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  mapping <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  facets <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for eeg_group</span></span>
+<span><span class="fu">plot_timecourse</span><span class="op">(</span></span>
+<span>  <span class="va">data</span>,</span>
+<span>  electrode <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  time_lim <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  add_CI <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  baseline <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  colour <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  color <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  mapping <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  facets <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for eeg_tfr</span></span>
+<span><span class="fu">plot_timecourse</span><span class="op">(</span></span>
+<span>  <span class="va">data</span>,</span>
+<span>  electrode <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  time_lim <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  add_CI <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  baseline <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  colour <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  color <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  mapping <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  freq_range <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  type <span class="op">=</span> <span class="st">"divide"</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -248,12 +248,12 @@ frequencies will have shorter timecourses than high frequencies.</p></dd>
     <div id="methods-by-class-">
     <h2>Methods (by class)</h2>
     
-<ul><li><p><code>data.frame</code>: Plot a data.frame timecourse</p></li>
-<li><p><code>eeg_evoked</code>: plot <code>eeg_evoked</code> timecourses</p></li>
-<li><p><code>eeg_ICA</code>: Plot individual components from <code>eeg_ICA</code> components</p></li>
-<li><p><code>eeg_epochs</code>: Plot timecourses from <code>eeg_epochs</code> objects.</p></li>
-<li><p><code>eeg_group</code>: Plot timecourses from <code>eeg_group</code> objects.</p></li>
-<li><p><code>eeg_tfr</code>: Plot timecourses from <code>eeg_tfr</code> objects.</p></li>
+<ul><li><p><code>plot_timecourse(data.frame)</code>: Plot a data.frame timecourse</p></li>
+<li><p><code>plot_timecourse(eeg_evoked)</code>: plot <code>eeg_evoked</code> timecourses</p></li>
+<li><p><code>plot_timecourse(eeg_ICA)</code>: Plot individual components from <code>eeg_ICA</code> components</p></li>
+<li><p><code>plot_timecourse(eeg_epochs)</code>: Plot timecourses from <code>eeg_epochs</code> objects.</p></li>
+<li><p><code>plot_timecourse(eeg_group)</code>: Plot timecourses from <code>eeg_group</code> objects.</p></li>
+<li><p><code>plot_timecourse(eeg_tfr)</code>: Plot timecourses from <code>eeg_tfr</code> objects.</p></li>
 </ul></div>
     <div id="author">
     <h2>Author</h2>
@@ -262,17 +262,16 @@ frequencies will have shorter timecourses than high frequencies.</p></dd>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
-<span class="r-in"><span class="fu">plot_timecourse</span><span class="op">(</span><span class="va">demo_epochs</span>, <span class="st">"A29"</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">plot_timecourse</span><span class="op">(</span><span class="va">demo_epochs</span>, <span class="st">"A29"</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Creating epochs based on combinations of variables: participant_id </span>
 <span class="r-plt img"><img src="plot_timecourse-1.png" alt="" width="700" height="433"></span>
-<span class="r-in"><span class="fu">plot_timecourse</span><span class="op">(</span><span class="va">demo_epochs</span>, <span class="st">"A29"</span>, add_CI <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Computation failed in `stat_summary()`:</span>
+<span class="r-in"><span><span class="fu">plot_timecourse</span><span class="op">(</span><span class="va">demo_epochs</span>, <span class="st">"A29"</span>, add_CI <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="plot_timecourse-2.png" alt="" width="700" height="433"></span>
-<span class="r-in"><span class="fu">plot_timecourse</span><span class="op">(</span><span class="va">demo_spatial</span>, <span class="st">"Oz"</span>, mapping <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>colour <span class="op">=</span> <span class="va">epoch_labels</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu">plot_timecourse</span><span class="op">(</span><span class="va">demo_spatial</span>, <span class="st">"Oz"</span>, mapping <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>colour <span class="op">=</span> <span class="va">epoch_labels</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Creating epochs based on combinations of variables: participant_id epoch_labels </span>
 <span class="r-plt img"><img src="plot_timecourse-3.png" alt="" width="700" height="433"></span>
-<span class="r-in"><span class="fu">plot_timecourse</span><span class="op">(</span><span class="va">demo_spatial</span>, <span class="st">"Oz"</span>, facets <span class="op">=</span> <span class="op">~</span><span class="va">epoch_labels</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu">plot_timecourse</span><span class="op">(</span><span class="va">demo_spatial</span>, <span class="st">"Oz"</span>, facets <span class="op">=</span> <span class="op">~</span><span class="va">epoch_labels</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Creating epochs based on combinations of variables: participant_id epoch_labels </span>
 <span class="r-plt img"><img src="plot_timecourse-4.png" alt="" width="700" height="433"></span>
 </code></pre></div>
@@ -289,7 +288,7 @@ frequencies will have shorter timecourses than high frequencies.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

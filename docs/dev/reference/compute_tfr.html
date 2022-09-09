@@ -87,91 +87,118 @@ domain.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">compute_tfr</span><span class="op">(</span><span class="va">data</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S3 method for default</span>
-<span class="fu">compute_tfr</span><span class="op">(</span><span class="va">data</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S3 method for eeg_epochs</span>
-<span class="fu">compute_tfr</span><span class="op">(</span>
-  <span class="va">data</span>,
-  method <span class="op">=</span> <span class="st">"morlet"</span>,
-  <span class="va">foi</span>,
-  <span class="va">n_freq</span>,
-  spacing <span class="op">=</span> <span class="st">"linear"</span>,
-  n_cycles <span class="op">=</span> <span class="fl">7</span>,
-  keep_trials <span class="op">=</span> <span class="cn">FALSE</span>,
-  output <span class="op">=</span> <span class="st">"power"</span>,
-  downsample <span class="op">=</span> <span class="fl">1</span>,
-  trim_edges <span class="op">=</span> <span class="cn">TRUE</span>,
-  verbose <span class="op">=</span> <span class="cn">TRUE</span>,
-  <span class="va">...</span>
-<span class="op">)</span>
-
-<span class="co"># S3 method for eeg_evoked</span>
-<span class="fu">compute_tfr</span><span class="op">(</span>
-  <span class="va">data</span>,
-  method <span class="op">=</span> <span class="st">"morlet"</span>,
-  <span class="va">foi</span>,
-  <span class="va">n_freq</span>,
-  spacing <span class="op">=</span> <span class="st">"linear"</span>,
-  n_cycles <span class="op">=</span> <span class="fl">7</span>,
-  keep_trials <span class="op">=</span> <span class="cn">FALSE</span>,
-  output <span class="op">=</span> <span class="st">"power"</span>,
-  downsample <span class="op">=</span> <span class="fl">1</span>,
-  trim_edges <span class="op">=</span> <span class="cn">TRUE</span>,
-  verbose <span class="op">=</span> <span class="cn">TRUE</span>,
-  <span class="va">...</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">compute_tfr</span><span class="op">(</span><span class="va">data</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for default</span></span>
+<span><span class="fu">compute_tfr</span><span class="op">(</span><span class="va">data</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for eeg_epochs</span></span>
+<span><span class="fu">compute_tfr</span><span class="op">(</span></span>
+<span>  <span class="va">data</span>,</span>
+<span>  method <span class="op">=</span> <span class="st">"morlet"</span>,</span>
+<span>  <span class="va">foi</span>,</span>
+<span>  <span class="va">n_freq</span>,</span>
+<span>  spacing <span class="op">=</span> <span class="st">"linear"</span>,</span>
+<span>  n_cycles <span class="op">=</span> <span class="fl">7</span>,</span>
+<span>  keep_trials <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  output <span class="op">=</span> <span class="st">"power"</span>,</span>
+<span>  downsample <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  trim_edges <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for eeg_evoked</span></span>
+<span><span class="fu">compute_tfr</span><span class="op">(</span></span>
+<span>  <span class="va">data</span>,</span>
+<span>  method <span class="op">=</span> <span class="st">"morlet"</span>,</span>
+<span>  <span class="va">foi</span>,</span>
+<span>  <span class="va">n_freq</span>,</span>
+<span>  spacing <span class="op">=</span> <span class="st">"linear"</span>,</span>
+<span>  n_cycles <span class="op">=</span> <span class="fl">7</span>,</span>
+<span>  keep_trials <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  output <span class="op">=</span> <span class="st">"power"</span>,</span>
+<span>  downsample <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  trim_edges <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>data</dt>
 <dd><p>An object of class <code>eeg_epochs</code>.</p></dd>
+
+
 <dt>...</dt>
 <dd><p>Further TFR parameters</p></dd>
+
+
 <dt>method</dt>
 <dd><p>Time-frequency analysis method. Defaults to "morlet".</p></dd>
+
+
 <dt>foi</dt>
 <dd><p>Frequencies of interest. Scalar or character vector of the lowest
 and highest frequency to resolve.</p></dd>
+
+
 <dt>n_freq</dt>
 <dd><p>Number of frequencies to be resolved. Must be an integer number
 of frequencies.</p></dd>
+
+
 <dt>spacing</dt>
 <dd><p>Use "linear" or "log" spacing for the frequency vector and
 number of cycles.</p></dd>
+
+
 <dt>n_cycles</dt>
 <dd><p>Number of cycles at each frequency. If a single integer, use
 a constant number of cycles at each frequency. If a character vector of
 length 2, the number of cycles will scale with frequency from the minimum
 to the maximum.</p></dd>
+
+
 <dt>keep_trials</dt>
 <dd><p>Keep single trials or average over them before returning.
 Defaults to FALSE.</p></dd>
+
+
 <dt>output</dt>
 <dd><p>Sets whether output is power, phase, or fourier coefficients.</p></dd>
+
+
 <dt>downsample</dt>
 <dd><p>Downsampling factor. Integer. Selects every n samples after
 performing time-frequency analysis on the full sampling rate data.</p></dd>
+
+
 <dt>trim_edges</dt>
 <dd><p>Remove edges of time-frequency representation to avoid edge
 effects from overlap of wavelet with timepoints outside the epochs.
 Defaults to TRUE.</p></dd>
+
+
 <dt>verbose</dt>
 <dd><p>Print informative messages in console.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>An object of class <code>eeg_tfr</code></p>
+    
+
+<p>An object of class <code>eeg_tfr</code></p>
+
+
     </div>
     <div id="methods-by-class-">
     <h2>Methods (by class)</h2>
     
-<ul><li><p><code>default</code>: Default method for compute_tfr</p></li>
-<li><p><code>eeg_epochs</code>: Default method for <code>compute_tfr</code></p></li>
-<li><p><code>eeg_evoked</code>: Method for <code>eeg_evoked</code> objects.</p></li>
+<ul><li><p><code>compute_tfr(default)</code>: Default method for compute_tfr</p></li>
+<li><p><code>compute_tfr(eeg_epochs)</code>: Default method for <code>compute_tfr</code></p></li>
+<li><p><code>compute_tfr(eeg_evoked)</code>: Method for <code>eeg_evoked</code> objects.</p></li>
 </ul></div>
     <div id="author">
     <h2>Author</h2>
@@ -180,12 +207,12 @@ Defaults to TRUE.</p></dd>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">out</span> <span class="op">&lt;-</span> <span class="fu">compute_tfr</span><span class="op">(</span><span class="va">demo_epochs</span>, method <span class="op">=</span> <span class="st">"morlet"</span>, foi <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">30</span><span class="op">)</span>, n_freq <span class="op">=</span> <span class="fl">10</span>, n_cycles <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">out</span> <span class="op">&lt;-</span> <span class="fu">compute_tfr</span><span class="op">(</span><span class="va">demo_epochs</span>, method <span class="op">=</span> <span class="st">"morlet"</span>, foi <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">30</span><span class="op">)</span>, n_freq <span class="op">=</span> <span class="fl">10</span>, n_cycles <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Computing TFR using Morlet wavelet convolution</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Output frequencies using linear spacing: 4 6.89 9.78 12.67 15.56 18.44 21.33 24.22 27.11 30</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Removing channel means per epoch...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Returning signal averaged over all trials.</span>
-<span class="r-in"><span class="va">out</span></span>
+<span class="r-in"><span><span class="va">out</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Epoched EEG TFR data</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Frequency range		:	 4 6.89 9.78 12.67 15.56 18.44 21.33 24.22 27.11 30 </span>
@@ -194,7 +221,7 @@ Defaults to TRUE.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Number of epochs	:	 1 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Epoch limits		:	 -0.197 - 0.451 seconds</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Sampling rate		:	 128  Hz</span>
-<span class="r-in"><span class="va">out</span><span class="op">$</span><span class="va">freq_info</span><span class="op">$</span><span class="va">morlet_resolution</span></span>
+<span class="r-in"><span><span class="va">out</span><span class="op">$</span><span class="va">freq_info</span><span class="op">$</span><span class="va">morlet_resolution</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    frequency   sigma_f    sigma_t n_cycles</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1   4.000000  1.333333 0.11936621        3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2   6.888889  2.296296 0.06930941        3</span>
@@ -206,12 +233,13 @@ Defaults to TRUE.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 8  24.222222  8.074074 0.01971185        3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 9  27.111111  9.037037 0.01761141        3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 10 30.000000 10.000000 0.01591549        3</span>
-<span class="r-in"><span class="va">out</span> <span class="op">&lt;-</span> <span class="fu">compute_tfr</span><span class="op">(</span><span class="va">demo_epochs</span>, method <span class="op">=</span> <span class="st">"morlet"</span>, foi <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">30</span><span class="op">)</span>, n_freq <span class="op">=</span> <span class="fl">10</span>, n_cycles <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">10</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="va">out</span> <span class="op">&lt;-</span> <span class="fu">compute_tfr</span><span class="op">(</span><span class="va">demo_epochs</span>, method <span class="op">=</span> <span class="st">"morlet"</span>, foi <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">30</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span> n_freq <span class="op">=</span> <span class="fl">10</span>, n_cycles <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">10</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Computing TFR using Morlet wavelet convolution</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Output frequencies using linear spacing: 4 6.89 9.78 12.67 15.56 18.44 21.33 24.22 27.11 30</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Removing channel means per epoch...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Returning signal averaged over all trials.</span>
-<span class="r-in"><span class="va">out</span><span class="op">$</span><span class="va">freq_info</span><span class="op">$</span><span class="va">morlet_resolution</span></span>
+<span class="r-in"><span><span class="va">out</span><span class="op">$</span><span class="va">freq_info</span><span class="op">$</span><span class="va">morlet_resolution</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    frequency  sigma_f    sigma_t  n_cycles</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1   4.000000 1.333333 0.11936621  3.000000</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2   6.888889 1.823529 0.08727852  3.777778</span>
@@ -223,14 +251,15 @@ Defaults to TRUE.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 8  24.222222 2.868421 0.05548521  8.444444</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 9  27.111111 2.939759 0.05413877  9.222222</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 10 30.000000 3.000000 0.05305165 10.000000</span>
-<span class="r-in"><span class="fu"><a href="plot_tfr.html">plot_tfr</a></span><span class="op">(</span><span class="va">out</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu"><a href="plot_tfr.html">plot_tfr</a></span><span class="op">(</span><span class="va">out</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="compute_tfr-1.png" alt="" width="700" height="433"></span>
-<span class="r-in"><span class="va">out</span> <span class="op">&lt;-</span> <span class="fu">compute_tfr</span><span class="op">(</span><span class="va">demo_epochs</span>, method <span class="op">=</span> <span class="st">"morlet"</span>, foi <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">30</span><span class="op">)</span>, n_freq <span class="op">=</span> <span class="fl">10</span>, n_cycles <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">10</span><span class="op">)</span>, trim_edges <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="va">out</span> <span class="op">&lt;-</span> <span class="fu">compute_tfr</span><span class="op">(</span><span class="va">demo_epochs</span>, method <span class="op">=</span> <span class="st">"morlet"</span>, foi <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">30</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span> n_freq <span class="op">=</span> <span class="fl">10</span>, n_cycles <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">10</span><span class="op">)</span>, trim_edges <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Computing TFR using Morlet wavelet convolution</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Output frequencies using linear spacing: 4 6.89 9.78 12.67 15.56 18.44 21.33 24.22 27.11 30</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Removing channel means per epoch...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Returning signal averaged over all trials.</span>
-<span class="r-in"><span class="fu"><a href="plot_tfr.html">plot_tfr</a></span><span class="op">(</span><span class="va">out</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu"><a href="plot_tfr.html">plot_tfr</a></span><span class="op">(</span><span class="va">out</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="compute_tfr-2.png" alt="" width="700" height="433"></span>
 </code></pre></div>
     </div>
@@ -246,7 +275,7 @@ Defaults to TRUE.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

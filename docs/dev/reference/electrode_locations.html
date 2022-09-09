@@ -83,48 +83,61 @@ data.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">electrode_locations</span><span class="op">(</span><span class="va">data</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S3 method for data.frame</span>
-<span class="fu">electrode_locations</span><span class="op">(</span>
-  <span class="va">data</span>,
-  electrode <span class="op">=</span> <span class="st">"electrode"</span>,
-  drop <span class="op">=</span> <span class="cn">FALSE</span>,
-  montage <span class="op">=</span> <span class="cn">NULL</span>,
-  overwrite <span class="op">=</span> <span class="cn">TRUE</span>,
-  <span class="va">...</span>
-<span class="op">)</span>
-
-<span class="co"># S3 method for eeg_data</span>
-<span class="fu">electrode_locations</span><span class="op">(</span><span class="va">data</span>, drop <span class="op">=</span> <span class="cn">FALSE</span>, montage <span class="op">=</span> <span class="cn">NULL</span>, overwrite <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S3 method for eeg_epochs</span>
-<span class="fu">electrode_locations</span><span class="op">(</span><span class="va">data</span>, drop <span class="op">=</span> <span class="cn">FALSE</span>, montage <span class="op">=</span> <span class="cn">NULL</span>, overwrite <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S3 method for eeg_tfr</span>
-<span class="fu">electrode_locations</span><span class="op">(</span><span class="va">data</span>, drop <span class="op">=</span> <span class="cn">FALSE</span>, montage <span class="op">=</span> <span class="cn">NULL</span>, overwrite <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">electrode_locations</span><span class="op">(</span><span class="va">data</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for data.frame</span></span>
+<span><span class="fu">electrode_locations</span><span class="op">(</span></span>
+<span>  <span class="va">data</span>,</span>
+<span>  electrode <span class="op">=</span> <span class="st">"electrode"</span>,</span>
+<span>  drop <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  montage <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  overwrite <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for eeg_data</span></span>
+<span><span class="fu">electrode_locations</span><span class="op">(</span><span class="va">data</span>, drop <span class="op">=</span> <span class="cn">FALSE</span>, montage <span class="op">=</span> <span class="cn">NULL</span>, overwrite <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for eeg_epochs</span></span>
+<span><span class="fu">electrode_locations</span><span class="op">(</span><span class="va">data</span>, drop <span class="op">=</span> <span class="cn">FALSE</span>, montage <span class="op">=</span> <span class="cn">NULL</span>, overwrite <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for eeg_tfr</span></span>
+<span><span class="fu">electrode_locations</span><span class="op">(</span><span class="va">data</span>, drop <span class="op">=</span> <span class="cn">FALSE</span>, montage <span class="op">=</span> <span class="cn">NULL</span>, overwrite <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>data</dt>
 <dd><p>An EEG dataset.</p></dd>
+
+
 <dt>...</dt>
 <dd><p>Passed to S3 methods.</p></dd>
+
+
 <dt>electrode</dt>
 <dd><p>The column name containing electrode names in data.
 (Defaults to "electrode").</p></dd>
+
+
 <dt>drop</dt>
 <dd><p>Should electrodes in <code>data</code> for which default locations are
 not available be removed? (Defaults to FALSE).</p></dd>
+
+
 <dt>montage</dt>
 <dd><p>Name of an existing montage set. Defaults to NULL.</p></dd>
+
+
 <dt>overwrite</dt>
 <dd><p>Overwrite existing channel info. Defaults to FALSE.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A tibble (or data.frame), or ggplot2 object if <code>plot = TRUE</code>.</p>
+    
+
+<p>A tibble (or data.frame), or ggplot2 object if <code>plot = TRUE</code>.</p>
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -137,11 +150,11 @@ BioSemi systems included. These can be added using the montage parameter:
     <div id="methods-by-class-">
     <h2>Methods (by class)</h2>
     
-<ul><li><p><code>data.frame</code>: Adds standard locations to a data frame in
+<ul><li><p><code>electrode_locations(data.frame)</code>: Adds standard locations to a data frame in
 long format</p></li>
-<li><p><code>eeg_data</code>: Adds standard locations to the chan_info field of an eeg_data object.</p></li>
-<li><p><code>eeg_epochs</code>: Adds standard locations to the chan_info field of an <code>eeg_data</code> object.</p></li>
-<li><p><code>eeg_tfr</code>: Adds standard locations to the chan_info field of an <code>eeg_tfr</code> object.</p></li>
+<li><p><code>electrode_locations(eeg_data)</code>: Adds standard locations to the chan_info field of an eeg_data object.</p></li>
+<li><p><code>electrode_locations(eeg_epochs)</code>: Adds standard locations to the chan_info field of an <code>eeg_data</code> object.</p></li>
+<li><p><code>electrode_locations(eeg_tfr)</code>: Adds standard locations to the chan_info field of an <code>eeg_tfr</code> object.</p></li>
 </ul></div>
     <div id="references">
     <h2>References</h2>
@@ -152,8 +165,8 @@ Neurophysiology, 112, 4, 713-719</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu"><a href="channels.html">channels</a></span><span class="op">(</span><span class="va">demo_epochs</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 11 x 9</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="channels.html">channels</a></span><span class="op">(</span><span class="va">demo_epochs</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 11 × 9</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    electrode radius theta   phi cart_x cart_y cart_z     x     y</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> A5             1   -<span style="color: #BB0000;">60</span>   -<span style="color: #BB0000;">51</span>  -<span style="color: #BB0000;">46.3</span>   57.2  42.5  -<span style="color: #BB0000;">37.8</span>  46.6</span>
@@ -167,7 +180,7 @@ Neurophysiology, 112, 4, 713-719</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> B16            1     0     0    0      0    85      0     0  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> B18            1    46     0   61.1    0    59.0   46     0  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">11</span> B26            1    60   -<span style="color: #BB0000;">51</span>   46.3  -<span style="color: #BB0000;">57.2</span>  42.5   37.8 -<span style="color: #BB0000;">46.6</span></span>
-<span class="r-in"><span class="fu">electrode_locations</span><span class="op">(</span><span class="va">demo_epochs</span>, overwrite <span class="op">=</span> <span class="cn">TRUE</span>, montage <span class="op">=</span> <span class="st">"biosemi64alpha"</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu">electrode_locations</span><span class="op">(</span><span class="va">demo_epochs</span>, overwrite <span class="op">=</span> <span class="cn">TRUE</span>, montage <span class="op">=</span> <span class="st">"biosemi64alpha"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Epoched EEG data</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Number of channels	: 11 </span>
@@ -190,7 +203,7 @@ Neurophysiology, 112, 4, 713-719</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

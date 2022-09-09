@@ -31,7 +31,7 @@ create topographical plots."><meta name="robots" content="noindex"><!-- mathjax 
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -44,6 +44,9 @@ create topographical plots."><meta name="robots" content="noindex"><!-- mathjax 
     </li>
     <li>
       <a href="../articles/linear_modelling/linear_modelling.html">Linear Modelling</a>
+    </li>
+    <li>
+      <a href="../articles/single_subj_N170/N170_single_subject.html">Getting started with eegUtils and the N170</a>
     </li>
     <li>
       <a href="../articles/time-frequency-analysis.html">Frequency analysis</a>
@@ -82,72 +85,93 @@ create topographical plots.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">get_scalpmap</span><span class="op">(</span><span class="va">data</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S3 method for data.frame</span>
-<span class="fu">get_scalpmap</span><span class="op">(</span>
-  <span class="va">data</span>,
-  method <span class="op">=</span> <span class="st">"biharmonic"</span>,
-  grid_res <span class="op">=</span> <span class="fl">100</span>,
-  interp_limit <span class="op">=</span> <span class="st">"skirt"</span>,
-  quantity <span class="op">=</span> <span class="st">"amplitude"</span>,
-  facets <span class="op">=</span> <span class="cn">NULL</span>,
-  r <span class="op">=</span> <span class="fl">95</span>,
-  k <span class="op">=</span> <span class="op">-</span><span class="fl">1</span>,
-  <span class="va">...</span>
-<span class="op">)</span>
-
-<span class="co"># S3 method for eeg_epochs</span>
-<span class="fu">get_scalpmap</span><span class="op">(</span>
-  <span class="va">data</span>,
-  method <span class="op">=</span> <span class="st">"biharmonic"</span>,
-  grid_res <span class="op">=</span> <span class="fl">100</span>,
-  interp_limit <span class="op">=</span> <span class="st">"skirt"</span>,
-  quantity <span class="op">=</span> <span class="st">"amplitude"</span>,
-  facets <span class="op">=</span> <span class="cn">NULL</span>,
-  r <span class="op">=</span> <span class="fl">95</span>,
-  <span class="va">...</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">get_scalpmap</span><span class="op">(</span><span class="va">data</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for data.frame</span></span>
+<span><span class="fu">get_scalpmap</span><span class="op">(</span></span>
+<span>  <span class="va">data</span>,</span>
+<span>  method <span class="op">=</span> <span class="st">"biharmonic"</span>,</span>
+<span>  grid_res <span class="op">=</span> <span class="fl">100</span>,</span>
+<span>  interp_limit <span class="op">=</span> <span class="st">"skirt"</span>,</span>
+<span>  quantity <span class="op">=</span> <span class="st">"amplitude"</span>,</span>
+<span>  facets <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  r <span class="op">=</span> <span class="fl">95</span>,</span>
+<span>  k <span class="op">=</span> <span class="op">-</span><span class="fl">1</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for eeg_epochs</span></span>
+<span><span class="fu">get_scalpmap</span><span class="op">(</span></span>
+<span>  <span class="va">data</span>,</span>
+<span>  method <span class="op">=</span> <span class="st">"biharmonic"</span>,</span>
+<span>  grid_res <span class="op">=</span> <span class="fl">100</span>,</span>
+<span>  interp_limit <span class="op">=</span> <span class="st">"skirt"</span>,</span>
+<span>  quantity <span class="op">=</span> <span class="st">"amplitude"</span>,</span>
+<span>  facets <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  r <span class="op">=</span> <span class="fl">95</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>data</dt>
 <dd><p>An object of class 'data.frame`</p></dd>
+
+
 <dt>...</dt>
 <dd><p>Other arguments</p></dd>
+
+
 <dt>method</dt>
 <dd><p>"biharmonic" or "gam" smooth</p></dd>
+
+
 <dt>grid_res</dt>
 <dd><p>Grid resolution</p></dd>
+
+
 <dt>interp_limit</dt>
 <dd><p>Interpolate up to the "head" or add a "skirt"</p></dd>
+
+
 <dt>quantity</dt>
 <dd><p>Quantity to be plotted. Defaults to "amplitude".</p></dd>
+
+
 <dt>facets</dt>
 <dd><p>Any facets you plan to use</p></dd>
+
+
 <dt>r</dt>
 <dd><p>Size of headshape</p></dd>
+
+
 <dt>k</dt>
 <dd><p>Degrees of freedom used for spline when using <code>method = gam</code>.
 Defaults to -1, which attempts to automatically determine k.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A <code>tibble</code> with the columns <code>x</code>, <code>y</code>, <code>fill</code></p>
+    
+
+<p>A <code>tibble</code> with the columns <code>x</code>, <code>y</code>, <code>fill</code></p>
+
+
     </div>
     <div id="methods-by-class-">
     <h2>Methods (by class)</h2>
     
-<ul><li><p><code>data.frame</code>: Get scalpmap from a <code>data.frame</code></p></li>
-<li><p><code>eeg_epochs</code>: Get scalpmap from an <code>eeg_epochs</code> object.</p></li>
+<ul><li><p><code>get_scalpmap(data.frame)</code>: Get scalpmap from a <code>data.frame</code></p></li>
+<li><p><code>get_scalpmap(eeg_epochs)</code>: Get scalpmap from an <code>eeg_epochs</code> object.</p></li>
 </ul></div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu">get_scalpmap</span><span class="op">(</span><span class="va">demo_epochs</span><span class="op">)</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu">get_scalpmap</span><span class="op">(</span><span class="va">demo_epochs</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Joining, by = "electrode"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 6 x 3</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 6 × 3</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       x     y  fill</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> -<span style="color: #BB0000;">113.</span> -<span style="color: #BB0000;">9.60</span>  5.77</span>
@@ -170,7 +194,7 @@ Defaults to -1, which attempts to automatically determine k.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

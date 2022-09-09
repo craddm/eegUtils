@@ -30,7 +30,7 @@ decomposition and the electrooculogram channels of an eeg_epochs dataset."><meta
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -83,52 +83,71 @@ decomposition and the electrooculogram channels of an <code>eeg_epochs</code> da
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">ar_eogcor</span><span class="op">(</span><span class="va">decomp</span>, <span class="va">data</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S3 method for eeg_ICA</span>
-<span class="fu">ar_eogcor</span><span class="op">(</span>
-  <span class="va">decomp</span>,
-  <span class="va">data</span>,
-  <span class="va">HEOG</span>,
-  <span class="va">VEOG</span>,
-  threshold <span class="op">=</span> <span class="cn">NULL</span>,
-  plot <span class="op">=</span> <span class="cn">TRUE</span>,
-  bipolarize <span class="op">=</span> <span class="cn">TRUE</span>,
-  verbose <span class="op">=</span> <span class="cn">TRUE</span>,
-  <span class="va">...</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">ar_eogcor</span><span class="op">(</span><span class="va">decomp</span>, <span class="va">data</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for eeg_ICA</span></span>
+<span><span class="fu">ar_eogcor</span><span class="op">(</span></span>
+<span>  <span class="va">decomp</span>,</span>
+<span>  <span class="va">data</span>,</span>
+<span>  <span class="va">HEOG</span>,</span>
+<span>  <span class="va">VEOG</span>,</span>
+<span>  threshold <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  plot <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  bipolarize <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>decomp</dt>
 <dd><p>ICA decomposition</p></dd>
+
+
 <dt>data</dt>
 <dd><p>Original data</p></dd>
+
+
 <dt>...</dt>
 <dd><p>Other parameters</p></dd>
+
+
 <dt>HEOG</dt>
 <dd><p>Horizontal eye channels</p></dd>
+
+
 <dt>VEOG</dt>
 <dd><p>Vertical eye channels</p></dd>
+
+
 <dt>threshold</dt>
 <dd><p>Threshold for correlation (r). Defaults to NULL,
 automatically determining a threshold.</p></dd>
+
+
 <dt>plot</dt>
 <dd><p>Plot correlation coefficient for all components</p></dd>
+
+
 <dt>bipolarize</dt>
 <dd><p>Bipolarize the HEOG and VEOG channels?</p></dd>
+
+
 <dt>verbose</dt>
 <dd><p>Print informative messages. Defaults to TRUE.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A character vector of component names that break the threshold.</p>
+    
+
+<p>A character vector of component names that break the threshold.</p>
     </div>
     <div id="methods-by-class-">
     <h2>Methods (by class)</h2>
     
-<ul><li><p><code>eeg_ICA</code>: Method for eeg_ICA objects.</p></li>
+<ul><li><p><code>ar_eogcor(eeg_ICA)</code>: Method for eeg_ICA objects.</p></li>
 </ul></div>
     <div id="references">
     <h2>References</h2>
@@ -154,7 +173,7 @@ artifact correction. J Neurosci Methods. Jul 30;250:47-63. doi:
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

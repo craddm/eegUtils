@@ -39,7 +39,7 @@ results.'><meta name="robots" content="noindex"><!-- mathjax --><script src="htt
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -52,6 +52,9 @@ results.'><meta name="robots" content="noindex"><!-- mathjax --><script src="htt
     </li>
     <li>
       <a href="../articles/linear_modelling/linear_modelling.html">Linear Modelling</a>
+    </li>
+    <li>
+      <a href="../articles/single_subj_N170/N170_single_subject.html">Getting started with eegUtils and the N170</a>
     </li>
     <li>
       <a href="../articles/time-frequency-analysis.html">Frequency analysis</a>
@@ -98,53 +101,64 @@ results.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">rm_baseline</span><span class="op">(</span><span class="va">data</span>, time_lim <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S3 method for eeg_data</span>
-<span class="fu">rm_baseline</span><span class="op">(</span><span class="va">data</span>, time_lim <span class="op">=</span> <span class="cn">NULL</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S3 method for eeg_epochs</span>
-<span class="fu">rm_baseline</span><span class="op">(</span><span class="va">data</span>, time_lim <span class="op">=</span> <span class="cn">NULL</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S3 method for data.frame</span>
-<span class="fu">rm_baseline</span><span class="op">(</span><span class="va">data</span>, time_lim <span class="op">=</span> <span class="cn">NULL</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S3 method for eeg_tfr</span>
-<span class="fu">rm_baseline</span><span class="op">(</span><span class="va">data</span>, time_lim <span class="op">=</span> <span class="cn">NULL</span>, type <span class="op">=</span> <span class="st">"divide"</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S3 method for eeg_evoked</span>
-<span class="fu">rm_baseline</span><span class="op">(</span><span class="va">data</span>, time_lim <span class="op">=</span> <span class="cn">NULL</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">rm_baseline</span><span class="op">(</span><span class="va">data</span>, time_lim <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for eeg_data</span></span>
+<span><span class="fu">rm_baseline</span><span class="op">(</span><span class="va">data</span>, time_lim <span class="op">=</span> <span class="cn">NULL</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for eeg_epochs</span></span>
+<span><span class="fu">rm_baseline</span><span class="op">(</span><span class="va">data</span>, time_lim <span class="op">=</span> <span class="cn">NULL</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for data.frame</span></span>
+<span><span class="fu">rm_baseline</span><span class="op">(</span><span class="va">data</span>, time_lim <span class="op">=</span> <span class="cn">NULL</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for eeg_tfr</span></span>
+<span><span class="fu">rm_baseline</span><span class="op">(</span><span class="va">data</span>, time_lim <span class="op">=</span> <span class="cn">NULL</span>, type <span class="op">=</span> <span class="st">"divide"</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for eeg_evoked</span></span>
+<span><span class="fu">rm_baseline</span><span class="op">(</span><span class="va">data</span>, time_lim <span class="op">=</span> <span class="cn">NULL</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>data</dt>
 <dd><p>Data to be baseline corrected.</p></dd>
+
+
 <dt>time_lim</dt>
 <dd><p>Numeric character vector (e.g. time_lim &lt;- c(-.1, 0))
 defining the time period to use as a baseline. If the value is NULL, it
 uses the mean of the whole of each epoch if the data is epoched, or the
 channel mean if the data is continuous.</p></dd>
+
+
 <dt>...</dt>
 <dd><p>other parameters to be passed to functions</p></dd>
+
+
 <dt>verbose</dt>
 <dd><p>Defaults to TRUE. Output descriptive messages to console.</p></dd>
+
+
 <dt>type</dt>
 <dd><p>Type of baseline correction to apply. Options are ("divide",
 "ratio", "absolute", "db", and "pc")</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>An <code>eegUtils</code> object or a <code>data.frame</code>, depending on the input.</p>
+    
+
+<p>An <code>eegUtils</code> object or a <code>data.frame</code>, depending on the input.</p>
     </div>
     <div id="methods-by-class-">
     <h2>Methods (by class)</h2>
     
-<ul><li><p><code>eeg_data</code>: remove baseline from continuous <code>eeg_data</code></p></li>
-<li><p><code>eeg_epochs</code>: Remove baseline from <code>eeg_epochs</code></p></li>
-<li><p><code>data.frame</code>: Legacy method for data.frames</p></li>
-<li><p><code>eeg_tfr</code>: Method for <code>eeg_tfr</code> objects</p></li>
-<li><p><code>eeg_evoked</code>: Method for <code>eeg_evoked</code> objects</p></li>
+<ul><li><p><code>rm_baseline(eeg_data)</code>: remove baseline from continuous <code>eeg_data</code></p></li>
+<li><p><code>rm_baseline(eeg_epochs)</code>: Remove baseline from <code>eeg_epochs</code></p></li>
+<li><p><code>rm_baseline(data.frame)</code>: Legacy method for data.frames</p></li>
+<li><p><code>rm_baseline(eeg_tfr)</code>: Method for <code>eeg_tfr</code> objects</p></li>
+<li><p><code>rm_baseline(eeg_evoked)</code>: Method for <code>eeg_evoked</code> objects</p></li>
 </ul></div>
     <div id="author">
     <h2>Author</h2>
@@ -153,7 +167,7 @@ channel mean if the data is continuous.</p></dd>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu">rm_baseline</span><span class="op">(</span><span class="va">demo_epochs</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">rm_baseline</span><span class="op">(</span><span class="va">demo_epochs</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Removing channel means per epoch...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Epoched EEG data</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -163,8 +177,8 @@ channel mean if the data is continuous.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Electrode names		: A5 A13 A21 A29 A31 B5 B6 B8 B16 B18 B26 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Sampling rate		: 128  Hz</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Reference		: average </span>
-<span class="r-in"><span class="fu">rm_baseline</span><span class="op">(</span><span class="va">demo_epochs</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">.1</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Baseline: -0.1 sBaseline: 0 s</span>
+<span class="r-in"><span><span class="fu">rm_baseline</span><span class="op">(</span><span class="va">demo_epochs</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">.1</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Baseline: -0.1 - 0s</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Epoched EEG data</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Number of channels	: 11 </span>
@@ -187,7 +201,7 @@ channel mean if the data is continuous.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

@@ -30,7 +30,7 @@ electrode placed according to its location on the scalp."><meta name="robots" co
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -43,6 +43,9 @@ electrode placed according to its location on the scalp."><meta name="robots" co
     </li>
     <li>
       <a href="../articles/linear_modelling/linear_modelling.html">Linear Modelling</a>
+    </li>
+    <li>
+      <a href="../articles/single_subj_N170/N170_single_subject.html">Getting started with eegUtils and the N170</a>
     </li>
     <li>
       <a href="../articles/time-frequency-analysis.html">Frequency analysis</a>
@@ -80,67 +83,92 @@ electrode placed according to its location on the scalp.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">erp_scalp</span><span class="op">(</span><span class="va">data</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S3 method for default</span>
-<span class="fu">erp_scalp</span><span class="op">(</span>
-  <span class="va">data</span>,
-  electrode <span class="op">=</span> <span class="st">"electrode"</span>,
-  amplitude <span class="op">=</span> <span class="st">"amplitude"</span>,
-  time <span class="op">=</span> <span class="st">"time"</span>,
-  color <span class="op">=</span> <span class="cn">NULL</span>,
-  colour <span class="op">=</span> <span class="cn">NULL</span>,
-  size <span class="op">=</span> <span class="fl">0.8</span>,
-  baseline <span class="op">=</span> <span class="cn">NULL</span>,
-  show_guide <span class="op">=</span> <span class="cn">TRUE</span>,
-  chan_info <span class="op">=</span> <span class="cn">NULL</span>,
-  montage <span class="op">=</span> <span class="cn">NULL</span>,
-  <span class="va">...</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">erp_scalp</span><span class="op">(</span><span class="va">data</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for default</span></span>
+<span><span class="fu">erp_scalp</span><span class="op">(</span></span>
+<span>  <span class="va">data</span>,</span>
+<span>  electrode <span class="op">=</span> <span class="st">"electrode"</span>,</span>
+<span>  amplitude <span class="op">=</span> <span class="st">"amplitude"</span>,</span>
+<span>  time <span class="op">=</span> <span class="st">"time"</span>,</span>
+<span>  color <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  colour <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  size <span class="op">=</span> <span class="fl">0.8</span>,</span>
+<span>  baseline <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  show_guide <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  chan_info <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  montage <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>data</dt>
 <dd><p>An EEG dataset.</p></dd>
+
+
 <dt>...</dt>
 <dd><p>Various arguments passed to specific functions</p></dd>
+
+
 <dt>electrode</dt>
 <dd><p>Column name containing electrode names in data. Defaults to
 "electrode".</p></dd>
+
+
 <dt>amplitude</dt>
 <dd><p>Column name containing amplitudes in data. Defaults to
 "amplitude".</p></dd>
+
+
 <dt>time</dt>
 <dd><p>Column name containing time in data. Defaults to "time".</p></dd>
+
+
 <dt>color</dt>
 <dd><p>Alias for <code>colour</code>.</p></dd>
+
+
 <dt>colour</dt>
 <dd><p>Variable to colour lines by. If no variable is passed, only one
 line is drawn for each electrode.</p></dd>
+
+
 <dt>size</dt>
 <dd><p>Size of the line(s) for the ERPs.</p></dd>
+
+
 <dt>baseline</dt>
 <dd><p>Character vector of times to subtract for baseline correct.</p></dd>
+
+
 <dt>show_guide</dt>
 <dd><p>Should a guide showing the scale of the ERP plots be shown.
 Defaults to TRUE.</p></dd>
+
+
 <dt>chan_info</dt>
 <dd><p>Pass channel information in the standard <code>eegUtils</code> format
 directly.</p></dd>
+
+
 <dt>montage</dt>
 <dd><p>Name of an existing montage set. Defaults to NULL, which will
 attempt to us locations from the data. If none are found, it will attempt
 to use standard 10-05 locations.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>Returns a ggplot2 plot object.</p>
+    
+
+<p>Returns a ggplot2 plot object.</p>
     </div>
     <div id="methods-by-class-">
     <h2>Methods (by class)</h2>
     
-<ul><li><p><code>default</code>: Plot an ERP scalp map</p></li>
+<ul><li><p><code>erp_scalp(default)</code>: Plot an ERP scalp map</p></li>
 </ul></div>
     <div id="see-also">
     <h2>See also</h2>
@@ -158,9 +186,10 @@ layout.</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu">erp_scalp</span><span class="op">(</span><span class="va">demo_epochs</span>, montage <span class="op">=</span> <span class="st">"biosemi64alpha"</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">erp_scalp</span><span class="op">(</span><span class="va">demo_epochs</span>, montage <span class="op">=</span> <span class="st">"biosemi64alpha"</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Creating epochs based on combinations of variables: epoch_label participant_id </span>
 <span class="r-plt img"><img src="erp_scalp-1.png" alt="" width="700" height="433"></span>
-<span class="r-in"></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -175,7 +204,7 @@ layout.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

@@ -32,7 +32,7 @@ noise."><meta name="robots" content="noindex"><!-- mathjax --><script src="https
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -45,6 +45,9 @@ noise."><meta name="robots" content="noindex"><!-- mathjax --><script src="https
     </li>
     <li>
       <a href="../articles/linear_modelling/linear_modelling.html">Linear Modelling</a>
+    </li>
+    <li>
+      <a href="../articles/single_subj_N170/N170_single_subject.html">Getting started with eegUtils and the N170</a>
     </li>
     <li>
       <a href="../articles/time-frequency-analysis.html">Frequency analysis</a>
@@ -84,35 +87,48 @@ noise.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">ar_acf</span><span class="op">(</span><span class="va">data</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S3 method for eeg_ICA</span>
-<span class="fu">ar_acf</span><span class="op">(</span><span class="va">data</span>, ms <span class="op">=</span> <span class="fl">20</span>, plot <span class="op">=</span> <span class="cn">TRUE</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span>, threshold <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">ar_acf</span><span class="op">(</span><span class="va">data</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for eeg_ICA</span></span>
+<span><span class="fu">ar_acf</span><span class="op">(</span><span class="va">data</span>, ms <span class="op">=</span> <span class="fl">20</span>, plot <span class="op">=</span> <span class="cn">TRUE</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span>, threshold <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>data</dt>
 <dd><p><code>eeg_ICA</code> object</p></dd>
+
+
 <dt>...</dt>
 <dd><p>additional parameters</p></dd>
+
+
 <dt>ms</dt>
 <dd><p>Time lag to check ACF, in milliseconds. Defaults to 20 ms.</p></dd>
+
+
 <dt>plot</dt>
 <dd><p>Produce plot showing ACF and threshold for all EEG components.</p></dd>
+
+
 <dt>verbose</dt>
 <dd><p>Print informative messages. Defaults to TRUE.</p></dd>
+
+
 <dt>threshold</dt>
 <dd><p>Specify a threshold for low ACF. NULL estimates the threshold automatically.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A character vector of component names that break the threshold.</p>
+    
+
+<p>A character vector of component names that break the threshold.</p>
     </div>
     <div id="methods-by-class-">
     <h2>Methods (by class)</h2>
     
-<ul><li><p><code>eeg_ICA</code>: Autocorrelation checker for <code>eeg_ICA</code> objects</p></li>
+<ul><li><p><code>ar_acf(eeg_ICA)</code>: Autocorrelation checker for <code>eeg_ICA</code> objects</p></li>
 </ul></div>
     <div id="references">
     <h2>References</h2>
@@ -128,11 +144,11 @@ artifact correction. J Neurosci Methods. Jul 30;250:47-63. doi:
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">demo_sobi</span> <span class="op">&lt;-</span> <span class="fu"><a href="run_ICA.html">run_ICA</a></span><span class="op">(</span><span class="va">demo_epochs</span>, pca <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">demo_sobi</span> <span class="op">&lt;-</span> <span class="fu"><a href="run_ICA.html">run_ICA</a></span><span class="op">(</span><span class="va">demo_epochs</span>, pca <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Reducing data to 10 dimensions using PCA.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Running SOBI ICA.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Setting tolerance to 0.0011</span>
-<span class="r-in"><span class="fu">ar_acf</span><span class="op">(</span><span class="va">demo_sobi</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu">ar_acf</span><span class="op">(</span><span class="va">demo_sobi</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Estimating autocorrelation at 20ms lag.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Estimated ACF threshold: -0.16</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Subthreshold components:  </span>
@@ -152,7 +168,7 @@ artifact correction. J Neurosci Methods. Jul 30;250:47-63. doi:
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

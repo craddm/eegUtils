@@ -87,73 +87,92 @@ FFT separately for each epoch and then average them afterwards.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">compute_psd</span><span class="op">(</span><span class="va">data</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S3 method for eeg_data</span>
-<span class="fu">compute_psd</span><span class="op">(</span>
-  <span class="va">data</span>,
-  seg_length <span class="op">=</span> <span class="cn">NULL</span>,
-  noverlap <span class="op">=</span> <span class="cn">NULL</span>,
-  n_fft <span class="op">=</span> <span class="cn">NULL</span>,
-  method <span class="op">=</span> <span class="st">"Welch"</span>,
-  demean <span class="op">=</span> <span class="cn">TRUE</span>,
-  verbose <span class="op">=</span> <span class="cn">TRUE</span>,
-  <span class="va">...</span>
-<span class="op">)</span>
-
-<span class="co"># S3 method for eeg_epochs</span>
-<span class="fu">compute_psd</span><span class="op">(</span>
-  <span class="va">data</span>,
-  seg_length <span class="op">=</span> <span class="cn">NULL</span>,
-  noverlap <span class="op">=</span> <span class="cn">NULL</span>,
-  n_fft <span class="op">=</span> <span class="fl">256</span>,
-  method <span class="op">=</span> <span class="st">"Welch"</span>,
-  keep_trials <span class="op">=</span> <span class="cn">TRUE</span>,
-  demean <span class="op">=</span> <span class="cn">TRUE</span>,
-  verbose <span class="op">=</span> <span class="cn">TRUE</span>,
-  <span class="va">...</span>
-<span class="op">)</span>
-
-<span class="co"># S3 method for eeg_evoked</span>
-<span class="fu">compute_psd</span><span class="op">(</span>
-  <span class="va">data</span>,
-  seg_length <span class="op">=</span> <span class="cn">NULL</span>,
-  noverlap <span class="op">=</span> <span class="cn">NULL</span>,
-  n_fft <span class="op">=</span> <span class="fl">256</span>,
-  method <span class="op">=</span> <span class="st">"Welch"</span>,
-  demean <span class="op">=</span> <span class="cn">TRUE</span>,
-  verbose <span class="op">=</span> <span class="cn">TRUE</span>,
-  <span class="va">...</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">compute_psd</span><span class="op">(</span><span class="va">data</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for eeg_data</span></span>
+<span><span class="fu">compute_psd</span><span class="op">(</span></span>
+<span>  <span class="va">data</span>,</span>
+<span>  seg_length <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  noverlap <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  n_fft <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  method <span class="op">=</span> <span class="st">"Welch"</span>,</span>
+<span>  demean <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for eeg_epochs</span></span>
+<span><span class="fu">compute_psd</span><span class="op">(</span></span>
+<span>  <span class="va">data</span>,</span>
+<span>  seg_length <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  noverlap <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  n_fft <span class="op">=</span> <span class="fl">256</span>,</span>
+<span>  method <span class="op">=</span> <span class="st">"Welch"</span>,</span>
+<span>  keep_trials <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  demean <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for eeg_evoked</span></span>
+<span><span class="fu">compute_psd</span><span class="op">(</span></span>
+<span>  <span class="va">data</span>,</span>
+<span>  seg_length <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  noverlap <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  n_fft <span class="op">=</span> <span class="fl">256</span>,</span>
+<span>  method <span class="op">=</span> <span class="st">"Welch"</span>,</span>
+<span>  demean <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>data</dt>
 <dd><p>Data to be plotted. Accepts objects of class <code>eeg_data</code></p></dd>
+
+
 <dt>...</dt>
 <dd><p>any further parameters passed to specific methods</p></dd>
+
+
 <dt>seg_length</dt>
 <dd><p>Length of rolling data segments. Defaults to <code>n_fft</code>.
 Must be &lt;= <code>n_fft</code>.</p></dd>
+
+
 <dt>noverlap</dt>
 <dd><p>Number of (sampling) points of overlap between segments. Must
 be &lt;= <code>seg_length</code>.</p></dd>
+
+
 <dt>n_fft</dt>
 <dd><p>Length of FFT to be calculated in sampling points. See details.</p></dd>
+
+
 <dt>method</dt>
 <dd><p>Defaults to "Welch". No other method currently implemented.</p></dd>
+
+
 <dt>demean</dt>
 <dd><p>Remove channel/epoch means. TRUE by default.</p></dd>
+
+
 <dt>verbose</dt>
 <dd><p>Print informative messages. TRUE by default.</p></dd>
+
+
 <dt>keep_trials</dt>
 <dd><p>Include FFT for every trial in output, or average over
 them if FALSE.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>Currently, a data frame with the PSD for each channel separately.</p>
+    
+
+<p>Currently, a data frame with the PSD for each channel separately.</p>
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -171,9 +190,9 @@ points. If NULL, it defaults to 50\<!-- % overlap between segments. --></p>
     <div id="methods-by-class-">
     <h2>Methods (by class)</h2>
     
-<ul><li><p><code>eeg_data</code>: Compute PSD for an <code>eeg_data</code> object</p></li>
-<li><p><code>eeg_epochs</code>: Compute PSD for an <code>eeg_epochs</code> object</p></li>
-<li><p><code>eeg_evoked</code>: Compute PSD for an <code>eeg_evoked</code> object</p></li>
+<ul><li><p><code>compute_psd(eeg_data)</code>: Compute PSD for an <code>eeg_data</code> object</p></li>
+<li><p><code>compute_psd(eeg_epochs)</code>: Compute PSD for an <code>eeg_epochs</code> object</p></li>
+<li><p><code>compute_psd(eeg_evoked)</code>: Compute PSD for an <code>eeg_evoked</code> object</p></li>
 </ul></div>
     <div id="author">
     <h2>Author</h2>
@@ -182,20 +201,20 @@ points. If NULL, it defaults to 50\<!-- % overlap between segments. --></p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">out</span> <span class="op">&lt;-</span> <span class="fu">compute_psd</span><span class="op">(</span><span class="va">demo_epochs</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">out</span> <span class="op">&lt;-</span> <span class="fu">compute_psd</span><span class="op">(</span><span class="va">demo_epochs</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Removing channel means per epoch...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Computing Power Spectral Density using Welch's method.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> FFT length: 256</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Segment length: 84</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Overlapping points: 42 (50% overlap)</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">out</span> <span class="op">&lt;-</span> <span class="fu">compute_psd</span><span class="op">(</span><span class="va">demo_epochs</span>, n_fft <span class="op">=</span> <span class="fl">256</span>, seg_length <span class="op">=</span> <span class="fl">128</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">out</span> <span class="op">&lt;-</span> <span class="fu">compute_psd</span><span class="op">(</span><span class="va">demo_epochs</span>, n_fft <span class="op">=</span> <span class="fl">256</span>, seg_length <span class="op">=</span> <span class="fl">128</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Removing channel means per epoch...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Computing Power Spectral Density using Welch's method.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> FFT length: 256</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Segment length: 84</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Overlapping points: 42 (50% overlap)</span>
-<span class="r-in"></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -210,7 +229,7 @@ points. If NULL, it defaults to 50\<!-- % overlap between segments. --></p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>
