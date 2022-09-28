@@ -4,8 +4,8 @@
 #'
 #' @author Matt Craddock, \email{matt@@mattcraddock.com}
 #' @param data An EEG dataset. If the input is a data.frame, then it must have
-#'   columns x, y, and amplitude at present. x and y are (Cartesian) electrode
-#'   co-ordinates), amplitude is amplitude.
+#'   columns `electrode`, `x`, `y`, and `amplitude`. `x` and `y` should be
+#'   (Cartesian) electrode co-ordinates.
 #' @param ... Various arguments passed to specific functions
 #' @examples
 #' topoplot(demo_epochs)
@@ -15,7 +15,7 @@
 #'
 #' @section Notes on usage of Generalized Additive Models for interpolation: The
 #'   function fits a GAM using the `gam` function from `mgcv`. Specifically, it
-#'   fits a spline using the model function gam(z ~ s(x, y, bs = "ts", k = 40).
+#'   fits a spline using the model function `gam(z ~ s(x, y, bs = "ts", k = 40)`.
 #'   Using GAMs for smooths is very much experimental. The surface is produced
 #'   from the predictions of the GAM model fitted to the supplied data. Values
 #'   at each electrode do not necessarily match actual values in the data:
@@ -65,7 +65,7 @@ topoplot.default <- function(data,
 #'   "name" = electrode name, "none" = no marker. Defaults to "point".
 #' @param quantity Allows plotting of an arbitrary quantitative column. Defaults
 #'   to amplitude. Use quoted column names. E.g. "p.value", "t_statistic".
-#' @param montage Name of an existing montage set. Defaults to NULL; (currently
+#' @param montage Name of an existing montage set. Defaults to NULL. (currently
 #'   only 'biosemi64alpha' available other than default 10/20 system)
 #' @param highlights Electrodes to highlight (in white).
 #' @param scaling Scaling multiplication factor for labels and any plot lines.

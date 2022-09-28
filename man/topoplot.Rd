@@ -128,8 +128,8 @@ topoplot(data, ...)
 }
 \arguments{
 \item{data}{An EEG dataset. If the input is a data.frame, then it must have
-columns x, y, and amplitude at present. x and y are (Cartesian) electrode
-co-ordinates), amplitude is amplitude.}
+columns \code{electrode}, \code{x}, \code{y}, and \code{amplitude}. \code{x} and \code{y} should be
+(Cartesian) electrode co-ordinates.}
 
 \item{...}{Various arguments passed to specific functions}
 
@@ -172,7 +172,7 @@ plotted head, and moves all electrodes inside the head.}
 \item{quantity}{Allows plotting of an arbitrary quantitative column. Defaults
 to amplitude. Use quoted column names. E.g. "p.value", "t_statistic".}
 
-\item{montage}{Name of an existing montage set. Defaults to NULL; (currently
+\item{montage}{Name of an existing montage set. Defaults to NULL. (currently
 only 'biosemi64alpha' available other than default 10/20 system)}
 
 \item{highlights}{Electrodes to highlight (in white).}
@@ -215,7 +215,7 @@ eeg_data objects.
 \section{Notes on usage of Generalized Additive Models for interpolation}{
  The
 function fits a GAM using the \code{gam} function from \code{mgcv}. Specifically, it
-fits a spline using the model function gam(z ~ s(x, y, bs = "ts", k = 40).
+fits a spline using the model function \verb{gam(z ~ s(x, y, bs = "ts", k = 40)}.
 Using GAMs for smooths is very much experimental. The surface is produced
 from the predictions of the GAM model fitted to the supplied data. Values
 at each electrode do not necessarily match actual values in the data:
