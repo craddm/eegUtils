@@ -208,8 +208,8 @@
     <h2>Arguments</h2>
     <dl><dt>data</dt>
 <dd><p>An EEG dataset. If the input is a data.frame, then it must have
-columns x, y, and amplitude at present. x and y are (Cartesian) electrode
-co-ordinates), amplitude is amplitude.</p></dd>
+columns <code>electrode</code>, <code>x</code>, <code>y</code>, and <code>amplitude</code>. <code>x</code> and <code>y</code> should be
+(Cartesian) electrode co-ordinates.</p></dd>
 
 
 <dt>...</dt>
@@ -278,7 +278,7 @@ to amplitude. Use quoted column names. E.g. "p.value", "t_statistic".</p></dd>
 
 
 <dt>montage</dt>
-<dd><p>Name of an existing montage set. Defaults to NULL; (currently
+<dd><p>Name of an existing montage set. Defaults to NULL. (currently
 only 'biosemi64alpha' available other than default 10/20 system)</p></dd>
 
 
@@ -329,7 +329,7 @@ eeg_data objects.</p></li>
     <h2>Notes on usage of Generalized Additive Models for interpolation</h2>
     <p>The
 function fits a GAM using the <code>gam</code> function from <code>mgcv</code>. Specifically, it
-fits a spline using the model function gam(z ~ s(x, y, bs = "ts", k = 40).
+fits a spline using the model function <code>gam(z ~ s(x, y, bs = "ts", k = 40)</code>.
 Using GAMs for smooths is very much experimental. The surface is produced
 from the predictions of the GAM model fitted to the supplied data. Values
 at each electrode do not necessarily match actual values in the data:
