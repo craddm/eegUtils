@@ -40,6 +40,14 @@ jobs:
           http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
 
+      - name: Install hdf5 on mac
+        if: runner.os == 'macOS'
+        run: brew install hdf5
+
+      - name: Install XQuartz on macOS
+        if: runner.os == 'macOS'
+        run: brew cask install xquartz
+
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
           extra-packages: any::rcmdcheck
@@ -49,10 +57,4 @@ jobs:
         with:
           upload-snapshots: true
 
-      - name: Install hdf5 on mac
-        if: runner.os == 'macOS'
-        run: brew install hdf5
 
-      - name: Install XQuartz on macOS
-        if: runner.os == 'macOS'
-        run: brew cask install xquartz
