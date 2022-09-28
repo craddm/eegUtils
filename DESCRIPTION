@@ -38,7 +38,7 @@ Imports:
     data.table,
     isoband
 Depends:
-  R (>= 3.4.0)
+  R (>= 3.6.0)
 RoxygenNote: 7.2.1
 Suggests: 
     testthat,
