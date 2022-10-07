@@ -79,9 +79,9 @@
 <text x='635.80' y='298.31' style='font-size: 8.80px; font-family: sans;' textLength='4.89px' lengthAdjust='spacingAndGlyphs'>0</text>
 <text x='635.80' y='276.78' style='font-size: 8.80px; font-family: sans;' textLength='4.89px' lengthAdjust='spacingAndGlyphs'>2</text>
 <text x='635.80' y='255.25' style='font-size: 8.80px; font-family: sans;' textLength='4.89px' lengthAdjust='spacingAndGlyphs'>4</text>
-<text transform='translate(652.84,252.08) rotate(-270)' style='font-size: 12.00px; font-family: sans;' textLength='60.70px' lengthAdjust='spacingAndGlyphs'>Amplitude (</text>
-<text transform='translate(652.84,312.78) rotate(-270)' style='font-size: 12.00px; font-family: sans;' textLength='6.56px' lengthAdjust='spacingAndGlyphs'>μ</text>
-<text transform='translate(652.84,319.34) rotate(-270)' style='font-size: 12.00px; font-family: sans;' textLength='12.00px' lengthAdjust='spacingAndGlyphs'>V)</text>
+<text transform='translate(652.84,255.65) rotate(-270)' style='font-size: 12.00px; font-family: sans;' textLength='60.70px' lengthAdjust='spacingAndGlyphs'>Amplitude (</text>
+<text transform='translate(652.84,316.35) rotate(-270)' style='font-size: 12.00px; font-family: sans;' textLength='6.56px' lengthAdjust='spacingAndGlyphs'>μ</text>
+<text transform='translate(652.84,322.91) rotate(-270)' style='font-size: 12.00px; font-family: sans;' textLength='12.00px' lengthAdjust='spacingAndGlyphs'>V)</text>
 <line x1='615.92' y1='338.34' x2='618.80' y2='338.34' style='stroke-width: 0.38; stroke: #FFFFFF; stroke-linecap: butt;' />
 <line x1='615.92' y1='316.81' x2='618.80' y2='316.81' style='stroke-width: 0.38; stroke: #FFFFFF; stroke-linecap: butt;' />
 <line x1='615.92' y1='295.28' x2='618.80' y2='295.28' style='stroke-width: 0.38; stroke: #FFFFFF; stroke-linecap: butt;' />

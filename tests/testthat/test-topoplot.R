@@ -34,4 +34,7 @@ test_that("Topoplots", {
     "multiple times",
     topoplot(demo_spatial,
              time_lim = list(0, .1, .2)))
+  vdiffr::expect_doppelganger(
+    "au label for ica",
+    topoplot(demo_SOBI, 1))
 })
