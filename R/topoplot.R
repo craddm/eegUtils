@@ -270,10 +270,11 @@ topoplot.data.frame <- function(data,
     theme(rect = element_blank(),
           line = element_blank(),
           axis.text = element_blank(),
-          axis.title = element_blank()) +
+          axis.title = element_blank(),
+          legend.title.align = 0.5) +
     guides(fill = guide_colorbar(title = fill_title,
                                  #expression(paste("Amplitude (",
-                                          #                mu, "V)")),
+                                 #                mu, "V)")),
                                  title.position = "right",
                                  barwidth = rel(1) * scaling,
                                  barheight = rel(6) * scaling,
@@ -494,15 +495,16 @@ topoplot.eeg_ICA <- function(data,
     message("time_lim is ignored for ICA components.")
   }
 
-  # chan_info <- data$chan_info
-  # data <- data.frame(amplitude = data$mixing_matrix[, component],
-  #                     electrode = data$mixing_matrix$electrode)
   data <- select(data,
                  dplyr::all_of(component))
   data <- as.data.frame(data,
-                        mixing = TRUE, long = TRUE)
+                        mixing = TRUE,
+                        long = TRUE)
   if (length(component) > 1) {
     groups <- "component"
+    if (verbose) {
+      message(paste("Plotting", length(component), "components"))
+    }
   }
   topoplot(data,
            chanLocs = chanLocs,#chan_info,
