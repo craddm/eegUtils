@@ -352,6 +352,9 @@ topoplot.eeg_data <- function(data, time_lim = NULL,
                               verbose = TRUE,
                               groups = NULL,
                               k = 40,
+                              fill_title = expression(
+                                paste("Amplitude (", mu, "V)")
+                              ),
                               ...) {
 
   if (!is.null(data$chan_info)) {
@@ -391,7 +394,8 @@ topoplot.eeg_data <- function(data, time_lim = NULL,
            scaling = scaling,
            verbose = verbose,
            groups = groups,
-           k = k)
+           k = k,
+           fill_title = fill_title)
 }
 
 
@@ -416,6 +420,9 @@ topoplot.eeg_epochs <- function(data,
                                 groups = NULL,
                                 verbose = TRUE,
                                 k = 40,
+                                fill_title = expression(
+                                  paste("Amplitude (", mu, "V)")
+                                ),
                                 ...) {
 
   if (!is.null(data$chan_info)) {
@@ -450,8 +457,8 @@ topoplot.eeg_epochs <- function(data,
            scaling = scaling,
            groups = groups,
            verbose = verbose,
-           k = k
-  )
+           k = k,
+           fill_title = fill_title)
 }
 
 
@@ -514,7 +521,8 @@ topoplot.eeg_ICA <- function(data,
            time_lim = NULL,
            verbose = verbose,
            groups = groups,
-           k = k)
+           k = k,
+           fill_title = fill_title)
 
 }
 

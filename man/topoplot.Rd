@@ -56,6 +56,7 @@ topoplot(data, ...)
   verbose = TRUE,
   groups = NULL,
   k = 40,
+  fill_title = expression(paste("Amplitude (", mu, "V)")),
   ...
 )
 
@@ -78,6 +79,7 @@ topoplot(data, ...)
   groups = NULL,
   verbose = TRUE,
   k = 40,
+  fill_title = expression(paste("Amplitude (", mu, "V)")),
   ...
 )
 
