@@ -33,6 +33,7 @@ topoplot(data, ...)
   groups = NULL,
   verbose = TRUE,
   k = 40,
+  fill_title = expression(paste("Amplitude (", mu, "V)")),
   ...
 )
 
@@ -100,6 +101,7 @@ topoplot(data, ...)
   verbose = TRUE,
   groups = NULL,
   k = 40,
+  fill_title = "a.u.",
   ...
 )
 
@@ -123,6 +125,7 @@ topoplot(data, ...)
   verbose = TRUE,
   groups = NULL,
   k = 40,
+  fill_title = expression(paste("Power (", mu, V^2, ")")),
   ...
 )
 }
@@ -188,6 +191,10 @@ Defaults to TRUE.}
 
 \item{k}{Degrees of freedom used for spline when using \code{method = gam}.
 Defaults to 40.}
+
+\item{fill_title}{Allows specification of the title of the colourbar.
+Defaults to `expression( paste("Amplitude (", mu, "V)")), appropriate for
+typical time-domain data.}
 
 \item{component}{Component to plot (numeric)}
 

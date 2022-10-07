@@ -76,6 +76,9 @@ topoplot.default <- function(data,
 #'   Defaults to TRUE.
 #' @param k Degrees of freedom used for spline when using `method = gam`.
 #'   Defaults to 40.
+#' @param fill_title Allows specification of the title of the colourbar.
+#'   Defaults to `expression( paste("Amplitude (", mu, "V)")), appropriate for
+#'   typical time-domain data.
 #' @import ggplot2
 #' @import tidyr
 #' @family scalp-based maps
@@ -101,6 +104,9 @@ topoplot.data.frame <- function(data,
                                 groups = NULL,
                                 verbose = TRUE,
                                 k = 40,
+                                fill_title = expression(
+                                  paste("Amplitude (", mu, "V)")
+                                  ),
                                 ...) {
 
   if (identical(method, "gam")) {
@@ -265,8 +271,9 @@ topoplot.data.frame <- function(data,
           line = element_blank(),
           axis.text = element_blank(),
           axis.title = element_blank()) +
-    guides(fill = guide_colorbar(title = expression(paste("Amplitude (",
-                                                          mu, "V)")),
+    guides(fill = guide_colorbar(title = fill_title,
+                                 #expression(paste("Amplitude (",
+                                          #                mu, "V)")),
                                  title.position = "right",
                                  barwidth = rel(1) * scaling,
                                  barheight = rel(6) * scaling,
@@ -470,6 +477,7 @@ topoplot.eeg_ICA <- function(data,
                              verbose = TRUE,
                              groups = NULL,
                              k = 40,
+                             fill_title = "a.u.",
                              ...) {
   if (missing(component)) {
     stop("Component number must be specified for eeg_ICA objects.")
@@ -533,6 +541,9 @@ topoplot.eeg_tfr <- function(data,
                              verbose = TRUE,
                              groups = NULL,
                              k = 40,
+                             fill_title = expression(
+                               paste("Power (", mu, V^2, ")")
+                               ),
                              ...) {
 
   if (!is.null(data$chan_info)) {
@@ -572,7 +583,8 @@ topoplot.eeg_tfr <- function(data,
            passed = TRUE,
            verbose = verbose,
            groups = groups,
-           k = k)
+           k = k,
+           fill_title = fill_title)
 }
 
 #' Set palette and limits for topoplot
