@@ -37,4 +37,7 @@ test_that("Topoplots", {
   vdiffr::expect_doppelganger(
     "au label for ica",
     topoplot(demo_SOBI, 1))
+  vdiffr::expect_doppelganger(
+    "add custom fill title",
+    topoplot(demo_epochs, fill_title = "testing"))
 })
