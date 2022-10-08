@@ -319,51 +319,6 @@ electrode_locations.data.frame <- function(data,
                                            montage = NULL,
                                            overwrite = TRUE,
                                            ...) {
-
-  #if a montage supplied, check if it matches known montages
-  # if (!is.null(montage)) {
-  #   electrodeLocs <- montage_check(montage)
-  # }
-  #
-  # data[, electrode] <- toupper(data[[electrode]])
-  # electrodeLocs[, electrode] <- toupper(electrodeLocs[[electrode]])
-  #
-  # if (tibble::is_tibble(data)) {
-  #   elecs <-
-  #     dplyr::pull(unique(data[, electrode])) %in%
-  #     dplyr::pull(electrodeLocs[, electrode])
-  #
-  #   if (!all(elecs)) {
-  #     message(paste("Electrode locations not found: ",
-  #                   paste(unique(data[, electrode])[!elecs, ],
-  #                         sep = ",")))
-  #   } else if (!any(elecs)) {
-  #     stop("No matching electrode locations found.")
-  #   }
-  # } else {
-  #   elecs <-
-  #     unique(data[, electrode]) %in% electrodeLocs[, electrode,
-  #                                                  drop = TRUE]
-  #   if (!all(elecs)) {
-  #     message("Electrodes locations not found: ",
-  #             paste(unique(data[, electrode])[!elecs], collapse = " "))
-  #   } else if (!any(elecs)) {
-  #     stop("No matching electrode locations found.")
-  #   }
-  #
-  # }
-  #
-  # if (drop) {
-  #   data <- dplyr::inner_join(data,
-  #                             electrodeLocs,
-  #                             by = electrode)
-  # } else {
-  #   data <- dplyr::left_join(data,
-  #                            electrodeLocs,
-  #                            by = electrode)
-  # }
-  #
-  # data
   add_elocs(data,
             drop = drop,
             montage = montage,
