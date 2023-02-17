@@ -105,6 +105,7 @@ StatScalpmap <-
                    required_aes = c("x",
                                     "y",
                                     "fill"),
+                   dropped_aes = "z",
                    compute_group = function(data,
                                             scales,
                                             grid_res,
@@ -120,12 +121,8 @@ StatScalpmap <-
                                        FUN = mean)
 
                      if (is.null(r)) {
-                       #max_elec <- calc_max_elec(data)
                        r <- update_r(interp_limit = interp_limit,
                                      data = data)
-                       # r <- switch(interp_limit,
-                       #              "head" = max_elec,
-                       #              "skirt" = 95)
                      }
 
                      if (identical(method, "biharmonic")) {
@@ -343,7 +340,7 @@ geom_head <- function(mapping = NULL,
 
 StatHead <- ggplot2::ggproto("StatHead",
                              Stat,
-                             dropped_aes = "fill",
+                             dropped_aes = c("fill", "z"),
                              compute_group = function(data,
                                                       scales,
                                                       interp_limit,
@@ -401,7 +398,7 @@ geom_mask <- function(mapping = NULL,
 StatMask <-
   ggplot2::ggproto("StatMask",
                    Stat,
-                   dropped_aes = "fill",
+                   dropped_aes = c("fill", "z"),
                    compute_group = function(data,
                                             scales,
                                             interp_limit,
@@ -475,7 +472,7 @@ GeomEars <- ggplot2::ggproto("GeomEars",
 
 StatREar <- ggplot2::ggproto("StatREar",
                              Stat,
-                             dropped_aes = "fill",
+                             dropped_aes = c("fill", "z"),
                              compute_group = function(data,
                                                       scales,
                                                       interp_limit,
@@ -492,7 +489,7 @@ StatREar <- ggplot2::ggproto("StatREar",
 
 StatLEar <- ggplot2::ggproto("StatLEar",
                              Stat,
-                             dropped_aes = "fill",
+                             dropped_aes = c("fill", "z"),
                              compute_group = function(data,
                                                       scales,
                                                       interp_limit,
@@ -560,6 +557,7 @@ StatChannels <-
   ggplot2::ggproto("StatChannels",
                    Stat,
                    required_aes = c("x", "y"),
+                   dropped_aes = c("fill", "z"),
                    compute_group = function(data, scales) {
 
                      if ("label" %in% names(data)) {
