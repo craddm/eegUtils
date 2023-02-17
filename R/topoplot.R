@@ -285,10 +285,10 @@ topoplot.data.frame <- function(data,
     topo <-
       topo +
       ggplot2::annotate("point",
-                       x = data$x,
-                       y = data$y,
-                       colour = "black",
-                       size = rel(2 * scaling))
+                        x = data$x,
+                        y = data$y,
+                        colour = "black",
+                        size = rel(2 * scaling))
     }  else if (identical(chan_marker, "name")) {
       topo <-
         topo +
