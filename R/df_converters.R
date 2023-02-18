@@ -29,7 +29,7 @@ as.data.frame.eeg_data <- function(x,
   if (long) {
     df <- tidyr::pivot_longer(
       df,
-      cols = chan_names,
+      cols = tidyr::all_of(chan_names),
       names_to = "electrode",
       values_to = "amplitude"
       )
