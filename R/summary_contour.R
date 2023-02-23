@@ -147,7 +147,7 @@ StatScalpContours <-
                    # get a different warning
                    default_aes = aes(order = after_stat(level),
                                      linetype = ggplot2::after_stat(level) < 0),
-                   dropped_aes = c("z", "fill"),
+                   dropped_aes = c("z", "fill", "label"),
 
                    setup_params = function(data, params) {
 
