@@ -5,7 +5,7 @@
 \alias{StatScalpContours}
 \title{StatScalpcontours}
 \format{
-An object of class \code{StatScalpContours} (inherits from \code{Stat}, \code{ggproto}, \code{gg}) of length 5.
+An object of class \code{StatScalpContours} (inherits from \code{Stat}, \code{ggproto}, \code{gg}) of length 6.
 }
 \usage{
 StatScalpContours

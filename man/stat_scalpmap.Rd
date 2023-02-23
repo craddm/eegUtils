@@ -41,6 +41,7 @@ geom_mask(
   na.rm = FALSE,
   colour = "white",
   size = rel(5),
+  linewidth = rel(5),
   r = 95,
   interp_limit = "skirt",
   ...
@@ -66,10 +67,10 @@ geom_channels(
 )
 }
 \arguments{
-\item{mapping}{Set of aesthetic mappings created by \code{\link[ggplot2:aes]{aes()}} or
-\code{\link[ggplot2:aes_]{aes_()}}. If specified and \code{inherit.aes = TRUE} (the
-default), it is combined with the default mapping at the top level of the
-plot. You must supply \code{mapping} if there is no plot mapping.}
+\item{mapping}{Set of aesthetic mappings created by \code{\link[ggplot2:aes]{aes()}}. If specified and
+\code{inherit.aes = TRUE} (the default), it is combined with the default mapping
+at the top level of the plot. You must supply \code{mapping} if there is no plot
+mapping.}
 
 \item{data}{The data to be displayed in this layer. There are three
 options:
@@ -86,8 +87,10 @@ the plot data. The return value must be a \code{data.frame}, and
 will be used as the layer data. A \code{function} can be created
 from a \code{formula} (e.g. \code{~ head(.x, 10)}).}
 
-\item{position}{Position adjustment, either as a string, or the result of
-a call to a position adjustment function.}
+\item{position}{Position adjustment, either as a string naming the adjustment
+(e.g. \code{"jitter"} to use \code{position_jitter}), or the result of a call to a
+position adjustment function. Use the latter if you need to change the
+settings of the adjustment.}
 
 \item{na.rm}{If \code{FALSE}, the default, missing values are removed with
 a warning. If \code{TRUE}, missing values are silently removed.}
@@ -122,7 +125,9 @@ to the paired geom/stat.}
 
 \item{colour}{For \code{geom_mask}, colour of the masking ring.}
 
-\item{size}{For \code{geom_mask}, width of the masking ring.}
+\item{size}{For \code{geom_mask}, width of the masking ring. Deprecated.}
+
+\item{linewidth}{For \code{geom_mask}, width of the masking ring.}
 
 \item{geom}{"point" for points or "text" for labels. Default is "point".}
 }
