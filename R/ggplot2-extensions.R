@@ -105,7 +105,7 @@ StatScalpmap <-
                    required_aes = c("x",
                                     "y",
                                     "fill"),
-                   dropped_aes = "z",
+                   dropped_aes = c("z", "label"),
                    compute_group = function(data,
                                             scales,
                                             grid_res,
@@ -340,7 +340,7 @@ geom_head <- function(mapping = NULL,
 
 StatHead <- ggplot2::ggproto("StatHead",
                              Stat,
-                             dropped_aes = c("fill", "z"),
+                             dropped_aes = c("fill", "z", "label"),
                              compute_group = function(data,
                                                       scales,
                                                       interp_limit,
@@ -366,7 +366,8 @@ GeomHead <- ggplot2::ggproto("GeomHead",
 #'
 #' @inheritParams ggplot2::geom_path
 #' @param colour For `geom_mask`, colour of the masking ring.
-#' @param size For `geom_mask`, width of the masking ring.
+#' @param size For `geom_mask`, width of the masking ring. Deprecated.
+#' @param linewidth For `geom_mask`, width of the masking ring.
 #' @rdname stat_scalpmap
 #' @family topoplot functions
 #' @export
@@ -376,6 +377,7 @@ geom_mask <- function(mapping = NULL,
                       na.rm = FALSE,
                       colour = "white",
                       size = rel(5),
+                      linewidth = rel(5),
                       r = 95,
                       interp_limit = "skirt",
                       ...) {
@@ -398,7 +400,7 @@ geom_mask <- function(mapping = NULL,
 StatMask <-
   ggplot2::ggproto("StatMask",
                    Stat,
-                   dropped_aes = c("fill", "z"),
+                   dropped_aes = c("fill", "z", "label"),
                    compute_group = function(data,
                                             scales,
                                             interp_limit,
@@ -411,9 +413,7 @@ StatMask <-
                       if (scale_fac < r) scale_fac <- r
 
                       if (identical(interp_limit, "head")) {
-                        scale_fac <- max_elec + 1.02#* 1.02
-                          #min(max_elec * 1.10, max_elec + 15)
-                        #  max(scale_fac + 5, scale_fac * 1.05)
+                        scale_fac <- max_elec + 1.02
                       }
 
                      data <- data.frame(x = scale_fac * cos(circ_rad_fun()),
@@ -438,18 +438,19 @@ geom_ears <- function(mapping = NULL,
                       ...) {
 
   list(
-    ggplot2::layer(data = data,
-                 mapping = mapping,
-                 stat = StatREar,
-                 geom = GeomEars,
-                 position = PositionIdentity,
-                 show.legend = show.legend,
-                 inherit.aes = TRUE,
-                 params = list(na.rm = na.rm,
-                               curvature = -.5,
-                               angle = 60,
-                               r = r,
-                               ...)),
+    ggplot2::layer(
+      data = data,
+      mapping = mapping,
+      stat = StatREar,
+      geom = GeomEars,
+      position = PositionIdentity,
+      show.legend = show.legend,
+      inherit.aes = TRUE,
+      params = list(na.rm = na.rm,
+                    curvature = -.5,
+                    angle = 60,
+                    r = r,
+                    ...)),
     ggplot2::layer(data = data,
                    mapping = mapping,
                    stat = StatLEar,
@@ -472,7 +473,7 @@ GeomEars <- ggplot2::ggproto("GeomEars",
 
 StatREar <- ggplot2::ggproto("StatREar",
                              Stat,
-                             dropped_aes = c("fill", "z"),
+                             dropped_aes = c("fill", "z", "label"),
                              compute_group = function(data,
                                                       scales,
                                                       interp_limit,
@@ -489,7 +490,7 @@ StatREar <- ggplot2::ggproto("StatREar",
 
 StatLEar <- ggplot2::ggproto("StatLEar",
                              Stat,
-                             dropped_aes = c("fill", "z"),
+                             dropped_aes = c("fill", "z", "label"),
                              compute_group = function(data,
                                                       scales,
                                                       interp_limit,
@@ -557,7 +558,7 @@ StatChannels <-
   ggplot2::ggproto("StatChannels",
                    Stat,
                    required_aes = c("x", "y"),
-                   dropped_aes = c("fill", "z"),
+                   dropped_aes = c("fill", "z", "label"),
                    compute_group = function(data, scales) {
 
                      if ("label" %in% names(data)) {
@@ -631,7 +632,7 @@ StatSummaryByFill <-
   ggplot2::ggproto("StatSummaryByFill",
                    Stat,
                    required_aes = c("x", "y", "fill"),
-                   dropped_aes = c("z"),
+                   dropped_aes = c("z", "label"),
                    compute_group = function(data,
                                             scales,
                                             fun.data = NULL,
