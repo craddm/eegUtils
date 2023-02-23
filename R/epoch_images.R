@@ -273,7 +273,7 @@ create_erpimage <- function(data,
     geom_raster(interpolate = interpolate) +
     geom_vline(xintercept = 0,
                linetype = "dashed",
-               size = 1) +
+               linewidth = 1) +
     scale_fill_distiller(palette = "RdBu",
                          limits = clim,
                          oob = scales::squish) +
@@ -337,7 +337,7 @@ create_tfrimage <- function(data,
     geom_raster(interpolate = interpolate) +
     geom_vline(xintercept = 0,
                linetype = "dashed",
-               size = 1) +
+               linewidth = 1) +
     scale_fill_viridis_c(limits = clim,
                          oob = scales::squish) +
     scale_y_continuous(expand = c(0, 0)) +
@@ -429,7 +429,7 @@ erp_raster <- function(data,
     #geom_raster(interpolate = interpolate) +
     geom_vline( xintercept = 0,
                 linetype = "dashed",
-                size = 2) +
+                linewidth = 2) +
     scale_fill_distiller(palette = "RdBu",
                          limits = c(clim[1],
                                     clim[2]),

@@ -554,7 +554,7 @@ create_tc <- function(data,
                        expand = c(0, 0)) +
     theme_minimal(base_size = 12) +
     theme(panel.grid = element_blank(),
-          axis.ticks = element_line(size = .5)) +
+          axis.ticks = element_line(linewidth = .5)) +
     guides(colour = guide_legend(override.aes = list(alpha = 1)))
 }
 
