@@ -66,7 +66,7 @@ plot_difference.eeg_epochs <-
         id_cols = c(participant_id,
                     time,
                     electrode),
-        names_from = conditions,
+        names_from = tidyr::all_of(conditions),
         values_from = amplitude,
         values_fn = mean
         )
