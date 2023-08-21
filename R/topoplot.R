@@ -261,10 +261,10 @@ topoplot.data.frame <- function(data,
 
   topo <-
     topo +
-    geom_mask(size = 5 * scaling,
+    geom_mask(linewidth = 5 * scaling,
               interp_limit = interp_limit) +
     geom_head(r = r,
-              size = rel(1.5) * scaling) +
+              linewidth = rel(1.5) * scaling) +
     coord_equal() +
     theme_bw() +
     theme(rect = element_blank(),
