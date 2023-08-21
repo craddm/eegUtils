@@ -254,7 +254,7 @@ topoplot.data.frame <- function(data,
             linetype = ggplot2::after_stat(level) < 0),
         bins = 6,
         colour = "black",
-        size = rel(1.1 * scaling),
+        linewidth = rel(1.1 * scaling),
         show.legend = FALSE
       )
     }

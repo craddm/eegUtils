@@ -365,10 +365,11 @@ plot_timecourse.eeg_tfr <- function(data,
          colour = "",
          fill = "") +
     geom_vline(xintercept = 0,
-               linetype = "solid", size = 0.5) +
+               linetype = "solid",
+               linewidth = 0.5) +
     geom_hline(yintercept = yintercept,
                linetype = "solid",
-               size = 0.5) +
+               linewidth = 0.5) +
     scale_x_continuous(breaks = scales::pretty_breaks(n = 4),
                        expand = c(0, 0)) +
     scale_y_continuous(breaks = scales::pretty_breaks(n = 4),
@@ -509,7 +510,7 @@ create_tc <- function(data,
                          linetype = "dashed",
                          aes(colour = !!colour),
                          fill = NA,
-                         size = 1,
+                         linewidth = 1,
                          alpha = 0.5)
           }
       } else {
@@ -520,7 +521,7 @@ create_tc <- function(data,
                        #linetype = "dashed",
                        mapping = mapping,
                        fill = NA,
-                       size = 1,
+                       linewidth = 1,
                        alpha = 0.5)
       }
   }
@@ -529,7 +530,7 @@ create_tc <- function(data,
     tc_plot +
     stat_summary(fun = "mean",
                  geom = "line",
-                 size = 1.2)
+                 linewidth = 1.2)
 
   if (!is.null(mapping)) {
     tc_plot <-
@@ -549,8 +550,11 @@ create_tc <- function(data,
          colour = "",
          fill = "") +
     geom_vline(xintercept = 0,
-               linetype = "solid", size = 0.5) +
-    geom_hline(yintercept = 0, linetype = "solid", size = 0.5) +
+               linetype = "solid",
+               linewidth = 0.5) +
+    geom_hline(yintercept = 0,
+               linetype = "solid",
+               linewidth = 0.5) +
     scale_x_continuous(breaks = scales::pretty_breaks(n = 4),
                        expand = c(0, 0)) +
     scale_y_continuous(breaks = scales::pretty_breaks(n = 4),

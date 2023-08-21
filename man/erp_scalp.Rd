@@ -15,6 +15,7 @@ erp_scalp(data, ...)
   color = NULL,
   colour = NULL,
   size = 0.8,
+  linewidth = 0.8,
   baseline = NULL,
   show_guide = TRUE,
   chan_info = NULL,
@@ -40,7 +41,9 @@ erp_scalp(data, ...)
 \item{colour}{Variable to colour lines by. If no variable is passed, only one
 line is drawn for each electrode.}
 
-\item{size}{Size of the line(s) for the ERPs.}
+\item{size}{Size of the line(s) for the ERPs. Deprecated}
+
+\item{linewidth}{Size of the line(s) for the ERPs.}
 
 \item{baseline}{Character vector of times to subtract for baseline correct.}
 

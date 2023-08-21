@@ -303,13 +303,13 @@ create_bf <- function(data,
            y = ylab,
            colour = "") +
       geom_hline(yintercept = 0,
-                 size = 0.5,
+                 linewidth = 0.5,
                  linetype = "dashed",
                  alpha = 0.5) +
       scale_x_continuous(expand = c(0, 0)) +
       theme_minimal(base_size = 12) +
       theme(panel.grid = element_blank(),
-            axis.ticks = element_line(size = .5))
+            axis.ticks = element_line(linewidth = .5))
   } else {
     butterfly_plot <-
       butterfly_plot +
@@ -317,16 +317,18 @@ create_bf <- function(data,
       labs(x = "Time (s)",
            y = ylab,#expression(paste("Amplitude (", mu, "V)")),
            colour = "") +
-      geom_hline(yintercept = 0, size = 0.5) +
+      geom_hline(yintercept = 0,
+                 linewidth = 0.5) +
       scale_x_continuous(expand = c(0, 0)) +
       theme_minimal(base_size = 12) +
       theme(panel.grid = element_blank(),
-            axis.ticks = element_line(size = .5))
+            axis.ticks = element_line(linewidth = .5))
 
     if (!continuous) {
       butterfly_plot <-
         butterfly_plot +
-        geom_vline(xintercept = 0, size = 0.5)
+        geom_vline(xintercept = 0,
+                   linewidth = 0.5)
     }
   }
 

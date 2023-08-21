@@ -40,7 +40,8 @@ erp_scalp.eeg_ICA <- function(data,
 #' @param colour Variable to colour lines by. If no variable is passed, only one
 #'   line is drawn for each electrode.
 #' @param color Alias for `colour`.
-#' @param size Size of the line(s) for the ERPs.
+#' @param size Size of the line(s) for the ERPs. Deprecated
+#' @param linewidth Size of the line(s) for the ERPs.
 #' @param show_guide Should a guide showing the scale of the ERP plots be shown.
 #'   Defaults to TRUE.
 #' @param baseline Character vector of times to subtract for baseline correct.
@@ -58,6 +59,7 @@ erp_scalp.default <- function(data,
                               color = NULL,
                               colour = NULL,
                               size = .8,
+                              linewidth = .8,
                               baseline = NULL,
                               show_guide = TRUE,
                               chan_info = NULL,
@@ -131,11 +133,11 @@ erp_scalp.default <- function(data,
     plot <-
       plot +
       geom_vline(xintercept = 0,
-                 size = .3)
+                 linewidth = .3)
     plot <-
       plot +
       geom_hline(yintercept = 0,
-                 size = .3)
+                 linewidth = .3)
     plot <-
       plot +
       theme_void()
@@ -147,16 +149,17 @@ erp_scalp.default <- function(data,
     if (rlang::quo_is_null(colour)) {
       plot <-
         plot +
-        geom_line(size = size)
+        geom_line(linewidth = linewidth)
     } else {
       plot <-
         plot +
         scale_color_brewer(palette = "Set1")
       plot <-
         plot +
-        geom_line(aes(colour = {{ colour }}),
-        show.legend = FALSE,
-        size = size)
+        geom_line(
+          aes(colour = {{ colour }}),
+          show.legend = FALSE,
+          linewidth = linewidth)
     }
     plot
   }
@@ -215,15 +218,15 @@ erp_scalp.default <- function(data,
     scale_x_continuous(breaks = scales::breaks_pretty(n = 3)) +
     scale_y_continuous(breaks = c(round(minAmp, 1), 0, round(maxAmp, 1))) +
     geom_vline(xintercept = 0,
-               size = .4) +
+               linewidth = .4) +
     geom_hline(yintercept = 0,
-               size = .4) +
+               linewidth = .4) +
     # Remove the labels, because they make the guide appear TINY
     labs(y = "", x = "") +
     theme_minimal(base_size = 8) +
     theme(
       panel.grid = element_blank(),
-      axis.ticks = element_line(size = .3),
+      axis.ticks = element_line(linewidth = .3),
       axis.title = element_blank(),
       panel.background = element_blank()
     )
@@ -424,7 +427,7 @@ interactive_scalp <- function(data,
             plot_timecourse(select_elecs(data,
                                          unlist(button_reacts$sel_elecs)),
                             colour = rlang::as_label(colour)) +
-              facet_wrap( ~ electrode)
+              facet_wrap(~electrode)
           }
         }
       })
