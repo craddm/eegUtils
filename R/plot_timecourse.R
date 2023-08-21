@@ -316,6 +316,23 @@ plot_timecourse.eeg_tfr <- function(data,
     data <- rm_baseline(data,
                         time_lim = baseline,
                         type = type)
+    yintercept <-
+      switch(type,
+             divide = 1,
+             db = 0,
+             absolute = 0,
+             pc = 0,
+             ratio = 1)
+    ylabel <-
+      switch(type,
+             divide = "Power ratio",
+             db = "Decibels (dB)",
+             ratio = "Power ratio",
+             absolute = "Power (a.u.)",
+             pc = "Percent change (%)")
+  } else {
+    yintercept <- 0
+    ylabel <- "Power (a.u.)"
   }
 
   if (!is.null(time_lim)) {
@@ -336,20 +353,6 @@ plot_timecourse.eeg_tfr <- function(data,
   data_f <- as.data.frame(data,
                           long = TRUE,
                           coords = FALSE)
-  yintercept <-
-    switch(type,
-           divide = 1,
-           db = 0,
-           absolute = 0,
-           pc = 0,
-           ratio = 1)
-  ylabel <-
-    switch(type,
-           divide = "Power ratio",
-           db = "Decibels (dB)",
-           ratio = "Power ratio",
-           absolute = "Power (a.u.)",
-           pc = "Percent change (%)")
 
   tc_plot <-
     ggplot(data_f,
