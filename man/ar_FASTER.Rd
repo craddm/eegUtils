@@ -64,8 +64,8 @@ EEG artifact Rejection. J Neurosci Methods.
 ar_FASTER(demo_epochs)
 }
 \references{
-Nolan, Whelan & Reilly (2010). FASTER: Fully Automated Statistical Thresholding for
-EEG artifact Rejection. J Neurosci Methods.
+Nolan, Whelan & Reilly (2010). FASTER: Fully Automated
+Statistical Thresholding for EEG artifact Rejection. J Neurosci Methods.
 }
 \author{
 Matt Craddock \email{matt@mattcraddock.com}

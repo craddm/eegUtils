@@ -142,7 +142,8 @@ averaging. Output is a \code{ggplot2} object.
 
 \item \code{plot_timecourse(eeg_evoked)}: plot \code{eeg_evoked} timecourses
 
-\item \code{plot_timecourse(eeg_ICA)}: Plot individual components from \code{eeg_ICA} components
+\item \code{plot_timecourse(eeg_ICA)}: Plot individual components from \code{eeg_ICA}
+components
 
 \item \code{plot_timecourse(eeg_epochs)}: Plot timecourses from \code{eeg_epochs} objects.
 
