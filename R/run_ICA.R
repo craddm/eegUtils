@@ -220,7 +220,7 @@ run_ICA.eeg_epochs <- function(data,
           maxiter = maxit,
           whiten = "sqrtm",
           verbose = verbose
-          )
+        )
     }
 
     ICA_out$S <- as.data.frame(ICA_out$S)
@@ -390,14 +390,15 @@ apply_ica <- function(data, ...) {
 }
 
 #' @param comps Components to remove.
-#' @describeIn apply_ica From given `eeg_ICA` object, recreate channel timecourses.
+#' @describeIn apply_ica From given `eeg_ICA` object, recreate channel
+#'   timecourses.
 #' @export
 apply_ica.eeg_ICA <- function(data,
                               comps = NULL,
                               ...) {
   ncomps <- ncol(data$mixing_matrix)
   new_mixmat <- data$mixing_matrix[1:(ncomps - 1)]
-  new_mixmat[ , comps] <- 0
+  new_mixmat[, comps] <- 0
   new_dat <- mix(as.matrix(new_mixmat), as.matrix(data$signals))
   new_dat <- as.data.frame(t(new_dat))
   names(new_dat) <- data$chan_info$electrode

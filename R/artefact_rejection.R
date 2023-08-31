@@ -104,11 +104,11 @@ check_thresh <- function(data, threshold) {
   total_data <- prod(dim(data$signals))
 
   message(sum(upper_thresh),
-          " (", round(sum(upper_thresh)/total_data * 100, 2), "%) ",
-          "samples above ", max(threshold) , " uV threshold.")
+          " (", round(sum(upper_thresh) / total_data * 100, 2), "%) ",
+          "samples above ", max(threshold), " uV threshold.")
   message(sum(lower_thresh),
-          " (", round(sum(lower_thresh)/total_data * 100, 2), "%) ",
-          "samples below ", min(threshold) , " uV threshold.")
+          " (", round(sum(lower_thresh) / total_data * 100, 2), "%) ",
+          "samples below ", min(threshold), " uV threshold.")
   crossed_thresh
 }
 
@@ -140,12 +140,12 @@ channel_stats.eeg_data <- function(data,
   chan_range <- apply(data$signals, 2, function(x) diff(range(x)))
 
   data.frame(electrode = names(data$signals),
-             means = chan_means,
-             sds = chan_sds,
-             variance = chan_var,
-             kurtosis = chan_kurt,
-             minmax = chan_range
-             )
+    means = chan_means,
+    sds = chan_sds,
+    variance = chan_var,
+    kurtosis = chan_kurt,
+    minmax = chan_range
+  )
 }
 
 #' Epoch statistics

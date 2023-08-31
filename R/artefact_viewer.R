@@ -167,5 +167,3 @@ epochPlotly <- function(id,
       )
   )
 }
-
-

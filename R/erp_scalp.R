@@ -66,7 +66,7 @@ erp_scalp.default <- function(data,
                               montage = NULL,
                               ...) {
 
-  if (is.eeg_epochs(data) & is.null(montage)) {
+  if (is.eeg_epochs(data) && is.null(montage)) {
     chan_info <- channels(data)
     data <- eeg_average(data)
     data <- as.data.frame(data,
@@ -82,7 +82,7 @@ erp_scalp.default <- function(data,
 
   if (rlang::quo_is_null(colour) && !rlang::quo_is_null(color)) {
     colour <- color
-  } else if (!rlang::quo_is_null(color) & !rlang::quo_is_null(colour)) {
+  } else if (!rlang::quo_is_null(color) && !rlang::quo_is_null(colour)) {
     message("Please only supply `colour` or `color`, not both. `colour` will be used.")
   }
 
@@ -246,7 +246,7 @@ erp_scalp.default <- function(data,
       )
   }
 
-  for (i in 1:nrow(data)) {
+  for (i in seq_len(nrow(data))) {
     p <-
       p +
       annotation_custom(
@@ -423,7 +423,7 @@ interactive_scalp <- function(data,
             plot_timecourse(select_elecs(data,
                                          unlist(button_reacts$sel_elecs)),
                             colour = "electrode")
-          } else{
+          } else {
             plot_timecourse(select_elecs(data,
                                          unlist(button_reacts$sel_elecs)),
                             colour = rlang::as_label(colour)) +
@@ -456,5 +456,3 @@ interactive_scalp <- function(data,
 
   runGadget(ui, server)
 }
-
-

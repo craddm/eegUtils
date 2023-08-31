@@ -123,7 +123,7 @@ select_times.eeg_evoked <- function(data,
 select_times.eeg_tfr <- function(data,
                                  time_lim = NULL,
                                  df_out = FALSE,
-                                 ...){
+                                 ...) {
 
   keep_rows <- find_times(data$timings, time_lim)
   data$timings <- data$timings[keep_rows, , drop = FALSE]

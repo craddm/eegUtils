@@ -345,4 +345,3 @@ rob_se <- function(mdf,
                    inverted_dm))
   sqrt(out_se)
 }
-

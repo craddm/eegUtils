@@ -648,5 +648,3 @@ StatSummaryByFill <-
                      summary
                      }
                    )
-
-

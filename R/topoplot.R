@@ -507,7 +507,7 @@ topoplot.eeg_ICA <- function(data,
     }
   }
   topoplot(data,
-           chanLocs = chanLocs,#chan_info,
+           chanLocs = chanLocs, #chan_info,
            limits = limits,
            interp_limit = interp_limit,
            r = r,

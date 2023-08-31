@@ -141,11 +141,11 @@ run_iir <- function(data,
     stop("Filter order should be between 2 and 20.")
   }
 
-  if (length(low_freq) > 1 | length(high_freq) > 1) {
+  if (length(low_freq) > 1 || length(high_freq) > 1) {
     stop("Only one number should be passed to low_freq or high_freq")
   }
 
-  if (is.null(low_freq) & is.null(high_freq)) {
+  if (is.null(low_freq) && is.null(high_freq)) {
     stop("At least one frequency must be specified.")
   }
 
@@ -155,7 +155,7 @@ run_iir <- function(data,
     W <- high_freq / (srate / 2)
   } else if (is.null(high_freq)) {
     filt_type <- "high"
-    message("High-pass IIR filter at ", low_freq," Hz")
+    message("High-pass IIR filter at ", low_freq, " Hz")
     W <- low_freq / (srate / 2)
 
     if (length(dim(data)) > 1) {

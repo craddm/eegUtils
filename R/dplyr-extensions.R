@@ -346,11 +346,9 @@ rename.eeg_ICA <- function(.data,
 #' @importFrom dplyr rename
 #' @export
 rename.eeg_epochs <- function(.data,
-                           ...) {
+                              ...) {
   .data$signals <- dplyr::rename(.data$signals,
                                  ...)
   .data$chan_info$electrode <- names(.data$signals)
   .data
 }
-
-

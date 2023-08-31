@@ -67,7 +67,7 @@ compute_tfr.eeg_epochs <- function(data,
                                    trim_edges = TRUE,
                                    verbose = TRUE,
                                    ...) {
-  if (identical(output, "fourier") & keep_trials == FALSE) {
+  if (identical(output, "fourier") && keep_trials == FALSE) {
     if (verbose) {
       message("For fourier output, all trials are kept.")
     }
@@ -279,7 +279,7 @@ tf_morlet <- function(data,
                          output)
 
   sigtime <- sigtime[time_sel]
-  data$timings <- data$timings[data$timings$time %in% sigtime,]
+  data$timings <- data$timings[data$timings$time %in% sigtime, ]
 
   if (keep_trials == TRUE) {
     dimnames(data$signals) <- list(
@@ -751,20 +751,17 @@ tf_hanning <- function(data,
   n_conv <- stats::nextn(n_conv, 2)
 
   # zero-pad and run FFTs on morlets
-   norm_mf <- lapply(
-     hann_windows,
-     fft_n,
-     n = n_conv
-   )
+  norm_mf <- lapply(
+    hann_windows,
+    fft_n,
+    n = n_conv
+  )
 
-   norm_mf <- matrix(unlist(norm_mf),
-                     ncol = length(norm_mf))
-                    #byrow = TRUE)
-
-
-  # # Normalise wavelets for FFT (as suggested by Mike X. Cohen):
-   norm_mf <- wavelet_norm(norm_mf,
-                           n_freq)
+  norm_mf <- matrix(unlist(norm_mf),
+                    ncol = length(norm_mf))
+  # Normalise wavelets for FFT (as suggested by Mike X. Cohen):
+  norm_mf <- wavelet_norm(norm_mf,
+                          n_freq)
 
   # Run the FFT convolutions on each individual trial
 
@@ -782,7 +779,7 @@ tf_hanning <- function(data,
                          output)
 
   sigtime <- sigtime[time_sel]
-  data$timings <- data$timings[data$timings$time %in% sigtime,]
+  data$timings <- data$timings[data$timings$time %in% sigtime, ]
 
   if (keep_trials == TRUE) {
     dimnames(data$signals) <- list(
@@ -825,16 +822,15 @@ hann_family <- function(frex,
 
   max_win <- max(win_sizes) * 3
 
-    windows <- lapply(
+  windows <- lapply(
     seq_along(frex),
     function(x) {
       current_win <- win_sizes[[x]]
       window <- signal::hanning(win_sizes[[x]])
       pi_seq <- seq(from = -(current_win - 1) / 2,
-                    to = (current_win - 1)/ 2,
+                    to = (current_win - 1) / 2,
                     length.out = current_win)
-
-      pi_seq <- pi_seq * 2 * pi /srate
+      pi_seq <- pi_seq * 2 * pi / srate
       prepad <- ceiling((max_win - length(window)) / 2)
       postpad <- floor((max_win - length(window)) / 2)
       win_times <- pi_seq * frex[[x]]
@@ -847,7 +843,8 @@ hann_family <- function(frex,
                        rep(0, postpad))
          )
       final_win
-      })
+    }
+  )
   windows
 }
 
@@ -886,7 +883,6 @@ cycle_calc <- function(time_win,
                        frex) {
   time_win * frex
 }
-
 
 parse_cycles <- function(n_cycles, spacing, n_freq) {
   if (length(n_cycles) == 2) {

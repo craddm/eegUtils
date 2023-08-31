@@ -45,7 +45,7 @@ import_raw <- function(file_name,
                   "as",
                   toupper(file_type)))
 
-    if (fast_bdf & file_type == "bdf") {
+    if (fast_bdf && file_type == "bdf") {
       bdf_header <- read_bdf_header(file_name)
       sigs <- read_bdf_data(file_name, bdf_header)
       colnames(sigs) <- bdf_header$chan_labels
@@ -89,10 +89,10 @@ import_raw <- function(file_name,
 
     if (purrr::is_empty(events)) {
       warning("No status channel. Retaining all channels.")
-      chan_nos <- 1:ncol(sigs)
+      chan_nos <- seq_len(ncol(sigs))
     } else {
       #all chans except Status
-      chan_nos <- (1:ncol(sigs))[-which(names(sigs) == "Status")]
+      chan_nos <- (seq_len(ncol(sigs)))[-which(names(sigs) == "Status")]
     }
 
     timings <- tibble::tibble(sample = 1:nrow(sigs))
@@ -327,7 +327,7 @@ import_cnt <- function(file_name) {
                         accept = integer(n_events),
                         accuracy = integer(n_events),
                         stringsAsFactors = FALSE
-                        )
+  )
 
   for (i in 1:n_events) {
     ev_list$event_type[i] <- readBin(cnt_file,
@@ -618,7 +618,7 @@ import_set <- function(file_name,
                 "type",
                 "epoch")
 
-  if (drop_custom & any(!colnames(event_table) %in% std_cols)) {
+  if (drop_custom && any(!colnames(event_table) %in% std_cols)) {
     message("Dropping custom columns...")
     event_table <- event_table[, std_cols]
   }

@@ -41,7 +41,7 @@ ar_eogcor.eeg_ICA <- function(decomp,
                               ...) {
 
   if (!is.null(threshold)) {
-    if (threshold > 1 | threshold < 0) {
+    if (threshold > 1 || threshold < 0) {
       stop("Threshold must be between 0 and 1.")
     }
     heog_threshold <- threshold
@@ -54,7 +54,7 @@ ar_eogcor.eeg_ICA <- function(decomp,
                                         HEOG,
                                         VEOG)
                               } else {
-                                data$signals[,c("HEOG", "VEOG")]
+                                data$signals[, c("HEOG", "VEOG")]
                               }))
 
   if (is.null(threshold)) {
@@ -123,7 +123,7 @@ ar_acf.eeg_ICA <- function(data,
                            threshold = NULL,
                            ...) {
 
-  time_lag <- round(data$srate * (ms/1000))
+  time_lag <- round(data$srate * (ms / 1000))
   low_acf <- apply(data$signals, 2,
                    function(x) stats::acf(x, time_lag, plot = FALSE)$acf[time_lag + 1, 1, 1])
   if (is.null(threshold)) {

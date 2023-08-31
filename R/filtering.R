@@ -275,11 +275,11 @@ parse_filt_freqs <- function(low_freq,
                              srate,
                              method) {
 
-  if (length(low_freq) > 1 | length(high_freq) > 1) {
+  if (length(low_freq) > 1 || length(high_freq) > 1) {
     stop("Only one number should be passed to low_freq or high_freq.")
   }
 
-  if (is.null(low_freq) & is.null(high_freq)) {
+  if (is.null(low_freq) && is.null(high_freq)) {
     stop("At least one frequency must be specified.")
   }
 

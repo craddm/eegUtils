@@ -11,9 +11,8 @@
 #' @examples
 #' ar_FASTER(demo_epochs)
 #' @return An `eeg_epochs` object with artefact correction applied.
-#' @references
-#' Nolan, Whelan & Reilly (2010). FASTER: Fully Automated Statistical Thresholding for
-#' EEG artifact Rejection. J Neurosci Methods.
+#' @references Nolan, Whelan & Reilly (2010). FASTER: Fully Automated
+#' Statistical Thresholding for EEG artifact Rejection. J Neurosci Methods.
 #' @export
 
 ar_FASTER <- function(data, ...) {

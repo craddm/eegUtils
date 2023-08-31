@@ -18,7 +18,7 @@
 #' @export
 
 erp_image <- function(data,
-                      ...){
+                      ...) {
   UseMethod("erp_image", data)
 }
 
@@ -190,7 +190,7 @@ erp_image.eeg_tfr <- function(data,
   data <- select_elecs(data,
                        electrode)
 
-  if (!is.null(freq_range)){
+  if (!is.null(freq_range)) {
     data <- select_freqs(data,
                          freq_range)
   }
@@ -326,7 +326,7 @@ create_tfrimage <- function(data,
     clim <- c(0, clim)
   } else if (length(clim) != 2) {
     clim <- max(abs(max(data$smooth_amp, na.rm = TRUE)),
-                abs(min(data$smooth_amp, na.rm = T)))
+                abs(min(data$smooth_amp, na.rm = TRUE)))
     clim <- c(0, clim)
   }
 
@@ -461,22 +461,22 @@ arrange_chans <- function(chan_info, sig_names) {
 
   # Order them from back to front
   midline_labels <- midline_labels[sort(midline_dist,
-                                        decreasing = T,
-                                        index.return = T)$ix]
+                                        decreasing = TRUE,
+                                        index.return = TRUE)$ix]
 
   # Pick out electrodes from the left hemisphere
   left <- is.true(chan_info$x < 0)
-  left_labels <- chan_info$electrode[left ]
+  left_labels <- chan_info$electrode[left]
   left_dist <- chan_info$y[left]
   left_labels <- left_labels[sort(left_dist,
-                                  index.return = T)$ix]
+                                  index.return = TRUE)$ix]
 
   # Pick out electrodes from the right hemisphere
   right <- is.true(chan_info$x > 0)
   right_labels <- chan_info$electrode[right]
   right_dist <- chan_info$y[right]
   right_labels <- right_labels[sort(right_dist,
-                                    index.return = T)$ix]
+                                    index.return = TRUE)$ix]
 
   all_labels <- c(left_labels,
                   midline_labels,

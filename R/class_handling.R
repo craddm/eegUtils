@@ -109,15 +109,15 @@ eeg_tfr <- function(data,
 
   structure(list(signals = data,
                  srate = srate,
-                events = events,
-                chan_info = chan_info,
-                reference = reference,
-                timings = timings,
-                freq_info = freq_info,
-                dimensions = dimensions,
-                epochs = epochs,
-                version = utils::packageVersion("eegUtils")),
-                class = "eeg_tfr")
+                 events = events,
+                 chan_info = chan_info,
+                 reference = reference,
+                 timings = timings,
+                 freq_info = freq_info,
+                 dimensions = dimensions,
+                 epochs = epochs,
+                 version = utils::packageVersion("eegUtils")),
+            class = "eeg_tfr")
 }
 
 #' Function to create an object of class eeg_psd

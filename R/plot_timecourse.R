@@ -132,7 +132,8 @@ plot_timecourse.eeg_evoked <- function(data,
   tc_plot
 }
 
-#' @describeIn plot_timecourse Plot individual components from `eeg_ICA` components
+#' @describeIn plot_timecourse Plot individual components from `eeg_ICA`
+#'   components
 #' @param component name or number of ICA component to plot
 #' @export
 plot_timecourse.eeg_ICA <- function(data,
@@ -189,7 +190,7 @@ plot_timecourse.eeg_ICA <- function(data,
                        facets = facets)
 
   tc_plot
-  }
+}
 
 #' @describeIn plot_timecourse Plot timecourses from `eeg_epochs` objects.
 #' @export
@@ -302,7 +303,7 @@ plot_timecourse.eeg_tfr <- function(data,
                                     type = "divide",
                                     ...) {
 
-  if (!is.null(colour) | !is.null(color)) {
+  if (!is.null(colour) || !is.null(color)) {
     warning(
       "colour argument is kept for compatability, please use the `mapping` argument and supply a `ggplot2` `aes()` mapping. the colour parameter will be deprectated in v0.9.0 of eegUtils"
     )

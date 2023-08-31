@@ -71,7 +71,7 @@ epoch_data.eeg_data <- function(data,
    }
 
   # generate time vector
-  init_times <- seq(time_lim[1], time_lim[2], 1/data$srate)
+  init_times <- seq(time_lim[1], time_lim[2], 1 / data$srate)
   #check if times need adjusting.
   time_check <- min(abs(init_times))
   if (time_check != 0) {
@@ -95,7 +95,7 @@ epoch_data.eeg_data <- function(data,
   # i.e. if srate is 1000, a vector from -100 to 0 to 100 would be -.1 s before
   # to .1 s after event onset
 
-  samps <- init_times / (1/srate)
+  samps <- init_times / (1 / srate)
   event_table <- data$events
 
   # go through all events and find which match those specified as the events to

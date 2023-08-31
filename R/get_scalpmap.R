@@ -180,7 +180,7 @@ calc_map <- function(data,
                      interp_limit,
                      quantity,
                      facets,
-                     r){
+                     r) {
 
   tmp <- as.data.frame(data)
 

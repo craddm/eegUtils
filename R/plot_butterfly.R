@@ -196,7 +196,7 @@ plot_butterfly.eeg_lm <- function(data,
     ylab <- expression(paste("Amplitude (", mu, "V)"))
   } else if (identical(quantity, "t_stats")) {
     quantity <- "statistic"
-    ylab <- expression(italic("t")~"-statistic")
+    ylab <- expression(italic("t") ~ "-statistic")
   } else if (identical(quantity, "std_err")) {
     ylab <- expression(paste("Std. error (", mu, "V)"))
   } else if (identical(quantity, "r_sq")) {

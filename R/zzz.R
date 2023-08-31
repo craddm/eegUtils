@@ -46,7 +46,7 @@ utils::globalVariables(c("time",
                          "expected",
                          "BDFAnnotations",
                          "weight")
-                       )
+)
 
 ## usethis namespace: start
 #' @importFrom Rcpp sourceCpp
@@ -59,6 +59,6 @@ NULL
 ## usethis namespace: end
 NULL
 
-.onUnload <- function (libpath) {
+.onUnload <- function(libpath) {
   library.dynam.unload("eegUtils", libpath)
 }

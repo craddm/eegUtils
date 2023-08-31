@@ -289,7 +289,8 @@ view_ica <- function(data) {
         names(rejects)[vapply(rejects,
                               function(x) identical(x, "Reject"),
                               logical(1))]
-      data.frame("Rejected" = rejects)}
+      data.frame("Rejected" = rejects)
+      }
     )
 
     observeEvent(input$done, {

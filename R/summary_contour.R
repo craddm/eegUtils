@@ -241,9 +241,9 @@ contour_breaks <- function(z_range, bins = NULL, binwidth = NULL, breaks = NULL)
   if (!is.null(bins)) {
     # round lower limit down and upper limit up to make sure
     # we generate bins that span the data range nicely
-    accuracy <- signif(diff(z_range), 1)/10
-    z_range[1] <- floor(z_range[1]/accuracy)*accuracy
-    z_range[2] <- ceiling(z_range[2]/accuracy)*accuracy
+    accuracy <- signif(diff(z_range), 1) / 10
+    z_range[1] <- floor(z_range[1] / accuracy) * accuracy
+    z_range[2] <- ceiling(z_range[2] / accuracy) * accuracy
 
     if (bins == 1) {
       return(z_range)
@@ -439,5 +439,3 @@ new_data_frame <- function(x = list(), n = NULL) {
   attr(x, "row.names") <- .set_row_names(n)
   x
 }
-
-

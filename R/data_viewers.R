@@ -71,7 +71,10 @@ browse_data.eeg_ICA <- function(data,
                verbose = FALSE,
                grid_res = 70)
       },
-      cacheKeyExpr = {input$icomp})
+      cacheKeyExpr = {
+        input$icomp
+        }
+      )
 
     output$comp_img <- shiny::renderCachedPlot({
       erp_image(data, component = input$icomp)
@@ -125,8 +128,8 @@ browse_data.eeg_ICA <- function(data,
         names(returnValue)[vapply(returnValue,
                                   function(x) identical(x, "Reject"),
                                   logical(1))]
-       shiny::stopApp(returnValue)
-     })
+      shiny::stopApp(returnValue)
+    })
 
     session$onSessionEnded(stopApp)
   }
