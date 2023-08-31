@@ -2,6 +2,7 @@
 
 ### Function changes
 - `plot_timecourse()` now requires facets and mappings to be explicitly stated during the call, rather than added afterwards. This allows it to use weighted averages when required.
+- `plot_timecourse.eeg_tfr()` now defaults to no baseline correction, and takes a `type` argument for baseline type to be specified.
 - Added new `plot_gfp()` function for calculating and plotting Global Field Power.
 - `topoplot()` now supports plotting of multiple timepoints - pass a list of times to the `time_lim` argument.
 - `topoplot()` now supports custom fill titles through the `fill_title` argument, and automatically switches where necessary (e.g. now says "Power mV^2"). Fill titles are now also centred.
@@ -24,6 +25,7 @@
 - `import_raw(..., fast_bdf = TRUE)` will now discard Annotations rather than fail to import BDF files with Annotations.
 - removed dependency on `Matrix` - now using `qr()$rank` in `run_ICA` rather than using `Matrix::rankMatrix()` to determine rank of input signals.
 - Added numerous `dropped_aes` variables to the custom `ggplot2` `stat_` functions for compatibility with `ggplot2 3.4.0`.
+- Replaced `size` aesthetic with `linewidth` for compatibility with `ggplot2 3.4.0`.
 
 # eegUtils 0.7.0
 
