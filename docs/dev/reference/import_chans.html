@@ -30,7 +30,7 @@ supported."><meta name="robots" content="noindex"><!-- mathjax --><script src="h
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -43,6 +43,9 @@ supported."><meta name="robots" content="noindex"><!-- mathjax --><script src="h
     </li>
     <li>
       <a href="../articles/linear_modelling/linear_modelling.html">Linear Modelling</a>
+    </li>
+    <li>
+      <a href="../articles/single_subj_N170/N170_single_subject.html">Getting started with eegUtils and the N170</a>
     </li>
     <li>
       <a href="../articles/time-frequency-analysis.html">Frequency analysis</a>
@@ -80,23 +83,30 @@ supported.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">import_chans</span><span class="op">(</span><span class="va">file_name</span>, format <span class="op">=</span> <span class="st">"spherical"</span>, file_format <span class="op">=</span> <span class="st">"auto"</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">import_chans</span><span class="op">(</span><span class="va">file_name</span>, format <span class="op">=</span> <span class="st">"spherical"</span>, file_format <span class="op">=</span> <span class="st">"auto"</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>file_name</dt>
 <dd><p>Name and full path of file to be loaded.</p></dd>
+
+
 <dt>format</dt>
 <dd><p>If the file is not <code>.elc</code> format, "spherical", "geographic".
 Default is "spherical".</p></dd>
+
+
 <dt>file_format</dt>
 <dd><p>Default is <code>auto</code>, which will use the file extension to
 determine file format. Other options include <code>ced</code>, <code>besa</code>, <code>elp</code>, <code>elc</code></p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A <code>tibble</code> containing electrode names and locations in several
+    
+
+<p>A <code>tibble</code> containing electrode names and locations in several
 different coordinate systems.</p>
     </div>
     <div id="author">
@@ -116,7 +126,7 @@ different coordinate systems.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

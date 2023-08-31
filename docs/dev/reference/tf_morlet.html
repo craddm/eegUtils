@@ -83,44 +83,63 @@ in frequency domain</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">tf_morlet</span><span class="op">(</span>
-  <span class="va">data</span>,
-  <span class="va">foi</span>,
-  <span class="va">n_freq</span>,
-  <span class="va">spacing</span>,
-  <span class="va">n_cycles</span>,
-  <span class="va">keep_trials</span>,
-  <span class="va">output</span>,
-  <span class="va">downsample</span>,
-  demean <span class="op">=</span> <span class="cn">TRUE</span>,
-  trim_edges <span class="op">=</span> <span class="va">trim_edges</span>,
-  <span class="va">verbose</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">tf_morlet</span><span class="op">(</span></span>
+<span>  <span class="va">data</span>,</span>
+<span>  <span class="va">foi</span>,</span>
+<span>  <span class="va">n_freq</span>,</span>
+<span>  <span class="va">spacing</span>,</span>
+<span>  <span class="va">n_cycles</span>,</span>
+<span>  <span class="va">keep_trials</span>,</span>
+<span>  <span class="va">output</span>,</span>
+<span>  <span class="va">downsample</span>,</span>
+<span>  demean <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  trim_edges <span class="op">=</span> <span class="va">trim_edges</span>,</span>
+<span>  <span class="va">verbose</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>data</dt>
 <dd><p>Data in <code>eeg_epochs</code> format.</p></dd>
+
+
 <dt>foi</dt>
 <dd><p>Frequencies of interest. Scalar or character vector of the lowest
 and highest frequency to resolve.</p></dd>
+
+
 <dt>n_freq</dt>
 <dd><p>Number of frequencies to be resolved.</p></dd>
+
+
 <dt>spacing</dt>
 <dd><p>Use linear or log spacing for frequencies.</p></dd>
+
+
 <dt>n_cycles</dt>
 <dd><p>Number of cycles at each frequency.</p></dd>
+
+
 <dt>keep_trials</dt>
 <dd><p>Keep single trials or average over them before returning.</p></dd>
+
+
 <dt>output</dt>
 <dd><p>Sets whether output is power, phase, or fourier coefficients.</p></dd>
+
+
 <dt>downsample</dt>
 <dd><p>Downsampling factor (integer).</p></dd>
+
+
 <dt>demean</dt>
 <dd><p>Remove mean before transforming.</p></dd>
+
+
 <dt>verbose</dt>
 <dd><p>Print informative messages in console.</p></dd>
+
 </dl></div>
 
   </div>
@@ -135,7 +154,7 @@ and highest frequency to resolve.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

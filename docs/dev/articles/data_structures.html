@@ -47,7 +47,7 @@
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -61,6 +61,9 @@
     </li>
     <li>
       <a href="../articles/linear_modelling/linear_modelling.html">Linear Modelling</a>
+    </li>
+    <li>
+      <a href="../articles/single_subj_N170/N170_single_subject.html">Getting started with eegUtils and the N170</a>
     </li>
     <li>
       <a href="../articles/time-frequency-analysis.html">Frequency analysis</a>
@@ -95,9 +98,10 @@
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>A guide to eegUtils data structures</h1>
-                        <h4 data-toc-skip class="author">Matt Craddock</h4>
+                        <h4 data-toc-skip class="author">Matt
+Craddock</h4>
             
-            <h4 data-toc-skip class="date">2022-02-07</h4>
+            <h4 data-toc-skip class="date">2023-08-22</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/craddm/eegUtils/blob/HEAD/vignettes/data_structures.Rmd" class="external-link"><code>vignettes/data_structures.Rmd</code></a></small>
       <div class="hidden name"><code>data_structures.Rmd</code></div>
@@ -109,30 +113,43 @@
 <div class="section level2">
 <h2 id="eegutils">eegUtils<a class="anchor" aria-label="anchor" href="#eegutils"></a>
 </h2>
-<p><code>eegUtils</code> uses S3 objects to store EEG data and associated information such as channel locations. Using different object classes for data structured in different ways ensures that the various plotting functions work consistently across different types of EEG data. For example, there are different classes for epoched (<code>eeg_epochs</code>) and continuous data (<code>eeg_data</code>), and for time-frequency representations of data (<code>eeg_tfr</code>).</p>
+<p><code>eegUtils</code> uses S3 objects to store EEG data and
+associated information such as channel locations. Using different object
+classes for data structured in different ways ensures that the various
+plotting functions work consistently across different types of EEG data.
+For example, there are different classes for epoched
+(<code>eeg_epochs</code>) and continuous data (<code>eeg_data</code>),
+and for time-frequency representations of data
+(<code>eeg_tfr</code>).</p>
 </div>
 <div class="section level2">
 <h2 id="eeg_data-objects">
 <code>eeg_data</code> objects<a class="anchor" aria-label="anchor" href="#eeg_data-objects"></a>
 </h2>
-<p><code>eeg_data</code> objects are the base class used for continuous data. When raw data is imported, the output is this class. This class is a list constituting the following entries:</p>
+<p><code>eeg_data</code> objects are the base class used for continuous
+data. When raw data is imported, the output is this class. This class is
+a list constituting the following entries:</p>
 <ul>
 <li>
 <code>signals</code>
 <ul>
-<li>A data frame containing the actual EEG data in wide format. Each column is data from a single electrode, each row from a single timepoint.</li>
+<li>A data frame containing the actual EEG data in wide format. Each
+column is data from a single electrode, each row from a single
+timepoint.</li>
 </ul>
 </li>
 <li>
 <code>srate</code>
 <ul>
-<li>A single numeric value giving the sampling rate of the data in Hz</li>
+<li>A single numeric value giving the sampling rate of the data in
+Hz</li>
 </ul>
 </li>
 <li>
 <code>events</code>
 <ul>
-<li>A data.frame/tibble with 3 columns describing the events recorded in the data.
+<li>A data.frame/tibble with 3 columns describing the events recorded in
+the data.
 <ul>
 <li>event_onset (in samples) relative to <em>recording onset</em>
 </li>
@@ -146,13 +163,17 @@
 <li>
 <code>chan_info</code>
 <ul>
-<li>Often NULL on import, since BDF and CNT do not contain (usable) electrode locations.</li>
-<li>A data.frame/tibble containing channel location information can be added. Currently similar to EEGLAB style, with the following columns (may change):
+<li>Often NULL on import, since BDF and CNT do not contain (usable)
+electrode locations.</li>
+<li>A data.frame/tibble containing channel location information can be
+added. Currently similar to EEGLAB style, with the following columns
+(may change):
 <ul>
 <li>
 <code>electrode</code> - electrode names</li>
 <li>
-<code>radius</code> - Spherical co-ordinates (Radius is typically normalized to 1)</li>
+<code>radius</code> - Spherical co-ordinates (Radius is typically
+normalized to 1)</li>
 <li>
 <code>theta</code> - Spherical co-ordinates (theta)</li>
 <li>
@@ -164,34 +185,38 @@
 <li>
 <code>cart_z</code> - Cartesian 3D coordinates</li>
 <li>
-<code>x</code> - 2D Stereographic projection of the spherical coordinates</li>
+<code>x</code> - 2D Stereographic projection of the spherical
+coordinates</li>
 <li>
-<code>y</code> - 2D Stereographic projection of the spherical coordinates</li>
+<code>y</code> - 2D Stereographic projection of the spherical
+coordinates</li>
 </ul>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu">eegUtils</span><span class="fu">:::</span><span class="va">electrodeLocs</span><span class="op">)</span>
-<span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 x 9</span></span>
-<span class="co">#&gt;   electrode radius theta   phi cart_x cart_y cart_z      x     y</span>
-<span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">1</span> LPA            1  -<span style="color: #BB0000;">119</span>    13 -<span style="color: #BB0000;">86.1</span>   -<span style="color: #BB0000;">20.0</span> -<span style="color: #BB0000;">48.0</span>  -<span style="color: #BB0000;">116.</span>  -<span style="color: #BB0000;">26.8</span></span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">2</span> RPA            1   119   -<span style="color: #BB0000;">13</span>  85.8   -<span style="color: #BB0000;">20.0</span> -<span style="color: #BB0000;">48.0</span>   116.  -<span style="color: #BB0000;">26.8</span></span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">3</span> Nz             1   115    90   0.01   86.8 -<span style="color: #BB0000;">40.0</span>     0   115  </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">4</span> Fp1            1   -<span style="color: #BB0000;">94</span>   -<span style="color: #BB0000;">71</span> -<span style="color: #BB0000;">29.4</span>    83.9  -<span style="color: #BB0000;">6.99</span>  -<span style="color: #BB0000;">30.6</span>  88.9</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">5</span> Fpz            1    91    90   0.11   88.2  -<span style="color: #BB0000;">1.71</span>    0    91  </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">6</span> Fp2            1    94    71  29.9    84.9  -<span style="color: #BB0000;">7.08</span>   30.6  88.9</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu">eegUtils</span><span class="fu">:::</span><span class="va">electrodeLocs</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 9</span></span></span>
+<span><span class="co">#&gt;   electrode radius theta   phi cart_x cart_y cart_z      x     y</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> LPA            1  -<span style="color: #BB0000;">119</span>    13 -<span style="color: #BB0000;">86.1</span>   -<span style="color: #BB0000;">20.0</span> -<span style="color: #BB0000;">48.0</span>  -<span style="color: #BB0000;">116.</span>  -<span style="color: #BB0000;">26.8</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> RPA            1   119   -<span style="color: #BB0000;">13</span>  85.8   -<span style="color: #BB0000;">20.0</span> -<span style="color: #BB0000;">48.0</span>   116.  -<span style="color: #BB0000;">26.8</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> Nz             1   115    90   0.01   86.8 -<span style="color: #BB0000;">40.0</span>     0   115  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> Fp1            1   -<span style="color: #BB0000;">94</span>   -<span style="color: #BB0000;">71</span> -<span style="color: #BB0000;">29.4</span>    83.9  -<span style="color: #BB0000;">6.99</span>  -<span style="color: #BB0000;">30.6</span>  88.9</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> Fpz            1    91    90   0.11   88.2  -<span style="color: #BB0000;">1.71</span>    0    91  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> Fp2            1    94    71  29.9    84.9  -<span style="color: #BB0000;">7.08</span>   30.6  88.9</span></span></code></pre></div>
 </li>
 </ul>
 </li>
 <li>
 <code>timings</code>
 <ul>
-<li>A data.frame containing a description of each row in time (s) and sample numbers (samples)</li>
+<li>A data.frame containing a description of each row in time (s) and
+sample numbers (samples)</li>
 </ul>
 </li>
 <li>
 <code>epochs</code>
 <ul>
-<li>A data.frame containing information about the epochs in the data, more relevant for epoched data.</li>
+<li>A data.frame containing information about the epochs in the data,
+more relevant for epoched data.</li>
 </ul>
 </li>
 <li>
@@ -201,9 +226,11 @@
 <li>Once data is referenced, is a list consisting of two entries.
 <ul>
 <li>
-<code>ref_chans</code> - Labels for channels used to calculate the reference data. Can also be “average”.</li>
+<code>ref_chans</code> - Labels for channels used to calculate the
+reference data. Can also be “average”.</li>
 <li>
-<code>excluded</code> - Labels for any channels excluded from the reference data.</li>
+<code>excluded</code> - Labels for any channels excluded from the
+reference data.</li>
 </ul>
 </li>
 </ul>
@@ -213,40 +240,46 @@
 <div class="section level2">
 <h2 id="eeg_epochs">eeg_epochs<a class="anchor" aria-label="anchor" href="#eeg_epochs"></a>
 </h2>
-<p><code>eeg_epochs</code> objects share the same overall structure with <code>eeg_data</code> objects, but some of the internals currently differ, as described below.</p>
+<p><code>eeg_epochs</code> objects share the same overall structure with
+<code>eeg_data</code> objects, but some of the internals currently
+differ, as described below.</p>
 <ul>
 <li>
 <code>events</code>
 <ul>
-<li>The events table has two additional columns, <code>epoch</code> and <code>time</code>.
+<li>The events table has two additional columns, <code>epoch</code> and
+<code>time</code>.
 <ul>
 <li>
-<code>epoch</code> gives the epoch number to which a given event belongs</li>
+<code>epoch</code> gives the epoch number to which a given event
+belongs</li>
 <li>
-<code>time</code> gives the time point at which the event occurs relative to the <em>epoch onset</em>
+<code>time</code> gives the time point at which the event occurs
+relative to the <em>epoch onset</em>
 </li>
 <li>
-<code>event_time</code> still gives the time point at which the event occurs relative to the <em>recording onset</em>
+<code>event_time</code> still gives the time point at which the
+event occurs relative to the <em>recording onset</em>
 </li>
 </ul>
 </li>
 </ul>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/events.html">events</a></span><span class="op">(</span><span class="va">demo_epochs</span><span class="op">)</span>
-<span class="co">#&gt; <span style="color: #949494;"># A tibble: 80 x 5</span></span>
-<span class="co">#&gt;    event_onset event_time event_type epoch  time</span>
-<span class="co">#&gt;          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>        <span style="text-decoration: underline;">4</span>128       8.06        208     1     0</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span>        <span style="text-decoration: underline;">7</span>037      13.7         213     2     0</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span>       <span style="text-decoration: underline;">10</span>043      19.6         215     3     0</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span>       <span style="text-decoration: underline;">12</span>928      25.2         213     4     0</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span>       <span style="text-decoration: underline;">15</span>868      31.0         207     5     0</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span>       <span style="text-decoration: underline;">18</span>777      36.7         207     6     0</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span>       <span style="text-decoration: underline;">21</span>578      42.1         213     7     0</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>       <span style="text-decoration: underline;">24</span>554      48.0         213     8     0</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>       <span style="text-decoration: underline;">27</span>379      53.5         222     9     0</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">10</span>       <span style="text-decoration: underline;">30</span>306      59.2         208    10     0</span>
-<span class="co">#&gt; <span style="color: #949494;"># ... with 70 more rows</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/events.html">events</a></span><span class="op">(</span><span class="va">demo_epochs</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 80 × 5</span></span></span>
+<span><span class="co">#&gt;    event_onset event_time event_type epoch  time</span></span>
+<span><span class="co">#&gt;          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>        <span style="text-decoration: underline;">4</span>128       8.06        208     1     0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span>        <span style="text-decoration: underline;">7</span>037      13.7         213     2     0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span>       <span style="text-decoration: underline;">10</span>043      19.6         215     3     0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span>       <span style="text-decoration: underline;">12</span>928      25.2         213     4     0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span>       <span style="text-decoration: underline;">15</span>868      31.0         207     5     0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span>       <span style="text-decoration: underline;">18</span>777      36.7         207     6     0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span>       <span style="text-decoration: underline;">21</span>578      42.1         213     7     0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>       <span style="text-decoration: underline;">24</span>554      48.0         213     8     0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>       <span style="text-decoration: underline;">27</span>379      53.5         222     9     0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>       <span style="text-decoration: underline;">30</span>306      59.2         208    10     0</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 70 more rows</span></span></span></code></pre></div>
 </li>
 <li>
 <code>timings</code>
@@ -254,54 +287,58 @@
 <li>The timings table has one additional column, <code>epoch</code>.
 <ul>
 <li>
-<code>epoch</code> gives the epoch number to which a given datapoint belongs</li>
+<code>epoch</code> gives the epoch number to which a given datapoint
+belongs</li>
 <li>
 <code>sample</code> still uniquely identifies each datapoint</li>
 <li>
-<code>time</code> now gives the time relative to the zero-point of the epoch, i.e. the <em>event</em> on which the epoch is centred.</li>
+<code>time</code> now gives the time relative to the zero-point of
+the epoch, i.e. the <em>event</em> on which the epoch is centred.</li>
 </ul>
 </li>
 </ul>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">demo_epochs</span><span class="op">$</span><span class="va">timings</span><span class="op">)</span>
-<span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 x 3</span></span>
-<span class="co">#&gt;   epoch sample   time</span>
-<span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">1</span>     1   <span style="text-decoration: underline;">4</span>028 -<span style="color: #BB0000;">0.197</span></span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">2</span>     1   <span style="text-decoration: underline;">4</span>032 -<span style="color: #BB0000;">0.189</span></span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">3</span>     1   <span style="text-decoration: underline;">4</span>036 -<span style="color: #BB0000;">0.182</span></span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">4</span>     1   <span style="text-decoration: underline;">4</span>040 -<span style="color: #BB0000;">0.174</span></span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">5</span>     1   <span style="text-decoration: underline;">4</span>044 -<span style="color: #BB0000;">0.166</span></span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">6</span>     1   <span style="text-decoration: underline;">4</span>048 -<span style="color: #BB0000;">0.158</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">demo_epochs</span><span class="op">$</span><span class="va">timings</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 3</span></span></span>
+<span><span class="co">#&gt;   epoch sample   time</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>     1   <span style="text-decoration: underline;">4</span>028 -<span style="color: #BB0000;">0.197</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span>     1   <span style="text-decoration: underline;">4</span>032 -<span style="color: #BB0000;">0.189</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span>     1   <span style="text-decoration: underline;">4</span>036 -<span style="color: #BB0000;">0.182</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span>     1   <span style="text-decoration: underline;">4</span>040 -<span style="color: #BB0000;">0.174</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span>     1   <span style="text-decoration: underline;">4</span>044 -<span style="color: #BB0000;">0.166</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span>     1   <span style="text-decoration: underline;">4</span>048 -<span style="color: #BB0000;">0.158</span></span></span></code></pre></div>
 </li>
 <li>
 <code>epochs</code>
 <ul>
-<li>A data.frame containing information about the participant, and labels applied to any epochs</li>
+<li>A data.frame containing information about the participant, and
+labels applied to any epochs</li>
 </ul>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/epochs.html">epochs</a></span><span class="op">(</span><span class="va">demo_epochs</span><span class="op">)</span>
-<span class="co">#&gt; <span style="color: #949494;"># A tibble: 80 x 4</span></span>
-<span class="co">#&gt;    epoch recording epoch_label participant_id</span>
-<span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>     1 <span style="color: #BB0000;">NA</span>        <span style="color: #BB0000;">NA</span>          001           </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span>     2 <span style="color: #BB0000;">NA</span>        <span style="color: #BB0000;">NA</span>          001           </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span>     3 <span style="color: #BB0000;">NA</span>        <span style="color: #BB0000;">NA</span>          001           </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span>     4 <span style="color: #BB0000;">NA</span>        <span style="color: #BB0000;">NA</span>          001           </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span>     5 <span style="color: #BB0000;">NA</span>        <span style="color: #BB0000;">NA</span>          001           </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span>     6 <span style="color: #BB0000;">NA</span>        <span style="color: #BB0000;">NA</span>          001           </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span>     7 <span style="color: #BB0000;">NA</span>        <span style="color: #BB0000;">NA</span>          001           </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>     8 <span style="color: #BB0000;">NA</span>        <span style="color: #BB0000;">NA</span>          001           </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>     9 <span style="color: #BB0000;">NA</span>        <span style="color: #BB0000;">NA</span>          001           </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">10</span>    10 <span style="color: #BB0000;">NA</span>        <span style="color: #BB0000;">NA</span>          001           </span>
-<span class="co">#&gt; <span style="color: #949494;"># ... with 70 more rows</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/epochs.html">epochs</a></span><span class="op">(</span><span class="va">demo_epochs</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 80 × 4</span></span></span>
+<span><span class="co">#&gt;    epoch recording epoch_label participant_id</span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>     1 <span style="color: #BB0000;">NA</span>        <span style="color: #BB0000;">NA</span>          001           </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span>     2 <span style="color: #BB0000;">NA</span>        <span style="color: #BB0000;">NA</span>          001           </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span>     3 <span style="color: #BB0000;">NA</span>        <span style="color: #BB0000;">NA</span>          001           </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span>     4 <span style="color: #BB0000;">NA</span>        <span style="color: #BB0000;">NA</span>          001           </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span>     5 <span style="color: #BB0000;">NA</span>        <span style="color: #BB0000;">NA</span>          001           </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span>     6 <span style="color: #BB0000;">NA</span>        <span style="color: #BB0000;">NA</span>          001           </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span>     7 <span style="color: #BB0000;">NA</span>        <span style="color: #BB0000;">NA</span>          001           </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>     8 <span style="color: #BB0000;">NA</span>        <span style="color: #BB0000;">NA</span>          001           </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>     9 <span style="color: #BB0000;">NA</span>        <span style="color: #BB0000;">NA</span>          001           </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>    10 <span style="color: #BB0000;">NA</span>        <span style="color: #BB0000;">NA</span>          001           </span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 70 more rows</span></span></span></code></pre></div>
 </li>
 </ul>
 </div>
 <div class="section level2">
 <h2 id="eeg_tfr">eeg_tfr<a class="anchor" aria-label="anchor" href="#eeg_tfr"></a>
 </h2>
-<p><code>eeg_tfr</code> objects hold time-frequency representations of <code>eeg_epochs</code> objects.</p>
+<p><code>eeg_tfr</code> objects hold time-frequency representations of
+<code>eeg_epochs</code> objects.</p>
 <ul>
 <li>
 <code>signals</code>
@@ -312,7 +349,8 @@
 <li>
 <code>dimensions</code>
 <ul>
-<li>keeps track of which matrix dimension corresponds to which property.</li>
+<li>keeps track of which matrix dimension corresponds to which
+property.</li>
 </ul>
 </li>
 </ul>
@@ -320,18 +358,21 @@
 <div class="section level2">
 <h2 id="eeg_ica">eeg_ICA<a class="anchor" aria-label="anchor" href="#eeg_ica"></a>
 </h2>
-<p><code>eeg_ICA</code> objects contain the results of either an ICA or an SSD decomposition applied to an <code>eeg_epochs</code> object.</p>
+<p><code>eeg_ICA</code> objects contain the results of either an ICA or
+an SSD decomposition applied to an <code>eeg_epochs</code> object.</p>
 <ul>
 <li>
 <code>mixing_matrix</code>
 <ul>
-<li>The weights that are used to convert the source data into the original data</li>
+<li>The weights that are used to convert the source data into the
+original data</li>
 </ul>
 </li>
 <li>
 <code>unmixing_matrix</code>
 <ul>
-<li>The weights that are used to convert the original data into source data</li>
+<li>The weights that are used to convert the original data into source
+data</li>
 </ul>
 </li>
 <li>
@@ -357,7 +398,7 @@
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>

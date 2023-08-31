@@ -85,76 +85,95 @@ ignored, which can result in minor edge artifacts.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">eeg_filter</span><span class="op">(</span><span class="va">data</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S3 method for eeg_data</span>
-<span class="fu">eeg_filter</span><span class="op">(</span>
-  <span class="va">data</span>,
-  low_freq <span class="op">=</span> <span class="cn">NULL</span>,
-  high_freq <span class="op">=</span> <span class="cn">NULL</span>,
-  filter_order <span class="op">=</span> <span class="st">"auto"</span>,
-  trans_bw <span class="op">=</span> <span class="st">"auto"</span>,
-  method <span class="op">=</span> <span class="st">"fir"</span>,
-  window <span class="op">=</span> <span class="st">"hamming"</span>,
-  demean <span class="op">=</span> <span class="cn">TRUE</span>,
-  <span class="va">...</span>
-<span class="op">)</span>
-
-<span class="co"># S3 method for eeg_epochs</span>
-<span class="fu">eeg_filter</span><span class="op">(</span>
-  <span class="va">data</span>,
-  low_freq <span class="op">=</span> <span class="cn">NULL</span>,
-  high_freq <span class="op">=</span> <span class="cn">NULL</span>,
-  filter_order <span class="op">=</span> <span class="st">"auto"</span>,
-  trans_bw <span class="op">=</span> <span class="st">"auto"</span>,
-  method <span class="op">=</span> <span class="st">"fir"</span>,
-  window <span class="op">=</span> <span class="st">"hamming"</span>,
-  demean <span class="op">=</span> <span class="cn">TRUE</span>,
-  <span class="va">...</span>
-<span class="op">)</span>
-
-<span class="co"># S3 method for eeg_group</span>
-<span class="fu">eeg_filter</span><span class="op">(</span>
-  <span class="va">data</span>,
-  low_freq <span class="op">=</span> <span class="cn">NULL</span>,
-  high_freq <span class="op">=</span> <span class="cn">NULL</span>,
-  filter_order <span class="op">=</span> <span class="st">"auto"</span>,
-  trans_bw <span class="op">=</span> <span class="st">"auto"</span>,
-  method <span class="op">=</span> <span class="st">"fir"</span>,
-  window <span class="op">=</span> <span class="st">"hamming"</span>,
-  demean <span class="op">=</span> <span class="cn">TRUE</span>,
-  <span class="va">...</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">eeg_filter</span><span class="op">(</span><span class="va">data</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for eeg_data</span></span>
+<span><span class="fu">eeg_filter</span><span class="op">(</span></span>
+<span>  <span class="va">data</span>,</span>
+<span>  low_freq <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  high_freq <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  filter_order <span class="op">=</span> <span class="st">"auto"</span>,</span>
+<span>  trans_bw <span class="op">=</span> <span class="st">"auto"</span>,</span>
+<span>  method <span class="op">=</span> <span class="st">"fir"</span>,</span>
+<span>  window <span class="op">=</span> <span class="st">"hamming"</span>,</span>
+<span>  demean <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for eeg_epochs</span></span>
+<span><span class="fu">eeg_filter</span><span class="op">(</span></span>
+<span>  <span class="va">data</span>,</span>
+<span>  low_freq <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  high_freq <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  filter_order <span class="op">=</span> <span class="st">"auto"</span>,</span>
+<span>  trans_bw <span class="op">=</span> <span class="st">"auto"</span>,</span>
+<span>  method <span class="op">=</span> <span class="st">"fir"</span>,</span>
+<span>  window <span class="op">=</span> <span class="st">"hamming"</span>,</span>
+<span>  demean <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for eeg_group</span></span>
+<span><span class="fu">eeg_filter</span><span class="op">(</span></span>
+<span>  <span class="va">data</span>,</span>
+<span>  low_freq <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  high_freq <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  filter_order <span class="op">=</span> <span class="st">"auto"</span>,</span>
+<span>  trans_bw <span class="op">=</span> <span class="st">"auto"</span>,</span>
+<span>  method <span class="op">=</span> <span class="st">"fir"</span>,</span>
+<span>  window <span class="op">=</span> <span class="st">"hamming"</span>,</span>
+<span>  demean <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>data</dt>
 <dd><p>An <code>eeg_data</code> or <code>eeg_epochs</code> object to be filtered.</p></dd>
+
+
 <dt>...</dt>
 <dd><p>Additional parameters.</p></dd>
+
+
 <dt>low_freq</dt>
 <dd><p>Low cutoff frequency.</p></dd>
+
+
 <dt>high_freq</dt>
 <dd><p>High cutoff frequency.</p></dd>
+
+
 <dt>filter_order</dt>
 <dd><p>Defaults to "auto", which automatically estimates filter order for the specified filter characteristics (defaults to 4 if method = "iir").</p></dd>
+
+
 <dt>trans_bw</dt>
 <dd><p>Transition bandwidth of the filter. "auto" or an integer.
 "auto" attempts to determine a suitable transition bandwidth using the
 heuristic given below. Ignored if method = "iir".</p></dd>
+
+
 <dt>method</dt>
 <dd><p>"fir" (Finite Impulse Response) or "iir" (Infinite Impulse
 Response). Defaults to "fir".</p></dd>
+
+
 <dt>window</dt>
 <dd><p>Windowing function to use (FIR filtering only). Defaults to
 "hamming"; currently only "hamming" available.</p></dd>
+
+
 <dt>demean</dt>
 <dd><p>Remove DC component (i.e. channel/epoch mean) before filtering. Defaults to TRUE.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>An object of the original class with signals filtered according to
+    
+
+<p>An object of the original class with signals filtered according to
 the user's specifications</p>
     </div>
     <div id="details">
@@ -184,7 +203,7 @@ purposes, use FIR filters.</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu"><a href="plot_psd.html">plot_psd</a></span><span class="op">(</span><span class="fu">eeg_filter</span><span class="op">(</span><span class="va">demo_epochs</span>, low_freq <span class="op">=</span> <span class="fl">1</span>, high_freq <span class="op">=</span> <span class="fl">30</span><span class="op">)</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="plot_psd.html">plot_psd</a></span><span class="op">(</span><span class="fu">eeg_filter</span><span class="op">(</span><span class="va">demo_epochs</span>, low_freq <span class="op">=</span> <span class="fl">1</span>, high_freq <span class="op">=</span> <span class="fl">30</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Band-pass FIR filter from 1 - 30 Hz</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Transition bandwidth: 1 Hz</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Filter order: 424</span>
@@ -195,7 +214,7 @@ purposes, use FIR filters.</p>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Segment length: 84</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Overlapping points: 42 (50% overlap)</span>
 <span class="r-plt img"><img src="eeg_filter-1.png" alt="" width="700" height="433"></span>
-<span class="r-in"><span class="fu"><a href="plot_psd.html">plot_psd</a></span><span class="op">(</span><span class="fu">eeg_filter</span><span class="op">(</span><span class="va">demo_epochs</span>, low_freq <span class="op">=</span> <span class="fl">12</span>, high_freq <span class="op">=</span> <span class="fl">8</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu"><a href="plot_psd.html">plot_psd</a></span><span class="op">(</span><span class="fu">eeg_filter</span><span class="op">(</span><span class="va">demo_epochs</span>, low_freq <span class="op">=</span> <span class="fl">12</span>, high_freq <span class="op">=</span> <span class="fl">8</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Band-stop FIR filter from 8 - 12 Hz.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Transition bandwidth: 2 Hz</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Filter order: 212</span>
@@ -206,7 +225,7 @@ purposes, use FIR filters.</p>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Segment length: 84</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Overlapping points: 42 (50% overlap)</span>
 <span class="r-plt img"><img src="eeg_filter-2.png" alt="" width="700" height="433"></span>
-<span class="r-in"><span class="fu"><a href="plot_psd.html">plot_psd</a></span><span class="op">(</span><span class="fu">eeg_filter</span><span class="op">(</span><span class="va">demo_epochs</span>, low_freq <span class="op">=</span> <span class="fl">12</span>, high_freq <span class="op">=</span> <span class="fl">8</span>, method <span class="op">=</span> <span class="st">"iir"</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu"><a href="plot_psd.html">plot_psd</a></span><span class="op">(</span><span class="fu">eeg_filter</span><span class="op">(</span><span class="va">demo_epochs</span>, low_freq <span class="op">=</span> <span class="fl">12</span>, high_freq <span class="op">=</span> <span class="fl">8</span>, method <span class="op">=</span> <span class="st">"iir"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Band-stop IIR filter from 8 - 12 Hz.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Effective filter order: 4 (two-pass)</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Removing channel means per epoch...</span>
@@ -216,7 +235,7 @@ purposes, use FIR filters.</p>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Segment length: 84</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Overlapping points: 42 (50% overlap)</span>
 <span class="r-plt img"><img src="eeg_filter-3.png" alt="" width="700" height="433"></span>
-<span class="r-in"></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -231,7 +250,7 @@ purposes, use FIR filters.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

@@ -85,30 +85,37 @@ timepoint. It corresponds to the spatial standard deviation.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">plot_gfp</span><span class="op">(</span><span class="va">data</span>, cols <span class="op">=</span> <span class="cn">NULL</span>, keep_trials <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">plot_gfp</span><span class="op">(</span><span class="va">data</span>, cols <span class="op">=</span> <span class="cn">NULL</span>, keep_trials <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>data</dt>
 <dd><p>An <code>eeg_epochs</code> object</p></dd>
+
+
 <dt>cols</dt>
 <dd><p>Condition columns from the <code>epochs</code> metadata to calculate GFP
 separately for different conditions.</p></dd>
+
+
 <dt>keep_trials</dt>
 <dd><p>Calculate GFP for each epoch separately, then average over
 epochs.</p></dd>
+
 </dl></div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu">plot_gfp</span><span class="op">(</span><span class="va">demo_spatial</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">plot_gfp</span><span class="op">(</span><span class="va">demo_spatial</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Creating epochs based on combinations of variables: participant_id </span>
 <span class="r-plt img"><img src="plot_gfp-1.png" alt="" width="700" height="433"></span>
-<span class="r-in"><span class="fu">plot_gfp</span><span class="op">(</span><span class="va">demo_spatial</span>, keep_trials <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu">plot_gfp</span><span class="op">(</span><span class="va">demo_spatial</span>, keep_trials <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="plot_gfp-2.png" alt="" width="700" height="433"></span>
-<span class="r-in"><span class="fu">plot_gfp</span><span class="op">(</span><span class="va">demo_spatial</span>, cols <span class="op">=</span> <span class="st">"epoch_labels"</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu">plot_gfp</span><span class="op">(</span><span class="va">demo_spatial</span>, cols <span class="op">=</span> <span class="st">"epoch_labels"</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Creating epochs based on combinations of variables: participant_id epoch_labels </span>
 <span class="r-plt img"><img src="plot_gfp-3.png" alt="" width="700" height="433"></span>
-<span class="r-in"><span class="fu">plot_gfp</span><span class="op">(</span><span class="va">demo_spatial</span>, cols <span class="op">=</span> <span class="st">"epoch_labels"</span>, keep_trials <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu">plot_gfp</span><span class="op">(</span><span class="va">demo_spatial</span>, cols <span class="op">=</span> <span class="st">"epoch_labels"</span>, keep_trials <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="plot_gfp-4.png" alt="" width="700" height="433"></span>
 </code></pre></div>
     </div>
@@ -124,7 +131,7 @@ epochs.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

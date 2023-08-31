@@ -31,7 +31,7 @@ any ICA weights or decompositions are discarded."><meta name="robots" content="n
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -44,6 +44,9 @@ any ICA weights or decompositions are discarded."><meta name="robots" content="n
     </li>
     <li>
       <a href="../articles/linear_modelling/linear_modelling.html">Linear Modelling</a>
+    </li>
+    <li>
+      <a href="../articles/single_subj_N170/N170_single_subject.html">Getting started with eegUtils and the N170</a>
     </li>
     <li>
       <a href="../articles/time-frequency-analysis.html">Frequency analysis</a>
@@ -82,37 +85,52 @@ any ICA weights or decompositions are discarded.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">import_set</span><span class="op">(</span>
-  <span class="va">file_name</span>,
-  df_out <span class="op">=</span> <span class="cn">FALSE</span>,
-  participant_id <span class="op">=</span> <span class="cn">NULL</span>,
-  recording <span class="op">=</span> <span class="cn">NULL</span>,
-  drop_custom <span class="op">=</span> <span class="cn">FALSE</span>,
-  verbose <span class="op">=</span> <span class="cn">TRUE</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">import_set</span><span class="op">(</span></span>
+<span>  <span class="va">file_name</span>,</span>
+<span>  df_out <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  participant_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  recording <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  drop_custom <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>file_name</dt>
 <dd><p>Filename (and path if not in present working directory)</p></dd>
+
+
 <dt>df_out</dt>
 <dd><p>Defaults to FALSE - outputs an object of class <code>eeg_epochs</code>. Set
 to TRUE for a normal data frame.</p></dd>
+
+
 <dt>participant_id</dt>
 <dd><p>Character vector. By default, the filename will be used as the id of the
 participant.</p></dd>
+
+
 <dt>recording</dt>
 <dd><p>Character vector. By default, the filename will be used as the name of the
 recording.</p></dd>
+
+
 <dt>drop_custom</dt>
 <dd><p>Drop custom event fields. TRUE by default.</p></dd>
+
+
 <dt>verbose</dt>
 <dd><p>Print informative messages. TRUE by default.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>An object of class <code>eeg_epochs</code></p>
+    
+
+<p>An object of class <code>eeg_epochs</code></p>
+
+
     </div>
     <div id="author">
     <h2>Author</h2>
@@ -121,7 +139,7 @@ recording.</p></dd>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="fu">import_set</span><span class="op">(</span><span class="st">"your_data.set"</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="fu">import_set</span><span class="op">(</span><span class="st">"your_data.set"</span><span class="op">)</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -136,7 +154,7 @@ recording.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

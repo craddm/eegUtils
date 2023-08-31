@@ -34,7 +34,7 @@ function to calculate the equivalent number of cycles at each frequency."><meta 
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -47,6 +47,9 @@ function to calculate the equivalent number of cycles at each frequency."><meta 
     </li>
     <li>
       <a href="../articles/linear_modelling/linear_modelling.html">Linear Modelling</a>
+    </li>
+    <li>
+      <a href="../articles/single_subj_N170/N170_single_subject.html">Getting started with eegUtils and the N170</a>
     </li>
     <li>
       <a href="../articles/time-frequency-analysis.html">Frequency analysis</a>
@@ -88,19 +91,24 @@ function to calculate the equivalent number of cycles at each frequency.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">cycle_calc</span><span class="op">(</span><span class="va">time_win</span>, <span class="va">frex</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">cycle_calc</span><span class="op">(</span><span class="va">time_win</span>, <span class="va">frex</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>time_win</dt>
 <dd><p>Time window in seconds.</p></dd>
+
+
 <dt>frex</dt>
 <dd><p>Frequencies of interest.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>the number of cycles for each frequency of interest</p>
+    
+
+<p>the number of cycles for each frequency of interest</p>
     </div>
     <div id="see-also">
     <h2>See also</h2>
@@ -109,11 +117,11 @@ function to calculate the equivalent number of cycles at each frequency.</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu">cycle_calc</span><span class="op">(</span><span class="fl">.5</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">30</span>, length.out <span class="op">=</span> <span class="fl">10</span><span class="op">)</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">cycle_calc</span><span class="op">(</span><span class="fl">.5</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">30</span>, length.out <span class="op">=</span> <span class="fl">10</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [1]  1.5  3.0  4.5  6.0  7.5  9.0 10.5 12.0 13.5 15.0</span>
-<span class="r-in"><span class="va">no_scale_tfr</span> <span class="op">&lt;-</span> <span class="fu"><a href="compute_tfr.html">compute_tfr</a></span><span class="op">(</span><span class="va">demo_epochs</span>, foi <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">30</span><span class="op">)</span>,</span>
-<span class="r-in"> n_cycles <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/range.html" class="external-link">range</a></span><span class="op">(</span><span class="fu">cycle_calc</span><span class="op">(</span><span class="fl">0.5</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">30</span>, length.out <span class="op">=</span> <span class="fl">10</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span>
-<span class="r-in">  n_freq <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="va">no_scale_tfr</span> <span class="op">&lt;-</span> <span class="fu"><a href="compute_tfr.html">compute_tfr</a></span><span class="op">(</span><span class="va">demo_epochs</span>, foi <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">30</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span> n_cycles <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/range.html" class="external-link">range</a></span><span class="op">(</span><span class="fu">cycle_calc</span><span class="op">(</span><span class="fl">0.5</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">30</span>, length.out <span class="op">=</span> <span class="fl">10</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  n_freq <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Computing TFR using Morlet wavelet convolution</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Output frequencies using linear spacing: 3 6 9 12 15 18 21 24 27 30</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Removing channel means per epoch...</span>
@@ -132,7 +140,7 @@ function to calculate the equivalent number of cycles at each frequency.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

@@ -47,7 +47,7 @@
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -61,6 +61,9 @@
     </li>
     <li>
       <a href="../articles/linear_modelling/linear_modelling.html">Linear Modelling</a>
+    </li>
+    <li>
+      <a href="../articles/single_subj_N170/N170_single_subject.html">Getting started with eegUtils and the N170</a>
     </li>
     <li>
       <a href="../articles/time-frequency-analysis.html">Frequency analysis</a>
@@ -95,9 +98,10 @@
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Frequency analysis</h1>
-                        <h4 data-toc-skip class="author">Matt Craddock</h4>
+                        <h4 data-toc-skip class="author">Matt
+Craddock</h4>
             
-            <h4 data-toc-skip class="date">2022-02-07</h4>
+            <h4 data-toc-skip class="date">2023-08-22</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/craddm/eegUtils/blob/HEAD/vignettes/time-frequency-analysis.Rmd" class="external-link"><code>vignettes/time-frequency-analysis.Rmd</code></a></small>
       <div class="hidden name"><code>time-frequency-analysis.Rmd</code></div>
@@ -106,85 +110,117 @@
 
     
     
-<p>Periodicity is commonly observed in EEG signals. For example, oscillations in the alpha frequency range (approximately 8-13 Hz) were one of the first signals observed in the human EEG. One method of analysing this periodicity is to calculate the Power Spectral Density using a method such as Welch’s FFT.</p>
+<p>Periodicity is commonly observed in EEG signals. For example,
+oscillations in the alpha frequency range (approximately 8-13 Hz) were
+one of the first signals observed in the human EEG. One method of
+analysing this periodicity is to calculate the Power Spectral Density
+using a method such as Welch’s FFT.</p>
 <div class="section level2">
 <h2 id="frequency-analysis">Frequency analysis<a class="anchor" aria-label="anchor" href="#frequency-analysis"></a>
 </h2>
-<p>In <code>eegUtils</code>, this can be achieved using <code><a href="../reference/compute_psd.html">compute_psd()</a></code> and <code><a href="../reference/plot_psd.html">plot_psd()</a></code>. With epoched data, <code><a href="../reference/compute_psd.html">compute_psd()</a></code> calculates the PSD for each trial separately. <code><a href="../reference/compute_psd.html">compute_psd()</a></code> returns a <code>data.frame</code> with spectral power at each resolved frequency and for each electrode. Note that <code><a href="../reference/plot_psd.html">plot_psd()</a></code> can be called directly on <code>eeg_data</code> or <code>eeg_epochs</code> objects without first having to <code><a href="../reference/compute_psd.html">compute_psd()</a></code>. With epoched data, it will compute the PSD for each epoch and then average over epochs before plotting.</p>
+<p>In <code>eegUtils</code>, this can be achieved using
+<code><a href="../reference/compute_psd.html">compute_psd()</a></code> and <code><a href="../reference/plot_psd.html">plot_psd()</a></code>. With epoched
+data, <code><a href="../reference/compute_psd.html">compute_psd()</a></code> calculates the PSD for each trial
+separately. <code><a href="../reference/compute_psd.html">compute_psd()</a></code> returns a <code>data.frame</code>
+with spectral power at each resolved frequency and for each electrode.
+Note that <code><a href="../reference/plot_psd.html">plot_psd()</a></code> can be called directly on
+<code>eeg_data</code> or <code>eeg_epochs</code> objects without first
+having to <code><a href="../reference/compute_psd.html">compute_psd()</a></code>. With epoched data, it will compute
+the PSD for each epoch and then average over epochs before plotting.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/craddm/eegUtils" class="external-link">eegUtils</a></span><span class="op">)</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Attaching package: 'eegUtils'</span>
-<span class="co">#&gt; The following object is masked from 'package:stats':</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;     filter</span>
-<span class="va">demo_psd</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compute_psd.html">compute_psd</a></span><span class="op">(</span><span class="va">demo_epochs</span><span class="op">)</span>
-<span class="co">#&gt; Removing channel means per epoch...</span>
-<span class="co">#&gt; Computing Power Spectral Density using Welch's method.</span>
-<span class="co">#&gt; FFT length: 256</span>
-<span class="co">#&gt; Segment length: 84</span>
-<span class="co">#&gt; Overlapping points: 42 (50% overlap)</span>
-<span class="fu"><a href="../reference/plot_psd.html">plot_psd</a></span><span class="op">(</span><span class="va">demo_epochs</span><span class="op">)</span>
-<span class="co">#&gt; Removing channel means per epoch...</span>
-<span class="co">#&gt; Computing Power Spectral Density using Welch's method.</span>
-<span class="co">#&gt; FFT length: 256</span>
-<span class="co">#&gt; Segment length: 84</span>
-<span class="co">#&gt; Overlapping points: 42 (50% overlap)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/craddm/eegUtils" class="external-link">eegUtils</a></span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Attaching package: 'eegUtils'</span></span>
+<span><span class="co">#&gt; The following object is masked from 'package:stats':</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;     filter</span></span>
+<span><span class="va">demo_psd</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compute_psd.html">compute_psd</a></span><span class="op">(</span><span class="va">demo_epochs</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Removing channel means per epoch...</span></span>
+<span><span class="co">#&gt; Computing Power Spectral Density using Welch's method.</span></span>
+<span><span class="co">#&gt; FFT length: 256</span></span>
+<span><span class="co">#&gt; Segment length: 84</span></span>
+<span><span class="co">#&gt; Overlapping points: 42 (50% overlap)</span></span>
+<span><span class="fu"><a href="../reference/plot_psd.html">plot_psd</a></span><span class="op">(</span><span class="va">demo_epochs</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Removing channel means per epoch...</span></span>
+<span><span class="co">#&gt; Computing Power Spectral Density using Welch's method.</span></span>
+<span><span class="co">#&gt; FFT length: 256</span></span>
+<span><span class="co">#&gt; Segment length: 84</span></span>
+<span><span class="co">#&gt; Overlapping points: 42 (50% overlap)</span></span></code></pre></div>
 <p><img src="time-frequency-analysis_files/figure-html/create-psd-1.png" width="700"></p>
 </div>
 <div class="section level2">
 <h2 id="time-frequency-analysis">Time-frequency analysis<a class="anchor" aria-label="anchor" href="#time-frequency-analysis"></a>
 </h2>
-<p>Frequency analysis necessarily discards temporal information. One problem is that it assumes stationarity - that the signal remains stable in terms of frequency and power across the whole analysed time window. However, this is rarely the case with EEG data, which exhibits dynamics across a wide range of timescales.</p>
-<p>Time-frequency analysis is a method of accounting for non-stationarity by decomposing the signal using a moving-window analysis, tiling the time-frequency space to resolve power over relatively shorter time-windows.</p>
-<p>In <code>eegUtils</code>, <code><a href="../reference/compute_tfr.html">compute_tfr()</a></code> can be used to calculate a time-frequency representation of <code><a href="../reference/eeg_epochs.html">eeg_epochs()</a></code>. Currently, this is achieved using Morlet wavelets. Morlet wavelets are used to window the signal, controlling spectral leakage and time-frequency specificity. Morlet wavelets have a user-defined temporal extent, which in turn determines the frequency extent. We define the temporal extent of our wavelets by <strong>cycles</strong>; we define it as an integer number of cycles at each frequency of interest.</p>
+<p>Frequency analysis necessarily discards temporal information. One
+problem is that it assumes stationarity - that the signal remains stable
+in terms of frequency and power across the whole analysed time window.
+However, this is rarely the case with EEG data, which exhibits dynamics
+across a wide range of timescales.</p>
+<p>Time-frequency analysis is a method of accounting for
+non-stationarity by decomposing the signal using a moving-window
+analysis, tiling the time-frequency space to resolve power over
+relatively shorter time-windows.</p>
+<p>In <code>eegUtils</code>, <code><a href="../reference/compute_tfr.html">compute_tfr()</a></code> can be used to
+calculate a time-frequency representation of <code><a href="../reference/eeg_epochs.html">eeg_epochs()</a></code>.
+Currently, this is achieved using Morlet wavelets. Morlet wavelets are
+used to window the signal, controlling spectral leakage and
+time-frequency specificity. Morlet wavelets have a user-defined temporal
+extent, which in turn determines the frequency extent. We define the
+temporal extent of our wavelets by <strong>cycles</strong>; we define it
+as an integer number of cycles at each frequency of interest.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">demo_tfr</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compute_tfr.html">compute_tfr</a></span><span class="op">(</span><span class="va">demo_epochs</span>,
-                        method <span class="op">=</span> <span class="st">"morlet"</span>,
-                        foi <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">30</span><span class="op">)</span>,
-                        n_freq <span class="op">=</span> <span class="fl">12</span>,
-                        n_cycles <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>
-<span class="co">#&gt; Computing TFR using Morlet wavelet convolution</span>
-<span class="co">#&gt; Output frequencies using linear spacing: 4 6.36 8.73 11.09 13.45 15.82 18.18 20.55 22.91 25.27 27.64 30</span>
-<span class="co">#&gt; Removing channel means per epoch...</span>
-<span class="co">#&gt; Returning signal averaged over all trials.</span>
-<span class="va">demo_tfr</span>
-<span class="co">#&gt; Epoched EEG TFR data</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Frequency range      :    4 6.36 8.73 11.09 13.45 15.82 18.18 20.55 22.91 25.27 27.64 30 </span>
-<span class="co">#&gt; Number of channels   :    11 </span>
-<span class="co">#&gt; Electrode names      :    A5 A13 A21 A29 A31 B5 B6 B8 B16 B18 B26 </span>
-<span class="co">#&gt; Number of epochs :    80 </span>
-<span class="co">#&gt; Epoch limits     :    -0.197 - 0.451 seconds</span>
-<span class="co">#&gt; Sampling rate        :    128  Hz</span></code></pre></div>
-<p>Note that the characteristics of the wavelets, in terms of temporal and frequency standard deviations, are stored inside the <code>eeg_tfr</code> object:</p>
+<code class="sourceCode R"><span><span class="va">demo_tfr</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compute_tfr.html">compute_tfr</a></span><span class="op">(</span><span class="va">demo_epochs</span>,</span>
+<span>                        method <span class="op">=</span> <span class="st">"morlet"</span>,</span>
+<span>                        foi <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">30</span><span class="op">)</span>,</span>
+<span>                        n_freq <span class="op">=</span> <span class="fl">12</span>,</span>
+<span>                        n_cycles <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Computing TFR using Morlet wavelet convolution</span></span>
+<span><span class="co">#&gt; Output frequencies using linear spacing: 4 6.36 8.73 11.09 13.45 15.82 18.18 20.55 22.91 25.27 27.64 30</span></span>
+<span><span class="co">#&gt; Removing channel means per epoch...</span></span>
+<span><span class="co">#&gt; Returning signal averaged over all trials.</span></span>
+<span><span class="va">demo_tfr</span></span>
+<span><span class="co">#&gt; Epoched EEG TFR data</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Frequency range      :    4 6.36 8.73 11.09 13.45 15.82 18.18 20.55 22.91 25.27 27.64 30 </span></span>
+<span><span class="co">#&gt; Number of channels   :    11 </span></span>
+<span><span class="co">#&gt; Electrode names      :    A5 A13 A21 A29 A31 B5 B6 B8 B16 B18 B26 </span></span>
+<span><span class="co">#&gt; Number of epochs :    1 </span></span>
+<span><span class="co">#&gt; Epoch limits     :    -0.197 - 0.451 seconds</span></span>
+<span><span class="co">#&gt; Sampling rate        :    128  Hz</span></span></code></pre></div>
+<p>Note that the characteristics of the wavelets, in terms of temporal
+and frequency standard deviations, are stored inside the
+<code>eeg_tfr</code> object:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">demo_tfr</span><span class="op">$</span><span class="va">freq_info</span><span class="op">$</span><span class="va">morlet_resolution</span>
-<span class="co">#&gt;    frequency   sigma_f    sigma_t n_cycles</span>
-<span class="co">#&gt; 1   4.000000  1.333333 0.11936621        3</span>
-<span class="co">#&gt; 2   6.363636  2.121212 0.07503019        3</span>
-<span class="co">#&gt; 3   8.727273  2.909091 0.05470951        3</span>
-<span class="co">#&gt; 4  11.090909  3.696970 0.04305011        3</span>
-<span class="co">#&gt; 5  13.454545  4.484848 0.03548725        3</span>
-<span class="co">#&gt; 6  15.818182  5.272727 0.03018456        3</span>
-<span class="co">#&gt; 7  18.181818  6.060606 0.02626057        3</span>
-<span class="co">#&gt; 8  20.545455  6.848485 0.02323944        3</span>
-<span class="co">#&gt; 9  22.909091  7.636364 0.02084172        3</span>
-<span class="co">#&gt; 10 25.272727  8.424242 0.01889249        3</span>
-<span class="co">#&gt; 11 27.636364  9.212121 0.01727669        3</span>
-<span class="co">#&gt; 12 30.000000 10.000000 0.01591549        3</span></code></pre></div>
-<p>The results of the time-frequency transformation can be plotted using the <code><a href="../reference/plot_tfr.html">plot_tfr()</a></code> function.</p>
+<code class="sourceCode R"><span><span class="va">demo_tfr</span><span class="op">$</span><span class="va">freq_info</span><span class="op">$</span><span class="va">morlet_resolution</span></span>
+<span><span class="co">#&gt;    frequency   sigma_f    sigma_t n_cycles</span></span>
+<span><span class="co">#&gt; 1   4.000000  1.333333 0.11936621        3</span></span>
+<span><span class="co">#&gt; 2   6.363636  2.121212 0.07503019        3</span></span>
+<span><span class="co">#&gt; 3   8.727273  2.909091 0.05470951        3</span></span>
+<span><span class="co">#&gt; 4  11.090909  3.696970 0.04305011        3</span></span>
+<span><span class="co">#&gt; 5  13.454545  4.484848 0.03548725        3</span></span>
+<span><span class="co">#&gt; 6  15.818182  5.272727 0.03018456        3</span></span>
+<span><span class="co">#&gt; 7  18.181818  6.060606 0.02626057        3</span></span>
+<span><span class="co">#&gt; 8  20.545455  6.848485 0.02323944        3</span></span>
+<span><span class="co">#&gt; 9  22.909091  7.636364 0.02084172        3</span></span>
+<span><span class="co">#&gt; 10 25.272727  8.424242 0.01889249        3</span></span>
+<span><span class="co">#&gt; 11 27.636364  9.212121 0.01727669        3</span></span>
+<span><span class="co">#&gt; 12 30.000000 10.000000 0.01591549        3</span></span></code></pre></div>
+<p>The results of the time-frequency transformation can be plotted using
+the <code><a href="../reference/plot_tfr.html">plot_tfr()</a></code> function.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/plot_tfr.html">plot_tfr</a></span><span class="op">(</span><span class="va">demo_tfr</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_tfr.html">plot_tfr</a></span><span class="op">(</span><span class="va">demo_tfr</span><span class="op">)</span></span></code></pre></div>
 <p><img src="time-frequency-analysis_files/figure-html/tfr-plot-1.png" width="700"></p>
-<p>Baseline correction is common in the literature, which can serve two purposes. Several different methods are possible. both for plotting only, and as a modification to the <code>eeg_tfr</code> object using <code><a href="../reference/rm_baseline.html">rm_baseline()</a></code>.</p>
+<p>Baseline correction is common in the literature, which can serve two
+purposes. Several different methods are possible. both for plotting
+only, and as a modification to the <code>eeg_tfr</code> object using
+<code><a href="../reference/rm_baseline.html">rm_baseline()</a></code>.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/plot_tfr.html">plot_tfr</a></span><span class="op">(</span><span class="va">demo_tfr</span>, baseline_type <span class="op">=</span> <span class="st">"absolute"</span>, baseline <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">.1</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt; Baseline: -0.1 - 0 s</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_tfr.html">plot_tfr</a></span><span class="op">(</span><span class="va">demo_tfr</span>, baseline_type <span class="op">=</span> <span class="st">"absolute"</span>, baseline <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">.1</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Baseline: -0.1-0 s</span></span></code></pre></div>
 <p><img src="time-frequency-analysis_files/figure-html/db-plot-1.png" width="700"></p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/plot_tfr.html">plot_tfr</a></span><span class="op">(</span><span class="va">demo_tfr</span>, baseline_type <span class="op">=</span> <span class="st">"db"</span>, baseline <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">.1</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt; Baseline: -0.1 - 0 s</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_tfr.html">plot_tfr</a></span><span class="op">(</span><span class="va">demo_tfr</span>, baseline_type <span class="op">=</span> <span class="st">"db"</span>, baseline <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">.1</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Baseline: -0.1-0 s</span></span></code></pre></div>
 <p><img src="time-frequency-analysis_files/figure-html/db-plot-2.png" width="700"></p>
 </div>
   </div>
@@ -206,7 +242,7 @@
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>

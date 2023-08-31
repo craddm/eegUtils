@@ -35,7 +35,7 @@ original order."><meta name="robots" content="noindex"><!-- mathjax --><script s
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -48,6 +48,9 @@ original order."><meta name="robots" content="noindex"><!-- mathjax --><script s
     </li>
     <li>
       <a href="../articles/linear_modelling/linear_modelling.html">Linear Modelling</a>
+    </li>
+    <li>
+      <a href="../articles/single_subj_N170/N170_single_subject.html">Getting started with eegUtils and the N170</a>
     </li>
     <li>
       <a href="../articles/time-frequency-analysis.html">Frequency analysis</a>
@@ -90,34 +93,45 @@ original order.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">erp_raster</span><span class="op">(</span>
-  <span class="va">data</span>,
-  anat_order <span class="op">=</span> <span class="cn">TRUE</span>,
-  time_lim <span class="op">=</span> <span class="cn">NULL</span>,
-  clim <span class="op">=</span> <span class="cn">NULL</span>,
-  interpolate <span class="op">=</span> <span class="cn">FALSE</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">erp_raster</span><span class="op">(</span></span>
+<span>  <span class="va">data</span>,</span>
+<span>  anat_order <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  time_lim <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  clim <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  interpolate <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>data</dt>
 <dd><p>An <code>eeg_epochs</code> object</p></dd>
+
+
 <dt>anat_order</dt>
 <dd><p>Arrange the channels in a more anatomically representative
 order. Defaults to TRUE.</p></dd>
+
+
 <dt>time_lim</dt>
 <dd><p>Time limits of plot - should be a character vector (e.g.
 c(-.2, .5))</p></dd>
+
+
 <dt>clim</dt>
 <dd><p>Character vector of min and max values of plotting colour range.
 e.g. c(-5,5). Defaults to min and max.</p></dd>
+
+
 <dt>interpolate</dt>
 <dd><p>Smooth the raster plot. Defaults to FALSE.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A <code>ggplot</code> object</p>
+    
+
+<p>A <code>ggplot</code> object</p>
     </div>
     <div id="author">
     <h2>Author</h2>
@@ -126,15 +140,15 @@ e.g. c(-5,5). Defaults to min and max.</p></dd>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
-<span class="r-in"><span class="fu">erp_raster</span><span class="op">(</span><span class="va">demo_epochs</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">erp_raster</span><span class="op">(</span><span class="va">demo_epochs</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="erp_raster-1.png" alt="" width="700" height="433"></span>
-<span class="r-in"><span class="fu">erp_raster</span><span class="op">(</span><span class="va">demo_epochs</span>, interpolate <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu">erp_raster</span><span class="op">(</span><span class="va">demo_epochs</span>, interpolate <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="erp_raster-2.png" alt="" width="700" height="433"></span>
-<span class="r-in"><span class="fu">erp_raster</span><span class="op">(</span><span class="fu"><a href="rm_baseline.html">rm_baseline</a></span><span class="op">(</span><span class="va">demo_epochs</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">.1</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span>, interpolate <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Baseline: -0.1 sBaseline: 0 s</span>
+<span class="r-in"><span><span class="fu">erp_raster</span><span class="op">(</span><span class="fu"><a href="rm_baseline.html">rm_baseline</a></span><span class="op">(</span><span class="va">demo_epochs</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">.1</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span>, interpolate <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Baseline: -0.1 - 0s</span>
 <span class="r-plt img"><img src="erp_raster-3.png" alt="" width="700" height="433"></span>
-<span class="r-in"><span class="fu">erp_raster</span><span class="op">(</span><span class="va">demo_spatial</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span><span class="va">epoch_labels</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu">erp_raster</span><span class="op">(</span><span class="va">demo_spatial</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span><span class="va">epoch_labels</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="erp_raster-4.png" alt="" width="700" height="433"></span>
 </code></pre></div>
     </div>
@@ -150,7 +164,7 @@ e.g. c(-5,5). Defaults to min and max.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

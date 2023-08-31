@@ -81,9 +81,13 @@
 <h4 id="function-changes-development-version">Function changes<a class="anchor" aria-label="anchor" href="#function-changes-development-version"></a></h4>
 <ul><li>
 <code><a href="../reference/plot_timecourse.html">plot_timecourse()</a></code> now requires facets and mappings to be explicitly stated during the call, rather than added afterwards. This allows it to use weighted averages when required.</li>
+<li>
+<code><a href="../reference/plot_timecourse.html">plot_timecourse.eeg_tfr()</a></code> now defaults to no baseline correction, and takes a <code>type</code> argument for baseline type to be specified.</li>
 <li>Added new <code><a href="../reference/plot_gfp.html">plot_gfp()</a></code> function for calculating and plotting Global Field Power.</li>
 <li>
 <code><a href="../reference/topoplot.html">topoplot()</a></code> now supports plotting of multiple timepoints - pass a list of times to the <code>time_lim</code> argument.</li>
+<li>
+<code><a href="../reference/topoplot.html">topoplot()</a></code> now supports custom fill titles through the <code>fill_title</code> argument, and automatically switches where necessary (e.g. now says “Power mV^2”). Fill titles are now also centred.</li>
 <li>
 <code><a href="../reference/browse_data.html">browse_data.eeg_ICA()</a></code> now provides the option to select components for rejection, and returns a character vector of selected components.</li>
 <li>
@@ -116,6 +120,8 @@
 <li>
 <code>import_raw(..., fast_bdf = TRUE)</code> will now discard Annotations rather than fail to import BDF files with Annotations.</li>
 <li>removed dependency on <code>Matrix</code> - now using <code>qr()$rank</code> in <code>run_ICA</code> rather than using <code><a href="https://rdrr.io/pkg/Matrix/man/rankMatrix.html" class="external-link">Matrix::rankMatrix()</a></code> to determine rank of input signals.</li>
+<li>Added numerous <code>dropped_aes</code> variables to the custom <code>ggplot2</code> <code>stat_</code> functions for compatibility with <code>ggplot2 3.4.0</code>.</li>
+<li>Replaced <code>size</code> aesthetic with <code>linewidth</code> for compatibility with <code>ggplot2 3.4.0</code>.</li>
 </ul></div>
 </div>
     <div class="section level2">
@@ -271,7 +277,7 @@
 <li>
 <code><a href="../reference/view_artefacts.html">view_artefacts()</a></code>Shiny viewer for channel and epoch stats added.</li>
 <li>
-<code><a href="../reference/plot_timecourse.html">plot_timecourse()</a></code> now takes a mapping argument, which allows use of <code>ggplot2</code> <code>aes()</code> mappings</li>
+<code><a href="../reference/plot_timecourse.html">plot_timecourse()</a></code> now takes a mapping argument, which allows use of <code>ggplot2</code> <code><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes()</a></code> mappings</li>
 <li>
 <code><a href="../reference/eeg_average.html">eeg_average.eeg_tfr()</a></code> now follows behaviour of other <code><a href="../reference/eeg_average.html">eeg_average()</a></code> methods in respecting the <code>epochs</code> structure.<br></li>
 <li>
@@ -708,7 +714,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

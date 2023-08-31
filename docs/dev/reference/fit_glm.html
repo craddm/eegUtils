@@ -140,7 +140,13 @@ the term <code>baseline</code> in the specified formula.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Channel names			: Fp1 F3 F7 C3 T7 P3 P7 Oz Pz Fpz Fp2 Fz F4 F8 Cz C4 T8 P4 P8 EXG1 EXG2 EXG3 EXG4 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Epoch limits			: -0.301 - 0.488 seconds</span>
 <span class="r-in"><span><span class="fu">fit_glm</span><span class="op">(</span><span class="op">~</span><span class="va">epoch_labels</span> <span class="op">+</span> <span class="va">baseline</span>, <span class="va">demo_spatial</span>, baseline <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">.1</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in fit_glm.eeg_epochs(~epoch_labels + baseline, demo_spatial, baseline = c(-0.1,     0)):</span> time_lim must be specified if using baseline fitting</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> EEG Linear Model</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Formula: ~ epoch_labels + baseline </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Number of fitted channels	:	 23 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Channel names			: Fp1 F3 F7 C3 T7 P3 P7 Oz Pz Fpz Fp2 Fz F4 F8 Cz C4 T8 P4 P8 EXG1 EXG2 EXG3 EXG4 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Epoch limits			: -0.301 - 0.488 seconds</span>
 </code></pre></div>
     </div>
   </div>
@@ -155,7 +161,7 @@ the term <code>baseline</code> in the specified formula.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

@@ -30,7 +30,7 @@ if seg_length is 256 and signal length is 400, only 1 segment is returned)"><met
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -43,6 +43,9 @@ if seg_length is 256 and signal length is 400, only 1 segment is returned)"><met
     </li>
     <li>
       <a href="../articles/linear_modelling/linear_modelling.html">Linear Modelling</a>
+    </li>
+    <li>
+      <a href="../articles/single_subj_N170/N170_single_subject.html">Getting started with eegUtils and the N170</a>
     </li>
     <li>
       <a href="../articles/time-frequency-analysis.html">Frequency analysis</a>
@@ -80,20 +83,27 @@ if seg_length is 256 and signal length is 400, only 1 segment is returned)</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">split_vec</span><span class="op">(</span><span class="va">vec</span>, <span class="va">seg_length</span>, <span class="va">overlap</span>, detrend <span class="op">=</span> <span class="st">"mean"</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">split_vec</span><span class="op">(</span><span class="va">vec</span>, <span class="va">seg_length</span>, <span class="va">overlap</span>, detrend <span class="op">=</span> <span class="st">"mean"</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>vec</dt>
 <dd><p>Data vector to be split up into segments.</p></dd>
+
+
 <dt>seg_length</dt>
 <dd><p>Length of segments to be FFT'd (in samples).</p></dd>
+
+
 <dt>overlap</dt>
 <dd><p>Overlap between segments (in samples).</p></dd>
+
+
 <dt>detrend</dt>
 <dd><p>Detrend segments. Defaults to "mean" - removes mean from each
 segment. Anything else turns off detrending.</p></dd>
+
 </dl></div>
     <div id="author">
     <h2>Author</h2>
@@ -112,7 +122,7 @@ segment. Anything else turns off detrending.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

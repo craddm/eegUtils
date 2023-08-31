@@ -29,7 +29,7 @@
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -81,35 +81,48 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S3 method for eeg_lm</span>
-<span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span>
-  <span class="va">x</span>,
-  row.names <span class="op">=</span> <span class="cn">NULL</span>,
-  optional <span class="op">=</span> <span class="cn">FALSE</span>,
-  long <span class="op">=</span> <span class="cn">FALSE</span>,
-  coords <span class="op">=</span> <span class="cn">TRUE</span>,
-  values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"coefficients"</span>, <span class="st">"std_err"</span>, <span class="st">"t_stats"</span>, <span class="st">"r_sq"</span><span class="op">)</span>,
-  <span class="va">...</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S3 method for eeg_lm</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span></span>
+<span>  <span class="va">x</span>,</span>
+<span>  row.names <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  optional <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  long <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  coords <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"coefficients"</span>, <span class="st">"std_err"</span>, <span class="st">"t_stats"</span>, <span class="st">"r_sq"</span><span class="op">)</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>x</dt>
 <dd><p>Object of class <code>eeg_data</code></p></dd>
+
+
 <dt>row.names</dt>
 <dd><p>Kept for compatibility with S3 generic, ignored.</p></dd>
+
+
 <dt>optional</dt>
 <dd><p>Kept for compatibility with S3 generic, ignored.</p></dd>
+
+
 <dt>long</dt>
 <dd><p>Convert to long format. Defaults to FALSE.</p></dd>
+
+
 <dt>coords</dt>
 <dd><p>Include electrode coordinates in output. Only possible when
 long = TRUE.</p></dd>
+
+
 <dt>values</dt>
 <dd><p>Defaults to "coefficients", returning fitted coefficient values.</p></dd>
+
+
 <dt>...</dt>
 <dd><p>arguments for other as.data.frame commands</p></dd>
+
 </dl></div>
     <div id="author">
     <h2>Author</h2>
@@ -128,7 +141,7 @@ long = TRUE.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>
