@@ -22,4 +22,3 @@ test_that("glm fitting works", {
   expect_known_output(test_glm_bl,
                       "test_glm_bl.Rdata")
 })
-

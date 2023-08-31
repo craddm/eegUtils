@@ -171,7 +171,8 @@ eeg_average.eeg_evoked <- function(data,
   data$signals <- as.data.frame(data)
   data$signals <-
     dplyr::group_by(data$signals,
-                    dplyr::across(c(time, dplyr::all_of(col_names)))
+                    dplyr::across(c(time,
+                                    dplyr::all_of(col_names)))
                     )
 
   message("Creating epochs based on combinations of variables: ", paste(col_names, ""))

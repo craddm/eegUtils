@@ -128,7 +128,7 @@ spheric_spline <- function(good_elecs,
   lec[g_dims[1] + 1, g_dims[2] + 1] <- 0
   invC <- MASS::ginv(lec, tol = 0)
   W <- cbind(ph, 1)
-  W <- W %*% invC[ , 1:g_dims[1]]
+  W <- W %*% invC[, 1:g_dims[1]]
   W
 }
 
@@ -146,7 +146,7 @@ interp_chans <- function(.data,
 
   bad_cols <- (toupper(names(.data)) %in% toupper(bad_chans)) | missing_coords
   weight_rows <- names(.data[, !missing_coords]) %in% bad_chans
-  new_chans <- weights[weight_rows, , drop = TRUE] %*% t(.data[ , !bad_cols])
+  new_chans <- weights[weight_rows, , drop = TRUE] %*% t(.data[, !bad_cols])
   .data[, bad_chans] <- t(new_chans)
   .data
 }
@@ -214,10 +214,10 @@ compute_csd.eeg_data <- function(data,
 #' @describeIn compute_csd Transform `eeg_data` to CSD
 #' @export
 compute_csd.eeg_epochs <- function(data,
-                                 m = 4,
-                                 smoothing = 1e-05,
-                                 scaling = 1,
-                                 ...) {
+                                   m = 4,
+                                   smoothing = 1e-05,
+                                   scaling = 1,
+                                   ...) {
   convert_to_csd(data,
                  m,
                  smoothing,
@@ -275,13 +275,13 @@ convert_to_csd <- function(data,
   }
 
   g_mat <- compute_g(xyz_coords,
-                  xyz_coords,
-                  m = m,
-                  iter = 50)
+                     xyz_coords,
+                     m = m,
+                     iter = 50)
   h_mat <- compute_h(xyz_coords,
-                  xyz_coords,
-                  m = m,
-                  iter = 50)
+                     xyz_coords,
+                     m = m,
+                     iter = 50)
 
   diag(g_mat) <- diag(g_mat) + smoothing
   g_inv <- solve(g_mat)
@@ -329,7 +329,7 @@ compute_g <- function(xyz_coords,
   g <- matrix(0, ncol = ncol(EI), nrow = nrow(EI))
 
   gg <- 1:iter
-  gg <- (2 * gg + 1) / (gg ^ m *(gg + 1) ^ m)
+  gg <- (2 * gg + 1) / (gg ^ m * (gg + 1) ^ m)
   legpoly <- matrix(0,
                     nrow = length(c(EI)),
                     ncol = iter)
@@ -341,7 +341,7 @@ compute_g <- function(xyz_coords,
     legpoly[, i] <- t(poly_xy[1, ])
   }
 
-  g <- sweep(legpoly, 2, gg, "*")#g + gg
+  g <- sweep(legpoly, 2, gg, "*")
   g <- rowSums(g)
   g <- g / 4 / pi
   dim(g) <- c(nrow(EI), ncol(EI))

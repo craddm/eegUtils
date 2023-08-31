@@ -64,5 +64,5 @@ test_that("geom_topo testing", {
                                               aes(label = electrode)) +
                                 coord_equal()
   )
-  }
+}
 )

@@ -50,7 +50,7 @@ test_that("component removal works", {
 
 test_that("artefact detect works", {
 
-  expect_equal(ar_acf(demo_SOBI, plot = FALSE),character())
+  expect_equal(ar_acf(demo_SOBI, plot = FALSE), character())
   expect_equal(ar_chanfoc(demo_SOBI, plot = FALSE), character())
   expect_equal(ar_trialfoc(demo_SOBI, plot = FALSE), "Comp009")
   expect_equal(ar_eogcor(demo_fica,
