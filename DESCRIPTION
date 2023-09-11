@@ -4,11 +4,11 @@ Title: Utilities for Electroencephalographic (EEG) Analysis
 Version: 0.7.0.9000
 Date: 2023-08-31
 Authors@R: c(
-  person("Matt", "Craddock", role = c("aut", "cre", "cph"), email = "matt@mattcraddock.com"),
+  person("Matt", "Craddock", role = c("aut", "cre"), email = "matt@mattcraddock.com"),
   person("Matti", "Vuorre", role = "ctb", email = "mv2521@columbia.edu"),
-  person("ggplot2 authors", role = c("ctb", "cph"), comment = "Routines borrowed from ggplot2 to allow countours to be drawn on topoplots"))
+  person("ggplot2 authors", role = c("cph"), comment = "Routines borrowed from ggplot2 to allow contours to be drawn on topoplots"))
 Maintainer: Matt Craddock <matt@mattcraddock.com>
-Description: EEG processing and visualization tools. Includes import
+Description: Electroencephalography data processing and visualization tools. Includes import
   functions for 'BioSemi' (.BDF), 'Neuroscan' (.CNT), 'Brain Vision Analyzer' (.VHDR),
   'EEGLAB' (.set) and 'Fieldtrip' (.mat). Many preprocessing functions such as
   referencing, epoching, filtering, and ICA are available. There are a variety 
