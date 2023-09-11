@@ -1,4 +1,4 @@
-#' @keywords internal
+#' A package for processing electroencephalographic data
 "_PACKAGE"
 
 # The following block is used by usethis to automatically manage
