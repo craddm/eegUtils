@@ -3,8 +3,8 @@
 #'Typically event-related potentials/fields, but could also be timecourses from
 #'frequency analyses for single frequencies. Averages over all submitted
 #'electrodes. For group data, `plot_timecourse` will average within-participants
-#'first, using weighted averaging where possible, then across participants using unweighted
-#'averaging. Output is a `ggplot2` object.
+#'first, using weighted averaging where possible, then across participants using
+#'unweighted averaging. Output is a `ggplot2` object.
 #'
 #'@author Matt Craddock, \email{matt@@mattcraddock.com}
 #'
@@ -91,15 +91,15 @@ plot_timecourse.data.frame <- function(data,
 #' @describeIn plot_timecourse plot `eeg_evoked` timecourses
 #' @export
 plot_timecourse.eeg_evoked <- function(data,
-                               electrode = NULL,
-                               time_lim = NULL,
-                               add_CI = FALSE,
-                               baseline = NULL,
-                               colour = NULL,
-                               color = NULL,
-                               mapping = NULL,
-                               facets = NULL,
-                               ...) {
+                                       electrode = NULL,
+                                       time_lim = NULL,
+                                       add_CI = FALSE,
+                                       baseline = NULL,
+                                       colour = NULL,
+                                       color = NULL,
+                                       mapping = NULL,
+                                       facets = NULL,
+                                       ...) {
 
   if (add_CI) {
     warning("Cannot add_CI for eeg_evoked objects.")
@@ -441,7 +441,7 @@ parse_for_tc <- function(data,
       vapply(mapping,
              rlang::as_label,
              character(1))
-      )
+    )
   }
 
   if (!is.null(colour)) {
@@ -455,10 +455,9 @@ parse_for_tc <- function(data,
 
   col_names <- c(col_names, all.vars(facets))
 
-  #if (!is.eeg_stats(data) && !is.eeg_evoked(data) && !add_CI) {
-  if (!is.eeg_stats(data) && !add_CI){
+  if (!is.eeg_stats(data) && !add_CI) {
     data <- eeg_average(data,
-                        cols = col_names)#all.vars(facets))
+                        cols = col_names)
   }
 
   data <- as.data.frame(data,
@@ -504,27 +503,26 @@ create_tc <- function(data,
                        colour = "black",
                        size = 1,
                        alpha = 0.5)
-        } else {
-          tc_plot <- tc_plot +
-            stat_summary(fun.data = mean_cl_normal,
-                         geom = "ribbon",
-                         linetype = "dashed",
-                         aes(colour = !!colour),
-                         fill = NA,
-                         linewidth = 1,
-                         alpha = 0.5)
-          }
       } else {
-        tc_plot <-
-          tc_plot +
+        tc_plot <- tc_plot +
           stat_summary(fun.data = mean_cl_normal,
                        geom = "ribbon",
-                       #linetype = "dashed",
-                       mapping = mapping,
+                       linetype = "dashed",
+                       aes(colour = !!colour),
                        fill = NA,
                        linewidth = 1,
                        alpha = 0.5)
       }
+    } else {
+      tc_plot <-
+        tc_plot +
+        stat_summary(fun.data = mean_cl_normal,
+                     geom = "ribbon",
+                     mapping = mapping,
+                     fill = NA,
+                     linewidth = 1,
+                     alpha = 0.5)
+    }
   }
 
   tc_plot <-
@@ -565,4 +563,3 @@ create_tc <- function(data,
           axis.ticks = element_line(linewidth = .5)) +
     guides(colour = guide_legend(override.aes = list(alpha = 1)))
 }
-

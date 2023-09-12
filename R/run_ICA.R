@@ -99,7 +99,7 @@ run_ICA.eeg_epochs <- function(data,
     pca_flag <- FALSE
   }
 
-  rank_check <- qr(data$signals)$rank #Matrix::rankMatrix(as.matrix(data$signals))
+  rank_check <- qr(data$signals)$rank
 
   if (rank_check < ncol(data$signals)) {
     stop(paste(
@@ -224,7 +224,7 @@ run_ICA.eeg_epochs <- function(data,
     }
 
     ICA_out$S <- as.data.frame(ICA_out$S)
-    names(ICA_out$S) <- sprintf("Comp%03d", 1:ncol(ICA_out$S))
+    names(ICA_out$S) <- sprintf("Comp%03d", seq_len(ncol(ICA_out$S)))
 
     if (pca_flag) {
       mixing_matrix <- as.data.frame(pca_decomp[, 1:pca] %*% ICA_out$M)
@@ -236,12 +236,12 @@ run_ICA.eeg_epochs <- function(data,
       unmixing_matrix$Component <- sprintf("Comp%03d", 1:pca)
     } else {
       mixing_matrix <- as.data.frame(ICA_out$M)
-      names(mixing_matrix) <- sprintf("Comp%03d", 1:ncol(ICA_out$M))
+      names(mixing_matrix) <- sprintf("Comp%03d", seq_len(ncol(ICA_out$M)))
       mixing_matrix$electrode <- names(data$signals)
       unmixing_matrix <- as.data.frame(ICA_out$W)
       names(unmixing_matrix) <- names(data$signals)
       unmixing_matrix$Component <-
-        sprintf("Comp%03d", 1:ncol(ICA_out$S))
+        sprintf("Comp%03d", seq_len(ncol(ICA_out$S)))
     }
   }
 
@@ -289,7 +289,6 @@ sobi_ICA <- function(data,
                      centre,
                      verbose = TRUE) {
 
-  #n_epochs <- length(unique(data$timings$epoch))
   n_epochs <- nrow(epochs(data))
   n_channels <- ncol(data$signals)
   n_times <- length(unique(data$timings$time))
@@ -308,7 +307,7 @@ sobi_ICA <- function(data,
   Q <- whitening::whiteningMatrix(stats::cov(as.matrix(data$signals)),
                                   method = "PCA")
   amp_matrix <- t(whitening::whiten(as.matrix(data$signals),
-                                 method = "PCA"))
+                                    method = "PCA"))
   ## reshape to reflect epoching structure
   dim(amp_matrix) <- c(n_channels,
                        n_times,
@@ -357,7 +356,7 @@ sobi_ICA <- function(data,
   S <- tcrossprod(unmixing_matrix,
                   as.matrix(data$signals))
   S <- as.data.frame(t(S))
-  names(S) <- sprintf("Comp%03d", 1:ncol(S))
+  names(S) <- sprintf("Comp%03d", seq_len(ncol(S)))
 
   list(M = mixing_matrix,
        W = unmixing_matrix,
