@@ -71,12 +71,12 @@ eeg_decompose.default <- function(data, ...) {
 #' @describeIn eeg_decompose method for `eeg_epochs` objects
 #' @export
 eeg_decompose.eeg_epochs <- function(data,
-                                  sig_range,
-                                  noise_range,
-                                  method = "ssd",
-                                  verbose = TRUE,
-                                  order = 2,
-                                  ...) {
+                                     sig_range,
+                                     noise_range,
+                                     method = "ssd",
+                                     verbose = TRUE,
+                                     order = 2,
+                                     ...) {
 
   if (verbose) {
     message("Performing ", method, "...")
@@ -147,7 +147,7 @@ run_SSD <- function(data,
   eig_sigs <- base::eigen(cov_sig)
   # Get the rank of the covariance matrix and select only as many components as
   # there are ranks
-  rank_sig <- qr(cov_sig)$rank#Matrix::rankMatrix(cov_sig)
+  rank_sig <- qr(cov_sig)$rank
 
   if (verbose) {
     if (rank_sig < ncol(cov_sig)) {
@@ -183,21 +183,21 @@ run_SSD <- function(data,
   data$unmixing_matrix <- as.data.frame(MASS::ginv(data$mixing_matrix, tol = 0))
 
   data$mixing_matrix <- as.data.frame(data$mixing_matrix)
-  names(data$mixing_matrix) <- sprintf("Comp%03d", 1:ncol(data$mixing_matrix))
+  names(data$mixing_matrix) <- sprintf("Comp%03d", seq_len(ncol(data$mixing_matrix)))
   data$mixing_matrix$electrode <- names(data$signals)
 
   names(data$unmixing_matrix) <- data$mixing_matrix$electrode
-  data$unmixing_matrix$Component <- sprintf("Comp%03d", 1:ncol(W))
+  data$unmixing_matrix$Component <- sprintf("Comp%03d", seq_len(ncol(W)))
 
   # RESS applies weights to unfiltered original data
   if (RESS) {
     data$signals <- as.data.frame(as.matrix(data$signals) %*% W)
-    names(data$signals) <- sprintf("Comp%03d", 1:ncol(W))
+    names(data$signals) <- sprintf("Comp%03d", seq_len(ncol(W)))
     return(data)
   }
 
   data$signals <- as.data.frame(as.matrix(signal$signals) %*% W)
-  names(data$signals) <- sprintf("Comp%03d", 1:ncol(W))
+  names(data$signals) <- sprintf("Comp%03d", seq_len(ncol(W)))
   data$algorithm <- list(algorithm = if (RESS) "ress" else "ssd")
   data$contents <- "full"
   data

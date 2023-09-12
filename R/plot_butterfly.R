@@ -203,9 +203,9 @@ plot_butterfly.eeg_lm <- function(data,
     ylab <- expression(paste(italic("r"), {}^2))
   }
 
-   if (is.character(quantity)) {
-     quantity <- as.name(quantity)
-   }
+  if (is.character(quantity)) {
+    quantity <- as.name(quantity)
+  }
 
   create_bf(data,
             legend = legend,
@@ -315,7 +315,7 @@ create_bf <- function(data,
       butterfly_plot +
       chan_lines() +
       labs(x = "Time (s)",
-           y = ylab,#expression(paste("Amplitude (", mu, "V)")),
+           y = ylab,
            colour = "") +
       geom_hline(yintercept = 0,
                  linewidth = 0.5) +

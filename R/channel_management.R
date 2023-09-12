@@ -29,13 +29,13 @@ import_chans <- function(file_name,
 
   chan_locs <-
     switch(file_type,
-           elc = import_elc(file_name),
-           txt = switch(format,
-                        spherical = import_txt(file_name)),
-           elp = import_elp(file_name),
-           ced = import_ced(file_name),
-           stop("File type ", file_type, " is unknown.")
-           )
+      elc = import_elc(file_name),
+      txt = switch(format,
+                   spherical = import_txt(file_name)),
+      elp = import_elp(file_name),
+      ced = import_ced(file_name),
+      stop("File type ", file_type, " is unknown.")
+    )
 
   chan_locs <- validate_channels(chan_locs)
   chan_locs
@@ -64,9 +64,7 @@ import_elc <- function(file_name) {
                        labs_loc + n_elecs)]
 
   pos <- strsplit(pos, " ")
-  pos <- lapply(pos,
-                function(x)
-                  as.numeric(x[!x == ""]))
+  pos <- lapply(pos, function(x) as.numeric(x[!x == ""]))
   pos <- as.data.frame(do.call("rbind", pos))
 
   sph_pos <- cart_to_spherical(norm_sphere(pos))
@@ -193,9 +191,9 @@ import_ced <- function(file_name) {
                        "cart_z", "sph_theta",
                        "sph_phi", "sph_radius", "type")
   chan_info <- raw_locs[c("electrode",
-                         "cart_x",
-                         "cart_y",
-                         "cart_z")]
+                          "cart_x",
+                          "cart_y",
+                          "cart_z")]
   # in EEGLAB, + y is towards left ear, + x towards nose + z towards vertex
   # we want + y to be towards nose, + x to be towards right ear
   names(chan_info) <- names(chan_info)[c(1, 3, 2, 4)]
@@ -278,8 +276,7 @@ flip_x <- function(chan_info) {
 
 #' Get standard electrode locations
 #'
-#' Joins standard electrode locations to EEG data from `eegUtils` internal
-#' data.
+#' Joins standard electrode locations to EEG data from `eegUtils` internal data.
 #'
 #' The standard locations are from the 10-05 system derived by Oostenveld &
 #' Praamstra (2001). In addition, there are multiple specific montages for
@@ -326,7 +323,8 @@ electrode_locations.data.frame <- function(data,
 }
 
 #' @param overwrite Overwrite existing channel info. Defaults to FALSE.
-#' @describeIn electrode_locations Adds standard locations to the chan_info field of an eeg_data object.
+#' @describeIn electrode_locations Adds standard locations to the chan_info
+#'   field of an eeg_data object.
 #' @export
 
 electrode_locations.eeg_data <- function(data,
@@ -341,7 +339,8 @@ electrode_locations.eeg_data <- function(data,
             overwrite = overwrite)
 }
 
-#' @describeIn electrode_locations Adds standard locations to the chan_info field of an `eeg_data` object.
+#' @describeIn electrode_locations Adds standard locations to the chan_info
+#'   field of an `eeg_data` object.
 #' @export
 
 electrode_locations.eeg_epochs <- function(data,
@@ -356,7 +355,8 @@ electrode_locations.eeg_epochs <- function(data,
             overwrite = overwrite)
 }
 
-#' @describeIn electrode_locations Adds standard locations to the chan_info field of an `eeg_tfr` object.
+#' @describeIn electrode_locations Adds standard locations to the chan_info
+#'   field of an `eeg_tfr` object.
 #' @export
 electrode_locations.eeg_tfr <- function(data,
                                         drop = FALSE,
@@ -385,7 +385,7 @@ add_elocs <- function(data,
     chan_names <- channel_names(data)
   }
 
-  if (!is.null(chan_info) & !overwrite) {
+  if (!is.null(chan_info) && !overwrite) {
     stop("Channel info already present, set overwrite to TRUE to replace.")
   }
 
@@ -410,9 +410,9 @@ add_elocs <- function(data,
   chan_info <- electrodeLocs[matched_els, ]
 
   if (drop) {
-     data <- select_elecs(data,
-                          chan_names[missing_els],
-                          keep = FALSE)
+    data <- select_elecs(data,
+                         chan_names[missing_els],
+                         keep = FALSE)
   }
 
   if (inherits(data, "data.frame")) {
@@ -471,7 +471,8 @@ plot_electrodes.default <- function(data,
   }
 }
 
-#' @describeIn plot_electrodes Plot electrodes associated with an `eeg_data` object.
+#' @describeIn plot_electrodes Plot electrodes associated with an `eeg_data`
+#'   object.
 #' @export
 plot_electrodes.eeg_data <- function(data,
                                      interact = FALSE) {
@@ -484,7 +485,8 @@ plot_electrodes.eeg_data <- function(data,
                                interact)
 }
 
-#' @describeIn plot_electrodes Plot electrodes associated with an `eeg_evoked` object.
+#' @describeIn plot_electrodes Plot electrodes associated with an `eeg_evoked`
+#'   object.
 #' @export
 plot_electrodes.eeg_evoked <- function(data,
                                        interact = FALSE) {
@@ -497,10 +499,11 @@ plot_electrodes.eeg_evoked <- function(data,
                                interact)
 }
 
-#' @describeIn plot_electrodes Plot electrodes associated with an `eeg_data` object.
+#' @describeIn plot_electrodes Plot electrodes associated with an `eeg_data`
+#'   object.
 #' @export
 plot_electrodes.eeg_tfr <- function(data,
-                                     interact = FALSE) {
+                                    interact = FALSE) {
 
   if (is.null(channels(data))) {
     stop("No channel locations found.")
@@ -513,10 +516,11 @@ plot_electrodes.eeg_tfr <- function(data,
 #' Create a ggplot or plotly plot showing electrode positions
 #'
 #' @param data The data from which to extract channel locations
-#' @param interact If TRUE, use `plotly` to create a 3D interactive plot, otherwise create a 2D `ggplot`.
+#' @param interact If TRUE, use `plotly` to create a 3D interactive plot,
+#'   otherwise create a 2D `ggplot`.
 #' @keywords internal
 create_electrode_layout_plot <-  function(data,
-                                          interact)
+                                          interact) {
   if (interact) {
     if (!requireNamespace("plotly", quietly = TRUE)) {
       stop("Package \"plotly\" needed for interactive electrode plots. Please install it.",
@@ -541,6 +545,7 @@ create_electrode_layout_plot <-  function(data,
       ggplot2::labs(x = "x (mm)",
                     y = "y (mm)")
   }
+}
 
 
 #' Montage check
@@ -763,8 +768,8 @@ cart_to_spherical <- function(xyz_coords) {
 #' @param radius Radius of head (in mm)
 #' @keywords internal
 sph_to_cart <- function(theta,
-                             phi,
-                             radius = 85) {
+                        phi,
+                        radius = 85) {
   theta <- deg2rad(theta)
   phi <- deg2rad(phi)
   cart_x <- radius * sin(theta) * cos(phi)

@@ -172,9 +172,8 @@ eeg_average.eeg_evoked <- function(data,
   data$signals <- as.data.frame(data)
   data$signals <-
     dplyr::group_by(data$signals,
-                    dplyr::across(c(time,
-                                    dplyr::all_of(col_names)))
-                    )
+      dplyr::across(c(time,
+                      dplyr::all_of(col_names))))
 
   message("Creating epochs based on combinations of variables: ",
           paste(col_names, ""))
@@ -318,13 +317,12 @@ average_tf <- function(data,
   # There must be a less hacky way of doing this
   epo_nums <-
     lapply(1:new_epos,
-           function(x)
-             sort(
-               merge(epochs(data),
-                     epo_types[x, , drop = FALSE],
-                     by = col_names)[, "epoch"]
-               )
-           )
+      function(x) {
+        sort(merge(epochs(data),
+                   epo_types[x, , drop = FALSE],
+                   by = col_names)[, "epoch"])
+      }
+    )
   # convert epoch numbers from epochs() to positions in matrix
   epo_nums <- lapply(epo_nums,
                      function(x) which(orig_dims$epoch %in% x))
@@ -355,7 +353,7 @@ average_tf <- function(data,
         data$signals,
         c(2, 3, 4),
         circ_mean
-        )
+      )
     } else if (identical(data$freq_info$output, "power")) {
 
       # maybe one day try to calm this nested loop gore down
@@ -363,8 +361,8 @@ average_tf <- function(data,
       avg_tf <- array(0, dim = c(new_epos,
                                  dim(data$signals)[2:4]))
 
-    # figure out how to do weighted means. colWeightedMeans requires a matrix and spits out an er
-    # might work better with C++?
+    # figure out how to do weighted means. colWeightedMeans requires a matrix
+    # and spits out an er might work better with C++?
 
     # if (var(epo_weights) == 0)
 
@@ -376,14 +374,14 @@ average_tf <- function(data,
             avg_tf[ik, , elec, freq] <-
               array(
                 colMeans(
-                  data$signals[epo_nums[[ik]], ,
-                               elec, freq,
-                               drop = FALSE]),
-                  dim = c(1, n_times,
-                          1, 1)
-                )
-            }
+                         data$signals[epo_nums[[ik]], ,
+                                      elec, freq,
+                                      drop = FALSE]),
+                dim = c(1, n_times,
+                        1, 1)
+              )
           }
+        }
       }
       data$signals <- avg_tf
       new_dims <- orig_dims
@@ -401,7 +399,7 @@ average_tf <- function(data,
       time = rep(
         as.numeric(dimnames(data$signals)[["time"]]),
         new_epos
-        ),
+      ),
       epoch = rep(1:new_epos,
                   each = n_times)
     )
