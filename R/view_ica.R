@@ -25,11 +25,11 @@ view_ica <- function(data) {
                          keep_trials = FALSE)
 
   psd_ica <- tidyr::pivot_longer(
-     psd_ica,
-     cols = channel_names(data),
-     names_to = "component",
-     values_to = "power"
-   )
+    psd_ica,
+    cols = channel_names(data),
+    names_to = "component",
+    values_to = "power"
+  )
 
   psd_ica$power <- 10 * log10(psd_ica$power)
 
@@ -42,7 +42,7 @@ view_ica <- function(data) {
 
   ica_topoplots <-
     topoplot(data,
-             1:length(names(data$signals)),
+             seq_along(names(data$signals)),
              grid_res = 67,
              chan_marker = "none",
              limits = c(-3, 3),
@@ -56,7 +56,7 @@ view_ica <- function(data) {
       collapsible = TRUE,
       tabPanel(
         "Topographies", plotOutput("comp_topos", dblclick = "topo_click")
-        ),
+      ),
       tabPanel(
         "Timecourses",
         plotOutput("ica_butters",
@@ -67,7 +67,7 @@ view_ica <- function(data) {
         tableOutput("info"),
         tags$p(span("Hover over lines to see component details.")),
         tags$p("To zoom, drag-click to highlight where you want to zoom, then double-click to zoom. Double-click again to zoom back out.")
-        ),
+      ),
       tabPanel(
         "PSDs",
         plotOutput(
@@ -76,48 +76,48 @@ view_ica <- function(data) {
           brush = brushOpts(id = "psd_brush",
                             resetOnNew = TRUE),
           dblclick = "psd_dbl"
-          ),
+        ),
         tableOutput("psd_info"),
         tags$p(span("Hover over lines to see component details.")),
         tags$p("To zoom, drag-click to highlight where you want to zoom, then double-click to zoom. Double-click again to zoom back out.")
-        ),
+      ),
       tabPanel("Individual",
-               sidebarLayout(
-                 sidebarPanel(
-                   selectInput(
-                     "comp_no", "Component:",
-                     channel_names(data)
-                   ),
-                   shiny::radioButtons("reject_comps",
-                                       label = NULL,
-                                       choices = c("Keep", "Reject"),
-                                       inline = TRUE),
-                   width = 3),
-                 mainPanel(
-                   fluidRow(
-                     column(plotOutput("indiv_topo"), width = 6),
-                     column(plotOutput("indiv_erpim"), width = 6)
-                     ),
-                   fluidRow(
-                     column(plotOutput("indiv_psd"), width = 6),
-                     column(plotOutput("indiv_tc"), width = 6)
-                     ),
-                   width = 9)
-                 )
-               ),
+        sidebarLayout(
+          sidebarPanel(
+                       selectInput(
+                         "comp_no", "Component:",
+                         channel_names(data)
+                       ),
+                       shiny::radioButtons("reject_comps",
+                                           label = NULL,
+                                           choices = c("Keep", "Reject"),
+                                           inline = TRUE),
+                       width = 3),
+          mainPanel(
+                    fluidRow(
+                      column(plotOutput("indiv_topo"), width = 6),
+                      column(plotOutput("indiv_erpim"), width = 6)
+                    ),
+                    fluidRow(
+                      column(plotOutput("indiv_psd"), width = 6),
+                      column(plotOutput("indiv_tc"), width = 6)
+                    ),
+                    width = 9)
+        )
+      ),
       tabPanel("Output",
                tableOutput("reject_table"),
                checkboxGroupInput("output_choices",
-                                  label = "Output to return",
-                                  choices = list(
-                                    "Components to reject" = "reject",
-                                    "Components to keep" = "keep",
-                                    "Reconstructed data" = "data")
-                                  ),
+                 label = "Output to return",
+                 choices = list(
+                                "Components to reject" = "reject",
+                                "Components to keep" = "keep",
+                                "Reconstructed data" = "data")
+               ),
                actionButton("done",
                             "Press to close app and return to console"))
 
-      )
+    )
 
   server <- function(input,
                      output,
@@ -134,15 +134,15 @@ view_ica <- function(data) {
         ica_topoplots,
         height = function() {
           .75 * session$clientData$output_comp_topos_width
-          }
-        )
+        }
+      )
 
     output$ica_butters <-
       renderPlot(
         ica_butter +
           coord_cartesian(xlim = b_ranges$x,
                           ylim = b_ranges$y)
-        )
+      )
 
     output$ica_psd <-
       renderPlot({
@@ -155,7 +155,7 @@ view_ica <- function(data) {
           coord_cartesian(xlim = ranges$x,
                           ylim = ranges$y,
                           expand = FALSE)
-    })
+      })
 
     output$info <- renderTable({
       as.data.frame(
@@ -263,7 +263,7 @@ view_ica <- function(data) {
                           input$topo_click,
                           threshold = 20,
                           maxpoints = 1)
-        )
+      )
       updateNavbarPage(inputId = "main_page",
                        selected = "Individual")
       updateSelectInput(inputId = "comp_no",
@@ -290,7 +290,7 @@ view_ica <- function(data) {
                               function(x) identical(x, "Reject"),
                               logical(1))]
       data.frame("Rejected" = rejects)
-      }
+    }
     )
 
     observeEvent(input$done, {
@@ -303,7 +303,7 @@ view_ica <- function(data) {
         returnValue <- vector(
           "list",
           length(outputs)
-          )
+        )
         names(returnValue) <- outputs
         rejects <- reactiveValuesToList(isolate(comp_status))
         rejects <-
@@ -353,7 +353,7 @@ ica_topos <- function(data) {
       colour = "black",
       size = rel(0.8)
     ) +
-    facet_wrap( ~ component) +
+    facet_wrap(~component) +
     theme_void() +
     scale_fill_distiller(palette = "RdBu",
                          limits = c(-3, 3),
