@@ -1,7 +1,7 @@
 #' Channel interpolation
 #'
-#' Interpolate EEG channels using a spherical spline (Perrin et al., 1989; 1990). The
-#' data must have channel locations attached.
+#' Interpolate EEG channels using a spherical spline (Perrin et al., 1989;
+#' 1990). The data must have channel locations attached.
 #'
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #'
@@ -9,12 +9,11 @@
 #' @param bad_elecs Name(s) of electrode(s) to interpolate.
 #' @param ... Other parameters passed to the functions.
 #' @references * Perrin, F., Pernier, J., Bertrand, O., & Echallier, J. F.
-#'       (1989). Spherical splines for scalp potential and current
-#'       density mapping. Electroencephalography and Clinical
-#'     Neurophysiology, 72, 184-187
+#'   (1989). Spherical splines for scalp potential and current density mapping.
+#'   Electroencephalography and Clinical Neurophysiology, 72, 184-187
 #'  * Perrin, F., Pernier, J., Bertrand, O., & Echallier, J. F.
-#'      (1990). Corrigenda EEG 02274. Electroencephalography and
-#'      Clinical Neurophysiology, 76, 565
+#'   (1990). Corrigenda EEG 02274. Electroencephalography and Clinical
+#'   Neurophysiology, 76, 565
 #' @export
 
 interp_elecs <- function(data, bad_elecs, ...) {
@@ -93,7 +92,7 @@ interp_elecs.eeg_data <- function(data,
   final_cols <- sigs_select & !bad_cols
 
   weights <- spheric_spline(xyz_good,
-                             xyz_coords)
+                            xyz_coords)
 
   data$signals <- interp_chans(data$signals,
                                bad_elecs,
@@ -254,10 +253,10 @@ convert_to_csd <- function(data,
 
   if (any(missing_coords)) {
     stop("No coordinates for ",
-         paste0(data$chan_info$electrode[missing_coords],
-                collapse = " "),
-         ". Remove channels before applying CSD."
-         )
+      paste0(data$chan_info$electrode[missing_coords],
+             collapse = " "),
+      ". Remove channels before applying CSD."
+    )
   }
 
   # Convert data to average reference

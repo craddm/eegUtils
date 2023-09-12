@@ -15,13 +15,13 @@
 #'
 #' @section Notes on usage of Generalized Additive Models for interpolation: The
 #'   function fits a GAM using the `gam` function from `mgcv`. Specifically, it
-#'   fits a spline using the model function `gam(z ~ s(x, y, bs = "ts", k = 40)`.
-#'   Using GAMs for smooths is very much experimental. The surface is produced
-#'   from the predictions of the GAM model fitted to the supplied data. Values
-#'   at each electrode do not necessarily match actual values in the data:
-#'   high-frequency variation will tend to be smoothed out. Thus, the method
-#'   should be used with caution. In addition the method can only be used when
-#'   there are more than 40 electrodes.
+#'   fits a spline using the model function `gam(z ~ s(x, y, bs = "ts", k =
+#'   40)`. Using GAMs for smooths is very much experimental. The surface is
+#'   produced from the predictions of the GAM model fitted to the supplied data.
+#'   Values at each electrode do not necessarily match actual values in the
+#'   data: high-frequency variation will tend to be smoothed out. Thus, the
+#'   method should be used with caution. In addition the method can only be used
+#'   when there are more than 40 electrodes.
 
 topoplot <- function(data,
                      ...) {
@@ -77,7 +77,7 @@ topoplot.default <- function(data,
 #' @param k Degrees of freedom used for spline when using `method = gam`.
 #'   Defaults to 40.
 #' @param fill_title Allows specification of the title of the colourbar.
-#'   Defaults to `expression( paste("Amplitude (", mu, "V)")), appropriate for
+#'   Defaults to `expression(paste("Amplitude (", mu, "V)")), appropriate for
 #'   typical time-domain data.
 #' @import ggplot2
 #' @import tidyr
@@ -106,7 +106,7 @@ topoplot.data.frame <- function(data,
                                 k = 40,
                                 fill_title = expression(
                                   paste("Amplitude (", mu, "V)")
-                                  ),
+                                ),
                                 ...) {
 
   if (identical(method, "gam")) {
@@ -120,13 +120,13 @@ topoplot.data.frame <- function(data,
   # Filter out unwanted timepoints and find nearest time values in the data
   # --------------
 
-   if (!is.null(time_lim)) {
+  if (!is.null(time_lim)) {
     data <- select_times(data,
                          time_lim)
     if (is.list(time_lim)) {
       groups <- c(groups, "time")
     }
-   }
+  }
 
   # Check for x and y co-ordinates, try to add if not found
   # --------------
@@ -183,11 +183,11 @@ topoplot.data.frame <- function(data,
                       dplyr::across({{ groups }}))
     data <-
       dplyr::summarise(data,
-                       fill = mean({{quantity}},
+                       fill = mean({{ quantity }},
                                    na.rm = TRUE))
     data <- dplyr::ungroup(data)
     data <- tidyr::nest(data,
-                        data = -{{groups}})
+                        data = -{{ groups }})
 
   } else {
 
@@ -199,8 +199,8 @@ topoplot.data.frame <- function(data,
                        z = mean({{quantity}},
                                 na.rm = TRUE))
 
-    # Cut the data frame down to only the necessary columns, and make sure it has
-    # the right names
+    # Cut the data frame down to only the necessary columns, and make sure it
+    # has the right names
     data <- data.frame(x = data$x,
                        y = data$y,
                        fill = data$z,
@@ -222,10 +222,12 @@ topoplot.data.frame <- function(data,
                   data = data,
                   interp_limit = interp_limit)
   } else {
-     if (r < max_elec) {
-       if (verbose) message("r < most distant electrode from origin, consider adjusting to no lower than ",
-                            round(max_elec, 2))
-     }
+    if (r < max_elec) {
+      if (verbose) {
+        message("r < most distant electrode from origin, consider adjusting to no lower than ",
+                round(max_elec, 2))
+      }
+    }
   }
 
   if (verbose) {
@@ -257,7 +259,7 @@ topoplot.data.frame <- function(data,
         linewidth = rel(1.1 * scaling),
         show.legend = FALSE
       )
-    }
+  }
 
   topo <-
     topo +
@@ -289,16 +291,16 @@ topoplot.data.frame <- function(data,
                         y = data$y,
                         colour = "black",
                         size = rel(2 * scaling))
-    }  else if (identical(chan_marker, "name")) {
-      topo <-
-        topo +
-        ggplot2::annotate("text",
-                          x = data$x,
-                          y = data$y,
-                          label = data$electrode,
-                          colour = "black",
-                          size = rel(4 * scaling))
-    }
+  } else if (identical(chan_marker, "name")) {
+    topo <-
+      topo +
+      ggplot2::annotate("text",
+                        x = data$x,
+                        y = data$y,
+                        label = data$electrode,
+                        colour = "black",
+                        size = rel(4 * scaling))
+  }
 
   # Highlight specified electrodes
   if (!is.null(highlights)) {
@@ -553,7 +555,7 @@ topoplot.eeg_tfr <- function(data,
                              k = 40,
                              fill_title = expression(
                                paste("Power (", mu, V^2, ")")
-                               ),
+                             ),
                              ...) {
 
   if (!is.null(data$chan_info)) {

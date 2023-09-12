@@ -31,32 +31,31 @@ view_artefacts <- function(data) {
 
   ui <-
     navbarPage("Artefact checks",
-               inverse = TRUE,
-               tabPanel("Channel stats",
-                        sidebarLayout(
-                          sidebarPanel(selectInput("chan_meas",
-                                                   "Display measures",
-                                                   choices = c("means",
-                                                               "sds",
-                                                               "variance",
-                                                               "kurtosis",
-                                                               "minmax")
-                                                   ),
-                                       checkboxInput("std_meas",
-                                                     "Standardize?"),
-                                       width = 3),
-                          mainPanel(
-                            plotly::plotlyOutput("chan_plot"),
-                            #channelPlotly(chan_dat),
-                            fluidRow(
-                              column(6,
-                                     plotly::plotlyOutput("erpplot")),
-                              column(6,
-                                     plotly::plotlyOutput("erpimage"))),
-                            ),
-                          )),
-               tabPanel("Epoch stats",
-                        epochPlotly(epoch_dat))
+      inverse = TRUE,
+      tabPanel("Channel stats",
+               sidebarLayout(
+                 sidebarPanel(selectInput("chan_meas",
+                                "Display measures",
+                                choices = c("means",
+                                            "sds",
+                                            "variance",
+                                            "kurtosis",
+                                            "minmax")
+                              ),
+                              checkboxInput("std_meas",
+                                            "Standardize?"),
+                              width = 3),
+                 mainPanel(
+                   plotly::plotlyOutput("chan_plot"),
+                   fluidRow(
+                            column(6,
+                                   plotly::plotlyOutput("erpplot")),
+                            column(6,
+                                   plotly::plotlyOutput("erpimage"))),
+                 ),
+               )),
+      tabPanel("Epoch stats",
+               epochPlotly(epoch_dat))
     )
 
   server <- function(input, output) {
@@ -104,7 +103,6 @@ view_artefacts <- function(data) {
       }
     })
 
-
     output$plotly_emeans <- plotly::renderPlotly({
       plotly::plot_ly(epoch_dat,
                       y = ~electrode,
@@ -145,7 +143,6 @@ view_artefacts <- function(data) {
 
   shiny::runGadget(ui,
                    server)
-
 }
 
 
@@ -164,6 +161,6 @@ epochPlotly <- function(id,
                            height = 250),
       plotly::plotlyOutput("plotly_minmax",
                            height = 250)
-      )
+    )
   )
 }

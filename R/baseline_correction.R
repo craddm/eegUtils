@@ -128,7 +128,6 @@ rm_baseline.eeg_epochs <- function(data,
                                 n_chans))
   colnames(data$signals) <- elecs
   data$signals <- tibble::as_tibble(data$signals)
-  #names(data$signals) <- elecs
   data
 }
 
@@ -157,7 +156,7 @@ rm_baseline.data.frame <- function(data,
                             electrode,
                             epoch,
                             add = TRUE)
-  } else{
+  } else {
     data <- dplyr::group_by(data,
                             electrode,
                             add = TRUE)
