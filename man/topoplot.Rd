@@ -195,7 +195,7 @@ Defaults to TRUE.}
 Defaults to 40.}
 
 \item{fill_title}{Allows specification of the title of the colourbar.
-Defaults to `expression( paste("Amplitude (", mu, "V)")), appropriate for
+Defaults to `expression(paste("Amplitude (", mu, "V)")), appropriate for
 typical time-domain data.}
 
 \item{component}{Component to plot (numeric)}
@@ -210,7 +210,7 @@ Allows topographical plotting of functional data. Output is a ggplot2 object.
 \item \code{topoplot(default)}: Default method for data frames.
 
 \item \code{topoplot(data.frame)}: Topographical plotting of data.frames and other non
-eeg_data objects.
+\code{eeg_data} objects.
 
 \item \code{topoplot(eeg_data)}: Topographical plotting of \code{eeg_data} objects.
 
@@ -224,13 +224,12 @@ eeg_data objects.
 \section{Notes on usage of Generalized Additive Models for interpolation}{
  The
 function fits a GAM using the \code{gam} function from \code{mgcv}. Specifically, it
-fits a spline using the model function \verb{gam(z ~ s(x, y, bs = "ts", k = 40)}.
-Using GAMs for smooths is very much experimental. The surface is produced
-from the predictions of the GAM model fitted to the supplied data. Values
-at each electrode do not necessarily match actual values in the data:
-high-frequency variation will tend to be smoothed out. Thus, the method
-should be used with caution. In addition the method can only be used when
-there are more than 40 electrodes.
+fits a spline using the model function \verb{gam(z ~ s(x, y, bs = "ts", k = 40)}. Using GAMs for smooths is very much experimental. The surface is
+produced from the predictions of the GAM model fitted to the supplied data.
+Values at each electrode do not necessarily match actual values in the
+data: high-frequency variation will tend to be smoothed out. Thus, the
+method should be used with caution. In addition the method can only be used
+when there are more than 40 electrodes.
 }
 
 \examples{
