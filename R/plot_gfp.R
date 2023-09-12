@@ -9,6 +9,7 @@
 #'   separately for different conditions.
 #' @param keep_trials Calculate GFP for each epoch separately, then average over
 #'   epochs.
+#' @author Matt Craddock \email{matt@@mattcraddock.com}
 #' @export
 #' @examples
 #' plot_gfp(demo_spatial)
