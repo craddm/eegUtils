@@ -45,7 +45,9 @@ eeg_filter <- function(data, ...) {
 
 #' @param low_freq Low cutoff frequency.
 #' @param high_freq High cutoff frequency.
-#' @param filter_order Defaults to "auto", which automatically estimates filter order for the specified filter characteristics (defaults to 4 if method = "iir").
+#' @param filter_order Defaults to "auto", which automatically estimates filter
+#'   order for the specified filter characteristics (defaults to 4 if method =
+#'   "iir").
 #' @param trans_bw Transition bandwidth of the filter. "auto" or an integer.
 #'   "auto" attempts to determine a suitable transition bandwidth using the
 #'   heuristic given below. Ignored if method = "iir".
@@ -53,7 +55,8 @@ eeg_filter <- function(data, ...) {
 #'   Response). Defaults to "fir".
 #' @param window Windowing function to use (FIR filtering only). Defaults to
 #'   "hamming"; currently only "hamming" available.
-#' @param demean Remove DC component (i.e. channel/epoch mean) before filtering. Defaults to TRUE.
+#' @param demean Remove DC component (i.e. channel/epoch mean) before filtering.
+#'   Defaults to TRUE.
 #' @rdname eeg_filter
 #' @export
 eeg_filter.eeg_data <- function(data,
@@ -178,15 +181,15 @@ eeg_filter.eeg_epochs <- function(data,
                             window)
 
   if (demean) {
-     data <- rm_baseline(data) # remove DC component
+    data <- rm_baseline(data) # remove DC component
   }
   if (identical(method, "iir")) {
-     data <- run_iir_n(data,
-                       filt_coef)
+    data <- run_iir_n(data,
+                      filt_coef)
   } else {
     data <- run_fir(data,
-                     filt_coef,
-                     filter_order)
+                    filt_coef,
+                    filter_order)
   }
   data$signals <- tibble::as_tibble(data$signals)
   data
@@ -221,30 +224,28 @@ run_fir <- function(data,
                     filt_coef,
                     filter_order) {
 
-   fft_length <- length(filt_coef) * 2 - 1
-   fft_length <- stats::nextn(fft_length) #length(filt_coef) * 2 - 1
-   sig_length <- nrow(data$signals)
-   # pad the signals with zeros to help with edge effects
-   pad_zeros <- stats::nextn(sig_length + fft_length - 1) - sig_length
-   pad_zeros <- 2 * round(pad_zeros / 2)
-   data$signals <- purrr::map_df(data$signals,
-                                  ~pad(.,
-                                       pad_zeros))
-   data$signals <- future.apply::future_lapply(data$signals,
-                                               signal::fftfilt,
-                                               b = filt_coef,
-                                               n = fft_length)
-
-
-   # fftfilt filters once and thus shifts everything in time by the group delay
-   # of the filter (half the filter order). Here we correct for both the
-   # padding and the group delay
-   data$signals <- purrr::map_df(data$signals,
-                                  ~fix_grpdelay(.,
-                                                pad_zeros,
-                                                filter_order / 2))
-   data$signals <- tibble::as_tibble(data$signals)
-   data
+  fft_length <- length(filt_coef) * 2 - 1
+  fft_length <- stats::nextn(fft_length)
+  sig_length <- nrow(data$signals)
+  # pad the signals with zeros to help with edge effects
+  pad_zeros <- stats::nextn(sig_length + fft_length - 1) - sig_length
+  pad_zeros <- 2 * round(pad_zeros / 2)
+  data$signals <- purrr::map_df(data$signals,
+                                ~pad(.,
+                                     pad_zeros))
+  data$signals <- future.apply::future_lapply(data$signals,
+                                              signal::fftfilt,
+                                              b = filt_coef,
+                                              n = fft_length)
+  # fftfilt filters once and thus shifts everything in time by the group delay
+  # of the filter (half the filter order). Here we correct for both the
+  # padding and the group delay
+  data$signals <- purrr::map_df(data$signals,
+                                ~fix_grpdelay(.,
+                                              pad_zeros,
+                                              filter_order / 2))
+  data$signals <- tibble::as_tibble(data$signals)
+  data
 }
 
 run_iir_n <- function(data,
@@ -370,7 +371,7 @@ est_filt_order <- function(window,
 
   if (identical(window, "hamming")) {
     filt_ord <- 3.3 * srate
-  } else{
+  } else {
     stop("Only hamming windows currently implemented.")
   }
 
@@ -405,7 +406,7 @@ filter_coefs <- function(method,
                          filter_order)
 
     coefs <- list()
-    for (i in 1:length(filt_pars$W)) {
+    for (i in seq_along(filt_pars$W)) {
       coefs[[i]] <- filt_kernel(filter_order,
                                 filt_pars$W[[i]],
                                 win)
@@ -517,10 +518,9 @@ gauss_filter <- function(data,
   x <- hz - freq
   fx <- exp(-.5 * (x / s)^2)
   fx <- fx / max(fx)
-  filt_sig <- apply(data, 2, function(x) {
-    2 * Re(stats::fft(stats::fft(x) / srate * fx,
-               inverse = TRUE))})
+  filt_sig <- apply(data, 2,
+                    function(x) {
+                                 2 * Re(stats::fft(stats::fft(x) / srate * fx,
+                                                   inverse = TRUE))})
   as.data.frame(filt_sig)
 }
-
-
