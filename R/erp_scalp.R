@@ -3,7 +3,7 @@
 #' Creates a `ggplot2` figure showing the ERP at each electrode, with each
 #' electrode placed according to its location on the scalp.
 #'
-#' @param data An EEG dataset.
+#' @param data An `eeg_epochs` or `eeg_evoked` object
 #' @param ... Various arguments passed to specific functions
 #'
 #' @examples
@@ -18,7 +18,7 @@
 #' @family scalp-based maps
 #' @seealso [interactive_scalp()] for interactive plots of ERPs in a scalp-based
 #'   layout.
-#' @return Returns a ggplot2 plot object.
+#' @return Returns a `ggplot2` plot object.
 #' @export
 
 erp_scalp <- function(data,
@@ -156,10 +156,9 @@ erp_scalp.default <- function(data,
         scale_color_brewer(palette = "Set1")
       plot <-
         plot +
-        geom_line(
-          aes(colour = {{ colour }}),
-          show.legend = FALSE,
-          linewidth = linewidth)
+        geom_line(aes(colour = {{ colour }}),
+                  show.legend = FALSE,
+                  linewidth = linewidth)
     }
     plot
   }
@@ -168,8 +167,8 @@ erp_scalp.default <- function(data,
   data <- tidyr::nest(data,
                       data = !electrode)
   data <- dplyr::mutate(data,
-                        plot = map(data,
-                                   plotfun))
+                        plot = purrr::map(data,
+                                          plotfun))
   data <- dplyr::select(data,
                         -data)
 
@@ -270,7 +269,8 @@ erp_scalp.default <- function(data,
 #' @param data An EEG dataset.
 #' @param colour Variable to colour lines by. If no variable is passed, only one
 #'   line is drawn for each electrode.
-#' @param baseline Character vector of times to subtract for baseline correction.
+#' @param baseline Character vector of times to subtract for baseline
+#'   correction.
 #' @param montage Name of an existing montage set. Defaults to NULL; (currently
 #'   only 'biosemi64alpha' available other than default 10/20 system)
 #'
@@ -279,7 +279,8 @@ erp_scalp.default <- function(data,
 #' @import shiny
 #' @import miniUI
 #' @family scalp-based maps
-#' @seealso [erp_scalp()] for non-interactive plots of ERPs in a scalp-based layout.
+#' @seealso [erp_scalp()] for non-interactive plots of ERPs in a scalp-based
+#'   layout.
 #' @export
 
 interactive_scalp <- function(data,
@@ -302,20 +303,21 @@ interactive_scalp <- function(data,
     colour <- rlang::enquo(colour)
   }
 
-  ui <- miniPage(
-    gadgetTitleBar("Scalp ERPs"),
+  ui <- miniPage(gadgetTitleBar("Scalp ERPs"),
     miniTabstripPanel(
       miniTabPanel(
         "Whole scalp",
         icon = icon("circle"),
-        miniContentPanel(fillCol(
-          flex = c(7, 1),
-          plotOutput("Scalp", height = "100%",
-                     click = "click_plot"),
-          verbatimTextOutput("click_info")
-          )),
-        miniButtonBlock(actionButton("reset", "Reset selection"))
+        miniContentPanel(
+          fillCol(
+            flex = c(7, 1),
+            plotOutput("Scalp", height = "100%",
+                       click = "click_plot"),
+            verbatimTextOutput("click_info")
+          )
         ),
+        miniButtonBlock(actionButton("reset", "Reset selection"))
+      ),
       miniTabPanel(
         "Selected electrodes",
         icon = icon("chart-line"),
@@ -323,9 +325,10 @@ interactive_scalp <- function(data,
         miniButtonBlock(
           actionButton("avg", "Mean"),
           actionButton("single", "Plot individual electrodes")
-          )
         )
-      ))
+      )
+    )
+  )
 
   server <- function(input,
                      output,
@@ -342,15 +345,15 @@ interactive_scalp <- function(data,
                               long = TRUE)
 
     if (is.null(chan_info)) {
-         tmp_data <- electrode_locations(tmp_data,
-                                         drop = TRUE,
-                                         montage = montage)    #
+      tmp_data <- electrode_locations(tmp_data,
+                                      drop = TRUE,
+                                      montage = montage)
     } else {
-       tmp_data <- dplyr::left_join(tmp_data,
-                                    chan_info,
-                                    by = c("electrode", "x", "y"))
-       tmp_data <- dplyr::filter(tmp_data,
-                                 !(is.na(x) | is.na(y)))
+      tmp_data <- dplyr::left_join(tmp_data,
+                                   chan_info,
+                                   by = c("electrode", "x", "y"))
+      tmp_data <- dplyr::filter(tmp_data,
+                                !(is.na(x) | is.na(y)))
     }
 
     button_reacts <- reactiveValues(sel_elecs = list(),
@@ -399,26 +402,18 @@ interactive_scalp <- function(data,
 
       # plot selected electrodes when on appropriate tab
       output$Selected <- renderPlot({
-
         if (button_reacts$avg) {
-
           if (rlang::quo_is_null(colour)) {
-
             plot_timecourse(
               select_elecs(data,
                            unlist(button_reacts$sel_elecs))
-              )
-
+            )
           } else {
-
             plot_timecourse(select_elecs(data,
                                          unlist(button_reacts$sel_elecs)),
                             colour = rlang::as_label(colour))
-                            #colour = as.name(colour))
           }
-
         } else {
-
           if (rlang::quo_is_null(colour)) {
             plot_timecourse(select_elecs(data,
                                          unlist(button_reacts$sel_elecs)),
@@ -434,7 +429,6 @@ interactive_scalp <- function(data,
     })
 
     #Close app gracefully if done button clicked
-
     observeEvent(input$done, {
       stopApp()
     })
@@ -443,16 +437,12 @@ interactive_scalp <- function(data,
     observeEvent(input$reset, {
       button_reacts$sel_elecs <- NULL
     })
-
     observeEvent(input$avg, {
       button_reacts$avg <- TRUE
     })
-
     observeEvent(input$single, {
       button_reacts$avg <- FALSE
     })
-
   }
-
   runGadget(ui, server)
 }
