@@ -20,9 +20,10 @@ ar_eogcor(decomp, data, ...)
 )
 }
 \arguments{
-\item{decomp}{ICA decomposition}
+\item{decomp}{An \code{eeg_ica} object}
 
-\item{data}{Original data}
+\item{data}{The original \code{eeg_epochs} object from which this decomposition
+was derived}
 
 \item{...}{Other parameters}
 
@@ -48,7 +49,7 @@ decomposition and the electrooculogram channels of an \code{eeg_epochs} dataset.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{ar_eogcor(eeg_ICA)}: Method for eeg_ICA objects.
+\item \code{ar_eogcor(eeg_ICA)}: Method for \code{eeg_ICA} objects.
 
 }}
 \references{

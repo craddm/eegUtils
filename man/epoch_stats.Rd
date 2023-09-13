@@ -10,7 +10,7 @@ epoch_stats(data, ...)
 \method{epoch_stats}{eeg_epochs}(data, ...)
 }
 \arguments{
-\item{data}{Data as a \code{eeg_data} or \code{eeg_epochs} object.}
+\item{data}{An \code{eeg_epochs} object.}
 
 \item{...}{Other parameters passed to the functions.}
 }

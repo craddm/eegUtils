@@ -14,7 +14,7 @@ ar_chanfoc(
 )
 }
 \arguments{
-\item{data}{\code{eeg_ICA} object}
+\item{data}{An \code{eeg_ICA} object}
 
 \item{plot}{Produce plot showing max z-scores and threshold for all ICA
 components.}

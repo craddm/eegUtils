@@ -133,8 +133,8 @@ Returns a ggplot2 plot object
 Typically event-related potentials/fields, but could also be timecourses from
 frequency analyses for single frequencies. Averages over all submitted
 electrodes. For group data, \code{plot_timecourse} will average within-participants
-first, using weighted averaging where possible, then across participants using unweighted
-averaging. Output is a \code{ggplot2} object.
+first, using weighted averaging where possible, then across participants using
+unweighted averaging. Output is a \code{ggplot2} object.
 }
 \section{Methods (by class)}{
 \itemize{

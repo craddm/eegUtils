@@ -9,7 +9,8 @@ create_electrode_layout_plot(data, interact)
 \arguments{
 \item{data}{The data from which to extract channel locations}
 
-\item{interact}{If TRUE, use \code{plotly} to create a 3D interactive plot, otherwise create a 2D \code{ggplot}.}
+\item{interact}{If TRUE, use \code{plotly} to create a 3D interactive plot,
+otherwise create a 2D \code{ggplot}.}
 }
 \description{
 Create a ggplot or plotly plot showing electrode positions

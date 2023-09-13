@@ -10,7 +10,7 @@ channel_stats(data, ...)
 \method{channel_stats}{eeg_data}(data, ...)
 }
 \arguments{
-\item{data}{Data as a \code{eeg_data} or \code{eeg_epochs} object.}
+\item{data}{An \code{eeg_data} or \code{eeg_epochs} object.}
 
 \item{...}{Other parameters passed to the functions.}
 }

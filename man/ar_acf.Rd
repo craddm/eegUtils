@@ -20,7 +20,8 @@ ar_acf(data, ...)
 
 \item{verbose}{Print informative messages. Defaults to TRUE.}
 
-\item{threshold}{Specify a threshold for low ACF. NULL estimates the threshold automatically.}
+\item{threshold}{Specify a threshold for low ACF. NULL estimates the
+threshold automatically.}
 }
 \value{
 A character vector of component names that break the threshold.

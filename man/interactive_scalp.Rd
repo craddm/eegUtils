@@ -12,7 +12,8 @@ interactive_scalp(data, colour = NULL, baseline = NULL, montage = NULL)
 \item{colour}{Variable to colour lines by. If no variable is passed, only one
 line is drawn for each electrode.}
 
-\item{baseline}{Character vector of times to subtract for baseline correction.}
+\item{baseline}{Character vector of times to subtract for baseline
+correction.}
 
 \item{montage}{Name of an existing montage set. Defaults to NULL; (currently
 only 'biosemi64alpha' available other than default 10/20 system)}
@@ -23,7 +24,8 @@ clicking of individual electrodes to plot them in a separate panel. In that
 panel, they can be averaged over or plotted as individual electrodes.
 }
 \seealso{
-\code{\link[=erp_scalp]{erp_scalp()}} for non-interactive plots of ERPs in a scalp-based layout.
+\code{\link[=erp_scalp]{erp_scalp()}} for non-interactive plots of ERPs in a scalp-based
+layout.
 
 Other scalp-based maps: 
 \code{\link{erp_scalp}()},

@@ -44,8 +44,7 @@ not available be removed? (Defaults to FALSE).}
 A tibble (or data.frame), or ggplot2 object if \code{plot = TRUE}.
 }
 \description{
-Joins standard electrode locations to EEG data from \code{eegUtils} internal
-data.
+Joins standard electrode locations to EEG data from \code{eegUtils} internal data.
 }
 \details{
 The standard locations are from the 10-05 system derived by Oostenveld &
@@ -59,11 +58,14 @@ BioSemi systems included. These can be added using the montage parameter:
 \item \code{electrode_locations(data.frame)}: Adds standard locations to a data frame in
 long format
 
-\item \code{electrode_locations(eeg_data)}: Adds standard locations to the chan_info field of an eeg_data object.
+\item \code{electrode_locations(eeg_data)}: Adds standard locations to the chan_info
+field of an eeg_data object.
 
-\item \code{electrode_locations(eeg_epochs)}: Adds standard locations to the chan_info field of an \code{eeg_data} object.
+\item \code{electrode_locations(eeg_epochs)}: Adds standard locations to the chan_info
+field of an \code{eeg_data} object.
 
-\item \code{electrode_locations(eeg_tfr)}: Adds standard locations to the chan_info field of an \code{eeg_tfr} object.
+\item \code{electrode_locations(eeg_tfr)}: Adds standard locations to the chan_info
+field of an \code{eeg_tfr} object.
 
 }}
 \examples{

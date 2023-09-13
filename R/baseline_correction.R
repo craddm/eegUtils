@@ -53,13 +53,12 @@ rm_baseline.eeg_data <- function(data,
                                time_lim = time_lim)
     baseline_dat <- colMeans(base_times$signals)
     if (verbose) {
-      message(paste0(
-        "Baseline: ",
-        time_lim[1],
-        " - ",
-        time_lim[2],
-        "s")
-        )
+      message(paste0("Baseline: ",
+                     time_lim[1],
+                     " - ",
+                     time_lim[2],
+                     "s")
+      )
     }
     data$signals <- as.matrix(data$signals)
     data$baseline <- time_lim
@@ -94,25 +93,21 @@ rm_baseline.eeg_epochs <- function(data,
       message("Removing channel means per epoch...")
     }
     # reshape to 3D matrix
-    orig_chans <- channel_names(data)
-
     data$signals <- as.matrix(data$signals)
     dim(data$signals) <- c(n_times, n_epochs, n_chans)
     # colMeans gives an n_epochs * n_channels matrix - i.e. baseline value for
     # each epoch and channel
     baseline_dat <- colMeans(data$signals)
-    # now we go through each timepoint subtracting the baseline values
     data$signals <- baseline_epo(data$signals,
                                  baseline_dat)
     data$baseline <- range(data$timings$time)
   } else {
     if (verbose) {
-      message(paste0(
-        "Baseline: ",
-        time_lim[1],
-        " - ",
-        time_lim[2],
-        "s"))
+      message(paste0("Baseline: ",
+                     time_lim[1],
+                     " - ",
+                     time_lim[2],
+                     "s"))
     }
     base_times <- get_epoch_baselines(data,
                                       time_lim)
@@ -328,7 +323,6 @@ rm_baseline.eeg_evoked <- function(data,
   orig_cols <- channel_names(data)
   n_times <- length(unique(data$timings$time))
   n_epochs <- nrow(unique(epochs(data)[, c("epoch", "participant_id")]))
-  n_participants <- length(unique(epochs(data)$participant_id))
   n_chans <- length(orig_cols)
 
   if (is.null(time_lim)) {
@@ -386,10 +380,7 @@ rm_baseline.eeg_group <- function(data, ...) {
 get_epoch_baselines <- function(data,
                                 time_lim) {
 
-  #n_epochs <- nrow(epochs(data))
   n_epochs <- nrow(unique(epochs(data)[, c("epoch", "participant_id")]))
-  n_participants <- length(unique(epochs(data)$participant_id))
-
   n_chans <- length(channel_names(data))
   chan_names <- colnames(data$signals)
 
