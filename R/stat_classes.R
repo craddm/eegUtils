@@ -62,19 +62,3 @@ new_eeg_stats <- function(...,
   )
 }
 
-# new_eeg_tstats <- function(statistic) {
-#   stopifnot(is.data.frame(statistic))
-#   stopifnot(is.data.frame(timings))
-#   #stopifnot(is.data.frame(t_stats))
-#   #stopifnot(is.data.frame(r_sq))
-#   #stopifnot(rlang::is_formula(formula))
-#
-#   new_eeg_stats(
-#     statistic = statistic,
-#     timings = timings,
-#     epochs = epochs,
-#     chan_info = chan_info,
-#     formula = formula,
-#     class = "eeg_tstats"
-#   )
-# }
