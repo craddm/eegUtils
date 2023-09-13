@@ -11,14 +11,14 @@ eeg_decompose(data, ...)
   data,
   sig_range,
   noise_range,
-  method = "ssd",
+  method = c("ssd", "ress"),
   verbose = TRUE,
   order = 2,
   ...
 )
 }
 \arguments{
-\item{data}{An \code{eeg_data} object}
+\item{data}{An \code{eeg_epochs} object}
 
 \item{...}{Additional parameters}
 
@@ -26,26 +26,26 @@ eeg_decompose(data, ...)
 
 \item{noise_range}{Range of frequencies to be considered noise (e.g. bounds of flanker frequencies)}
 
-\item{method}{Type of decomposition to apply. Currently only "ssd" is supported.}
+\item{method}{Type of decomposition to apply. Defaults to "ssd"}
 
 \item{verbose}{Informative messages printed to console. Defaults to TRUE.}
 
 \item{order}{Filter order for filter applied to signal/noise}
 }
 \value{
-An \code{eeg_ICA} object. Note that
+An \code{eeg_ICA} object.
 }
 \description{
 Implements a selection of Generalized Eigenvalue based decomposition methods
 for EEG signals. Intended for isolating oscillations at specified
-frequencies, decomposing channel-based data into components
-reflecting distinct or combinations of sources of oscillatory signals.
-Currently, spatio-spectral decomposition (Nikulin, Nolte, & Curio, 2011) and
-Rhythmic Entrainment Source Separation (Cohen & Gulbinate, 2017) are
-implemented. The key difference between the two is that the former returns
-the results of the data-derived spatial filters applied to the
-bandpass-filtered "signal" data, whereas the latter returns the results of the
-filters applied to the original, broadband data.
+frequencies, decomposing channel-based data into components reflecting
+distinct or combinations of sources of oscillatory signals. Currently,
+spatio-spectral decomposition (Nikulin, Nolte, & Curio, 2011) and Rhythmic
+Entrainment Source Separation (Cohen & Gulbinate, 2017) are implemented. The
+key difference between the two is that the former returns the results of the
+data-derived spatial filters applied to the bandpass-filtered "signal" data,
+whereas the latter returns the results of the filters applied to the
+original, broadband data.
 }
 \section{Methods (by class)}{
 \itemize{
