@@ -54,7 +54,9 @@ eeg_filter(data, ...)
 
 \item{high_freq}{High cutoff frequency.}
 
-\item{filter_order}{Defaults to "auto", which automatically estimates filter order for the specified filter characteristics (defaults to 4 if method = "iir").}
+\item{filter_order}{Defaults to "auto", which automatically estimates filter
+order for the specified filter characteristics (defaults to 4 if method =
+"iir").}
 
 \item{trans_bw}{Transition bandwidth of the filter. "auto" or an integer.
 "auto" attempts to determine a suitable transition bandwidth using the
@@ -66,7 +68,8 @@ Response). Defaults to "fir".}
 \item{window}{Windowing function to use (FIR filtering only). Defaults to
 "hamming"; currently only "hamming" available.}
 
-\item{demean}{Remove DC component (i.e. channel/epoch mean) before filtering. Defaults to TRUE.}
+\item{demean}{Remove DC component (i.e. channel/epoch mean) before filtering.
+Defaults to TRUE.}
 }
 \value{
 An object of the original class with signals filtered according to

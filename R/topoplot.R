@@ -83,7 +83,7 @@ topoplot.default <- function(data,
 #' @import tidyr
 #' @family scalp-based maps
 #' @describeIn topoplot Topographical plotting of data.frames and other non
-#'   eeg_data objects.
+#'   `eeg_data` objects.
 #' @export
 
 topoplot.data.frame <- function(data,

@@ -26,3 +26,6 @@ plot_gfp(demo_spatial, keep_trials = TRUE)
 plot_gfp(demo_spatial, cols = "epoch_labels")
 plot_gfp(demo_spatial, cols = "epoch_labels", keep_trials = TRUE)
 }
+\author{
+Matt Craddock \email{matt@mattcraddock.com}
+}
