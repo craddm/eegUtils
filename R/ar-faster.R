@@ -155,7 +155,6 @@ ar_FASTER.eeg_epochs <- function(data,
                           verbose = FALSE)
   }
 
-  #data$chan_info <- orig_chan_info
   data
 }
 
@@ -170,18 +169,14 @@ faster_chans <- function(data,
                          sds = 3,
                          ...) {
   chan_hurst <- scale(quick_hurst(data))
-  chan_vars <- scale(apply(data,
-                           2,
-                           stats::var))
+  chan_vars <- scale(apply(data, 2, stats::var))
   chan_corrs <- scale(colMeans(abs(stats::cor(data))))
   bad_chans <- matrix(c(abs(chan_hurst) > sds,
                         abs(chan_vars) > sds,
                         abs(chan_corrs) > sds),
                       nrow = 3,
                       byrow = TRUE)
-  bad_chans <- apply(bad_chans,
-                     2,
-                     any)
+  bad_chans <- apply(bad_chans, 2, any)
   bad_chans
 }
 
@@ -197,10 +192,11 @@ faster_epochs <- function(data, sds = 3, ...) {
   data$signals <- split(data$signals, data$timings$epoch)
   data$signals <- lapply(data$signals, as.matrix)
   epoch_ranges <- lapply(data$signals,
-                         function(x) matrixStats::rowDiffs(
-                           matrixStats::colRanges(x)
+                         function(x) {
+                           matrixStats::rowDiffs(
+                             matrixStats::colRanges(x)
                            )
-                         )
+                         })
   epoch_ranges <- matrix(unlist(epoch_ranges),
                          ncol = length(epoch_ranges))
   epoch_ranges <- colMeans(epoch_ranges)
@@ -374,10 +370,10 @@ faster_epo_stat <- function(data,
 
   measures <-
     data.frame(vars = matrixStats::colVars(as.matrix(data)),
-               medgrad = matrixStats::colMedians(diff(as.matrix(data))),
-               range_diff = t(diff(t(matrixStats::colRanges(as.matrix(data))))),
-               chan_dev = abs(colMeans(data) - chan_means)
-  )
+      medgrad = matrixStats::colMedians(diff(as.matrix(data))),
+      range_diff = t(diff(t(matrixStats::colRanges(as.matrix(data))))),
+      chan_dev = abs(colMeans(data) - chan_means)
+    )
   # Check if any measure is above threshold of standard deviations
   # for some reason FASTER median centres all measures.
 
@@ -432,7 +428,7 @@ ar_FASTER.eeg_group <- function(data,
         dplyr::all_of(data_chans),
         mean,
         na.rm = TRUE)
-      )
+    )
 
   channel_mean <-
     colMeans(all_data[, data_chans], na.rm = TRUE)
