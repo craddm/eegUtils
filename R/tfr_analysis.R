@@ -581,8 +581,8 @@ parse_frex <- function(foi,
     message(
       paste("Output frequencies using", spacing, "spacing:",
         paste(round(frex, 2), collapse = " ")
+      )
     )
-  )
   }
   frex
 }
@@ -602,7 +602,6 @@ run_tf <- function(tmp,
   n_freq <- dim(norm_mf)[2]
   n_times <- length(time_sel)
   all_times <- nhfkn + (time_sel - 1)
-  orig_n <- nrow(tmp)
   tmp_epo <- array(complex(1),
                    dim = c(n_conv,
                            n_epochs))
