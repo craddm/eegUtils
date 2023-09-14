@@ -96,8 +96,6 @@ erp_image.data.frame <- function(data,
 
 }
 
-
-
 #'@describeIn erp_image Create an `erp_image` from `eeg_epochs`
 #'@export
 erp_image.eeg_epochs <- function(data,
@@ -205,8 +203,6 @@ erp_image.eeg_tfr <- function(data,
                         long = TRUE,
                         coords = FALSE)
 
-
-
   create_tfrimage(data,
                   electrode = electrode,
                   smoothing = smoothing,
@@ -283,7 +279,6 @@ create_erpimage <- function(data,
     labs(x = "Time (s)", fill = "Amplitude", y = "Epoch number") +
     ggtitle(paste("ERP Image for", electrode))
 }
-
 
 create_tfrimage <- function(data,
                             electrode,
@@ -375,7 +370,6 @@ create_tfrimage <- function(data,
 #'   e.g. c(-5,5). Defaults to min and max.
 #' @param interpolate Smooth the raster plot. Defaults to FALSE.
 #' @import ggplot2
-#' @importFrom tidyr gather
 #' @importFrom scales squish
 #' @author Matt Craddock, \email{matt@@mattcraddock.com}
 #' @return A `ggplot` object
@@ -387,11 +381,7 @@ erp_raster <- function(data,
                        clim = NULL,
                        interpolate = FALSE) {
 
-  if (
-    inherits(
-      data, c("eeg_tfr", "eeg_ICA")
-      )
-    ) {
+  if (inherits(data, c("eeg_tfr", "eeg_ICA"))) {
     stop(
       paste(
         "Not currently implemented for objects of class",
@@ -426,7 +416,6 @@ erp_raster <- function(data,
                       y = electrode,
                       fill = amplitude)) +
     stat_summary_by_fill(interpolate = interpolate) +
-    #geom_raster(interpolate = interpolate) +
     geom_vline( xintercept = 0,
                 linetype = "dashed",
                 linewidth = 2) +
