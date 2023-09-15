@@ -249,12 +249,14 @@ eeg_average.eeg_evoked <- function(data,
 #' @export
 eeg_average.eeg_tfr <- function(data,
                                 cols = NULL,
+                                weighted = TRUE,
                                 ...) {
   if (!any(c("participant_id", "epoch") %in% data$dimensions)) {
     message("Data is already averaged.")
   } else {
     data <- average_tf(data,
-                       cols = cols)
+                       cols = cols,
+                       weighted = weighted)
     class(data) <- c("tfr_average",
                      class(data))
   }
@@ -262,17 +264,18 @@ eeg_average.eeg_tfr <- function(data,
 }
 
 
-#' Internal function for averaging over epochs for eeg_tfr objects.
+#' Internal function for averaging over epochs for `eeg_tfr` objects.
 #' @param data data to average over
+#' @param weighted Calculate weighted means if TRUE (if possible!)
 #' @keywords internal
 average_tf <- function(data,
-                       cols = NULL) {
+                       cols = NULL,
+                       weighted) {
 
   # Need to find a way to make this respect epochs structure...
   orig_dims <- dimnames(data$signals)
+  is_group_df <- inherits(data, "eeg_group")
 
-  is_group_df <- inherits(data,
-                          "eeg_group")
   if ("participant_id" %in% names(orig_dims)) {
     data$signals <- aperm(data$signals,
                           c("participant_id",
@@ -284,13 +287,14 @@ average_tf <- function(data,
   }
 
   if (!is.null(cols)) {
-    if ("participant_id" %in% cols) {
-      col_names <- cols
+    if (identical(cols, "everything")) {
+      col_names <- "participant_id"
     } else {
-      col_names <- c(
-        "participant_id",
-        cols
-      )
+      if ("participant_id" %in% cols) {
+        col_names <- cols
+      } else {
+        col_names <- c("participant_id", cols)
+      }
     }
   } else {
     col_names <- names(data$epochs)
@@ -306,17 +310,13 @@ average_tf <- function(data,
     }
   }
 
-  epo_types <- unique(
-    epochs(data)[col_names]
-  )
-  new_epos <- nrow(epo_types)
-  n_times <- length(
-    dimnames(data$signals)$time
-  )
+  epo_types <- unique(epochs(data)[col_names])
+  new_epochs <- nrow(epo_types)
+  n_times <- length(dimnames(data$signals)$time)
 
   # There must be a less hacky way of doing this
   epo_nums <-
-    lapply(1:new_epos,
+    lapply(1:new_epochs,
       function(x) {
         sort(merge(epochs(data),
                    epo_types[x, , drop = FALSE],
@@ -326,70 +326,86 @@ average_tf <- function(data,
   # convert epoch numbers from epochs() to positions in matrix
   epo_nums <- lapply(epo_nums,
                      function(x) which(orig_dims$epoch %in% x))
-  epo_weights <- vapply(epo_nums,
-                        length,
-                        integer(1))
-  if (is_group_df) {
 
+  if ("weight" %in% colnames(epochs(data))) {
+    epo_weights <- epochs(data)[["weight"]]
+  } else {
+    epo_weights <- vapply(epo_nums,
+                          length,
+                          integer(1))
+  }
+
+  if (is_group_df) {
     orig_dims <- dimnames(data$signals)
     orig_dims[["participant_id"]] <- "grand_average"
     data$signals <- colMeans(data$signals)
     dim(data$signals) <- c(1,
                            dim(data$signals))
-
     dimnames(data$signals) <- orig_dims
     data$dimensions <- c("participant_id",
                          "epoch",
                          "time",
                          "electrode",
                          "frequency")
-    epo_types$epoch <- 1:new_epos
+    epo_types$epoch <- 1:new_epochs
     epochs(data) <- epo_types
-
   } else {
-    if (identical(data$freq_info$output,
-                  "phase")) {
+    if (identical(data$freq_info$output, "phase")) {
       data$signals <- apply(
         data$signals,
         c(2, 3, 4),
         circ_mean
       )
     } else if (identical(data$freq_info$output, "power")) {
+      avg_tf <- array(0,
+                      dim = c(new_epochs,
+                              dim(data$signals)[2:4]))
+      final_weights <- integer(new_epochs)
 
-      # maybe one day try to calm this nested loop gore down
-      # but it's pretty quick so hey
-      avg_tf <- array(0, dim = c(new_epos,
-                                 dim(data$signals)[2:4]))
+      # figuring out how to do weighted means.
 
-    # figure out how to do weighted means. colWeightedMeans requires a matrix
-    # and spits out an er might work better with C++?
-
-    # if (var(epo_weights) == 0)
-
-    # colSums(data$signals[epo_nums[[ik]]], , elec, freq, drop = FALSE)
-
-      for (elec in seq_len(dim(data$signals)[3])) { # electrodes
-        for (freq in seq_len(dim(data$signals)[4])) { # frequencies
-          for (ik in 1:new_epos) {
-            avg_tf[ik, , elec, freq] <-
-              array(
-                colMeans(
-                         data$signals[epo_nums[[ik]], ,
-                                      elec, freq,
-                                      drop = FALSE]),
-                dim = c(1, n_times,
-                        1, 1)
-              )
+      if (inherits(data, "tfr_average") && weighted) {
+        if (new_epochs == 1) {
+          relative_weights <- epo_weights / sum(epo_weights)
+          weighted_means <- sweep(data$signals, c(1,3,4),
+                                  relative_weights, "*")
+          avg_tf[1, , , ] <- colSums(weighted_means)
+          final_weights <- sum(epo_weights)
+        } else {
+          for (epoch_no in seq_len(new_epochs)) {
+            cond_epochs <- epo_nums[[epoch_no]]
+            temp <- data$signals[cond_epochs, , , ]
+            relative_weights <- epo_weights[cond_epochs] / sum(epo_weights[cond_epochs])
+            weighted_means <- sweep(temp, c(1,3,4),
+                                    relative_weights, "*")
+            avg_tf[epoch_no, , , ] <- colSums(weighted_means)
+            final_weights[epoch_no] <- sum(epo_weights[cond_epochs])
           }
         }
+      } else {
+        for (elec in seq_len(dim(data$signals)[3])) { # electrodes
+          for (freq in seq_len(dim(data$signals)[4])) { # frequencies
+            for (ik in seq_len(new_epochs)) {
+              avg_tf[ik, , elec, freq] <-
+                array(
+                  colMeans(
+                    data$signals[epo_nums[[ik]], ,
+                                 elec, freq,
+                                 drop = FALSE]),
+                  dim = c(1, n_times, 1, 1)
+                )
+            }
+          }
+        }
+        final_weights <- epo_weights
       }
       data$signals <- avg_tf
       new_dims <- orig_dims
-      new_dims[["epoch"]] <- as.character(1:new_epos)
+      new_dims[["epoch"]] <- as.character(1:new_epochs)
       dimnames(data$signals) <- new_dims
-      epo_types$epoch <- 1:new_epos
+      epo_types$epoch <- 1:new_epochs
       epochs(data) <- epo_types
-      epochs(data)$weight <- epo_weights
+      epochs(data)$weight <- final_weights
     } else {
       stop("Averaging of fourier coefficients not supported.")
     }
@@ -398,9 +414,9 @@ average_tf <- function(data,
     tibble::tibble(
       time = rep(
         as.numeric(dimnames(data$signals)[["time"]]),
-        new_epos
+        new_epochs
       ),
-      epoch = rep(1:new_epos,
+      epoch = rep(1:new_epochs,
                   each = n_times)
     )
   data

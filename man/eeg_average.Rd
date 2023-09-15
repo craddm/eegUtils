@@ -16,7 +16,7 @@ eeg_average(data, ...)
 
 \method{eeg_average}{eeg_evoked}(data, cols = NULL, weighted = TRUE, ...)
 
-\method{eeg_average}{eeg_tfr}(data, cols = NULL, ...)
+\method{eeg_average}{eeg_tfr}(data, cols = NULL, weighted = TRUE, ...)
 }
 \arguments{
 \item{data}{An \code{eeg_epochs} of \code{eeg_tfr} object.}
