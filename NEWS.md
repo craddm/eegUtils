@@ -9,7 +9,7 @@
 - `browse_data.eeg_ICA()` now provides the option to select components for rejection, and returns a character vector of selected components.
 - `view_ica()` now allows you to select components for rejection, to double-click on topographies to inspect them individually, and to return cleaned data.
 - `eeg_average()` now supports averaging over conditions in `eeg_evoked` files
-- `eeg_average()` now records weights - the number of epochs that went into an average - and uses those in subsequent steps where possible for `eeg_epochs`/`eeg_evoked` objects. Currently only partially implemented for `eeg_tfr` objects.
+- `eeg_average()` now records weights - the number of epochs that went into an average - and uses those in subsequent steps where possible for `eeg_epochs`/`eeg_evoked` / `eeg_tfr` objects. 
 - `compute_tfr()` now has an argument `trim_edges` which allows users to switch off automatic removal of epoch edges after transformation. Defaults to TRUE.
 - `rm_baseline()` now adds a record of the baseline period 
 
@@ -26,6 +26,7 @@
 - removed dependency on `Matrix` - now using `qr()$rank` in `run_ICA` rather than using `Matrix::rankMatrix()` to determine rank of input signals.
 - Added numerous `dropped_aes` variables to the custom `ggplot2` `stat_` functions for compatibility with `ggplot2 3.4.0`.
 - Replaced `size` aesthetic with `linewidth` for compatibility with `ggplot2 3.4.0`.
+- Lots of minor code style improvements
 
 # eegUtils 0.7.0
 
