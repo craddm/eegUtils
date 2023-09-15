@@ -95,7 +95,7 @@
 <li>
 <code><a href="../reference/eeg_average.html">eeg_average()</a></code> now supports averaging over conditions in <code>eeg_evoked</code> files</li>
 <li>
-<code><a href="../reference/eeg_average.html">eeg_average()</a></code> now records weights - the number of epochs that went into an average - and uses those in subsequent steps where possible for <code>eeg_epochs</code>/<code>eeg_evoked</code> objects. Currently only partially implemented for <code>eeg_tfr</code> objects.</li>
+<code><a href="../reference/eeg_average.html">eeg_average()</a></code> now records weights - the number of epochs that went into an average - and uses those in subsequent steps where possible for <code>eeg_epochs</code>/<code>eeg_evoked</code> / <code>eeg_tfr</code> objects.</li>
 <li>
 <code><a href="../reference/compute_tfr.html">compute_tfr()</a></code> now has an argument <code>trim_edges</code> which allows users to switch off automatic removal of epoch edges after transformation. Defaults to TRUE.</li>
 <li>
@@ -122,6 +122,7 @@
 <li>removed dependency on <code>Matrix</code> - now using <code>qr()$rank</code> in <code>run_ICA</code> rather than using <code><a href="https://rdrr.io/pkg/Matrix/man/rankMatrix.html" class="external-link">Matrix::rankMatrix()</a></code> to determine rank of input signals.</li>
 <li>Added numerous <code>dropped_aes</code> variables to the custom <code>ggplot2</code> <code>stat_</code> functions for compatibility with <code>ggplot2 3.4.0</code>.</li>
 <li>Replaced <code>size</code> aesthetic with <code>linewidth</code> for compatibility with <code>ggplot2 3.4.0</code>.</li>
+<li>Lots of minor code style improvements</li>
 </ul></div>
 </div>
     <div class="section level2">

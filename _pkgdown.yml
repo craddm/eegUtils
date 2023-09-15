@@ -103,3 +103,5 @@ reference:
     - list_epochs
     - list_events
     - fit_glm
+    - eegUtils-package
+    - eeg_summarise

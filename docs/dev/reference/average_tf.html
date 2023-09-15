@@ -71,23 +71,27 @@
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Internal function for averaging over epochs for eeg_tfr objects.</h1>
+    <h1>Internal function for averaging over epochs for <code>eeg_tfr</code> objects.</h1>
     <small class="dont-index">Source: <a href="https://github.com/craddm/eegUtils/blob/HEAD/R/data_averaging.R" class="external-link"><code>R/data_averaging.R</code></a></small>
     <div class="hidden name"><code>average_tf.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Internal function for averaging over epochs for eeg_tfr objects.</p>
+    <p>Internal function for averaging over epochs for <code>eeg_tfr</code> objects.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">average_tf</span><span class="op">(</span><span class="va">data</span>, cols <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">average_tf</span><span class="op">(</span><span class="va">data</span>, cols <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">weighted</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>data</dt>
 <dd><p>data to average over</p></dd>
+
+
+<dt>weighted</dt>
+<dd><p>Calculate weighted means if TRUE (if possible!)</p></dd>
 
 </dl></div>
 

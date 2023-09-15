@@ -313,7 +313,7 @@ Defaults to 40.</p></dd>
 
 <dt>fill_title</dt>
 <dd><p>Allows specification of the title of the colourbar.
-Defaults to `expression( paste("Amplitude (", mu, "V)")), appropriate for
+Defaults to `expression(paste("Amplitude (", mu, "V)")), appropriate for
 typical time-domain data.</p></dd>
 
 
@@ -330,7 +330,7 @@ typical time-domain data.</p></dd>
     
 <ul><li><p><code>topoplot(default)</code>: Default method for data frames.</p></li>
 <li><p><code>topoplot(data.frame)</code>: Topographical plotting of data.frames and other non
-eeg_data objects.</p></li>
+<code>eeg_data</code> objects.</p></li>
 <li><p><code>topoplot(eeg_data)</code>: Topographical plotting of <code>eeg_data</code> objects.</p></li>
 <li><p><code>topoplot(eeg_epochs)</code>: Topographical plotting of <code>eeg_epochs</code> objects.</p></li>
 <li><p><code>topoplot(eeg_ICA)</code>: Topographical plot for <code>eeg_ICA</code> objects</p></li>
@@ -340,13 +340,12 @@ eeg_data objects.</p></li>
     <h2>Notes on usage of Generalized Additive Models for interpolation</h2>
     <p>The
 function fits a GAM using the <code>gam</code> function from <code>mgcv</code>. Specifically, it
-fits a spline using the model function <code>gam(z ~ s(x, y, bs = "ts", k = 40)</code>.
-Using GAMs for smooths is very much experimental. The surface is produced
-from the predictions of the GAM model fitted to the supplied data. Values
-at each electrode do not necessarily match actual values in the data:
-high-frequency variation will tend to be smoothed out. Thus, the method
-should be used with caution. In addition the method can only be used when
-there are more than 40 electrodes.</p>
+fits a spline using the model function <code>gam(z ~ s(x, y, bs = "ts", k = 40)</code>. Using GAMs for smooths is very much experimental. The surface is
+produced from the predictions of the GAM model fitted to the supplied data.
+Values at each electrode do not necessarily match actual values in the
+data: high-frequency variation will tend to be smoothed out. Thus, the
+method should be used with caution. In addition the method can only be used
+when there are more than 40 electrodes.</p>
     </div>
     <div id="see-also">
     <h2>See also</h2>

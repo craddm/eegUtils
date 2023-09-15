@@ -65,20 +65,16 @@ fit_glm.eeg_epochs <- function(formula,
   )
 
   n_times <- length(split_data)
-
   mod_terms <- all.vars(formula)
 
   if ("baseline" %in% mod_terms) {
-
     if (is.null(baseline)) {
       stop("`baseline` must be specified if using baseline fitting.")
     }
-
     base_times <- get_epoch_baselines(
       data,
       baseline
     )
-
     # basic design matrix with dummy baseline column
     design_mat <- stats::model.matrix(
       formula,
@@ -86,7 +82,6 @@ fit_glm.eeg_epochs <- function(formula,
         baseline = base_times[, 1]
       )
     )
-
     # create one design matrix for each channel with the appropriate baseline
     # for each epoch
     mod_mats <- lapply(
@@ -100,7 +95,6 @@ fit_glm.eeg_epochs <- function(formula,
         )
       }
     )
-
     n_preds <- ncol(mod_mats[[1]])
 
     # invert design matrices using qr/cholesky (unscaled cov matrix)
@@ -139,8 +133,6 @@ fit_glm.eeg_epochs <- function(formula,
     )
 
     resid_df <- n_epochs - n_preds
-
-
 
     # Outer loop through timepoints, inner loop through channels
     # Try other way to see if any faster
