@@ -4,7 +4,7 @@
 \alias{average_tf}
 \title{Internal function for averaging over epochs for \code{eeg_tfr} objects.}
 \usage{
-average_tf(data, cols = NULL, weighted)
+average_tf(data, cols = NULL, weighted, verbose)
 }
 \arguments{
 \item{data}{data to average over}

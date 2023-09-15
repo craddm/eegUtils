@@ -12,11 +12,11 @@ eeg_average(data, ...)
 
 \method{eeg_average}{default}(data, ...)
 
-\method{eeg_average}{eeg_epochs}(data, cols = NULL, ...)
+\method{eeg_average}{eeg_epochs}(data, cols = NULL, verbose = TRUE, ...)
 
-\method{eeg_average}{eeg_evoked}(data, cols = NULL, weighted = TRUE, ...)
+\method{eeg_average}{eeg_evoked}(data, cols = NULL, weighted = TRUE, verbose = TRUE, ...)
 
-\method{eeg_average}{eeg_tfr}(data, cols = NULL, weighted = TRUE, ...)
+\method{eeg_average}{eeg_tfr}(data, cols = NULL, weighted = TRUE, verbose = TRUE, ...)
 }
 \arguments{
 \item{data}{An \code{eeg_epochs} of \code{eeg_tfr} object.}
@@ -26,6 +26,8 @@ eeg_average(data, ...)
 \item{cols}{Columns from the \code{epochs} structure that the average should
 group on. NULL, the default, uses all columns other than the \code{epoch}
 column.}
+
+\item{verbose}{Print informative messages during averaging. Defaults to TRUE}
 
 \item{weighted}{Produce a weighted average over epochs, which accounts for
 upstream differences in the number of epochs that contribute to each

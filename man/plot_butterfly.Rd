@@ -79,7 +79,7 @@ plot_butterfly(data, ...)
 \arguments{
 \item{data}{EEG dataset. Should have multiple timepoints.}
 
-\item{...}{Other parameters passed to plot_butterfly}
+\item{...}{Other parameters passed to \code{plot_butterfly}}
 
 \item{time_lim}{Character vector. Numbers in whatever time unit is used
 specifying beginning and end of time-range to plot. e.g. c(-.1,.3)}
