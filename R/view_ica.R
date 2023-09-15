@@ -38,7 +38,7 @@ view_ica <- function(data) {
                               cols = "participant_id"),
                   long = TRUE,
                   coords = FALSE)
-  ica_butter <- plot_butterfly(ica_erps)
+  ica_butterfly <- plot_butterfly(ica_erps)
 
   ica_topoplots <-
     topoplot(data,
@@ -59,7 +59,7 @@ view_ica <- function(data) {
       ),
       tabPanel(
         "Timecourses",
-        plotOutput("ica_butters",
+        plotOutput("ica_butterflies",
                    hover = "butter_click",
                    brush = brushOpts(id = "butter_brush",
                                      resetOnNew = TRUE),
@@ -137,9 +137,9 @@ view_ica <- function(data) {
         }
       )
 
-    output$ica_butters <-
-      renderPlot(
-        ica_butter +
+    output$ica_butterflies <-
+      shiny::renderPlot(
+        ica_butterfly +
           coord_cartesian(xlim = b_ranges$x,
                           ylim = b_ranges$y)
       )
@@ -177,61 +177,58 @@ view_ica <- function(data) {
       )
     })
 
-    output$indiv_topo <- renderCachedPlot({
+    output$indiv_topo <- shiny::bindCache(
+      renderPlot({
       topoplot(data,
                input$comp_no,
                verbose = FALSE)
-    }, cacheKeyExpr = {
-      input$comp_no
-    })
+    }),
+    input$comp_no)
 
-    output$indiv_erpim <- renderCachedPlot({
-      erp_image(data,
-                input$comp_no)
-    }, cacheKeyExpr = {
-      input$comp_no
-    })
+    output$indiv_erpim <- shiny::bindCache(
+      shiny::renderPlot({
+        erp_image(data,
+                  input$comp_no)
+      }),
+    input$comp_no
+    )
 
-    output$indiv_tc <- renderCachedPlot({
-      plot_timecourse(data,
-                      input$comp_no)
-    },
-    cacheKeyExpr = {
-      input$comp_no
-    })
+    output$indiv_tc <- shiny::bindCache(
+      shiny::renderPlot({
+        plot_timecourse(data,
+                        input$comp_no)
+        }),
+      input$comp_no)
 
-    output$indiv_psd <- renderCachedPlot({
-      tmp_psd <-
-        compute_psd(
-          select(data,
-                 input$comp_no),
-          n_fft = data$srate,
-          noverlap = 0,
-          verbose = FALSE
-        )
-
-      tmp_psd <- dplyr::rename(tmp_psd,
-                               power = 2)
-      tmp_psd <- dplyr::filter(tmp_psd,
-                               frequency >= 3,
-                               frequency <= 50)
-      ggplot(tmp_psd,
-             aes(x = frequency,
-                 y = 10 * log10((power)))) +
-        stat_summary(geom = "ribbon",
-                     fun.data = mean_cl_normal,
-                     alpha = 0.5) +
-        stat_summary(geom = "line",
-                     fun = mean) +
-        theme_classic() +
-        labs(x = "Frequency (Hz)",
-             y = "Power (dB)") +
-        coord_cartesian(expand = FALSE)
-    },
-    cacheKeyExpr = {
-      input$comp_no
-    },
-    res = 96)
+    output$indiv_psd <- shiny::bindCache(
+      shiny::renderPlot({
+        tmp_psd <-
+          compute_psd(
+            select(data,
+                   input$comp_no),
+            n_fft = data$srate,
+            noverlap = 0,
+            verbose = FALSE
+            )
+        tmp_psd <- dplyr::rename(tmp_psd,
+                                 power = 2)
+        tmp_psd <- dplyr::filter(tmp_psd,
+                                 frequency >= 3,
+                                 frequency <= 50)
+        ggplot(tmp_psd,
+               aes(x = frequency,
+                   y = 10 * log10((power)))) +
+          stat_summary(geom = "ribbon",
+                       fun.data = mean_se,
+                       alpha = 0.5) +
+          stat_summary(geom = "line",
+                       fun = mean) +
+          theme_classic() +
+          labs(x = "Frequency (Hz)",
+               y = "Power (dB)") +
+          coord_cartesian(expand = FALSE)
+    }, res = 96),
+    input$icomp)
 
     observeEvent(input$psd_dbl, {
       brush <- input$psd_brush
@@ -335,14 +332,14 @@ view_ica <- function(data) {
 
 
 ica_topos <- function(data) {
-  ggplot2::ggplot(get_scalpmap(data,
-                               grid_res = 50),
-                  aes(
-                    x = x,
-                    y = y,
-                    fill = scale(fill),
-                    z = scale(fill)
-                  )) +
+  ggplot2::ggplot(
+    get_scalpmap(data,
+                 grid_res = 50),
+    aes(x = x,
+        y = y,
+        fill = scale(fill),
+        z = scale(fill)
+        )) +
     geom_raster(interpolate = TRUE) +
     geom_head(data = channels(data),
               mapping = aes(fill = NULL,
