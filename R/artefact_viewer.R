@@ -16,9 +16,9 @@
 view_artefacts <- function(data) {
 
   chan_dat <- channel_stats(data)
-  scale_chans <- dplyr::mutate_if(chan_dat,
-                                  is.numeric,
-                                  ~(. - mean(.)) / sd(.))
+  scale_chans <- dplyr::mutate(chan_dat,
+                               across(where(is.numeric),
+                                      ~(. - mean(.)) / sd(.)))
   epoch_dat <- epoch_stats(data)
   epoch_dat <- tidyr::pivot_longer(epoch_dat,
                                    cols = channel_names(data),
@@ -54,8 +54,7 @@ view_artefacts <- function(data) {
                                    plotly::plotlyOutput("erpimage"))),
                  ),
                )),
-      tabPanel("Epoch stats",
-               epochPlotly(epoch_dat))
+      tabPanel("Epoch stats", epoch_plotly(epoch_dat))
     )
 
   server <- function(input, output) {
@@ -146,8 +145,8 @@ view_artefacts <- function(data) {
 }
 
 
-epochPlotly <- function(id,
-                        label = "Plotly channels") {
+epoch_plotly <- function(id,
+                         label = "Plotly channels") {
 
   ns <- shiny::NS(id)
 
