@@ -58,57 +58,56 @@ browse_data.eeg_ICA <- function(data,
       )
   )
 
-
   server <- function(input,
                      output,
                      session) {
 
     comp_status <- shiny::reactiveValues()
-    output$topo_ica <- shiny::renderCachedPlot({
-      comp_no <- which(names(data$signals) == input$icomp)
-      topoplot(data,
-               component = comp_no,
-               verbose = FALSE,
-               grid_res = 70)
-      },
-      cacheKeyExpr = {
-        input$icomp
-        }
-      )
+    output$topo_ica <- shiny::bindCache(
+      shiny::renderPlot({
+        comp_no <- which(names(data$signals) == input$icomp)
+        topoplot(data,
+                 component = comp_no,
+                 verbose = FALSE,
+                 grid_res = 70)
+        }),
+        input$icomp)
 
-    output$comp_img <- shiny::renderCachedPlot({
-      erp_image(data, component = input$icomp)
-      },
-      cacheKeyExpr = {input$icomp})
+    output$comp_img <- shiny::bindCache(
+      shiny::renderPlot({
+        erp_image(data, component = input$icomp)
+        }),
+        input$icomp)
 
-    output$comp_tc <- shiny::renderCachedPlot({
-      plot_timecourse(data, component = input$icomp)
-      },
-      cacheKeyExpr = {input$icomp})
+    output$comp_tc <- shiny::bindCache(
+      shiny::renderPlot({
+        plot_timecourse(data, component = input$icomp)
+        }),
+      input$icomp)
 
-    output$comp_psd <- shiny::renderCachedPlot({
-      tmp_psd <-
-        compute_psd(select(data, input$icomp),
-                    n_fft = data$srate,
-                    verbose = FALSE)
-
-      tmp_psd <- dplyr::rename(tmp_psd,
-                               power = 2)
-      tmp_psd <- dplyr::filter(tmp_psd,
-                               frequency >= 3,
-                               frequency <= 50)
-      ggplot(tmp_psd,
-             aes(x = frequency,
-                 y = 10 * log10((power)))) +
-        stat_summary(geom = "ribbon",
-                     fun.data = mean_cl_normal,
-                     alpha = 0.5) +
-        stat_summary(geom = "line",
-                     fun = mean) +
-        theme_classic() +
-        labs(x = "Frequency (Hz)", y = "Power (dB)")
-        },
-      cacheKeyExpr = {input$icomp})
+    output$comp_psd <- shiny::bindCache(
+      shiny::renderPlot({
+        tmp_psd <-
+          compute_psd(select(data, input$icomp),
+                      n_fft = data$srate,
+                      verbose = FALSE)
+        tmp_psd <- dplyr::rename(tmp_psd,
+                                 power = 2)
+        tmp_psd <- dplyr::filter(tmp_psd,
+                                 frequency >= 3,
+                                 frequency <= 50)
+        ggplot(tmp_psd,
+               aes(x = frequency,
+                   y = 10 * log10((power)))) +
+          stat_summary(geom = "ribbon",
+                       fun.data = mean_se,
+                       alpha = 0.5) +
+          stat_summary(geom = "line",
+                       fun = mean) +
+          theme_classic() +
+          labs(x = "Frequency (Hz)", y = "Power (dB)")
+        }),
+      input$icomp)
 
     shiny::observeEvent(input$icomp, {
       shiny::updateRadioButtons(
@@ -374,14 +373,13 @@ browse_data.eeg_epochs <- function(data,
                        output,
                        session) {
 
-      tmp_dat <- shiny::reactive({
-        select_epochs(data,
-                      epoch_no = seq(input$time_range,
-                                     input$time_range + input$sig_time - 1))
-      })
-
-      tmp_data <- shiny::debounce(tmp_dat,
-                                  400)
+      tmp_data <- shiny::debounce(
+        shiny::reactive({
+          select_epochs(data,
+                        epoch_no = seq(input$time_range,
+                                       input$time_range + input$sig_time - 1))
+        }),
+        400)
 
       output$butterfly <- shiny::renderPlot({
 
@@ -411,52 +409,53 @@ browse_data.eeg_epochs <- function(data,
         butter_out
       })
 
-      tmp_dat_ind <- reactive({
-        select_epochs(data,
-                      epoch_no = seq(input$time_range_ind,
-                                     input$time_range_ind + input$sig_time_ind - 1))
-      })
+      tmp_data_ind <- shiny::debounce(
+        shiny::reactive({
+          select_epochs(data,
+                        epoch_no = seq(input$time_range_ind,
+                                       input$time_range_ind + input$sig_time_ind - 1))
+          }),
+        600)
 
-      tmp_data_ind <- debounce(tmp_dat_ind, 600)
+      output$time_plot <- shiny::bindCache(
+        shiny::renderPlot({
+          if (input$dc_offset_ind) {
+            tmp_data_ind <- rm_baseline(tmp_data_ind(),
+                                        verbose = FALSE)
+          } else {
+            tmp_data_ind <- tmp_data_ind()
+          }
 
-      output$time_plot <- renderPlot({
+          tmp_data_ind <- as.data.frame(tmp_data_ind,
+                                        long = TRUE,
+                                        coords = FALSE)
 
-        if (input$dc_offset_ind) {
-          tmp_data_ind <- rm_baseline(tmp_data_ind(),
-                                      verbose = FALSE)
-        } else {
-          tmp_data_ind <- tmp_data_ind()
-        }
-
-        tmp_data_ind <- as.data.frame(tmp_data_ind,
-                                      long = TRUE,
-                                      coords = FALSE)
-
-        init_plot <- ggplot2::ggplot(tmp_data_ind,
-                                     aes(x = time,
-                                         y = amplitude)) +
-          geom_line() +
-          facet_grid(electrode ~ epoch,
-                     scales = "free_y",
-                     switch = "y") +
-          theme_minimal() +
-          theme(
-            axis.text.y = element_blank(),
-            axis.ticks.y = element_blank(),
-            axis.title.y = element_blank(),
-            strip.text.y = element_text(angle = 180),
-            panel.spacing = unit(0, "lines"),
-            panel.grid.minor = element_blank(),
-            panel.grid.major = element_blank()
-          ) +
-          scale_x_continuous(expand = c(0, 0)) +
-          geom_vline(xintercept = max(unique(tmp_data_ind$time))) +
-          geom_vline(xintercept = 0,
-                     linetype = "longdash")
-
-        init_plot
-      },
-      height = 2500)
+          init_plot <- ggplot2::ggplot(tmp_data_ind,
+                                       aes(x = time,
+                                           y = amplitude)) +
+            geom_line() +
+            facet_grid(electrode ~ epoch,
+                       scales = "free_y",
+                       switch = "y") +
+            theme_minimal() +
+            theme(
+              axis.text.y = element_blank(),
+              axis.ticks.y = element_blank(),
+              axis.title.y = element_blank(),
+              strip.text.y = element_text(angle = 180),
+              panel.spacing = unit(0, "lines"),
+              panel.grid.minor = element_blank(),
+              panel.grid.major = element_blank()
+              ) +
+            scale_x_continuous(expand = c(0, 0)) +
+            geom_vline(xintercept = max(unique(tmp_data_ind$time))) +
+            geom_vline(xintercept = 0,
+                       linetype = "longdash")
+          init_plot
+          },
+          height = 2500),
+        input$dc_offset_ind, tmp_data_ind()
+      )
 
       observeEvent(input$done, {
         stopApp()
