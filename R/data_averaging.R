@@ -30,12 +30,14 @@ eeg_average.default <- function(data,
 #' @param cols Columns from the `epochs` structure that the average should
 #'   group on. NULL, the default, uses all columns other than the `epoch`
 #'   column.
+#' @param verbose Print informative messages during averaging. Defaults to TRUE
 #' @examples
 #' eeg_average(demo_spatial)
 #' eeg_average(demo_spatial, cols = "everything")
 #' @export
 eeg_average.eeg_epochs <- function(data,
                                    cols = NULL,
+                                   verbose = TRUE,
                                    ...) {
 
   elecs <- channel_names(data)
@@ -88,8 +90,10 @@ eeg_average.eeg_epochs <- function(data,
                     dplyr::across(c(time,
                                     dplyr::all_of(col_names))))
 
-  message("Creating epochs based on combinations of variables: ",
-          paste(col_names, ""))
+  if (verbose) {
+    message("Creating epochs based on combinations of variables: ",
+            paste(col_names, ""))
+  }
 
   # Add epoch weights
   data$signals <-
@@ -144,17 +148,19 @@ eeg_average.eeg_epochs <- function(data,
 #' @param weighted Produce a weighted average over epochs, which accounts for
 #'   upstream differences in the number of epochs that contribute to each
 #'   average.
+#' @param verbose Print informative messages during averaging. Defaults to TRUE
 #' @describeIn eeg_average average an `eeg_evoked` object over epochs.
 #' @export
 eeg_average.eeg_evoked <- function(data,
                                    cols = NULL,
                                    weighted = TRUE,
+                                   verbose = TRUE,
                                    ...) {
 
   is_group_df <- inherits(data,
                           "eeg_group")
 
-  if (is.null(cols)) {
+  if (is.null(cols) && verbose) {
     message("Data is already averaged - you must specify columns to group your averages by.")
     return(data)
   }
@@ -175,12 +181,14 @@ eeg_average.eeg_evoked <- function(data,
       dplyr::across(c(time,
                       dplyr::all_of(col_names))))
 
-  message("Creating epochs based on combinations of variables: ",
-          paste(col_names, ""))
+  if (verbose) {
+    message("Creating epochs based on combinations of variables: ",
+            paste(col_names, ""))
+  }
 
   if (weighted) {
     if ("weight" %in% names(data$signals)) {
-      message("Calculating weighted means.")
+      if (verbose) message("Calculating weighted means.")
       full_weights <- dplyr::summarise(data$signals,
                                        weight = sum(weight))
       data$signals <-
@@ -190,7 +198,7 @@ eeg_average.eeg_evoked <- function(data,
       data$signals$weight <- full_weights$weight
       weighted <- TRUE
     } else {
-      message("No weights found, calculating unweighted means.")
+      if (verbose) message("No weights found, calculating unweighted means.")
       data$signals <-
         dplyr::summarise(data$signals,
                          dplyr::across(dplyr::all_of(elecs),
@@ -250,19 +258,20 @@ eeg_average.eeg_evoked <- function(data,
 eeg_average.eeg_tfr <- function(data,
                                 cols = NULL,
                                 weighted = TRUE,
+                                verbose = TRUE,
                                 ...) {
   if (!any(c("participant_id", "epoch") %in% data$dimensions)) {
     message("Data is already averaged.")
   } else {
     data <- average_tf(data,
                        cols = cols,
-                       weighted = weighted)
+                       weighted = weighted,
+                       verbose = verbose)
     class(data) <- c("tfr_average",
                      class(data))
   }
   data
 }
-
 
 #' Internal function for averaging over epochs for `eeg_tfr` objects.
 #' @param data data to average over
@@ -270,7 +279,8 @@ eeg_average.eeg_tfr <- function(data,
 #' @keywords internal
 average_tf <- function(data,
                        cols = NULL,
-                       weighted) {
+                       weighted,
+                       verbose) {
 
   # Need to find a way to make this respect epochs structure...
   orig_dims <- dimnames(data$signals)
@@ -365,6 +375,7 @@ average_tf <- function(data,
       # figuring out how to do weighted means.
 
       if (inherits(data, "tfr_average") && weighted) {
+        if (verbose) message("Calculating weighted means...")
         if (new_epochs == 1) {
           relative_weights <- epo_weights / sum(epo_weights)
           weighted_means <- sweep(data$signals, c(1,3,4),
