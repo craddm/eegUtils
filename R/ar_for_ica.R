@@ -54,7 +54,7 @@ ar_eogcor.eeg_ICA <- function(decomp,
                                         HEOG,
                                         VEOG)
                               } else {
-                                data$signals[, c("HEOG", "VEOG")]
+                                data$signals[, c(HEOG, VEOG)]
                               }))
 
   if (is.null(threshold)) {
@@ -177,13 +177,16 @@ ar_chanfoc <- function(data,
   if (!inherits(data, "eeg_ICA")) {
     stop("Only eeg_ICA objects supported.")
   }
+
   n_comps <- length(channel_names(data))
   zmat <- apply(data$mixing_matrix[, 1:n_comps], 2, scale)
+
   if (identical(measure, "max")) {
     max_weights <- apply(zmat, 2, function(x) max(abs(x)))
   } else if (identical(measure, "kurtosis")) {
     max_weights <- apply(zmat, 2, kurtosis)
   }
+
   if (is.null(threshold)) {
     threshold <- mean(max_weights) + 2 * stats::sd(max_weights)
     if (verbose) {
@@ -201,7 +204,6 @@ ar_chanfoc <- function(data,
   if (verbose) {
     message("Components with high channel focality: ", paste0(chan_foc, sep = " "))
   }
-
   chan_foc
 }
 
