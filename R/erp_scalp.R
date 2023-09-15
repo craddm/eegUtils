@@ -256,7 +256,6 @@ erp_scalp.default <- function(data,
         ymax = data$y[i] + panel_size
       )
   }
-
   p
 }
 
@@ -267,12 +266,7 @@ erp_scalp.default <- function(data,
 #' panel, they can be averaged over or plotted as individual electrodes.
 #'
 #' @param data An EEG dataset.
-#' @param colour Variable to colour lines by. If no variable is passed, only one
-#'   line is drawn for each electrode.
-#' @param baseline Character vector of times to subtract for baseline
-#'   correction.
-#' @param montage Name of an existing montage set. Defaults to NULL; (currently
-#'   only 'biosemi64alpha' available other than default 10/20 system)
+#' @param ... Additional arguments
 #'
 #' @author Matt Craddock, \email{matt@@mattcraddock.com}
 #'
@@ -282,14 +276,31 @@ erp_scalp.default <- function(data,
 #' @seealso [erp_scalp()] for non-interactive plots of ERPs in a scalp-based
 #'   layout.
 #' @export
-
 interactive_scalp <- function(data,
-                              colour = NULL,
-                              baseline = NULL,
-                              montage = NULL) {
-  if (is.eeg_epochs(data)) {
-    data <- eeg_average(data)
-  }
+                              ...) {
+  UseMethod("interactive_scalp", data)
+}
+
+#' @export
+interactive_scalp.default <- function(data,
+                                      ...) {
+  message(paste("Not implemented for objects of class", class(data)))
+}
+
+#' @param colour Variable to colour lines by. If no variable is passed, only one
+#'   line is drawn for each electrode.
+#' @param baseline Character vector of times to subtract for baseline
+#'   correction.
+#' @param montage Name of an existing montage set. Defaults to NULL; (currently
+#'   only 'biosemi64alpha' available other than default 10/20 system)
+#' @describeIn interactive_scalp Method for `eeg_epochs` objects
+#' @export
+interactive_scalp.eeg_epochs <- function(data,
+                                         colour = NULL,
+                                         baseline = NULL,
+                                         montage = NULL) {
+
+  data <- eeg_average(data, verbose = FALSE)
 
   if (!is.null(baseline)) {
     data <- rm_baseline(data,
@@ -306,8 +317,8 @@ interactive_scalp <- function(data,
   ui <- miniPage(gadgetTitleBar("Scalp ERPs"),
     miniTabstripPanel(
       miniTabPanel(
-        "Whole scalp",
-        icon = icon("circle"),
+        title = "Whole scalp",
+        icon = icon("fa-circle", class = "fas"),
         miniContentPanel(
           fillCol(
             flex = c(7, 1),
@@ -333,28 +344,11 @@ interactive_scalp <- function(data,
   server <- function(input,
                      output,
                      session) {
-    chan_info <- NULL
 
-    if (is.eeg_evoked(data)) {
-      chan_info <- channels(data)
-    } else if (is.eeg_epochs(data)) {
-      chan_info <- channels(data)
-    }
+    chan_info <- channels(data)
 
     tmp_data <- as.data.frame(data,
                               long = TRUE)
-
-    if (is.null(chan_info)) {
-      tmp_data <- electrode_locations(tmp_data,
-                                      drop = TRUE,
-                                      montage = montage)
-    } else {
-      tmp_data <- dplyr::left_join(tmp_data,
-                                   chan_info,
-                                   by = c("electrode", "x", "y"))
-      tmp_data <- dplyr::filter(tmp_data,
-                                !(is.na(x) | is.na(y)))
-    }
 
     button_reacts <- reactiveValues(sel_elecs = list(),
                                     avg = TRUE)
@@ -362,22 +356,21 @@ interactive_scalp <- function(data,
     output$Scalp <- renderPlot({
 
       if (rlang::quo_is_null(colour)) {
-        erp_scalp(tmp_data,
+        erp_scalp(data,
                   montage = montage,
                   chan_info = chan_info)
       } else {
         erp_scalp(
-          tmp_data,
+          data,
           colour = !!colour,
           montage = montage,
           chan_info = chan_info
         )
       }
-
     })
 
     observeEvent(input$click_plot, {
-      tmp <- nearPoints(
+      electrode_choice <- nearPoints(
         tmp_data,
         input$click_plot,
         "x",
@@ -386,13 +379,13 @@ interactive_scalp <- function(data,
         maxpoints = 1
       )
 
-      if (nrow(tmp) > 0) {
-        if (tmp$electrode %in% button_reacts$sel_elecs) {
+      if (nrow(electrode_choice) > 0) {
+        if (electrode_choice$electrode %in% button_reacts$sel_elecs) {
           button_reacts$sel_elecs <-
-            button_reacts$sel_elecs[-which(button_reacts$sel_elecs == tmp$electrode)]
+            button_reacts$sel_elecs[-which(button_reacts$sel_elecs == electrode_choice$electrode)]
         } else {
           button_reacts$sel_elecs <- c(button_reacts$sel_elecs,
-                                       tmp$electrode)
+                                       electrode_choice$electrode)
         }
       }
 
@@ -404,24 +397,22 @@ interactive_scalp <- function(data,
       output$Selected <- renderPlot({
         if (button_reacts$avg) {
           if (rlang::quo_is_null(colour)) {
-            plot_timecourse(
-              select_elecs(data,
-                           unlist(button_reacts$sel_elecs))
-            )
+            plot_timecourse(data,
+                            unlist(button_reacts$sel_elecs))
           } else {
-            plot_timecourse(select_elecs(data,
-                                         unlist(button_reacts$sel_elecs)),
-                            colour = rlang::as_label(colour))
+            plot_timecourse(data,
+                            unlist(button_reacts$sel_elecs),
+                            mapping = aes(colour = !!colour))
           }
         } else {
           if (rlang::quo_is_null(colour)) {
-            plot_timecourse(select_elecs(data,
-                                         unlist(button_reacts$sel_elecs)),
-                            colour = "electrode")
+            plot_timecourse(data,
+                            electrode = unlist(button_reacts$sel_elecs)) +
+              aes(colour = electrode)
           } else {
-            plot_timecourse(select_elecs(data,
-                                         unlist(button_reacts$sel_elecs)),
-                            colour = rlang::as_label(colour)) +
+            plot_timecourse(data,
+                            electrode = unlist(button_reacts$sel_elecs),
+                            mapping = aes(colour = !!colour)) +
               facet_wrap(~electrode)
           }
         }
