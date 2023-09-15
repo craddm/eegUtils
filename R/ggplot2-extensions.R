@@ -632,19 +632,32 @@ StatSummaryByFill <-
   ggplot2::ggproto("StatSummaryByFill",
                    Stat,
                    required_aes = c("x", "y", "fill"),
-                   dropped_aes = c("z", "label"),
+                   optional_aes = "weight",
+                   dropped_aes = c("z", "label", "weight"),
                    compute_group = function(data,
                                             scales,
                                             fun.data = NULL,
                                             na.rm = FALSE,
                                             params,
                                             layout) {
-                     summary <-
-                       aggregate(fill ~ x + y,
-                                 data = data,
-                                 FUN = fun.data,
-                                 na.rm = na.rm,
-                                 na.action = na.pass)
-                     summary
+
+                     if (identical(fun.data, weighted.mean)) {
+                       data$fill <- data$fill * data$weight
+                       fill_summary <- aggregate(fill ~ x + y,
+                                                 data = data,
+                                                 FUN = sum)
+                       weight_summary <- aggregate(weight ~ x + y,
+                                                   data = data,
+                                                   FUN = sum)
+                       fill_summary$fill <- fill_summary$fill / weight_summary$weight
+                     } else {
+                       fill_summary <-
+                         aggregate(fill ~ x + y,
+                                   data = data,
+                                   FUN = fun.data,
+                                   na.rm = na.rm,
+                                   na.action = na.pass)
+                     }
+                     fill_summary
                      }
                    )
