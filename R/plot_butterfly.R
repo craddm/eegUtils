@@ -16,7 +16,7 @@
 #'
 #' @author Matt Craddock, \email{matt@@mattcraddock.com}
 #' @param data EEG dataset. Should have multiple timepoints.
-#' @param ... Other parameters passed to plot_butterfly
+#' @param ... Other parameters passed to `plot_butterfly`
 #' @examples
 #' plot_butterfly(demo_epochs)
 #' plot_butterfly(demo_epochs,
