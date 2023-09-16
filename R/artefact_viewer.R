@@ -17,8 +17,8 @@ view_artefacts <- function(data) {
 
   chan_dat <- channel_stats(data)
   scale_chans <- dplyr::mutate(chan_dat,
-                               across(where(is.numeric),
-                                      ~(. - mean(.)) / sd(.)))
+                               dplyr::across(dplyr::where(is.numeric),
+                                             ~(. - mean(.)) / sd(.)))
   epoch_dat <- epoch_stats(data)
   epoch_dat <- tidyr::pivot_longer(epoch_dat,
                                    cols = channel_names(data),
@@ -59,7 +59,7 @@ view_artefacts <- function(data) {
 
   server <- function(input, output) {
 
-    plot_data <- reactive({
+    plot_data <- shiny::reactive({
       if (input$std_meas) {
         scale_chans
       } else {

@@ -7,7 +7,7 @@
 \usage{
 interactive_scalp(data, ...)
 
-\method{interactive_scalp}{eeg_epochs}(data, colour = NULL, baseline = NULL, montage = NULL)
+\method{interactive_scalp}{eeg_epochs}(data, colour = NULL, baseline = NULL, montage = NULL, ...)
 }
 \arguments{
 \item{data}{An EEG dataset.}

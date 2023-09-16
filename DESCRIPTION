@@ -21,7 +21,7 @@ Imports:
     dplyr (>= 1.0.0),
     scales,
     purrr,
-    shiny,
+    shiny (>= 1.6.0),
     tidyr (>= 1.0.0),
     miniUI,
     rlang (>= 1.0.0),

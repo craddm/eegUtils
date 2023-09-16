@@ -298,7 +298,8 @@ interactive_scalp.default <- function(data,
 interactive_scalp.eeg_epochs <- function(data,
                                          colour = NULL,
                                          baseline = NULL,
-                                         montage = NULL) {
+                                         montage = NULL,
+                                         ...) {
 
   data <- eeg_average(data, verbose = FALSE)
 
@@ -389,12 +390,12 @@ interactive_scalp.eeg_epochs <- function(data,
         }
       }
 
-      output$click_info <- renderPrint({
+      output$click_info <- shiny::renderPrint({
         cat("Selected:", unlist(button_reacts$sel_elecs))
       })
 
       # plot selected electrodes when on appropriate tab
-      output$Selected <- renderPlot({
+      output$Selected <- shiny::renderPlot({
         if (button_reacts$avg) {
           if (rlang::quo_is_null(colour)) {
             plot_timecourse(data,
