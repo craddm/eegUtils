@@ -70,8 +70,7 @@ ar_FASTER.eeg_epochs <- function(data,
     if (is.numeric(exclude)) {
       exclude <- orig_names[exclude]
     }
-    message("Excluding channel(s):",
-            paste(exclude, ""))
+    message("Excluding channel(s):", paste(exclude, ""))
     data_chans <- data_chans[!(data_chans %in% exclude)]
   }
 
@@ -80,8 +79,7 @@ ar_FASTER.eeg_epochs <- function(data,
     bad_chans <- faster_chans(data$signals[, data_chans])
     bad_chan_n <- data_chans[bad_chans]
     message(paste("Globally bad channels:",
-                  paste(bad_chan_n,
-                        collapse = " ")))
+                  paste(bad_chan_n, collapse = " ")))
 
     if (length(bad_chan_n) > 0) {
 
@@ -137,13 +135,17 @@ ar_FASTER.eeg_epochs <- function(data,
                           epoch_no = bad_epochs,
                           keep = FALSE)
   } else {
-    message("Skipping bad epoch detection")
+    message("Skipping globally bad epoch detection...")
   }
   # Step 3: ICA stats (not currently implemented)
 
   # Step 4: Channels in Epochs
-  data <- faster_cine(data,
-                      exclude)
+  if (test_cine) {
+    data <- faster_cine(data,
+                        exclude)
+  } else {
+    message("Skipping detection of locally bad channels in epochs...")
+  }
 
   # Step 5: Grand average step (not currently implemented, probably never will be!)
 
@@ -494,7 +496,7 @@ ar_FASTER.eeg_group <- function(data,
       deviance = rowSums(scaled_diffs > 3),
       variance = rowSums(scaled_vars > 3),
       range = rowSums(scaled_ranges > 3)
-      )
+    )
   }
 
 }
