@@ -48,10 +48,8 @@ view_artefacts <- function(data) {
                  mainPanel(
                    plotly::plotlyOutput("chan_plot"),
                    fluidRow(
-                            column(6,
-                                   plotly::plotlyOutput("erpplot")),
-                            column(6,
-                                   plotly::plotlyOutput("erpimage"))),
+                            column(6, plotly::plotlyOutput("erpplot")),
+                            column(6, plotly::plotlyOutput("erpimage"))),
                  ),
                )),
       tabPanel("Epoch stats", epoch_plotly(epoch_dat))

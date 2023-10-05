@@ -33,7 +33,7 @@ browse_data.eeg_ICA <- function(data,
         fillRow(
           fillCol(
             shiny::selectInput("icomp",
-                               label = NULL, #"Component",
+                               label = NULL,
                                names(data$signals))
           ),
           fillCol(
