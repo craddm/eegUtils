@@ -27,6 +27,7 @@
 - Added numerous `dropped_aes` variables to the custom `ggplot2` `stat_` functions for compatibility with `ggplot2 3.4.0`.
 - Replaced `size` aesthetic with `linewidth` for compatibility with `ggplot2 3.4.0`.
 - Lots of minor code style improvements
+- Deprecated function `iir_filt` removed
 
 # eegUtils 0.7.0
 
