@@ -47,8 +47,8 @@ line is drawn for each electrode.}
 
 \item{baseline}{Character vector of times to subtract for baseline correct.}
 
-\item{show_guide}{Should a guide showing the scale of the ERP plots be shown.
-Defaults to TRUE.}
+\item{show_guide}{Should be a guide showing the scale of the ERP plots be
+shown. Defaults to TRUE.}
 
 \item{chan_info}{Pass channel information in the standard \code{eegUtils} format
 directly.}

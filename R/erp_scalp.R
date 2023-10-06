@@ -13,8 +13,6 @@
 #' @author Matt Craddock, \email{matt@@mattcraddock.com}
 #' @importFrom purrr map
 #' @importFrom dplyr group_by summarise mutate select
-#' @import ggplot2
-#' @import tidyr
 #' @family scalp-based maps
 #' @seealso [interactive_scalp()] for interactive plots of ERPs in a scalp-based
 #'   layout.
@@ -42,8 +40,8 @@ erp_scalp.eeg_ICA <- function(data,
 #' @param color Alias for `colour`.
 #' @param size Size of the line(s) for the ERPs. Deprecated
 #' @param linewidth Size of the line(s) for the ERPs.
-#' @param show_guide Should a guide showing the scale of the ERP plots be shown.
-#'   Defaults to TRUE.
+#' @param show_guide Should be a guide showing the scale of the ERP plots be
+#'   shown. Defaults to TRUE.
 #' @param baseline Character vector of times to subtract for baseline correct.
 #' @param chan_info Pass channel information in the standard `eegUtils` format
 #'   directly.
@@ -68,11 +66,11 @@ erp_scalp.default <- function(data,
 
   if (is.eeg_epochs(data) && is.null(montage)) {
     chan_info <- channels(data)
-    data <- eeg_average(data)
+    data <- eeg_average(data, verbose = FALSE)
     data <- as.data.frame(data,
                           long = TRUE)
   } else if (is.eeg_epochs(data)) {
-    data <- eeg_average(data)
+    data <- eeg_average(data, verbose = FALSE)
     data <- as.data.frame(data,
                           long = TRUE)
   }
@@ -319,7 +317,7 @@ interactive_scalp.eeg_epochs <- function(data,
     miniTabstripPanel(
       miniTabPanel(
         title = "Whole scalp",
-        icon = icon("fa-circle", class = "fas"),
+        icon = icon("circle", class = "fas"),
         miniContentPanel(
           fillCol(
             flex = c(7, 1),
