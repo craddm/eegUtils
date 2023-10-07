@@ -124,22 +124,7 @@ epoch_data.eeg_data <- function(data,
                                     cbind(data$signals,
                                           data$timings),
                                     by = c("sample" = "sample"))
-  # epoched_data <- data.frame(
-  #   epoch = rep(
-  #     1:length(epoch_zero),
-  #     each = length(samps)
-  #     ),
-  #   sample = rowSums(
-  #     expand.grid(
-  #       samps,
-  #       epoch_zero)
-  #     ),
-  #   time = init_times)
-  #
-  # epoched_data <- merge(epoched_data,
-  #                       cbind(data$signals,
-  #                             data$timings),
-  #                       by = "sample")
+
   # Check for any epochs that contain NAs
   epoched_data <- split(epoched_data,
                         epoched_data$epoch)
