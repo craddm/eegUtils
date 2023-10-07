@@ -161,8 +161,9 @@ filter.eeg_tfr <- function(.data, ...) {
           call. = FALSE)
   }
 
-  lhs_args <- unlist(lapply(args[which_calls],
-                              function(x) as.character(x[[2]])))
+  lhs_args <- unlist(lapply(args,
+                            function(x) as.character(x[[2]])))
+  lhs_args <- unique(lhs_args)
   mat_dims <- names(dimnames(.data$signals)) %in% lhs_args
   hmz <- dimnames(.data$signals)[mat_dims]
   hmz <- lapply(hmz,
@@ -194,7 +195,7 @@ filter.eeg_tfr <- function(.data, ...) {
     .data$timings <- dplyr::filter(.data$timings,
                                    !!!args[in_timings])
     keep_times <- unique(.data$timings$time)
-    time_idx <- which(hmz$time %in% unique(keep_times))
+    time_idx <- which(unique(keep_times) %in% as.numeric(dimnames(.data$signals)[["time"]]))
     .data$signals <- abind::asub(.data$signals,
                                  time_idx,
                                  dims = which(.data$dimensions == "time"),
@@ -217,7 +218,6 @@ filter.eeg_tfr <- function(.data, ...) {
                                  dims = which(names(dimnames(.data$signals)) %in% "frequency"),
                                  drop = FALSE)
     .data$freq_info$freqs <- .data$freq_info$freqs[logi_freq]
-    #.data$signals[[]]
   }
 
   if (any(args_done == FALSE)) {
