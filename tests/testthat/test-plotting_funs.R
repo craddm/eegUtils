@@ -1,4 +1,3 @@
-load("EEGdat.rda")
 test_data <- import_raw("Newtest17-256.bdf")
 demo_epochs <- electrode_locations(demo_epochs,
                                    montage = "biosemi64alpha",

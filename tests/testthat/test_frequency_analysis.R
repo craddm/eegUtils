@@ -2,14 +2,10 @@ test_data <- import_raw("Newtest17-256.bdf")
 test_data <- electrode_locations(test_data, montage = "biosemi64alpha",
                                  overwrite = TRUE)
 test_epo <- epoch_data(test_data, 255)
-tmp_psd <- "psd_output.Rdata"
 
 test_that("PSD computation runs correctly.", {
-  test_psd <- compute_psd(test_data)
-  expect_known_output(test_psd, tmp_psd)
-  test_epo_psd <- compute_psd(test_epo)
-  expect_equal(length(unique(test_epo_psd$epoch)), 39)
-  expect_equal(length(unique(test_epo_psd$frequency)), 128)
+  expect_snapshot(compute_psd(test_data))
+  expect_snapshot(compute_psd(test_epo))
 })
 
 test_that("TFA works on epoched data with and without trimmed edges", {
