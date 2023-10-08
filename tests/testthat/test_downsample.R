@@ -1,5 +1,3 @@
-context("Test downsampling")
-
 test_data <- import_raw("Newtest17-256.bdf")
 
 test_that("Downsampling output is sensible", {

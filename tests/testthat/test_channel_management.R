@@ -1,5 +1,3 @@
-context("Test channel management functions")
-
 temp_chans <- import_chans("standard_1005.elc")
 
 expected_names <- c("electrode",

@@ -107,7 +107,7 @@ test_that("erp_raster and erp_image function", {
   test_epo <- electrode_locations(test_epo,
                                   montage = "biosemi64alpha",
                                   overwrite = TRUE)
-  expect_is(test_epo$chan_info,
+  expect_s3_class(test_epo$chan_info,
             "data.frame")
 })
 

@@ -1,5 +1,3 @@
-context("Test data modification")
-
 test_data <- import_raw("Newtest17-256.bdf")
 
 test_that("Referencing works for eeg_* objects", {
@@ -23,13 +21,4 @@ test_that("Referencing works for eeg_* objects", {
   demo_reref <- eeg_reference(demo_epochs, "A29")
   expect_false("A29" %in% names(demo_reref$signals))
   expect_true(identical("A29", demo_reref$reference$ref_chans))
-})
-
-
-test_that("Downsampling output is sensible", {
-
-  test_epo <- epoch_data(test_data, 255)
-  test_reref <- eeg_reference(test_epo)
-  test_ds <- eeg_downsample(test_reref, 2)
-  expect_equal(nrow(test_ds$signals), nrow(test_ds$timings))
 })
