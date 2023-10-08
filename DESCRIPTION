@@ -60,6 +60,7 @@ Suggests:
 URL: https://github.com/craddm/eegUtils, https://craddm.github.io/eegUtils
 BugReports: https://github.com/craddm/eegUtils/issues
 Config/testthat/edition: 3
+Config/testthat/parallel: true
 VignetteBuilder: knitr
 LinkingTo: 
     Rcpp,
