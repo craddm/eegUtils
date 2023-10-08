@@ -248,7 +248,7 @@ run_ICA.eeg_epochs <- function(data,
   ica_obj <- eeg_ICA(
     mixing_matrix = mixing_matrix,
     unmixing_matrix = unmixing_matrix,
-    signals = ICA_out$S,
+    signals = tibble::as_tibble(ICA_out$S),
     timings = data$timings,
     events = data$events,
     chan_info = data$chan_info,
@@ -313,7 +313,6 @@ sobi_ICA <- function(data,
                        n_times,
                        n_epochs)
 
-  ## vectorise this loop if possible?
   k <- -1
   pm <- n_channels * n_lags
   N <- n_times
@@ -339,7 +338,7 @@ sobi_ICA <- function(data,
                  eps = tol,
                  maxiter = maxiter)$V
 
-  ## create mixing matrix for output
+  # Create mixing matrix for output
   mixing_matrix <- MASS::ginv(Q, tol = 0) %*% V
 
   var_order <- sort(vaf_mix(mixing_matrix),
