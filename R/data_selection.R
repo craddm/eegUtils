@@ -502,7 +502,7 @@ select_epochs.eeg_ICA <- function(data,
     }
   }
   if (df_out) {
-    return(as.data.frame(data))
+    return(tibble::as_tibble(data))
   }
   data
 }
@@ -526,17 +526,18 @@ select_epochs.eeg_tfr <- function(data,
     }
 
     if (is.numeric(epoch_no)) {
-      keep_rows <- data$timings$epoch %in% epoch_no
+      keep_epochs <- dimnames(data$signals)[["epoch"]] %in% as.character(epoch_no)
       if (keep == FALSE) {
-        keep_rows <- !keep_rows
+        keep_epochs <- !keep_epochs
+        data$timings <- data$timings[!data$timings$epoch %in% epoch_no, ]
+      } else {
+        data$timings <- data$timings[data$timings$epoch %in% epoch_no, ]
       }
-      data$signals <- data$signals[, keep_rows[1:length(dimnames(data$signals)[["time"]])], , , drop = FALSE]
-      data$timings <- data$timings[keep_rows, ]
+      data$signals <- data$signals[keep_epochs, , , , drop = FALSE]
       data$events <- data$events[data$events$epoch %in% epoch_no, ]
       if (!is.null(data$epochs)) {
         data$epochs <- data$epochs[data$epochs$epoch %in% epoch_no, ]
       }
-
     }
 
   } else {
