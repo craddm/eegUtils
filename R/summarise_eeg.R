@@ -26,6 +26,9 @@ eeg_summarise.default <- function(data,
 #'   summary statistic will be provided for each timepoint, or a list of
 #'   individual times. If none is supplied, the function will calculate a
 #'   summary for every timepoint.
+#' @examples
+#' eeg_summarise(demo_spatial, statistic = "sem")
+#'
 #' @describeIn eeg_summarise Calculate summary statistics for `eeg_epochs`
 #'   objects
 #' @export
@@ -55,6 +58,7 @@ eeg_summarise.eeg_epochs <- function(data,
   data <- dplyr::group_by(data,
                           dplyr::across({{ groups }}))
 
+  statistic <- match.arg(statistic)
   summary_function <-
     switch(statistic,
            mean = function(x) mean(x),

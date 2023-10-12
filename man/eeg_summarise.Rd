@@ -43,3 +43,7 @@ error, or variance \code{eeg_epochs} objects.
 objects
 
 }}
+\examples{
+eeg_summarise(demo_spatial, statistic = "sem")
+
+}
