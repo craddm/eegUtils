@@ -112,6 +112,13 @@ eeg_combine.eeg_data <- function(data,
       data$timings <- dplyr::bind_rows(data$timings,
                                        purrr::map_df(args,
                                                      ~ .$timings))
+
+      data$chan_info <- unique(
+        dplyr::bind_rows(data$chan_info,
+                         purrr::map_df(args,
+                                       ~.$chan_info))
+      )
+
       message("Taking first dataset's recording name.")
     }
   }
@@ -141,7 +148,14 @@ eeg_combine.eeg_epochs <- function(data,
   participant_time <- get_time_rows(data,
                                     args)
 
-  if (all(sapply(args, is.eeg_epochs))) {
+  channel_consistency <- check_channels(data, args)
+
+  if (channel_consistency > 1) {
+    warning(paste("Channels are not consistent across all datasets.",
+                  "Check if it is correct to combine them."))
+  }
+
+  if (check_classes(c(list(data), args))) {
     data$signals <- dplyr::bind_rows(data$signals,
                                      purrr::map_df(args,
                                                    ~.$signals))
@@ -154,8 +168,13 @@ eeg_combine.eeg_epochs <- function(data,
     data$epochs  <- dplyr::bind_rows(data$epochs,
                                      purrr::map_df(args,
                                                    ~.$epochs))
+    data$chan_info <- unique(
+      dplyr::bind_rows(data$chan_info,
+                       purrr::map_df(args,
+                                     ~.$chan_info))
+    )
   } else {
-    stop("All inputs must be eeg_epochs objects.")
+    stop("All inputs must be unaveraged eeg_epochs objects.")
   }
 
   if (length(unique(epochs(data)$participant_id)) > 1) {
@@ -185,10 +204,18 @@ eeg_combine.eeg_evoked <- function(data,
 
   check_participants(data,
                      args)
+
   participant_time <- get_time_rows(data,
                                     args)
 
-  if (check_classes(args)) {
+  channel_consistency <- check_channels(data, args)
+
+  if (channel_consistency > 1) {
+    warning(paste("Channels are not consistent across all datasets.",
+                  "Check if it is correct to combine them."))
+  }
+
+  if (check_classes(c(list(data), args))) {
 
     data$signals <- dplyr::bind_rows(data$signals,
                                      purrr::map_df(args,
@@ -199,6 +226,11 @@ eeg_combine.eeg_evoked <- function(data,
     data$epochs  <- dplyr::bind_rows(data$epochs,
                                      purrr::map_df(args,
                                                    ~.$epochs))
+    data$chan_info <- unique(
+      dplyr::bind_rows(data$chan_info,
+                       purrr::map_df(args,
+                                     ~.$chan_info))
+    )
   } else {
     stop("All inputs must be `eeg_evoked` objects.")
   }
@@ -223,7 +255,7 @@ eeg_combine.eeg_tfr <- function(data,
     stop("Nothing to combine.")
   }
 
-  if (check_classes(args)) {
+  if (check_classes(c(list(data), args))) {
 
     new_dim <- length(dim(data$signals)) + 1
     orig_dims <- dimnames(data$signals)
@@ -499,4 +531,13 @@ get_time_rows <- function(data,
            function(x) nrow(x$timings),
            numeric(1))
     )
+}
+
+check_channels <- function(data,
+                           args) {
+  length(
+    unique(
+      c(list(channel_names(data)),
+        lapply(args, FUN = channel_names)))
+  ) == 1
 }
