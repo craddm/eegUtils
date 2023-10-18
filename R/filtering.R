@@ -410,8 +410,7 @@ filter_coefs <- function(method,
       coefs[[i]] <- filt_kernel(filter_order,
                                 filt_pars$W[[i]],
                                 win)
-      if (identical(filt_pars$filt_type,
-                    "high")) {
+      if (identical(filt_pars$filt_type, "high")) {
         coefs[[i]] <- spec_inv(coefs[[i]])
       }
       if (i == 2) {

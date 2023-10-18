@@ -14,7 +14,7 @@ Nothing.
 }
 \description{
 An interactive Shiny app that allows exploration of channel and epoch
-statistics.
+statistics
 }
 \examples{
   \dontrun{ view_artefacts(demo_epochs) }

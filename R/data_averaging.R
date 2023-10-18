@@ -23,7 +23,7 @@ eeg_average <- function(data,
 
 eeg_average.default <- function(data,
                                 ...) {
-  stop("eeg_epochs or eeg_tfr object required as input.")
+  stop(paste("Cannot average an object of class", class(data)))
 }
 
 #' @describeIn eeg_average Create evoked data from `eeg_epochs`objects

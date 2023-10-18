@@ -1,12 +1,11 @@
 #' Artefact browser
 #'
 #' An interactive Shiny app that allows exploration of channel and epoch
-#' statistics.
+#' statistics
 #'
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #' @import shiny
 #' @import ggplot2
-#' @importFrom plotly plot_ly renderPlotly event_data
 #' @param data Object to be explored.
 #' @return Nothing.
 #' @examples
@@ -35,13 +34,13 @@ view_artefacts <- function(data) {
       tabPanel("Channel stats",
                sidebarLayout(
                  sidebarPanel(selectInput("chan_meas",
-                                "Display measures",
-                                choices = c("means",
-                                            "sds",
-                                            "variance",
-                                            "kurtosis",
-                                            "minmax")
-                              ),
+                                          "Display measures",
+                                          choices = c("means",
+                                                      "sds",
+                                                      "variance",
+                                                      "kurtosis",
+                                                      "minmax")
+                                         ),
                               checkboxInput("std_meas",
                                             "Standardize?"),
                               width = 3),
@@ -87,7 +86,7 @@ view_artefacts <- function(data) {
       if (length(s)) {
         plot_timecourse(data,
                         electrode = s[["x"]]) +
-          labs(y = "amplitude")
+          labs(y = "Amplitude")
       }
     })
 
