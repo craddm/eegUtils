@@ -11,8 +11,6 @@
 #' @param coords Include electrode coordinates in output. Only possible when
 #'   long = TRUE.
 #' @param ... arguments for other as.data.frame commands
-#' @importFrom tidyr pivot_longer
-#' @importFrom dplyr left_join
 #' @export
 
 as.data.frame.eeg_data <- function(x,
@@ -23,12 +21,12 @@ as.data.frame.eeg_data <- function(x,
                                    coords = FALSE,
                                    ...) {
   chan_names <- channel_names(x)
-  df <- data.frame(x$signals,
-                   x$timings)
+  new_df <- data.frame(x$signals,
+                       x$timings)
 
   if (long) {
-    df <- tidyr::pivot_longer(
-      df,
+    new_df <- tidyr::pivot_longer(
+      new_df,
       cols = tidyr::all_of(chan_names),
       names_to = "electrode",
       values_to = "amplitude"
@@ -36,12 +34,11 @@ as.data.frame.eeg_data <- function(x,
   }
 
   if (events) {
-    df <- dplyr::left_join(df,
+    new_df <- dplyr::left_join(new_df,
                            x$events,
                            by = c("sample" = "event_onset"))
   }
-
-  df
+  new_df
 }
 
 
@@ -53,8 +50,7 @@ as.data.frame.eeg_data <- function(x,
 #' @param optional Kept for compatability with S3 generic, ignored.
 #' @param long Convert to long format. Defaults to FALSE.
 #' @param ... arguments for other `as.data.frame` commands
-#'
-#' @importFrom tidyr pivot_longer
+#' @return A `data.frame` or `tibble`
 #' @export
 as.data.frame.eeg_tfr <- function(x,
                                   row.names = NULL,
@@ -80,8 +76,6 @@ as.data.frame.eeg_tfr <- function(x,
                             each = dim_size[1])
     out_df$epoch <- unique(x$epochs$epoch)
   } else if (inherits(x, "eeg_group")) {
-     # stop("Currently not working with eeg_group objects...")
-      #avg_dim <- "participant_id"
       out_df <- aperm(x$signals,
                       c("time",
                         "frequency",
@@ -94,7 +88,7 @@ as.data.frame.eeg_tfr <- function(x,
       colnames(out_df) <- dimnames(x$signals)$electrode
       out_df <- as.data.frame(out_df)
       out_df$time <- rep(as.numeric(dimnames(x$signals)$time),
-                         prod(dim_size[2:4]))#out_df$time)
+                         prod(dim_size[2:4]))
       out_df$frequency <- rep(as.numeric(dimnames(x$signals)$frequency),
                               each = dim_size[1])
       out_df$epoch <- rep(x$epochs$epoch, each =
@@ -128,7 +122,6 @@ as.data.frame.eeg_tfr <- function(x,
                                x$epochs,
                                by = c("participant_id", "epoch"))
   } else {
-    #out_df$epoch <- as.numeric(out_df$epoch)
     out_df <- dplyr::left_join(out_df,
                                x$epochs,
                                by = "epoch")
@@ -139,7 +132,6 @@ as.data.frame.eeg_tfr <- function(x,
                                names_to = "electrode",
                                values_to = "power"))
   }
-
   out_df
 }
 
@@ -150,7 +142,7 @@ as.data.frame.eeg_tfr <- function(x,
 #' Convert an object of class `eeg_data` into a standard `data.frame`.
 #'
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
-#' @param x Object of class `eeg_data`
+#' @param x Object of class `eeg_lm`
 #' @param row.names Kept for compatibility with S3 generic, ignored.
 #' @param optional Kept for compatibility with S3 generic, ignored.
 #' @param long Convert to long format. Defaults to FALSE.
@@ -158,8 +150,6 @@ as.data.frame.eeg_tfr <- function(x,
 #'   long = TRUE.
 #' @param values Defaults to "coefficients", returning fitted coefficient values.
 #' @param ... arguments for other as.data.frame commands
-#' @importFrom tidyr pivot_longer
-#' @importFrom dplyr left_join
 #' @export
 as.data.frame.eeg_lm <- function(x,
                                  row.names = NULL,
@@ -201,8 +191,6 @@ as.data.frame.eeg_lm <- function(x,
                               names_to = "electrode",
                               values_to = val_name)
 
-#    df$electrode <- as.character(df$electrode)
-
     if (coords && !is.null(channels(x))) {
       df <- dplyr::left_join(df,
                              channels(x)[, c("electrode", "x", "y")],
@@ -239,7 +227,7 @@ as.data.frame.eeg_stats <- function(x,
                         electrode,
                         statistic,
                         -time,
-                        factor_key = T)
+                        factor_key = TRUE)
     if (coords && !is.null(channels(x))) {
       df <- dplyr::left_join(df,
                              channels(x)[, c("electrode", "x", "y")],
@@ -266,8 +254,6 @@ as.data.frame.eeg_stats <- function(x,
 #' @param coords Include electrode coordinates in output. Ignored if long == FALSE.
 #' @param ... arguments for other as.data.frame commands
 #'
-#' @importFrom tidyr pivot_longer
-#' @importFrom dplyr left_join
 #' @export
 
 as.data.frame.eeg_epochs <- function(x, row.names = NULL,
@@ -289,9 +275,8 @@ as.data.frame.eeg_epochs <- function(x, row.names = NULL,
                    stringsAsFactors = FALSE)
 
   names(df)[1:length(chan_names)] <- chan_names
-  # combine the new data frame with any condition labels from the events table
-  if (long) {
 
+  if (long) {
     # When converting to long, use factor_key to keep channels in same order,
     # then convert back to character.
     df <- tidyr::pivot_longer(df,
@@ -327,8 +312,6 @@ as.data.frame.eeg_epochs <- function(x, row.names = NULL,
 #' @param coords include electrode coordinates in output. Ignored if long = FALSE.
 #' @param ... arguments for other as.data.frame commands
 #'
-#' @importFrom tidyr pivot_longer
-#' @importFrom dplyr left_join
 #' @export
 
 as.data.frame.eeg_evoked <- function(x,
@@ -379,15 +362,14 @@ as.data.frame.eeg_evoked <- function(x,
 #
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #' @param x Object of class `eeg_ICA`
-#' @param row.names Kept for compatability with S3 generic, ignored.
-#' @param optional Kept for compatability with S3 generic, ignored.
+#' @param row.names Kept for compatibility with S3 generic, ignored.
+#' @param optional Kept for compatibility with S3 generic, ignored.
 #' @param long Convert to long format. Defaults to FALSE
 #' @param cond_labels add condition labels to data frame. Deprecated.
 #' @param mixing If TRUE, outputs the mixing matrix. If FALSE, outputs source activations.
 #' @param coords Adds electrode coordinates if TRUE; only if long data and the mixing matrix are requested.
 #' @param ... arguments for other as.data.frame commands
 #'
-#' @importFrom tidyr pivot_longer
 #' @export
 
 as.data.frame.eeg_ICA <- function(x,

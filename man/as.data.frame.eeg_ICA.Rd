@@ -18,9 +18,9 @@
 \arguments{
 \item{x}{Object of class \code{eeg_ICA}}
 
-\item{row.names}{Kept for compatability with S3 generic, ignored.}
+\item{row.names}{Kept for compatibility with S3 generic, ignored.}
 
-\item{optional}{Kept for compatability with S3 generic, ignored.}
+\item{optional}{Kept for compatibility with S3 generic, ignored.}
 
 \item{long}{Convert to long format. Defaults to FALSE}
 

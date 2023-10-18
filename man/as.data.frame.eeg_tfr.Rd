@@ -17,6 +17,9 @@
 
 \item{...}{arguments for other \code{as.data.frame} commands}
 }
+\value{
+A \code{data.frame} or \code{tibble}
+}
 \description{
 Convert \code{eeg_tfr} objects to a \code{data.frame}
 }

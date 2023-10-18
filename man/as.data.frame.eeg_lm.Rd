@@ -15,7 +15,7 @@
 )
 }
 \arguments{
-\item{x}{Object of class \code{eeg_data}}
+\item{x}{Object of class \code{eeg_lm}}
 
 \item{row.names}{Kept for compatibility with S3 generic, ignored.}
 
