@@ -3,10 +3,19 @@
 #' Combine multiple `eeg_epochs`, `eeg_data`, or `eeg_evoked` objects into a
 #' single object. The function will check the `participant_id` entry in the
 #' `epochs` structure of each object to see if the objects come from a single
-#' participant or from multiple participants. If the data are from a single
-#' participant, it will concatenate the objects and check for duplicate epoch
-#' numbers. If the data are from multiple participants, it will create an
-#' `eeg_group` object.
+#' participant or from multiple participants. If the data are from multiple
+#' participants, it will create an `eeg_group` object. For individual
+#' participants, it will check for duplicate epochs. For most objects, it will
+#' concatenate the objects if none are found. However, for `eeg_data` it will
+#' instead try to correct the epoch numbers. Check the details below for further
+#' advice.
+#'
+#' Combining `eeg_data` is mainly intended to be used for combining multiple
+#' recordings from a single participant prior to subsequent epoching. Thus, the
+#' function will change the epochs and timing structures of the resulting
+#' combined object to be as if it were a single recording. The objects will be
+#' combined in the input order, so ensure that the objects are input in
+#' chronological order.
 #'
 #' @param data An `eeg_data`, `eeg_epochs`, or `eeg_evoked` object, or a list of
 #'   such objects.
@@ -368,15 +377,18 @@ eeg_combine.eeg_ICA <- function(data,
 #' Check consistency of event and timing tables
 #'
 #' @param data `eeg_data` or `eeg_epochs` object
+#' @param verbose Print informative messages
 #' @keywords internal
 
-check_timings <- function(.data) {
+check_timings <- function(.data,
+                          verbose = TRUE) {
   UseMethod("check_timings", .data)
 }
 
 #' @rdname check_timings
 #' @keywords internal
-check_timings.eeg_data <- function(.data) {
+check_timings.eeg_data <- function(.data,
+                                   verbose = TRUE) {
   .data$timings$sample <- 1:nrow(.data$timings)
   .data$timings$time <- (.data$timings$sample - 1) / .data$srate
   .data
@@ -384,16 +396,18 @@ check_timings.eeg_data <- function(.data) {
 
 #' @rdname check_timings
 #' @keywords internal
-check_timings.eeg_epochs <- function(data) {
+check_timings.eeg_epochs <- function(data,
+                                     verbose = TRUE) {
 
   n_rows <- nrow(data$timings)
 
   # Check for duplicate epochs
-  if (!any(duplicated(data$epochs$epoch))) {
+  if (!any(duplicated(data$epochs))) {
+    if (verbose) message("No duplicate epochs found, combining objects.")
     return(data)
   }
 
-  message("Duplicate epoch numbers detected, attempting to correct...")
+  if (verbose) message("Duplicate epoch numbers detected, attempting to correct...")
 
   # if the epoch numbers are not ascending, fix them...
   if (any(diff(data$timings$epoch) < 0)) {

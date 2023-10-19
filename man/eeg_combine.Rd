@@ -36,11 +36,22 @@ class as the original input object.
 }
 \description{
 Combine multiple \code{eeg_epochs}, \code{eeg_data}, or \code{eeg_evoked} objects into a
-single object. The function will try to check the \code{participant_id} entry in
-the \code{epochs} structure to see if the data comes from a single participant or
-from multiple participants. If the data is from a single participant, it will
-concatenate the objects and attempt to correct them so that the trial numbers
-and timings are correct.
+single object. The function will check the \code{participant_id} entry in the
+\code{epochs} structure of each object to see if the objects come from a single
+participant or from multiple participants. If the data are from multiple
+participants, it will create an \code{eeg_group} object. For individual
+participants, it will check for duplicate epochs. For most objects, it will
+concatenate the objects if none are found. However, for \code{eeg_data} it will
+instead try to correct the epoch numbers. Check the details below for further
+advice.
+}
+\details{
+Combining \code{eeg_data} is mainly intended to be used for combining multiple
+recordings from a single participant prior to subsequent epoching. Thus, the
+function will change the epochs and timing structures of the resulting
+combined object to be as if it were a single recording. The objects will be
+combined in the input order, so ensure that the objects are input in
+chronological order.
 }
 \section{Methods (by class)}{
 \itemize{
