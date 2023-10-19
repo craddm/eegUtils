@@ -2,7 +2,6 @@
 #' @export
 dplyr::filter
 
-#' @importFrom dplyr filter
 #' @export
 filter.eeg_epochs <- function(.data,
                               ...) {
@@ -59,7 +58,6 @@ filter.eeg_epochs <- function(.data,
   .data
 }
 
-#' @importFrom dplyr filter
 #' @export
 filter.eeg_data <- function(.data, ...) {
 
@@ -93,7 +91,6 @@ filter.eeg_data <- function(.data, ...) {
   .data
 }
 
-#' @importFrom dplyr filter
 #' @export
 filter.eeg_evoked <- function(.data,
                               ...) {
@@ -252,7 +249,6 @@ parse_args <- function(arg_list,
 #' @export
 dplyr::select
 
-#' @importFrom dplyr select
 #' @export
 select.eeg_epochs <- function(.data,
                               ...) {
@@ -266,7 +262,6 @@ select.eeg_epochs <- function(.data,
   .data
 }
 
-#' @importFrom dplyr select
 #' @export
 select.eeg_data <- function(.data, ...) {
   .data$signals <- dplyr::select(.data$signals, ...)
@@ -276,7 +271,6 @@ select.eeg_data <- function(.data, ...) {
   .data
 }
 
-#' @importFrom dplyr select filter
 #' @export
 select.eeg_ICA <- function(.data, ...) {
   .data$signals <- dplyr::select(.data$signals,
@@ -294,7 +288,6 @@ select.eeg_ICA <- function(.data, ...) {
   .data
 }
 
-#' @importFrom dplyr select
 #' @export
 select.eeg_stats <- function(.data, ...) {
   .data$statistic <- dplyr::select(.data$statistic,
@@ -307,20 +300,16 @@ select.eeg_stats <- function(.data, ...) {
   .data
 }
 
-
 #' @importFrom dplyr mutate
 #' @export
 dplyr::mutate
 
-#' @importFrom dplyr mutate
 #' @export
-
 mutate.eeg_data <- function(.data, ...) {
   .data$signals <- dplyr::mutate(.data$signals, ...)
   .data
 }
 
-#' @importFrom dplyr mutate
 #' @export
 mutate.eeg_epochs <- function(.data, ...) {
   .data$signals <- dplyr::mutate(.data$signals, ...)
@@ -331,7 +320,6 @@ mutate.eeg_epochs <- function(.data, ...) {
 #' @export
 dplyr::rename
 
-#' @importFrom dplyr rename
 #' @export
 rename.eeg_ICA <- function(.data,
                            ...) {
@@ -343,10 +331,18 @@ rename.eeg_ICA <- function(.data,
   .data
 }
 
-#' @importFrom dplyr rename
 #' @export
 rename.eeg_epochs <- function(.data,
                               ...) {
+  .data$signals <- dplyr::rename(.data$signals,
+                                 ...)
+  .data$chan_info$electrode <- names(.data$signals)
+  .data
+}
+
+#' @export
+rename.eeg_data <- function(.data,
+                            ...) {
   .data$signals <- dplyr::rename(.data$signals,
                                  ...)
   .data$chan_info$electrode <- names(.data$signals)
