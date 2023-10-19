@@ -93,6 +93,36 @@ print.eeg_tfr <- function(x,
   invisible(x)
 }
 
+#' Print `tfr_average` summary
+#'
+#' Print a basic summary of the contents of a `tfr_average` object
+#'
+#' @param x `tfr_average` object to be printed
+#' @param ... Further arguments passed
+#' @export
+print.tfr_average <- function(x,
+                              ...) {
+  elec_names <- dimnames(x$signals)[["electrode"]]
+  n_chan <- length(elec_names)
+  if ("epoch" %in% names(x$timings)) {
+    n_epochs <- length(unique(x$timings$epoch))
+  } else {
+    n_epochs <- "None, averaged."
+  }
+  cat("EEG TFR average data\n\n")
+  cat("Frequency range\t\t:\t", round(x$freq_info$freqs, 2), "\n")
+  cat("Number of channels\t:\t", n_chan, "\n")
+  cat("Electrode names\t\t:\t", elec_names, "\n")
+  cat("Number of epochs\t:\t", n_epochs, "\n")
+  cat("Epoch limits\t\t:\t",
+      round(min(unique(x$timings$time)), 3),
+      "-",
+      round(max(unique(x$timings$time)), 3),
+      "seconds\n")
+  cat("Sampling rate\t\t:\t", x$srate, " Hz\n")
+  invisible(x)
+}
+
 #' Print `eeg_evoked` summary
 #'
 #' Print a basic summary of the contents of an `eeg_epochs` object
