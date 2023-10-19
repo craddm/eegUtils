@@ -1,18 +1,17 @@
 #' Combine `eegUtils` objects
 #'
 #' Combine multiple `eeg_epochs`, `eeg_data`, or `eeg_evoked` objects into a
-#' single object. The function will try to check the `participant_id` entry in
-#' the `epochs` structure to see if the data comes from a single participant or
-#' from multiple participants. If the data is from a single participant, it will
-#' concatenate the objects and attempt to correct them so that the trial numbers
-#' and timings are correct.
+#' single object. The function will check the `participant_id` entry in the
+#' `epochs` structure of each object to see if the objects come from a single
+#' participant or from multiple participants. If the data are from a single
+#' participant, it will concatenate the objects and check for duplicate epoch
+#' numbers. If the data are from multiple participants, it will create an
+#' `eeg_group` object.
 #'
 #' @param data An `eeg_data`, `eeg_epochs`, or `eeg_evoked` object, or a list of
 #'   such objects.
 #' @param ... additional `eeg_data` or `eeg_epochs` objects
 #' @author Matt Craddock, \email{matt@@mattcraddock.com}
-#' @importFrom dplyr mutate bind_rows
-#' @importFrom purrr map_df
 #' @return If all objects have the same `participant_id`, returns an object of
 #'   the same class as the original input object. If the objects have different
 #'   `participant_id` numbers, an object of both class `eeg_group` and the same
@@ -28,12 +27,11 @@ eeg_combine <- function(data,
 eeg_combine.default <- function(data,
                                 ...) {
   stop(
-    "Don't know how to combine objects of class ",
+    "Cannot combine objects of class ",
     class(data)[[1]],
     call. = FALSE
   )
 }
-
 
 #' @describeIn eeg_combine Method for combining lists of `eeg_data` and
 #'   `eeg_epochs` objects.
@@ -138,6 +136,7 @@ eeg_combine.eeg_epochs <- function(data,
                                    check_timings = TRUE) {
 
   args <- list(...)
+
   if (length(args) == 0) {
     stop("Nothing to combine.")
   }
@@ -186,7 +185,7 @@ eeg_combine.eeg_epochs <- function(data,
   } else {
     #fix epoch numbering for combined objects, but only when there are single
     #participants
-    if (check_timings == TRUE) {
+    if (check_timings) {
       data <- check_timings(data)
     }
   }
@@ -248,21 +247,22 @@ eeg_combine.eeg_evoked <- function(data,
 
 #' @export
 eeg_combine.eeg_tfr <- function(data,
-                                ...) {
+                                ...,
+                                check_timings = TRUE) {
   args <- list(...)
 
   if (length(args) == 0) {
     stop("Nothing to combine.")
   }
 
-  if (check_classes(c(list(data), args))) {
+  if (check_classes(append(list(data), args))) {
+
+    # issue here: only handles `eeg_tfr` when same n_epochs for each object
+    # assumes when combining that they are averages from different participants
+    # so won't work if combining within participants, for example
 
     new_dim <- length(dim(data$signals)) + 1
     orig_dims <- dimnames(data$signals)
-
-    # issue here: only handles eeg_tfr when same n_epochs for each object
-    # assumes when combining that they are averages from different participants
-    # so won't work if combining within participants, for example
 
     if (!check_epochs(append(list(data), args))) {
       stop("Cannot combine `eeg_tfr` when n_epochs is different across objects.
@@ -295,6 +295,9 @@ eeg_combine.eeg_tfr <- function(data,
       message("Multiple participant IDs, creating eeg_group.")
 
     } else {
+      if (check_timings == TRUE) {
+        data <- check_timings(data)
+      }
       dimnames(data$signals) <- c(orig_dims,
                                   list(epoch = data$epochs$epoch))
       data$epoch <- c(data$dimensions,
@@ -371,7 +374,6 @@ check_timings <- function(.data) {
   UseMethod("check_timings", .data)
 }
 
-
 #' @rdname check_timings
 #' @keywords internal
 check_timings.eeg_data <- function(.data) {
@@ -386,9 +388,12 @@ check_timings.eeg_epochs <- function(data) {
 
   n_rows <- nrow(data$timings)
 
-  # really should we be checking for *repeats* rather than decreases, as people
-  # might combine data in the "wrong" order, or even the same file multiple
-  # times?
+  # Check for duplicate epochs
+  if (!any(duplicated(data$epochs$epoch))) {
+    return(data)
+  }
+
+  message("Duplicate epoch numbers detected, attempting to correct...")
 
   # if the epoch numbers are not ascending, fix them...
   if (any(diff(data$timings$epoch) < 0)) {
@@ -504,6 +509,7 @@ check_dims <- function(x) {
 
 check_participants <- function(data,
                                args) {
+
   part_ids <- c(get_participant_id(data),
                 sapply(args, get_participant_id))
 
