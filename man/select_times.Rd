@@ -48,7 +48,7 @@ than that requested.
 \itemize{
 \item \code{select_times(default)}: Default select times function
 
-\item \code{select_times(eeg_data)}: Select times from an eeg_data object
+\item \code{select_times(eeg_data)}: Select times from an \code{eeg_data} object
 
 \item \code{select_times(eeg_epochs)}: Select times in \code{eeg_epochs} objects
 
