@@ -85,13 +85,20 @@ panel, they can be averaged over or plotted as individual electrodes.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">interactive_scalp</span><span class="op">(</span><span class="va">data</span>, colour <span class="op">=</span> <span class="cn">NULL</span>, baseline <span class="op">=</span> <span class="cn">NULL</span>, montage <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">interactive_scalp</span><span class="op">(</span><span class="va">data</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for eeg_epochs</span></span>
+<span><span class="fu">interactive_scalp</span><span class="op">(</span><span class="va">data</span>, colour <span class="op">=</span> <span class="cn">NULL</span>, baseline <span class="op">=</span> <span class="cn">NULL</span>, montage <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>data</dt>
 <dd><p>An EEG dataset.</p></dd>
+
+
+<dt>...</dt>
+<dd><p>Additional arguments</p></dd>
 
 
 <dt>colour</dt>
@@ -109,6 +116,11 @@ correction.</p></dd>
 only 'biosemi64alpha' available other than default 10/20 system)</p></dd>
 
 </dl></div>
+    <div id="methods-by-class-">
+    <h2>Methods (by class)</h2>
+    
+<ul><li><p><code>interactive_scalp(eeg_epochs)</code>: Method for <code>eeg_epochs</code> objects</p></li>
+</ul></div>
     <div id="see-also">
     <h2>See also</h2>
     <div class="dont-index"><p><code><a href="erp_scalp.html">erp_scalp()</a></code> for non-interactive plots of ERPs in a scalp-based

@@ -91,7 +91,6 @@ reference:
     - starts_with("print")
     - starts_with("is")
     - epoch_data.default
-    - iir_filt
     - tag_epochs
     - demo_epochs
     - demo_spatial

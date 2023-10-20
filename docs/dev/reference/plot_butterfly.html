@@ -165,7 +165,7 @@ not possible.</p>
 
 
 <dt>...</dt>
-<dd><p>Other parameters passed to plot_butterfly</p></dd>
+<dd><p>Other parameters passed to <code>plot_butterfly</code></p></dd>
 
 
 <dt>time_lim</dt>
@@ -224,11 +224,11 @@ plot.</p>
 
 
 <p>In order for ggplot2 facetting to work, the data has to be plotted using
-<code><a href="https://ggplot2.tidyverse.org/reference/stat_summary.html" class="external-link">stat_summary()</a></code> rather than <code><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line()</a></code>, so that the plots can still be
+<code>stat_summary()</code> rather than <code>geom_line()</code>, so that the plots can still be
 made when not all categorical variables are reflected in the facets. e.g.
 if there are two variables with two levels each, but you want to average
-over one of those variables, <code><a href="https://ggplot2.tidyverse.org/reference/stat_summary.html" class="external-link">stat_summary()</a></code> is required. However,
-<code><a href="https://ggplot2.tidyverse.org/reference/stat_summary.html" class="external-link">stat_summary()</a></code> can be extremely slow with a large number of timepoints,
+over one of those variables, <code>stat_summary()</code> is required. However,
+<code>stat_summary()</code> can be extremely slow with a large number of timepoints,
 electrodes, and epochs.</p>
     </div>
     <div id="author">

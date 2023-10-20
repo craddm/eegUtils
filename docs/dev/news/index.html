@@ -100,6 +100,7 @@
 <code><a href="../reference/compute_tfr.html">compute_tfr()</a></code> now has an argument <code>trim_edges</code> which allows users to switch off automatic removal of epoch edges after transformation. Defaults to TRUE.</li>
 <li>
 <code><a href="../reference/rm_baseline.html">rm_baseline()</a></code> now adds a record of the baseline period</li>
+<li>Changed logic of <code><a href="../reference/eeg_combine.html">eeg_combine.eeg_epochs()</a></code>. Now checks for duplicate epochs directly using <code>epoch</code>, <code>participant_id</code> and <code>recording</code>, and only corrects when there are duplicates. This means <code>recording</code> and <code>participant_id</code> have to be matching across <code>eeg_epochs</code> objects for the timing correction to be applied.</li>
 </ul></div>
 <div class="section level4">
 <h4 id="internal-changesbug-fixes-development-version">Internal changes/bug fixes<a class="anchor" aria-label="anchor" href="#internal-changesbug-fixes-development-version"></a></h4>
@@ -123,6 +124,7 @@
 <li>Added numerous <code>dropped_aes</code> variables to the custom <code>ggplot2</code> <code>stat_</code> functions for compatibility with <code>ggplot2 3.4.0</code>.</li>
 <li>Replaced <code>size</code> aesthetic with <code>linewidth</code> for compatibility with <code>ggplot2 3.4.0</code>.</li>
 <li>Lots of minor code style improvements</li>
+<li>Deprecated function <code>iir_filt</code> removed</li>
 </ul></div>
 </div>
     <div class="section level2">
@@ -432,7 +434,7 @@
 <ul><li>
 <code><a href="../reference/eeg_filter.html">eeg_filter()</a></code> supports use of multiple threads/cores through the <code>future</code> package.</li>
 <li>
-<code><a href="../reference/iir_filt.html">iir_filt()</a></code> will be deprecated</li>
+<code>iir_filt()</code> will be deprecated</li>
 </ul></li>
 <li>
 <code><a href="../reference/geom_topo.html">geom_topo()</a></code> extension for <code>ggplot2</code> added. Allows plotting of a topographical scalp maps using standard <code>ggplot2</code> functions.</li>
@@ -442,14 +444,14 @@
 <h4 id="internal-changes--bug-fixes-0-4-0">Internal changes / bug fixes<a class="anchor" aria-label="anchor" href="#internal-changes--bug-fixes-0-4-0"></a></h4>
 <ul><li>
 <code>data.table</code> now used in the following functions internally:
-<ul><li><code><a href="../reference/eeg_reference.html">reref_eeg()</a></code></li>
-<li><code><a href="../reference/iir_filt.html">iir_filt()</a></code></li>
+<ul><li><code>reref_eeg()</code></li>
+<li><code>iir_filt()</code></li>
 <li><code><a href="../reference/ar_FASTER.html">eeg_FASTER()</a></code></li>
 </ul></li>
 <li>
-<code><a href="../reference/eeg_reference.html">reref_eeg()</a></code> now correctly excludes electrodes as requested.</li>
+<code>reref_eeg()</code> now correctly excludes electrodes as requested.</li>
 <li>
-<code><a href="../reference/iir_filt.html">iir_filt()</a></code> now correctly respects epoch boundaries.</li>
+<code>iir_filt()</code> now correctly respects epoch boundaries.</li>
 <li>New field <code>epochs</code> added to <code>eeg_data</code> and <code>eeg_epochs</code> objects.</li>
 <li>
 <code>chan_info</code> changes to make chan_info consistent across systems.</li>
@@ -525,7 +527,7 @@
 <div class="section level4">
 <h4 id="internal-changes-bug-fixes-0-2-1">Internal changes/ bug fixes<a class="anchor" aria-label="anchor" href="#internal-changes-bug-fixes-0-2-1"></a></h4>
 <ul><li>
-<code><a href="../reference/eeg_reference.html">reref_eeg()</a></code>
+<code>reref_eeg()</code>
 <ul><li>correctly excludes multiple named electrodes (i.e. passed as characters rather than numbers), where it previously silently failed.</li>
 <li>no longer records the reference data in the <code>ref_data</code> field</li>
 </ul></li>
@@ -571,7 +573,7 @@
 <li>
 <code><a href="../reference/as.data.frame.eeg_ICA.html">as.data.frame.eeg_ICA()</a></code> now has a <code>cond_labels</code> parameter to select epochs with specific events and add the event label as an additional column.</li>
 <li>
-<code><a href="../reference/eeg_reference.html">reref_eeg()</a></code> now removes reference channels from the data.</li>
+<code>reref_eeg()</code> now removes reference channels from the data.</li>
 <li>
 <code><a href="../reference/ar_FASTER.html">eeg_FASTER()</a></code> - FASTER artefact rejection method now (mostly) implemented (<em>experimental</em>).</li>
 </ul></div>
@@ -681,7 +683,7 @@
 <div class="section level4">
 <h4 id="function-changes-0-1-12">Function changes<a class="anchor" aria-label="anchor" href="#function-changes-0-1-12"></a></h4>
 <ul><li>
-<code><a href="../reference/iir_filt.html">iir_filt()</a></code> now also filters reference channels</li>
+<code>iir_filt()</code> now also filters reference channels</li>
 <li>
 <code>load_set()</code> command added to load EEGLAB .set files</li>
 </ul></div>
@@ -691,7 +693,7 @@
 <ul><li><code>select_times.eeg_data</code></li>
 <li><code>select_times.eeg_epochs</code></li>
 </ul></li>
-<li>Converted <code><a href="../reference/iir_filt.html">iir_filt()</a></code> to an S3 generic method
+<li>Converted <code>iir_filt()</code> to an S3 generic method
 <ul><li><code>iir_filt.eeg_data</code></li>
 <li><code>iir_filt.eeg_epochs</code></li>
 </ul></li>
