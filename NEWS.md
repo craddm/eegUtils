@@ -12,6 +12,7 @@
 - `eeg_average()` now records weights - the number of epochs that went into an average - and uses those in subsequent steps where possible for `eeg_epochs`/`eeg_evoked` / `eeg_tfr` objects. 
 - `compute_tfr()` now has an argument `trim_edges` which allows users to switch off automatic removal of epoch edges after transformation. Defaults to TRUE.
 - `rm_baseline()` now adds a record of the baseline period 
+- Changed logic of `eeg_combine.eeg_epochs()`. Now checks for duplicate epochs directly using `epoch`, `participant_id` and `recording`, and only corrects when there are duplicates. This means `recording` and `participant_id` have to be matching across `eeg_epochs` objects for the timing correction to be applied.
 
 ### Internal changes/bug fixes
 - Recoded `faster_epochs()` to no longer use `data.table`.
