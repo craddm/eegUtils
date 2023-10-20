@@ -59,11 +59,11 @@ advice.
 }}
 \section{Combining \code{eeg_data} objects}{
 Combining \code{eeg_data} is mainly intended to be used for combining multiple
-recordings from a single participant prior to subsequent epoching. Thus, the
-function will change the epochs and timing structures of the resulting
-combined object to be as if it were a single recording. The objects will be
-combined in the input order, so ensure that the objects are input in
-chronological order.
+recordings from a single participant prior to subsequent epoching. Thus,
+\code{check_timings} defaults to true, and the function will change the epochs and
+timing structures of the resulting combined object to be as if it were a
+single recording. The objects will be combined in the input order, so ensure
+that the objects are input in chronological order.
 }
 
 \section{Combining \code{eeg_epochs} objects}{
@@ -71,26 +71,28 @@ There are several scenarios where you might wish to combine \code{eeg_epochs}. F
 example, a user may have processed continuous data in smaller chunks
 reflecting short recording blocks before epoching. They then wish to combine
 these into a single object. In that case, the epoch numbering should reflect
-chronological ordering and needs to be corrected. The \code{check_timing} argument
-turns on this behaviour.
-
-Alternatively, the user may wish to combine \code{eeg_epochs} objects from
-different participants or from entirely different recording sessions of the
-same participant. In this case, no correction of timings or epoch numbers is
-desirable.
+chronological ordering and needs to be corrected.
 
 If \code{check_timings == TRUE}, the function will perform several checks before
 combining objects. First, it will check for duplicate epochs in the \code{epochs}
 structure of each object. If each object only has unique epochs, the objects
 will be combined without correction. Thus, combining across separate
-recordings or separate participants will be successful. If there are any
-duplicates (e.g. a participant has more than one epoch numbered one from the
-same recording), it will then check if there are any missing epochs. If there
-are, the new trial numbering cannot be automatically determined, so the
-objects cannot be combined without further manual intervention. If there are
-no missing epochs, it will then check if there is decrease in epoch numbers
-across objects. If there is, then the epoch numbers for objects will be
-corrected.
+recordings or separate participants will not elicit correction. The user
+should ensure
+
+If there are any duplicates (e.g. a participant has more than one epoch
+numbered one from the same recording), it will then check if there are any
+missing epochs. If there are, the new trial numbering cannot be automatically
+determined, so the objects cannot be combined without further manual
+intervention. If there are no missing epochs, it will then check if there is
+any decreases in epoch numbers across objects. If there are any, then the
+epoch numbers and timings for the objects will be adjusted.
+
+Alternatively, the user may wish to combine \code{eeg_epochs} objects from
+different participants or from entirely different recording sessions of the
+same participant. In this case, no correction of timings or epoch numbers is
+desirable. \code{check_timings == TRUE} should detect this and skip correction,
+but can be explicitly set to \code{FALSE}.
 }
 
 \author{
