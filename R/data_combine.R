@@ -10,12 +10,43 @@
 #' instead try to correct the epoch numbers. Check the details below for further
 #' advice.
 #'
+#' # Combining `eeg_data` objects
+#'
 #' Combining `eeg_data` is mainly intended to be used for combining multiple
-#' recordings from a single participant prior to subsequent epoching. Thus, the
-#' function will change the epochs and timing structures of the resulting
-#' combined object to be as if it were a single recording. The objects will be
-#' combined in the input order, so ensure that the objects are input in
-#' chronological order.
+#' recordings from a single participant prior to subsequent epoching. Thus,
+#' `check_timings` defaults to true, and the function will change the epochs and
+#' timing structures of the resulting combined object to be as if it were a
+#' single recording. The objects will be combined in the input order, so ensure
+#' that the objects are input in chronological order.
+#'
+#' # Combining `eeg_epochs` objects
+#'
+#' There are several scenarios where you might wish to combine `eeg_epochs`. For
+#' example, a user may have processed continuous data in smaller chunks
+#' reflecting short recording blocks before epoching. They then wish to combine
+#' these into a single object. In that case, the epoch numbering should reflect
+#' chronological ordering and needs to be corrected.
+#'
+#' If `check_timings == TRUE`, the function will perform several checks before
+#' combining objects. First, it will check for duplicate epochs in the `epochs`
+#' structure of each object. If each object only has unique epochs, the objects
+#' will be combined without correction. Thus, combining across separate
+#' recordings or separate participants will not elicit correction. The user
+#' should ensure
+#'
+#' If there are any duplicates (e.g. a participant has more than one epoch
+#' numbered one from the same recording), it will then check if there are any
+#' missing epochs. If there are, the new trial numbering cannot be automatically
+#' determined, so the objects cannot be combined without further manual
+#' intervention. If there are no missing epochs, it will then check if there is
+#' any decreases in epoch numbers across objects. If there are any, then the
+#' epoch numbers and timings for the objects will be adjusted.
+#'
+#' Alternatively, the user may wish to combine `eeg_epochs` objects from
+#' different participants or from entirely different recording sessions of the
+#' same participant. In this case, no correction of timings or epoch numbers is
+#' desirable. `check_timings == TRUE` should detect this and skip correction,
+#' but can be explicitly set to `FALSE`.
 #'
 #' @param data An `eeg_data`, `eeg_epochs`, or `eeg_evoked` object, or a list of
 #'   such objects.
@@ -401,17 +432,27 @@ check_timings.eeg_epochs <- function(data,
 
   n_rows <- nrow(data$timings)
 
-  # Check for duplicate epochs
-  if (!any(duplicated(data$epochs))) {
+  # Check for duplicate epochs. If not, there's nothing to correct.
+  if (!any(duplicated(data$epochs[, c("epoch", "participant_id", "recording")]))) {
     if (verbose) message("No duplicate epochs found, combining objects.")
     return(data)
   }
 
-  if (verbose) message("Duplicate epoch numbers detected, attempting to correct...")
+  # If there are any positive differences other than 1, then some trials have
+  # been removed and the trials are not necessarily in chronological order. It
+  # then isn't clear how to combine them.
+  if (any(diff(data$timings$epoch) > 1)) {
+    stop("Some epochs appear to be missing. ",
+         "Cannot automatically combine objects. ",
+         "See help for further details.")
+  }
 
   # if the epoch numbers are not ascending, fix them...
   if (any(diff(data$timings$epoch) < 0)) {
-    message("Decreasing epoch numbers detected, attempting to correct...")
+    if (verbose) {
+      message("Replacing timings with ascending values.",
+              "This assumes that the objects are provided in the correct order.")
+    }
   }
 
   # Do I need while here, or just if? double check...
@@ -422,7 +463,7 @@ check_timings.eeg_epochs <- function(data,
     # only works correctly with 2 objects
 
     #check for any places where epoch numbers decrease instead of increase
-    switch_locs <- which(sign(diff(data$timings$epoch)) == -1)
+    switch_locs <- which(diff(data$timings$epoch) < 0)
 
     #consider switch this out with an RLE method, which would be much simpler.
 
