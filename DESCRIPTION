@@ -56,7 +56,8 @@ Suggests:
     R.matlab,
     hdf5r,
     mgcv,
-    infomax (>= 0.1.0)
+    infomax (>= 0.1.0),
+    Hmisc
 URL: https://github.com/craddm/eegUtils, https://craddm.github.io/eegUtils
 BugReports: https://github.com/craddm/eegUtils/issues
 Config/testthat/edition: 3
