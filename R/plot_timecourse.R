@@ -11,9 +11,10 @@
 #' @examples
 #' library(ggplot2)
 #' plot_timecourse(demo_epochs, "A29")
-#' plot_timecourse(demo_epochs, "A29", add_CI = TRUE)
-#' plot_timecourse(demo_spatial, "Oz", mapping = aes(colour = epoch_labels))
-#' plot_timecourse(demo_spatial, "Oz", facets = ~epoch_labels)
+#' plot_timecourse(demo_epochs, "A29", baseline = c(-.1, 0))
+#' plot_timecourse(demo_epochs, "A29", baseline = c(-.1, 0), add_CI = TRUE)
+#' plot_timecourse(demo_spatial, "Oz", baseline = c(-.1, 0), mapping = aes(colour = epoch_labels))
+#' plot_timecourse(demo_spatial, "Oz", baseline = c(-.1, 0), facets = ~epoch_labels)
 #'@param data EEG dataset. Should have multiple timepoints.
 #'@param ... Other arguments passed to methods.
 #'@import ggplot2
@@ -493,6 +494,12 @@ create_tc <- function(data,
   }
 
   if (add_CI) {
+    if (!requireNamespace("Hmisc", quietly = TRUE)) {
+      stop(
+        "Package \"Hmisc\" must be installed to add confidence intervals.",
+        call. = FALSE
+      )
+    }
     if (is.null(mapping)) {
       if (is.null(colour)) {
         tc_plot <- tc_plot +
