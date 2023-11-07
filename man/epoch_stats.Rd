@@ -10,7 +10,7 @@ epoch_stats(data, ...)
 \method{epoch_stats}{eeg_epochs}(data, ...)
 }
 \arguments{
-\item{data}{Data as a \code{eeg_data} or \code{eeg_epochs} object.}
+\item{data}{An \code{eeg_epochs} object.}
 
 \item{...}{Other parameters passed to the functions.}
 }
@@ -19,9 +19,9 @@ Calculate various statistics for each epoch in the data
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{eeg_epochs}: Calculate statistics for each epoch.
-}}
+\item \code{epoch_stats(eeg_epochs)}: Calculate statistics for each epoch.
 
+}}
 \examples{
 epoch_stats(demo_epochs)
 }

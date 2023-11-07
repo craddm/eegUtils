@@ -26,8 +26,6 @@
 #' @param ... Other parameters passed to function.
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #' @return An `eeg_ICA` object containing an ICA decomposition
-#' @importFrom MASS ginv
-#' @importFrom Matrix rankMatrix
 #' @family decompositions
 #' @examples
 #' sobi_demo <-
@@ -67,6 +65,9 @@ run_ICA.default <- function(data,
 #' @param rate Learning rate for extended infomax. Ignored if method !=
 #'   "infomax".
 #' @param verbose Print informative messages to console.
+#' @param return "full" or "weights". "full" returns the mixing and unmixing
+#'   matrices and the source timecourses. "weights" returns only the mixing and
+#'   unmixing matrices. Defaults to "full".
 #' @describeIn run_ICA Run ICA on an `eeg_epochs` object
 #' @importFrom stats cov
 #' @export
@@ -81,6 +82,7 @@ run_ICA.eeg_epochs <- function(data,
                                rateanneal = c(60, .9),
                                rate = 0.1,
                                verbose = TRUE,
+                               return = c("full", "weights"),
                                ...) {
 
   orig_chans <- channel_names(data)
@@ -97,7 +99,7 @@ run_ICA.eeg_epochs <- function(data,
     pca_flag <- FALSE
   }
 
-  rank_check <- Matrix::rankMatrix(as.matrix(data$signals))
+  rank_check <- qr(data$signals)$rank
 
   if (rank_check < ncol(data$signals)) {
     stop(paste(
@@ -203,8 +205,6 @@ run_ICA.eeg_epochs <- function(data,
           rate = rate
         )
       }
-
-
     } else if (identical(method, "imax")) {
       if (!requireNamespace("infomax", quietly = TRUE)) {
         stop(
@@ -220,11 +220,11 @@ run_ICA.eeg_epochs <- function(data,
           maxiter = maxit,
           whiten = "sqrtm",
           verbose = verbose
-          )
+        )
     }
 
     ICA_out$S <- as.data.frame(ICA_out$S)
-    names(ICA_out$S) <- sprintf("Comp%03d", 1:ncol(ICA_out$S))
+    names(ICA_out$S) <- sprintf("Comp%03d", seq_len(ncol(ICA_out$S)))
 
     if (pca_flag) {
       mixing_matrix <- as.data.frame(pca_decomp[, 1:pca] %*% ICA_out$M)
@@ -236,25 +236,28 @@ run_ICA.eeg_epochs <- function(data,
       unmixing_matrix$Component <- sprintf("Comp%03d", 1:pca)
     } else {
       mixing_matrix <- as.data.frame(ICA_out$M)
-      names(mixing_matrix) <- sprintf("Comp%03d", 1:ncol(ICA_out$M))
+      names(mixing_matrix) <- sprintf("Comp%03d", seq_len(ncol(ICA_out$M)))
       mixing_matrix$electrode <- names(data$signals)
       unmixing_matrix <- as.data.frame(ICA_out$W)
       names(unmixing_matrix) <- names(data$signals)
       unmixing_matrix$Component <-
-        sprintf("Comp%03d", 1:ncol(ICA_out$S))
+        sprintf("Comp%03d", seq_len(ncol(ICA_out$S)))
     }
   }
 
   ica_obj <- eeg_ICA(
     mixing_matrix = mixing_matrix,
     unmixing_matrix = unmixing_matrix,
-    signals = ICA_out$S,
+    signals = tibble::as_tibble(ICA_out$S),
     timings = data$timings,
     events = data$events,
     chan_info = data$chan_info,
     srate = data$srate,
     epochs = data$epochs,
-    algorithm = method
+    algorithm = list(algorithm = method,
+                     tol = tol,
+                     max_iterations = maxit),
+    contents = return
   )
   ica_obj
 }
@@ -286,7 +289,6 @@ sobi_ICA <- function(data,
                      centre,
                      verbose = TRUE) {
 
-  #n_epochs <- length(unique(data$timings$epoch))
   n_epochs <- nrow(epochs(data))
   n_channels <- ncol(data$signals)
   n_times <- length(unique(data$timings$time))
@@ -305,13 +307,12 @@ sobi_ICA <- function(data,
   Q <- whitening::whiteningMatrix(stats::cov(as.matrix(data$signals)),
                                   method = "PCA")
   amp_matrix <- t(whitening::whiten(as.matrix(data$signals),
-                                 method = "PCA"))
+                                    method = "PCA"))
   ## reshape to reflect epoching structure
   dim(amp_matrix) <- c(n_channels,
                        n_times,
                        n_epochs)
 
-  ## vectorise this loop if possible?
   k <- -1
   pm <- n_channels * n_lags
   N <- n_times
@@ -327,7 +328,7 @@ sobi_ICA <- function(data,
   epsil <- 1 / sqrt(N) / 100
 
   if (epsil > tol) {
-    message("Setting tolerance to ", round(epsil, 4))
+    message("Setting tolerance to ", signif(epsil, 2))
     tol <- epsil
   }
 
@@ -337,7 +338,7 @@ sobi_ICA <- function(data,
                  eps = tol,
                  maxiter = maxiter)$V
 
-  ## create mixing matrix for output
+  # Create mixing matrix for output
   mixing_matrix <- MASS::ginv(Q, tol = 0) %*% V
 
   var_order <- sort(vaf_mix(mixing_matrix),
@@ -347,16 +348,6 @@ sobi_ICA <- function(data,
   mixing_matrix <- mixing_matrix[, var_order]
 
   unmixing_matrix <- MASS::ginv(mixing_matrix, tol = 0)
-  # rescale vecs
-  # scaling <- sqrt(colMeans(mixing_matrix^2))
-  #
-  # unmixing_matrix <- sweep(unmixing_matrix,
-  #                          MARGIN = 1,
-  #                          scaling,
-  #                          `*`) # scaled weights
-
-  # mixing_matrix <- MASS::ginv(unmixing_matrix %*% diag(ncol(unmixing_matrix)),
-  #                             tol = 0)
 
   dim(amp_matrix) <- c(n_channels,
                        n_times * n_epochs)
@@ -364,7 +355,7 @@ sobi_ICA <- function(data,
   S <- tcrossprod(unmixing_matrix,
                   as.matrix(data$signals))
   S <- as.data.frame(t(S))
-  names(S) <- sprintf("Comp%03d", 1:ncol(S))
+  names(S) <- sprintf("Comp%03d", seq_len(ncol(S)))
 
   list(M = mixing_matrix,
        W = unmixing_matrix,
@@ -397,14 +388,15 @@ apply_ica <- function(data, ...) {
 }
 
 #' @param comps Components to remove.
-#' @describeIn apply_ica From given `eeg_ICA` object, recreate channel timecourses.
+#' @describeIn apply_ica From given `eeg_ICA` object, recreate channel
+#'   timecourses.
 #' @export
 apply_ica.eeg_ICA <- function(data,
                               comps = NULL,
                               ...) {
   ncomps <- ncol(data$mixing_matrix)
   new_mixmat <- data$mixing_matrix[1:(ncomps - 1)]
-  new_mixmat[ , comps] <- 0
+  new_mixmat[, comps] <- 0
   new_dat <- mix(as.matrix(new_mixmat), as.matrix(data$signals))
   new_dat <- as.data.frame(t(new_dat))
   names(new_dat) <- data$chan_info$electrode
@@ -437,15 +429,13 @@ apply_ica.eeg_epochs <- function(data,
 
   if (is.character(comps)) {
     comps_missing <- which(!(comps %in% channel_names(decomp)))
-    #comps <- which(channel_names(decomp) %in% comps)
     keep_comps <- which(!channel_names(decomp) %in% comps)
   } else {
-     keep_comps <- seq(1, ncomps)[-comps]
+    keep_comps <- seq(1, ncomps)[-comps]
   }
 
   sources <- unmix(data$signals,
                    decomp$unmixing_matrix[, 1:nelecs])
-  #keep_comps <- names(decomp$mixing_matrix[, 1:ncomps])[-comps]
   new_sigs <- mix(sources[, keep_comps],
                   decomp$mixing_matrix[, keep_comps])
   colnames(new_sigs) <- data$chan_info$electrode

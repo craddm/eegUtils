@@ -2,18 +2,28 @@
 % Please edit documentation in R/view_ica.R
 \name{view_ica}
 \alias{view_ica}
-\title{EEG component viewer}
+\title{EEG decomposition viewer}
 \usage{
 view_ica(data)
 }
 \arguments{
 \item{data}{An \code{eeg_ICA} object}
 }
+\value{
+A list consisting (optionally) of
+\itemize{
+\item A character vector of components marked for rejection
+\item A character vector of components marked to be kept
+\item An \code{eeg_epochs} object reconstructed from the \code{eeg_ICA} object, with
+components marked for rejection removed.
+}
+}
 \description{
-A Shiny viewer for ICA or SSD/RESS components that provides an interface for
-looking at topographies, timecourses, and power spectral densities of all or
-individual components.
+A Shiny viewer for Independent Component Analysis or Spatio-spectral
+Decomposition/RESS components that provides an interface for looking at
+topographies, timecourses, and power spectral densities of all or individual
+components. Can be used to select and reject artefactual components.
 }
 \author{
-Matt craddock \email{matt@mattcraddock.com}
+Matt Craddock \email{matt@mattcraddock.com}
 }

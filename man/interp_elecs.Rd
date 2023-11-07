@@ -17,23 +17,22 @@ interp_elecs(data, bad_elecs, ...)
 \item{...}{Other parameters passed to the functions.}
 }
 \description{
-Interpolate EEG channels using a spherical spline (Perrin et al., 1989; 1990). The
-data must have channel locations attached.
+Interpolate EEG channels using a spherical spline (Perrin et al., 1989;
+1990). The data must have channel locations attached.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{eeg_data}: Interpolate EEG channel(s)
-}}
+\item \code{interp_elecs(eeg_data)}: Interpolate EEG channel(s)
 
+}}
 \references{
 \itemize{
 \item Perrin, F., Pernier, J., Bertrand, O., & Echallier, J. F.
-(1989). Spherical splines for scalp potential and current
-density mapping. Electroencephalography and Clinical
-Neurophysiology, 72, 184-187
+(1989). Spherical splines for scalp potential and current density mapping.
+Electroencephalography and Clinical Neurophysiology, 72, 184-187
 \item Perrin, F., Pernier, J., Bertrand, O., & Echallier, J. F.
-(1990). Corrigenda EEG 02274. Electroencephalography and
-Clinical Neurophysiology, 76, 565
+(1990). Corrigenda EEG 02274. Electroencephalography and Clinical
+Neurophysiology, 76, 565
 }
 }
 \author{

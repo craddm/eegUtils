@@ -88,15 +88,15 @@ order to make across-trial patterns more apparent.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{data.frame}: Default function operates on normal data frames
+\item \code{erp_image(data.frame)}: Default function operates on normal data frames
 
-\item \code{eeg_epochs}: Create an \code{erp_image} from \code{eeg_epochs}
+\item \code{erp_image(eeg_epochs)}: Create an \code{erp_image} from \code{eeg_epochs}
 
-\item \code{eeg_ICA}: Plot component image from \code{eeg_ICA}
+\item \code{erp_image(eeg_ICA)}: Plot component image from \code{eeg_ICA}
 
-\item \code{eeg_tfr}: Plot component image from \code{eeg_tfr}
+\item \code{erp_image(eeg_tfr)}: Plot component image from \code{eeg_tfr}
+
 }}
-
 \examples{
 erp_image(demo_epochs, electrode = "A31")
 erp_image(demo_epochs, electrode = "A31", interpolate = TRUE)

@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">eegUtils</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.6.3.9000</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.7.0.9000</span>
       </span>
     </div>
 
@@ -29,7 +29,7 @@
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -42,6 +42,9 @@
     </li>
     <li>
       <a href="../articles/linear_modelling/linear_modelling.html">Linear Modelling</a>
+    </li>
+    <li>
+      <a href="../articles/single_subj_N170/N170_single_subject.html">Getting started with eegUtils and the N170</a>
     </li>
     <li>
       <a href="../articles/time-frequency-analysis.html">Frequency analysis</a>
@@ -73,15 +76,67 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.6.3.9000" id="eegutils-0639000">eegUtils 0.6.3.9000<a class="anchor" aria-label="anchor" href="#eegutils-0639000"></a></h2>
+<h2 class="page-header" data-toc-text="development version" id="eegutils-development-version">eegUtils (development version)<a class="anchor" aria-label="anchor" href="#eegutils-development-version"></a></h2>
 <div class="section level4">
-<h4 id="function-changes-0-6-3-9000">Function changes<a class="anchor" aria-label="anchor" href="#function-changes-0-6-3-9000"></a></h4>
-<ul><li>Add <code>imax</code> method to <code><a href="../reference/run_ICA.html">run_ICA()</a></code>. This allows use of the <code>infomax</code> ICA algorithm from the <code>infomax</code> package, which is a reimplementation of the Infomax algorithm used in the <code>EEGLAB</code> Matlab toolbox.</li>
+<h4 id="function-changes-development-version">Function changes<a class="anchor" aria-label="anchor" href="#function-changes-development-version"></a></h4>
+<ul><li>
+<code><a href="../reference/plot_timecourse.html">plot_timecourse()</a></code> now requires facets and mappings to be explicitly stated during the call, rather than added afterwards. This allows it to use weighted averages when required.</li>
+<li>
+<code><a href="../reference/plot_timecourse.html">plot_timecourse.eeg_tfr()</a></code> now defaults to no baseline correction, and takes a <code>type</code> argument for baseline type to be specified.</li>
+<li>Added new <code><a href="../reference/plot_gfp.html">plot_gfp()</a></code> function for calculating and plotting Global Field Power.</li>
+<li>
+<code><a href="../reference/topoplot.html">topoplot()</a></code> now supports plotting of multiple timepoints - pass a list of times to the <code>time_lim</code> argument.</li>
+<li>
+<code><a href="../reference/topoplot.html">topoplot()</a></code> now supports custom fill titles through the <code>fill_title</code> argument, and automatically switches where necessary (e.g. now says “Power mV^2”). Fill titles are now also centred.</li>
+<li>
+<code><a href="../reference/browse_data.html">browse_data.eeg_ICA()</a></code> now provides the option to select components for rejection, and returns a character vector of selected components.</li>
+<li>
+<code><a href="../reference/view_ica.html">view_ica()</a></code> now allows you to select components for rejection, to double-click on topographies to inspect them individually, and to return cleaned data.</li>
+<li>
+<code><a href="../reference/eeg_average.html">eeg_average()</a></code> now supports averaging over conditions in <code>eeg_evoked</code> files</li>
+<li>
+<code><a href="../reference/eeg_average.html">eeg_average()</a></code> now records weights - the number of epochs that went into an average - and uses those in subsequent steps where possible for <code>eeg_epochs</code>/<code>eeg_evoked</code> / <code>eeg_tfr</code> objects.</li>
+<li>
+<code><a href="../reference/compute_tfr.html">compute_tfr()</a></code> now has an argument <code>trim_edges</code> which allows users to switch off automatic removal of epoch edges after transformation. Defaults to TRUE.</li>
+<li>
+<code><a href="../reference/rm_baseline.html">rm_baseline()</a></code> now adds a record of the baseline period</li>
+<li>Changed logic of <code><a href="../reference/eeg_combine.html">eeg_combine.eeg_epochs()</a></code>. Now checks for duplicate epochs directly using <code>epoch</code>, <code>participant_id</code> and <code>recording</code>, and only corrects when there are duplicates. This means <code>recording</code> and <code>participant_id</code> have to be matching across <code>eeg_epochs</code> objects for the timing correction to be applied.</li>
+</ul></div>
+<div class="section level4">
+<h4 id="internal-changesbug-fixes-development-version">Internal changes/bug fixes<a class="anchor" aria-label="anchor" href="#internal-changesbug-fixes-development-version"></a></h4>
+<ul><li>Recoded <code><a href="../reference/faster_epochs.html">faster_epochs()</a></code> to no longer use <code>data.table</code>.</li>
+<li>added <code>parse_cycles()</code> function for use during <code><a href="../reference/compute_tfr.html">compute_tfr()</a></code>
+</li>
+<li>Using <code><a href="../reference/electrode_locations.html">electrode_locations()</a></code> on a <code>data.frame</code> would return a data frame with the electrode names in full upper case. Now returns with the electrodes in their original case.</li>
+<li>
+<code>eeg_evoked</code> objects should now contain reference information.</li>
+<li>
+<code>ar_for_ica</code> file started, moving some functions from <code>artefact_rejection.R</code>
+</li>
+<li>
+<code>select_times</code> prevented from converting single column data.frames to vectors after subsetting.</li>
+<li>
+<code>plot_timecourse.eeg_tfr</code> now correctly uses the <code>freq_range</code> parameter.</li>
+<li>Improvements to internal processing logic in <code><a href="../reference/view_ica.html">view_ica()</a></code> to improve performance.</li>
+<li>
+<code>import_raw(..., fast_bdf = TRUE)</code> will now discard Annotations rather than fail to import BDF files with Annotations.</li>
+<li>removed dependency on <code>Matrix</code> - now using <code>qr()$rank</code> in <code>run_ICA</code> rather than using <code><a href="https://rdrr.io/pkg/Matrix/man/rankMatrix.html" class="external-link">Matrix::rankMatrix()</a></code> to determine rank of input signals.</li>
+<li>Added numerous <code>dropped_aes</code> variables to the custom <code>ggplot2</code> <code>stat_</code> functions for compatibility with <code>ggplot2 3.4.0</code>.</li>
+<li>Replaced <code>size</code> aesthetic with <code>linewidth</code> for compatibility with <code>ggplot2 3.4.0</code>.</li>
+<li>Lots of minor code style improvements</li>
+<li>Deprecated function <code>iir_filt</code> removed</li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="0.7.0" id="eegutils-070">eegUtils 0.7.0<a class="anchor" aria-label="anchor" href="#eegutils-070"></a></h2>
+<div class="section level4">
+<h4 id="function-changes-0-7-0">Function changes<a class="anchor" aria-label="anchor" href="#function-changes-0-7-0"></a></h4>
+<ul><li>Add <code>imax</code> method to <code><a href="../reference/run_ICA.html">run_ICA()</a></code>. This allows use of the <code>infomax</code> ICA algorithm from the <code>infomax</code> package, which is a reimplementation of the extended-Infomax algorithm used in the <code>EEGLAB</code> Matlab toolbox.</li>
 <li>
 <code><a href="../reference/erp_scalp.html">erp_scalp()</a></code> and <code><a href="../reference/interactive_scalp.html">interactive_scalp()</a></code> should now appropriately use channel locations included in the data.</li>
 <li>More informative messages when using <code><a href="../reference/compute_tfr.html">compute_tfr()</a></code>.</li>
 <li>
-<code><a href="../reference/plot_tfr.html">plot_tfr()</a></code> now applies baseline correction on a single-trial basis where possible, which may show different results when using non-linear baseline correction (e.g. divide or dB)</li>
+<code><a href="../reference/plot_tfr.html">plot_tfr()</a></code> now applies baseline correction on a single-trial basis where possible, which may show different results when using non-linear baseline correction (e.g. <code>divide</code> or <code>dB</code>)</li>
 <li>
 <code><a href="../reference/topoplot.html">topoplot()</a></code> now allows you to provide multiple component numbers when plotting from an <code>eeg_ICA</code> object, and will automatically produce an appropriately facetted plot.</li>
 <li>
@@ -101,9 +156,11 @@
 <li>added <code>get_participant_id</code>, <code>set_participant_id</code>, <code>get_recording</code> and <code>set_recording</code> to interact with the <code>epochs</code> metadata in each <code>eegUtils</code> object.</li>
 <li>
 <code><a href="../reference/eeg_combine.html">eeg_combine()</a></code> handles <code><a href="../reference/eeg_tfr.html">eeg_tfr()</a></code> objects better, now returns an error when trying to combine single-trial data.</li>
+<li>
+<code><a href="../reference/plot_timecourse.html">plot_timecourse()</a></code> now handles <code><a href="../reference/eeg_tfr.html">eeg_tfr()</a></code> objects.</li>
 </ul></div>
 <div class="section level4">
-<h4 id="internal-changes--bug-fixes-0-6-3-9000">Internal changes / bug fixes<a class="anchor" aria-label="anchor" href="#internal-changes--bug-fixes-0-6-3-9000"></a></h4>
+<h4 id="internal-changes--bug-fixes-0-7-0">Internal changes / bug fixes<a class="anchor" aria-label="anchor" href="#internal-changes--bug-fixes-0-7-0"></a></h4>
 <ul><li>
 <code><a href="../reference/erp_scalp.html">erp_scalp()</a></code> and <code><a href="../reference/interactive_scalp.html">interactive_scalp()</a></code> now use cleaner evaluation of the <code>colour</code> argument using <code>rlang</code>
 </li>
@@ -223,7 +280,7 @@
 <li>
 <code><a href="../reference/view_artefacts.html">view_artefacts()</a></code>Shiny viewer for channel and epoch stats added.</li>
 <li>
-<code><a href="../reference/plot_timecourse.html">plot_timecourse()</a></code> now takes a mapping argument, which allows use of <code>ggplot2</code> <code>aes()</code> mappings</li>
+<code><a href="../reference/plot_timecourse.html">plot_timecourse()</a></code> now takes a mapping argument, which allows use of <code>ggplot2</code> <code><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes()</a></code> mappings</li>
 <li>
 <code><a href="../reference/eeg_average.html">eeg_average.eeg_tfr()</a></code> now follows behaviour of other <code><a href="../reference/eeg_average.html">eeg_average()</a></code> methods in respecting the <code>epochs</code> structure.<br></li>
 <li>
@@ -377,7 +434,7 @@
 <ul><li>
 <code><a href="../reference/eeg_filter.html">eeg_filter()</a></code> supports use of multiple threads/cores through the <code>future</code> package.</li>
 <li>
-<code><a href="../reference/iir_filt.html">iir_filt()</a></code> will be deprecated</li>
+<code>iir_filt()</code> will be deprecated</li>
 </ul></li>
 <li>
 <code><a href="../reference/geom_topo.html">geom_topo()</a></code> extension for <code>ggplot2</code> added. Allows plotting of a topographical scalp maps using standard <code>ggplot2</code> functions.</li>
@@ -387,14 +444,14 @@
 <h4 id="internal-changes--bug-fixes-0-4-0">Internal changes / bug fixes<a class="anchor" aria-label="anchor" href="#internal-changes--bug-fixes-0-4-0"></a></h4>
 <ul><li>
 <code>data.table</code> now used in the following functions internally:
-<ul><li><code><a href="../reference/eeg_reference.html">reref_eeg()</a></code></li>
-<li><code><a href="../reference/iir_filt.html">iir_filt()</a></code></li>
+<ul><li><code>reref_eeg()</code></li>
+<li><code>iir_filt()</code></li>
 <li><code><a href="../reference/ar_FASTER.html">eeg_FASTER()</a></code></li>
 </ul></li>
 <li>
-<code><a href="../reference/eeg_reference.html">reref_eeg()</a></code> now correctly excludes electrodes as requested.</li>
+<code>reref_eeg()</code> now correctly excludes electrodes as requested.</li>
 <li>
-<code><a href="../reference/iir_filt.html">iir_filt()</a></code> now correctly respects epoch boundaries.</li>
+<code>iir_filt()</code> now correctly respects epoch boundaries.</li>
 <li>New field <code>epochs</code> added to <code>eeg_data</code> and <code>eeg_epochs</code> objects.</li>
 <li>
 <code>chan_info</code> changes to make chan_info consistent across systems.</li>
@@ -470,7 +527,7 @@
 <div class="section level4">
 <h4 id="internal-changes-bug-fixes-0-2-1">Internal changes/ bug fixes<a class="anchor" aria-label="anchor" href="#internal-changes-bug-fixes-0-2-1"></a></h4>
 <ul><li>
-<code><a href="../reference/eeg_reference.html">reref_eeg()</a></code>
+<code>reref_eeg()</code>
 <ul><li>correctly excludes multiple named electrodes (i.e. passed as characters rather than numbers), where it previously silently failed.</li>
 <li>no longer records the reference data in the <code>ref_data</code> field</li>
 </ul></li>
@@ -516,7 +573,7 @@
 <li>
 <code><a href="../reference/as.data.frame.eeg_ICA.html">as.data.frame.eeg_ICA()</a></code> now has a <code>cond_labels</code> parameter to select epochs with specific events and add the event label as an additional column.</li>
 <li>
-<code><a href="../reference/eeg_reference.html">reref_eeg()</a></code> now removes reference channels from the data.</li>
+<code>reref_eeg()</code> now removes reference channels from the data.</li>
 <li>
 <code><a href="../reference/ar_FASTER.html">eeg_FASTER()</a></code> - FASTER artefact rejection method now (mostly) implemented (<em>experimental</em>).</li>
 </ul></div>
@@ -626,7 +683,7 @@
 <div class="section level4">
 <h4 id="function-changes-0-1-12">Function changes<a class="anchor" aria-label="anchor" href="#function-changes-0-1-12"></a></h4>
 <ul><li>
-<code><a href="../reference/iir_filt.html">iir_filt()</a></code> now also filters reference channels</li>
+<code>iir_filt()</code> now also filters reference channels</li>
 <li>
 <code>load_set()</code> command added to load EEGLAB .set files</li>
 </ul></div>
@@ -636,7 +693,7 @@
 <ul><li><code>select_times.eeg_data</code></li>
 <li><code>select_times.eeg_epochs</code></li>
 </ul></li>
-<li>Converted <code><a href="../reference/iir_filt.html">iir_filt()</a></code> to an S3 generic method
+<li>Converted <code>iir_filt()</code> to an S3 generic method
 <ul><li><code>iir_filt.eeg_data</code></li>
 <li><code>iir_filt.eeg_epochs</code></li>
 </ul></li>
@@ -660,7 +717,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

@@ -59,15 +59,15 @@ This is a generic function for selecting epochs from an epoched data set.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{default}: Select from generic object
+\item \code{select_epochs(default)}: Select from generic object
 
-\item \code{eeg_epochs}: Selection of epochs from \code{eeg_epochs} objects.
+\item \code{select_epochs(eeg_epochs)}: Selection of epochs from \code{eeg_epochs} objects.
 
-\item \code{eeg_ICA}: Selection of epochs from \code{eeg_ICA} objects.
+\item \code{select_epochs(eeg_ICA)}: Selection of epochs from \code{eeg_ICA} objects.
 
-\item \code{eeg_tfr}: Selection of epochs from \code{eeg_tfr} objects.
+\item \code{select_epochs(eeg_tfr)}: Selection of epochs from \code{eeg_tfr} objects.
+
 }}
-
 \examples{
 select_epochs(demo_epochs, epoch_no = 1:5)
 demo_ica <- run_ICA(demo_epochs, pca = 10)

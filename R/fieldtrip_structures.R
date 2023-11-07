@@ -9,18 +9,18 @@ ft_raw <- function(data,
   sig_names <- unlist(data["label", , ],
                       use.names = FALSE)
 
-  times <- unlist(data["time", ,],
+  times <- unlist(data["time", , ],
                   use.names = FALSE)
 
   if ("fsample" %in% struct_names) {
-    srate <- unlist(data["fsample", ,],
+    srate <- unlist(data["fsample", , ],
                     use.names = FALSE)
   } else {
     srate <- NULL
   }
 
   n_trials <- length(data["trial", , ][[1]])
-  signals <- purrr::flatten(purrr::flatten(data["trial", ,]))
+  signals <- purrr::flatten(purrr::flatten(data["trial", , ]))
   signals <- tibble::as_tibble(t(do.call(cbind, signals)))
   names(signals) <- sig_names
   timings <- tibble::tibble(epoch = rep(seq(1, n_trials),
@@ -34,7 +34,7 @@ ft_raw <- function(data,
   if ("elec" %in% struct_names) {
     if (verbose) message("Importing channel information.")
     chan_info <- ft_chan_info(
-      unlist(data["elec", ,],
+      unlist(data["elec", , ],
              recursive = FALSE)
     )
     chan_info$electrode <- sig_names

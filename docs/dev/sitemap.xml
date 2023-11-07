@@ -19,6 +19,9 @@
     <loc>http://craddm.github.io/eegUtils/articles/linear_modelling/linear_modelling.html</loc>
   </url>
   <url>
+    <loc>http://craddm.github.io/eegUtils/articles/single_subj_N170/N170_single_subject.html</loc>
+  </url>
+  <url>
     <loc>http://craddm.github.io/eegUtils/articles/time-frequency-analysis.html</loc>
   </url>
   <url>
@@ -97,6 +100,9 @@
     <loc>http://craddm.github.io/eegUtils/reference/bva_elecs.html</loc>
   </url>
   <url>
+    <loc>http://craddm.github.io/eegUtils/reference/calculate_sem.html</loc>
+  </url>
+  <url>
     <loc>http://craddm.github.io/eegUtils/reference/calc_max_elec.html</loc>
   </url>
   <url>
@@ -166,6 +172,9 @@
     <loc>http://craddm.github.io/eegUtils/reference/cov_epochs.html</loc>
   </url>
   <url>
+    <loc>http://craddm.github.io/eegUtils/reference/create_electrode_layout_plot.html</loc>
+  </url>
+  <url>
     <loc>http://craddm.github.io/eegUtils/reference/create_erpimage.html</loc>
   </url>
   <url>
@@ -230,6 +239,9 @@
   </url>
   <url>
     <loc>http://craddm.github.io/eegUtils/reference/eeg_stats.html</loc>
+  </url>
+  <url>
+    <loc>http://craddm.github.io/eegUtils/reference/eeg_summarise.html</loc>
   </url>
   <url>
     <loc>http://craddm.github.io/eegUtils/reference/eeg_tfr.html</loc>
@@ -454,6 +466,9 @@
     <loc>http://craddm.github.io/eegUtils/reference/plot_electrodes.html</loc>
   </url>
   <url>
+    <loc>http://craddm.github.io/eegUtils/reference/plot_gfp.html</loc>
+  </url>
+  <url>
     <loc>http://craddm.github.io/eegUtils/reference/plot_psd.html</loc>
   </url>
   <url>
@@ -485,6 +500,9 @@
   </url>
   <url>
     <loc>http://craddm.github.io/eegUtils/reference/print.eeg_tfr.html</loc>
+  </url>
+  <url>
+    <loc>http://craddm.github.io/eegUtils/reference/print.tfr_average.html</loc>
   </url>
   <url>
     <loc>http://craddm.github.io/eegUtils/reference/proc_events.html</loc>

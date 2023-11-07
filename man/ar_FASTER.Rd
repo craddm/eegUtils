@@ -55,17 +55,17 @@ EEG artifact Rejection. J Neurosci Methods.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{eeg_epochs}: Run FASTER on \code{eeg_epochs}
+\item \code{ar_FASTER(eeg_epochs)}: Run FASTER on \code{eeg_epochs}
 
-\item \code{eeg_group}: Run FASTER on \code{eeg_group} objects
+\item \code{ar_FASTER(eeg_group)}: Run FASTER on \code{eeg_group} objects
+
 }}
-
 \examples{
 ar_FASTER(demo_epochs)
 }
 \references{
-Nolan, Whelan & Reilly (2010). FASTER: Fully Automated Statistical Thresholding for
-EEG artifact Rejection. J Neurosci Methods.
+Nolan, Whelan & Reilly (2010). FASTER: Fully Automated
+Statistical Thresholding for EEG artifact Rejection. J Neurosci Methods.
 }
 \author{
 Matt Craddock \email{matt@mattcraddock.com}

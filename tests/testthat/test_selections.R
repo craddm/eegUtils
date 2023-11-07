@@ -33,7 +33,8 @@ test_that("selection of electrodes and times works as expected", {
 
   expect_equal(select_elecs(test_dat, electrode = "Fp1"), new_dat)
 
-  expect_equivalent(select_times(test_dat_time, c(-.1, .3)), time_sel)
+  expect_equal(select_times(test_dat_time, c(-.1, .3)), time_sel,
+               ignore_attr = TRUE)
 })
 
 test_that("Selection of electrodes and times works for eeg_* objects", {
@@ -80,9 +81,9 @@ test_that("Selection of epochs functions for eeg_epochs objects only", {
   test_epo <- epoch_data(test_data, 255)
   test_epo <- tag_events(test_epo, 255, "testing")
   test_epo_df <- select_epochs(test_epo, 255, df_out = TRUE)
-  expect_is(test_epo_df, "data.frame")
+  expect_s3_class(test_epo_df, "data.frame")
   test_epo_255 <- select_epochs(test_epo, 255)
-  expect_is(test_epo_255, "eeg_epochs")
+  expect_s3_class(test_epo_255, "eeg_epochs")
   expect_identical(test_epo_255$signals, test_epo$signals)
   test_epo_testing <- select_epochs(test_epo, "testing")
   expect_identical(test_epo_255$signals,

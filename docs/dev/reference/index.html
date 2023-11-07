@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">eegUtils</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.6.3.9000</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.7.0.9000</span>
       </span>
     </div>
 
@@ -29,7 +29,7 @@
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -42,6 +42,9 @@
     </li>
     <li>
       <a href="../articles/linear_modelling/linear_modelling.html">Linear Modelling</a>
+    </li>
+    <li>
+      <a href="../articles/single_subj_N170/N170_single_subject.html">Getting started with eegUtils and the N170</a>
     </li>
     <li>
       <a href="../articles/time-frequency-analysis.html">Frequency analysis</a>
@@ -114,7 +117,7 @@
       </tr><tr><td>
           <p><code><a href="eeg_average.html">eeg_average()</a></code> </p>
         </td>
-        <td><p>Calculate averages (e.g. ERPs) for single datasets</p></td>
+        <td><p>Calculate averages (e.g. event-related potentials) for single datasets</p></td>
       </tr><tr><td>
           <p><code><a href="eeg_combine.html">eeg_combine()</a></code> </p>
         </td>
@@ -132,7 +135,7 @@
         </td>
         <td><p>Filter EEG data</p></td>
       </tr><tr><td>
-          <p><code><a href="eeg_reference.html">eeg_reference()</a></code> <code><a href="eeg_reference.html">reref_eeg()</a></code> </p>
+          <p><code><a href="eeg_reference.html">eeg_reference()</a></code> </p>
         </td>
         <td><p>Referencing</p></td>
       </tr><tr><td>
@@ -224,7 +227,7 @@
         </td>
         <td><p>Select timerange</p></td>
       </tr><tr><td>
-          <p><code><a href="reexports.html">reexports</a></code> </p>
+          <p><code><a href="reexports.html">reexports</a></code> <code><a href="reexports.html">filter</a></code> <code><a href="reexports.html">select</a></code> <code><a href="reexports.html">mutate</a></code> <code><a href="reexports.html">rename</a></code> <code><a href="reexports.html">fortify</a></code> </p>
         </td>
         <td><p>Objects exported from other packages</p></td>
       </tr></tbody><tbody><tr><th colspan="2">
@@ -234,7 +237,7 @@
       </tr></tbody><tbody><tr><td>
           <p><code><a href="browse_data.html">browse_data()</a></code> </p>
         </td>
-        <td><p>Browse EEG data.</p></td>
+        <td><p>Browse EEG data</p></td>
       </tr><tr><td>
           <p><code><a href="erp_image.html">erp_image()</a></code> </p>
         </td>
@@ -272,6 +275,10 @@
         </td>
         <td><p>Plot electrode locations</p></td>
       </tr><tr><td>
+          <p><code><a href="plot_gfp.html">plot_gfp()</a></code> </p>
+        </td>
+        <td><p>Plot Global Field Power of EEG Signals</p></td>
+      </tr><tr><td>
           <p><code><a href="plot_psd.html">plot_psd()</a></code> </p>
         </td>
         <td><p>Plot Power Spectral Density</p></td>
@@ -282,7 +289,7 @@
       </tr><tr><td>
           <p><code><a href="plot_timecourse.html">plot_timecourse()</a></code> </p>
         </td>
-        <td><p>Plot 1-D timecourse data.</p></td>
+        <td><p>Plot one-dimensional timecourse data.</p></td>
       </tr><tr><td>
           <p><code><a href="stat_scalpmap.html">stat_scalpmap()</a></code> <code><a href="stat_scalpmap.html">geom_head()</a></code> <code><a href="stat_scalpmap.html">geom_mask()</a></code> <code><a href="stat_scalpmap.html">geom_ears()</a></code> <code><a href="stat_scalpmap.html">geom_channels()</a></code> </p>
         </td>
@@ -298,7 +305,7 @@
       </tr><tr><td>
           <p><code><a href="view_ica.html">view_ica()</a></code> </p>
         </td>
-        <td><p>EEG component viewer</p></td>
+        <td><p>EEG decomposition viewer</p></td>
       </tr></tbody><tbody><tr><th colspan="2">
           <h2 id="frequency-analysis">Frequency analysis <a href="#frequency-analysis" class="anchor" aria-hidden="true"></a></h2>
           <p class="section-desc"></p><p>Functions related to (time-)frequency analysis</p>
@@ -338,7 +345,7 @@
       </tr><tr><td>
           <p><code><a href="as.data.frame.eeg_lm.html">as.data.frame(<i>&lt;eeg_lm&gt;</i>)</a></code> </p>
         </td>
-        <td><p>Convert <code>eeg_lm</code> to data.frame</p></td>
+        <td><p>Convert <code>eeg_lm</code> to <code>data.frame</code></p></td>
       </tr><tr><td>
           <p><code><a href="as.data.frame.eeg_stats.html">as.data.frame(<i>&lt;eeg_stats&gt;</i>)</a></code> </p>
         </td>
@@ -346,7 +353,7 @@
       </tr><tr><td>
           <p><code><a href="as.data.frame.eeg_tfr.html">as.data.frame(<i>&lt;eeg_tfr&gt;</i>)</a></code> </p>
         </td>
-        <td><p>Convert <code>eeg_tfr</code> objects to data frames</p></td>
+        <td><p>Convert <code>eeg_tfr</code> objects to a <code>data.frame</code></p></td>
       </tr></tbody><tbody><tr><th colspan="2">
           <h2 id="accessors">Accessors <a href="#accessors" class="anchor" aria-hidden="true"></a></h2>
           <p class="section-desc"></p><p>Functions for accessing and modifying specific elements of an object</p>
@@ -384,7 +391,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

@@ -1,12 +1,11 @@
 #' Artefact browser
 #'
 #' An interactive Shiny app that allows exploration of channel and epoch
-#' statistics.
+#' statistics
 #'
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #' @import shiny
 #' @import ggplot2
-#' @importFrom plotly plot_ly renderPlotly event_data
 #' @param data Object to be explored.
 #' @return Nothing.
 #' @examples
@@ -16,9 +15,9 @@
 view_artefacts <- function(data) {
 
   chan_dat <- channel_stats(data)
-  scale_chans <- dplyr::mutate_if(chan_dat,
-                                  is.numeric,
-                                  ~(. - mean(.)) / sd(.))
+  scale_chans <- dplyr::mutate(chan_dat,
+                               dplyr::across(dplyr::where(is.numeric),
+                                             ~(. - mean(.)) / sd(.)))
   epoch_dat <- epoch_stats(data)
   epoch_dat <- tidyr::pivot_longer(epoch_dat,
                                    cols = channel_names(data),
@@ -31,36 +30,33 @@ view_artefacts <- function(data) {
 
   ui <-
     navbarPage("Artefact checks",
-               tabPanel("Channel stats",
-                        sidebarLayout(
-                          sidebarPanel(selectInput("chan_meas",
-                                                   "Display measures",
-                                                   choices = c("means",
-                                                               "sds",
-                                                               "variance",
-                                                               "kurtosis",
-                                                               "minmax")
-                                                   ),
-                                       checkboxInput("std_meas",
-                                                     "Standardize?"),
-                                       width = 3),
-                          mainPanel(
-                            plotly::plotlyOutput("chan_plot"),
-                            #channelPlotly(chan_dat),
-                            fluidRow(
-                              column(6,
-                                     plotly::plotlyOutput("erpplot")),
-                              column(6,
-                                     plotly::plotlyOutput("erpimage"))),
-                            ),
-                          )),
-               tabPanel("Epoch stats",
-                        epochPlotly(epoch_dat))
+      inverse = TRUE,
+      tabPanel("Channel stats",
+               sidebarLayout(
+                 sidebarPanel(selectInput("chan_meas",
+                                          "Display measures",
+                                          choices = c("means",
+                                                      "sds",
+                                                      "variance",
+                                                      "kurtosis",
+                                                      "minmax")
+                                         ),
+                              checkboxInput("std_meas",
+                                            "Standardize?"),
+                              width = 3),
+                 mainPanel(
+                   plotly::plotlyOutput("chan_plot"),
+                   fluidRow(
+                            column(6, plotly::plotlyOutput("erpplot")),
+                            column(6, plotly::plotlyOutput("erpimage"))),
+                 ),
+               )),
+      tabPanel("Epoch stats", epoch_plotly(epoch_dat))
     )
 
   server <- function(input, output) {
 
-    plot_data <- reactive({
+    plot_data <- shiny::reactive({
       if (input$std_meas) {
         scale_chans
       } else {
@@ -90,7 +86,7 @@ view_artefacts <- function(data) {
       if (length(s)) {
         plot_timecourse(data,
                         electrode = s[["x"]]) +
-          labs(y = "amplitude")
+          labs(y = "Amplitude")
       }
     })
 
@@ -102,7 +98,6 @@ view_artefacts <- function(data) {
                   electrode = s[["x"]])
       }
     })
-
 
     output$plotly_emeans <- plotly::renderPlotly({
       plotly::plot_ly(epoch_dat,
@@ -142,14 +137,13 @@ view_artefacts <- function(data) {
 
   }
 
-  shiny::shinyApp(ui,
-                  server)
-
+  shiny::runGadget(ui,
+                   server)
 }
 
 
-epochPlotly <- function(id,
-                        label = "Plotly channels") {
+epoch_plotly <- function(id,
+                         label = "Plotly channels") {
 
   ns <- shiny::NS(id)
 
@@ -163,8 +157,6 @@ epochPlotly <- function(id,
                            height = 250),
       plotly::plotlyOutput("plotly_minmax",
                            height = 250)
-      )
+    )
   )
 }
-
-

@@ -25,7 +25,7 @@
 
 eeg_reference <- function(data, ...) {
   UseMethod("eeg_reference", data)
-  }
+}
 
 #' @export
 #' @describeIn eeg_reference Default method
@@ -45,7 +45,6 @@ eeg_reference.default <- function(data, ...) {
 #'   channel was used in recording and is absent from the data, passing "LM"
 #'   adds an "LM" channel back to the data, populated with zeroes.
 #' @param verbose Print informative messages in console. Defaults to TRUE.
-#' @importFrom matrixStats rowMedians
 #' @import data.table
 #' @return object of class `eeg_data`, re-referenced as requested.
 #' @describeIn eeg_reference Rereference objects of class `eeg_data`
@@ -187,13 +186,13 @@ do_referencing <- function(data,
   if (identical(ref_chans, "average")) {
     data$reference <- list(ref_chans = ref_chans,
                            excluded = exclude)
-    } else {
-      data$reference <- list(ref_chans = ref_chans,
-                             excluded = exclude)
-      data <- select_elecs(data,
-                           ref_chans,
-                           keep = FALSE)
-    }
+  } else {
+    data$reference <- list(ref_chans = ref_chans,
+                           excluded = exclude)
+    data <- select_elecs(data,
+                         ref_chans,
+                         keep = FALSE)
+  }
   data
 }
 
@@ -383,7 +382,7 @@ check_q <- function(q,
 
   if (q < 2) {
     stop("q must be 2 or more.")
-  } else if ((srate / q) %% 1 > 0){
+  } else if ((srate / q) %% 1 > 0) {
       stop("srate / q must give a round number.")
   }
 
@@ -392,6 +391,3 @@ check_q <- function(q,
                  srate / q, "Hz."))
   q
 }
-
-
-

@@ -1,17 +1,18 @@
-#'Browse EEG data.
+#'Browse EEG data
 #'
 #'A Shiny gadget for browsing EEG data and ICA decompositions interactively.
 #'With EEG data (epoched or continuous), data can be viewed as a butterfly plot
 #'(all electrodes overlaid) or as individual traces (electrodes "stacked").
 #'Currently, the scale cannot be manually set and is determined by the range of
-#'the viewable data. With
+#'the viewable data. For `eeg_ICA` objects, you will instead be shown a
+#'composite of multiple properties of the decomposition - a topography, an ERP
+#'image, an ERP, and a power spectral density plot from 4-50 Hz.
 #'
 #'@author Matt Craddock \email{matt@@mattcraddock.com}
 #'@import ggplot2
 #'@import shiny
 #'@import miniUI
-#'@param data `eeg_data`, `eeg_epochs`, or `eeg_ICA` object to be
-#'  plotted.
+#'@param data `eeg_data`, `eeg_epochs`, or `eeg_ICA` object to be plotted.
 #'@param ... Other parameters passed to browsing functions.
 #'@export
 
@@ -20,6 +21,7 @@ browse_data <- function(data, ...) {
 }
 
 #' @export
+#' @return A character vector of component names selected for rejection.
 #' @describeIn browse_data View `eeg_ICA` component properties
 browse_data.eeg_ICA <- function(data,
                                 ...) {
@@ -27,76 +29,107 @@ browse_data.eeg_ICA <- function(data,
   ui <- miniUI::miniPage(
     gadgetTitleBar("ICA dashboard"),
     miniUI::miniContentPanel(
-      fillRow(
-        fillCol(
-          plotOutput("topo_ica",
-                     height = "100%"),
-          plotOutput("comp_psd",
-                     height = "100%")),
-        fillCol(plotOutput("comp_img",
-                           height = "100%"),
-                plotOutput("comp_tc",
-                           height = "100%"),
-                shiny::selectInput("icomp",
-                                   "Component",
-                                   names(data$signals)))
+      fillPage(
+        fillRow(
+          fillCol(
+            shiny::selectInput("icomp",
+                               label = NULL,
+                               names(data$signals))
+          ),
+          fillCol(
+            shiny::radioButtons("reject_comps",
+                                label = NULL,
+                                choices = c("Keep", "Reject"),
+                                inline = TRUE)
+          ),
+        height = "15%"),
+        fillRow(
+          fillCol(
+            plotOutput("topo_ica", height = "100%"),
+            plotOutput("comp_psd", height = "100%"),
+            ),
+          fillCol(
+            plotOutput("comp_img", height = "100%"),
+            plotOutput("comp_tc", height = "100%")
+            ),
+          height = "85%"
+          )
         )
       )
-    )
+  )
 
   server <- function(input,
                      output,
                      session) {
 
-    output$topo_ica <- renderCachedPlot({
-      comp_no <- which(names(data$signals) == input$icomp)
-      topoplot(data,
-               component = comp_no,
-               verbose = FALSE,
-               grid_res = 67)
-      },
-      cacheKeyExpr = {input$icomp})
+    comp_status <- shiny::reactiveValues()
+    output$topo_ica <- shiny::bindCache(
+      shiny::renderPlot({
+        comp_no <- which(names(data$signals) == input$icomp)
+        topoplot(data,
+                 component = comp_no,
+                 verbose = FALSE,
+                 grid_res = 70)
+        }),
+        input$icomp)
 
-    output$comp_img <- renderCachedPlot({
-      erp_image(data,
-                component = input$icomp)
-    },
-    cacheKeyExpr = {input$icomp})
+    output$comp_img <- shiny::bindCache(
+      shiny::renderPlot({
+        erp_image(data, component = input$icomp)
+        }),
+        input$icomp)
 
-    output$comp_tc <- renderCachedPlot({
-      plot_timecourse(data,
-                      component = input$icomp)
-    },
-    cacheKeyExpr = {input$icomp})
+    output$comp_tc <- shiny::bindCache(
+      shiny::renderPlot({
+        plot_timecourse(data, component = input$icomp)
+        }),
+      input$icomp)
 
-    output$comp_psd <- renderCachedPlot({
-      tmp_psd <-
-        compute_psd(select(data, input$icomp),
-                    n_fft = data$srate,
-                    verbose = FALSE)
+    output$comp_psd <- shiny::bindCache(
+      shiny::renderPlot({
+        tmp_psd <-
+          compute_psd(select(data, input$icomp),
+                      n_fft = data$srate,
+                      verbose = FALSE)
+        tmp_psd <- dplyr::rename(tmp_psd,
+                                 power = 2)
+        tmp_psd <- dplyr::filter(tmp_psd,
+                                 frequency >= 3,
+                                 frequency <= 50)
+        ggplot(tmp_psd,
+               aes(x = frequency,
+                   y = 10 * log10((power)))) +
+          stat_summary(geom = "ribbon",
+                       fun.data = mean_se,
+                       alpha = 0.5) +
+          stat_summary(geom = "line",
+                       fun = mean) +
+          theme_classic() +
+          labs(x = "Frequency (Hz)", y = "Power (dB)")
+        }),
+      input$icomp)
 
-      tmp_psd <- dplyr::rename(tmp_psd,
-                               power = 2)
-      tmp_psd <- dplyr::filter(tmp_psd,
-                               frequency >= 3,
-                               frequency <= 50)
-      ggplot(tmp_psd,
-             aes(x = frequency,
-                 y = 10 * log10((power)))) +
-        stat_summary(geom = "ribbon",
-                     fun.data = mean_cl_normal,
-                     alpha = 0.5) +
-        stat_summary(geom = "line",
-                     fun = mean) +
-        theme_classic() +
-        labs(x = "Frequency (Hz)", y = "Power (dB)")
-        },
-      cacheKeyExpr = {input$icomp})
+    shiny::observeEvent(input$icomp, {
+      shiny::updateRadioButtons(
+        inputId = "reject_comps",
+        choices = c("Keep", "Reject"),
+        selected = comp_status[[input$icomp]],
+        inline = TRUE)
+      })
 
-    observeEvent(input$done, {
-      returnValue <- ""
-      stopApp(returnValue)
+    shiny::observeEvent(input$reject_comps, {
+      comp_status[[shiny::isolate(input$icomp)]] <- input$reject_comps
+      comp_status
+      })
+    shiny::observeEvent(input$done, {
+      returnValue <- reactiveValuesToList(comp_status)
+      returnValue <-
+        names(returnValue)[vapply(returnValue,
+                                  function(x) identical(x, "Reject"),
+                                  logical(1))]
+      shiny::stopApp(returnValue)
     })
+
     session$onSessionEnded(stopApp)
   }
   runGadget(ui,
@@ -106,23 +139,20 @@ browse_data.eeg_ICA <- function(data,
 
 #' @export
 browse_data.eeg_stats <- function(data, ...) {
-  warning("Not currently implemented for eeg_stats objects.")
+  warning("Not currently implemented for `eeg_stats` objects.")
 }
 
 #'@param sig_length Length of signal to be plotted initially (seconds if
 #'  continuous, epochs if epoched).
-#'@param n_elecs Number of electrodes to be plotted on a single screen. (not yet
-#'  implemented)
 #'@param downsample Only works on `eeg_data` or `eeg_epochs` objects.
 #'  Reduces size of data by only plotting every 4th point, speeding up plotting
-#'  considerably. Defaults to TRUE for eeg_data, FALSE for eeg_epochs
+#'  considerably. Defaults to TRUE for `eeg_data`, FALSE for `eeg_epochs`
 #'
 #'@export
 #'@describeIn browse_data Browse continuous EEG data.
 
 browse_data.eeg_data <- function(data,
                                  sig_length = 5,
-                                 n_elecs = NULL,
                                  downsample = TRUE,
                                  ...) {
 
@@ -134,10 +164,10 @@ browse_data.eeg_data <- function(data,
   }
 
   ui <- miniPage(
-      gadgetTitleBar("Continous data browser"),
+      gadgetTitleBar("Continuous data browser"),
       miniTabstripPanel(
         miniTabPanel(title = "Butterfly",
-                     icon = icon("line-chart"),
+                     icon = icon("chart-line"),
                      miniContentPanel(
                        fillCol(
                          flex = c(4, NA, 1),
@@ -186,8 +216,6 @@ browse_data.eeg_data <- function(data,
                                           "Display length",
                                           sig_length,
                                           min = 1, max = 60),
-                             #numericInput("elecs_per_page_ind", "Electrodes per
-                             #page", n_elecs, min = 1, max = 30),
                              checkboxInput("dc_offset_ind",
                                            "Remove DC offset",
                                            value = TRUE)
@@ -271,7 +299,6 @@ browse_data.eeg_data <- function(data,
 
 browse_data.eeg_epochs <- function(data,
                                    sig_length = 5,
-                                   n_elecs = NULL,
                                    downsample = FALSE,
                                    ...) {
 
@@ -284,7 +311,7 @@ browse_data.eeg_epochs <- function(data,
     gadgetTitleBar("Epoched data browser"),
     miniTabstripPanel(
       miniTabPanel(title = "Butterfly",
-                   icon = icon("line-chart"),
+                   icon = icon("chart-line"),
                    miniContentPanel(
                      fillCol(
                        flex = c(4, NA, 1),
@@ -314,7 +341,7 @@ browse_data.eeg_epochs <- function(data,
                    miniContentPanel(
                      wellPanel(
                        plotOutput("time_plot"),
-                       style = "overflow-y:scroll; max-height: 800px"
+                       style = "overflow-y:scroll; max-height: 800px;overflow-x:scroll"
                        ),
                      fillPage(
                        fillCol(
@@ -328,11 +355,9 @@ browse_data.eeg_epochs <- function(data,
                                      width = "100%"),
                          fillRow(
                            numericInput("sig_time_ind",
-                                        "Display length",
+                                        "Display length (epochs)",
                                         sig_length,
                                         min = 1, max = 60),
-                           #numericInput("elecs_per_page_ind", "Electrodes per
-                           #page", n_elecs, min = 1, max = 30),
                            checkboxInput("dc_offset_ind",
                                          "Remove DC offset",
                                          value = FALSE)
@@ -348,19 +373,19 @@ browse_data.eeg_epochs <- function(data,
                        output,
                        session) {
 
-      tmp_dat <- reactive({
-        select_epochs(data,
-                      epoch_no = seq(input$time_range,
-                                     input$time_range + input$sig_time - 1))
-      })
+      tmp_data <- shiny::debounce(
+        shiny::reactive({
+          select_epochs(data,
+                        epoch_no = seq(input$time_range,
+                                       input$time_range + input$sig_time - 1))
+        }),
+        400)
 
-      tmp_data <- debounce(tmp_dat,
-                           800)
-
-      output$butterfly <- renderPlot({
+      output$butterfly <- shiny::renderPlot({
 
         if (input$dc_offset) {
-          tmp_data <- rm_baseline(tmp_data(), verbose = FALSE)
+          tmp_data <- rm_baseline(tmp_data(),
+                                  verbose = FALSE)
         } else {
           tmp_data <- tmp_data()
         }
@@ -384,52 +409,53 @@ browse_data.eeg_epochs <- function(data,
         butter_out
       })
 
-      tmp_dat_ind <- reactive({
-        select_epochs(data,
-                      epoch_no = seq(input$time_range_ind,
-                                     input$time_range_ind + input$sig_time_ind - 1))
-      })
+      tmp_data_ind <- shiny::debounce(
+        shiny::reactive({
+          select_epochs(data,
+                        epoch_no = seq(input$time_range_ind,
+                                       input$time_range_ind + input$sig_time_ind - 1))
+          }),
+        600)
 
-      tmp_data_ind <- debounce(tmp_dat_ind, 800)
+      output$time_plot <- shiny::bindCache(
+        shiny::renderPlot({
+          if (input$dc_offset_ind) {
+            tmp_data_ind <- rm_baseline(tmp_data_ind(),
+                                        verbose = FALSE)
+          } else {
+            tmp_data_ind <- tmp_data_ind()
+          }
 
-      output$time_plot <- renderPlot({
+          tmp_data_ind <- as.data.frame(tmp_data_ind,
+                                        long = TRUE,
+                                        coords = FALSE)
 
-        if (input$dc_offset_ind) {
-          tmp_data_ind <- rm_baseline(tmp_data_ind(),
-                                      verbose = FALSE)
-        } else {
-          tmp_data_ind <- tmp_data_ind()
-        }
-
-        tmp_data_ind <- as.data.frame(tmp_data_ind,
-                                      long = TRUE,
-                                      coords = FALSE)
-
-        init_plot <- ggplot2::ggplot(tmp_data_ind,
-                                     aes(x = time,
-                                         y = amplitude)) +
-          geom_line() +
-          facet_grid(electrode ~ epoch,
-                     scales = "free_y",
-                     switch = "y") +
-          theme_minimal() +
-          theme(
-            axis.text.y = element_blank(),
-            axis.ticks.y = element_blank(),
-            axis.title.y = element_blank(),
-            strip.text.y = element_text(angle = 180),
-            panel.spacing = unit(0, "lines"),
-            panel.grid.minor = element_blank(),
-            panel.grid.major = element_blank()
-          ) +
-          scale_x_continuous(expand = c(0, 0)) +
-          geom_vline(xintercept = max(unique(tmp_data_ind$time))) +
-          geom_vline(xintercept = 0,
-                     linetype = "longdash")
-
-        init_plot
-      },
-      height = 2500)
+          init_plot <- ggplot2::ggplot(tmp_data_ind,
+                                       aes(x = time,
+                                           y = amplitude)) +
+            geom_line() +
+            facet_grid(electrode ~ epoch,
+                       scales = "free_y",
+                       switch = "y") +
+            theme_minimal() +
+            theme(
+              axis.text.y = element_blank(),
+              axis.ticks.y = element_blank(),
+              axis.title.y = element_blank(),
+              strip.text.y = element_text(angle = 180),
+              panel.spacing = unit(0, "lines"),
+              panel.grid.minor = element_blank(),
+              panel.grid.major = element_blank()
+              ) +
+            scale_x_continuous(expand = c(0, 0)) +
+            geom_vline(xintercept = max(unique(tmp_data_ind$time))) +
+            geom_vline(xintercept = 0,
+                       linetype = "longdash")
+          init_plot
+          },
+          height = 2500),
+        input$dc_offset_ind, tmp_data_ind()
+      )
 
       observeEvent(input$done, {
         stopApp()
