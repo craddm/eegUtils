@@ -27,6 +27,7 @@ ar_eogcor <- function(decomp,
 #'   automatically determining a threshold.
 #' @param plot Plot correlation coefficient for all components
 #' @param bipolarize Bipolarize the HEOG and VEOG channels?
+#' @param method Correlation method. Defaults to Pearson.
 #' @param verbose Print informative messages. Defaults to TRUE.
 #' @describeIn ar_eogcor Method for `eeg_ICA` objects.
 #' @export
@@ -37,6 +38,7 @@ ar_eogcor.eeg_ICA <- function(decomp,
                               threshold = NULL,
                               plot = TRUE,
                               bipolarize = TRUE,
+                              method = c("pearson", "kendall", "spearman"),
                               verbose = TRUE,
                               ...) {
 
@@ -48,6 +50,8 @@ ar_eogcor.eeg_ICA <- function(decomp,
     veog_threshold <- threshold
   }
 
+  method <- match.arg(method)
+
   eog_corrs <- abs(stats::cor(decomp$signals,
                               if (bipolarize) {
                                 bip_eog(data$signals,
@@ -55,7 +59,8 @@ ar_eogcor.eeg_ICA <- function(decomp,
                                         VEOG)
                               } else {
                                 data$signals[, c(HEOG, VEOG)]
-                              }))
+                              },
+                              method = method))
 
   if (is.null(threshold)) {
     mean_corrs <- colMeans(eog_corrs)
@@ -68,10 +73,15 @@ ar_eogcor.eeg_ICA <- function(decomp,
 
   if (plot) {
     graphics::par(mfrow = c(1, 2))
-    plot(eog_corrs[, 1])
+    plot(eog_corrs[, 1],
+         xlab = "Channel",
+         ylab = "HEOG correlation")
     graphics::abline(h = heog_threshold)
-    plot(eog_corrs[, 2])
+    plot(eog_corrs[, 2],
+         xlab = "Channel",
+         ylab = "VEOG correlation")
     graphics::abline(h = veog_threshold)
+    graphics::title(paste("method =", method))
   }
 
   crossed_thresh <- cbind(eog_corrs[, 1] > heog_threshold,
@@ -80,7 +90,8 @@ ar_eogcor.eeg_ICA <- function(decomp,
                         1, any)
   above_thresh <- channel_names(decomp)[above_thresh]
   if (verbose) {
-    message("Components with high EOG correlation: ", paste0(above_thresh, sep = " "))
+    message("Components with high EOG correlation: ",
+            paste0(above_thresh, sep = " "))
   }
   above_thresh
 }

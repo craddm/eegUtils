@@ -15,6 +15,7 @@ ar_eogcor(decomp, data, ...)
   threshold = NULL,
   plot = TRUE,
   bipolarize = TRUE,
+  method = c("pearson", "kendall", "spearman"),
   verbose = TRUE,
   ...
 )
@@ -37,6 +38,8 @@ automatically determining a threshold.}
 \item{plot}{Plot correlation coefficient for all components}
 
 \item{bipolarize}{Bipolarize the HEOG and VEOG channels?}
+
+\item{method}{Correlation method. Defaults to Pearson.}
 
 \item{verbose}{Print informative messages. Defaults to TRUE.}
 }
