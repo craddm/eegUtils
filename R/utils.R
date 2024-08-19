@@ -7,6 +7,7 @@ conv_to_mat <- function(data, ...) {
   UseMethod("conv_to_mat", data)
 }
 
+#' @keywords internal
 conv_to_mat.default <- function(data, ...) {
   stop("Not implemented for objects of class", class(data))
 }
