@@ -38,8 +38,8 @@ Imports:
     data.table,
     isoband
 Depends:
-  R (>= 3.6.0)
-RoxygenNote: 7.2.3
+  R (>= 4.0.0)
+RoxygenNote: 7.3.2
 Suggests: 
     testthat,
     vdiffr,
