@@ -36,7 +36,8 @@ Imports:
     future.apply,
     Rcpp,
     data.table,
-    isoband
+    isoband,
+    bslib
 Depends:
   R (>= 4.0.0)
 RoxygenNote: 7.3.2
