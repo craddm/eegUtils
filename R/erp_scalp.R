@@ -64,17 +64,9 @@ erp_scalp.default <- function(data,
                               montage = NULL,
                               ...) {
 
-  if (is.eeg_epochs(data) && is.null(montage)) {
-    chan_info <- channels(data)
-    data <- eeg_average(data, verbose = FALSE)
-    data <- as.data.frame(data,
-                          long = TRUE)
-  } else if (is.eeg_epochs(data)) {
-    data <- eeg_average(data, verbose = FALSE)
-    data <- as.data.frame(data,
-                          long = TRUE)
-  }
-
+  # Check for colours to group by first
+  cols <- "everything"
+  # Catch both unquoted and quoted colour inputs
   color <- rlang::enquo(color)
   colour <- rlang::enquo(colour)
 
@@ -87,6 +79,20 @@ erp_scalp.default <- function(data,
   if (!rlang::quo_is_symbol(colour) && !rlang::quo_is_null(colour)) {
     colour <- rlang::ensym(colour)
     colour <- rlang::enquo(colour)
+  }
+
+  if (!rlang::quo_is_null(colour)) {
+    cols <- rlang::as_name(colour)
+  }
+
+  if (is.eeg_epochs(data) && is.null(montage)) {
+    chan_info <- channels(data)
+    data <- eeg_average(data, verbose = FALSE, cols = cols)
+    data <- as.data.frame(data, long = TRUE)
+  } else if (is.eeg_epochs(data)) {
+    data <- eeg_average(data, verbose = FALSE, cols = cols)
+    data <- as.data.frame(data,
+                          long = TRUE)
   }
 
   if (rlang::quo_is_null(colour)) {
@@ -126,8 +132,8 @@ erp_scalp.default <- function(data,
 
     plot <-
       plot +
-      coord_cartesian(ylim = c(minAmp, maxAmp),
-                      xlim = c(minTime, maxTime))
+      ggplot2::coord_cartesian(ylim = c(minAmp, maxAmp),
+                               xlim = c(minTime, maxTime))
     plot <-
       plot +
       geom_vline(xintercept = 0,
@@ -313,32 +319,31 @@ interactive_scalp.eeg_epochs <- function(data,
     colour <- rlang::enquo(colour)
   }
 
-  ui <- miniPage(gadgetTitleBar("Scalp ERPs"),
-    miniTabstripPanel(
-      miniTabPanel(
-        title = "Whole scalp",
-        icon = icon("circle", class = "fas"),
-        miniContentPanel(
-          fillCol(
-            flex = c(7, 1),
-            plotOutput("Scalp", height = "100%",
-                       click = "click_plot"),
-            verbatimTextOutput("click_info")
-          )
+  ui <-
+      bslib::page_fillable(
+      bslib::navset_card_underline(
+        bslib::nav_panel(
+          title = "Whole scalp",
+          icon = icon(name = "circle", lib = "font-awesome"),
+          plotOutput("Scalp",
+                     click = "click_plot"),
+          verbatimTextOutput("click_info")
         ),
-        miniButtonBlock(actionButton("reset", "Reset selection"))
-      ),
-      miniTabPanel(
-        "Selected electrodes",
-        icon = icon("chart-line"),
-        miniContentPanel(plotOutput("Selected", height = "100%")),
-        miniButtonBlock(
-          actionButton("avg", "Mean"),
+        bslib::nav_panel(
+          title = "Selected electrodes",
+          icon = icon("chart-line"),
+          plotOutput("Selected"),
+          bslib::tooltip(
+            actionButton("avg", "Mean"),
+            "Plot the mean of the selected electrodes",
+            placement = "right"
+          ),
           actionButton("single", "Plot individual electrodes")
+          )
         )
       )
-    )
-  )
+
+
 
   server <- function(input,
                      output,
