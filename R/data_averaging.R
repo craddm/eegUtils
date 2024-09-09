@@ -160,7 +160,7 @@ eeg_average.eeg_evoked <- function(data,
   is_group_df <- inherits(data,
                           "eeg_group")
 
-  if (is.null(cols) && verbose) {
+  if (is.null(cols)) {
     message("Data is already averaged - you must specify columns to group your averages by.")
     return(data)
   }
