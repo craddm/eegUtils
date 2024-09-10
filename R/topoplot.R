@@ -273,7 +273,7 @@ topoplot.data.frame <- function(data,
           line = element_blank(),
           axis.text = element_blank(),
           axis.title = element_blank(),
-          legend.title = element_text(0.5)) +
+          legend.title = element_text(hjust = 0.5)) +
     guides(fill = guide_colorbar(title = fill_title,
                                  #expression(paste("Amplitude (",
                                  #                mu, "V)")),
