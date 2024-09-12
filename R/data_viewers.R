@@ -307,162 +307,163 @@ browse_data.eeg_epochs <- function(data,
                            q = 4)
   }
 
-  ui <- miniPage(
-    gadgetTitleBar("Epoched data browser"),
-    miniTabstripPanel(
-      miniTabPanel(title = "Butterfly",
-                   icon = icon("chart-line"),
-                   miniContentPanel(
-                     fillCol(
-                       flex = c(4, NA, 1),
-                       plotOutput("butterfly", height = "100%"),
-                       sliderInput("time_range",
-                                   label = "Display starting epoch",
-                                   step = 1,
-                                   min = 1,
-                                   max = max(unique(data$timings$epoch)),
-                                   value = min(unique(data$timings$epoch)),
-                                   width = "100%"),
-                       fillRow(
-                         numericInput("sig_time",
-                                      "No. epochs",
-                                      sig_length,
-                                      min = 1, max = 60),
-                         #numericInput("uV_scale", "Scale (microvolts)",
-                         #max(data$amplitude), min = 10, value = 100),
-                         checkboxInput("dc_offset",
-                                       "Remove DC offset",
-                                       value = FALSE)
-                         )
-                       )
-                     )
-                   ),
-      miniTabPanel(title = "Individual",
-                   miniContentPanel(
-                     wellPanel(
-                       plotOutput("time_plot"),
-                       style = "overflow-y:scroll; max-height: 800px;overflow-x:scroll"
-                       ),
-                     fillPage(
-                       fillCol(
-                         flex = c(NA, 2),
-                         sliderInput("time_range_ind",
-                                     label = "Display starting epoch",
-                                     step = 1,
-                                     min = 1,
-                                     max = max(unique(data$timings$epoch)),
-                                     value = min(unique(data$timings$epoch)),
-                                     width = "100%"),
-                         fillRow(
-                           numericInput("sig_time_ind",
-                                        "Display length (epochs)",
-                                        sig_length,
-                                        min = 1, max = 60),
-                           checkboxInput("dc_offset_ind",
-                                         "Remove DC offset",
-                                         value = FALSE)
-                           )
-                         )
-                       )
-                     )
-                   )
+  ui <- bslib::page_fillable(
+    title = "Epoched data browser",
+    bslib::navset_tab(
+      bslib::nav_panel(
+        title = bslib::tooltip(
+          shiny::tags$span(
+            "Butterfly",
+            shiny::icon("chart-line")
+          ),
+          "Shows traces from every electrode overlapping, with transparency"),
+        bslib::card(
+          shiny::plotOutput("butterfly"),
+          shiny::sliderInput("time_range",
+                             label = "Display starting epoch",
+                             step = 1,
+                             min = 1,
+                             max = max(unique(data$timings$epoch)),
+                             value = min(unique(data$timings$epoch)),
+                             width = "100%"),
+          bslib::layout_columns(
+            shiny::numericInput("sig_time",
+                                "No. epochs",
+                                sig_length,
+                                min = 1, max = 60),
+            shiny::checkboxInput("dc_offset",
+                                 "Remove DC offset",
+                                 value = FALSE)
+            )
+        ),
+      ),
+
+      #   #numericInput("uV_scale", "Scale (microvolts)",
+      # #max(data$amplitude), min = 10, value = 100),
+      # checkboxInput("dc_offset",
+      #               "Remove DC offset",
+      #               value = FALSE)
+      bslib::nav_panel(
+        title = "Individual",
+        icon = shiny::icon("chart-line"),
+        bslib::card(
+          shiny::plotOutput("time_plot"),
+          #style = "overflow-y:scroll; max-height: 800px;overflow-x:scroll",
+          shiny::sliderInput("time_range_ind",
+                             label = "Display starting epoch",
+                             step = 1,
+                             min = 1,
+                             max = max(unique(data$timings$epoch)),
+                             value = min(unique(data$timings$epoch)),
+                             width = "100%"),
+          bslib::layout_columns(
+            shiny::numericInput("sig_time_ind",
+                                "Display length (epochs)",
+                                sig_length,
+                                min = 1, max = 60),
+            shiny::checkboxInput("dc_offset_ind",
+                                 "Remove DC offset",
+                                 value = FALSE)
+          )
+        )
       )
     )
+  )
 
-    server <- function(input,
-                       output,
-                       session) {
+  server <- function(input,
+                     output,
+                     session) {
 
-      tmp_data <- shiny::debounce(
-        shiny::reactive({
-          select_epochs(data,
-                        epoch_no = seq(input$time_range,
-                                       input$time_range + input$sig_time - 1))
-        }),
-        400)
+    tmp_data <- shiny::debounce(
+      shiny::reactive({
+        select_epochs(data,
+                      epoch_no = seq(input$time_range,
+                                     input$time_range + input$sig_time - 1))
+      }),
+      400)
 
-      output$butterfly <- shiny::renderPlot({
+    output$butterfly <- shiny::renderPlot({
 
-        if (input$dc_offset) {
-          tmp_data <- rm_baseline(tmp_data(),
-                                  verbose = FALSE)
+      if (input$dc_offset) {
+        tmp_data <- rm_baseline(tmp_data(),
+                                verbose = FALSE)
+      } else {
+        tmp_data <- tmp_data()
+      }
+
+      tmp_data <- as.data.frame(tmp_data,
+                                long = TRUE,
+                                coords = FALSE)
+
+      butter_out <- plot_butterfly(tmp_data,
+                                   legend = FALSE,
+                                   browse_mode = TRUE,
+                                   allow_facets = TRUE) +
+        facet_wrap("epoch",
+                   nrow = 1) +
+        theme(
+          panel.spacing = unit(0, "lines")
+        ) +
+        geom_vline(xintercept = max(unique(tmp_data$time))) +
+        geom_vline(xintercept = 0,
+                   linetype = "longdash")
+      butter_out
+    })
+
+    tmp_data_ind <- shiny::debounce(
+      shiny::reactive({
+        select_epochs(data,
+                      epoch_no = seq(input$time_range_ind,
+                                     input$time_range_ind + input$sig_time_ind - 1))
+      }),
+      600)
+
+    output$time_plot <- shiny::bindCache(
+      shiny::renderPlot({
+        if (input$dc_offset_ind) {
+          tmp_data_ind <- rm_baseline(tmp_data_ind(),
+                                      verbose = FALSE)
         } else {
-          tmp_data <- tmp_data()
+          tmp_data_ind <- tmp_data_ind()
         }
 
-        tmp_data <- as.data.frame(tmp_data,
-                                  long = TRUE,
-                                  coords = FALSE)
+        tmp_data_ind <- as.data.frame(tmp_data_ind,
+                                      long = TRUE,
+                                      coords = FALSE)
 
-        butter_out <- plot_butterfly(tmp_data,
-                                     legend = FALSE,
-                                     browse_mode = TRUE,
-                                     allow_facets = TRUE) +
-          facet_wrap("epoch",
-                     nrow = 1) +
+        init_plot <- ggplot2::ggplot(tmp_data_ind,
+                                     aes(x = time,
+                                         y = amplitude)) +
+          geom_line() +
+          facet_grid(electrode ~ epoch,
+                     scales = "free_y",
+                     switch = "y") +
+          theme_minimal() +
           theme(
-            panel.spacing = unit(0, "lines")
-            ) +
-          geom_vline(xintercept = max(unique(tmp_data$time))) +
+            axis.text.y = element_blank(),
+            axis.ticks.y = element_blank(),
+            axis.title.y = element_blank(),
+            strip.text.y = element_text(angle = 180),
+            panel.spacing = unit(0, "lines"),
+            panel.grid.minor = element_blank(),
+            panel.grid.major = element_blank()
+          ) +
+          scale_x_continuous(expand = c(0, 0)) +
+          geom_vline(xintercept = max(unique(tmp_data_ind$time))) +
           geom_vline(xintercept = 0,
                      linetype = "longdash")
-        butter_out
-      })
+        init_plot
+      },
+      height = 2500),
+      input$dc_offset_ind, tmp_data_ind()
+    )
 
-      tmp_data_ind <- shiny::debounce(
-        shiny::reactive({
-          select_epochs(data,
-                        epoch_no = seq(input$time_range_ind,
-                                       input$time_range_ind + input$sig_time_ind - 1))
-          }),
-        600)
-
-      output$time_plot <- shiny::bindCache(
-        shiny::renderPlot({
-          if (input$dc_offset_ind) {
-            tmp_data_ind <- rm_baseline(tmp_data_ind(),
-                                        verbose = FALSE)
-          } else {
-            tmp_data_ind <- tmp_data_ind()
-          }
-
-          tmp_data_ind <- as.data.frame(tmp_data_ind,
-                                        long = TRUE,
-                                        coords = FALSE)
-
-          init_plot <- ggplot2::ggplot(tmp_data_ind,
-                                       aes(x = time,
-                                           y = amplitude)) +
-            geom_line() +
-            facet_grid(electrode ~ epoch,
-                       scales = "free_y",
-                       switch = "y") +
-            theme_minimal() +
-            theme(
-              axis.text.y = element_blank(),
-              axis.ticks.y = element_blank(),
-              axis.title.y = element_blank(),
-              strip.text.y = element_text(angle = 180),
-              panel.spacing = unit(0, "lines"),
-              panel.grid.minor = element_blank(),
-              panel.grid.major = element_blank()
-              ) +
-            scale_x_continuous(expand = c(0, 0)) +
-            geom_vline(xintercept = max(unique(tmp_data_ind$time))) +
-            geom_vline(xintercept = 0,
-                       linetype = "longdash")
-          init_plot
-          },
-          height = 2500),
-        input$dc_offset_ind, tmp_data_ind()
-      )
-
-      observeEvent(input$done, {
-        stopApp()
-      })
-      session$onSessionEnded(stopApp)
-    }
-  runGadget(ui,
-            server,
-            viewer = paneViewer(minHeight = 600))
+    shiny::observeEvent(input$done, {
+      shiny::stopApp()
+    })
+    session$onSessionEnded(stopApp)
+  }
+  shiny::runGadget(ui,
+                   server,
+                   viewer = shiny::paneViewer(minHeight = 600))
 }
