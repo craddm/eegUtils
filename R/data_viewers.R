@@ -344,8 +344,13 @@ browse_data.eeg_epochs <- function(data,
       #               "Remove DC offset",
       #               value = FALSE)
       bslib::nav_panel(
-        title = "Individual",
-        icon = shiny::icon("chart-line"),
+        title = bslib::tooltip(
+          shiny::tags$span(
+            "Individual",
+            shiny::icon("chart-line"),
+          ),
+          "Show traces for each electrode separately"
+          ),
         bslib::card(
           shiny::plotOutput("time_plot"),
           #style = "overflow-y:scroll; max-height: 800px;overflow-x:scroll",
