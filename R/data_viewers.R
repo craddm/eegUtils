@@ -26,35 +26,30 @@ browse_data <- function(data, ...) {
 browse_data.eeg_ICA <- function(data,
                                 ...) {
 
-  ui <- miniUI::miniPage(
-    gadgetTitleBar("ICA dashboard"),
-    miniUI::miniContentPanel(
-      fillPage(
-        fillRow(
-          fillCol(
-            shiny::selectInput("icomp",
-                               label = NULL,
-                               names(data$signals))
-          ),
-          fillCol(
-            shiny::radioButtons("reject_comps",
-                                label = NULL,
-                                choices = c("Keep", "Reject"),
-                                inline = TRUE)
-          ),
-        height = "15%"),
-        fillRow(
-          fillCol(
-            plotOutput("topo_ica", height = "100%"),
-            plotOutput("comp_psd", height = "100%"),
-            ),
-          fillCol(
-            plotOutput("comp_img", height = "100%"),
-            plotOutput("comp_tc", height = "100%")
-            ),
-          height = "85%"
-          )
-        )
+  ui <- bslib::page_fillable(
+    bslib::card(
+      tags$span(
+          "ICA Dashboard",
+          shiny::actionButton("done", "Done", class = "btn-success", style ="align-right")
+        ),
+        min_height = "85px"  #))
+    ),
+    bslib::layout_columns(
+        shiny::selectInput("icomp",
+                           label = NULL,
+                           names(data$signals)),
+        shiny::radioButtons("reject_comps",
+                            label = NULL,
+                            choices = c("Keep", "Reject"),
+                            inline = TRUE),
+        ),
+    bslib::layout_column_wrap(
+      plotOutput("topo_ica", height = "300px"),
+      plotOutput("comp_img"),
+      plotOutput("comp_psd"),
+      plotOutput("comp_tc"),
+      width = 1/2,
+      heights_equal = "all"
       )
   )
 
