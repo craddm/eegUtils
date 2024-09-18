@@ -11,7 +11,6 @@
 #'@author Matt Craddock \email{matt@@mattcraddock.com}
 #'@import ggplot2
 #'@import shiny
-#'@import miniUI
 #'@param data `eeg_data`, `eeg_epochs`, or `eeg_ICA` object to be plotted.
 #'@param ... Other parameters passed to browsing functions.
 #'@export
@@ -44,7 +43,7 @@ browse_data.eeg_ICA <- function(data,
                             inline = TRUE),
         ),
     bslib::layout_column_wrap(
-      plotOutput("topo_ica", height = "300px"),
+      plotOutput("topo_ica", height = "400px"),
       plotOutput("comp_img"),
       plotOutput("comp_psd"),
       plotOutput("comp_tc"),
@@ -158,69 +157,63 @@ browse_data.eeg_data <- function(data,
                            q = 4)
   }
 
-  ui <- miniPage(
-      gadgetTitleBar("Continuous data browser"),
-      miniTabstripPanel(
-        miniTabPanel(title = "Butterfly",
-                     icon = icon("chart-line"),
-                     miniContentPanel(
-                       fillCol(
-                         flex = c(4, NA, 1),
-                         plotOutput("butterfly",
-                                    height = "100%"),
-                         sliderInput("time_range",
-                                     label = "Display start time",
-                                     step = 1,
-                                     min = 0,
-                                     max = max(unique(data$timings$time)),
-                                     value = min(unique(data$timings$time)),
-                                     width = "100%"),
-                         fillRow(
-                           numericInput("sig_time",
-                                        "Display length",
-                                        value = sig_length,
-                                        min = 1,
-                                        max = 60),
-                           #numericInput("uV_scale", "Scale (microvolts)", value
+  ui <- bslib::page_fillable(
+      title = ("Continuous data browser"),
+      bslib::navset_tab(
+        bslib::nav_panel(
+          title = "Butterfly",
+          icon = icon("chart-line"),
+          bslib::card(
+            plotOutput("butterfly"),
+            sliderInput("time_range",
+                        label = "Display start time",
+                        step = 1,
+                        min = 0,
+                        max = max(unique(data$timings$time)),
+                        value = min(unique(data$timings$time)),
+                        width = "100%"),
+            bslib::layout_columns(
+              numericInput("sig_time",
+                           "Display length",
+                           value = sig_length,
+                           min = 1,
+                           max = 60),
+              #numericInput("uV_scale", "Scale (microvolts)", value
                            #= 50, min = 1),
-                           checkboxInput("dc_offset",
-                                         "Remove DC offset",
-                                         value = TRUE)
-                         )
-                       )
-                     )
+              checkboxInput("dc_offset",
+                            "Remove DC offset",
+                            value = TRUE)
+              )
+            )
         ),
-        miniTabPanel(title = "Individual",
-                     miniContentPanel(
-                       wellPanel(
-                         plotOutput("time_plot"),
-                         style = "overflow-y:scroll; max-height: 800px"
-                       ),
-                       fillPage(
-                         fillCol(
-                           flex = c(NA, 2),
-                           sliderInput("time_range_ind",
-                                       label = "Display start time",
-                                       step = 1,
-                                       min = 0,
-                                       max = max(unique(data$timings$time)),
-                                       value = min(unique(data$timings$time)),
-                                       width = "100%"),
-                           fillRow(
-                             numericInput("sig_time_ind",
-                                          "Display length",
-                                          sig_length,
-                                          min = 1, max = 60),
-                             checkboxInput("dc_offset_ind",
-                                           "Remove DC offset",
-                                           value = TRUE)
+        bslib::nav_panel(
+          title = "Individual",
+          icon = icon("chart-line"),
+          bslib::card(
+            wellPanel(
+              plotOutput("time_plot"),
+              style = "overflow-y:scroll; max-height: 800px"
+              ),
+            sliderInput("time_range_ind",
+                        label = "Display start time",
+                        step = 1,
+                        min = 0,
+                        max = max(unique(data$timings$time)),
+                        value = min(unique(data$timings$time)),
+                        width = "100%"),
+            bslib::layout_columns(
+              numericInput("sig_time_ind",
+                           "Display length",
+                           sig_length,
+                           min = 1, max = 60),
+              checkboxInput("dc_offset_ind",
+                            "Remove DC offset",
+                            value = TRUE)
                            )
                          )
                        )
                      )
         )
-      )
-    )
 
     server <- function(input,
                        output,
