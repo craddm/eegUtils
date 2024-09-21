@@ -7,7 +7,6 @@
 #' @import shiny
 #' @import ggplot2
 #' @param data Object to be explored.
-#' @return Nothing.
 #' @examples
 #'   \dontrun{ view_artefacts(demo_epochs) }
 #' @export
@@ -29,29 +28,28 @@ view_artefacts <- function(data) {
                                   values_from = value)
 
   ui <-
-    navbarPage("Artefact checks",
+    bslib::page_navbar(title = "Artefact checks",
       inverse = TRUE,
-      tabPanel("Channel stats",
-               sidebarLayout(
-                 sidebarPanel(selectInput("chan_meas",
-                                          "Display measures",
-                                          choices = c("means",
-                                                      "sds",
-                                                      "variance",
-                                                      "kurtosis",
-                                                      "minmax")
-                                         ),
-                              checkboxInput("std_meas",
-                                            "Standardize?"),
-                              width = 3),
-                 mainPanel(
-                   plotly::plotlyOutput("chan_plot"),
-                   fluidRow(
-                            column(6, plotly::plotlyOutput("erpplot")),
-                            column(6, plotly::plotlyOutput("erpimage"))),
-                 ),
-               )),
-      tabPanel("Epoch stats", epoch_plotly(epoch_dat))
+      bslib::nav_panel(
+        title = "Channel stats",
+        bslib::layout_sidebar(
+          sidebar = bslib::sidebar(
+            shiny::selectInput("chan_meas",
+                               "Display measures",
+                               choices = c("means",
+                                           "sds",
+                                           "variance",
+                                           "kurtosis",
+                                           "minmax")
+                               ),
+            shiny::checkboxInput("std_meas",
+                                 "Standardize?")),
+          plotly::plotlyOutput("chan_plot"),
+          plotly::plotlyOutput("erpplot"),
+          plotly::plotlyOutput("erpimage")
+          )
+        ),
+      bslib::nav_panel("Epoch stats", epoch_plotly(epoch_dat))
     )
 
   server <- function(input, output) {
@@ -147,8 +145,8 @@ epoch_plotly <- function(id,
 
   ns <- shiny::NS(id)
 
-  tagList(
-    fluidRow(
+  shiny::tagList(
+    shiny::fluidRow(
       plotly::plotlyOutput("plotly_emeans",
                            height = 250),
       plotly::plotlyOutput("plotly_evars",
