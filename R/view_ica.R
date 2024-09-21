@@ -49,73 +49,73 @@ view_ica <- function(data) {
              verbose = FALSE)
 
   ui <-
-    navbarPage(
+    shiny::navbarPage(
       title = "EEG decomposition viewer",
       id = "main_page",
       inverse = TRUE,
       collapsible = TRUE,
-      tabPanel(
-        "Topographies", plotOutput("comp_topos", dblclick = "topo_click")
+      shiny::tabPanel(
+        "Topographies", shiny::plotOutput("comp_topos", dblclick = "topo_click")
       ),
-      tabPanel(
+      shiny::tabPanel(
         "Timecourses",
-        plotOutput("ica_butterflies",
+        shiny::plotOutput("ica_butterflies",
                    hover = "butter_click",
-                   brush = brushOpts(id = "butter_brush",
+                   brush = shiny::brushOpts(id = "butter_brush",
                                      resetOnNew = TRUE),
                    dblclick = "butter_dbl"),
-        tableOutput("info"),
-        tags$p(span("Hover over lines to see component details.")),
-        tags$p("To zoom, drag-click to highlight where you want to zoom, then double-click to zoom. Double-click again to zoom back out.")
+        shiny::tableOutput("info"),
+        shiny::tags$p(shiny::span("Hover over lines to see component details.")),
+        shiny::tags$p("To zoom, drag-click to highlight where you want to zoom, then double-click to zoom. Double-click again to zoom back out.")
       ),
-      tabPanel(
+      shiny::tabPanel(
         "PSDs",
-        plotOutput(
+        shiny::plotOutput(
           "ica_psd",
           hover = "psd_click",
-          brush = brushOpts(id = "psd_brush",
+          brush = shiny::brushOpts(id = "psd_brush",
                             resetOnNew = TRUE),
           dblclick = "psd_dbl"
         ),
-        tableOutput("psd_info"),
-        tags$p(span("Hover over lines to see component details.")),
-        tags$p("To zoom, drag-click to highlight where you want to zoom, then double-click to zoom. Double-click again to zoom back out.")
+        shiny::tableOutput("psd_info"),
+        shiny::tags$p(shiny::span("Hover over lines to see component details.")),
+        shiny::tags$p("To zoom, drag-click to highlight where you want to zoom, then double-click to zoom. Double-click again to zoom back out.")
       ),
-      tabPanel("Individual",
-        sidebarLayout(
-          sidebarPanel(
-                       selectInput(
-                         "comp_no", "Component:",
-                         channel_names(data)
-                       ),
-                       shiny::radioButtons("reject_comps",
-                                           label = NULL,
-                                           choices = c("Keep", "Reject"),
-                                           inline = TRUE),
-                       width = 3),
-          mainPanel(
-                    fluidRow(
-                      column(plotOutput("indiv_topo"), width = 6),
-                      column(plotOutput("indiv_erpim"), width = 6)
-                    ),
-                    fluidRow(
-                      column(plotOutput("indiv_psd"), width = 6),
-                      column(plotOutput("indiv_tc"), width = 6)
-                    ),
-                    width = 9)
-        )
-      ),
-      tabPanel("Output",
-               tableOutput("reject_table"),
-               checkboxGroupInput("output_choices",
-                 label = "Output to return",
-                 choices = list(
-                                "Components to reject" = "reject",
-                                "Components to keep" = "keep",
-                                "Reconstructed data" = "data")
-               ),
-               actionButton("done",
-                            "Press to close app and return to console"))
+      shiny::tabPanel("Individual",
+        shiny::sidebarLayout(
+          shiny::sidebarPanel(
+            shiny::selectInput(
+              "comp_no", "Component:",
+              channel_names(data)
+              ),
+            shiny::radioButtons("reject_comps",
+                                label = NULL,
+                                choices = c("Keep", "Reject"),
+                                inline = TRUE),
+            width = 3),
+          shiny::mainPanel(
+            shiny::fluidRow(
+              shiny::column(shiny::plotOutput("indiv_topo"), width = 6),
+              shiny::column(shiny::plotOutput("indiv_erpim"), width = 6)
+              ),
+            shiny::fluidRow(
+              shiny::column(shiny::plotOutput("indiv_psd"), width = 6),
+              shiny::column(shiny::plotOutput("indiv_tc"), width = 6)
+              ),
+            width = 9)
+          )
+        ),
+      shiny::tabPanel("Output",
+                      shiny::tableOutput("reject_table"),
+                      shiny::checkboxGroupInput("output_choices",
+                                                label = "Output to return",
+                                                choices = list(
+                                                  "Components to reject" = "reject",
+                                                  "Components to keep" = "keep",
+                                                  "Reconstructed data" = "data")
+                                                ),
+                      shiny::actionButton("done",
+                                          "Press to close app and return to console"))
 
     )
 
@@ -123,10 +123,10 @@ view_ica <- function(data) {
                      output,
                      session) {
 
-    comp_status <- reactiveValues()
-    ranges <- reactiveValues(x = NULL,
+    comp_status <- shiny::reactiveValues()
+    ranges <- shiny::reactiveValues(x = NULL,
                              y = NULL)
-    b_ranges <- reactiveValues(x = NULL,
+    b_ranges <- shiny::reactiveValues(x = NULL,
                                y = NULL)
 
     output$comp_topos <-
@@ -145,7 +145,7 @@ view_ica <- function(data) {
       )
 
     output$ica_psd <-
-      renderPlot({
+      shiny::renderPlot({
         ggplot(psd_ica,
                aes(x = frequency,
                    y = power,
@@ -157,7 +157,7 @@ view_ica <- function(data) {
                           expand = FALSE)
       })
 
-    output$info <- renderTable({
+    output$info <- shiny::renderTable({
       as.data.frame(
         shiny::nearPoints(ica_erps,
                           input$butter_click,
@@ -168,7 +168,7 @@ view_ica <- function(data) {
       )
     })
 
-    output$psd_info <- renderTable({
+    output$psd_info <- shiny::renderTable({
       as.data.frame(
         shiny::nearPoints(psd_ica,
                           input$psd_click,
@@ -178,7 +178,7 @@ view_ica <- function(data) {
     })
 
     output$indiv_topo <- shiny::bindCache(
-      renderPlot({
+      shiny::renderPlot({
       topoplot(data,
                input$comp_no,
                verbose = FALSE)
@@ -230,7 +230,7 @@ view_ica <- function(data) {
     }, res = 96),
     input$icomp)
 
-    observeEvent(input$psd_dbl, {
+    shiny::observeEvent(input$psd_dbl, {
       brush <- input$psd_brush
       if (!is.null(brush)) {
         ranges$x <- c(brush$xmin, brush$xmax)
@@ -241,7 +241,7 @@ view_ica <- function(data) {
       }
     })
 
-    observeEvent(input$butter_dbl, {
+    shiny::observeEvent(input$butter_dbl, {
       brush <- input$butter_brush
       if (!is.null(brush)) {
         b_ranges$x <- c(brush$xmin,
@@ -254,34 +254,34 @@ view_ica <- function(data) {
       }
     })
 
-    observeEvent(input$topo_click, {
+    shiny::observeEvent(input$topo_click, {
       selected_topo <- as.data.frame(
         shiny::nearPoints(ica_topoplots$data,
                           input$topo_click,
                           threshold = 20,
                           maxpoints = 1)
       )
-      updateNavbarPage(inputId = "main_page",
+      shiny::updateNavbarPage(inputId = "main_page",
                        selected = "Individual")
-      updateSelectInput(inputId = "comp_no",
+      shiny::updateSelectInput(inputId = "comp_no",
                         selected = selected_topo$component)
     })
 
 
-    observeEvent(input$comp_no, {
-      updateRadioButtons(inputId = "reject_comps",
+    shiny::observeEvent(input$comp_no, {
+      shiny::updateRadioButtons(inputId = "reject_comps",
                          choices = c("Keep", "Reject"),
                          selected = comp_status[[input$comp_no]],
                          inline = TRUE)
     })
 
-    observeEvent(input$reject_comps, {
-      comp_status[[isolate(input$comp_no)]] <- input$reject_comps
+    shiny::observeEvent(input$reject_comps, {
+      comp_status[[shiny::isolate(input$comp_no)]] <- input$reject_comps
       comp_status
     })
 
-    output$reject_table <- renderTable({
-      rejects <- reactiveValuesToList(comp_status)
+    output$reject_table <- shiny::renderTable({
+      rejects <- shiny::reactiveValuesToList(comp_status)
       rejects <-
         names(rejects)[vapply(rejects,
                               function(x) identical(x, "Reject"),
@@ -290,8 +290,8 @@ view_ica <- function(data) {
     }
     )
 
-    observeEvent(input$done, {
-      outputs <- isolate(input$output_choices)
+    shiny::observeEvent(input$done, {
+      outputs <- shiny::isolate(input$output_choices)
 
       if (is.null(outputs)) {
         message("No output requested.")
@@ -302,7 +302,7 @@ view_ica <- function(data) {
           length(outputs)
         )
         names(returnValue) <- outputs
-        rejects <- reactiveValuesToList(isolate(comp_status))
+        rejects <- shiny::reactiveValuesToList(shiny::isolate(comp_status))
         rejects <-
           names(rejects)[vapply(rejects,
                                 function(x) identical(x, "Reject"),
