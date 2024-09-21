@@ -27,11 +27,11 @@ browse_data.eeg_ICA <- function(data,
 
   ui <- bslib::page_fillable(
     bslib::card(
-      tags$span(
-          "ICA Dashboard",
-          shiny::actionButton("done", "Done", class = "btn-success", style ="align-right")
+      shiny::tags$span(
+        "ICA Dashboard",
+        shiny::actionButton("done", "Done", class = "btn-success", style ="align-right")
         ),
-        min_height = "85px"  #))
+      min_height = "85px"
     ),
     bslib::layout_columns(
         shiny::selectInput("icomp",
@@ -43,10 +43,10 @@ browse_data.eeg_ICA <- function(data,
                             inline = TRUE),
         ),
     bslib::layout_column_wrap(
-      plotOutput("topo_ica", height = "400px"),
-      plotOutput("comp_img"),
-      plotOutput("comp_psd"),
-      plotOutput("comp_tc"),
+      shiny::plotOutput("topo_ica", height = "400px"),
+      shiny::plotOutput("comp_img"),
+      shiny::plotOutput("comp_psd"),
+      shiny::plotOutput("comp_tc"),
       width = 1/2,
       heights_equal = "all"
       )
@@ -116,7 +116,7 @@ browse_data.eeg_ICA <- function(data,
       comp_status
       })
     shiny::observeEvent(input$done, {
-      returnValue <- reactiveValuesToList(comp_status)
+      returnValue <- shiny::reactiveValuesToList(comp_status)
       returnValue <-
         names(returnValue)[vapply(returnValue,
                                   function(x) identical(x, "Reject"),
@@ -124,11 +124,11 @@ browse_data.eeg_ICA <- function(data,
       shiny::stopApp(returnValue)
     })
 
-    session$onSessionEnded(stopApp)
+    session$onSessionEnded(shiny::stopApp)
   }
-  runGadget(ui,
+  shiny::runGadget(ui,
             server,
-            viewer = paneViewer(minHeight = 600))
+            viewer = shiny::paneViewer(minHeight = 600))
 }
 
 #' @export
@@ -162,10 +162,10 @@ browse_data.eeg_data <- function(data,
       bslib::navset_tab(
         bslib::nav_panel(
           title = "Butterfly",
-          icon = icon("chart-line"),
+          icon = shiny::icon("chart-line"),
           bslib::card(
-            plotOutput("butterfly"),
-            sliderInput("time_range",
+            shiny::plotOutput("butterfly"),
+            shiny::sliderInput("time_range",
                         label = "Display start time",
                         step = 1,
                         min = 0,
@@ -173,14 +173,14 @@ browse_data.eeg_data <- function(data,
                         value = min(unique(data$timings$time)),
                         width = "100%"),
             bslib::layout_columns(
-              numericInput("sig_time",
+              shiny::numericInput("sig_time",
                            "Display length",
                            value = sig_length,
                            min = 1,
                            max = 60),
               #numericInput("uV_scale", "Scale (microvolts)", value
                            #= 50, min = 1),
-              checkboxInput("dc_offset",
+              shiny::checkboxInput("dc_offset",
                             "Remove DC offset",
                             value = TRUE)
               )
@@ -188,13 +188,13 @@ browse_data.eeg_data <- function(data,
         ),
         bslib::nav_panel(
           title = "Individual",
-          icon = icon("chart-line"),
+          icon = shiny::icon("chart-line"),
           bslib::card(
-            wellPanel(
-              plotOutput("time_plot"),
+            shiny::wellPanel(
+              shiny::plotOutput("time_plot"),
               style = "overflow-y:scroll; max-height: 800px"
               ),
-            sliderInput("time_range_ind",
+            shiny::sliderInput("time_range_ind",
                         label = "Display start time",
                         step = 1,
                         min = 0,
@@ -202,11 +202,11 @@ browse_data.eeg_data <- function(data,
                         value = min(unique(data$timings$time)),
                         width = "100%"),
             bslib::layout_columns(
-              numericInput("sig_time_ind",
+              shiny::numericInput("sig_time_ind",
                            "Display length",
                            sig_length,
                            min = 1, max = 60),
-              checkboxInput("dc_offset_ind",
+              shiny::checkboxInput("dc_offset_ind",
                             "Remove DC offset",
                             value = TRUE)
                            )
@@ -219,7 +219,7 @@ browse_data.eeg_data <- function(data,
                        output,
                        session) {
 
-      output$butterfly <- renderPlot({
+      output$butterfly <- shiny::renderPlot({
         # select only the time range that we want to display
         tmp_data <- select_times(data,
                                  time_lim = c(input$time_range,
@@ -236,7 +236,7 @@ browse_data.eeg_data <- function(data,
         zz
       })
 
-      output$time_plot <- renderPlot({
+      output$time_plot <- shiny::renderPlot({
         tmp_data <- select_times(data,
                                  time_lim = c(input$time_range_ind,
                                               input$time_range_ind + input$sig_time_ind))
@@ -272,14 +272,14 @@ browse_data.eeg_data <- function(data,
         init_plot
       }, height = 2000)
 
-      observeEvent(input$done, {
+      shiny::observeEvent(input$done, {
         stopApp()
       })
       session$onSessionEnded(stopApp)
     }
-  runGadget(ui,
+  shiny::runGadget(ui,
             server,
-            viewer = paneViewer(minHeight = 600))
+            viewer = shiny::paneViewer(minHeight = 600))
 }
 
 #'@export
@@ -454,7 +454,7 @@ browse_data.eeg_epochs <- function(data,
     shiny::observeEvent(input$done, {
       shiny::stopApp()
     })
-    session$onSessionEnded(stopApp)
+    session$onSessionEnded(shiny::stopApp)
   }
   shiny::runGadget(ui,
                    server,
