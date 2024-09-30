@@ -158,128 +158,115 @@ browse_data.eeg_data <- function(data,
   }
 
   ui <- bslib::page_fillable(
-      title = ("Continuous data browser"),
-      bslib::navset_tab(
-        bslib::nav_panel(
-          title = "Butterfly",
-          icon = shiny::icon("chart-line"),
-          bslib::card(
-            shiny::plotOutput("butterfly"),
-            shiny::sliderInput("time_range",
-                        label = "Display start time",
-                        step = 1,
-                        min = 0,
-                        max = max(unique(data$timings$time)),
-                        value = min(unique(data$timings$time)),
-                        width = "100%"),
-            bslib::layout_columns(
-              shiny::numericInput("sig_time",
-                           "Display length",
-                           value = sig_length,
-                           min = 1,
-                           max = 60),
-              #numericInput("uV_scale", "Scale (microvolts)", value
-                           #= 50, min = 1),
-              shiny::checkboxInput("dc_offset",
-                            "Remove DC offset",
-                            value = TRUE)
-              )
-            )
-        ),
-        bslib::nav_panel(
-          title = "Individual",
-          icon = shiny::icon("chart-line"),
-          bslib::card(
-            shiny::wellPanel(
-              shiny::plotOutput("time_plot"),
-              style = "overflow-y:scroll; max-height: 800px"
-              ),
-            shiny::sliderInput("time_range_ind",
-                        label = "Display start time",
-                        step = 1,
-                        min = 0,
-                        max = max(unique(data$timings$time)),
-                        value = min(unique(data$timings$time)),
-                        width = "100%"),
-            bslib::layout_columns(
-              shiny::numericInput("sig_time_ind",
-                           "Display length",
-                           sig_length,
-                           min = 1, max = 60),
-              shiny::checkboxInput("dc_offset_ind",
-                            "Remove DC offset",
-                            value = TRUE)
-                           )
-                         )
-                       )
-                     )
+    title = ("Continuous data browser"),
+    bslib::navset_tab(
+      bslib::nav_panel(
+        title = "Butterfly",
+        icon = shiny::icon("chart-line"),
+        bslib::card(
+          shiny::plotOutput("butterfly"),
         )
+      ),
+      bslib::nav_panel(
+        title = "Individual",
+        icon = shiny::icon("chart-line"),
+        bslib::card(
+          shiny::wellPanel(
+            shiny::plotOutput("time_plot"),
+            style = "overflow-y:scroll; max-height: 800px"
+          ),
+        ),
+      ),
+      footer =
+        bslib::card(
+          shiny::sliderInput(
+            "time_range",
+            label = "Display start time (seconds)",
+            step = 1,
+            min = round(min(data$timings$time), 2),
+            max = round(max(data$timings$time), 2),
+            value = min(data$timings$time),
+            width = "100%"),
+          bslib::layout_columns(
+            shiny::numericInput("sig_time",
+                                "Display length (seconds)",
+                                value = sig_length,
+                                min = 1,
+                                max = round(1/data$srate * nrow(data$signals)))
+          ),
+          shiny::checkboxInput("dc_offset",
+                               "Remove DC offset",
+                               value = TRUE)
+        )
+    )
+  )
 
-    server <- function(input,
-                       output,
-                       session) {
+  server <- function(input,
+                     output,
+                     session) {
 
-      output$butterfly <- shiny::renderPlot({
-        # select only the time range that we want to display
-        tmp_data <- select_times(data,
-                                 time_lim = c(input$time_range,
-                                              input$time_range + input$sig_time))
 
-        if (input$dc_offset) {
-          tmp_data <- rm_baseline(tmp_data,
-                                  verbose = FALSE)
-        }
+    output$butterfly <- shiny::renderPlot({
+      # select only the time range that we want to display
+      tmp_data <- select_times(data,
+                               time_lim = c(input$time_range,
+                                            input$time_range + input$sig_time))
 
-        zz <- plot_butterfly(tmp_data,
-                             legend = FALSE,
-                             continuous = TRUE)
-        zz
-      })
+      if (input$dc_offset) {
+        tmp_data <- rm_baseline(tmp_data,
+                                verbose = FALSE)
+      }
 
-      output$time_plot <- shiny::renderPlot({
-        tmp_data <- select_times(data,
-                                 time_lim = c(input$time_range_ind,
-                                              input$time_range_ind + input$sig_time_ind))
+      butterfly_plot <- plot_butterfly(tmp_data,
+                                       legend = FALSE,
+                                       continuous = TRUE)
+      butterfly_plot
+    })
 
-        if (input$dc_offset_ind) {
-          tmp_data <- rm_baseline(tmp_data,
-                                  verbose = FALSE)
-        }
+    output$time_plot <- shiny::renderPlot({
+      tmp_data <- select_times(data,
+                               time_lim = c(input$time_range,
+                                            input$time_range + input$sig_time))
 
-        tmp_data <- as.data.frame(tmp_data,
-                                  long = TRUE,
-                                  coords = FALSE)
+      if (input$dc_offset) {
+        tmp_data <- rm_baseline(tmp_data,
+                                verbose = FALSE)
+      }
 
-        init_plot <- ggplot2::ggplot(tmp_data,
-                                     aes(x = time,
-                                         y = amplitude)) +
-          geom_line() +
-          facet_grid(electrode ~ .,
-                     scales = "free_y",
-                     switch = "y") +
-          theme_minimal() +
-          theme(
-            axis.text.y = element_blank(),
-            axis.ticks.y = element_blank(),
-            axis.title.y = element_blank(),
-            strip.text.y = element_text(angle = 180),
-            panel.spacing = unit(0, "lines"),
-            panel.grid.minor = element_blank(),
-            panel.grid.major.y = element_blank()
-          ) +
-          scale_x_continuous(expand = c(0, 0))
+      tmp_data <- as.data.frame(tmp_data,
+                                long = TRUE,
+                                coords = FALSE)
 
-        init_plot
-      }, height = 2000)
+      init_plot <- ggplot2::ggplot(tmp_data,
+                                   aes(x = time,
+                                       y = amplitude)) +
+        geom_line() +
+        facet_grid(electrode ~ .,
+                   scales = "free_y",
+                   switch = "y") +
+        theme_minimal() +
+        theme(
+          axis.text.y = element_blank(),
+          axis.ticks.y = element_blank(),
+          axis.title.y = element_blank(),
+          strip.text.y = element_text(angle = 180),
+          panel.spacing = unit(0, "lines"),
+          panel.grid.minor = element_blank(),
+          panel.grid.major.y = element_blank()
+        ) +
+        scale_x_continuous(expand = c(0, 0))
 
-      shiny::observeEvent(input$done, {
-        stopApp()
-      })
-      session$onSessionEnded(stopApp)
-    }
+      init_plot
+    }, height = 2000)
+
+    shiny::observeEvent(input$done, {
+      stopApp()
+    })
+    session$onSessionEnded(stopApp)
+  }
   shiny::runGadget(ui,
-            server,
-            viewer = shiny::paneViewer(minHeight = 600))
+                   server,
+                   viewer = shiny::paneViewer(minHeight = 600))
 }
 
 #'@export
@@ -311,8 +298,8 @@ browse_data.eeg_epochs <- function(data,
                              label = "Display starting epoch",
                              step = 1,
                              min = 1,
-                             max = max(unique(data$timings$epoch)),
-                             value = min(unique(data$timings$epoch)),
+                             max = max(data$timings$epoch),
+                             value = min(data$timings$epoch),
                              width = "100%"),
           bslib::layout_columns(
             shiny::numericInput("sig_time",
