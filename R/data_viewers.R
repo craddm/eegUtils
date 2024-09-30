@@ -181,25 +181,19 @@ browse_data.eeg_data <- function(data,
         bslib::card(
           shiny::sliderInput(
             "time_range",
-            label = "Display start time (seconds)",
+            label = "Display time range (seconds)",
             step = 1,
             min = round(min(data$timings$time), 2),
             max = round(max(data$timings$time), 2),
-            value = min(data$timings$time),
+            value = c(min(data$timings$time),
+                      min(data$timings$time) + 4),
             width = "100%"),
-          bslib::layout_columns(
-            shiny::numericInput("sig_time",
-                                "Display length (seconds)",
-                                value = sig_length,
-                                min = 1,
-                                max = round(1/data$srate * nrow(data$signals)))
-          ),
           shiny::checkboxInput("dc_offset",
                                "Remove DC offset",
                                value = TRUE)
-        )
+          )
+      )
     )
-  )
 
   server <- function(input,
                      output,
@@ -209,8 +203,8 @@ browse_data.eeg_data <- function(data,
     output$butterfly <- shiny::renderPlot({
       # select only the time range that we want to display
       tmp_data <- select_times(data,
-                               time_lim = c(input$time_range,
-                                            input$time_range + input$sig_time))
+                               time_lim = c(input$time_range[1],
+                                            input$time_range[2]))
 
       if (input$dc_offset) {
         tmp_data <- rm_baseline(tmp_data,
@@ -294,30 +288,11 @@ browse_data.eeg_epochs <- function(data,
           "Shows traces from every electrode overlapping, with transparency"),
         bslib::card(
           shiny::plotOutput("butterfly"),
-          shiny::sliderInput("time_range",
-                             label = "Display starting epoch",
-                             step = 1,
-                             min = 1,
-                             max = max(data$timings$epoch),
-                             value = min(data$timings$epoch),
-                             width = "100%"),
-          bslib::layout_columns(
-            shiny::numericInput("sig_time",
-                                "No. epochs",
-                                sig_length,
-                                min = 1, max = 60),
-            shiny::checkboxInput("dc_offset",
-                                 "Remove DC offset",
-                                 value = FALSE)
-            )
         ),
       ),
 
       #   #numericInput("uV_scale", "Scale (microvolts)",
       # #max(data$amplitude), min = 10, value = 100),
-      # checkboxInput("dc_offset",
-      #               "Remove DC offset",
-      #               value = FALSE)
       bslib::nav_panel(
         title = bslib::tooltip(
           shiny::tags$span(
@@ -325,27 +300,24 @@ browse_data.eeg_epochs <- function(data,
             shiny::icon("chart-line"),
           ),
           "Show traces for each electrode separately"
-          ),
+        ),
         bslib::card(
           shiny::plotOutput("time_plot"),
-          #style = "overflow-y:scroll; max-height: 800px;overflow-x:scroll",
-          shiny::sliderInput("time_range_ind",
-                             label = "Display starting epoch",
-                             step = 1,
-                             min = 1,
-                             max = max(unique(data$timings$epoch)),
-                             value = min(unique(data$timings$epoch)),
-                             width = "100%"),
-          bslib::layout_columns(
-            shiny::numericInput("sig_time_ind",
-                                "Display length (epochs)",
-                                sig_length,
-                                min = 1, max = 60),
-            shiny::checkboxInput("dc_offset_ind",
-                                 "Remove DC offset",
-                                 value = FALSE)
-          )
-        )
+          style = "overflow-y:scroll; max-height: 800px",
+        ),
+      ),
+      footer = bslib::card(
+        shiny::sliderInput("time_range",
+                           label = "Epoch range",
+                           step = 1,
+                           min = 1,
+                           max = max(data$timings$epoch),
+                           value = c(min(data$timings$epoch),
+                                     min(data$timings$epoch) + 4),
+                           width = "100%"),
+        shiny::checkboxInput("dc_offset",
+                             "Remove DC offset",
+                             value = FALSE)
       )
     )
   )
@@ -357,8 +329,8 @@ browse_data.eeg_epochs <- function(data,
     tmp_data <- shiny::debounce(
       shiny::reactive({
         select_epochs(data,
-                      epoch_no = seq(input$time_range,
-                                     input$time_range + input$sig_time - 1))
+                      epoch_no = seq(input$time_range[1],
+                                     input$time_range[2]))
       }),
       400)
 
@@ -390,28 +362,20 @@ browse_data.eeg_epochs <- function(data,
       butter_out
     })
 
-    tmp_data_ind <- shiny::debounce(
-      shiny::reactive({
-        select_epochs(data,
-                      epoch_no = seq(input$time_range_ind,
-                                     input$time_range_ind + input$sig_time_ind - 1))
-      }),
-      600)
-
     output$time_plot <- shiny::bindCache(
       shiny::renderPlot({
-        if (input$dc_offset_ind) {
-          tmp_data_ind <- rm_baseline(tmp_data_ind(),
-                                      verbose = FALSE)
+        if (input$dc_offset) {
+          tmp_data <- rm_baseline(tmp_data(),
+                                  verbose = FALSE)
         } else {
-          tmp_data_ind <- tmp_data_ind()
+          tmp_data <- tmp_data()
         }
 
-        tmp_data_ind <- as.data.frame(tmp_data_ind,
-                                      long = TRUE,
-                                      coords = FALSE)
+        tmp_data <- as.data.frame(tmp_data,
+                                  long = TRUE,
+                                  coords = FALSE)
 
-        init_plot <- ggplot2::ggplot(tmp_data_ind,
+        init_plot <- ggplot2::ggplot(tmp_data,
                                      aes(x = time,
                                          y = amplitude)) +
           geom_line() +
@@ -429,13 +393,14 @@ browse_data.eeg_epochs <- function(data,
             panel.grid.major = element_blank()
           ) +
           scale_x_continuous(expand = c(0, 0)) +
-          geom_vline(xintercept = max(unique(tmp_data_ind$time))) +
+          geom_vline(xintercept = max(unique(tmp_data$time))) +
           geom_vline(xintercept = 0,
-                     linetype = "longdash")
+                     linetype = "longdash") +
+          labs(x = "Time (s)")
         init_plot
       },
       height = 2500),
-      input$dc_offset_ind, tmp_data_ind()
+      input$dc_offset, tmp_data()
     )
 
     shiny::observeEvent(input$done, {
