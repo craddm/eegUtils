@@ -175,7 +175,7 @@ browse_data.eeg_data <- function(data,
             shiny::plotOutput("time_plot"),
             style = "overflow-y:scroll; max-height: 800px"
           ),
-        ),
+        )
       ),
       footer =
         bslib::card(
@@ -294,9 +294,6 @@ browse_data.eeg_epochs <- function(data,
           class = "resize-vertical"
         ),
       ),
-
-      #   #numericInput("uV_scale", "Scale (microvolts)",
-      # #max(data$amplitude), min = 10, value = 100),
       bslib::nav_panel(
         title = bslib::tooltip(
           shiny::tags$span(
@@ -309,7 +306,7 @@ browse_data.eeg_epochs <- function(data,
           shiny::plotOutput("time_plot"),
           style = "overflow-y:scroll; max-height: 800px",
           class = "resize-vertical"
-        ),
+        )
       ),
       footer = bslib::card(
         shiny::sliderInput("time_range",
@@ -322,7 +319,10 @@ browse_data.eeg_epochs <- function(data,
                            width = "100%"),
         shiny::checkboxInput("dc_offset",
                              "Remove DC offset",
-                             value = FALSE)
+                             value = FALSE),
+        shiny::numericInput("uV_scale",
+                            "Scale (microvolts)",
+                            value = 50, step = 1),
       )
     )
   )
@@ -363,7 +363,10 @@ browse_data.eeg_epochs <- function(data,
         ) +
         geom_vline(xintercept = max(unique(tmp_data$time))) +
         geom_vline(xintercept = 0,
-                   linetype = "longdash")
+                   linetype = "longdash",
+                   alpha = 0.2) +
+        coord_cartesian(ylim = c(-input$uV_scale, input$uV_scale),
+                        expand = FALSE)
       butter_out
     })
 
@@ -385,8 +388,10 @@ browse_data.eeg_epochs <- function(data,
                                          y = amplitude)) +
           geom_line() +
           facet_grid(electrode ~ epoch,
-                     scales = "free_y",
+                     #scales = "free_y",
                      switch = "y") +
+          coord_cartesian(ylim = c(-input$uV_scale, input$uV_scale),
+                          expand = FALSE) +
           theme_minimal() +
           theme(
             axis.text.y = element_blank(),
@@ -400,12 +405,15 @@ browse_data.eeg_epochs <- function(data,
           scale_x_continuous(expand = c(0, 0)) +
           geom_vline(xintercept = max(unique(tmp_data$time))) +
           geom_vline(xintercept = 0,
-                     linetype = "longdash") +
+                     linetype = "longdash",
+                     alpha = 0.2) +
           labs(x = "Time (s)")
         init_plot
       },
       height = 2500),
-      input$dc_offset, tmp_data()
+      input$dc_offset,
+      tmp_data(),
+      input$uV_scale
     )
 
     shiny::observeEvent(input$done, {
@@ -417,3 +425,4 @@ browse_data.eeg_epochs <- function(data,
                    server,
                    viewer = shiny::paneViewer(minHeight = 600))
 }
+
