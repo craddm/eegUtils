@@ -158,13 +158,17 @@ browse_data.eeg_data <- function(data,
   }
 
   ui <- bslib::page_fillable(
+    tags$head(
+      tags$style(".resize-vertical {resize: vertical;}")
+    ),
     title = ("Continuous data browser"),
     bslib::navset_tab(
       bslib::nav_panel(
         title = "Butterfly",
         icon = shiny::icon("chart-line"),
         bslib::card(
-          shiny::plotOutput("butterfly")
+          shiny::plotOutput("butterfly"),
+          class = "resize-vertical"
         )
       ),
       bslib::nav_panel(
@@ -173,7 +177,8 @@ browse_data.eeg_data <- function(data,
         bslib::card(
           shiny::wellPanel(
             shiny::plotOutput("time_plot"),
-            style = "overflow-y:scroll; max-height: 800px"
+            style = "overflow-y:scroll; max-height: 800px",
+            class = "resize-vertical"
           ),
         )
       ),
