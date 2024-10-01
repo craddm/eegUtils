@@ -190,7 +190,10 @@ browse_data.eeg_data <- function(data,
             width = "100%"),
           shiny::checkboxInput("dc_offset",
                                "Remove DC offset",
-                               value = TRUE)
+                               value = TRUE),
+          shiny::numericInput("uV_scale",
+                              "Scale (microvolts)",
+                              value = 50, step = 1),
           )
       )
     )
@@ -214,7 +217,9 @@ browse_data.eeg_data <- function(data,
       butterfly_plot <- plot_butterfly(tmp_data,
                                        legend = FALSE,
                                        continuous = TRUE)
-      butterfly_plot
+      butterfly_plot +
+        coord_cartesian(ylim = c(-input$uV_scale, input$uV_scale),
+                        expand = FALSE)
     })
 
     output$time_plot <- shiny::renderPlot({
@@ -248,7 +253,9 @@ browse_data.eeg_data <- function(data,
           panel.grid.minor = element_blank(),
           panel.grid.major.y = element_blank()
         ) +
-        scale_x_continuous(expand = c(0, 0))
+        scale_x_continuous(expand = c(0, 0)) +
+        coord_cartesian(ylim = c(-input$uV_scale, input$uV_scale),
+                        expand = FALSE)
 
       init_plot
     }, height = 2000)
