@@ -298,7 +298,7 @@ create_bf <- function(data,
       butterfly_plot +
       geom_line(colour = "black",
                 aes(group = electrode),
-                alpha = 0.2) +
+                alpha = 0.4) +
       labs(x = "Time (s)",
            y = ylab,
            colour = "") +

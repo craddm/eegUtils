@@ -320,30 +320,34 @@ interactive_scalp.eeg_epochs <- function(data,
   }
 
   ui <-
-      bslib::page_fillable(
+    bslib::page_fillable(
       bslib::navset_card_underline(
         bslib::nav_panel(
           title = "Whole scalp",
-          icon = icon(name = "circle", lib = "font-awesome"),
+          icon = icon(name = "circle",
+                      lib = "font-awesome"),
           plotOutput("Scalp",
                      click = "click_plot"),
           verbatimTextOutput("click_info")
         ),
         bslib::nav_panel(
           title = "Selected electrodes",
-          icon = icon("chart-line"),
+          icon = icon("chart-line",
+                      lib = "font-awesome"),
           plotOutput("Selected"),
-          bslib::tooltip(
-            actionButton("avg", "Mean"),
-            "Plot the mean of the selected electrodes",
-            placement = "right"
-          ),
-          actionButton("single", "Plot individual electrodes")
+          bslib::layout_column_wrap(
+            bslib::tooltip(
+              actionButton("avg", "Mean"),
+              "Plot the mean of the selected electrodes"
+              ),
+            bslib::tooltip(
+              actionButton("single", "Plot individual electrodes"),
+              "Butterfly plot with each selected electrode shown separately"
+              )
           )
         )
       )
-
-
+    )
 
   server <- function(input,
                      output,

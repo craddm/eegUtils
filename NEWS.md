@@ -7,6 +7,7 @@
 - `topoplot()` now supports plotting of multiple timepoints - pass a list of times to the `time_lim` argument.
 - `topoplot()` now supports custom fill titles through the `fill_title` argument, and automatically switches where necessary (e.g. now says "Power mV^2"). Fill titles are now also centred.
 - `browse_data.eeg_ICA()` now provides the option to select components for rejection, and returns a character vector of selected components.
+- Recoded `browse_data()` to use `bslib` for styling.
 - `view_ica()` now allows you to select components for rejection, to double-click on topographies to inspect them individually, and to return cleaned data.
 - `eeg_average()` now supports averaging over conditions in `eeg_evoked` files
 - `eeg_average()` now records weights - the number of epochs that went into an average - and uses those in subsequent steps where possible for `eeg_epochs`/`eeg_evoked` / `eeg_tfr` objects. 
