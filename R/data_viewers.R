@@ -158,9 +158,6 @@ browse_data.eeg_data <- function(data,
   }
 
   ui <- bslib::page_fillable(
-    tags$head(
-      tags$style(".resize-vertical {resize: vertical;}")
-    ),
     title = ("Continuous data browser"),
     bslib::navset_tab(
       bslib::nav_panel(
@@ -168,7 +165,7 @@ browse_data.eeg_data <- function(data,
         icon = shiny::icon("chart-line"),
         bslib::card(
           shiny::plotOutput("butterfly"),
-          class = "resize-vertical"
+          style = "resize:vertical;"
         )
       ),
       bslib::nav_panel(
@@ -177,8 +174,7 @@ browse_data.eeg_data <- function(data,
         bslib::card(
           shiny::wellPanel(
             shiny::plotOutput("time_plot"),
-            style = "overflow-y:scroll; max-height: 800px",
-            class = "resize-vertical"
+            style = "overflow-y:scroll; max-height: 800px; resize:vertical",
           ),
         )
       ),
@@ -289,9 +285,6 @@ browse_data.eeg_epochs <- function(data,
   }
 
   ui <- bslib::page_fillable(
-    tags$head(
-      tags$style(".resize-vertical {resize: vertical;}")
-    ),
     title = "Epoched data browser",
     bslib::navset_tab(
       bslib::nav_panel(
@@ -303,7 +296,7 @@ browse_data.eeg_epochs <- function(data,
           "Shows traces from every electrode overlapping, with transparency"),
         bslib::card(
           shiny::plotOutput("butterfly"),
-          class = "resize-vertical"
+          style = "resize:vertical;"
         ),
       ),
       bslib::nav_panel(
@@ -316,8 +309,7 @@ browse_data.eeg_epochs <- function(data,
         ),
         bslib::card(
           shiny::plotOutput("time_plot"),
-          style = "overflow-y:scroll; max-height: 800px",
-          class = "resize-vertical"
+          style = "overflow-y:scroll; max-height: 800px; resize:vertical;",
         )
       ),
       footer = bslib::card(
