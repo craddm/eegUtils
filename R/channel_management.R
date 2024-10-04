@@ -98,6 +98,13 @@ import_txt <- function(file_name) {
   raw_locs <- utils::read.delim(file_name,
                                 stringsAsFactors = FALSE)
 
+  expected <- c("labels", "radius",
+                "ref", "sph.phi",
+                "sph.radius", "sph.theta",
+                "theta", "type",
+                "urchan", "X",
+                "Y", "Z")
+
   if (any(names(raw_locs) %in% expected)) {
     message("Possibly EEGLAB channel info, attempting import...")
     final_locs <- parse_chaninfo(raw_locs)
@@ -763,8 +770,9 @@ cart_to_spherical <- function(xyz_coords) {
 }
 
 #' Convert spherical co-ordinates to Cartesian 3D co-ordinates
-
-#' @param sph_coords Theta and phi in degrees.
+#'
+#' @param theta Theta in degrees
+#' @param phi Phi in degrees
 #' @param radius Radius of head (in mm)
 #' @keywords internal
 sph_to_cart <- function(theta,
