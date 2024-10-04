@@ -9,9 +9,6 @@ view_artefacts(data)
 \arguments{
 \item{data}{Object to be explored.}
 }
-\value{
-Nothing.
-}
 \description{
 An interactive Shiny app that allows exploration of channel and epoch
 statistics

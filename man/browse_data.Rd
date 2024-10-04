@@ -33,11 +33,10 @@ A character vector of component names selected for rejection.
 \description{
 A Shiny gadget for browsing EEG data and ICA decompositions interactively.
 With EEG data (epoched or continuous), data can be viewed as a butterfly plot
-(all electrodes overlaid) or as individual traces (electrodes "stacked").
-Currently, the scale cannot be manually set and is determined by the range of
-the viewable data. For \code{eeg_ICA} objects, you will instead be shown a
-composite of multiple properties of the decomposition - a topography, an ERP
-image, an ERP, and a power spectral density plot from 4-50 Hz.
+(all electrodes overlaid) or as individual traces (electrodes "stacked"). For
+\code{eeg_ICA} objects, you will instead be shown a composite of multiple
+properties of the decomposition - a topography, an ERP image, an ERP, and a
+power spectral density plot from 4-50 Hz.
 }
 \section{Methods (by class)}{
 \itemize{
