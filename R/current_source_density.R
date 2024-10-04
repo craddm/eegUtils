@@ -356,7 +356,6 @@ compute_g <- function(xyz_coords,
 #' @param xyz_coords A set of electrode locations on a unit sphere.
 #' @param xyz_elecs A set of electrode locations on a unit sphere.
 #' @param m Interpolation constant (higher = less flexible)
-#' @param lambda smoothing parameter
 #' @param iter iterations for calculations
 #' @importFrom pracma legendre
 #' @keywords internal
