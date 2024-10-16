@@ -111,3 +111,4 @@ update_r <-
 #' Calculate maximum electrode distance from origin.
 #' @keywords internal
 calc_max_elec <- function(data) max(sqrt(data$x^2 + data$y^2), na.rm = TRUE)
+
