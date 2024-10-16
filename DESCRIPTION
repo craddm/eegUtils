@@ -50,7 +50,6 @@ Suggests:
     JADE,
     ica,
     geigen,
-    whitening,
     fICA,
     edfReader,
     ini,

@@ -158,12 +158,6 @@ run_ICA.eeg_epochs <- function(data,
 
     if (identical(method, "sobi")) {
       if (!requireNamespace("JADE", quietly = TRUE)) {
-        if (!requireNamespace("whitening", quietly = TRUE)) {
-          stop(
-            "Packages \"JADE\" and \"whitening\" needed to use SOBI. Please install them.",
-            call. = FALSE
-          )
-        }
         stop("Package \"JADE\" needed to use SOBI. Please install it.",
              call. = FALSE)
       }
@@ -278,6 +272,7 @@ run_ICA.eeg_group <- function(data,
 #' @param pca Number of PCA components.
 #' @param centre Mean centre signals.
 #' @param verbose Print informative messages.
+#' @param whitening Defaults to pca, options are pca or zca
 #' @author A. Belouchrani and A. Cichocki. Adapted to R by Matt Craddock
 #'   \email{matt@@mattcraddock.com}
 #' @keywords internal
@@ -287,81 +282,58 @@ sobi_ICA <- function(data,
                      tol,
                      pca,
                      centre,
-                     verbose = TRUE) {
+                     verbose = TRUE,
+                     whitening = "pca") {
 
   n_epochs <- nrow(epochs(data))
   n_channels <- ncol(data$signals)
   n_times <- length(unique(data$timings$time))
 
-  ##number of lags at which to assess autocovariance matrices
-  ## 100 is the default; only switches to smaller n if epochs are too short
-  n_lags <- min(100,
-                ceiling(n_times / 3))
+  # Optimize: Use integer division for n_lags
+  n_lags <- min(100, n_times %/% 3)
 
   if (centre) {
-    # centre the data on zero.
-    data <- rm_baseline(data,
-                        verbose = FALSE)
+    data <- rm_baseline(data, verbose = FALSE)
   }
 
-  Q <- whitening::whiteningMatrix(stats::cov(as.matrix(data$signals)),
-                                  method = "PCA")
-  amp_matrix <- t(whitening::whiten(as.matrix(data$signals),
-                                    method = "PCA"))
-  ## reshape to reflect epoching structure
-  dim(amp_matrix) <- c(n_channels,
-                       n_times,
-                       n_epochs)
+  cov_matrix <- cov(as.matrix(data$signals))
+  eigen_decomp <- eigen(cov_matrix)
+  if (identical(whitening, "pca")) {
+    Q <- diag(1 / sqrt(eigen_decomp$values)) %*% t(eigen_decomp$vectors)
+  } else {
+    Q <- eigen_decomp$vectors %*% diag(1 / sqrt(eigen_decomp$values)) %*% t(eigen_decomp$vectors)
+  }
+  # Reshape amp_matrix to have three dimensions
+  amp_matrix <- array(Q %*% t(as.matrix(data$signals)), dim = c(n_channels, n_times, n_epochs))
 
-  k <- -1
-  pm <- n_channels * n_lags
-  N <- n_times
-  M <- matrix(NA,
-              nrow = n_channels,
-              ncol = pm)
+  # Preallocate matrix M
+  M <- array(0, dim = c(n_channels, n_channels, n_lags))
 
-  for (u in seq(1, pm, n_channels)) {
-    k <- k + 1
-    M[, u:(u + n_channels - 1)] <- do_iter(amp_matrix, k, N)
+  # Use do_iter function for cross-covariance calculation
+  for (k in 1:n_lags) {
+    M[, , k] <- do_iter(amp_matrix, k - 1, n_times)
   }
 
-  epsil <- 1 / sqrt(N) / 100
+  epsil <- 1 / sqrt(n_times) / 100
+  tol <- max(tol, epsil)
 
-  if (epsil > tol) {
-    message("Setting tolerance to ", signif(epsil, 2))
-    tol <- epsil
-  }
+  V <- JADE::rjd(M, eps = tol, maxiter = maxiter)$V
 
-  dim(M) <- c(n_channels, n_channels, n_lags)
+  mixing_matrix <- solve(Q) %*% V
 
-  V <- JADE::rjd(M,
-                 eps = tol,
-                 maxiter = maxiter)$V
-
-  # Create mixing matrix for output
-  mixing_matrix <- MASS::ginv(Q, tol = 0) %*% V
-
-  var_order <- sort(vaf_mix(mixing_matrix),
-                    decreasing = TRUE,
-                    index.return = TRUE)$ix
-
+  var_order <- order(colSums(mixing_matrix^2), decreasing = TRUE)
   mixing_matrix <- mixing_matrix[, var_order]
 
-  unmixing_matrix <- MASS::ginv(mixing_matrix, tol = 0)
+  unmixing_matrix <- solve(mixing_matrix)
 
-  dim(amp_matrix) <- c(n_channels,
-                       n_times * n_epochs)
-
-  S <- tcrossprod(unmixing_matrix,
-                  as.matrix(data$signals))
-  S <- as.data.frame(t(S))
+  S <- t(unmixing_matrix %*% t(as.matrix(data$signals)))
+  S <- as.data.frame(S)
   names(S) <- sprintf("Comp%03d", seq_len(ncol(S)))
 
   list(M = mixing_matrix,
        W = unmixing_matrix,
        S = S)
 }
-
 
 #' Recreate channel timecourses from ICA decompositions.
 #'
