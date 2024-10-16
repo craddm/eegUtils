@@ -309,7 +309,7 @@ convert_to_csd <- function(data,
 #' @param xyz_coords A set of electrode locations on a unit sphere.
 #' @param xyz_elecs A set of electrode locations on a unit sphere.
 #' @param m Interpolation constant (higher = less flexible)
-#' @importFrom pracma legendre
+#' @param iter Number of iterations for calculations
 #' @keywords internal
 
 compute_g <- function(xyz_coords,
@@ -317,36 +317,30 @@ compute_g <- function(xyz_coords,
                       m = 4,
                       iter = 7) {
 
+  # Convert inputs to matrices
   xyz_coords <- as.matrix(xyz_coords)
   xyz_elecs <- as.matrix(xyz_elecs)
 
-  EI <- matrix(NA,
-               nrow = nrow(xyz_coords),
-               ncol = nrow(xyz_coords))
-  EI <- xyz_coords %*% t(xyz_elecs) # cosine similarity
+  # Calculate cosine similarity
+  EI <- xyz_coords %*% t(xyz_elecs)
 
+  # Pre-allocate matrix
   g <- matrix(0, ncol = ncol(EI), nrow = nrow(EI))
 
-  gg <- 1:iter
-  gg <- (2 * gg + 1) / (gg ^ m * (gg + 1) ^ m)
-  legpoly <- matrix(0,
-                    nrow = length(c(EI)),
-                    ncol = iter)
+  # Pre-compute coefficients
+  gg <- (2 * seq_len(iter) + 1) / (seq_len(iter)^m * (seq_len(iter) + 1)^m)
 
-  for (i in seq(1, iter)) {
-    suppressWarnings(
-      poly_xy <- pracma::legendre(i, EI)
-    )
-    legpoly[, i] <- t(poly_xy[1, ])
+  # Compute all Legendre polynomials up to degree 'iter'
+  P <- legendre_polynomials(iter, EI)
+
+  # Sum the polynomials
+  for (i in seq_len(iter)) {
+    g <- g + gg[i] * P[i + 1, ]  # Use the i-th degree term
   }
 
-  g <- sweep(legpoly, 2, gg, "*")
-  g <- rowSums(g)
-  g <- g / 4 / pi
-  dim(g) <- c(nrow(EI), ncol(EI))
-  g
+  # Final scaling
+  g / (4 * pi)
 }
-
 
 #' Compute the h function for two sets of locations of channel locations on the
 #' unit sphere.
@@ -357,7 +351,6 @@ compute_g <- function(xyz_coords,
 #' @param xyz_elecs A set of electrode locations on a unit sphere.
 #' @param m Interpolation constant (higher = less flexible)
 #' @param iter iterations for calculations
-#' @importFrom pracma legendre
 #' @keywords internal
 
 compute_h <- function(xyz_coords,
@@ -365,25 +358,45 @@ compute_h <- function(xyz_coords,
                       m = 4,
                       iter = 50) {
 
+  # Convert inputs to matrices
   xyz_coords <- as.matrix(xyz_coords)
   xyz_elecs <- as.matrix(xyz_elecs)
+
+  # Calculate cosine similarity
   EI <- xyz_coords %*% t(xyz_elecs)
 
-  h <- matrix(0,
-              ncol = ncol(EI),
-              nrow = nrow(EI))
+  # Pre-allocate matrix for results
+  h <- matrix(0, ncol = ncol(EI), nrow = nrow(EI))
 
-  # vectorize this too, just like compute_g!
-  for (i in seq(1, iter)) {
-    suppressWarnings(
-      poly_xy <- pracma::legendre(i, EI)
-    )
-    dim(poly_xy) <- c(i + 1,
-                      nrow(EI),
-                      ncol(EI))
-    h <- h + ((-2 * i - 1) / (i ^ (m - 1) * (i + 1) ^ (m - 1))) * poly_xy[1, , ]
+  # Pre-compute coefficients
+  coeff <- (-2 * seq_len(iter) - 1) / (seq_len(iter)^(m - 1) * (seq_len(iter) + 1)^(m - 1))
+
+  # Compute all Legendre polynomials up to degree 'iter'
+  P <- legendre_polynomials(iter, EI)
+
+  # Sum the polynomials
+  for (i in seq_len(iter)) {
+    h <- h + coeff[i] * P[i + 1, ]  # Use the i-th degree term
   }
 
-  h <- -h / 4 / pi
-  h
+  # Final scaling
+  -h / (4 * pi)
+}
+
+#' Calculate Legendre polynomials up to degree n
+#'
+#' @param n Maximum degree of Legendre polynomials
+#' @param x Input values
+#' @return Matrix of Legendre polynomial values
+#' @keywords internal
+legendre_polynomials <- function(n, x) {
+  P <- matrix(0, nrow = n + 1, ncol = length(x))
+  P[1, ] <- 1
+  if (n > 0) P[2, ] <- x
+
+  for (k in 2:n) {
+    P[k + 1, ] <- ((2 * k - 1) * x * P[k, ] - (k - 1) * P[k - 1, ]) / k
+  }
+
+  P
 }
