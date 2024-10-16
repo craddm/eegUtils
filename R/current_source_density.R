@@ -273,29 +273,24 @@ convert_to_csd <- function(data,
                               1)
   }
 
-  g_mat <- compute_g(xyz_coords,
-                     xyz_coords,
-                     m = m,
-                     iter = 50)
-  h_mat <- compute_h(xyz_coords,
-                     xyz_coords,
-                     m = m,
-                     iter = 50)
+# Optimize matrix operations
+  g_matrix <- compute_g(xyz_coords, xyz_coords, m = m, iter = 50)
+  h_matrix <- compute_h(xyz_coords, xyz_coords, m = m, iter = 50)
 
-  diag(g_mat) <- diag(g_mat) + smoothing
-  g_inv <- solve(g_mat)
-  sums_g <- colSums(g_inv)
-  total_g <- sum(sums_g)
-  new_sig <- as.matrix(data$signals[, data_chans])
-  bb <- t(apply(new_sig,
-                1,
-                function(x) g_inv %*% x))
-  bb_rows <- rowSums(bb) / total_g
-  bc <- bb - (bb_rows %*% t(sums_g))
-  be <- t(apply(bc,
-                1,
-                function(x) colSums(x * h_mat)) / scaling)
-  data$signals[, data_chans] <- as.data.frame(be)
+  diag(g_matrix) <- diag(g_matrix) + smoothing
+  g_inverse <- solve(g_matrix)
+  g_inverse_col_sums <- colSums(g_inverse)
+  g_inverse_total_sum <- sum(g_inverse_col_sums)
+
+  signal_matrix <- as.matrix(data$signals[, data_chans])
+
+  # Vectorize operations
+  intermediate_result <- signal_matrix %*% t(g_inverse)
+  row_averages <- rowSums(intermediate_result) / g_inverse_total_sum
+  centered_result <- intermediate_result - outer(row_averages, g_inverse_col_sums)
+  csd_values <- (centered_result %*% h_matrix) / scaling
+
+  data$signals[, data_chans] <- as.data.frame(csd_values)
   names(data$signals) <- orig_elecs
   data$reference$ref_chans <- "CSD"
   data
