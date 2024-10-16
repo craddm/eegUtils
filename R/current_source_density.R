@@ -296,7 +296,7 @@ convert_to_csd <- function(data,
   data
 }
 
-#' Compute the g function for two sets of locations of channel locations on the
+#' Compute the g function for two sets of channel locations on the
 #' unit sphere.
 #'
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
@@ -323,21 +323,21 @@ compute_g <- function(xyz_coords,
   g <- matrix(0, ncol = ncol(EI), nrow = nrow(EI))
 
   # Pre-compute coefficients
-  gg <- (2 * seq_len(iter) + 1) / (seq_len(iter)^m * (seq_len(iter) + 1)^m)
+  coeff <- (2 * seq_len(iter) + 1) / (seq_len(iter)^m * (seq_len(iter) + 1)^m)
 
   # Compute all Legendre polynomials up to degree 'iter'
   P <- legendre_polynomials(iter, EI)
 
   # Sum the polynomials
   for (i in seq_len(iter)) {
-    g <- g + gg[i] * P[i + 1, ]  # Use the i-th degree term
+    g <- g + coeff[i] * P[i + 1, ]  # Use the i-th degree term
   }
 
   # Final scaling
   g / (4 * pi)
 }
 
-#' Compute the h function for two sets of locations of channel locations on the
+#' Compute the h function for two sets of channel locations on the
 #' unit sphere.
 #'
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
