@@ -30,7 +30,6 @@ Imports:
     tibble,
     stats,
     matrixStats,
-    pracma,
     abind,
     plotly,
     future.apply,
