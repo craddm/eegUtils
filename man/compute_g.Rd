@@ -2,7 +2,7 @@
 % Please edit documentation in R/current_source_density.R
 \name{compute_g}
 \alias{compute_g}
-\title{Compute the g function for two sets of locations of channel locations on the
+\title{Compute the g function for two sets of channel locations on the
 unit sphere.}
 \usage{
 compute_g(xyz_coords, xyz_elecs, m = 4, iter = 7)
@@ -13,9 +13,11 @@ compute_g(xyz_coords, xyz_elecs, m = 4, iter = 7)
 \item{xyz_elecs}{A set of electrode locations on a unit sphere.}
 
 \item{m}{Interpolation constant (higher = less flexible)}
+
+\item{iter}{Number of iterations for calculations}
 }
 \description{
-Compute the g function for two sets of locations of channel locations on the
+Compute the g function for two sets of channel locations on the
 unit sphere.
 }
 \author{
