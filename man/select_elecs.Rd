@@ -47,17 +47,17 @@ This is a generic function for selection of electrodes from an EEG dataset.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{default}: Select electrodes from a generic data frame.
+\item \code{select_elecs(default)}: Select electrodes from a generic data frame.
 
-\item \code{eeg_data}: Select electrodes from a \code{eeg_data} object.
+\item \code{select_elecs(eeg_data)}: Select electrodes from a \code{eeg_data} object.
 
-\item \code{eeg_evoked}: Select electrode from an eeg_evoked object
+\item \code{select_elecs(eeg_evoked)}: Select electrode from an eeg_evoked object
 
-\item \code{eeg_ICA}: Select components from \code{eeg_ICA} objects.
+\item \code{select_elecs(eeg_ICA)}: Select components from \code{eeg_ICA} objects.
 
-\item \code{eeg_tfr}: Select electrodes from \code{eeg_tfr} objects.
+\item \code{select_elecs(eeg_tfr)}: Select electrodes from \code{eeg_tfr} objects.
+
 }}
-
 \examples{
 names(demo_epochs$signals)
 keep_A5 <- select_elecs(demo_epochs, electrode = "A5")

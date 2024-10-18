@@ -6,7 +6,7 @@ parse_locshdf5 <- function(eeglab_chans) {
   file_struct <-
     lapply(fields,
            function(x) {
-             chan_locs[[x]][1,]$dereference()
+             chan_locs[[x]][1, ]$dereference()
            })
   names(file_struct) <- fields
 
@@ -172,7 +172,7 @@ read_hdf5_set <- function(x,
                 "type",
                 "epoch")
 
-  if (drop_custom & any(!colnames(event_table) %in% std_cols)) {
+  if (drop_custom && any(!colnames(event_table) %in% std_cols)) {
     message("Dropping custom columns...")
     event_table <- event_table[, std_cols]
   }

@@ -21,6 +21,7 @@ compute_tfr(data, ...)
   keep_trials = FALSE,
   output = "power",
   downsample = 1,
+  trim_edges = TRUE,
   verbose = TRUE,
   ...
 )
@@ -35,6 +36,7 @@ compute_tfr(data, ...)
   keep_trials = FALSE,
   output = "power",
   downsample = 1,
+  trim_edges = TRUE,
   verbose = TRUE,
   ...
 )
@@ -52,7 +54,8 @@ and highest frequency to resolve.}
 \item{n_freq}{Number of frequencies to be resolved. Must be an integer number
 of frequencies.}
 
-\item{spacing}{Use "linear" or "log" spacing for the frequency vector and number of cycles.}
+\item{spacing}{Use "linear" or "log" spacing for the frequency vector and
+number of cycles.}
 
 \item{n_cycles}{Number of cycles at each frequency. If a single integer, use
 a constant number of cycles at each frequency. If a character vector of
@@ -67,6 +70,10 @@ Defaults to FALSE.}
 \item{downsample}{Downsampling factor. Integer. Selects every n samples after
 performing time-frequency analysis on the full sampling rate data.}
 
+\item{trim_edges}{Remove edges of time-frequency representation to avoid edge
+effects from overlap of wavelet with timepoints outside the epochs.
+Defaults to TRUE.}
+
 \item{verbose}{Print informative messages in console.}
 }
 \value{
@@ -80,19 +87,24 @@ domain.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{default}: Default method for compute_tfr
+\item \code{compute_tfr(default)}: Default method for compute_tfr
 
-\item \code{eeg_epochs}: Default method for \code{compute_tfr}
+\item \code{compute_tfr(eeg_epochs)}: Default method for \code{compute_tfr}
 
-\item \code{eeg_evoked}: Method for \code{eeg_evoked} objects.
+\item \code{compute_tfr(eeg_evoked)}: Method for \code{eeg_evoked} objects.
+
 }}
-
 \examples{
 out <- compute_tfr(demo_epochs, method = "morlet", foi = c(4, 30), n_freq = 10, n_cycles = 3)
 out
 out$freq_info$morlet_resolution
-out <- compute_tfr(demo_epochs, method = "morlet", foi = c(4, 30), n_freq = 10, n_cycles = c(3, 10))
+out <- compute_tfr(demo_epochs, method = "morlet", foi = c(4, 30),
+ n_freq = 10, n_cycles = c(3, 10))
 out$freq_info$morlet_resolution
+plot_tfr(out)
+out <- compute_tfr(demo_epochs, method = "morlet", foi = c(4, 30),
+ n_freq = 10, n_cycles = c(3, 10), trim_edges = FALSE)
+plot_tfr(out)
 }
 \author{
 Matt Craddock \email{matt@mattcraddock.com}

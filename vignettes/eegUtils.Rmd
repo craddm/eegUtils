@@ -127,7 +127,8 @@ You can inspect the added locations using `channels()`.
 `topoplot()` can then be used to plot a topographical representation of selected data. Note that it is not compulsory to use locations from `electrode_locations()`; if the data has x and y columns when it is a data frame, or added to `chan_info` element of the `eeg_data`/`eeg_epochs` object, then those will be used. 
 
 ```{r do-topo}
-epoched_example <- electrode_locations(epoched_example)
+epoched_example <- electrode_locations(epoched_example,
+                                       overwrite = TRUE)
 channels(epoched_example)
 topoplot(epoched_example,
          time_lim = c(.22, .24))

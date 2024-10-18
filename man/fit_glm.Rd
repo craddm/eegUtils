@@ -7,7 +7,7 @@
 \usage{
 fit_glm(formula, data, ...)
 
-\method{fit_glm}{eeg_epochs}(formula, data, time_lim = NULL, ...)
+\method{fit_glm}{eeg_epochs}(formula, data, baseline = NULL, ...)
 }
 \arguments{
 \item{formula}{An object of class \code{formula}. Right-hand side A
@@ -17,7 +17,7 @@ regression formula for a GLM. See ?formula and notes on use below}
 
 \item{...}{Any other arguments passed to (LM/GLM)}
 
-\item{time_lim}{Numeric vector of length 2 specifying time period to be used
+\item{baseline}{Numeric vector of length 2 specifying time period to be used
 as a baseline.}
 }
 \description{
@@ -25,9 +25,9 @@ Fits a linear model to each timepoint separately for each electrode.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{eeg_epochs}: GLM fitting for \code{eeg_epochs}
-}}
+\item \code{fit_glm(eeg_epochs)}: GLM fitting for \code{eeg_epochs}
 
+}}
 \section{Notes On Usage}{
 
 
@@ -41,6 +41,10 @@ The function allows flexible fitting of a baseline covariate, recognising
 the term \code{baseline} in the specified formula.
 }
 
+\examples{
+fit_glm(~epoch_labels, demo_spatial)
+fit_glm(~epoch_labels + baseline, demo_spatial, baseline = c(-.1, 0))
+}
 \author{
 Matt Craddock, \email{matt@mattcraddock.com}
 }

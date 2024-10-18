@@ -13,7 +13,8 @@ eeg_ICA(
   chan_info,
   srate,
   epochs,
-  algorithm
+  algorithm,
+  contents
 )
 }
 \arguments{
@@ -36,6 +37,9 @@ contained in the data, such as participant ID label and condition labels
 for epochs.}
 
 \item{algorithm}{The method used to calculate the decomposition.}
+
+\item{contents}{Whether the object contains only the mixing and unmixing
+matrices ("weights") or source timecourses as well ("full")}
 }
 \value{
 An object of class \code{eeg_ICA}.
@@ -44,7 +48,5 @@ An object of class \code{eeg_ICA}.
 Function to create an S3 object of class \code{eeg_ICA}.
 }
 \author{
-Matt Craddock \email{matt@mattcraddock.com}
-
 Matt Craddock \email{matt@mattcraddock.com}
 }

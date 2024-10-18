@@ -15,13 +15,16 @@ ar_eogcor(decomp, data, ...)
   threshold = NULL,
   plot = TRUE,
   bipolarize = TRUE,
+  method = c("pearson", "kendall", "spearman"),
+  verbose = TRUE,
   ...
 )
 }
 \arguments{
-\item{decomp}{ICA decomposition}
+\item{decomp}{An \code{eeg_ica} object}
 
-\item{data}{Original data}
+\item{data}{The original \code{eeg_epochs} object from which this decomposition
+was derived}
 
 \item{...}{Other parameters}
 
@@ -35,6 +38,10 @@ automatically determining a threshold.}
 \item{plot}{Plot correlation coefficient for all components}
 
 \item{bipolarize}{Bipolarize the HEOG and VEOG channels?}
+
+\item{method}{Correlation method. Defaults to Pearson.}
+
+\item{verbose}{Print informative messages. Defaults to TRUE.}
 }
 \value{
 A character vector of component names that break the threshold.
@@ -45,9 +52,9 @@ decomposition and the electrooculogram channels of an \code{eeg_epochs} dataset.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{eeg_ICA}: Method for eeg_ICA objects.
-}}
+\item \code{ar_eogcor(eeg_ICA)}: Method for \code{eeg_ICA} objects.
 
+}}
 \references{
 Chaumon, M., Bishop, D.V., Busch, N.A. (2015). A practical guide
 to the selection of independent components of the electroencephalogram for

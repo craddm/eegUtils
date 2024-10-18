@@ -78,7 +78,7 @@ write_vhdr <- function(.data,
          DataFile = paste0(filename, ".dat"),
          MarkerFile = paste0(filename, ".vmrk"),
          DataFormat = "BINARY",
-         DataOrientation=orientation,
+         DataOrientation = orientation,
          DataType = "TIMEDOMAIN",
          NumberOfChannels = n_chans,
          DataPoints = nrow(.data$signals),
@@ -115,7 +115,7 @@ write_vhdr <- function(.data,
   writeLines("", con)
 
   for (i in names(new_header)) {
-    writeLines(paste0("[", i,"]"), con)
+    writeLines(paste0("[", i, "]"), con)
     entries <-
       lapply(seq_along(new_header[[i]]),
              function(x) paste0(names(new_header[[i]][x]),
@@ -187,7 +187,7 @@ write_vmrk <- function(.data,
     paste0("Mk", 1:nrow(.data$events))
 
   for (i in names(new_markers)) {
-    writeLines(paste0("[", i,"]"), con)
+    writeLines(paste0("[", i, "]"), con)
     entries <-
       lapply(seq_along(new_markers[[i]]),
              function(x) paste0(names(new_markers[[i]][x]),

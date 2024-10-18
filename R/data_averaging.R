@@ -1,4 +1,4 @@
-#' Calculate averages (e.g. ERPs) for single datasets
+#' Calculate averages (e.g. event-related potentials) for single datasets
 #'
 #' This function is used to create an `eeg_evoked` object from `eeg_epochs`. By
 #' default, it will try to keep different conditions in the data separate using
@@ -23,30 +23,39 @@ eeg_average <- function(data,
 
 eeg_average.default <- function(data,
                                 ...) {
-  stop("eeg_epochs or eeg_tfr object required as input.")
+  stop(paste("Cannot average an object of class", class(data)))
 }
 
-#' @describeIn eeg_average Create evoked data from `eeg_epochs`
-#' @importFrom tibble tibble
-#' @importFrom dplyr left_join group_by_at summarise_at ungroup
+#' @describeIn eeg_average Create evoked data from `eeg_epochs`objects
 #' @param cols Columns from the `epochs` structure that the average should
 #'   group on. NULL, the default, uses all columns other than the `epoch`
 #'   column.
+#' @param verbose Print informative messages during averaging. Defaults to TRUE
+#' @examples
+#' eeg_average(demo_spatial)
+#' eeg_average(demo_spatial, cols = "everything")
 #' @export
 eeg_average.eeg_epochs <- function(data,
                                    cols = NULL,
+                                   verbose = TRUE,
                                    ...) {
 
   elecs <- channel_names(data)
 
+  # this is here for compatibility - early versions of the structure have no
+  # $epochs entry
   if (is.null(data$epochs)) {
     n_epochs <- length(unique(data$timings$epoch))
     data$epochs <-
-      tibble::new_tibble(list(epoch = unique(data$timings$epoch),
-                              participant_id = character(n_epochs),
-                              recording = character(n_epochs)),
-                         nrow = n_epochs,
-                         class = "epoch_info")
+      tibble::new_tibble(
+        list(
+          epoch = unique(data$timings$epoch),
+          participant_id = character(n_epochs),
+          recording = character(n_epochs)
+        ),
+        nrow = n_epochs,
+        class = "epoch_info"
+      )
   }
 
   data$signals <- dplyr::left_join(cbind(data$signals,
@@ -65,33 +74,37 @@ eeg_average.eeg_epochs <- function(data,
     } else {
       if ("participant_id" %in% cols) {
         col_names <- cols
-        } else {
-          col_names <- c("participant_id", cols)
-        }
+      } else {
+        col_names <- c("participant_id", cols)
+      }
     }
   } else {
     col_names <- names(data$epochs)
-    col_names <- col_names[!(col_names %in% c("epoch", "recording", "event_type"))]
+    col_names <-
+      col_names[!(col_names %in% c("epoch", "recording", "event_type"))]
   }
 
   # break down into individual calls using updated syntax
   data$signals <-
-    dplyr::group_by(
-      data$signals,
-      dplyr::across(c(time, dplyr::all_of(col_names)))
-    )
+    dplyr::group_by(data$signals,
+                    dplyr::across(c(time,
+                                    dplyr::all_of(col_names))))
+
+  if (verbose) {
+    message("Creating epochs based on combinations of variables: ",
+            paste(col_names, ""))
+  }
+
+  # Add epoch weights
+  data$signals <-
+    dplyr::summarise(data$signals,
+                     dplyr::across(dplyr::all_of(elecs),
+                                   mean),
+                     weight = dplyr::n())
 
   data$signals <-
-    dplyr::summarise(
-      data$signals,
-      dplyr::across(dplyr::all_of(elecs), mean)
-    )
-
-  data$signals <-
-    dplyr::group_by(
-      data$signals,
-      dplyr::across(dplyr::all_of(col_names))
-      )
+    dplyr::group_by(data$signals,
+                    dplyr::across(dplyr::all_of(col_names)))
 
   data$signals <-
     dplyr::mutate(data$signals,
@@ -104,7 +117,9 @@ eeg_average.eeg_epochs <- function(data,
   epochs <- dplyr::select(timings,
                           epoch,
                           !!col_names)
+  epochs$weight <- data$signals$weight
   epochs <- unique(epochs)
+
   timings <- data$signals[, c("time", "epoch")]
   timings <- unique(timings)
 
@@ -118,26 +133,123 @@ eeg_average.eeg_epochs <- function(data,
                      "data.frame")
 
   data <-
-    eeg_evoked(data = data$signals[, elecs],
-               chan_info = data$chan_info,
-               srate = data$srate,
-               timings = timings,
-               epochs = epochs)
+    eeg_evoked(
+      data = data$signals[, elecs],
+      chan_info = data$chan_info,
+      srate = data$srate,
+      timings = timings,
+      reference = data$reference,
+      epochs = epochs
+    )
   data
 }
 
-#' @describeIn eeg_average average an `eeg_epochs` object over epochs.
+
+#' @param weighted Produce a weighted average over epochs, which accounts for
+#'   upstream differences in the number of epochs that contribute to each
+#'   average.
+#' @param verbose Print informative messages during averaging. Defaults to TRUE
+#' @describeIn eeg_average average an `eeg_evoked` object over epochs.
 #' @export
 eeg_average.eeg_evoked <- function(data,
                                    cols = NULL,
+                                   weighted = TRUE,
+                                   verbose = TRUE,
                                    ...) {
 
+  is_group_df <- inherits(data,
+                          "eeg_group")
+
   if (is.null(cols)) {
-    message("Data is already averaged.")
-  } else {
-
-
+    message("Data is already averaged - you must specify columns to group your averages by.")
+    return(data)
   }
+
+  if (identical(cols, "everything")) {
+    col_names <- "participant_id"
+  } else {
+    if ("participant_id" %in% cols) {
+      col_names <- cols
+    } else {
+      col_names <- c("participant_id", cols)
+    }
+  }
+  elecs <- channel_names(data)
+  data$signals <- as.data.frame(data)
+  data$signals <-
+    dplyr::group_by(data$signals,
+      dplyr::across(c(time,
+                      dplyr::all_of(col_names))))
+
+  if (verbose) {
+    message("Creating epochs based on combinations of variables: ",
+            paste(col_names, ""))
+  }
+
+  if (weighted) {
+    if ("weight" %in% names(data$signals)) {
+      if (verbose) message("Calculating weighted means.")
+      full_weights <- dplyr::summarise(data$signals,
+                                       weight = sum(weight))
+      data$signals <-
+        dplyr::summarise(data$signals,
+                         dplyr::across(dplyr::all_of(elecs),
+                                       ~weighted.mean(.x, w = weight)))
+      data$signals$weight <- full_weights$weight
+      weighted <- TRUE
+    } else {
+      if (verbose) message("No weights found, calculating unweighted means.")
+      data$signals <-
+        dplyr::summarise(data$signals,
+                         dplyr::across(dplyr::all_of(elecs),
+                                       mean))
+      weighted <- FALSE
+    }
+  } else {
+    data$signals <-
+      dplyr::summarise(data$signals,
+                       dplyr::across(dplyr::all_of(elecs),
+                                     mean))
+    weighted <- FALSE
+  }
+
+  # We want to end up with a unique epoch number for each level of the main
+  # variable we are grouping by - so not by participant_id or by time. e.g. each
+  # participant should have an epoch 1, and it be the same epoch 1. So if
+  # grouping by 2 categories, each combination should have a unique epoch
+  # number. Only a concern for group data.
+
+  data$signals <-
+    dplyr::group_by(data$signals,
+                    dplyr::across(
+                      dplyr::all_of(col_names)
+                    )
+    )
+
+  data$signals <-
+    dplyr::mutate(data$signals,
+                  epoch = dplyr::cur_group_id())
+
+  data$signals <- dplyr::ungroup(data$signals)
+
+  epochs <- dplyr::select(data$signals,
+                          epoch,
+                          !!col_names)
+
+  if (weighted) epochs$weight <- full_weights$weight
+
+  epochs <- unique(epochs)
+
+  if (is_group_df) {
+    timings <- data$signals[, c("time", "epoch", "participant_id")]
+  } else {
+    timings <- data$signals[, c("time", "epoch")]
+  }
+  timings <- unique(timings)
+
+  data$timings <- timings
+  data$epochs <- epochs
+  data$signals <- data$signals[, !colnames(data$signals) %in% c("time", "epoch", "weight", col_names)]
   data
 }
 
@@ -145,29 +257,35 @@ eeg_average.eeg_evoked <- function(data,
 #' @export
 eeg_average.eeg_tfr <- function(data,
                                 cols = NULL,
+                                weighted = TRUE,
+                                verbose = TRUE,
                                 ...) {
   if (!any(c("participant_id", "epoch") %in% data$dimensions)) {
     message("Data is already averaged.")
   } else {
     data <- average_tf(data,
-                       cols = cols)
+                       cols = cols,
+                       weighted = weighted,
+                       verbose = verbose)
     class(data) <- c("tfr_average",
                      class(data))
   }
   data
 }
 
-
-#' Internal function for averaging over epochs for eeg_tfr objects.
+#' Internal function for averaging over epochs for `eeg_tfr` objects.
 #' @param data data to average over
+#' @param weighted Calculate weighted means if TRUE (if possible!)
 #' @keywords internal
 average_tf <- function(data,
-                       cols = NULL) {
+                       cols = NULL,
+                       weighted,
+                       verbose) {
 
   # Need to find a way to make this respect epochs structure...
   orig_dims <- dimnames(data$signals)
+  is_group_df <- inherits(data, "eeg_group")
 
-  is_group_df <- FALSE
   if ("participant_id" %in% names(orig_dims)) {
     data$signals <- aperm(data$signals,
                           c("participant_id",
@@ -176,14 +294,17 @@ average_tf <- function(data,
                             "electrode",
                             "frequency"))
     orig_dims <- dimnames(data$signals)
-    is_group_df <- TRUE
   }
 
   if (!is.null(cols)) {
-    if ("participant_id" %in% cols) {
-      col_names <- cols
+    if (identical(cols, "everything")) {
+      col_names <- "participant_id"
     } else {
-      col_names <- c("participant_id", cols)
+      if ("participant_id" %in% cols) {
+        col_names <- cols
+      } else {
+        col_names <- c("participant_id", cols)
+      }
     }
   } else {
     col_names <- names(data$epochs)
@@ -200,85 +321,121 @@ average_tf <- function(data,
   }
 
   epo_types <- unique(epochs(data)[col_names])
-  new_epos <- nrow(epo_types)
+  new_epochs <- nrow(epo_types)
   n_times <- length(dimnames(data$signals)$time)
 
   # There must be a less hacky way of doing this
   epo_nums <-
-    lapply(1:new_epos,
-           function(x) dplyr::inner_join(epochs(data),
-                                         epo_types[x, , drop = FALSE],
-                                         by = col_names)[["epoch"]])
-
+    lapply(1:new_epochs,
+      function(x) {
+        sort(merge(epochs(data),
+                   epo_types[x, , drop = FALSE],
+                   by = col_names)[, "epoch"])
+      }
+    )
   # convert epoch numbers from epochs() to positions in matrix
   epo_nums <- lapply(epo_nums,
                      function(x) which(orig_dims$epoch %in% x))
 
-  if (is_group_df) {
+  if ("weight" %in% colnames(epochs(data))) {
+    epo_weights <- epochs(data)[["weight"]]
+  } else {
+    epo_weights <- vapply(epo_nums,
+                          length,
+                          integer(1))
+  }
 
+  if (is_group_df) {
     orig_dims <- dimnames(data$signals)
     orig_dims[["participant_id"]] <- "grand_average"
     data$signals <- colMeans(data$signals)
     dim(data$signals) <- c(1,
                            dim(data$signals))
-
     dimnames(data$signals) <- orig_dims
     data$dimensions <- c("participant_id",
                          "epoch",
                          "time",
                          "electrode",
                          "frequency")
-    epo_types$epoch <- 1:new_epos
+    epo_types$epoch <- 1:new_epochs
     epochs(data) <- epo_types
-
   } else {
-    if (identical(data$freq_info$output,
-                  "phase")) {
-      data$signals <- apply(data$signals,
-                            c(2, 3, 4),
-                            circ_mean)
-    } else if (identical(data$freq_info$output,
-                         "power")) {
+    if (identical(data$freq_info$output, "phase")) {
+      data$signals <- apply(
+        data$signals,
+        c(2, 3, 4),
+        circ_mean
+      )
+    } else if (identical(data$freq_info$output, "power")) {
+      avg_tf <- array(0,
+                      dim = c(new_epochs,
+                              dim(data$signals)[2:4]))
+      final_weights <- integer(new_epochs)
 
-    # maybe one day try to calm this nested loop gore down
-    # but it's pretty quick so hey
-    avg_tf <- array(0, dim = c(new_epos,
-                               dim(data$signals)[2:4]))
+      # figuring out how to do weighted means.
 
-    for (iz in 1:dim(data$signals)[3]) { # electrodes
-      for (ij in 1:dim(data$signals)[4]) { # frequencies
-        for (ik in 1:new_epos) {
-          avg_tf[ik, , iz, ij] <-
-            array(colMeans(data$signals[epo_nums[[ik]], ,
-                                        iz, ij,
-                                        drop = FALSE]),
-                  dim = c(1, n_times,
-                          1, 1))
+      if (inherits(data, "tfr_average") && weighted) {
+        if (verbose) message("Calculating weighted means...")
+        if (new_epochs == 1) {
+          relative_weights <- epo_weights / sum(epo_weights)
+          weighted_means <- sweep(data$signals, c(1,3,4),
+                                  relative_weights, "*")
+          avg_tf[1, , , ] <- colSums(weighted_means)
+          final_weights <- sum(epo_weights)
+        } else {
+          for (epoch_no in seq_len(new_epochs)) {
+            cond_epochs <- epo_nums[[epoch_no]]
+            temp <- data$signals[cond_epochs, , , ]
+            relative_weights <- epo_weights[cond_epochs] / sum(epo_weights[cond_epochs])
+            weighted_means <- sweep(temp, c(1,3,4),
+                                    relative_weights, "*")
+            avg_tf[epoch_no, , , ] <- colSums(weighted_means)
+            final_weights[epoch_no] <- sum(epo_weights[cond_epochs])
+          }
         }
+      } else {
+        for (elec in seq_len(dim(data$signals)[3])) { # electrodes
+          for (freq in seq_len(dim(data$signals)[4])) { # frequencies
+            for (ik in seq_len(new_epochs)) {
+              avg_tf[ik, , elec, freq] <-
+                array(
+                  colMeans(
+                    data$signals[epo_nums[[ik]], ,
+                                 elec, freq,
+                                 drop = FALSE]),
+                  dim = c(1, n_times, 1, 1)
+                )
+            }
+          }
+        }
+        final_weights <- epo_weights
       }
-    }
-
-    data$signals <- avg_tf
-    new_dims <- orig_dims
-    new_dims[["epoch"]] <- as.character(1:new_epos)
-    dimnames(data$signals) <- new_dims
-    epo_types$epoch <- 1:new_epos
-    epochs(data) <- epo_types
+      data$signals <- avg_tf
+      new_dims <- orig_dims
+      new_dims[["epoch"]] <- as.character(1:new_epochs)
+      dimnames(data$signals) <- new_dims
+      epo_types$epoch <- 1:new_epochs
+      epochs(data) <- epo_types
+      epochs(data)$weight <- final_weights
     } else {
       stop("Averaging of fourier coefficients not supported.")
     }
   }
   data$timings <-
     tibble::tibble(
-      time = rep(as.numeric(dimnames(data$signals)[["time"]]), new_epos),
-      epoch = rep(1:new_epos, each = n_times)
-      )#dplyr::filter(data$timings, epoch == 1)
+      time = rep(
+        as.numeric(dimnames(data$signals)[["time"]]),
+        new_epochs
+      ),
+      epoch = rep(1:new_epochs,
+                  each = n_times)
+    )
   data
 }
 
 #' @export
-
 eeg_average.eeg_group <- function(data,
-                                ...) {
-  stop("Not currently supported for `eeg_group` objects.")
+                                  ...) {
+  NextMethod(...)
+  #stop("Not currently supported for `eeg_group` objects.")
 }

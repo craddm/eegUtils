@@ -4,7 +4,7 @@
 \alias{sobi_ICA}
 \title{SOBI ICA}
 \usage{
-sobi_ICA(data, maxiter, tol, pca, centre, verbose = TRUE)
+sobi_ICA(data, maxiter, tol, pca, centre, verbose = TRUE, whitening = "pca")
 }
 \arguments{
 \item{data}{Data to be ICAed.}
@@ -18,6 +18,8 @@ sobi_ICA(data, maxiter, tol, pca, centre, verbose = TRUE)
 \item{centre}{Mean centre signals.}
 
 \item{verbose}{Print informative messages.}
+
+\item{whitening}{Defaults to pca, options are pca or zca}
 }
 \description{
 Internal function for running SOBI ICA on an \code{eeg_epochs} object

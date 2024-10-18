@@ -22,11 +22,11 @@ List trigger types and any labels found in an \code{eeg_epochs} object.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{eeg_epochs}: List epochs and associated events from \code{eeg_epochs} objects
+\item \code{list_epochs(eeg_epochs)}: List epochs and associated events from \code{eeg_epochs} objects
 
-\item \code{eeg_ICA}: List epochs and associated events from \code{eeg_ICA} objects
+\item \code{list_epochs(eeg_ICA)}: List epochs and associated events from \code{eeg_ICA} objects
+
 }}
-
 \seealso{
 \code{\link[=tag_events]{tag_events()}} and \code{\link[=list_events]{list_events()}}
 

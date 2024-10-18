@@ -47,19 +47,27 @@ rm_baseline.eeg_data <- function(data,
     if (verbose) {
       message("Removing channel means...")
     }
+    data$baseline <- range(data$timings$time)
   } else {
     base_times <- select_times(data,
                                time_lim = time_lim)
     baseline_dat <- colMeans(base_times$signals)
     if (verbose) {
-      message(paste("Baseline:", time_lim, "s"))
+      message(paste0("Baseline: ",
+                     time_lim[1],
+                     " - ",
+                     time_lim[2],
+                     "s")
+      )
     }
     data$signals <- as.matrix(data$signals)
+    data$baseline <- time_lim
   }
 
   data$signals <- baseline_cont(data$signals,
                                 baseline_dat)
   data$signals <- tibble::as_tibble(data$signals)
+
   data
 }
 
@@ -85,20 +93,21 @@ rm_baseline.eeg_epochs <- function(data,
       message("Removing channel means per epoch...")
     }
     # reshape to 3D matrix
-    orig_chans <- channel_names(data)
-
     data$signals <- as.matrix(data$signals)
     dim(data$signals) <- c(n_times, n_epochs, n_chans)
     # colMeans gives an n_epochs * n_channels matrix - i.e. baseline value for
     # each epoch and channel
     baseline_dat <- colMeans(data$signals)
-    # now we go through each timepoint subtracting the baseline values
     data$signals <- baseline_epo(data$signals,
                                  baseline_dat)
-
+    data$baseline <- range(data$timings$time)
   } else {
     if (verbose) {
-      message(paste("Baseline:", time_lim, "s"))
+      message(paste0("Baseline: ",
+                     time_lim[1],
+                     " - ",
+                     time_lim[2],
+                     "s"))
     }
     base_times <- get_epoch_baselines(data,
                                       time_lim)
@@ -106,6 +115,7 @@ rm_baseline.eeg_epochs <- function(data,
     data$signals <- as.matrix(data$signals)
     dim(data$signals) <- c(n_times, n_epochs, n_chans)
     data$signals <- baseline_epo(data$signals, base_times)
+    data$baseline <- time_lim
   }
   #Reshape and turn back into data frame
   data$signals <- array(data$signals,
@@ -113,7 +123,6 @@ rm_baseline.eeg_epochs <- function(data,
                                 n_chans))
   colnames(data$signals) <- elecs
   data$signals <- tibble::as_tibble(data$signals)
-  #names(data$signals) <- elecs
   data
 }
 
@@ -142,7 +151,7 @@ rm_baseline.data.frame <- function(data,
                             electrode,
                             epoch,
                             add = TRUE)
-  } else{
+  } else {
     data <- dplyr::group_by(data,
                             electrode,
                             add = TRUE)
@@ -205,7 +214,11 @@ rm_baseline.eeg_tfr <- function(data,
 
   if (!is.null(time_lim)) {
     if (verbose) {
-      message(paste("Baseline:", time_lim[1], "-", time_lim[2], "s"))
+      message(paste0("Baseline: ",
+                     time_lim[1],
+                     "-",
+                     time_lim[2],
+                     " s"))
     }
     bline <- select_times(data,
                           time_lim)
@@ -309,20 +322,26 @@ rm_baseline.eeg_evoked <- function(data,
 
   orig_cols <- channel_names(data)
   n_times <- length(unique(data$timings$time))
-  # if (inherits(data,
-  #              "eeg_group")) {
-  #   #n_epochs <- nrow(data$epochs)
-    n_epochs <- nrow(unique(epochs(data)[, c("epoch", "participant_id")]))
-    n_participants <- length(unique(epochs(data)$participant_id))
-    # is_group_data <- TRUE
-  # } else {
-    # n_epochs <- length(unique(epochs(data)$epoch))
-    # n_participants <- length(unique(epochs(data)$participant_id))
-    # is_group_data <- FALSE
-  # }
-
-  #n_epochs <- nrow(data$epochs)
+  n_epochs <- nrow(unique(epochs(data)[, c("epoch", "participant_id")]))
   n_chans <- length(orig_cols)
+
+  if (is.null(time_lim)) {
+    if (verbose) {
+      message("Removing channel means...")
+    }
+    data$baseline <- range(data$timings$time)
+  } else {
+    if (verbose) {
+      message(paste0(
+        "Baseline: ",
+        time_lim[1],
+        " - ",
+        time_lim[2],
+        "s"))
+    }
+    data$baseline <- time_lim
+  }
+
   base_times <- get_epoch_baselines(data,
                                     time_lim)
 
@@ -334,8 +353,8 @@ rm_baseline.eeg_evoked <- function(data,
 
   data$signals <- baseline_epo(data$signals, base_times)
 
-    data$signals <- array(data$signals,
-                          dim = c(n_epochs * n_times, n_chans))
+  data$signals <- array(data$signals,
+                        dim = c(n_epochs * n_times, n_chans))
   colnames(data$signals) <- orig_cols
   data$signals <- tibble::as_tibble(data$signals)
   data
@@ -361,10 +380,7 @@ rm_baseline.eeg_group <- function(data, ...) {
 get_epoch_baselines <- function(data,
                                 time_lim) {
 
-  #n_epochs <- nrow(epochs(data))
   n_epochs <- nrow(unique(epochs(data)[, c("epoch", "participant_id")]))
-  n_participants <- length(unique(epochs(data)$participant_id))
-
   n_chans <- length(channel_names(data))
   chan_names <- colnames(data$signals)
 

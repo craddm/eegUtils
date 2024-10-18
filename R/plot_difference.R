@@ -52,7 +52,10 @@ plot_difference.eeg_epochs <-
         time_lim = time_lim,
         electrode = electrode,
         baseline = baseline,
-        add_CI = FALSE
+        add_CI = FALSE,
+        mapping = mapping,
+        facets = conditions,
+        colour = NULL
       )
 
     cond_levels <- unique(data[[conditions]])
@@ -63,7 +66,7 @@ plot_difference.eeg_epochs <-
         id_cols = c(participant_id,
                     time,
                     electrode),
-        names_from = conditions,
+        names_from = tidyr::all_of(conditions),
         values_from = amplitude,
         values_fn = mean
         )

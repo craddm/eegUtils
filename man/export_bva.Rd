@@ -27,6 +27,6 @@ the recommended formats for BIDS
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{eeg_data}: Method for \code{eeg_data}
-}}
+\item \code{export_bva(eeg_data)}: Method for \code{eeg_data}
 
+}}

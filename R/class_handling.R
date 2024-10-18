@@ -109,15 +109,15 @@ eeg_tfr <- function(data,
 
   structure(list(signals = data,
                  srate = srate,
-                events = events,
-                chan_info = chan_info,
-                reference = reference,
-                timings = timings,
-                freq_info = freq_info,
-                dimensions = dimensions,
-                epochs = epochs,
-                version = utils::packageVersion("eegUtils")),
-                class = "eeg_tfr")
+                 events = events,
+                 chan_info = chan_info,
+                 reference = reference,
+                 timings = timings,
+                 freq_info = freq_info,
+                 dimensions = dimensions,
+                 epochs = epochs,
+                 version = utils::packageVersion("eegUtils")),
+            class = "eeg_tfr")
 }
 
 #' Function to create an object of class eeg_psd
@@ -263,12 +263,14 @@ eeg_evoked <- function(data,
                        timings,
                        srate,
                        epochs,
+                       reference = NULL,
                        ...) {
   value <- list(signals = data,
                 chan_info = chan_info,
                 timings = timings,
                 srate = srate,
                 epochs = epochs,
+                reference = reference,
                 version = utils::packageVersion("eegUtils"))
   class(value) <- c("eeg_evoked", "eeg_epochs")
   value
@@ -289,6 +291,8 @@ eeg_evoked <- function(data,
 #'   contained in the data, such as participant ID label and condition labels
 #'   for epochs.
 #' @param algorithm The method used to calculate the decomposition.
+#' @param contents Whether the object contains only the mixing and unmixing
+#'   matrices ("weights") or source timecourses as well ("full")
 #' @return An object of class `eeg_ICA`.
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #' @export
@@ -300,7 +304,8 @@ eeg_ICA <- function(mixing_matrix,
                     chan_info,
                     srate,
                     epochs,
-                    algorithm) {
+                    algorithm,
+                    contents) {
 
   new_eeg_ICA(
     mixing_matrix = mixing_matrix,
@@ -312,20 +317,9 @@ eeg_ICA <- function(mixing_matrix,
     srate = srate,
     epochs = epochs,
     algorithm = algorithm,
+    contents = contents,
     version = utils::packageVersion("eegUtils")
     )
-  # class(value) <- c("eeg_ICA", "eeg_epochs")
-  # value <- list(mixing_matrix = mixing_matrix,
-  #               unmixing_matrix = unmixing_matrix,
-  #               signals = signals,
-  #               timings = timings,
-  #               events = events,
-  #               chan_info = chan_info,
-  #               srate = srate,
-  #               epochs = epochs,
-  #               algorithm = algorithm)
-  # class(value) <- c("eeg_ICA", "eeg_epochs")
-  # value
 }
 
 
@@ -338,6 +332,7 @@ new_eeg_ICA <- function(mixing_matrix,
                         srate,
                         epochs,
                         algorithm,
+                        contents,
                         version = utils::packageVersion("eegUtils")) {
 
   stopifnot(is.data.frame(mixing_matrix))
@@ -348,7 +343,8 @@ new_eeg_ICA <- function(mixing_matrix,
   stopifnot(is.data.frame(epochs))
   stopifnot(is.data.frame(chan_info))
   stopifnot(is.numeric(srate))
-  stopifnot(is.character(algorithm))
+  stopifnot(is.list(algorithm))
+  stopifnot(is.character(contents))
 
   structure(
     list(
@@ -361,6 +357,7 @@ new_eeg_ICA <- function(mixing_matrix,
       srate = srate,
       epochs = epochs,
       algorithm = algorithm,
+      contents = contents,
       version = version
       ),
     class = c("eeg_ICA",
