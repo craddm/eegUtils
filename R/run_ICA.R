@@ -68,6 +68,7 @@ run_ICA.default <- function(data,
 #' @param return "full" or "weights". "full" returns the mixing and unmixing
 #'   matrices and the source timecourses. "weights" returns only the mixing and
 #'   unmixing matrices. Defaults to "full".
+#' @param options List of option
 #' @describeIn run_ICA Run ICA on an `eeg_epochs` object
 #' @importFrom stats cov
 #' @export
@@ -83,21 +84,15 @@ run_ICA.eeg_epochs <- function(data,
                                rate = 0.1,
                                verbose = TRUE,
                                return = c("full", "weights"),
+                               params = NULL,
                                ...) {
 
   orig_chans <- channel_names(data)
 
-  if (!is.null(pca)) {
-    message("Reducing data to ", pca,
-            " dimensions using PCA.")
-    pca_decomp <- eigen(stats::cov(data$signals))$vectors
-    data$signals <-
-      as.data.frame(as.matrix(data$signals) %*% pca_decomp[, 1:pca])
-    pca_flag <- TRUE
-  } else {
-    pca <- ncol(data$signals)
-    pca_flag <- FALSE
-  }
+  pca_result <- perform_pca(data, pca)
+  data <- pca_result$data
+  pca_flag <- pca_result$pca_flag
+  pca_decomp <- pca_result$pca_decomp
 
   rank_check <- qr(data$signals)$rank
 
@@ -112,148 +107,13 @@ run_ICA.eeg_epochs <- function(data,
     stop("Unknown method; available methods are sobi, fastica, infomax, fica, and imax.")
   }
 
-  if (identical(method, "fica")) {
-    if (!requireNamespace("fICA", quietly = TRUE)) {
-      stop(
-        "Package \"fICA\" needed to use the fICA implementation of fastica. Please install it.",
-        call. = FALSE
-      )
-    }
-    message("Running fastica (fICA).")
+  # Run ICA
+  ICA_out <- run_ica_method(data, method, maxit, tol, centre, alg, rateanneal, rate, verbose)
 
-    ICA_out <- fICA::fICA(
-      as.matrix(data$signals),
-      eps = tol,
-      maxiter = maxit,
-      method = "sym2"
-    )
+  # Process ICA output
+  processed_output <- process_ica_output(ICA_out, method, pca, pca_flag, pca_decomp, orig_chans)
 
-    ICA_out$W <- ICA_out$W[, 1:pca]
-    mixing_matrix <- MASS::ginv(ICA_out$W, tol = 0)
-
-    if (pca_flag) {
-      mixing_matrix <- pca_decomp[, 1:pca] %*% mixing_matrix
-    }
-
-    var_order <- sort(vaf_mix(mixing_matrix),
-                      decreasing = TRUE,
-                      index.return = TRUE)$ix
-
-    mixing_matrix <- mixing_matrix[, var_order]
-
-    unmixing_matrix <-
-      as.data.frame(MASS::ginv(mixing_matrix, tol = 0))
-    mixing_matrix <- as.data.frame(mixing_matrix)
-
-    names(mixing_matrix) <- sprintf("Comp%03d", 1:pca)
-    mixing_matrix$electrode <- orig_chans
-    names(unmixing_matrix) <- orig_chans
-    unmixing_matrix$Component <- sprintf("Comp%03d", 1:pca)
-
-    ICA_out$S <- ICA_out$S[, var_order]
-    colnames(ICA_out$S) <- sprintf("Comp%03d", 1:pca)
-    ICA_out$S <- tibble::as_tibble(ICA_out$S[, 1:pca])
-
-  } else {
-
-    if (identical(method, "sobi")) {
-      if (!requireNamespace("JADE", quietly = TRUE)) {
-        stop("Package \"JADE\" needed to use SOBI. Please install it.",
-             call. = FALSE)
-      }
-
-      message("Running SOBI ICA.")
-      ICA_out <- sobi_ICA(
-        data,
-        maxiter = maxit,
-        tol = tol,
-        pca = pca,
-        centre = centre
-      )
-    } else if (any(method %in% c("fastica", "infomax"))) {
-      if (!requireNamespace("ica", quietly = TRUE)) {
-        stop("Package \"ica\" needed to use infomax or fastica. Please install it.",
-             call. = FALSE)
-      }
-
-      if (identical(method, "fastica")) {
-        message("Running fastica (ica).")
-        ICA_out <- ica::icafast(
-          data$signals,
-          nc = rank_check,
-          maxit = maxit,
-          tol = tol,
-          center = centre
-        )
-      } else if (identical(method, "infomax")) {
-        message("Running extended-Infomax (ica).")
-        ICA_out <- ica::icaimax(
-          data$signals,
-          nc = rank_check,
-          maxit = maxit,
-          fun = "ext",
-          tol = tol,
-          center = centre,
-          alg = alg,
-          rateanneal = rateanneal,
-          rate = rate
-        )
-      }
-    } else if (identical(method, "imax")) {
-      if (!requireNamespace("infomax", quietly = TRUE)) {
-        stop(
-          "Package \"infomax\" needed to use the \"imax\" method, please install it from https://github.com/eegverse/infomax"
-        )
-      }
-      message("Running extended-Infomax (infomax).")
-      ICA_out <-
-        infomax::run_infomax(
-          data$signals,
-          tol = tol,
-          centre = centre,
-          maxiter = maxit,
-          whiten = "sqrtm",
-          verbose = verbose
-        )
-    }
-
-    ICA_out$S <- as.data.frame(ICA_out$S)
-    names(ICA_out$S) <- sprintf("Comp%03d", seq_len(ncol(ICA_out$S)))
-
-    if (pca_flag) {
-      mixing_matrix <- as.data.frame(pca_decomp[, 1:pca] %*% ICA_out$M)
-      unmixing_matrix <-
-        as.data.frame(MASS::ginv(as.matrix(mixing_matrix), tol = 0))
-      names(mixing_matrix) <- sprintf("Comp%03d", 1:pca)
-      names(unmixing_matrix) <- orig_chans
-      mixing_matrix$electrode <- orig_chans
-      unmixing_matrix$Component <- sprintf("Comp%03d", 1:pca)
-    } else {
-      mixing_matrix <- as.data.frame(ICA_out$M)
-      names(mixing_matrix) <- sprintf("Comp%03d", seq_len(ncol(ICA_out$M)))
-      mixing_matrix$electrode <- names(data$signals)
-      unmixing_matrix <- as.data.frame(ICA_out$W)
-      names(unmixing_matrix) <- names(data$signals)
-      unmixing_matrix$Component <-
-        sprintf("Comp%03d", seq_len(ncol(ICA_out$S)))
-    }
-  }
-
-  ica_obj <- eeg_ICA(
-    mixing_matrix = mixing_matrix,
-    unmixing_matrix = unmixing_matrix,
-    signals = tibble::as_tibble(ICA_out$S),
-    timings = data$timings,
-    events = data$events,
-    chan_info = data$chan_info,
-    srate = data$srate,
-    epochs = data$epochs,
-    algorithm = list(algorithm = method,
-                     tol = tol,
-                     max_iterations = maxit),
-    contents = return
-  )
-  ica_obj
+  create_eeg_ica_object(processed_output, data, method, tol, maxit, return)
 }
 
 #' @export
@@ -435,4 +295,151 @@ get_vaf <- function(decomp) {
   ncomps <- ncol(decomp$mixing_matrix) - 1
   comp_var <- colSums(decomp$mixing_matrix[, 1:ncomps]^2)
   comp_var / sum(comp_var)
+}
+
+
+perform_pca <- function(data, pca) {
+  if (!is.null(pca)) {
+    stopifnot("`pca` must be numeric" = is.numeric(pca))
+    pca <- floor(pca)
+    message("Reducing data to ", pca, " dimensions using PCA.")
+    pca_decomp <- eigen(stats::cov(data$signals))$vectors
+    data$signals <- as.data.frame(as.matrix(data$signals) %*% pca_decomp[, 1:pca])
+    pca_flag <- TRUE
+  } else {
+    pca <- ncol(data$signals)
+    pca_flag <- FALSE
+    pca_decomp <- NULL
+  }
+  list(data = data, pca_flag = pca_flag, pca_decomp = pca_decomp)
+}
+
+run_ica_method <- function(data, method, maxit, tol, centre, alg, rateanneal, rate, verbose) {
+  switch(method,
+    sobi = run_sobi_ica(data, maxit, tol, centre),
+    fastica = run_fastica(data, maxit, tol, centre),
+    infomax = run_infomax(data, maxit, tol, centre, alg, rateanneal, rate),
+    fica = run_fica(data, maxit, tol),
+    imax = run_imax(data, maxit, tol, centre, verbose),
+    stop("Invalid method")
+  )
+}
+
+run_sobi_ica <- function(data, maxit, tol, centre) {
+  if (!requireNamespace("JADE", quietly = TRUE)) {
+    stop("Package \"JADE\" needed to use SOBI. Please install it.", call. = FALSE)
+  }
+  message("Running SOBI ICA.")
+  sobi_ICA(data, maxiter = maxit, tol = tol, pca = NULL, centre = centre)
+}
+
+run_fastica <- function(data, maxit, tol, centre) {
+  if (!requireNamespace("ica", quietly = TRUE)) {
+    stop("Package \"ica\" needed to use fastica. Please install it.", call. = FALSE)
+  }
+  message("Running fastica (ica).")
+  ica::icafast(data$signals, nc = ncol(data$signals), maxit = maxit, tol = tol, center = centre)
+}
+
+run_infomax <- function(data, maxit, tol, centre, alg, rateanneal, rate) {
+  if (!requireNamespace("ica", quietly = TRUE)) {
+    stop("Package \"ica\" needed to use infomax. Please install it.", call. = FALSE)
+  }
+  message("Running extended-Infomax (ica).")
+  ica::icaimax(data$signals,
+    nc = ncol(data$signals), maxit = maxit, fun = "ext",
+    tol = tol, center = centre, alg = alg, rateanneal = rateanneal, rate = rate
+  )
+}
+
+run_fica <- function(data, maxit, tol) {
+  if (!requireNamespace("fICA", quietly = TRUE)) {
+    stop("Package \"fICA\" needed to use the fICA implementation of fastica. Please install it.", call. = FALSE)
+  }
+  message("Running fastica (fICA).")
+  fICA::fICA(as.matrix(data$signals), eps = tol, maxiter = maxit, method = "sym2")
+}
+
+run_imax <- function(data, maxit, tol, centre, verbose) {
+  if (!requireNamespace("infomax", quietly = TRUE)) {
+    stop("Package \"infomax\" needed to use the \"imax\" method, please install it from https://github.com/eegverse/infomax")
+  }
+  message("Running extended-Infomax (infomax).")
+  infomax::run_infomax(data$signals, tol = tol, centre = centre, maxiter = maxit, whiten = "sqrtm", verbose = verbose)
+}
+
+process_ica_output <- function(ICA_out, method, pca, pca_flag, pca_decomp, orig_chans) {
+  if (method == "fica") {
+    process_fica_output(ICA_out, pca, pca_flag, pca_decomp, orig_chans)
+  } else {
+    process_other_ica_output(ICA_out, pca, pca_flag, pca_decomp, orig_chans)
+  }
+}
+
+process_fica_output <- function(ICA_out, pca, pca_flag, pca_decomp, orig_chans) {
+  ICA_out$W <- ICA_out$W[, 1:pca]
+  mixing_matrix <- MASS::ginv(ICA_out$W, tol = 0)
+
+  if (pca_flag) {
+    mixing_matrix <- pca_decomp[, 1:pca] %*% mixing_matrix
+  }
+
+  var_order <- order(vaf_mix(mixing_matrix), decreasing = TRUE)
+  mixing_matrix <- mixing_matrix[, var_order]
+
+  unmixing_matrix <- as.data.frame(MASS::ginv(mixing_matrix, tol = 0))
+  mixing_matrix <- as.data.frame(mixing_matrix)
+
+  names(mixing_matrix) <- sprintf("Comp%03d", 1:pca)
+  mixing_matrix$electrode <- orig_chans
+  names(unmixing_matrix) <- orig_chans
+  unmixing_matrix$Component <- sprintf("Comp%03d", 1:pca)
+
+  ICA_out$S <- ICA_out$S[, var_order]
+  colnames(ICA_out$S) <- sprintf("Comp%03d", 1:pca)
+  ICA_out$S <- tibble::as_tibble(ICA_out$S[, 1:pca])
+
+  list(mixing_matrix = mixing_matrix, unmixing_matrix = unmixing_matrix, S = ICA_out$S)
+}
+
+process_other_ica_output <- function(ICA_out, pca, pca_flag, pca_decomp, orig_chans) {
+  ICA_out$S <- as.data.frame(ICA_out$S)
+  names(ICA_out$S) <- sprintf("Comp%03d", seq_len(ncol(ICA_out$S)))
+
+  if (pca_flag) {
+    mixing_matrix <- as.data.frame(pca_decomp[, 1:pca] %*% ICA_out$M)
+    unmixing_matrix <- as.data.frame(MASS::ginv(as.matrix(mixing_matrix), tol = 0))
+    names(mixing_matrix) <- sprintf("Comp%03d", 1:pca)
+    names(unmixing_matrix) <- orig_chans
+    mixing_matrix$electrode <- orig_chans
+    unmixing_matrix$Component <- sprintf("Comp%03d", 1:pca)
+  } else {
+    mixing_matrix <- as.data.frame(ICA_out$M)
+    names(mixing_matrix) <- sprintf("Comp%03d", seq_len(ncol(ICA_out$M)))
+    mixing_matrix$electrode <- orig_chans
+    unmixing_matrix <- as.data.frame(ICA_out$W)
+    names(unmixing_matrix) <- orig_chans
+    unmixing_matrix$Component <- sprintf("Comp%03d", seq_len(ncol(ICA_out$S)))
+  }
+
+  list(mixing_matrix = mixing_matrix, unmixing_matrix = unmixing_matrix, S = ICA_out$S)
+}
+
+create_eeg_ica_object <- function(processed_output, data, method, tol, maxit, return) {
+  eeg_ICA(
+    mixing_matrix = processed_output$mixing_matrix,
+    unmixing_matrix = processed_output$unmixing_matrix,
+    signals = tibble::as_tibble(processed_output$S),
+    timings = data$timings,
+    events = data$events,
+    chan_info = data$chan_info,
+    srate = data$srate,
+    epochs = data$epochs,
+    algorithm = list(
+      algorithm = method,
+      tol = tol,
+      max_iterations = maxit
+    ),
+    contents = return
+  )
 }
