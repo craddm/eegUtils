@@ -961,3 +961,170 @@ finalize_tfr <- function(keep_trials,
   )
   data
 }
+
+#' Compute Synchrosqueezed Transform for EEG data
+#'
+#' This function performs synchrosqueezing on EEG time series data, providing a
+#' sharper time-frequency representation.
+#'
+#' @param data An object of class `eeg_epochs`.
+#' @param foi Frequencies of interest. Vector of the lowest and highest frequency to resolve.
+#' @param n_freq Number of frequencies to be resolved.
+#' @param n_voices Number of voices per octave for the wavelet transform.
+#' @param threshold Threshold for synchrosqueezing (default is 1e-8).
+#' @param keep_trials Keep single trials or average over them before returning.
+#' @param downsample Downsampling factor. Integer.
+#' @param verbose Print informative messages in console.
+#' @return An object of class `eeg_tfr` with synchrosqueezed representation.
+#' @export
+#' @importFrom wavelets cwt modwt
+#' @importFrom stats fft
+#'
+#' @examples
+#' out <- compute_synchrosqueezing(demo_epochs, foi = c(4, 30), n_freq = 20)
+#' plot_tfr(out)
+compute_synchrosqueezing <- function(data,
+                                     foi = c(1, 50),
+                                     n_freq = 32,
+                                     n_voices = 32,
+                                     threshold = 1e-8,
+                                     keep_trials = FALSE,
+                                     downsample = 1,
+                                     verbose = TRUE) {
+  if (!is.eeg_epochs(data)) {
+    stop("Input must be an eeg_epochs object.")
+  }
+
+  if (verbose) {
+    message("Computing Synchrosqueezed Transform")
+  }
+
+  # Generate frequency vector
+  frex <- exp(seq(log(foi[1]), log(foi[2]), length.out = n_freq))
+
+  # Prepare data
+  epochs <- unique(data$timings$epoch)
+  channels <- names(data$signals)
+  times <- unique(data$timings$time)
+
+  # Initialize output array
+  if (keep_trials) {
+    sst_out <- array(0, dim = c(length(epochs), length(times), length(channels), n_freq))
+    dimnames(sst_out) <- list(
+      epoch = epochs,
+      time = times,
+      electrode = channels,
+      frequency = frex
+    )
+  } else {
+    sst_out <- array(0, dim = c(1, length(times), length(channels), n_freq))
+    dimnames(sst_out) <- list(
+      epoch = "1",
+      time = times,
+      electrode = channels,
+      frequency = frex
+    )
+  }
+
+  # Compute synchrosqueezing for each epoch and channel
+  for (e in seq_along(epochs)) {
+    for (ch in seq_along(channels)) {
+      signal <- data$signals[[ch]][data$timings$epoch == epochs[e]]
+
+      # Compute CWT
+      wt <- wavelets::cwt(signal, n.scales = n_freq * n_voices, wavelet = "morlet")
+
+      # Compute instantaneous frequency
+      inst_freq <- compute_inst_freq(wt, data$srate)
+
+      # Perform synchrosqueezing
+      sst <- synchrosqueeze(wt, inst_freq, frex, threshold)
+
+      if (keep_trials) {
+        sst_out[e, , ch, ] <- sst
+      } else {
+        sst_out[1, , ch, ] <- sst_out[1, , ch, ] + sst
+      }
+    }
+  }
+
+  # Average if not keeping trials
+  if (!keep_trials) {
+    sst_out <- sst_out / length(epochs)
+  }
+
+  # Downsample if requested
+  if (downsample > 1) {
+    time_sel <- seq(1, length(times), by = downsample)
+    sst_out <- sst_out[, time_sel, , , drop = FALSE]
+    times <- times[time_sel]
+  }
+
+  # Create eeg_tfr object
+  tfr_obj <- eeg_tfr(
+    signals = sst_out,
+    srate = data$srate,
+    events = data$events,
+    chan_info = data$chan_info,
+    reference = data$reference,
+    timings = data.frame(
+      epoch = rep(dimnames(sst_out)$epoch, each = length(times)),
+      time = rep(times, length(dimnames(sst_out)$epoch))
+    ),
+    freq_info = list(
+      freqs = frex,
+      method = "synchrosqueezing",
+      output = "power",
+      baseline = "none"
+    ),
+    dimensions = c("epoch", "time", "electrode", "frequency"),
+    epochs = data$epochs[data$epochs$epoch %in% epochs, ]
+  )
+
+  tfr_obj
+}
+
+#' Compute instantaneous frequency
+#'
+#' @param wt Wavelet transform
+#' @param srate Sampling rate
+#' @return Matrix of instantaneous frequencies
+#' @keywords internal
+compute_inst_freq <- function(wt, srate) {
+  dt <- 1 / srate
+  phase <- Arg(wt)
+  inst_freq <- matrix(0, nrow = nrow(wt), ncol = ncol(wt))
+
+  for (i in 2:(ncol(wt) - 1)) {
+    inst_freq[, i] <- (phase[, i + 1] - phase[, i - 1]) / (2 * dt)
+  }
+
+  # Handle edges
+  inst_freq[, 1] <- (phase[, 2] - phase[, 1]) / dt
+  inst_freq[, ncol(wt)] <- (phase[, ncol(wt)] - phase[, ncol(wt) - 1]) / dt
+
+  inst_freq / (2 * pi) # Convert to Hz
+}
+
+#' Perform synchrosqueezing
+#'
+#' @param wt Wavelet transform
+#' @param inst_freq Instantaneous frequency
+#' @param frex Frequency vector
+#' @param threshold Threshold for synchrosqueezing
+#' @return Synchrosqueezed transform
+#' @keywords internal
+synchrosqueeze <- function(wt, inst_freq, frex, threshold) {
+  sst <- matrix(0, nrow = length(frex), ncol = ncol(wt))
+
+  for (i in 1:nrow(wt)) {
+    for (j in 1:ncol(wt)) {
+      if (abs(wt[i, j]) > threshold) {
+        k <- which.min(abs(frex - inst_freq[i, j]))
+        sst[k, j] <- sst[k, j] + wt[i, j]
+      }
+    }
+  }
+
+  abs(sst)^2 # Return power
+}
