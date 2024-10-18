@@ -2,7 +2,7 @@
 % Please edit documentation in R/current_source_density.R
 \name{compute_h}
 \alias{compute_h}
-\title{Compute the h function for two sets of locations of channel locations on the
+\title{Compute the h function for two sets of channel locations on the
 unit sphere.}
 \usage{
 compute_h(xyz_coords, xyz_elecs, m = 4, iter = 50)
@@ -15,11 +15,9 @@ compute_h(xyz_coords, xyz_elecs, m = 4, iter = 50)
 \item{m}{Interpolation constant (higher = less flexible)}
 
 \item{iter}{iterations for calculations}
-
-\item{lambda}{smoothing parameter}
 }
 \description{
-Compute the h function for two sets of locations of channel locations on the
+Compute the h function for two sets of channel locations on the
 unit sphere.
 }
 \author{
