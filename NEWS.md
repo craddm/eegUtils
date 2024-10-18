@@ -30,6 +30,9 @@
 - Replaced `size` aesthetic with `linewidth` for compatibility with `ggplot2 3.4.0`.
 - Lots of minor code style improvements
 - Deprecated function `iir_filt` removed
+- Refactored `run_ICA` and adopted faster SOBI methods
+- Used internal legendre polynomial function and removed `pracma` dependency
+- Used internal whitening methods in `sobi_ICA` and removed `whitenening` dependency
 
 # eegUtils 0.7.0
 
