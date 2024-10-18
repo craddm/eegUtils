@@ -68,7 +68,6 @@ run_ICA.default <- function(data,
 #' @param return "full" or "weights". "full" returns the mixing and unmixing
 #'   matrices and the source timecourses. "weights" returns only the mixing and
 #'   unmixing matrices. Defaults to "full".
-#' @param options List of option
 #' @describeIn run_ICA Run ICA on an `eeg_epochs` object
 #' @importFrom stats cov
 #' @export
@@ -84,7 +83,6 @@ run_ICA.eeg_epochs <- function(data,
                                rate = 0.1,
                                verbose = TRUE,
                                return = c("full", "weights"),
-                               params = NULL,
                                ...) {
 
   orig_chans <- channel_names(data)
