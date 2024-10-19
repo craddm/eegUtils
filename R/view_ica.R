@@ -48,76 +48,65 @@ view_ica <- function(data) {
              limits = c(-3, 3),
              verbose = FALSE)
 
-  ui <-
-    shiny::navbarPage(
-      title = "EEG decomposition viewer",
+  ui <- bslib::page_fillable(
+    title = "EEG decomposition viewer",
+    bslib::navset_tab(
       id = "main_page",
-      inverse = TRUE,
-      collapsible = TRUE,
-      shiny::tabPanel(
-        "Topographies", shiny::plotOutput("comp_topos", dblclick = "topo_click")
+      bslib::nav_panel(
+        "Topographies",
+        shiny::plotOutput("comp_topos", dblclick = "topo_click")
       ),
-      shiny::tabPanel(
+      bslib::nav_panel(
         "Timecourses",
         shiny::plotOutput("ica_butterflies",
-                   hover = "butter_click",
-                   brush = shiny::brushOpts(id = "butter_brush",
-                                     resetOnNew = TRUE),
-                   dblclick = "butter_dbl"),
+                          hover = "butter_click",
+                          brush = shiny::brushOpts(id = "butter_brush", resetOnNew = TRUE),
+                          dblclick = "butter_dbl"),
         shiny::tableOutput("info"),
         shiny::tags$p(shiny::span("Hover over lines to see component details.")),
         shiny::tags$p("To zoom, drag-click to highlight where you want to zoom, then double-click to zoom. Double-click again to zoom back out.")
       ),
-      shiny::tabPanel(
+      bslib::nav_panel(
         "PSDs",
         shiny::plotOutput(
           "ica_psd",
           hover = "psd_click",
-          brush = shiny::brushOpts(id = "psd_brush",
-                            resetOnNew = TRUE),
+          brush = shiny::brushOpts(id = "psd_brush", resetOnNew = TRUE),
           dblclick = "psd_dbl"
         ),
         shiny::tableOutput("psd_info"),
         shiny::tags$p(shiny::span("Hover over lines to see component details.")),
         shiny::tags$p("To zoom, drag-click to highlight where you want to zoom, then double-click to zoom. Double-click again to zoom back out.")
       ),
-      shiny::tabPanel("Individual",
-        shiny::sidebarLayout(
-          shiny::sidebarPanel(
-            shiny::selectInput(
-              "comp_no", "Component:",
-              channel_names(data)
-              ),
-            shiny::radioButtons("reject_comps",
-                                label = NULL,
-                                choices = c("Keep", "Reject"),
-                                inline = TRUE),
-            width = 3),
-          shiny::mainPanel(
-            shiny::fluidRow(
-              shiny::column(shiny::plotOutput("indiv_topo"), width = 6),
-              shiny::column(shiny::plotOutput("indiv_erpim"), width = 6)
-              ),
-            shiny::fluidRow(
-              shiny::column(shiny::plotOutput("indiv_psd"), width = 6),
-              shiny::column(shiny::plotOutput("indiv_tc"), width = 6)
-              ),
-            width = 9)
+      bslib::nav_panel(
+        "Individual",
+        bslib::layout_sidebar(
+          sidebar = bslib::sidebar(
+            shiny::selectInput("comp_no", "Component:", channel_names(data)),
+            shiny::radioButtons("reject_comps", label = NULL, choices = c("Keep", "Reject"), inline = TRUE)
+          ),
+          bslib::layout_column_wrap(
+            width = 1/2,
+            shiny::plotOutput("indiv_topo"),
+            shiny::plotOutput("indiv_erpim"),
+            shiny::plotOutput("indiv_psd"),
+            shiny::plotOutput("indiv_tc")
           )
-        ),
-      shiny::tabPanel("Output",
-                      shiny::tableOutput("reject_table"),
-                      shiny::checkboxGroupInput("output_choices",
-                                                label = "Output to return",
-                                                choices = list(
-                                                  "Components to reject" = "reject",
-                                                  "Components to keep" = "keep",
-                                                  "Reconstructed data" = "data")
-                                                ),
-                      shiny::actionButton("done",
-                                          "Press to close app and return to console"))
-
+        )
+      ),
+      bslib::nav_panel(
+        "Output",
+        shiny::tableOutput("reject_table"),
+        shiny::checkboxGroupInput("output_choices",
+                                  label = "Output to return",
+                                  choices = list(
+                                    "Components to reject" = "reject",
+                                    "Components to keep" = "keep",
+                                    "Reconstructed data" = "data")),
+        shiny::actionButton("done", "Press to close app and return to console")
+      )
     )
+  )
 
   server <- function(input,
                      output,
