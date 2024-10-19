@@ -30,11 +30,11 @@ condition).
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{eeg_data}: Tag events in an \code{eeg_data} object
+\item \code{tag_events(eeg_data)}: Tag events in an \code{eeg_data} object
 
-\item \code{eeg_epochs}: Tag events in an epoched dataset
+\item \code{tag_events(eeg_epochs)}: Tag events in an epoched dataset
+
 }}
-
 \seealso{
 Other event handlers: 
 \code{\link{events}()},

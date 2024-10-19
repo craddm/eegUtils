@@ -61,11 +61,11 @@ create topographical plots.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{data.frame}: Get scalpmap from a \code{data.frame}
+\item \code{get_scalpmap(data.frame)}: Get scalpmap from a \code{data.frame}
 
-\item \code{eeg_epochs}: Get scalpmap from an \code{eeg_epochs} object.
+\item \code{get_scalpmap(eeg_epochs)}: Get scalpmap from an \code{eeg_epochs} object.
+
 }}
-
 \examples{
 head(get_scalpmap(demo_epochs))
 }

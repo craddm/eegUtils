@@ -2,7 +2,7 @@
 % Please edit documentation in R/frequency_analysis.R
 \name{welch_fft}
 \alias{welch_fft}
-\title{Welch fft}
+\title{Welch FFT}
 \usage{
 welch_fft(data, seg_length, n_fft, noverlap, n_sig, srate)
 }
@@ -20,6 +20,7 @@ welch_fft(data, seg_length, n_fft, noverlap, n_sig, srate)
 \item{srate}{Sampling rate of the data.}
 }
 \description{
-Internal function for calculating the PSD using Welch's method
+Internal function for calculating the PSD using Welch's method. Hardcoded to
+use Hamming window.
 }
 \keyword{internal}

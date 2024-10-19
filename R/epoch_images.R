@@ -18,7 +18,7 @@
 #' @export
 
 erp_image <- function(data,
-                      ...){
+                      ...) {
   UseMethod("erp_image", data)
 }
 
@@ -95,8 +95,6 @@ erp_image.data.frame <- function(data,
   }
 
 }
-
-
 
 #'@describeIn erp_image Create an `erp_image` from `eeg_epochs`
 #'@export
@@ -190,7 +188,7 @@ erp_image.eeg_tfr <- function(data,
   data <- select_elecs(data,
                        electrode)
 
-  if (!is.null(freq_range)){
+  if (!is.null(freq_range)) {
     data <- select_freqs(data,
                          freq_range)
   }
@@ -204,8 +202,6 @@ erp_image.eeg_tfr <- function(data,
   data <- as.data.frame(data,
                         long = TRUE,
                         coords = FALSE)
-
-
 
   create_tfrimage(data,
                   electrode = electrode,
@@ -273,7 +269,7 @@ create_erpimage <- function(data,
     geom_raster(interpolate = interpolate) +
     geom_vline(xintercept = 0,
                linetype = "dashed",
-               size = 1) +
+               linewidth = 1) +
     scale_fill_distiller(palette = "RdBu",
                          limits = clim,
                          oob = scales::squish) +
@@ -283,7 +279,6 @@ create_erpimage <- function(data,
     labs(x = "Time (s)", fill = "Amplitude", y = "Epoch number") +
     ggtitle(paste("ERP Image for", electrode))
 }
-
 
 create_tfrimage <- function(data,
                             electrode,
@@ -326,7 +321,7 @@ create_tfrimage <- function(data,
     clim <- c(0, clim)
   } else if (length(clim) != 2) {
     clim <- max(abs(max(data$smooth_amp, na.rm = TRUE)),
-                abs(min(data$smooth_amp, na.rm = T)))
+                abs(min(data$smooth_amp, na.rm = TRUE)))
     clim <- c(0, clim)
   }
 
@@ -337,7 +332,7 @@ create_tfrimage <- function(data,
     geom_raster(interpolate = interpolate) +
     geom_vline(xintercept = 0,
                linetype = "dashed",
-               size = 1) +
+               linewidth = 1) +
     scale_fill_viridis_c(limits = clim,
                          oob = scales::squish) +
     scale_y_continuous(expand = c(0, 0)) +
@@ -375,7 +370,6 @@ create_tfrimage <- function(data,
 #'   e.g. c(-5,5). Defaults to min and max.
 #' @param interpolate Smooth the raster plot. Defaults to FALSE.
 #' @import ggplot2
-#' @importFrom tidyr gather
 #' @importFrom scales squish
 #' @author Matt Craddock, \email{matt@@mattcraddock.com}
 #' @return A `ggplot` object
@@ -387,11 +381,7 @@ erp_raster <- function(data,
                        clim = NULL,
                        interpolate = FALSE) {
 
-  if (
-    inherits(
-      data, c("eeg_tfr", "eeg_ICA")
-      )
-    ) {
+  if (inherits(data, c("eeg_tfr", "eeg_ICA"))) {
     stop(
       paste(
         "Not currently implemented for objects of class",
@@ -426,10 +416,9 @@ erp_raster <- function(data,
                       y = electrode,
                       fill = amplitude)) +
     stat_summary_by_fill(interpolate = interpolate) +
-    #geom_raster(interpolate = interpolate) +
     geom_vline( xintercept = 0,
                 linetype = "dashed",
-                size = 2) +
+                linewidth = 2) +
     scale_fill_distiller(palette = "RdBu",
                          limits = c(clim[1],
                                     clim[2]),
@@ -461,22 +450,22 @@ arrange_chans <- function(chan_info, sig_names) {
 
   # Order them from back to front
   midline_labels <- midline_labels[sort(midline_dist,
-                                        decreasing = T,
-                                        index.return = T)$ix]
+                                        decreasing = TRUE,
+                                        index.return = TRUE)$ix]
 
   # Pick out electrodes from the left hemisphere
   left <- is.true(chan_info$x < 0)
-  left_labels <- chan_info$electrode[left ]
+  left_labels <- chan_info$electrode[left]
   left_dist <- chan_info$y[left]
   left_labels <- left_labels[sort(left_dist,
-                                  index.return = T)$ix]
+                                  index.return = TRUE)$ix]
 
   # Pick out electrodes from the right hemisphere
   right <- is.true(chan_info$x > 0)
   right_labels <- chan_info$electrode[right]
   right_dist <- chan_info$y[right]
   right_labels <- right_labels[sort(right_dist,
-                                    index.return = T)$ix]
+                                    index.return = TRUE)$ix]
 
   all_labels <- c(left_labels,
                   midline_labels,

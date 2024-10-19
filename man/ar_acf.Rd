@@ -20,7 +20,8 @@ ar_acf(data, ...)
 
 \item{verbose}{Print informative messages. Defaults to TRUE.}
 
-\item{threshold}{Specify a threshold for low ACF. NULL estimates the threshold automatically.}
+\item{threshold}{Specify a threshold for low ACF. NULL estimates the
+threshold automatically.}
 }
 \value{
 A character vector of component names that break the threshold.
@@ -33,9 +34,9 @@ noise.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{eeg_ICA}: Autocorrelation checker for \code{eeg_ICA} objects
-}}
+\item \code{ar_acf(eeg_ICA)}: Autocorrelation checker for \code{eeg_ICA} objects
 
+}}
 \examples{
 demo_sobi <- run_ICA(demo_epochs, pca = 10)
 ar_acf(demo_sobi)

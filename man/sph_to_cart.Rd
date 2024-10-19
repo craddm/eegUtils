@@ -7,9 +7,11 @@
 sph_to_cart(theta, phi, radius = 85)
 }
 \arguments{
-\item{radius}{Radius of head (in mm)}
+\item{theta}{Theta in degrees}
 
-\item{sph_coords}{Theta and phi in degrees.}
+\item{phi}{Phi in degrees}
+
+\item{radius}{Radius of head (in mm)}
 }
 \description{
 Convert spherical co-ordinates to Cartesian 3D co-ordinates

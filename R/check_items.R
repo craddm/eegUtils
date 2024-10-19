@@ -25,10 +25,10 @@ check_epochs <- function(data) {
   stopifnot(is.list(data))
 
   dat_epochs <- lapply(data,
-                        function(x) nrow(x$signals))
+                       function(x) nrow(x$signals))
   check_epochs <- sapply(dat_epochs,
-                        identical,
-                        dat_epochs[[1]])
+                         identical,
+                         dat_epochs[[1]])
   all(check_epochs)
 }
 
@@ -74,9 +74,10 @@ label_check <- function(cond_labs,
                                "/")
 
       lab_check <- lapply(cond_labs,
-                          function(x) vapply(split_labels,
-                                             function(i) x %in% i,
-                                             logical(1)))
+                          function(x) {
+                                       vapply(split_labels,
+                                              function(i) x %in% i,
+                                              logical(1))})
       #condense to a single TRUE or FALSE for each label
       lab_check <- vapply(lab_check,
                           any,

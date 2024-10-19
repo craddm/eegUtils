@@ -13,6 +13,7 @@ tf_hanning(
   keep_trials,
   output,
   downsample,
+  trim_edges = trim_edges,
   demean = TRUE,
   verbose
 )

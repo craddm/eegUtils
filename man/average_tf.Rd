@@ -2,14 +2,16 @@
 % Please edit documentation in R/data_averaging.R
 \name{average_tf}
 \alias{average_tf}
-\title{Internal function for averaging over epochs for eeg_tfr objects.}
+\title{Internal function for averaging over epochs for \code{eeg_tfr} objects.}
 \usage{
-average_tf(data, cols = NULL)
+average_tf(data, cols = NULL, weighted, verbose)
 }
 \arguments{
 \item{data}{data to average over}
+
+\item{weighted}{Calculate weighted means if TRUE (if possible!)}
 }
 \description{
-Internal function for averaging over epochs for eeg_tfr objects.
+Internal function for averaging over epochs for \code{eeg_tfr} objects.
 }
 \keyword{internal}

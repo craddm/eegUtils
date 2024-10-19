@@ -38,18 +38,18 @@ import_erplab <- function(file_name,
   }
 
   temp_dat <- R.matlab::readMat(file_name)
-  times_data <- unlist(temp_dat$ERP["times", ,])
+  times_data <- unlist(temp_dat$ERP["times", , ])
   n_times <- length(times_data)
-  n_bins <- unlist(temp_dat$ERP["nbin", ,])
-  n_chans <- unlist(temp_dat$ERP["nchan", ,])
-  signals <- unlist(temp_dat$ERP["bindata", ,1])
+  n_bins <- unlist(temp_dat$ERP["nbin", , ])
+  n_chans <- unlist(temp_dat$ERP["nchan", , ])
+  signals <- unlist(temp_dat$ERP["bindata", , 1])
   signals <- array(signals,
                    dim = c(n_chans,
                            n_times *
                            n_bins))
   signals <- t(signals)
 
-  chan_info <- drop(Reduce(rbind, temp_dat$ERP["chanlocs",,]))
+  chan_info <- drop(Reduce(rbind, temp_dat$ERP["chanlocs", , ]))
   chan_info <- apply(chan_info, 1, unlist)
   chan_info <- lapply(chan_info,
                       function(x) if (length(x) == 0) NA else x)
@@ -66,7 +66,7 @@ import_erplab <- function(file_name,
     tibble::new_tibble(list(epoch = 1:n_bins,
                             participant_id = rep(participant_id, n_bins),
                             recording = rep(recording, n_bins),
-                            epoch_labels = unlist(temp_dat$ERP["bindescr", ,])),
+                            epoch_labels = unlist(temp_dat$ERP["bindescr", , ])),
                        nrow = n_bins,
                        class = "epoch_info")
   if (df_out) {

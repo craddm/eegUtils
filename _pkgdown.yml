@@ -4,6 +4,7 @@ development:
   mode: auto
 
 template:
+  bootstrap: 5
   params:
     bootswatch: flatly
 
@@ -86,3 +87,21 @@ reference:
       - channel_names
       - get_participant_id
       - get_recording
+  - title: internal
+    contents:
+    - starts_with("print")
+    - starts_with("is")
+    - epoch_data.default
+    - tag_epochs
+    - demo_epochs
+    - demo_spatial
+    - eeg_epochs
+    - eeg_ICA
+    - cycle_calc
+    - tag_epochs
+    - rotate_angle
+    - list_epochs
+    - list_events
+    - fit_glm
+    - eegUtils-package
+    - eeg_summarise
