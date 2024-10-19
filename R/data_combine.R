@@ -471,8 +471,8 @@ check_timings.eeg_epochs <- function(.data,
       switch_epo <- .data$timings$epoch[switch_locs]
       switch_sample <- .data$timings$sample[switch_locs]
       locs <- (switch_locs + 1):n_rows
-      data$timings$epoch[locs] <- .data$timings$epoch[locs] + switch_epo
-      data$timings$sample[locs] <- .data$timings$sample[locs] + switch_sample
+      .data$timings$epoch[locs] <- .data$timings$epoch[locs] + switch_epo
+      .data$timings$sample[locs] <- .data$timings$sample[locs] + switch_sample
     } else {
       for (i in 1:(length(switch_locs) - 1)) {
         switch_epo <- .data$timings$epoch[switch_locs[i]]
