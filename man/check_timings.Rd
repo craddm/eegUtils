@@ -10,7 +10,7 @@ check_timings(.data, verbose = TRUE)
 
 \method{check_timings}{eeg_data}(.data, verbose = TRUE)
 
-\method{check_timings}{eeg_epochs}(data, verbose = TRUE)
+\method{check_timings}{eeg_epochs}(.data, verbose = TRUE)
 }
 \arguments{
 \item{verbose}{Print informative messages}

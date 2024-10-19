@@ -19,7 +19,6 @@ run_ICA(data, ...)
   rate = 0.1,
   verbose = TRUE,
   return = c("full", "weights"),
-  params = NULL,
   ...
 )
 }
@@ -58,8 +57,6 @@ Defaults to "gradient". Ignored if method != "infomax".}
 \item{return}{"full" or "weights". "full" returns the mixing and unmixing
 matrices and the source timecourses. "weights" returns only the mixing and
 unmixing matrices. Defaults to "full".}
-
-\item{options}{List of option}
 }
 \value{
 An \code{eeg_ICA} object containing an ICA decomposition

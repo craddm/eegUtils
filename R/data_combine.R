@@ -427,28 +427,28 @@ check_timings.eeg_data <- function(.data,
 
 #' @rdname check_timings
 #' @keywords internal
-check_timings.eeg_epochs <- function(data,
+check_timings.eeg_epochs <- function(.data,
                                      verbose = TRUE) {
 
-  n_rows <- nrow(data$timings)
+  n_rows <- nrow(.data$timings)
 
   # Check for duplicate epochs. If not, there's nothing to correct.
-  if (!any(duplicated(data$epochs[, c("epoch", "participant_id", "recording")]))) {
+  if (!any(duplicated(.data$epochs[, c("epoch", "participant_id", "recording")]))) {
     if (verbose) message("No duplicate epochs found, combining objects.")
-    return(data)
+    return(.data)
   }
 
   # If there are any positive differences other than 1, then some trials have
   # been removed and the trials are not necessarily in chronological order. It
   # then isn't clear how to combine them.
-  if (any(diff(data$timings$epoch) > 1)) {
+  if (any(diff(.data$timings$epoch) > 1)) {
     stop("Some epochs appear to be missing. ",
          "Cannot automatically combine objects. ",
          "See help for further details.")
   }
 
   # if the epoch numbers are not ascending, fix them...
-  if (any(diff(data$timings$epoch) < 0)) {
+  if (any(diff(.data$timings$epoch) < 0)) {
     if (verbose) {
       message("Replacing timings with ascending values.",
               "This assumes that the objects are provided in the correct order.")
@@ -456,60 +456,60 @@ check_timings.eeg_epochs <- function(data,
   }
 
   # Do I need while here, or just if? double check...
-  while (any(diff(data$timings$epoch) < 0)) {
+  while (any(diff(.data$timings$epoch) < 0)) {
 
     # check consistency of the data timings table.
     # timings should be consistently increasing.
     # only works correctly with 2 objects
 
     #check for any places where epoch numbers decrease instead of increase
-    switch_locs <- which(diff(data$timings$epoch) < 0)
+    switch_locs <- which(diff(.data$timings$epoch) < 0)
 
     #consider switch this out with an RLE method, which would be much simpler.
 
     if (length(switch_locs) == 1) {
-      switch_epo <- data$timings$epoch[switch_locs]
-      switch_sample <- data$timings$sample[switch_locs]
+      switch_epo <- .data$timings$epoch[switch_locs]
+      switch_sample <- .data$timings$sample[switch_locs]
       locs <- (switch_locs + 1):n_rows
-      data$timings$epoch[locs] <- data$timings$epoch[locs] + switch_epo
-      data$timings$sample[locs] <- data$timings$sample[locs] + switch_sample
+      data$timings$epoch[locs] <- .data$timings$epoch[locs] + switch_epo
+      data$timings$sample[locs] <- .data$timings$sample[locs] + switch_sample
     } else {
       for (i in 1:(length(switch_locs) - 1)) {
-        switch_epo <- data$timings$epoch[switch_locs[i]]
-        switch_sample <- data$timings$sample[switch_locs[i]]
+        switch_epo <- .data$timings$epoch[switch_locs[i]]
+        switch_sample <- .data$timings$sample[switch_locs[i]]
         locs <- (switch_locs[i] + 1):switch_locs[i + 1]
-        data$timings$epoch[locs] <- data$timings$epoch[locs] + switch_epo
-        data$timings$sample[locs] <- data$timings$sample[locs] + switch_sample
+        data$timings$epoch[locs] <- .data$timings$epoch[locs] + switch_epo
+        data$timings$sample[locs] <- .data$timings$sample[locs] + switch_sample
       }
 
-      switch_epo <- data$timings$epoch[switch_locs[length(switch_locs)]]
-      switch_sample <- data$timings$sample[switch_locs[length(switch_locs)]]
-      data$timings$epoch[(switch_locs[length(switch_locs)] + 1):n_rows] <-
-        data$timings$epoch[(switch_locs[length(switch_locs)] + 1):n_rows] + switch_epo
-      data$timings$sample[(switch_locs[length(switch_locs)] + 1):n_rows] <-
-        data$timings$sample[(switch_locs[length(switch_locs)] + 1):n_rows] + switch_sample
+      switch_epo <- .data$timings$epoch[switch_locs[length(switch_locs)]]
+      switch_sample <- .data$timings$sample[switch_locs[length(switch_locs)]]
+      .data$timings$epoch[(switch_locs[length(switch_locs)] + 1):n_rows] <-
+        .data$timings$epoch[(switch_locs[length(switch_locs)] + 1):n_rows] + switch_epo
+      .data$timings$sample[(switch_locs[length(switch_locs)] + 1):n_rows] <-
+        .data$timings$sample[(switch_locs[length(switch_locs)] + 1):n_rows] + switch_sample
     }
   }
 
-  if (any(diff(data$events$event_time) < 0)) {
+  if (any(diff(.data$events$event_time) < 0)) {
 
     #check consistency of the data event table
     #to handle cases where there are multiple events per epoch,
     #use RLE to code how many times each epoch number comes up in a row;
     #then replace old epoch numbers with new and reconstruct the vector
-    orig_ev <- rle(data$events$epoch)
-    orig_ev$values <- unique(data$timings$epoch)
-    data$events$epoch <- inverse.rle(orig_ev)
-    data$events <- dplyr::left_join(data$events,
-                                    data$timings,
+    orig_ev <- rle(.data$events$epoch)
+    orig_ev$values <- unique(.data$timings$epoch)
+    .data$events$epoch <- inverse.rle(orig_ev)
+    .data$events <- dplyr::left_join(.data$events,
+                                    .data$timings,
                                     by = c("epoch",
                                            "time"))
-    data$events$event_onset <- data$events$sample
-    data$events$sample <- NULL
+    .data$events$event_onset <- .data$events$sample
+    .data$events$sample <- NULL
   }
 
-  data$epochs$epoch <- unique(data$events$epoch)
-  data
+  .data$epochs$epoch <- unique(.data$events$epoch)
+  .data
 }
 
 #' Rearrange and combine `tfr_average` objects
