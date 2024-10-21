@@ -500,3 +500,201 @@ ar_FASTER.eeg_group <- function(data,
   }
 
 }
+
+
+# ... existing code ...
+
+#' RANSAC EEG artefact rejection
+#'
+#' An implementation of the RANSAC (Random Sample Consensus) algorithm for EEG artifact rejection.
+#'
+#' @param data An object of class `eeg_epochs`
+#' @param threshold Correlation threshold for considering a channel as inlier
+#' @param min_channels Minimum number of channels required to be considered as inliers
+#' @param iterations Number of RANSAC iterations
+#' @param channel_wise Logical. If TRUE, performs channel-wise RANSAC
+#' @return An `eeg_epochs` object with artefact correction applied.
+#' @export
+
+ar_RANSAC <- function(data,
+                      threshold = 0.75,
+                      min_channels = 0.25,
+                      iterations = 20,
+                      channel_wise = FALSE) {
+  if (!inherits(data, "eeg_epochs")) {
+    stop("Input must be an eeg_epochs object")
+  }
+
+  # Get the data matrix
+  eeg_data <- as.matrix(data$signals)
+
+  # Get dimensions
+  n_channels <- ncol(eeg_data)
+  n_samples <- nrow(eeg_data)
+
+  # Minimum number of channels required
+  min_channels <- max(2, round(min_channels * n_channels))
+
+  # Initialize bad channels
+  bad_channels <- rep(FALSE, n_channels)
+
+  if (channel_wise) {
+    # Perform RANSAC for each channel
+    for (i in 1:n_channels) {
+      inliers <- ransac_channel(eeg_data[, -i], eeg_data[, i], threshold, min_channels, iterations)
+      if (length(inliers) < min_channels) {
+        bad_channels[i] <- TRUE
+      }
+    }
+  } else {
+    # Perform RANSAC for all channels at once
+    inliers <- ransac_all(eeg_data, threshold, min_channels, iterations)
+    bad_channels[!inliers] <- TRUE
+  }
+
+  # Interpolate bad channels
+  if (any(bad_channels)) {
+    message(paste("Bad channels detected:", paste(colnames(eeg_data)[bad_channels], collapse = ", ")))
+    data <- interp_elecs(data, colnames(eeg_data)[bad_channels])
+  } else {
+    message("No bad channels detected.")
+  }
+
+  return(data)
+}
+
+#' RANSAC for a single channel
+#' @keywords internal
+ransac_channel <- function(X, y, threshold, min_channels, iterations) {
+  best_inliers <- c()
+
+  for (i in 1:iterations) {
+    # Randomly select channels
+    sample_indices <- sample(ncol(X), min_channels)
+    sample_X <- X[, sample_indices]
+
+    # Fit a model
+    model <- lm(y ~ sample_X)
+
+    # Predict for all channels
+    predictions <- predict(model, data.frame(X))
+
+    # Calculate correlations
+    correlations <- cor(predictions, X)
+
+    # Find inliers
+    inliers <- which(correlations > threshold)
+
+    if (length(inliers) > length(best_inliers)) {
+      best_inliers <- inliers
+    }
+  }
+
+  return(best_inliers)
+}
+
+#' RANSAC for all channels
+#' @keywords internal
+ransac_all <- function(X, threshold, min_channels, iterations) {
+  best_inliers <- c()
+
+  for (i in 1:iterations) {
+    # Randomly select channels
+    sample_indices <- sample(ncol(X), min_channels)
+    sample_X <- X[, sample_indices]
+
+    # Calculate mean of sampled channels
+    sample_mean <- rowMeans(sample_X)
+
+    # Calculate correlations
+    correlations <- cor(sample_mean, X)
+
+    # Find inliers
+    inliers <- which(correlations > threshold)
+
+    if (length(inliers) > length(best_inliers)) {
+      best_inliers <- inliers
+    }
+  }
+
+  return(best_inliers)
+}
+
+# ... existing code ...
+
+#' Check for step artifacts in EEG data
+#'
+#' This function detects sudden, large amplitude changes in EEG signals that may indicate step artifacts.
+#'
+#' @param data An object of class `eeg_epochs`
+#' @param threshold The threshold for detecting step artifacts, in microvolts
+#' @param window_size The size of the moving window to check for step changes, in samples
+#' @param min_duration The minimum duration of a step change to be considered an artifact, in samples
+#'
+#' @return A list containing:
+#'   \item{artifact_epochs}{A vector of epoch numbers containing step artifacts}
+#'   \item{artifact_channels}{A list of channel names with step artifacts for each affected epoch}
+#'
+#' @export
+check_step_artifacts <- function(data, threshold = 100, window_size = 10, min_duration = 5) {
+  if (!inherits(data, "eeg_epochs")) {
+    stop("Input must be an eeg_epochs object")
+  }
+
+  # Get the data matrix
+  eeg_data <- as.matrix(data$signals)
+
+  # Get dimensions
+  n_channels <- ncol(eeg_data)
+  n_samples <- nrow(eeg_data)
+  n_epochs <- length(unique(data$timings$epoch))
+  samples_per_epoch <- n_samples / n_epochs
+
+  # Initialize results
+  artifact_epochs <- vector("numeric")
+  artifact_channels <- vector("list", n_epochs)
+
+  # Loop through epochs
+  for (epoch in 1:n_epochs) {
+    epoch_start <- (epoch - 1) * samples_per_epoch + 1
+    epoch_end <- epoch * samples_per_epoch
+    epoch_data <- eeg_data[epoch_start:epoch_end, ]
+
+    # Calculate differences between adjacent time points
+    diffs <- diff(epoch_data)
+
+    # Use a moving window to detect sustained step changes
+    for (i in 1:(nrow(diffs) - window_size + 1)) {
+      window_diffs <- diffs[i:(i + window_size - 1), ]
+      cumulative_diffs <- colSums(window_diffs)
+
+      # Check if the cumulative difference exceeds the threshold
+      step_channels <- which(abs(cumulative_diffs) > threshold)
+
+      if (length(step_channels) > 0) {
+        # Check if the step change persists for the minimum duration
+        for (chan in step_channels) {
+          if (all(abs(window_diffs[1:min_duration, chan]) > threshold / window_size)) {
+            if (!(epoch %in% artifact_epochs)) {
+              artifact_epochs <- c(artifact_epochs, epoch)
+            }
+            artifact_channels[[epoch]] <- unique(c(artifact_channels[[epoch]], colnames(eeg_data)[chan]))
+          }
+        }
+      }
+    }
+  }
+
+  # Remove empty elements from artifact_channels list
+  artifact_channels <- artifact_channels[sapply(artifact_channels, length) > 0]
+
+  # Create a summary message
+  if (length(artifact_epochs) > 0) {
+    message(paste("Step artifacts detected in", length(artifact_epochs), "epochs."))
+  } else {
+    message("No step artifacts detected.")
+  }
+
+  return(list(artifact_epochs = artifact_epochs, artifact_channels = artifact_channels))
+}
+
