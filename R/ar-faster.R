@@ -130,7 +130,13 @@ ar_FASTER.eeg_epochs <- function(data,
     message(paste("Globally bad epochs:",
                   paste(bad_epochs,
                         collapse = " ")))
-    data$reject$bad_epochs <- bad_epochs
+
+    data$reject$epochs <- do.call(rbind,
+                            list(data$reject$epoch,
+                                 data.frame(epoch = bad_epochs,
+                                            reason = "bad_epoch")
+                                 )
+    )
     data <- select_epochs(data,
                           epoch_no = bad_epochs,
                           keep = FALSE)
