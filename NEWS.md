@@ -1,4 +1,4 @@
-# eegUtils (development version)
+# eegUtils 0.8.0
 
 ### Function changes
 - `plot_timecourse()` now requires facets and mappings to be explicitly stated during the call, rather than added afterwards. This allows it to use weighted averages when required.
