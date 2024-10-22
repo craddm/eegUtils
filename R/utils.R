@@ -3,15 +3,16 @@
 #' @param data data to be converted
 #' @param ... additional parameters
 #' @keywords internal
-conv_to_mat <- function(data,...) {
+conv_to_mat <- function(data, ...) {
   UseMethod("conv_to_mat", data)
 }
 
+#' @keywords internal
 conv_to_mat.default <- function(data, ...) {
   stop("Not implemented for objects of class", class(data))
 }
 
-#' @describeIn conv_to_mat Convert eeg_epochs to 3D matrix
+#' @describeIn conv_to_mat Convert `eeg_epochs` to 3D matrix
 conv_to_mat.eeg_epochs <- function(data, ...) {
   n_epochs <- length(unique(data$timings$epoch))
   n_channels <- ncol(data$signals)
@@ -20,7 +21,6 @@ conv_to_mat.eeg_epochs <- function(data, ...) {
                 dim = c(n_times, n_epochs, n_channels))
   data
 }
-
 
 is.true <- function(x) {
   !is.na(x) & x
@@ -48,9 +48,11 @@ zero_vec <- function(vec_length) {
 pad <- function(x,
                 n,
                 startval = 0,
-                endval = 0) {c(rep(startval, n),
-                         x,
-                         rep(endval, n))}
+                endval = 0) {
+  c(rep(startval, n),
+    x,
+    rep(endval, n))
+  }
 
 #' Unpad a vector
 #'
@@ -109,3 +111,4 @@ update_r <-
 #' Calculate maximum electrode distance from origin.
 #' @keywords internal
 calc_max_elec <- function(data) max(sqrt(data$x^2 + data$y^2), na.rm = TRUE)
+

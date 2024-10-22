@@ -2,17 +2,23 @@
 % Please edit documentation in R/erp_scalp.R
 \name{interactive_scalp}
 \alias{interactive_scalp}
+\alias{interactive_scalp.eeg_epochs}
 \title{Interactive scalp maps}
 \usage{
-interactive_scalp(data, colour = NULL, baseline = NULL, montage = NULL)
+interactive_scalp(data, ...)
+
+\method{interactive_scalp}{eeg_epochs}(data, colour = NULL, baseline = NULL, montage = NULL, ...)
 }
 \arguments{
 \item{data}{An EEG dataset.}
 
+\item{...}{Additional arguments}
+
 \item{colour}{Variable to colour lines by. If no variable is passed, only one
 line is drawn for each electrode.}
 
-\item{baseline}{Character vector of times to subtract for baseline correction.}
+\item{baseline}{Character vector of times to subtract for baseline
+correction.}
 
 \item{montage}{Name of an existing montage set. Defaults to NULL; (currently
 only 'biosemi64alpha' available other than default 10/20 system)}
@@ -22,8 +28,14 @@ Launches a Shiny Gadget for an interactive version of \code{erp_scalp}, allowing
 clicking of individual electrodes to plot them in a separate panel. In that
 panel, they can be averaged over or plotted as individual electrodes.
 }
+\section{Methods (by class)}{
+\itemize{
+\item \code{interactive_scalp(eeg_epochs)}: Method for \code{eeg_epochs} objects
+
+}}
 \seealso{
-\code{\link[=erp_scalp]{erp_scalp()}} for non-interactive plots of ERPs in a scalp-based layout.
+\code{\link[=erp_scalp]{erp_scalp()}} for non-interactive plots of ERPs in a scalp-based
+layout.
 
 Other scalp-based maps: 
 \code{\link{erp_scalp}()},

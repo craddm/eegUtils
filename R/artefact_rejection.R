@@ -86,10 +86,15 @@ ar_thresh.eeg_epochs <- function(data,
       data <- select_epochs(data,
                             epoch_no = rej_epochs,
                             keep = FALSE)
-      } else {
-        data$reject$epochs <- rej_epochs
-        data$reject$timings <- data$timings[crossed_thresh,]
-      }
+    } else {
+      data$reject$epochs <- do.call(rbind,
+                                    list(
+                                      data$reject$epochs,
+                                      rej_epochs
+                                      )
+      )
+      data$reject$timings <- data$timings[crossed_thresh, ]
+    }
   }
   data
 }
@@ -104,11 +109,11 @@ check_thresh <- function(data, threshold) {
   total_data <- prod(dim(data$signals))
 
   message(sum(upper_thresh),
-          " (", round(sum(upper_thresh)/total_data * 100, 2), "%) ",
-          "samples above ", max(threshold) , " uV threshold.")
+          " (", round(sum(upper_thresh) / total_data * 100, 2), "%) ",
+          "samples above ", max(threshold), " uV threshold.")
   message(sum(lower_thresh),
-          " (", round(sum(lower_thresh)/total_data * 100, 2), "%) ",
-          "samples below ", min(threshold) , " uV threshold.")
+          " (", round(sum(lower_thresh) / total_data * 100, 2), "%) ",
+          "samples below ", min(threshold), " uV threshold.")
   crossed_thresh
 }
 
@@ -116,7 +121,7 @@ check_thresh <- function(data, threshold) {
 #'
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #'
-#' @param data Data as a `eeg_data` or `eeg_epochs` object.
+#' @param data An `eeg_data` or `eeg_epochs` object.
 #' @param ... Other parameters passed to the functions.
 #' @examples
 #' channel_stats(demo_epochs)
@@ -140,12 +145,12 @@ channel_stats.eeg_data <- function(data,
   chan_range <- apply(data$signals, 2, function(x) diff(range(x)))
 
   data.frame(electrode = names(data$signals),
-             means = chan_means,
-             sds = chan_sds,
-             variance = chan_var,
-             kurtosis = chan_kurt,
-             minmax = chan_range
-             )
+    means = chan_means,
+    sds = chan_sds,
+    variance = chan_var,
+    kurtosis = chan_kurt,
+    minmax = chan_range
+  )
 }
 
 #' Epoch statistics
@@ -154,7 +159,7 @@ channel_stats.eeg_data <- function(data,
 #'
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #'
-#' @param data Data as a `eeg_data` or `eeg_epochs` object.
+#' @param data An `eeg_epochs` object.
 #' @param ... Other parameters passed to the functions.
 #' @examples
 #' epoch_stats(demo_epochs)
@@ -253,29 +258,29 @@ eogreg <- function(data,
                    bipolarize) {
 
   if (bipolarize) {
-    EOG <- bip_EOG(data$signals, heog, veog)
+    eog <- bip_eog(data$signals, heog, veog)
   } else {
-    HEOG <- data$signals[, heog, drop = TRUE]
-    VEOG <- data$signals[, veog, drop = TRUE]
-    EOG <- data.frame(HEOG, VEOG)
+    heog <- data$signals[, heog, drop = TRUE]
+    veog <- data$signals[, veog, drop = TRUE]
+    eog <- data.frame(heog, veog)
   }
 
   data_chans <- channel_names(data)[!channel_names(data) %in% c(heog, veog)]
-  hmz <- solve(crossprod(as.matrix(EOG)),
-               crossprod(as.matrix(EOG),
+  hmz <- solve(crossprod(as.matrix(eog)),
+               crossprod(as.matrix(eog),
                          as.matrix(data$signals[, data_chans])))
-  data$signals[, data_chans] <- data$signals[, data_chans] - crossprod(t(as.matrix(EOG)), hmz)
+  data$signals[, data_chans] <- data$signals[, data_chans] - crossprod(t(as.matrix(eog)), hmz)
   data
 }
 
 #' @noRd
-bip_EOG <- function(data,
-                    HEOG,
-                    VEOG) {
-  HEOG <- data[, HEOG[1]] - data[, HEOG[2]]
-  VEOG <- data[, VEOG[1]] - data[, VEOG[2]]
-  EOG <- data.frame(HEOG, VEOG)
-  EOG
+bip_eog <- function(data,
+                    heog,
+                    veog) {
+  heog <- data[, heog[1]] - data[, heog[2]]
+  veog <- data[, veog[1]] - data[, veog[2]]
+  eog <- data.frame(heog, veog)
+  eog
 }
 
 

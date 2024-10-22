@@ -18,8 +18,9 @@
 #'   regression formula for a GLM. See ?formula and notes on use below
 #' @param data An `eegUtils` object.
 #' @param ... Any other arguments passed to (LM/GLM)
-#' @importFrom tibble as_tibble
-#' @importFrom dplyr mutate
+#' @examples
+#' fit_glm(~epoch_labels, demo_spatial)
+#' fit_glm(~epoch_labels + baseline, demo_spatial, baseline = c(-.1, 0))
 #' @export
 
 fit_glm <- function(formula,
@@ -35,13 +36,13 @@ fit_glm.default <- function(formula,
   stop(paste("Objects of class", class(data), "not currently supported"))
 }
 
-#' @param time_lim Numeric vector of length 2 specifying time period to be used
+#' @param baseline Numeric vector of length 2 specifying time period to be used
 #'   as a baseline.
 #' @describeIn fit_glm GLM fitting for `eeg_epochs`
 #' @export
 fit_glm.eeg_epochs <- function(formula,
                                data,
-                               time_lim = NULL,
+                               baseline = NULL,
                                ...) {
 
   n_chans <- ncol(data$signals)
@@ -64,20 +65,16 @@ fit_glm.eeg_epochs <- function(formula,
   )
 
   n_times <- length(split_data)
-
   mod_terms <- all.vars(formula)
 
   if ("baseline" %in% mod_terms) {
-
-    if (is.null(time_lim)) {
-      stop("time_lim must be specified if using baseline fitting")
+    if (is.null(baseline)) {
+      stop("`baseline` must be specified if using baseline fitting.")
     }
-
     base_times <- get_epoch_baselines(
       data,
-      time_lim
+      baseline
     )
-
     # basic design matrix with dummy baseline column
     design_mat <- stats::model.matrix(
       formula,
@@ -85,7 +82,6 @@ fit_glm.eeg_epochs <- function(formula,
         baseline = base_times[, 1]
       )
     )
-
     # create one design matrix for each channel with the appropriate baseline
     # for each epoch
     mod_mats <- lapply(
@@ -99,7 +95,6 @@ fit_glm.eeg_epochs <- function(formula,
         )
       }
     )
-
     n_preds <- ncol(mod_mats[[1]])
 
     # invert design matrices using qr/cholesky (unscaled cov matrix)
@@ -138,8 +133,6 @@ fit_glm.eeg_epochs <- function(formula,
     )
 
     resid_df <- n_epochs - n_preds
-
-
 
     # Outer loop through timepoints, inner loop through channels
     # Try other way to see if any faster
@@ -283,7 +276,8 @@ fit_glm.eeg_epochs <- function(formula,
     "epochs" = epochs,
     "r_sq" = r_sq,
     "timings" = timings,
-    "formula" = formula
+    "formula" = formula,
+    "version" = utils::packageVersion("eegUtils")
   )
 }
 
@@ -344,4 +338,3 @@ rob_se <- function(mdf,
                    inverted_dm))
   sqrt(out_se)
 }
-

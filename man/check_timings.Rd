@@ -6,13 +6,15 @@
 \alias{check_timings.eeg_epochs}
 \title{Check consistency of event and timing tables}
 \usage{
-check_timings(.data)
+check_timings(.data, verbose = TRUE)
 
-\method{check_timings}{eeg_data}(.data)
+\method{check_timings}{eeg_data}(.data, verbose = TRUE)
 
-\method{check_timings}{eeg_epochs}(data)
+\method{check_timings}{eeg_epochs}(.data, verbose = TRUE)
 }
 \arguments{
+\item{verbose}{Print informative messages}
+
 \item{data}{\code{eeg_data} or \code{eeg_epochs} object}
 }
 \description{

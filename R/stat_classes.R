@@ -31,7 +31,8 @@ new_eeg_lm <- function(coefficients,
                        chan_info,
                        epochs,
                        timings,
-                       formula) {
+                       formula,
+                       version) {
 
   stopifnot(is.data.frame(coefficients))
   stopifnot(is.data.frame(std_err))
@@ -48,6 +49,7 @@ new_eeg_lm <- function(coefficients,
     epochs = epochs,
     chan_info = chan_info,
     formula = formula,
+    version = version,
     class = "eeg_lm"
   )
 }
@@ -62,19 +64,3 @@ new_eeg_stats <- function(...,
   )
 }
 
-# new_eeg_tstats <- function(statistic) {
-#   stopifnot(is.data.frame(statistic))
-#   stopifnot(is.data.frame(timings))
-#   #stopifnot(is.data.frame(t_stats))
-#   #stopifnot(is.data.frame(r_sq))
-#   #stopifnot(rlang::is_formula(formula))
-#
-#   new_eeg_stats(
-#     statistic = statistic,
-#     timings = timings,
-#     epochs = epochs,
-#     chan_info = chan_info,
-#     formula = formula,
-#     class = "eeg_tstats"
-#   )
-# }

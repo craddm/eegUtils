@@ -30,11 +30,11 @@ timepoint from any electrode.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{eeg_data}: Reject data using a simple threshold.
+\item \code{ar_thresh(eeg_data)}: Reject data using a simple threshold.
 
-\item \code{eeg_epochs}: Reject data using a simple threshold.
+\item \code{ar_thresh(eeg_epochs)}: Reject data using a simple threshold.
+
 }}
-
 \examples{
 ar_thresh(demo_epochs, c(100))
 }

@@ -105,19 +105,19 @@ overlap between segments can be passed to Welch's FFT.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{eeg_epochs}: Plot PSD for \code{eeg_epochs}.
+\item \code{plot_psd(eeg_epochs)}: Plot PSD for \code{eeg_epochs}.
 
-\item \code{eeg_data}: Plot PSD for \code{eeg_data}.
+\item \code{plot_psd(eeg_data)}: Plot PSD for \code{eeg_data}.
 
-\item \code{eeg_ICA}: Plot PSD for \code{eeg_ICA} objects
+\item \code{plot_psd(eeg_ICA)}: Plot PSD for \code{eeg_ICA} objects
 
-\item \code{data.frame}: Plot PSD for \code{data.frame}s.
+\item \code{plot_psd(data.frame)}: Plot PSD for \code{data.frame}s.
 
-\item \code{eeg_evoked}: Plot PSD for \code{eeg_evoked} objects
+\item \code{plot_psd(eeg_evoked)}: Plot PSD for \code{eeg_evoked} objects
 
-\item \code{eeg_group}: Plot PSD for \code{eeg_group} objects is not currently supported
+\item \code{plot_psd(eeg_group)}: Plot PSD for \code{eeg_group} objects is not currently supported
+
 }}
-
 \examples{
  plot_psd(demo_epochs)
  plot_psd(demo_epochs, seg_length = 256)

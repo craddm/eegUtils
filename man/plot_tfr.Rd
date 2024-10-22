@@ -27,7 +27,7 @@ electrodes.}
 
 \item{freq_range}{Vector of two numbers. (e.g. c(8, 40)).}
 
-\item{baseline_type}{baseline correction to apply. Defaults to "none".}
+\item{baseline_type}{baseline correction to apply. Defaults to \code{none}.}
 
 \item{baseline}{Baseline period}
 
@@ -39,20 +39,22 @@ electrodes.}
 Defaults to TRUE.}
 
 \item{fun.data}{Statistical function to use for averaging over
-electrodes/conditions. Defaults to \code{mean}.}
+electrodes/conditions. Defaults to \code{mean}. Alternatively, supply
+\code{weighted.mean}, which will attempt to weight separate conditions
+appropriately.}
 }
 \value{
-A \code{ggplot}
+A \code{ggplot} object
 }
 \description{
-Creates a time-frequency plot of an \code{eeg_tfr} object. The plot has time
-on the x-axis and frequency on the y-axis. If no electrode is supplied, it
-will average over all electrodes.
+Creates a time-frequency plot of an \code{eeg_tfr} object. The plot has time on
+the x-axis and frequency on the y-axis. If no electrode is supplied, it will
+average over all electrodes.
 }
 \details{
 Various different baseline options can be applied here (e.g. "db" for
-decibels, "pc" for percent change, "divide" for division; see
-\code{rm_baseline} for details).
+decibels, "pc" for percent change, "divide" for division; see \code{rm_baseline}
+for details).
 }
 \seealso{
 \code{\link[=rm_baseline]{rm_baseline()}}

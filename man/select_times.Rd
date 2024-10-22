@@ -27,7 +27,7 @@ select_times(data, ...)
 \item{...}{Further arguments passed to or from other methods.}
 
 \item{time_lim}{A character vector of two numbers indicating the time range
-to be selected e.g. c(min, max)}
+to be selected e.g. c(min, max), or a list to select specific times.}
 
 \item{df_out}{Returns a data frame rather than an object of the same type
 that was passed in.}
@@ -46,22 +46,24 @@ than that requested.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{default}: Default select times function
+\item \code{select_times(default)}: Default select times function
 
-\item \code{eeg_data}: Select times from an eeg_data object
+\item \code{select_times(eeg_data)}: Select times from an \code{eeg_data} object
 
-\item \code{eeg_epochs}: Select times in \code{eeg_epochs} objects
+\item \code{select_times(eeg_epochs)}: Select times in \code{eeg_epochs} objects
 
-\item \code{eeg_evoked}: Select times in \code{eeg_evoked} objects
+\item \code{select_times(eeg_evoked)}: Select times in \code{eeg_evoked} objects
 
-\item \code{eeg_tfr}: Select times from an \code{eeg_tfr} object
+\item \code{select_times(eeg_tfr)}: Select times from an \code{eeg_tfr} object
+
 }}
-
 \examples{
 ## Select timepoints from -.1 to .3
 demo_epochs
 short_epochs <- select_times(demo_epochs, time_lim = c(-.1, .3))
 short_epochs
+short_epochs <- select_times(demo_epochs, time_lim = list(-.1, .15, .3))
+head(short_epochs$timings)
 
 }
 \seealso{

@@ -11,6 +11,8 @@
 #' demo_epochs
 #' short_epochs <- select_times(demo_epochs, time_lim = c(-.1, .3))
 #' short_epochs
+#' short_epochs <- select_times(demo_epochs, time_lim = list(-.1, .15, .3))
+#' head(short_epochs$timings)
 #'
 #' @author Matt Craddock, \email{matt@@mattcraddock.com}
 #'
@@ -25,7 +27,7 @@ select_times <- function(data, ...) {
 }
 
 #' @param time_lim A character vector of two numbers indicating the time range
-#'   to be selected e.g. c(min, max)
+#'   to be selected e.g. c(min, max), or a list to select specific times.
 #' @return Data frame with only data from within the specified range.
 #' @export
 #' @describeIn select_times Default select times function
@@ -35,12 +37,7 @@ select_times.default <- function(data,
                                  ...) {
 
   if ("time" %in% colnames(data)) {
-    if (length(time_lim) == 1) {
-      stop("Must enter two timepoints when selecting a time range.")
-    } else if (length(time_lim) == 2) {
-      data <- data[data$time > time_lim[1] &
-                     data$time < time_lim[2], ]
-    }
+    data <- data[find_times(data, time_lim), ]
   } else {
     warning("No time column found.")
   }
@@ -51,25 +48,27 @@ select_times.default <- function(data,
 #'   that was passed in.
 #' @export
 #' @return `eeg_data` object
-#' @describeIn select_times Select times from an eeg_data object
+#' @describeIn select_times Select times from an `eeg_data` object
 
 select_times.eeg_data <- function(data,
                                   time_lim = NULL,
                                   df_out = FALSE,
                                   ...) {
 
-  #data$signals <- as.data.frame(data)
   keep_rows <- find_times(data$timings, time_lim)
-  data$signals <- data$signals[keep_rows, ]
-  data$timings <- data$timings[keep_rows, ]
-  event_rows <- data$events$event_time > time_lim[1] &
-        data$events$event_time < time_lim[2]
+  data$signals <- data$signals[keep_rows, , drop = FALSE]
+  data$timings <- data$timings[keep_rows, , drop = FALSE]
+  if (is.list(time_lim)) {
+    remaining_times <- unique(data$timings$time)
+    event_rows <- data$events$time %in% remaining_times
+  } else {
+    event_rows <- data$events$event_time > time_lim[1] & data$events$event_time < time_lim[2]
+  }
   data$events <- data$events[event_rows, ]
 
   if (df_out) {
     return(as.data.frame(data))
   }
-
   data
 }
 
@@ -81,12 +80,16 @@ select_times.eeg_epochs <- function(data,
                                     ...) {
 
   keep_rows <- find_times(data$timings,
-                         time_lim)
+                          time_lim)
 
   data$signals <- data$signals[keep_rows, , drop = FALSE]
   data$timings <- data$timings[keep_rows, , drop = FALSE]
-  event_rows <- data$events$time > time_lim[1] &
-    data$events$time < time_lim[2]
+  if (is.list(time_lim)) {
+    remaining_times <- unique(data$timings$time)
+    event_rows <- data$events$time %in% remaining_times
+  } else {
+    event_rows <- data$events$time > time_lim[1] & data$events$time < time_lim[2]
+  }
   data$events <- data$events[event_rows, , drop = FALSE]
   if (df_out) {
     return(as.data.frame(data))
@@ -104,8 +107,8 @@ select_times.eeg_evoked <- function(data,
   keep_rows <- find_times(data$timings,
                           time_lim)
 
-  data$signals <- data$signals[keep_rows, ]
-  data$timings <- data$timings[keep_rows, ]
+  data$signals <- data$signals[keep_rows, , drop = FALSE]
+  data$timings <- data$timings[keep_rows, , drop = FALSE]
 
   if (df_out) {
     return(data$signals)
@@ -118,10 +121,10 @@ select_times.eeg_evoked <- function(data,
 select_times.eeg_tfr <- function(data,
                                  time_lim = NULL,
                                  df_out = FALSE,
-                                 ...){
+                                 ...) {
 
   keep_rows <- find_times(data$timings, time_lim)
-  data$timings <- data$timings[keep_rows, ]
+  data$timings <- data$timings[keep_rows, , drop = FALSE]
   if (length(data$dimensions) == 3) {
     data$signals <- data$signals[keep_rows, , , drop = FALSE]
   } else if (length(data$dimensions) == 4) {
@@ -146,12 +149,30 @@ select_times.eeg_tfr <- function(data,
 find_times <- function(timings,
                        time_lim) {
 
+  if (is.list(time_lim)) {
+    closest_times <- findInterval(unlist(time_lim), unique(timings$time))
+    closest_times <- unique(timings$time)[closest_times]
+    keep_rows <- timings$time %in% closest_times
+
+    time_diffs <- unlist(time_lim) - closest_times
+
+    if (any(time_diffs > 0)) {
+      message(
+        "Returning closest time points to those requested: ",
+        paste0(
+          signif(closest_times, 3),
+          sep = " ")
+      )
+    }
+    return(keep_rows)
+  }
   if (length(time_lim) == 2) {
     keep_rows <- timings$time > time_lim[1] & timings$time < time_lim[2]
   } else {
   warning("Must enter two timepoints when selecting a time range;
           using whole range.")
-    keep_rows <- rep(TRUE, length = length(timings$time))
+    keep_rows <- rep(TRUE,
+                     length = length(timings$time))
   }
   keep_rows
 }
@@ -193,9 +214,9 @@ select_elecs.default <- function(data,
   if ("electrode" %in% names(data)) {
     if (all(electrode %in% data$electrode)) {
       if (keep) {
-        data <- data[data$electrode %in% electrode, ]
+        data <- data[data$electrode %in% electrode, , drop = FALSE]
       } else {
-        data <- data[!data$electrode %in% electrode, ]
+        data <- data[!data$electrode %in% electrode, , drop = FALSE]
       }
     } else {
       warning(paste("Electrode(s) not found:",
@@ -236,7 +257,7 @@ select_elecs.eeg_data <- function(data,
     }
 
     if (!is.null(data$chan_info)) {
-      data$chan_info <- data$chan_info[data$chan_info$electrode %in% names(data$signals), ]
+      data$chan_info <- data$chan_info[data$chan_info$electrode %in% names(data$signals), , drop = FALSE]
     }
 
   } else {
@@ -479,7 +500,7 @@ select_epochs.eeg_ICA <- function(data,
     }
   }
   if (df_out) {
-    return(as.data.frame(data))
+    return(tibble::as_tibble(data))
   }
   data
 }
@@ -503,17 +524,18 @@ select_epochs.eeg_tfr <- function(data,
     }
 
     if (is.numeric(epoch_no)) {
-      keep_rows <- data$timings$epoch %in% epoch_no
+      keep_epochs <- dimnames(data$signals)[["epoch"]] %in% as.character(epoch_no)
       if (keep == FALSE) {
-        keep_rows <- !keep_rows
+        keep_epochs <- !keep_epochs
+        data$timings <- data$timings[!data$timings$epoch %in% epoch_no, ]
+      } else {
+        data$timings <- data$timings[data$timings$epoch %in% epoch_no, ]
       }
-      data$signals <- data$signals[, keep_rows[1:length(dimnames(data$signals)[["time"]])], , , drop = FALSE]
-      data$timings <- data$timings[keep_rows, ]
+      data$signals <- data$signals[keep_epochs, , , , drop = FALSE]
       data$events <- data$events[data$events$epoch %in% epoch_no, ]
       if (!is.null(data$epochs)) {
         data$epochs <- data$epochs[data$epochs$epoch %in% epoch_no, ]
       }
-
     }
 
   } else {

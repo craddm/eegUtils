@@ -177,7 +177,7 @@ create_psd_plot <- function(psd_out,
                             chan_names) {
 
   if (!is.null(freq_range)) {
-    if (length(freq_range) < 2 | length(freq_range) > 2) {
+    if (length(freq_range) < 2 || length(freq_range) > 2) {
       message("freq_range must be a vector of length 2. Displaying all frequencies.")
     } else {
       rows <- psd_out$frequency >= freq_range[[1]] &
@@ -196,7 +196,7 @@ create_psd_plot <- function(psd_out,
              y = 10 * log10(power),
              colour = electrode)) +
     stat_summary(geom = "line",
-                 fun = mean) +# geom_line() +
+                 fun = mean) +
     theme_bw() +
     ylab(expression(paste(mu, V^2, "/ Hz(dB)"))) +
     xlab("Frequency (Hz)") +
@@ -205,13 +205,13 @@ create_psd_plot <- function(psd_out,
 
 #' Time-frequency plot
 #'
-#' Creates a time-frequency plot of an `eeg_tfr` object. The plot has time
-#' on the x-axis and frequency on the y-axis. If no electrode is supplied, it
-#' will average over all electrodes.
+#' Creates a time-frequency plot of an `eeg_tfr` object. The plot has time on
+#' the x-axis and frequency on the y-axis. If no electrode is supplied, it will
+#' average over all electrodes.
 #'
 #' Various different baseline options can be applied here (e.g. "db" for
-#' decibels, "pc" for percent change, "divide" for division; see
-#' `rm_baseline` for details).
+#' decibels, "pc" for percent change, "divide" for division; see `rm_baseline`
+#' for details).
 #'
 #' @param data Object of class `eeg_tfr`
 #' @param electrode Electrode to plot. If none is supplied, averages over all
@@ -219,17 +219,19 @@ create_psd_plot <- function(psd_out,
 #' @param time_lim Time limits of plot.
 #' @param freq_range Vector of two numbers. (e.g. c(8, 40)).
 #' @param baseline Baseline period
-#' @param baseline_type baseline correction to apply. Defaults to "none".
+#' @param baseline_type baseline correction to apply. Defaults to `none`.
 #' @param fill_lims Custom colour scale (i.e. range of power). e.g. c(-5, 5).
 #' @param interpolate Interpolation of raster for smoother plotting.
 #' @param na.rm Remove NA values silently (TRUE) or with a warning (FALSE).
 #'   Defaults to TRUE.
 #' @param fun.data Statistical function to use for averaging over
-#'   electrodes/conditions. Defaults to `mean`.
+#'   electrodes/conditions. Defaults to `mean`. Alternatively, supply
+#'   `weighted.mean`, which will attempt to weight separate conditions
+#'   appropriately.
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #' @importFrom purrr partial
 #' @import ggplot2
-#' @return A `ggplot`
+#' @return A `ggplot` object
 #' @seealso [rm_baseline()]
 #' @export
 
@@ -244,7 +246,7 @@ plot_tfr <- function(data,
                      na.rm = TRUE,
                      fun.data = mean) {
 
-  if (!inherits(data,"eeg_tfr")) {
+  if (!inherits(data, "eeg_tfr")) {
     stop("Object of class eeg_tfr required.")
   }
 
@@ -275,12 +277,10 @@ plot_tfr <- function(data,
                         type = baseline_type)
   }
 
-
   if (!inherits(data, c("tfr_average",
                         "eeg_group"))) {
     data <- eeg_average(data)
   }
-
 
   fill_lab <-
     switch(data$freq_info$baseline,
@@ -295,7 +295,7 @@ plot_tfr <- function(data,
   if (is.null(fill_lims)) {
     if (identical(data$freq_info$baseline, "none")) {
       fill_lims <- c(0, NA)
-    } else{
+    } else {
       fill_lims <- c(NA, NA)
     }
   }
@@ -325,9 +325,10 @@ plot_tfr <- function(data,
                     aes(x = time,
                         y = frequency,
                         fill = power)) +
-    stat_summary_by_fill(fun.data = mean,
+    stat_summary_by_fill(fun.data = fun.data,
                          na.rm = na.rm,
-                         interpolate = interpolate) +
+                         interpolate = interpolate,
+                         aes(weight = weight)) +
     labs(x = "Time (s)",
          y = "Frequency (Hz)",
          fill = fill_lab) +

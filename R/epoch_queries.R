@@ -16,7 +16,6 @@ epochs <- function(data) {
   }
 }
 
-
 #' @param value Structure to replace `epochs` structure with.
 #' @rdname epochs
 #' @export

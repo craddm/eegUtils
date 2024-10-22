@@ -4,7 +4,14 @@
 \alias{create_tc}
 \title{Internal function for creation of timecourse plots}
 \usage{
-create_tc(data, add_CI, colour, quantity = amplitude, mapping = NULL)
+create_tc(
+  data,
+  add_CI,
+  colour,
+  quantity = amplitude,
+  mapping = NULL,
+  facets = NULL
+)
 }
 \arguments{
 \item{data}{A data frame to be plotted}

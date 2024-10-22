@@ -2,19 +2,19 @@
 #'
 #' Implements a selection of Generalized Eigenvalue based decomposition methods
 #' for EEG signals. Intended for isolating oscillations at specified
-#' frequencies, decomposing channel-based data into components
-#' reflecting distinct or combinations of sources of oscillatory signals.
-#' Currently, spatio-spectral decomposition (Nikulin, Nolte, & Curio, 2011) and
-#' Rhythmic Entrainment Source Separation (Cohen & Gulbinate, 2017) are
-#' implemented. The key difference between the two is that the former returns
-#' the results of the data-derived spatial filters applied to the
-#' bandpass-filtered "signal" data, whereas the latter returns the results of the
-#' filters applied to the original, broadband data.
+#' frequencies, decomposing channel-based data into components reflecting
+#' distinct or combinations of sources of oscillatory signals. Currently,
+#' spatio-spectral decomposition (Nikulin, Nolte, & Curio, 2011) and Rhythmic
+#' Entrainment Source Separation (Cohen & Gulbinate, 2017) are implemented. The
+#' key difference between the two is that the former returns the results of the
+#' data-derived spatial filters applied to the bandpass-filtered "signal" data,
+#' whereas the latter returns the results of the filters applied to the
+#' original, broadband data.
 #'
-#' @param data An `eeg_data` object
+#' @param data An `eeg_epochs` object
 #' @param ... Additional parameters
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
-#' @return An `eeg_ICA` object. Note that
+#' @return An `eeg_ICA` object.
 #' @examples
 #' # The default method is Spatio-Spectral Decomposition, which returns
 #' # spatially and temporally filtered source timecourses.
@@ -65,24 +65,24 @@ eeg_decompose.default <- function(data, ...) {
 
 #' @param sig_range Vector with two inputs, the lower and upper bounds of the frequency range of interest
 #' @param noise_range Range of frequencies to be considered noise (e.g. bounds of flanker frequencies)
-#' @param method Type of decomposition to apply. Currently only "ssd" is supported.
+#' @param method Type of decomposition to apply. Defaults to "ssd"
 #' @param verbose Informative messages printed to console. Defaults to TRUE.
 #' @param order Filter order for filter applied to signal/noise
 #' @describeIn eeg_decompose method for `eeg_epochs` objects
 #' @export
 eeg_decompose.eeg_epochs <- function(data,
-                                  sig_range,
-                                  noise_range,
-                                  method = "ssd",
-                                  verbose = TRUE,
-                                  order = 2,
-                                  ...) {
+                                     sig_range,
+                                     noise_range,
+                                     method = c("ssd", "ress"),
+                                     verbose = TRUE,
+                                     order = 2,
+                                     ...) {
 
   if (verbose) {
     message("Performing ", method, "...")
   }
 
-  data <- switch(method,
+  data <- switch(match.arg(method),
                  "ssd" = run_SSD(data,
                                  sig_range,
                                  noise_range,
@@ -144,12 +144,10 @@ run_SSD <- function(data,
   cov_sig <- cov_epochs(signal)
   cov_noise <- cov_epochs(noise)
 
-
-
   eig_sigs <- base::eigen(cov_sig)
   # Get the rank of the covariance matrix and select only as many components as
   # there are ranks
-  rank_sig <- Matrix::rankMatrix(cov_sig)
+  rank_sig <- qr(cov_sig)$rank
 
   if (verbose) {
     if (rank_sig < ncol(cov_sig)) {
@@ -185,21 +183,23 @@ run_SSD <- function(data,
   data$unmixing_matrix <- as.data.frame(MASS::ginv(data$mixing_matrix, tol = 0))
 
   data$mixing_matrix <- as.data.frame(data$mixing_matrix)
-  names(data$mixing_matrix) <- sprintf("Comp%03d", 1:ncol(data$mixing_matrix))
+  names(data$mixing_matrix) <- sprintf("Comp%03d", seq_len(ncol(data$mixing_matrix)))
   data$mixing_matrix$electrode <- names(data$signals)
 
   names(data$unmixing_matrix) <- data$mixing_matrix$electrode
-  data$unmixing_matrix$Component <- sprintf("Comp%03d", 1:ncol(W))
+  data$unmixing_matrix$Component <- sprintf("Comp%03d", seq_len(ncol(W)))
 
   # RESS applies weights to unfiltered original data
   if (RESS) {
     data$signals <- as.data.frame(as.matrix(data$signals) %*% W)
-    names(data$signals) <- sprintf("Comp%03d", 1:ncol(W))
+    names(data$signals) <- sprintf("Comp%03d", seq_len(ncol(W)))
     return(data)
   }
 
   data$signals <- as.data.frame(as.matrix(signal$signals) %*% W)
-  names(data$signals) <- sprintf("Comp%03d", 1:ncol(W))
+  names(data$signals) <- sprintf("Comp%03d", seq_len(ncol(W)))
+  data$algorithm <- list(algorithm = if (RESS) "ress" else "ssd")
+  data$contents <- "full"
   data
 
 }

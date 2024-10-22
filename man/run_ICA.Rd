@@ -18,6 +18,7 @@ run_ICA(data, ...)
   rateanneal = c(60, 0.9),
   rate = 0.1,
   verbose = TRUE,
+  return = c("full", "weights"),
   ...
 )
 }
@@ -52,6 +53,10 @@ Defaults to "gradient". Ignored if method != "infomax".}
 "infomax".}
 
 \item{verbose}{Print informative messages to console.}
+
+\item{return}{"full" or "weights". "full" returns the mixing and unmixing
+matrices and the source timecourses. "weights" returns only the mixing and
+unmixing matrices. Defaults to "full".}
 }
 \value{
 An \code{eeg_ICA} object containing an ICA decomposition
@@ -65,9 +70,9 @@ like \code{eeg_epochs} objects.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{eeg_epochs}: Run ICA on an \code{eeg_epochs} object
-}}
+\item \code{run_ICA(eeg_epochs)}: Run ICA on an \code{eeg_epochs} object
 
+}}
 \section{Notes on ICA usage}{
 
 

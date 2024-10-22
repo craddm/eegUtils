@@ -5,48 +5,48 @@
 \alias{browse_data.eeg_ICA}
 \alias{browse_data.eeg_data}
 \alias{browse_data.eeg_epochs}
-\title{Browse EEG data.}
+\title{Browse EEG data}
 \usage{
 browse_data(data, ...)
 
 \method{browse_data}{eeg_ICA}(data, ...)
 
-\method{browse_data}{eeg_data}(data, sig_length = 5, n_elecs = NULL, downsample = TRUE, ...)
+\method{browse_data}{eeg_data}(data, sig_length = 5, downsample = TRUE, ...)
 
-\method{browse_data}{eeg_epochs}(data, sig_length = 5, n_elecs = NULL, downsample = FALSE, ...)
+\method{browse_data}{eeg_epochs}(data, sig_length = 5, downsample = FALSE, ...)
 }
 \arguments{
-\item{data}{\code{eeg_data}, \code{eeg_epochs}, or \code{eeg_ICA} object to be
-plotted.}
+\item{data}{\code{eeg_data}, \code{eeg_epochs}, or \code{eeg_ICA} object to be plotted.}
 
 \item{...}{Other parameters passed to browsing functions.}
 
 \item{sig_length}{Length of signal to be plotted initially (seconds if
 continuous, epochs if epoched).}
 
-\item{n_elecs}{Number of electrodes to be plotted on a single screen. (not yet
-implemented)}
-
 \item{downsample}{Only works on \code{eeg_data} or \code{eeg_epochs} objects.
 Reduces size of data by only plotting every 4th point, speeding up plotting
-considerably. Defaults to TRUE for eeg_data, FALSE for eeg_epochs}
+considerably. Defaults to TRUE for \code{eeg_data}, FALSE for \code{eeg_epochs}}
+}
+\value{
+A character vector of component names selected for rejection.
 }
 \description{
 A Shiny gadget for browsing EEG data and ICA decompositions interactively.
 With EEG data (epoched or continuous), data can be viewed as a butterfly plot
-(all electrodes overlaid) or as individual traces (electrodes "stacked").
-Currently, the scale cannot be manually set and is determined by the range of
-the viewable data. With
+(all electrodes overlaid) or as individual traces (electrodes "stacked"). For
+\code{eeg_ICA} objects, you will instead be shown a composite of multiple
+properties of the decomposition - a topography, an ERP image, an ERP, and a
+power spectral density plot from 4-50 Hz.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{eeg_ICA}: View \code{eeg_ICA} component properties
+\item \code{browse_data(eeg_ICA)}: View \code{eeg_ICA} component properties
 
-\item \code{eeg_data}: Browse continuous EEG data.
+\item \code{browse_data(eeg_data)}: Browse continuous EEG data.
 
-\item \code{eeg_epochs}: Browse epoched EEG data.
+\item \code{browse_data(eeg_epochs)}: Browse epoched EEG data.
+
 }}
-
 \author{
 Matt Craddock \email{matt@mattcraddock.com}
 }

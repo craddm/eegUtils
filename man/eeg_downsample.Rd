@@ -27,11 +27,11 @@ moving events to the nearest time remaining after downsampling
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{eeg_data}: Downsample eeg_data objects
+\item \code{eeg_downsample(eeg_data)}: Downsample eeg_data objects
 
-\item \code{eeg_epochs}: Downsample eeg_epochs objects
+\item \code{eeg_downsample(eeg_epochs)}: Downsample eeg_epochs objects
+
 }}
-
 \examples{
 eeg_downsample(demo_epochs, 2)
 

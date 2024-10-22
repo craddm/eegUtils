@@ -2,7 +2,6 @@
 #' @export
 dplyr::filter
 
-#' @importFrom dplyr filter
 #' @export
 filter.eeg_epochs <- function(.data,
                               ...) {
@@ -59,7 +58,6 @@ filter.eeg_epochs <- function(.data,
   .data
 }
 
-#' @importFrom dplyr filter
 #' @export
 filter.eeg_data <- function(.data, ...) {
 
@@ -78,6 +76,7 @@ filter.eeg_data <- function(.data, ...) {
     .data$events$time <- .data$events$event_time
     .data$events <- dplyr::filter(.data$events,
                                   ...)
+    .data$events$time <- NULL
   }
 
   # # ensure this also handles the epoch structure correctly
@@ -88,10 +87,10 @@ filter.eeg_data <- function(.data, ...) {
     .data$epochs <- dplyr::filter(.data$epochs,
                                   !!!args[arg_list$in_epochs])
   }
+  .data$signals <- tibble::as_tibble(.data$signals)
   .data
 }
 
-#' @importFrom dplyr filter
 #' @export
 filter.eeg_evoked <- function(.data,
                               ...) {
@@ -159,8 +158,9 @@ filter.eeg_tfr <- function(.data, ...) {
           call. = FALSE)
   }
 
-  lhs_args <- unlist(lapply(args[which_calls],
-                              function(x) as.character(x[[2]])))
+  lhs_args <- unlist(lapply(args,
+                            function(x) as.character(x[[2]])))
+  lhs_args <- unique(lhs_args)
   mat_dims <- names(dimnames(.data$signals)) %in% lhs_args
   hmz <- dimnames(.data$signals)[mat_dims]
   hmz <- lapply(hmz,
@@ -192,7 +192,7 @@ filter.eeg_tfr <- function(.data, ...) {
     .data$timings <- dplyr::filter(.data$timings,
                                    !!!args[in_timings])
     keep_times <- unique(.data$timings$time)
-    time_idx <- which(hmz$time %in% unique(keep_times))
+    time_idx <- which(unique(keep_times) %in% as.numeric(dimnames(.data$signals)[["time"]]))
     .data$signals <- abind::asub(.data$signals,
                                  time_idx,
                                  dims = which(.data$dimensions == "time"),
@@ -215,7 +215,6 @@ filter.eeg_tfr <- function(.data, ...) {
                                  dims = which(names(dimnames(.data$signals)) %in% "frequency"),
                                  drop = FALSE)
     .data$freq_info$freqs <- .data$freq_info$freqs[logi_freq]
-    #.data$signals[[]]
   }
 
   if (any(args_done == FALSE)) {
@@ -233,13 +232,10 @@ filter.eeg_tfr <- function(.data, ...) {
 parse_args <- function(arg_list,
                        data) {
 
-  which_calls <- vapply(arg_list,
-                        is.call,
-                        logical(1),
-                        USE.NAMES = FALSE)
-
-  lhs_args <- unlist(lapply(arg_list[which_calls],
-                            function(x) as.character(x[[2]])))
+  lhs_args <- unlist(
+    lapply(arg_list,
+           all.vars)
+    )
 
   in_epochs <- lhs_args %in% names(epochs(data))
   in_timings <- lhs_args %in% names(data$timings)
@@ -253,7 +249,6 @@ parse_args <- function(arg_list,
 #' @export
 dplyr::select
 
-#' @importFrom dplyr select
 #' @export
 select.eeg_epochs <- function(.data,
                               ...) {
@@ -267,7 +262,6 @@ select.eeg_epochs <- function(.data,
   .data
 }
 
-#' @importFrom dplyr select
 #' @export
 select.eeg_data <- function(.data, ...) {
   .data$signals <- dplyr::select(.data$signals, ...)
@@ -277,7 +271,6 @@ select.eeg_data <- function(.data, ...) {
   .data
 }
 
-#' @importFrom dplyr select filter
 #' @export
 select.eeg_ICA <- function(.data, ...) {
   .data$signals <- dplyr::select(.data$signals,
@@ -295,7 +288,6 @@ select.eeg_ICA <- function(.data, ...) {
   .data
 }
 
-#' @importFrom dplyr select
 #' @export
 select.eeg_stats <- function(.data, ...) {
   .data$statistic <- dplyr::select(.data$statistic,
@@ -308,20 +300,16 @@ select.eeg_stats <- function(.data, ...) {
   .data
 }
 
-
 #' @importFrom dplyr mutate
 #' @export
 dplyr::mutate
 
-#' @importFrom dplyr mutate
 #' @export
-
 mutate.eeg_data <- function(.data, ...) {
   .data$signals <- dplyr::mutate(.data$signals, ...)
   .data
 }
 
-#' @importFrom dplyr mutate
 #' @export
 mutate.eeg_epochs <- function(.data, ...) {
   .data$signals <- dplyr::mutate(.data$signals, ...)
@@ -332,7 +320,6 @@ mutate.eeg_epochs <- function(.data, ...) {
 #' @export
 dplyr::rename
 
-#' @importFrom dplyr rename
 #' @export
 rename.eeg_ICA <- function(.data,
                            ...) {
@@ -344,14 +331,20 @@ rename.eeg_ICA <- function(.data,
   .data
 }
 
-#' @importFrom dplyr rename
 #' @export
 rename.eeg_epochs <- function(.data,
-                           ...) {
+                              ...) {
   .data$signals <- dplyr::rename(.data$signals,
                                  ...)
   .data$chan_info$electrode <- names(.data$signals)
   .data
 }
 
-
+#' @export
+rename.eeg_data <- function(.data,
+                            ...) {
+  .data$signals <- dplyr::rename(.data$signals,
+                                 ...)
+  .data$chan_info$electrode <- names(.data$signals)
+  .data
+}

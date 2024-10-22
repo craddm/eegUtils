@@ -8,7 +8,7 @@
 \alias{plot_timecourse.eeg_epochs}
 \alias{plot_timecourse.eeg_group}
 \alias{plot_timecourse.eeg_tfr}
-\title{Plot 1-D timecourse data.}
+\title{Plot one-dimensional timecourse data.}
 \usage{
 plot_timecourse(data, ...)
 
@@ -21,6 +21,7 @@ plot_timecourse(data, ...)
   colour = NULL,
   color = NULL,
   mapping = NULL,
+  facets = NULL,
   ...
 )
 
@@ -33,6 +34,7 @@ plot_timecourse(data, ...)
   colour = NULL,
   color = NULL,
   mapping = NULL,
+  facets = NULL,
   ...
 )
 
@@ -45,6 +47,7 @@ plot_timecourse(data, ...)
   colour = NULL,
   color = NULL,
   mapping = NULL,
+  facets = NULL,
   ...
 )
 
@@ -57,6 +60,7 @@ plot_timecourse(data, ...)
   colour = NULL,
   color = NULL,
   mapping = NULL,
+  facets = NULL,
   ...
 )
 
@@ -69,6 +73,7 @@ plot_timecourse(data, ...)
   colour = NULL,
   color = NULL,
   mapping = NULL,
+  facets = NULL,
   ...
 )
 
@@ -107,11 +112,17 @@ line is drawn.}
 
 \item{color}{Alias for colour.}
 
-\item{mapping}{A ggplot2 \code{aes()} mapping.}
+\item{mapping}{A \code{ggplot2} \code{aes()} mapping.}
+
+\item{facets}{A right-hand-side only formula specifying which variables should
+be used to create facets.}
 
 \item{component}{name or number of ICA component to plot}
 
-\item{freq_range}{Choose a specific frequency range to plot}
+\item{freq_range}{Choose a specific frequency range to plot. If NULL,
+calculates the mean over all frequencies. Note that this does not imply
+that there is power at an included frequency. For example, lower
+frequencies will have shorter timecourses than high frequencies.}
 
 \item{type}{Type of baseline correction to use for \code{eeg_tfr} objects}
 }
@@ -121,26 +132,33 @@ Returns a ggplot2 plot object
 \description{
 Typically event-related potentials/fields, but could also be timecourses from
 frequency analyses for single frequencies. Averages over all submitted
-electrodes. Output is a ggplot2 object.
+electrodes. For group data, \code{plot_timecourse} will average within-participants
+first, using weighted averaging where possible, then across participants using
+unweighted averaging. Output is a \code{ggplot2} object.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{data.frame}: Plot a data.frame timecourse
+\item \code{plot_timecourse(data.frame)}: Plot a data.frame timecourse
 
-\item \code{eeg_evoked}: plot \code{eeg_evoked} timecourses
+\item \code{plot_timecourse(eeg_evoked)}: plot \code{eeg_evoked} timecourses
 
-\item \code{eeg_ICA}: Plot individual components from \code{eeg_ICA} components
+\item \code{plot_timecourse(eeg_ICA)}: Plot individual components from \code{eeg_ICA}
+components
 
-\item \code{eeg_epochs}: Plot timecourses from \code{eeg_epochs} objects.
+\item \code{plot_timecourse(eeg_epochs)}: Plot timecourses from \code{eeg_epochs} objects.
 
-\item \code{eeg_group}: Plot timecourses from \code{eeg_group} objects.
+\item \code{plot_timecourse(eeg_group)}: Plot timecourses from \code{eeg_group} objects.
 
-\item \code{eeg_tfr}: Plot timecourses from \code{eeg_tfr} objects.
+\item \code{plot_timecourse(eeg_tfr)}: Plot timecourses from \code{eeg_tfr} objects.
+
 }}
-
 \examples{
+library(ggplot2)
 plot_timecourse(demo_epochs, "A29")
-plot_timecourse(demo_epochs, "A29", add_CI = TRUE)
+plot_timecourse(demo_epochs, "A29", baseline = c(-.1, 0))
+plot_timecourse(demo_epochs, "A29", baseline = c(-.1, 0), add_CI = TRUE)
+plot_timecourse(demo_spatial, "Oz", baseline = c(-.1, 0), mapping = aes(colour = epoch_labels))
+plot_timecourse(demo_spatial, "Oz", baseline = c(-.1, 0), facets = ~epoch_labels)
 }
 \author{
 Matt Craddock, \email{matt@mattcraddock.com}

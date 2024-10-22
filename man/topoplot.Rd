@@ -33,6 +33,7 @@ topoplot(data, ...)
   groups = NULL,
   verbose = TRUE,
   k = 40,
+  fill_title = expression(paste("Amplitude (", mu, "V)")),
   ...
 )
 
@@ -55,6 +56,7 @@ topoplot(data, ...)
   verbose = TRUE,
   groups = NULL,
   k = 40,
+  fill_title = expression(paste("Amplitude (", mu, "V)")),
   ...
 )
 
@@ -77,6 +79,7 @@ topoplot(data, ...)
   groups = NULL,
   verbose = TRUE,
   k = 40,
+  fill_title = expression(paste("Amplitude (", mu, "V)")),
   ...
 )
 
@@ -100,6 +103,7 @@ topoplot(data, ...)
   verbose = TRUE,
   groups = NULL,
   k = 40,
+  fill_title = "a.u.",
   ...
 )
 
@@ -123,19 +127,20 @@ topoplot(data, ...)
   verbose = TRUE,
   groups = NULL,
   k = 40,
+  fill_title = expression(paste("Power (", mu, V^2, ")")),
   ...
 )
 }
 \arguments{
 \item{data}{An EEG dataset. If the input is a data.frame, then it must have
-columns x, y, and amplitude at present. x and y are (Cartesian) electrode
-co-ordinates), amplitude is amplitude.}
+columns \code{electrode}, \code{x}, \code{y}, and \code{amplitude}. \code{x} and \code{y} should be
+(Cartesian) electrode co-ordinates.}
 
 \item{...}{Various arguments passed to specific functions}
 
-\item{time_lim}{Timepoint(s) to plot. Can be one time or a range to average
-over. If none is supplied, the function will average across all timepoints
-in the supplied data.}
+\item{time_lim}{Timepoint(s) to plot. Can be one time, a range to average
+over, or a list of individual times. If none is supplied, the function will
+average across all timepoints in the supplied data.}
 
 \item{limits}{Limits of the fill scale - should be given as a character
 vector with two values specifying the start and endpoints e.g. limits =
@@ -172,7 +177,7 @@ plotted head, and moves all electrodes inside the head.}
 \item{quantity}{Allows plotting of an arbitrary quantitative column. Defaults
 to amplitude. Use quoted column names. E.g. "p.value", "t_statistic".}
 
-\item{montage}{Name of an existing montage set. Defaults to NULL; (currently
+\item{montage}{Name of an existing montage set. Defaults to NULL. (currently
 only 'biosemi64alpha' available other than default 10/20 system)}
 
 \item{highlights}{Electrodes to highlight (in white).}
@@ -180,13 +185,18 @@ only 'biosemi64alpha' available other than default 10/20 system)}
 \item{scaling}{Scaling multiplication factor for labels and any plot lines.
 Defaults to 1.}
 
-\item{groups}{Column name for groups to retain. This is required to create facetted plots.}
+\item{groups}{Column name for groups to retain. This is required to create
+facetted plots.}
 
 \item{verbose}{Warning messages when electrodes do not have locations.
 Defaults to TRUE.}
 
 \item{k}{Degrees of freedom used for spline when using \code{method = gam}.
 Defaults to 40.}
+
+\item{fill_title}{Allows specification of the title of the colourbar.
+Defaults to `expression(paste("Amplitude (", mu, "V)")), appropriate for
+typical time-domain data.}
 
 \item{component}{Component to plot (numeric)}
 
@@ -197,35 +207,35 @@ Allows topographical plotting of functional data. Output is a ggplot2 object.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{default}: Default method for data frames.
+\item \code{topoplot(default)}: Default method for data frames.
 
-\item \code{data.frame}: Topographical plotting of data.frames and other non
-eeg_data objects.
+\item \code{topoplot(data.frame)}: Topographical plotting of data.frames and other non
+\code{eeg_data} objects.
 
-\item \code{eeg_data}: Topographical plotting of \code{eeg_data} objects.
+\item \code{topoplot(eeg_data)}: Topographical plotting of \code{eeg_data} objects.
 
-\item \code{eeg_epochs}: Topographical plotting of \code{eeg_epochs} objects.
+\item \code{topoplot(eeg_epochs)}: Topographical plotting of \code{eeg_epochs} objects.
 
-\item \code{eeg_ICA}: Topographical plot for \code{eeg_ICA} objects
+\item \code{topoplot(eeg_ICA)}: Topographical plot for \code{eeg_ICA} objects
 
-\item \code{eeg_tfr}: Topographical plotting of \code{eeg_tfr} objects.
+\item \code{topoplot(eeg_tfr)}: Topographical plotting of \code{eeg_tfr} objects.
+
 }}
-
 \section{Notes on usage of Generalized Additive Models for interpolation}{
  The
 function fits a GAM using the \code{gam} function from \code{mgcv}. Specifically, it
-fits a spline using the model function gam(z ~ s(x, y, bs = "ts", k = 40).
-Using GAMs for smooths is very much experimental. The surface is produced
-from the predictions of the GAM model fitted to the supplied data. Values
-at each electrode do not necessarily match actual values in the data:
-high-frequency variation will tend to be smoothed out. Thus, the method
-should be used with caution. In addition the method can only be used when
-there are more than 40 electrodes.
+fits a spline using the model function \verb{gam(z ~ s(x, y, bs = "ts", k = 40)}. Using GAMs for smooths is very much experimental. The surface is
+produced from the predictions of the GAM model fitted to the supplied data.
+Values at each electrode do not necessarily match actual values in the
+data: high-frequency variation will tend to be smoothed out. Thus, the
+method should be used with caution. In addition the method can only be used
+when there are more than 40 electrodes.
 }
 
 \examples{
 topoplot(demo_epochs)
 topoplot(demo_epochs, time_lim = c(.1, .2))
+topoplot(demo_spatial, time_lim = list(0, .1, .2))
 }
 \seealso{
 Other scalp-based maps: 

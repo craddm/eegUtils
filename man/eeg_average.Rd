@@ -6,17 +6,17 @@
 \alias{eeg_average.eeg_epochs}
 \alias{eeg_average.eeg_evoked}
 \alias{eeg_average.eeg_tfr}
-\title{Calculate averages (e.g. ERPs) for single datasets}
+\title{Calculate averages (e.g. event-related potentials) for single datasets}
 \usage{
 eeg_average(data, ...)
 
 \method{eeg_average}{default}(data, ...)
 
-\method{eeg_average}{eeg_epochs}(data, cols = NULL, ...)
+\method{eeg_average}{eeg_epochs}(data, cols = NULL, verbose = TRUE, ...)
 
-\method{eeg_average}{eeg_evoked}(data, cols = NULL, ...)
+\method{eeg_average}{eeg_evoked}(data, cols = NULL, weighted = TRUE, verbose = TRUE, ...)
 
-\method{eeg_average}{eeg_tfr}(data, cols = NULL, ...)
+\method{eeg_average}{eeg_tfr}(data, cols = NULL, weighted = TRUE, verbose = TRUE, ...)
 }
 \arguments{
 \item{data}{An \code{eeg_epochs} of \code{eeg_tfr} object.}
@@ -26,6 +26,12 @@ eeg_average(data, ...)
 \item{cols}{Columns from the \code{epochs} structure that the average should
 group on. NULL, the default, uses all columns other than the \code{epoch}
 column.}
+
+\item{verbose}{Print informative messages during averaging. Defaults to TRUE}
+
+\item{weighted}{Produce a weighted average over epochs, which accounts for
+upstream differences in the number of epochs that contribute to each
+average.}
 }
 \value{
 An object of class \code{eeg_evoked} if applied to \code{eeg_epochs};
@@ -40,15 +46,19 @@ the \code{cols} argument.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{default}: Default method for averaging EEG objects
+\item \code{eeg_average(default)}: Default method for averaging EEG objects
 
-\item \code{eeg_epochs}: Create evoked data from \code{eeg_epochs}
+\item \code{eeg_average(eeg_epochs)}: Create evoked data from \code{eeg_epochs}objects
 
-\item \code{eeg_evoked}: average an \code{eeg_epochs} object over epochs.
+\item \code{eeg_average(eeg_evoked)}: average an \code{eeg_evoked} object over epochs.
 
-\item \code{eeg_tfr}: average an \code{eeg_tfr} object over epochs.
+\item \code{eeg_average(eeg_tfr)}: average an \code{eeg_tfr} object over epochs.
+
 }}
-
+\examples{
+eeg_average(demo_spatial)
+eeg_average(demo_spatial, cols = "everything")
+}
 \author{
 Matt Craddock \email{matt@mattcraddock.com}
 }

@@ -15,6 +15,7 @@ erp_scalp(data, ...)
   color = NULL,
   colour = NULL,
   size = 0.8,
+  linewidth = 0.8,
   baseline = NULL,
   show_guide = TRUE,
   chan_info = NULL,
@@ -23,7 +24,7 @@ erp_scalp(data, ...)
 )
 }
 \arguments{
-\item{data}{An EEG dataset.}
+\item{data}{An \code{eeg_epochs} or \code{eeg_evoked} object}
 
 \item{...}{Various arguments passed to specific functions}
 
@@ -40,12 +41,14 @@ erp_scalp(data, ...)
 \item{colour}{Variable to colour lines by. If no variable is passed, only one
 line is drawn for each electrode.}
 
-\item{size}{Size of the line(s) for the ERPs.}
+\item{size}{Size of the line(s) for the ERPs. Deprecated}
+
+\item{linewidth}{Size of the line(s) for the ERPs.}
 
 \item{baseline}{Character vector of times to subtract for baseline correct.}
 
-\item{show_guide}{Should a guide showing the scale of the ERP plots be shown.
-Defaults to TRUE.}
+\item{show_guide}{Should be a guide showing the scale of the ERP plots be
+shown. Defaults to TRUE.}
 
 \item{chan_info}{Pass channel information in the standard \code{eegUtils} format
 directly.}
@@ -55,7 +58,7 @@ attempt to us locations from the data. If none are found, it will attempt
 to use standard 10-05 locations.}
 }
 \value{
-Returns a ggplot2 plot object.
+Returns a \code{ggplot2} plot object.
 }
 \description{
 Creates a \code{ggplot2} figure showing the ERP at each electrode, with each
@@ -63,9 +66,9 @@ electrode placed according to its location on the scalp.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{default}: Plot an ERP scalp map
-}}
+\item \code{erp_scalp(default)}: Plot an ERP scalp map
 
+}}
 \examples{
 erp_scalp(demo_epochs, montage = "biosemi64alpha")
 

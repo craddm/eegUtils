@@ -54,17 +54,17 @@ results.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{eeg_data}: remove baseline from continuous \code{eeg_data}
+\item \code{rm_baseline(eeg_data)}: remove baseline from continuous \code{eeg_data}
 
-\item \code{eeg_epochs}: Remove baseline from \code{eeg_epochs}
+\item \code{rm_baseline(eeg_epochs)}: Remove baseline from \code{eeg_epochs}
 
-\item \code{data.frame}: Legacy method for data.frames
+\item \code{rm_baseline(data.frame)}: Legacy method for data.frames
 
-\item \code{eeg_tfr}: Method for \code{eeg_tfr} objects
+\item \code{rm_baseline(eeg_tfr)}: Method for \code{eeg_tfr} objects
 
-\item \code{eeg_evoked}: Method for \code{eeg_evoked} objects
+\item \code{rm_baseline(eeg_evoked)}: Method for \code{eeg_evoked} objects
+
 }}
-
 \examples{
 rm_baseline(demo_epochs)
 rm_baseline(demo_epochs, c(-.1, 0))

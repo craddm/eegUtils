@@ -36,23 +36,64 @@ class as the original input object.
 }
 \description{
 Combine multiple \code{eeg_epochs}, \code{eeg_data}, or \code{eeg_evoked} objects into a
-single object. The function will try to check the \code{participant_id} entry in
-the \code{epochs} structure to see if the data comes from a single participant or
-from multiple participants. If the data is from a single participant, it will
-concatenate the objects and attempt to correct them so that the trial numbers
-and timings are correct.
+single object. The function will check the \code{participant_id} entry in the
+\code{epochs} structure of each object to see if the objects come from a single
+participant or from multiple participants. If the data are from multiple
+participants, it will create an \code{eeg_group} object. For individual
+participants, it will check for duplicate epochs. For most objects, it will
+concatenate the objects if none are found. However, for \code{eeg_data} it will
+instead try to correct the epoch numbers. Check the details below for further
+advice.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{list}: Method for combining lists of \code{eeg_data} and
+\item \code{eeg_combine(list)}: Method for combining lists of \code{eeg_data} and
 \code{eeg_epochs} objects.
 
-\item \code{eeg_data}: Method for combining \code{eeg_data} objects.
+\item \code{eeg_combine(eeg_data)}: Method for combining \code{eeg_data} objects.
 
-\item \code{eeg_epochs}: Method for combining \code{eeg_epochs} objects
+\item \code{eeg_combine(eeg_epochs)}: Method for combining \code{eeg_epochs} objects
 
-\item \code{eeg_evoked}: Method for combining \code{eeg_evoked} objects
+\item \code{eeg_combine(eeg_evoked)}: Method for combining \code{eeg_evoked} objects
+
 }}
+\section{Combining \code{eeg_data} objects}{
+Combining \code{eeg_data} is mainly intended to be used for combining multiple
+recordings from a single participant prior to subsequent epoching. Thus,
+\code{check_timings} defaults to true, and the function will change the epochs and
+timing structures of the resulting combined object to be as if it were a
+single recording. The objects will be combined in the input order, so ensure
+that the objects are input in chronological order.
+}
+
+\section{Combining \code{eeg_epochs} objects}{
+There are several scenarios where you might wish to combine \code{eeg_epochs}. For
+example, a user may have processed continuous data in smaller chunks
+reflecting short recording blocks before epoching. They then wish to combine
+these into a single object. In that case, the epoch numbering should reflect
+chronological ordering and needs to be corrected.
+
+If \code{check_timings == TRUE}, the function will perform several checks before
+combining objects. First, it will check for duplicate epochs in the \code{epochs}
+structure of each object. If each object only has unique epochs, the objects
+will be combined without correction. Thus, combining across separate
+recordings or separate participants will not elicit correction. The user
+should ensure
+
+If there are any duplicates (e.g. a participant has more than one epoch
+numbered one from the same recording), it will then check if there are any
+missing epochs. If there are, the new trial numbering cannot be automatically
+determined, so the objects cannot be combined without further manual
+intervention. If there are no missing epochs, it will then check if there is
+any decreases in epoch numbers across objects. If there are any, then the
+epoch numbers and timings for the objects will be adjusted.
+
+Alternatively, the user may wish to combine \code{eeg_epochs} objects from
+different participants or from entirely different recording sessions of the
+same participant. In this case, no correction of timings or epoch numbers is
+desirable. \code{check_timings == TRUE} should detect this and skip correction,
+but can be explicitly set to \code{FALSE}.
+}
 
 \author{
 Matt Craddock, \email{matt@mattcraddock.com}

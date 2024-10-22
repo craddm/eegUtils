@@ -1,7 +1,7 @@
 #' Channel interpolation
 #'
-#' Interpolate EEG channels using a spherical spline (Perrin et al., 1989; 1990). The
-#' data must have channel locations attached.
+#' Interpolate EEG channels using a spherical spline (Perrin et al., 1989;
+#' 1990). The data must have channel locations attached.
 #'
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #'
@@ -9,12 +9,11 @@
 #' @param bad_elecs Name(s) of electrode(s) to interpolate.
 #' @param ... Other parameters passed to the functions.
 #' @references * Perrin, F., Pernier, J., Bertrand, O., & Echallier, J. F.
-#'       (1989). Spherical splines for scalp potential and current
-#'       density mapping. Electroencephalography and Clinical
-#'     Neurophysiology, 72, 184-187
+#'   (1989). Spherical splines for scalp potential and current density mapping.
+#'   Electroencephalography and Clinical Neurophysiology, 72, 184-187
 #'  * Perrin, F., Pernier, J., Bertrand, O., & Echallier, J. F.
-#'      (1990). Corrigenda EEG 02274. Electroencephalography and
-#'      Clinical Neurophysiology, 76, 565
+#'   (1990). Corrigenda EEG 02274. Electroencephalography and Clinical
+#'   Neurophysiology, 76, 565
 #' @export
 
 interp_elecs <- function(data, bad_elecs, ...) {
@@ -93,7 +92,7 @@ interp_elecs.eeg_data <- function(data,
   final_cols <- sigs_select & !bad_cols
 
   weights <- spheric_spline(xyz_good,
-                             xyz_coords)
+                            xyz_coords)
 
   data$signals <- interp_chans(data$signals,
                                bad_elecs,
@@ -128,7 +127,7 @@ spheric_spline <- function(good_elecs,
   lec[g_dims[1] + 1, g_dims[2] + 1] <- 0
   invC <- MASS::ginv(lec, tol = 0)
   W <- cbind(ph, 1)
-  W <- W %*% invC[ , 1:g_dims[1]]
+  W <- W %*% invC[, 1:g_dims[1]]
   W
 }
 
@@ -146,7 +145,7 @@ interp_chans <- function(.data,
 
   bad_cols <- (toupper(names(.data)) %in% toupper(bad_chans)) | missing_coords
   weight_rows <- names(.data[, !missing_coords]) %in% bad_chans
-  new_chans <- weights[weight_rows, , drop = TRUE] %*% t(.data[ , !bad_cols])
+  new_chans <- weights[weight_rows, , drop = TRUE] %*% t(.data[, !bad_cols])
   .data[, bad_chans] <- t(new_chans)
   .data
 }
@@ -214,10 +213,10 @@ compute_csd.eeg_data <- function(data,
 #' @describeIn compute_csd Transform `eeg_data` to CSD
 #' @export
 compute_csd.eeg_epochs <- function(data,
-                                 m = 4,
-                                 smoothing = 1e-05,
-                                 scaling = 1,
-                                 ...) {
+                                   m = 4,
+                                   smoothing = 1e-05,
+                                   scaling = 1,
+                                   ...) {
   convert_to_csd(data,
                  m,
                  smoothing,
@@ -254,10 +253,10 @@ convert_to_csd <- function(data,
 
   if (any(missing_coords)) {
     stop("No coordinates for ",
-         paste0(data$chan_info$electrode[missing_coords],
-                collapse = " "),
-         ". Remove channels before applying CSD."
-         )
+      paste0(data$chan_info$electrode[missing_coords],
+             collapse = " "),
+      ". Remove channels before applying CSD."
+    )
   }
 
   # Convert data to average reference
@@ -274,35 +273,30 @@ convert_to_csd <- function(data,
                               1)
   }
 
-  g_mat <- compute_g(xyz_coords,
-                  xyz_coords,
-                  m = m,
-                  iter = 50)
-  h_mat <- compute_h(xyz_coords,
-                  xyz_coords,
-                  m = m,
-                  iter = 50)
+# Optimize matrix operations
+  g_matrix <- compute_g(xyz_coords, xyz_coords, m = m, iter = 50)
+  h_matrix <- compute_h(xyz_coords, xyz_coords, m = m, iter = 50)
 
-  diag(g_mat) <- diag(g_mat) + smoothing
-  g_inv <- solve(g_mat)
-  sums_g <- colSums(g_inv)
-  total_g <- sum(sums_g)
-  new_sig <- as.matrix(data$signals[, data_chans])
-  bb <- t(apply(new_sig,
-                1,
-                function(x) g_inv %*% x))
-  bb_rows <- rowSums(bb) / total_g
-  bc <- bb - (bb_rows %*% t(sums_g))
-  be <- t(apply(bc,
-                1,
-                function(x) colSums(x * h_mat)) / scaling)
-  data$signals[, data_chans] <- as.data.frame(be)
+  diag(g_matrix) <- diag(g_matrix) + smoothing
+  g_inverse <- solve(g_matrix)
+  g_inverse_col_sums <- colSums(g_inverse)
+  g_inverse_total_sum <- sum(g_inverse_col_sums)
+
+  signal_matrix <- as.matrix(data$signals[, data_chans])
+
+  # Vectorize operations
+  intermediate_result <- signal_matrix %*% t(g_inverse)
+  row_averages <- rowSums(intermediate_result) / g_inverse_total_sum
+  centered_result <- intermediate_result - outer(row_averages, g_inverse_col_sums)
+  csd_values <- (centered_result %*% h_matrix) / scaling
+
+  data$signals[, data_chans] <- as.data.frame(csd_values)
   names(data$signals) <- orig_elecs
   data$reference$ref_chans <- "CSD"
   data
 }
 
-#' Compute the g function for two sets of locations of channel locations on the
+#' Compute the g function for two sets of channel locations on the
 #' unit sphere.
 #'
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
@@ -310,7 +304,7 @@ convert_to_csd <- function(data,
 #' @param xyz_coords A set of electrode locations on a unit sphere.
 #' @param xyz_elecs A set of electrode locations on a unit sphere.
 #' @param m Interpolation constant (higher = less flexible)
-#' @importFrom pracma legendre
+#' @param iter Number of iterations for calculations
 #' @keywords internal
 
 compute_g <- function(xyz_coords,
@@ -318,38 +312,32 @@ compute_g <- function(xyz_coords,
                       m = 4,
                       iter = 7) {
 
+  # Convert inputs to matrices
   xyz_coords <- as.matrix(xyz_coords)
   xyz_elecs <- as.matrix(xyz_elecs)
 
-  EI <- matrix(NA,
-               nrow = nrow(xyz_coords),
-               ncol = nrow(xyz_coords))
-  EI <- xyz_coords %*% t(xyz_elecs) # cosine similarity
+  # Calculate cosine similarity
+  EI <- xyz_coords %*% t(xyz_elecs)
 
+  # Pre-allocate matrix
   g <- matrix(0, ncol = ncol(EI), nrow = nrow(EI))
 
-  gg <- 1:iter
-  gg <- (2 * gg + 1) / (gg ^ m *(gg + 1) ^ m)
-  legpoly <- matrix(0,
-                    nrow = length(c(EI)),
-                    ncol = iter)
+  # Pre-compute coefficients
+  coeff <- (2 * seq_len(iter) + 1) / (seq_len(iter)^m * (seq_len(iter) + 1)^m)
 
-  for (i in seq(1, iter)) {
-    suppressWarnings(
-      poly_xy <- pracma::legendre(i, EI)
-    )
-    legpoly[, i] <- t(poly_xy[1, ])
+  # Compute all Legendre polynomials up to degree 'iter'
+  P <- legendre_polynomials(iter, EI)
+
+  # Sum the polynomials
+  for (i in seq_len(iter)) {
+    g <- g + coeff[i] * P[i + 1, ]  # Use the i-th degree term
   }
 
-  g <- sweep(legpoly, 2, gg, "*")#g + gg
-  g <- rowSums(g)
-  g <- g / 4 / pi
-  dim(g) <- c(nrow(EI), ncol(EI))
-  g
+  # Final scaling
+  g / (4 * pi)
 }
 
-
-#' Compute the h function for two sets of locations of channel locations on the
+#' Compute the h function for two sets of channel locations on the
 #' unit sphere.
 #'
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
@@ -357,9 +345,7 @@ compute_g <- function(xyz_coords,
 #' @param xyz_coords A set of electrode locations on a unit sphere.
 #' @param xyz_elecs A set of electrode locations on a unit sphere.
 #' @param m Interpolation constant (higher = less flexible)
-#' @param lambda smoothing parameter
 #' @param iter iterations for calculations
-#' @importFrom pracma legendre
 #' @keywords internal
 
 compute_h <- function(xyz_coords,
@@ -367,25 +353,45 @@ compute_h <- function(xyz_coords,
                       m = 4,
                       iter = 50) {
 
+  # Convert inputs to matrices
   xyz_coords <- as.matrix(xyz_coords)
   xyz_elecs <- as.matrix(xyz_elecs)
+
+  # Calculate cosine similarity
   EI <- xyz_coords %*% t(xyz_elecs)
 
-  h <- matrix(0,
-              ncol = ncol(EI),
-              nrow = nrow(EI))
+  # Pre-allocate matrix for results
+  h <- matrix(0, ncol = ncol(EI), nrow = nrow(EI))
 
-  # vectorize this too, just like compute_g!
-  for (i in seq(1, iter)) {
-    suppressWarnings(
-      poly_xy <- pracma::legendre(i, EI)
-    )
-    dim(poly_xy) <- c(i + 1,
-                      nrow(EI),
-                      ncol(EI))
-    h <- h + ((-2 * i - 1) / (i ^ (m - 1) * (i + 1) ^ (m - 1))) * poly_xy[1, , ]
+  # Pre-compute coefficients
+  coeff <- (-2 * seq_len(iter) - 1) / (seq_len(iter)^(m - 1) * (seq_len(iter) + 1)^(m - 1))
+
+  # Compute all Legendre polynomials up to degree 'iter'
+  P <- legendre_polynomials(iter, EI)
+
+  # Sum the polynomials
+  for (i in seq_len(iter)) {
+    h <- h + coeff[i] * P[i + 1, ]  # Use the i-th degree term
   }
 
-  h <- -h / 4 / pi
-  h
+  # Final scaling
+  -h / (4 * pi)
+}
+
+#' Calculate Legendre polynomials up to degree n
+#'
+#' @param n Maximum degree of Legendre polynomials
+#' @param x Input values
+#' @return Matrix of Legendre polynomial values
+#' @keywords internal
+legendre_polynomials <- function(n, x) {
+  P <- matrix(0, nrow = n + 1, ncol = length(x))
+  P[1, ] <- 1
+  if (n > 0) P[2, ] <- x
+
+  for (k in 2:n) {
+    P[k + 1, ] <- ((2 * k - 1) * x * P[k, ] - (k - 1) * P[k - 1, ]) / k
+  }
+
+  P
 }

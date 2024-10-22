@@ -44,9 +44,9 @@ around each event.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{eeg_data}: Epoch \code{eeg_data} objects
-}}
+\item \code{epoch_data(eeg_data)}: Epoch \code{eeg_data} objects
 
+}}
 \author{
 Matt Craddock \email{matt@mattcraddock.com}
 }

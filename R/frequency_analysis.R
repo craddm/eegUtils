@@ -1,9 +1,9 @@
 #' Compute power spectral density
 #'
 #' `compute_psd` returns the PSD calculated using Welch's method for every
-#' channel in the data. The output is in  microvolts ^2 / Hz. If the object has
-#' multiple epochs, it will perform Welch's FFT separately for each epoch and
-#' then average them afterwards.
+#' channel in the data. The output is in microvolts-squared divided by Hertz -
+#' \eqn{\muV^2 / Hz}. If the object has multiple epochs, it will perform Welch's
+#' FFT separately for each epoch and then average them afterwards.
 #'
 #' Welch's FFT splits the data into multiple segments, calculates the FFT
 #' separately for each segment, and then averages over segments. Each segment is
@@ -11,11 +11,10 @@
 #' Welch's FFT is calculated separately for each trial.
 #'
 #' The number of sampling points used for the FFT can be specified using n_fft.
-#' n_fft defaults to 256 sampling points for `eeg_epochs` data, or the
-#' minimum of 2048 or the length of the signal for continuous `eeg_data`.
+#' n_fft defaults to 256 sampling points for `eeg_epochs` data, or the minimum
+#' of 2048 or the length of the signal for continuous `eeg_data`.
 #'
-#' `seg_length` defaults to be `n_fft`, and must be less than or equal
-#' to it.
+#' `seg_length` defaults to be `n_fft`, and must be less than or equal to it.
 #'
 #' `noverlap` specifies the amount of overlap between windows in sampling
 #' points. If NULL, it defaults to 50\% overlap between segments.
@@ -155,7 +154,7 @@ compute_psd.eeg_epochs <- function(data,
           "Computing Power Spectral Density using Welch's method.\n",
           "FFT length: ", n_fft, "\n",
           "Segment length: ", seg_length, "\n",
-          "Overlapping points: ", noverlap, " (", noverlap / seg_length * 100, "% overlap)"
+          "Overlapping points: ", noverlap, " (", round(noverlap / seg_length * 100, 2), "% overlap)"
         )
       )
     }
@@ -215,9 +214,10 @@ compute_psd.eeg_group <- function(data,
   stop("Cannot compute psd for `eeg_group` objects.")
 }
 
-#' Welch fft
+#' Welch FFT
 #'
-#' Internal function for calculating the PSD using Welch's method
+#' Internal function for calculating the PSD using Welch's method. Hardcoded to
+#' use Hamming window.
 #'
 #' @param data Object to perform FFT on.
 #' @param seg_length length of each segment of data.
@@ -254,7 +254,6 @@ welch_fft <- function(data,
     data_segs <- lapply(data_segs,
                         function(x) lapply(x,
                                            function(y) y * win))
-
     data_fft <- lapply(data_segs,
                        function(x) lapply(x,
                                           fft_n, n = n_fft))
@@ -275,16 +274,11 @@ welch_fft <- function(data,
     data_segs <- as.matrix(data)
     n_segs <- 1
 
-    data_segs <- sweep(data_segs,
-                       1,
-                       win, "*")
+    data_segs <- sweep(data_segs, 1, win, "*")
 
-    data_fft <- fft_n(data_segs,
-                      n_fft)
+    data_fft <- fft_n(data_segs, n_fft)
     colnames(data_fft) <- colnames(data_segs)
-    final_out <- apply(data_fft,
-                       2,
-                       function(x) abs(x * Conj(x)) / U)
+    final_out <- abs(data_fft * Conj(data_fft)) / U
 
     # Normalize by sampling rate
     if (is.null(srate)) {
@@ -338,5 +332,4 @@ split_vec <- function(vec,
     segs <- lapply(segs, function(x) x - mean(x))
   }
   segs
-
 }

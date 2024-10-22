@@ -9,5 +9,5 @@ test_that("Removing baseline works", {
   test_epo <- epoch_data(test_data, 255)
   test_bl <- rm_baseline(test_epo,
                          c(-.1, 0))
-
+  expect_equal(test_bl, readRDS("reference_files/baselined_test.rds"))
 })

@@ -11,9 +11,8 @@
 #' @examples
 #' ar_FASTER(demo_epochs)
 #' @return An `eeg_epochs` object with artefact correction applied.
-#' @references
-#' Nolan, Whelan & Reilly (2010). FASTER: Fully Automated Statistical Thresholding for
-#' EEG artifact Rejection. J Neurosci Methods.
+#' @references Nolan, Whelan & Reilly (2010). FASTER: Fully Automated
+#' Statistical Thresholding for EEG artifact Rejection. J Neurosci Methods.
 #' @export
 
 ar_FASTER <- function(data, ...) {
@@ -71,8 +70,7 @@ ar_FASTER.eeg_epochs <- function(data,
     if (is.numeric(exclude)) {
       exclude <- orig_names[exclude]
     }
-    message("Excluding channel(s):",
-            paste(exclude, ""))
+    message("Excluding channel(s):", paste(exclude, ""))
     data_chans <- data_chans[!(data_chans %in% exclude)]
   }
 
@@ -81,8 +79,7 @@ ar_FASTER.eeg_epochs <- function(data,
     bad_chans <- faster_chans(data$signals[, data_chans])
     bad_chan_n <- data_chans[bad_chans]
     message(paste("Globally bad channels:",
-                  paste(bad_chan_n,
-                        collapse = " ")))
+                  paste(bad_chan_n, collapse = " ")))
 
     if (length(bad_chan_n) > 0) {
 
@@ -133,18 +130,28 @@ ar_FASTER.eeg_epochs <- function(data,
     message(paste("Globally bad epochs:",
                   paste(bad_epochs,
                         collapse = " ")))
-    data$reject$bad_epochs <- bad_epochs
+
+    data$reject$epochs <- do.call(rbind,
+                            list(data$reject$epoch,
+                                 data.frame(epoch = bad_epochs,
+                                            reason = "bad_epoch")
+                                 )
+    )
     data <- select_epochs(data,
                           epoch_no = bad_epochs,
                           keep = FALSE)
   } else {
-    message("Skipping bad epoch detection")
+    message("Skipping globally bad epoch detection...")
   }
   # Step 3: ICA stats (not currently implemented)
 
   # Step 4: Channels in Epochs
-  data <- faster_cine(data,
-                      exclude)
+  if (test_cine) {
+    data <- faster_cine(data,
+                        exclude)
+  } else {
+    message("Skipping detection of locally bad channels in epochs...")
+  }
 
   # Step 5: Grand average step (not currently implemented, probably never will be!)
 
@@ -156,7 +163,6 @@ ar_FASTER.eeg_epochs <- function(data,
                           verbose = FALSE)
   }
 
-  #data$chan_info <- orig_chan_info
   data
 }
 
@@ -171,18 +177,14 @@ faster_chans <- function(data,
                          sds = 3,
                          ...) {
   chan_hurst <- scale(quick_hurst(data))
-  chan_vars <- scale(apply(data,
-                           2,
-                           stats::var))
+  chan_vars <- scale(apply(data, 2, stats::var))
   chan_corrs <- scale(colMeans(abs(stats::cor(data))))
   bad_chans <- matrix(c(abs(chan_hurst) > sds,
                         abs(chan_vars) > sds,
                         abs(chan_corrs) > sds),
                       nrow = 3,
                       byrow = TRUE)
-  bad_chans <- apply(bad_chans,
-                     2,
-                     any)
+  bad_chans <- apply(bad_chans, 2, any)
   bad_chans
 }
 
@@ -194,33 +196,40 @@ faster_chans <- function(data,
 #' @keywords internal
 
 faster_epochs <- function(data, sds = 3, ...) {
-  chans <- channel_names(data)
-  data <- data.table::as.data.table(data)
-  chan_means <- data[, lapply(.SD, mean), .SDcols = chans]
-  epoch_range <- data[, lapply(.SD, function(x) max(x) - min(x)),
-                      .SDcols = chans,
-                      by = epoch]
-  epoch_range <- epoch_range[, .(Mean = rowMeans(.SD)), by = epoch]
-  epoch_range <- abs(scale(epoch_range$Mean)) > sds
+  chan_means <- colMeans(data$signals)
+  data$signals <- split(data$signals, data$timings$epoch)
+  data$signals <- lapply(data$signals, as.matrix)
+  epoch_ranges <- lapply(data$signals,
+                         function(x) {
+                           matrixStats::rowDiffs(
+                             matrixStats::colRanges(x)
+                           )
+                         })
+  epoch_ranges <- matrix(unlist(epoch_ranges),
+                         ncol = length(epoch_ranges))
+  epoch_ranges <- colMeans(epoch_ranges)
 
-  epoch_diffs <- data[, lapply(.SD, mean),
-                      .SDcols = chans,
-                      by = epoch][, lapply(.SD, function(x) x - mean(x)),
-                                  .SDcols = chans][ ,
-                                                    .(Mean = rowMeans(.SD))]
-  epoch_diffs <- abs(scale(epoch_diffs$Mean)) > sds
+  epoch_diffs <- lapply(data$signals,
+                        colMeans)
+  epoch_diffs <- matrix(unlist(epoch_diffs),
+                        ncol = length(epoch_diffs))
+  epoch_diffs <- epoch_diffs - chan_means
+  epoch_diffs <- colMeans(abs(epoch_diffs))
 
-  epoch_vars <- data[, lapply(.SD, var), .SDcols = chans,
-                     by = epoch][, apply(.SD, 1, mean),
-                                 .SDcols = chans]
-  epoch_vars <- abs(scale(epoch_vars)) > sds
+  epoch_vars <- lapply(data$signals,
+                       function(x) matrixStats::colVars(x))
+  epoch_vars <- matrix(unlist(epoch_vars),
+                       ncol = length(epoch_vars))
+  epoch_vars <- colMeans(epoch_vars)
 
-  bad_epochs <- matrix(c(rowSums(epoch_vars) > 0,
-                         rowSums(epoch_range) > 0,
-                         rowSums(epoch_diffs) > 0),
-                       ncol = 3)
-  bad_epochs <- apply(bad_epochs, 1, any)
-  bad_epochs
+  measures <- matrix(c(epoch_ranges,
+                       epoch_diffs,
+                       epoch_vars),
+                     ncol = 3)
+
+  measures <- abs(scale(measures)) >= sds
+  measures <- rowSums(measures) > 0
+  measures
 }
 
 #' FASTER detection of bad channels in single epochs
@@ -369,10 +378,10 @@ faster_epo_stat <- function(data,
 
   measures <-
     data.frame(vars = matrixStats::colVars(as.matrix(data)),
-               medgrad = matrixStats::colMedians(diff(as.matrix(data))),
-               range_diff = t(diff(t(matrixStats::colRanges(as.matrix(data))))),
-               chan_dev = abs(colMeans(data) - chan_means)
-  )
+      medgrad = matrixStats::colMedians(diff(as.matrix(data))),
+      range_diff = t(diff(t(matrixStats::colRanges(as.matrix(data))))),
+      chan_dev = abs(colMeans(data) - chan_means)
+    )
   # Check if any measure is above threshold of standard deviations
   # for some reason FASTER median centres all measures.
 
@@ -420,17 +429,17 @@ ar_FASTER.eeg_group <- function(data,
   all_data <- as.data.frame(data)
 
   participant_mean <-
-    all_data %>%
-    dplyr::ungroup %>%
+    dplyr::ungroup(all_data) %>%
     dplyr::group_by(participant_id) %>%
     dplyr::summarise(
       dplyr::across(
         dplyr::all_of(data_chans),
-        mean)
-      )
+        mean,
+        na.rm = TRUE)
+    )
 
   channel_mean <-
-    colMeans(all_data[, data_chans])
+    colMeans(all_data[, data_chans], na.rm = TRUE)
 
   part_diffs <-
     abs(sweep(participant_mean[, data_chans],
@@ -438,17 +447,17 @@ ar_FASTER.eeg_group <- function(data,
               channel_mean, "-"))
 
   participant_var <-
-    all_data %>%
-    dplyr::ungroup %>%
+    dplyr::ungroup(all_data) %>%
     dplyr::group_by(participant_id) %>%
     dplyr::summarise(
       dplyr::across(
         dplyr::all_of(data_chans),
-        var)
+        var,
+        na.rm = TRUE)
     )
 
   channel_vars <-
-    matrixStats::colVars(as.matrix(all_data[, data_chans]))
+    matrixStats::colVars(as.matrix(all_data[, data_chans]), na.rm = TRUE)
 
   part_var_diffs <-
     abs(sweep(participant_var[, data_chans],
@@ -456,16 +465,13 @@ ar_FASTER.eeg_group <- function(data,
               channel_vars, "-"))
 
   part_ranges <-
-    all_data %>%
-    dplyr::ungroup %>%
+    dplyr::ungroup(all_data) %>%
     dplyr::group_by(participant_id) %>%
     dplyr::summarise(
       dplyr::across(
         dplyr::all_of(data_chans),
-        ~diff(range(.)))
+        ~diff(range(., na.rm = TRUE)))
     )
-
-
 
   scaled_diffs <- abs(scale(part_diffs[, data_chans]))
   scaled_vars <- abs(scale(part_var_diffs[, data_chans]))
@@ -475,13 +481,12 @@ ar_FASTER.eeg_group <- function(data,
 
   if (!is.null(EOG)) {
     participant_eog <-
-      all_data %>%
-      dplyr::ungroup %>%
+      dplyr::ungroup(all_data) %>%
       dplyr::group_by(participant_id) %>%
       dplyr::summarise(
         dplyr::across(
           dplyr::all_of(EOG),
-          max)
+          max, na.rm = TRUE)
       )
     scaled_eog <- abs(scale(matrixStats::rowMaxs(as.matrix(participant_eog[, EOG]))))
     data.frame(
@@ -497,7 +502,7 @@ ar_FASTER.eeg_group <- function(data,
       deviance = rowSums(scaled_diffs > 3),
       variance = rowSums(scaled_vars > 3),
       range = rowSums(scaled_ranges > 3)
-      )
+    )
   }
 
 }

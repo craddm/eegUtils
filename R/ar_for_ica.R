@@ -4,8 +4,9 @@
 #' decomposition and the electrooculogram channels of an `eeg_epochs` dataset.
 #'
 #' @author Matt Craddock, \email{matt@@mattcraddock.com}
-#' @param decomp ICA decomposition
-#' @param data Original data
+#' @param decomp An `eeg_ica` object
+#' @param data The original `eeg_epochs` object from which this decomposition
+#'   was derived
 #' @param ... Other parameters
 #' @references Chaumon, M., Bishop, D.V., Busch, N.A. (2015). A practical guide
 #'   to the selection of independent components of the electroencephalogram for
@@ -20,14 +21,15 @@ ar_eogcor <- function(decomp,
   UseMethod("ar_eogcor", decomp)
 }
 
-
 #' @param HEOG Horizontal eye channels
 #' @param VEOG Vertical eye channels
 #' @param threshold Threshold for correlation (r). Defaults to NULL,
 #'   automatically determining a threshold.
 #' @param plot Plot correlation coefficient for all components
 #' @param bipolarize Bipolarize the HEOG and VEOG channels?
-#' @describeIn ar_eogcor Method for eeg_ICA objects.
+#' @param method Correlation method. Defaults to Pearson.
+#' @param verbose Print informative messages. Defaults to TRUE.
+#' @describeIn ar_eogcor Method for `eeg_ICA` objects.
 #' @export
 ar_eogcor.eeg_ICA <- function(decomp,
                               data,
@@ -36,28 +38,33 @@ ar_eogcor.eeg_ICA <- function(decomp,
                               threshold = NULL,
                               plot = TRUE,
                               bipolarize = TRUE,
+                              method = c("pearson", "kendall", "spearman"),
+                              verbose = TRUE,
                               ...) {
 
   if (!is.null(threshold)) {
-    if (threshold > 1 | threshold < 0) {
+    if (threshold > 1 || threshold < 0) {
       stop("Threshold must be between 0 and 1.")
     }
     heog_threshold <- threshold
     veog_threshold <- threshold
   }
 
-  EOG_corrs <- abs(stats::cor(decomp$signals,
+  method <- match.arg(method)
+
+  eog_corrs <- abs(stats::cor(decomp$signals,
                               if (bipolarize) {
-                                bip_EOG(data$signals,
+                                bip_eog(data$signals,
                                         HEOG,
                                         VEOG)
                               } else {
-                                data$signals[,c("HEOG", "VEOG")]
-                              }))
+                                data$signals[, c(HEOG, VEOG)]
+                              },
+                              method = method))
 
   if (is.null(threshold)) {
-    mean_corrs <- colMeans(EOG_corrs)
-    sd_corrs <- matrixStats::colSds(EOG_corrs)
+    mean_corrs <- colMeans(eog_corrs)
+    sd_corrs <- matrixStats::colSds(eog_corrs)
     heog_threshold <- mean_corrs[[1]] + 4 * sd_corrs[[1]]
     veog_threshold <- mean_corrs[[2]] + 4 * sd_corrs[[2]]
     message("Estimated HEOG threshold: ", round(heog_threshold, 2))
@@ -66,17 +73,26 @@ ar_eogcor.eeg_ICA <- function(decomp,
 
   if (plot) {
     graphics::par(mfrow = c(1, 2))
-    plot(EOG_corrs[, 1])
+    plot(eog_corrs[, 1],
+         xlab = "Channel",
+         ylab = "HEOG correlation")
     graphics::abline(h = heog_threshold)
-    plot(EOG_corrs[, 2])
+    plot(eog_corrs[, 2],
+         xlab = "Channel",
+         ylab = "VEOG correlation")
     graphics::abline(h = veog_threshold)
+    graphics::title(paste("method =", method))
   }
 
-  crossed_thresh <- cbind(EOG_corrs[, 1] > heog_threshold,
-                          EOG_corrs[, 2] > veog_threshold)
+  crossed_thresh <- cbind(eog_corrs[, 1] > heog_threshold,
+                          eog_corrs[, 2] > veog_threshold)
   above_thresh <- apply(crossed_thresh,
                         1, any)
   above_thresh <- channel_names(decomp)[above_thresh]
+  if (verbose) {
+    message("Components with high EOG correlation: ",
+            paste0(above_thresh, sep = " "))
+  }
   above_thresh
 }
 
@@ -106,7 +122,8 @@ ar_acf <- function(data, ...) {
 #' @param ms Time lag to check ACF, in milliseconds. Defaults to 20 ms.
 #' @param plot Produce plot showing ACF and threshold for all EEG components.
 #' @param verbose Print informative messages. Defaults to TRUE.
-#' @param threshold Specify a threshold for low ACF. NULL estimates the threshold automatically.
+#' @param threshold Specify a threshold for low ACF. NULL estimates the
+#'   threshold automatically.
 #' @describeIn ar_acf Autocorrelation checker for `eeg_ICA` objects
 #' @importFrom stats sd cor
 #' @importFrom graphics abline par
@@ -118,7 +135,7 @@ ar_acf.eeg_ICA <- function(data,
                            threshold = NULL,
                            ...) {
 
-  time_lag <- round(data$srate * (ms/1000))
+  time_lag <- round(data$srate * (ms / 1000))
   low_acf <- apply(data$signals, 2,
                    function(x) stats::acf(x, time_lag, plot = FALSE)$acf[time_lag + 1, 1, 1])
   if (is.null(threshold)) {
@@ -144,7 +161,7 @@ ar_acf.eeg_ICA <- function(data,
 #' that have one particular channel that has a particularly high z-score.
 #'
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
-#' @param data `eeg_ICA` object
+#' @param data An `eeg_ICA` object
 #' @param plot Produce plot showing max z-scores and threshold for all ICA
 #'   components.
 #' @param threshold Specify a threshold for high focality. NULL estimates the
@@ -171,13 +188,16 @@ ar_chanfoc <- function(data,
   if (!inherits(data, "eeg_ICA")) {
     stop("Only eeg_ICA objects supported.")
   }
+
   n_comps <- length(channel_names(data))
   zmat <- apply(data$mixing_matrix[, 1:n_comps], 2, scale)
+
   if (identical(measure, "max")) {
     max_weights <- apply(zmat, 2, function(x) max(abs(x)))
   } else if (identical(measure, "kurtosis")) {
     max_weights <- apply(zmat, 2, kurtosis)
   }
+
   if (is.null(threshold)) {
     threshold <- mean(max_weights) + 2 * stats::sd(max_weights)
     if (verbose) {
@@ -195,7 +215,6 @@ ar_chanfoc <- function(data,
   if (verbose) {
     message("Components with high channel focality: ", paste0(chan_foc, sep = " "))
   }
-
   chan_foc
 }
 
@@ -251,5 +270,11 @@ ar_trialfoc <- function(data,
     graphics::abline(h = threshold)
   }
 
-  channel_names(data)[matrixStats::colMaxs(zmat) > threshold]
+  trial_foc <- channel_names(data)[matrixStats::colMaxs(zmat) > threshold]
+
+  if (verbose) {
+    message("Components with high trial focality: ", paste0(trial_foc, sep = " "))
+  }
+
+  trial_foc
 }

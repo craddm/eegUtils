@@ -29,6 +29,6 @@ adds a new column to the epochs structure in an \code{eeg_epochs} object.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{eeg_epochs}: Tag epochs in an \code{eeg_epochs} object.
-}}
+\item \code{tag_epochs(eeg_epochs)}: Tag epochs in an \code{eeg_epochs} object.
 
+}}

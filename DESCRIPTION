@@ -1,14 +1,14 @@
 Package: eegUtils
 Type: Package
 Title: Utilities for Electroencephalographic (EEG) Analysis 
-Version: 0.7.0
-Date: 2022-02-03
+Version: 0.8.0
+Date: 2024-10-22
 Authors@R: c(
-  person("Matt", "Craddock", role = c("aut", "cre", "cph"), email = "matt@mattcraddock.com"),
+  person("Matt", "Craddock", role = c("aut", "cre"), email = "matt@mattcraddock.com"),
   person("Matti", "Vuorre", role = "ctb", email = "mv2521@columbia.edu"),
-  person("ggplot2 authors", role = c("ctb", "cph"), comment = "Routines borrowed from ggplot2 to allow countours to be drawn on topoplots"))
+  person("ggplot2 authors", role = c("cph"), comment = "Routines borrowed from ggplot2 to allow contours to be drawn on topoplots"))
 Maintainer: Matt Craddock <matt@mattcraddock.com>
-Description: EEG processing and visualization tools. Includes import
+Description: Electroencephalography data processing and visualization tools. Includes import
   functions for 'BioSemi' (.BDF), 'Neuroscan' (.CNT), 'Brain Vision Analyzer' (.VHDR),
   'EEGLAB' (.set) and 'Fieldtrip' (.mat). Many preprocessing functions such as
   referencing, epoching, filtering, and ICA are available. There are a variety 
@@ -17,30 +17,29 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Imports:
-    ggplot2,
+    ggplot2 (>= 3.4.0),
     dplyr (>= 1.0.0),
     scales,
     purrr,
-    shiny,
+    shiny (>= 1.6.0),
     tidyr (>= 1.0.0),
     miniUI,
-    rlang (>= 0.4.0),
+    rlang (>= 1.0.0),
     MASS,
-    Matrix,
     signal,
     tibble,
     stats,
     matrixStats,
-    pracma,
     abind,
-    data.table,
     plotly,
     future.apply,
     Rcpp,
-    isoband
+    data.table,
+    isoband,
+    bslib
 Depends:
-  R (>= 3.3.0)
-RoxygenNote: 7.1.2
+  R (>= 4.0.0)
+RoxygenNote: 7.3.2
 Suggests: 
     testthat,
     vdiffr,
@@ -50,16 +49,18 @@ Suggests:
     JADE,
     ica,
     geigen,
-    whitening,
     fICA,
     edfReader,
     ini,
     R.matlab,
     hdf5r,
     mgcv,
-    infomax (>= 0.1.0)
+    infomax (>= 0.1.0),
+    Hmisc
 URL: https://github.com/craddm/eegUtils, https://craddm.github.io/eegUtils
 BugReports: https://github.com/craddm/eegUtils/issues
+Config/testthat/edition: 3
+Config/testthat/parallel: true
 VignetteBuilder: knitr
 LinkingTo: 
     Rcpp,

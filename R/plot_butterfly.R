@@ -11,17 +11,19 @@
 #'   made when not all categorical variables are reflected in the facets. e.g.
 #'   if there are two variables with two levels each, but you want to average
 #'   over one of those variables, `stat_summary()` is required. However,
-#'   `stat_summary()` is extremely slow.
+#'   `stat_summary()` can be extremely slow with a large number of timepoints,
+#'   electrodes, and epochs.
 #'
 #' @author Matt Craddock, \email{matt@@mattcraddock.com}
 #' @param data EEG dataset. Should have multiple timepoints.
-#' @param ... Other parameters passed to plot_butterfly
+#' @param ... Other parameters passed to `plot_butterfly`
 #' @examples
 #' plot_butterfly(demo_epochs)
 #' plot_butterfly(demo_epochs,
 #' time_lim = c(-.1, .4),
 #' legend = FALSE)
-#' @return A ggplot object
+#' @return ggplot2 object showing ERPs for all electrodes overlaid on a single
+#'   plot.
 #' @export
 
 plot_butterfly <- function(data, ...) {
@@ -32,15 +34,12 @@ plot_butterfly <- function(data, ...) {
 #'   specifying beginning and end of time-range to plot. e.g. c(-.1,.3)
 #' @param baseline  Character vector. Times to use as a baseline. Takes the mean
 #'   over the specified period and subtracts. e.g. c(-.1, 0)
-#' @param colourmap Attempt to plot using a different colourmap (from
-#'   RColorBrewer). (Not yet implemented)
 #' @param legend Include plot legend. Defaults to TRUE.
 #' @param allow_facets Allow use of ggplot2 facetting. See note below. Defaults
 #'   to FALSE.
 #' @param continuous Is the data continuous or not (I.e. epoched)
-#' @param browse_mode Custom theme for use with browse_data.
-#' @return ggplot2 object showing ERPs for all electrodes overlaid on a single
-#'   plot.
+#' @param browse_mode Applies custom theme used with `browse_data()`.
+
 #' @import ggplot2
 #' @importFrom dplyr group_by ungroup summarise
 #' @importFrom tidyr gather
@@ -51,7 +50,6 @@ plot_butterfly <- function(data, ...) {
 plot_butterfly.default <- function(data,
                                    time_lim = NULL,
                                    baseline = NULL,
-                                   colourmap = NULL,
                                    legend = TRUE,
                                    continuous = FALSE,
                                    browse_mode = FALSE,
@@ -92,7 +90,6 @@ plot_butterfly.default <- function(data,
 plot_butterfly.eeg_evoked <- function(data,
                                       time_lim = NULL,
                                       baseline = NULL,
-                                      colourmap = NULL,
                                       legend = TRUE,
                                       continuous = FALSE,
                                       browse_mode = FALSE,
@@ -199,16 +196,16 @@ plot_butterfly.eeg_lm <- function(data,
     ylab <- expression(paste("Amplitude (", mu, "V)"))
   } else if (identical(quantity, "t_stats")) {
     quantity <- "statistic"
-    ylab <- expression(italic("t")~"-statistic")
+    ylab <- expression(italic("t") ~ "-statistic")
   } else if (identical(quantity, "std_err")) {
     ylab <- expression(paste("Std. error (", mu, "V)"))
   } else if (identical(quantity, "r_sq")) {
     ylab <- expression(paste(italic("r"), {}^2))
   }
 
-   if (is.character(quantity)) {
-     quantity <- as.name(quantity)
-   }
+  if (is.character(quantity)) {
+    quantity <- as.name(quantity)
+  }
 
   create_bf(data,
             legend = legend,
@@ -272,8 +269,6 @@ create_bf <- function(data,
     data <- dplyr::summarise_at(data,
                                 vars({{quantity}}),
                                 mean)
-    # data <- dplyr::summarise(data,
-    #                          !!quo_name(quantity) := mean({{quantity}}))
     data$epoch <- 1
   }
 
@@ -303,35 +298,37 @@ create_bf <- function(data,
       butterfly_plot +
       geom_line(colour = "black",
                 aes(group = electrode),
-                alpha = 0.2) +
+                alpha = 0.4) +
       labs(x = "Time (s)",
            y = ylab,
            colour = "") +
       geom_hline(yintercept = 0,
-                 size = 0.5,
+                 linewidth = 0.5,
                  linetype = "dashed",
                  alpha = 0.5) +
       scale_x_continuous(expand = c(0, 0)) +
       theme_minimal(base_size = 12) +
       theme(panel.grid = element_blank(),
-            axis.ticks = element_line(size = .5))
+            axis.ticks = element_line(linewidth = .5))
   } else {
     butterfly_plot <-
       butterfly_plot +
       chan_lines() +
       labs(x = "Time (s)",
-           y = ylab,#expression(paste("Amplitude (", mu, "V)")),
+           y = ylab,
            colour = "") +
-      geom_hline(yintercept = 0, size = 0.5) +
+      geom_hline(yintercept = 0,
+                 linewidth = 0.5) +
       scale_x_continuous(expand = c(0, 0)) +
       theme_minimal(base_size = 12) +
       theme(panel.grid = element_blank(),
-            axis.ticks = element_line(size = .5))
+            axis.ticks = element_line(linewidth = .5))
 
     if (!continuous) {
       butterfly_plot <-
         butterfly_plot +
-        geom_vline(xintercept = 0, size = 0.5)
+        geom_vline(xintercept = 0,
+                   linewidth = 0.5)
     }
   }
 

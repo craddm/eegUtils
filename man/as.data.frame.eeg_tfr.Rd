@@ -2,7 +2,7 @@
 % Please edit documentation in R/df_converters.R
 \name{as.data.frame.eeg_tfr}
 \alias{as.data.frame.eeg_tfr}
-\title{Convert \code{eeg_tfr} objects to data frames}
+\title{Convert \code{eeg_tfr} objects to a \code{data.frame}}
 \usage{
 \method{as.data.frame}{eeg_tfr}(x, row.names = NULL, optional = FALSE, long = FALSE, ...)
 }
@@ -15,10 +15,13 @@
 
 \item{long}{Convert to long format. Defaults to FALSE.}
 
-\item{...}{arguments for other as.data.frame commands}
+\item{...}{arguments for other \code{as.data.frame} commands}
+}
+\value{
+A \code{data.frame} or \code{tibble}
 }
 \description{
-Convert \code{eeg_tfr} objects to data frames
+Convert \code{eeg_tfr} objects to a \code{data.frame}
 }
 \author{
 Matt Craddock \email{matt@mattcraddock.com}
