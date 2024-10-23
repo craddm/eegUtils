@@ -1,0 +1,14 @@
+pandoc: 3.1.11
+pkgdown: 2.1.1
+pkgdown_sha: ~
+articles:
+  data_structures: data_structures.html
+  eegUtils: eegUtils.html
+  epoch-handling: epoch-handling.html
+  linear_modelling/linear_modelling: linear_modelling/linear_modelling.html
+  time-frequency-analysis: time-frequency-analysis.html
+  topoplot/topoplot: topoplot/topoplot.html
+last_built: 2024-10-23T22:08Z
+urls:
+  reference: https://craddm.github.io/eegUtils/reference
+  article: https://craddm.github.io/eegUtils/articles
