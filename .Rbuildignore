@@ -16,3 +16,4 @@
 ^\.github$
 ^CITATION\.cff$
 ^vignettes/single_subj_N170$
+^pkgdown$
