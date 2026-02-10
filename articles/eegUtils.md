@@ -1,0 +1,251 @@
+# EEG Utils
+
+`eegUtils` is a package for performing basic EEG preprocessing and
+plotting of EEG data. Many of these functions are wrappers around
+existing R functions to make them behave in consistent ways and produce
+output that is more amenable to many of the subsequent steps in EEG
+analysis.
+
+The package implements custom objects to contain EEG data and associated
+metadata. Some of its functions depend on data being stored in this
+format, but part of the philosophy of the package is that any object
+stored in the custom `eeg_data` and associated formats will always be
+convertible to a standard data.frame or tibble for subsequent use in
+whatever way the user desires. Plotting functions will typically work on
+both `eeg_data` objects and standard formats, while more complex
+processing functions will require an `eeg_data` or related custom object
+(such as `eeg_tfr`).
+
+## Basic EEG processing
+
+There is currently suport for loading raw data in the .BDF (typically
+BioSemi), .CNT (32-bit; associated with Neuroscan), and .vhdr/.vmrk/.dat
+Brain Vision Analyzer 2.0 file formats using the
+[`import_raw()`](https://craddm.github.io/eegUtils/reference/import_raw.md)
+command. Loading data in these formats results in an `eeg_data` object -
+a structure that contains the raw data and a variety of metadata.
+
+In this experiment, participants had to covertly attend to either the
+left or right visual field as indicated by a visual cue (an arrow
+pointing left or right). Around 1-1.5 seconds after the cue, a target -
+a Gabor patch - could appear in either the left or right visual field.
+The task was to determing whether the target patch showed a vertical or
+a horizontal grating. 80% of the time, the target appeared in the cued
+location.
+
+You can find the file “Matt-task-spatcue.bdf” on [Open Science
+Framework](https://osf.io/dxhjb/).
+
+``` r
+library(eegUtils)
+if (!file.exists("Matt-task-spatcue.bdf")) {
+  temp_dir <- tempdir()
+  temp_file <- file.path(temp_dir, "Matt-task-spatcue.bdf")
+  download.file("https://osf.io/hy5wq/download",
+                temp_file,
+                mode = "wb")
+  eeg_example <- import_raw(temp_file)
+} else {
+  eeg_example <- import_raw("Matt-task-spatcue.bdf")
+}
+eeg_example
+```
+
+This data was recorded at 1024 Hz (downsampled here already to 256 Hz)
+using a BioSemi ActiveTwo amplifier and active electrodes. There were 64
+electrodes positioned and named according to the 10-05 international
+system. A few additional electrodes (EXG1-EXG4) placed around the eyes
+to record eye movements, and two further reference electrodes placed on
+the left and right mastoids (EXG5 and EXG6). EXG7 and EXG8 are empty
+channels, with no electrodes attached.
+
+## Referencing
+
+A common first step would be to rereference the data, which can be done
+using the
+[`eeg_reference()`](https://craddm.github.io/eegUtils/reference/eeg_reference.md)
+command. By default, if no electrodes are specified, the data will be
+referenced to a common average, calculated from all the electrodes in
+the data. First we’ll remove the two empty channels, EXG7 and EXG8,
+using the
+[`select_elecs()`](https://craddm.github.io/eegUtils/reference/select_elecs.md)
+function.
+
+``` r
+eeg_example <- select_elecs(eeg_example,
+                            electrode = c("EXG7", "EXG8"),
+                            keep = FALSE)
+eeg_example <- eeg_reference(eeg_example,
+                             ref_chans = "average")
+eeg_example
+```
+
+## Filtering
+
+Filtering can be performed using the
+[`eeg_filter()`](https://craddm.github.io/eegUtils/reference/eeg_filter.md)
+command. This uses IIR or FIR filters to modify the frequency response
+of the signal, removing low or high frequency fluctuations as requested.
+For speed, we’ll use “iir” filtering here to perform bandpass filtering
+with a high-pass filter at .1 Hz and a low-pass filter at 40 Hz. We’ll
+also plot the power spectral density of the data before and after
+filtering, using the
+[`plot_psd()`](https://craddm.github.io/eegUtils/reference/plot_psd.md)
+function.
+
+``` r
+plot_psd(eeg_example, 
+         freq_range = c(0, 60),
+         legend = FALSE)
+
+eeg_example <- eeg_filter(eeg_example,
+                          method = "iir",
+                          low_freq = .1,
+                          high_freq = 40,
+                          filter_order = 4) # specify a bandpass filter
+plot_psd(eeg_example, 
+         freq_range = c(0, 60),
+         legend = FALSE)
+```
+
+## Creating epochs
+
+Data can be epoched around events/triggers using
+[`epoch_data()`](https://craddm.github.io/eegUtils/reference/epoch_data.md),
+which outputs an `eeg_epochs` object. A list of the event triggers found
+in the data can be retrieved using `list_events(eeg_example)`, or more
+comprehensively, the events structure can be retrieved using
+`events(eeg_example)`. In this case, we’ll epoch around events `120` and
+`122`. These events correspond to the onset of a visual target on the
+left and right of fixation respectively, for validly cued trials only.
+
+We can specify the length of epochs around the trigger using the
+`time_lim` argument, and label each epoch using `epoch_labels`. Here we
+also specify that the data should be baseline corrected using the
+average of the timepoints from -.1s to 0s (stimulus onset).
+
+``` r
+list_events(eeg_example)
+epoched_example <-
+  epoch_data(
+    eeg_example,
+    events = c(120,
+               122),
+    epoch_labels = c("valid_left",
+                     "valid_right"),
+    time_lim = c(-.1, .4),
+    baseline = c(-.1, 0)
+  )
+```
+
+After epoching, use the
+[`epochs()`](https://craddm.github.io/eegUtils/reference/epochs.md)
+function to check the meta-information for this data and its epochs.
+
+``` r
+epochs(epoched_example)
+```
+
+## Plotting
+
+`eeg_epochs` can then be plotted using
+[`plot_butterfly()`](https://craddm.github.io/eegUtils/reference/plot_butterfly.md)
+or
+[`plot_timecourse()`](https://craddm.github.io/eegUtils/reference/plot_timecourse.md).
+Both
+[`plot_butterfly()`](https://craddm.github.io/eegUtils/reference/plot_butterfly.md)
+and
+[`plot_timecourse()`](https://craddm.github.io/eegUtils/reference/plot_timecourse.md)
+average over epochs.
+[`plot_timecourse()`](https://craddm.github.io/eegUtils/reference/plot_timecourse.md)
+will also average over electrodes - all electrodes if none are
+specified, or over any specified electrodes. Baseline correction can
+also be applied for plotting only using the `baseline` parameter in the
+plotting call.
+
+``` r
+plot_butterfly(epoched_example,
+               legend = FALSE)
+plot_butterfly(epoched_example,
+               time_lim = c(-.1, .3),
+               legend = FALSE)
+plot_timecourse(epoched_example,
+                electrode = "POz") # Plot POz
+plot_timecourse(epoched_example,
+                electrode = c("POz", "Oz", "O1", "O2")) # average over four occipital electrodes
+```
+
+Standard channel locations can be added using the
+[`electrode_locations()`](https://craddm.github.io/eegUtils/reference/electrode_locations.md)
+command. This function supplies default locations for over 300 typical
+locations accroding to the 10-05 system. There are several specific
+montages provided that can be specified using the `montage` parameter.
+
+You can inspect the added locations using
+[`channels()`](https://craddm.github.io/eegUtils/reference/channels.md).
+
+[`topoplot()`](https://craddm.github.io/eegUtils/reference/topoplot.md)
+can then be used to plot a topographical representation of selected
+data. Note that it is not compulsory to use locations from
+[`electrode_locations()`](https://craddm.github.io/eegUtils/reference/electrode_locations.md);
+if the data has x and y columns when it is a data frame, or added to
+`chan_info` element of the `eeg_data`/`eeg_epochs` object, then those
+will be used.
+
+``` r
+epoched_example <- electrode_locations(epoched_example,
+                                       overwrite = TRUE)
+channels(epoched_example)
+topoplot(epoched_example,
+         time_lim = c(.22, .24))
+```
+
+At any point, `eegUtils` objects can be transformed into data frames for
+use with functions that don’t natively support them.
+
+``` r
+library(ggplot2)
+library(dplyr)
+epoched_example %>%
+  select_epochs(epoch_no = 1:10) %>%
+  select_elecs(c("PO8", "Cz")) %>%
+  as.data.frame(long = TRUE) %>%
+  ggplot(aes(x = time, y = amplitude)) +
+  geom_line(aes(group = epoch), alpha = 0.2) + 
+  stat_summary(fun.y = mean,
+               geom = "line",
+               size = 2,
+               aes(colour = electrode)) + 
+  facet_wrap(~electrode) + 
+  theme_classic()
+```
+
+## Tidyverse functions
+
+In addition, there are overloaded versions of some `dplyr` functions
+that operate on the `signals` element of `eeg_data` and `eeg_epochs`
+objects. For example,
+[`select()`](https://dplyr.tidyverse.org/reference/select.html) can be
+used to choose particular electrodes, and
+[`filter()`](https://dplyr.tidyverse.org/reference/filter.html) can be
+used to filter out epochs or timepoints.
+[`mutate()`](https://dplyr.tidyverse.org/reference/mutate.html) can be
+used to add new columns (e.g. creating ROIs from multiple electrodes).
+
+``` r
+epoched_example %>%
+  rm_baseline(time_lim = c(-.1, 0)) %>%
+  mutate(occipital = (O1 + O2 + Oz) / 3) %>%
+  select(Oz, Fz, occipital) %>%
+  filter(epoch <= 60, time < .3, time > -.1) %>%
+  as.data.frame(long = TRUE) %>%
+  ggplot(aes(x = time, y = amplitude)) +
+  geom_line(aes(group = epoch), alpha = 0.2) + 
+  stat_summary(fun = mean,
+               geom = "line",
+               size = 2,
+               aes(colour = electrode)) +
+  facet_wrap(~electrode) + 
+  scale_colour_viridis_d() +
+  theme_classic()
+```

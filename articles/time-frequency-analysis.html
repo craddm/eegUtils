@@ -8,8 +8,8 @@
 <title>Frequency analysis • eegUtils</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.4.2/css/all.min.css" rel="stylesheet">
-<link href="../deps/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Frequency analysis">
 </head>
 <body>
@@ -65,9 +65,9 @@
                         <h4 data-toc-skip class="author">Matt
 Craddock</h4>
             
-            <h4 data-toc-skip class="date">2024-10-23</h4>
+            <h4 data-toc-skip class="date">2026-02-10</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/craddm/eegUtils/blob/v0.8.0/vignettes/time-frequency-analysis.Rmd" class="external-link"><code>vignettes/time-frequency-analysis.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/craddm/eegUtils/blob/main/vignettes/time-frequency-analysis.Rmd" class="external-link"><code>vignettes/time-frequency-analysis.Rmd</code></a></small>
       <div class="d-none name"><code>time-frequency-analysis.Rmd</code></div>
     </div>
 
@@ -109,7 +109,7 @@ the PSD for each epoch and then average over epochs before plotting.</p>
 <span><span class="co">#&gt; FFT length: 256</span></span>
 <span><span class="co">#&gt; Segment length: 84</span></span>
 <span><span class="co">#&gt; Overlapping points: 42 (50% overlap)</span></span></code></pre></div>
-<p><img src="time-frequency-analysis_files/figure-html/create-psd-1.png" width="700"></p>
+<p><img src="time-frequency-analysis_files/figure-html/create-psd-1.png" class="r-plt" alt="" width="700"></p>
 </div>
 <div class="section level2">
 <h2 id="time-frequency-analysis">Time-frequency analysis<a class="anchor" aria-label="anchor" href="#time-frequency-analysis"></a>
@@ -172,7 +172,7 @@ and frequency standard deviations, are stored inside the
 the <code><a href="../reference/plot_tfr.html">plot_tfr()</a></code> function.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_tfr.html">plot_tfr</a></span><span class="op">(</span><span class="va">demo_tfr</span><span class="op">)</span></span></code></pre></div>
-<p><img src="time-frequency-analysis_files/figure-html/tfr-plot-1.png" width="700"></p>
+<p><img src="time-frequency-analysis_files/figure-html/tfr-plot-1.png" class="r-plt" alt="" width="700"></p>
 <p>Baseline correction is common in the literature, which can serve two
 purposes. Several different methods are possible. both for plotting
 only, and as a modification to the <code>eeg_tfr</code> object using
@@ -180,11 +180,11 @@ only, and as a modification to the <code>eeg_tfr</code> object using
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_tfr.html">plot_tfr</a></span><span class="op">(</span><span class="va">demo_tfr</span>, baseline_type <span class="op">=</span> <span class="st">"absolute"</span>, baseline <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">.1</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Baseline: -0.1-0 s</span></span></code></pre></div>
-<p><img src="time-frequency-analysis_files/figure-html/db-plot-1.png" width="700"></p>
+<p><img src="time-frequency-analysis_files/figure-html/db-plot-1.png" class="r-plt" alt="" width="700"></p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_tfr.html">plot_tfr</a></span><span class="op">(</span><span class="va">demo_tfr</span>, baseline_type <span class="op">=</span> <span class="st">"db"</span>, baseline <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">.1</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Baseline: -0.1-0 s</span></span></code></pre></div>
-<p><img src="time-frequency-analysis_files/figure-html/db-plot-2.png" width="700"></p>
+<p><img src="time-frequency-analysis_files/figure-html/db-plot-2.png" class="r-plt" alt="" width="700"></p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
@@ -197,7 +197,7 @@ only, and as a modification to the <code>eeg_tfr</code> object using
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer>

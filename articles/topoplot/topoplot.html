@@ -8,8 +8,8 @@
 <title>Building a topographical plot • eegUtils</title>
 <script src="../../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../../deps/font-awesome-6.4.2/css/all.min.css" rel="stylesheet">
-<link href="../../deps/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="../../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../../deps/headroom-0.11.0/headroom.min.js"></script><script src="../../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../../deps/search-1.0.0/fuse.min.js"></script><script src="../../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../../pkgdown.js"></script><meta property="og:title" content="Building a topographical plot">
 </head>
 <body>
@@ -65,9 +65,9 @@
                         <h4 data-toc-skip class="author">Matt
 Craddock</h4>
             
-            <h4 data-toc-skip class="date">2024-10-23</h4>
+            <h4 data-toc-skip class="date">2026-02-10</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/craddm/eegUtils/blob/v0.8.0/vignettes/topoplot/topoplot.Rmd" class="external-link"><code>vignettes/topoplot/topoplot.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/craddm/eegUtils/blob/main/vignettes/topoplot/topoplot.Rmd" class="external-link"><code>vignettes/topoplot/topoplot.Rmd</code></a></small>
       <div class="d-none name"><code>topoplot.Rmd</code></div>
     </div>
 
@@ -86,7 +86,7 @@ dataset.</p>
 <span><span class="co">#&gt; Creating epochs based on combinations of variables: epoch_label participant_id</span></span>
 <span><span class="co">#&gt; Using electrode locations from data.</span></span>
 <span><span class="co">#&gt; Plotting head r 95 mm</span></span></code></pre></div>
-<p><img src="topoplot_files/figure-html/topo-orig-1.png" width="384"></p>
+<p><img src="topoplot_files/figure-html/topo-orig-1.png" class="r-plt" alt="" width="384"></p>
 <p><code><a href="../../reference/topoplot.html">topoplot()</a></code> has many different parameters that can be
 used to alter its appearance and select different parts of the data to
 be plotted. For example, here we select a specific time period to plot
@@ -102,7 +102,7 @@ cartoon head, and highlight a specific electrode in white.</p>
 <span><span class="co">#&gt; Creating epochs based on combinations of variables: epoch_label participant_id</span></span>
 <span><span class="co">#&gt; Using electrode locations from data.</span></span>
 <span><span class="co">#&gt; Plotting head r 101.2 mm</span></span></code></pre></div>
-<p><img src="topoplot_files/figure-html/unnamed-chunk-1-1.png" width="384"></p>
+<p><img src="topoplot_files/figure-html/unnamed-chunk-1-1.png" class="r-plt" alt="" width="384"></p>
 <p><code><a href="../../reference/topoplot.html">topoplot()</a></code> operates on several different types of
 <code>eegUtils</code> object, and has different default settings and
 behaviour for those objects. For example, for ICA decompositions, it
@@ -111,7 +111,7 @@ plots the mixing matrix for each component.</p>
 <code class="sourceCode R"><span><span class="va">demo_ica</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/run_ICA.html">run_ICA</a></span><span class="op">(</span><span class="va">demo_epochs</span>,</span>
 <span>                    pca <span class="op">=</span> <span class="fl">10</span><span class="op">)</span> <span class="co"># the data is average referenced, so PCA is required</span></span>
 <span><span class="fu"><a href="../../reference/topoplot.html">topoplot</a></span><span class="op">(</span><span class="va">demo_ica</span>, component <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
-<p><img src="topoplot_files/figure-html/get-ica-1.png" width="384"></p>
+<p><img src="topoplot_files/figure-html/get-ica-1.png" class="r-plt" alt="" width="384"></p>
 <div class="section level2">
 <h2 id="ggplot2-extensions---geom_topo">ggplot2 extensions - geom_topo()<a class="anchor" aria-label="anchor" href="#ggplot2-extensions---geom_topo"></a>
 </h2>
@@ -138,7 +138,7 @@ any desired manipulations such as averaging can be conducted first.</p>
 <span>           fill <span class="op">=</span> <span class="va">amplitude</span>,</span>
 <span>           z <span class="op">=</span> <span class="va">amplitude</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="../../reference/geom_topo.html">geom_topo</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p><img src="topoplot_files/figure-html/default-geom-1.png" width="384"></p>
+<p><img src="topoplot_files/figure-html/default-geom-1.png" class="r-plt" alt="" width="384"></p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">demo_epochs</span>,</span>
 <span>       <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span>,</span>
@@ -150,7 +150,7 @@ any desired manipulations such as averaging can be conducted first.</p>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_void</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_fixed.html" class="external-link">coord_equal</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/expression.html" class="external-link">expression</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"Amplitude ("</span>, <span class="va">mu</span>,<span class="st">"V)"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="topoplot_files/figure-html/unnamed-chunk-2-1.png" width="384"></p>
+<p><img src="topoplot_files/figure-html/unnamed-chunk-2-1.png" class="r-plt" alt="" width="384"></p>
 <p>There are several different parameters that can be passed to
 <code><a href="../../reference/geom_topo.html">geom_topo()</a></code> to change the appearance of the plot.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
@@ -169,7 +169,7 @@ any desired manipulations such as averaging can be conducted first.</p>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_void</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_fixed.html" class="external-link">coord_equal</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/expression.html" class="external-link">expression</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"Amplitude ("</span>, <span class="va">mu</span>,<span class="st">"V)"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> </span></code></pre></div>
-<p><img src="topoplot_files/figure-html/unnamed-chunk-3-1.png" width="384"></p>
+<p><img src="topoplot_files/figure-html/unnamed-chunk-3-1.png" class="r-plt" alt="" width="384"></p>
 </div>
 <div class="section level2">
 <h2 id="building-from-the-ground-up">Building from the ground up<a class="anchor" aria-label="anchor" href="#building-from-the-ground-up"></a>
@@ -200,7 +200,7 @@ animation. All of these <code>geoms</code> are customisable as standard
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_viridis.html" class="external-link">scale_fill_viridis_c</a></span><span class="op">(</span>limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">6</span>, <span class="fl">6</span><span class="op">)</span>,</span>
 <span>                       oob <span class="op">=</span> <span class="fu">scales</span><span class="fu">::</span><span class="va"><a href="https://scales.r-lib.org/reference/oob.html" class="external-link">squish</a></span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_fixed.html" class="external-link">coord_equal</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p><img src="topoplot_files/figure-html/step-by-step-1.png" width="700"></p>
+<p><img src="topoplot_files/figure-html/step-by-step-1.png" class="r-plt" alt="" width="700"></p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
@@ -213,7 +213,7 @@ animation. All of these <code>geoms</code> are customisable as standard
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer>

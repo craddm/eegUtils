@@ -1,0 +1,90 @@
+# Event and epoch handling
+
+In this example, we’re going to look at how to handle epoching and
+events. To start, we have continuous data from 70 channels sampled at
+512 Hz, average referenced, and bandpass filtered from 0.1 to 40 Hz.
+There is a complete table of all of the events imported with the data.
+We can use that table to form epochs.
+
+``` r
+eeg_example
+events(eeg_example)
+```
+
+There are 18 unique trigger codes, which we can check with
+[`list_events()`](https://craddm.github.io/eegUtils/reference/list_events.md).
+
+``` r
+list_events(eeg_example)
+```
+
+In this experiment, six of those triggers correspond to condition codes.
+
+| Trigger | Semantic type | Spatial frequency |
+|---------|---------------|-------------------|
+| 207     | Match         | High              |
+| 208     | Match         | Low               |
+| 213     | Mismatch      | High              |
+| 215     | Mismatch      | Low               |
+| 219     | Nonsense      | High              |
+| 222     | Nonsense      | Low               |
+
+We can use the
+[`epoch_data()`](https://craddm.github.io/eegUtils/reference/epoch_data.md)
+function to create epochs around each of these triggers, and label those
+epochs accordingly. In this example, I’ll label each trigger using
+hierarchically coded event tags, simultaneously giving each condition of
+semantic type and spatial frequency separated by a “/” symbol.
+
+``` r
+example_epochs <- 
+  epoch_data(eeg_example,
+             events = c(207, 
+                        208,
+                        213,
+                        215,
+                        219,
+                        222),
+             epoch_labels = c("Match/HSF",
+                              "Match/LSF",
+                              "Mismatch/HSF",
+                              "Mismatch/LSF",
+                              "Nonsense/HSF",
+                              "Nonsense/LSF"),
+             time_lim = c(-.2, .6))
+events(example_epochs)
+epochs(example_epochs)
+```
+
+As can be seen, this modifies the epochs structure so that it now labels
+each epoch accordingly. Since we have hierarchically encoded event tags,
+an easy way to split that into multiple columns is using the
+`separate()` function from the `tidyr` package.
+
+``` r
+epochs(example_epochs) <- tidyr::separate(epochs(example_epochs),
+                                          col = epoch_labels,
+                                          into = c("Semantics", "SF"))
+epochs(example_epochs)
+```
+
+Any columns in the `epochs` structure are included when converting to a
+data frame. This has a lot of advantages for plotting; many plotting
+commands now allow you to use
+[`facet_wrap()`](https://ggplot2.tidyverse.org/reference/facet_wrap.html)
+and
+[`facet_grid()`](https://ggplot2.tidyverse.org/reference/facet_grid.html)
+from `ggplot2` to facet on any of the columns from the epoch structure.
+Note that for performance reasons, facetting must be explicitly allowed
+using `allow_facets = TRUE`, since `ggplot2`’s
+[`stat_summary()`](https://ggplot2.tidyverse.org/reference/stat_summary.html)
+function can be extremely slow.
+
+``` r
+library(ggplot2)
+plot_butterfly(example_epochs,
+               legend = FALSE,
+               baseline = c(-.1, 0),
+               allow_facets = TRUE) +
+  facet_wrap(~SF)
+```
