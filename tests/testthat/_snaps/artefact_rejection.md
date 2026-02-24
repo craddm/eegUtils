@@ -82,3 +82,51 @@
       Reference		: 
       Signal length: 0 59.996 seconds
 
+# ar_peak2peak snapshot
+
+    Code
+      ar_peak2peak(demo_epochs, threshold = 30)
+    Message
+      53 epoch(s) exceed peak-to-peak threshold of 30 uV.
+    Output
+      Epoched EEG data
+      
+      Number of channels	: 11 
+      Number of epochs	: 80 
+      Epoch limits		: -0.197 - 0.451 seconds
+      Electrode names		: A5 A13 A21 A29 A31 B5 B6 B8 B16 B18 B26 
+      Sampling rate		: 128  Hz
+      Reference		: average 
+
+# ar_gradient snapshot
+
+    Code
+      ar_gradient(demo_epochs, threshold = 10)
+    Message
+      52 epoch(s) exceed gradient threshold of 10 uV.
+    Output
+      Epoched EEG data
+      
+      Number of channels	: 11 
+      Number of epochs	: 80 
+      Epoch limits		: -0.197 - 0.451 seconds
+      Electrode names		: A5 A13 A21 A29 A31 B5 B6 B8 B16 B18 B26 
+      Sampling rate		: 128  Hz
+      Reference		: average 
+
+# ar_flat snapshot
+
+    Code
+      ar_flat(demo_epochs, threshold = 10)
+    Message
+      47 epoch(s) have channels with variance below threshold of 10 uV^2.
+    Output
+      Epoched EEG data
+      
+      Number of channels	: 11 
+      Number of epochs	: 80 
+      Epoch limits		: -0.197 - 0.451 seconds
+      Electrode names		: A5 A13 A21 A29 A31 B5 B6 B8 B16 B18 B26 
+      Sampling rate		: 128  Hz
+      Reference		: average 
+

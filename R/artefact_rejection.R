@@ -277,3 +277,248 @@ ar_check_rejections <- function(data) {
     data$reject
   }
 }
+
+#' Peak-to-peak amplitude threshold
+#'
+#' Reject data based on the peak-to-peak amplitude (max - min) within each
+#' epoch or time window. This is more sensitive to slow drifts and DC shifts
+#' than an absolute threshold.
+#'
+#' @author Matt Craddock \email{matt@@mattcraddock.com}
+#'
+#' @param data An object of class `eeg_data` or `eeg_epochs`.
+#' @param threshold Peak-to-peak threshold in microvolts.
+#' @param reject If TRUE, remove marked epochs immediately. Defaults to FALSE.
+#' @examples
+#' ar_peak2peak(demo_epochs, threshold = 100)
+#' @return An object of the same class as `data`.
+#' @export
+
+ar_peak2peak <- function(data,
+                         threshold,
+                         reject = FALSE) {
+  UseMethod("ar_peak2peak", data)
+}
+
+#' @export
+ar_peak2peak.default <- function(data,
+                                 threshold,
+                                 reject = FALSE) {
+  stop("Not implemented for objects of class ",
+       class(data))
+}
+
+#' @describeIn ar_peak2peak Peak-to-peak threshold for epoched data.
+#' @export
+ar_peak2peak.eeg_epochs <- function(data,
+                                    threshold,
+                                    reject = FALSE) {
+
+  dt <- data.table::data.table(data$signals)
+  dt[, epoch := data$timings$epoch]
+  p2p <- dt[, lapply(.SD, function(x) max(x) - min(x)), by = epoch]
+  p2p_mat <- as.matrix(p2p[, -1, with = FALSE])
+  exceeded <- rowSums(p2p_mat > threshold) > 0
+  bad_epochs <- p2p$epoch[exceeded]
+
+  message(length(bad_epochs),
+          " epoch(s) exceed peak-to-peak threshold of ",
+          threshold, " uV.")
+
+  if (length(bad_epochs) == 0) {
+    return(data)
+  }
+
+  rej_epochs <- data.frame(epoch = bad_epochs,
+                           reason = "peak-to-peak")
+
+  if (reject) {
+    message("Removing ", length(bad_epochs), " epoch(s).")
+    data <- select_epochs(data,
+                          epoch_no = rej_epochs$epoch,
+                          keep = FALSE)
+  } else {
+    data$reject$epochs <- rbind(data$reject$epochs, rej_epochs)
+  }
+  data
+}
+
+#' @describeIn ar_peak2peak Peak-to-peak threshold for continuous data.
+#' @export
+ar_peak2peak.eeg_data <- function(data,
+                                  threshold,
+                                  reject = FALSE) {
+
+  p2p <- apply(data$signals, 2, function(x) max(x) - min(x))
+  bad_chans <- names(p2p)[p2p > threshold]
+
+  message(length(bad_chans),
+          " channel(s) exceed peak-to-peak threshold of ",
+          threshold, " uV across the recording.")
+
+  if (reject) {
+    message("Removing channel(s): ", paste(bad_chans, collapse = ", "))
+    data$signals <- data$signals[, !names(data$signals) %in% bad_chans,
+                                 drop = FALSE]
+  } else {
+    data$reject$channels <- union(data$reject$channels, bad_chans)
+  }
+  data
+}
+
+#' Maximum absolute gradient threshold
+#'
+#' Reject epochs based on the maximum absolute step between consecutive samples
+#' (i.e. `max(abs(diff(x)))`). This catches electrode "pops" that are
+#' invisible to amplitude or peak-to-peak checks.
+#'
+#' @author Matt Craddock \email{matt@@mattcraddock.com}
+#'
+#' @param data An object of class `eeg_epochs`.
+#' @param threshold Maximum allowable step between consecutive samples, in
+#'   microvolts.
+#' @param reject If TRUE, remove marked epochs immediately. Defaults to FALSE.
+#' @examples
+#' ar_gradient(demo_epochs, threshold = 50)
+#' @return An `eeg_epochs` object.
+#' @export
+
+ar_gradient <- function(data,
+                        threshold,
+                        reject = FALSE) {
+  UseMethod("ar_gradient", data)
+}
+
+#' @export
+ar_gradient.default <- function(data,
+                                threshold,
+                                reject = FALSE) {
+  stop("Not implemented for objects of class ",
+       class(data))
+}
+
+#' @describeIn ar_gradient Gradient threshold for epoched data.
+#' @export
+ar_gradient.eeg_epochs <- function(data,
+                                   threshold,
+                                   reject = FALSE) {
+
+  dt <- data.table::data.table(data$signals)
+  dt[, epoch := data$timings$epoch]
+
+  grad <- dt[, lapply(.SD, function(x) max(abs(diff(x)))), by = epoch]
+  grad_mat <- as.matrix(grad[, -1, with = FALSE])
+  exceeded <- rowSums(grad_mat > threshold) > 0
+  bad_epochs <- grad$epoch[exceeded]
+
+  message(length(bad_epochs),
+          " epoch(s) exceed gradient threshold of ",
+          threshold, " uV.")
+
+  if (length(bad_epochs) == 0) {
+    return(data)
+  }
+
+  rej_epochs <- data.frame(epoch = bad_epochs,
+                           reason = "gradient")
+
+  if (reject) {
+    message("Removing ", length(bad_epochs), " epoch(s).")
+    data <- select_epochs(data,
+                          epoch_no = rej_epochs$epoch,
+                          keep = FALSE)
+  } else {
+    data$reject$epochs <- rbind(data$reject$epochs, rej_epochs)
+  }
+  data
+}
+
+#' Flat channel / dead channel detection
+#'
+#' Flag channels (or channel×epoch combinations) where the signal variance
+#' falls below a threshold, indicating a disconnected or flat electrode.
+#'
+#' @author Matt Craddock \email{matt@@mattcraddock.com}
+#'
+#' @param data An object of class `eeg_data` or `eeg_epochs`.
+#' @param threshold Minimum acceptable variance (in uV^2). Channels with
+#'   variance below this value are flagged. Defaults to 0.01.
+#' @param reject If TRUE, remove flagged channels or epochs immediately.
+#'   Defaults to FALSE.
+#' @examples
+#' ar_flat(demo_epochs, threshold = 0.01)
+#' @return An object of the same class as `data`.
+#' @export
+
+ar_flat <- function(data,
+                    threshold = 0.01,
+                    reject = FALSE) {
+  UseMethod("ar_flat", data)
+}
+
+#' @export
+ar_flat.default <- function(data,
+                            threshold = 0.01,
+                            reject = FALSE) {
+  stop("Not implemented for objects of class ",
+       class(data))
+}
+
+#' @describeIn ar_flat Flat channel detection for continuous data.
+#' @export
+ar_flat.eeg_data <- function(data,
+                             threshold = 0.01,
+                             reject = FALSE) {
+
+  chan_var <- apply(data$signals, 2, stats::var)
+  bad_chans <- names(chan_var)[chan_var < threshold]
+
+  message(length(bad_chans),
+          " channel(s) have variance below threshold of ",
+          threshold, " uV^2.")
+
+  if (reject && length(bad_chans) > 0) {
+    message("Removing channel(s): ", paste(bad_chans, collapse = ", "))
+    data$signals <- data$signals[, !names(data$signals) %in% bad_chans,
+                                 drop = FALSE]
+  } else {
+    data$reject$channels <- union(data$reject$channels, bad_chans)
+  }
+  data
+}
+
+#' @describeIn ar_flat Flat channel detection for epoched data.
+#' @export
+ar_flat.eeg_epochs <- function(data,
+                               threshold = 0.01,
+                               reject = FALSE) {
+
+  dt <- data.table::data.table(data$signals)
+  dt[, epoch := data$timings$epoch]
+
+  epoch_var <- dt[, lapply(.SD, stats::var), by = epoch]
+  var_mat <- as.matrix(epoch_var[, -1, with = FALSE])
+  exceeded <- rowSums(var_mat < threshold) > 0
+  bad_epochs <- epoch_var$epoch[exceeded]
+
+  message(length(bad_epochs),
+          " epoch(s) have channels with variance below threshold of ",
+          threshold, " uV^2.")
+
+  if (length(bad_epochs) == 0) {
+    return(data)
+  }
+
+  rej_epochs <- data.frame(epoch = bad_epochs,
+                           reason = "flat")
+
+  if (reject) {
+    message("Removing ", length(bad_epochs), " epoch(s).")
+    data <- select_epochs(data,
+                          epoch_no = rej_epochs$epoch,
+                          keep = FALSE)
+  } else {
+    data$reject$epochs <- rbind(data$reject$epochs, rej_epochs)
+  }
+  data
+}
