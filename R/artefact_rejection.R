@@ -43,19 +43,15 @@ ar_thresh.eeg_data <- function(data,
                                  threshold)
   crossed_thresh <- rowSums(crossed_thresh) == 0
 
+  data$reject$timings <- data$timings[crossed_thresh, ]
   if (reject) {
     message("Removing ",
             sum(!crossed_thresh), " (",
             round(sum(!crossed_thresh) / nrow(data$signals) * 100, 2),
             "%) timepoints.")
-    data$reject$timings <- data$timings[crossed_thresh, ]
     data$timings <- data$timings[crossed_thresh, ]
     data$events <- data$events[data$events$event_time %in% data$timings$time, ]
-
     data$signals <- data$signals[crossed_thresh, ]
-
-  } else {
-    data$reject$timings <- data$timings[crossed_thresh, ]
   }
   data
 }
@@ -87,12 +83,7 @@ ar_thresh.eeg_epochs <- function(data,
                             epoch_no = rej_epochs,
                             keep = FALSE)
     } else {
-      data$reject$epochs <- do.call(rbind,
-                                    list(
-                                      data$reject$epochs,
-                                      rej_epochs
-                                      )
-      )
+      data$reject$epochs <- rbind(data$reject$epochs, rej_epochs)
       data$reject$timings <- data$timings[crossed_thresh, ]
     }
   }
@@ -101,9 +92,6 @@ ar_thresh.eeg_epochs <- function(data,
 
 #'@noRd
 check_thresh <- function(data, threshold) {
-  crossed_thresh <- data$signals > max(threshold) |
-    data$signals < min(threshold)
-
   upper_thresh <- data$signals > max(threshold)
   lower_thresh <- data$signals < min(threshold)
   total_data <- prod(dim(data$signals))
@@ -114,7 +102,7 @@ check_thresh <- function(data, threshold) {
   message(sum(lower_thresh),
           " (", round(sum(lower_thresh) / total_data * 100, 2), "%) ",
           "samples below ", min(threshold), " uV threshold.")
-  crossed_thresh
+  upper_thresh | lower_thresh
 }
 
 #' Channel statistics
@@ -174,20 +162,16 @@ epoch_stats <- function(data,
 #' @export
 epoch_stats.eeg_epochs <- function(data,
                                    ...) {
-  data$signals$epoch <- data$timings$epoch
-  data <- data.table::data.table(as.data.frame(data$signals))
-  epoch_vars <- data[, lapply(.SD, var), by = epoch]
-  epoch_kur <- data[, lapply(.SD, kurtosis), by = epoch]
-  epoch_max <- data[, lapply(.SD, max), by = epoch]
-  epoch_min <- data[, lapply(.SD, min), by = epoch]
-  min_max <- data[, lapply(.SD, function(x) max(x) - min(x)), by = epoch]
-  stats_out <- data.table::rbindlist(list(max = epoch_max,
-                                          min = epoch_min,
-                                          variance = epoch_vars,
-                                          kurtosis = epoch_kur,
-                                          minmax = min_max),
-                                     idcol = "measure")
-  stats_out
+  dt <- data.table::data.table(data$signals)
+  dt[, epoch := data$timings$epoch]
+
+  data.table::rbindlist(list(
+    max      = dt[, lapply(.SD, max), by = epoch],
+    min      = dt[, lapply(.SD, min), by = epoch],
+    variance = dt[, lapply(.SD, var), by = epoch],
+    kurtosis = dt[, lapply(.SD, kurtosis), by = epoch],
+    minmax   = dt[, lapply(.SD, function(x) max(x) - min(x)), by = epoch]
+  ), idcol = "measure")
 }
 
 #' Calculate kurtosis
@@ -196,9 +180,9 @@ epoch_stats.eeg_epochs <- function(data,
 #' @keywords internal
 
 kurtosis <- function(data) {
-  m4 <- mean((data - mean(data)) ^ 4)
-  kurt <- m4 / (stats::sd(data) ^ 4) - 3
-  kurt
+  m <- mean(data)
+  m4 <- mean((data - m) ^ 4)
+  m4 / stats::var(data) ^ 2 - 3
 }
 
 #' Remove EOG using regression
