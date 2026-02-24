@@ -162,7 +162,7 @@ browse_data.eeg_data <- function(data,
         title = "Butterfly",
         icon = shiny::icon("chart-line"),
         bslib::card(
-          shiny::plotOutput("butterfly"),
+          plotly::plotlyOutput("butterfly"),
           style = "resize:vertical;"
         )
       ),
@@ -170,10 +170,8 @@ browse_data.eeg_data <- function(data,
         title = "Individual",
         icon = shiny::icon("chart-line"),
         bslib::card(
-          shiny::wellPanel(
-            shiny::plotOutput("time_plot"),
-            style = "overflow-y:scroll; max-height: 800px; resize:vertical",
-          ),
+          plotly::plotlyOutput("time_plot"),
+          style = "overflow-y:scroll; max-height: 800px; resize:vertical",
         )
       ),
       footer =
@@ -201,63 +199,85 @@ browse_data.eeg_data <- function(data,
                      output,
                      session) {
 
+    time_range_debounced <- shiny::debounce(
+      shiny::reactive(input$time_range),
+      300
+    )
 
-    output$butterfly <- shiny::renderPlot({
-      # select only the time range that we want to display
+    output$butterfly <- plotly::renderPlotly({
       tmp_data <- select_times(data,
-                               time_lim = c(input$time_range[1],
-                                            input$time_range[2]))
+                               time_lim = c(time_range_debounced()[1],
+                                            time_range_debounced()[2]))
 
       if (input$dc_offset) {
         tmp_data <- rm_baseline(tmp_data,
                                 verbose = FALSE)
       }
 
-      butterfly_plot <- plot_butterfly(tmp_data,
-                                       legend = FALSE,
-                                       continuous = TRUE)
-      butterfly_plot +
-        coord_cartesian(ylim = c(-input$uV_scale, input$uV_scale),
-                        expand = FALSE)
+      times <- tmp_data$timings$time
+      signals <- tmp_data$signals
+      chan_names <- names(signals)
+
+      p <- plotly::plot_ly(type = "scattergl", mode = "lines")
+      for (ch in chan_names) {
+        p <- plotly::add_trace(p,
+                               x = times,
+                               y = signals[[ch]],
+                               name = ch,
+                               line = list(color = "black", width = 0.5),
+                               opacity = 0.4,
+                               showlegend = FALSE)
+      }
+      plotly::layout(p,
+        xaxis = list(title = "Time (s)", zeroline = FALSE),
+        yaxis = list(title = "\u03bcV",
+                     range = c(-input$uV_scale, input$uV_scale)),
+        margin = list(l = 50, r = 10, t = 10, b = 40)
+      )
     })
 
-    output$time_plot <- shiny::renderPlot({
+    output$time_plot <- plotly::renderPlotly({
       tmp_data <- select_times(data,
-                               time_lim = c(input$time_range,
-                                            input$time_range + input$sig_time))
+                               time_lim = c(time_range_debounced()[1],
+                                            time_range_debounced()[2]))
 
       if (input$dc_offset) {
         tmp_data <- rm_baseline(tmp_data,
                                 verbose = FALSE)
       }
 
-      tmp_data <- as.data.frame(tmp_data,
-                                long = TRUE,
-                                coords = FALSE)
+      times <- tmp_data$timings$time
+      signals <- tmp_data$signals
+      chan_names <- names(signals)
+      n_chans <- length(chan_names)
+      scale <- input$uV_scale
 
-      init_plot <- ggplot2::ggplot(tmp_data,
-                                   aes(x = time,
-                                       y = amplitude)) +
-        geom_line() +
-        facet_grid(electrode ~ .,
-                   scales = "free_y",
-                   switch = "y") +
-        theme_minimal() +
-        theme(
-          axis.text.y = element_blank(),
-          axis.ticks.y = element_blank(),
-          axis.title.y = element_blank(),
-          strip.text.y = element_text(angle = 180),
-          panel.spacing = unit(0, "lines"),
-          panel.grid.minor = element_blank(),
-          panel.grid.major.y = element_blank()
-        ) +
-        scale_x_continuous(expand = c(0, 0)) +
-        coord_cartesian(ylim = c(-input$uV_scale, input$uV_scale),
-                        expand = FALSE)
+      p <- plotly::plot_ly(type = "scattergl", mode = "lines")
+      for (i in seq_along(chan_names)) {
+        ch <- chan_names[i]
+        y_raw <- signals[[ch]]
+        y_clipped <- pmax(pmin(y_raw, scale), -scale)
+        p <- plotly::add_trace(p,
+                               x = times,
+                               y = (y_clipped / scale) + (n_chans - i) * 2,
+                               name = ch,
+                               showlegend = FALSE,
+                               line = list(width = 0.8))
+      }
 
-      init_plot
-    }, height = 2000)
+      plotly::layout(p,
+        xaxis = list(title = "Time (s)", zeroline = FALSE),
+        yaxis = list(
+          tickvals = as.list(seq(0, (n_chans - 1) * 2, 2)),
+          ticktext = as.list(rev(chan_names)),
+          zeroline = FALSE,
+          showgrid = FALSE,
+          title = ""
+        ),
+        margin = list(l = 60, r = 10, t = 10, b = 40),
+        height = min(50 * n_chans, 2000)
+      )
+    })
 
     shiny::observeEvent(input$done, {
       stopApp()
