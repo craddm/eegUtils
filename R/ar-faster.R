@@ -90,39 +90,27 @@ faster_chans <- function(data,
 
 faster_epochs <- function(data, sds = 3, ...) {
   chan_means <- colMeans(data$signals)
-  data$signals <- split(data$signals, data$timings$epoch)
-  data$signals <- lapply(data$signals, as.matrix)
-  epoch_ranges <- lapply(data$signals,
-                         function(x) {
-                           matrixStats::rowDiffs(
-                             matrixStats::colRanges(x)
-                           )
-                         })
-  epoch_ranges <- matrix(unlist(epoch_ranges),
-                         ncol = length(epoch_ranges))
-  epoch_ranges <- colMeans(epoch_ranges)
+  epochs <- lapply(split(data$signals, data$timings$epoch), as.matrix)
 
-  epoch_diffs <- lapply(data$signals,
-                        colMeans)
-  epoch_diffs <- matrix(unlist(epoch_diffs),
-                        ncol = length(epoch_diffs))
-  epoch_diffs <- epoch_diffs - chan_means
-  epoch_diffs <- colMeans(abs(epoch_diffs))
+  # Single pass over epochs computing all three measures at once
+  stats <- lapply(epochs, function(x) {
+    list(
+      range = matrixStats::rowDiffs(matrixStats::colRanges(x)),
+      means = colMeans(x),
+      vars  = matrixStats::colVars(x)
+    )
+  })
 
-  epoch_vars <- lapply(data$signals,
-                       function(x) matrixStats::colVars(x))
-  epoch_vars <- matrix(unlist(epoch_vars),
-                       ncol = length(epoch_vars))
-  epoch_vars <- colMeans(epoch_vars)
+  epoch_ranges <- colMeans(matrix(unlist(lapply(stats, `[[`, "range")),
+                                  ncol = length(stats)))
+  epoch_diffs  <- colMeans(abs(matrix(unlist(lapply(stats, `[[`, "means")),
+                                      ncol = length(stats)) - chan_means))
+  epoch_vars   <- colMeans(matrix(unlist(lapply(stats, `[[`, "vars")),
+                                  ncol = length(stats)))
 
-  measures <- matrix(c(epoch_ranges,
-                       epoch_diffs,
-                       epoch_vars),
-                     ncol = 3)
-
+  measures <- matrix(c(epoch_ranges, epoch_diffs, epoch_vars), ncol = 3)
   measures <- abs(scale(measures)) >= sds
-  measures <- rowSums(measures) > 0
-  measures
+  rowSums(measures) > 0
 }
 
 #' FASTER detection of bad channels in single epochs
@@ -145,6 +133,10 @@ faster_cine <- function(data,
 
   # Remove any rows with missing values
   xyz_coords <- xyz_coords[!missing_values, ]
+
+  # Normalise coords once here rather than once per epoch inside interp_weights()
+  xyz_coords[, c("cart_x", "cart_y", "cart_z")] <-
+    norm_sphere(xyz_coords[, c("cart_x", "cart_y", "cart_z")])
 
   # Use %in% for faster matching
   keep_chans <- names(data$signals) %in% xyz_coords$electrode
@@ -231,9 +223,6 @@ faster_cine <- function(data,
 #' @noRd
 interp_weights <- function(xyz_coords, x) {
 
-  xyz_coords[, c("cart_x", "cart_y", "cart_z")] <-
-    norm_sphere(xyz_coords[, c("cart_x", "cart_y", "cart_z")])
-
   bad_coords <- xyz_coords[xyz_coords$electrode %in% x, ]
 
   if (nrow(bad_coords) == 0) {
@@ -277,11 +266,12 @@ faster_epo_stat <- function(data,
     data <- dplyr::select(data, -dplyr::all_of(exclude))
   }
 
+  mat <- as.matrix(data)
   measures <-
-    data.frame(vars = matrixStats::colVars(as.matrix(data)),
-      medgrad = matrixStats::colMedians(diff(as.matrix(data))),
-      range_diff = t(diff(t(matrixStats::colRanges(as.matrix(data))))),
-      chan_dev = abs(colMeans(data) - chan_means)
+    data.frame(vars = matrixStats::colVars(mat),
+      medgrad = matrixStats::colMedians(diff(mat)),
+      range_diff = t(diff(t(matrixStats::colRanges(mat)))),
+      chan_dev = abs(colMeans(mat) - chan_means)
     )
   # Check if any measure is above threshold of standard deviations
   # for some reason FASTER median centres all measures.
