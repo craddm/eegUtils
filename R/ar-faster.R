@@ -178,33 +178,41 @@ faster_cine <- function(data,
     bad_chans <- bad_chans[epoch %in% repairable_epochs]
   }
 
+  # Convert bad_chans data.table to a named list split by epoch (Bug 1 fix)
+  bad_chans_list <- split(bad_chans$bad_chan, bad_chans$epoch)
+
   # Get a transfer matrix for each epoch
-  bad_coords <- lapply(bad_chans,
-                       function(x) interp_weights(xyz_coords,
-                                                  x))
+  bad_coords <- lapply(bad_chans_list,
+                       function(x) interp_weights(xyz_coords, x))
 
-  bad_coords <- bad_coords[lapply(bad_coords, length) > 0]
+  bad_coords <- bad_coords[lengths(bad_coords) > 0]
 
-  # If there's nothing bad in any epoch, return the data
-  if (nrow(bad_coords) == 0) {
+  # If there's nothing bad in any epoch, return the data (Bug 2 fix)
+  if (length(bad_coords) == 0) {
     return(data)
   }
 
-  bad_epochs <- bad_coords$epoch
+  # Get bad epoch names (Bug 3 fix)
+  bad_epochs <- names(bad_coords)
 
-  # Use data.table for faster operations
-  new_epochs <- epochs[epoch %in% bad_epochs,
-                       interp_chans(.SD,
-                                    bad_chans[epoch == .BY$epoch, bad_chan],
-                                    !keep_chans,
-                                    bad_coords[epoch == .BY$epoch, coords[[1]]]),
-                       by = epoch]
+  # Split epochs into a list for interpolation (Bug 4 fix)
+  epochs_list <- split(data$signals, data$timings$epoch)
 
-  # Update epochs
-  epochs <- epochs[!epoch %in% broken_epochs]
-  epochs[epoch %in% bad_epochs, names(epochs) := new_epochs]
+  # Apply interpolation to bad epochs
+  new_epochs <- lapply(bad_epochs,
+                       function(x) interp_chans(epochs_list[[x]],
+                                                bad_chans_list[[x]],
+                                                !keep_chans,
+                                                bad_coords[[x]]))
+  epochs_list <- replace(epochs_list, bad_epochs, new_epochs)
 
-  data$signals <- as.data.frame(epochs[, !c("epoch")])
+  # Remove broken epochs and sync timings (Bug 5 fix)
+  if (length(broken_epochs) > 0) {
+    epochs_list <- epochs_list[!names(epochs_list) %in% as.character(broken_epochs)]
+    data$timings <- data$timings[!data$timings$epoch %in% broken_epochs, ]
+  }
+
+  data$signals <- as.data.frame(data.table::rbindlist(epochs_list))
   data$reject$cine_list <- bad_chans[, .(bad_chan = list(bad_chan)), by = epoch]
   data$reject$cine_total <- bad_chans[, .N, by = epoch]$N
 
@@ -266,7 +274,7 @@ faster_epo_stat <- function(data,
                             chan_means) {
 
   if (!is.null(exclude)) {
-    data <- select(data, -exclude)
+    data <- dplyr::select(data, -dplyr::all_of(exclude))
   }
 
   measures <-
