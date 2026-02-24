@@ -501,9 +501,6 @@ ar_FASTER.eeg_group <- function(data,
 
 }
 
-
-# ... existing code ...
-
 #' RANSAC EEG artefact rejection
 #'
 #' An implementation of the RANSAC (Random Sample Consensus) algorithm for EEG artifact rejection.
@@ -616,11 +613,8 @@ ransac_all <- function(X, threshold, min_channels, iterations) {
       best_inliers <- inliers
     }
   }
-
   return(best_inliers)
 }
-
-# ... existing code ...
 
 #' Check for step artifacts in EEG data
 #'
