@@ -505,7 +505,7 @@ StatREar <- ggplot2::ggproto("StatREar",
                                r <- update_r(r,
                                              data,
                                              interp_limit)
-                               make_r_ear(r = r)
+                               make_ear(r = r, side = "right")
                              })
 
 StatLEar <- ggplot2::ggproto("StatLEar",
@@ -521,7 +521,7 @@ StatLEar <- ggplot2::ggproto("StatLEar",
                                r <- update_r(r,
                                              data,
                                              interp_limit)
-                               make_l_ear(r = r)
+                               make_ear(r = r, side = "left")
                              }
 )
 
@@ -547,31 +547,25 @@ make_head <- function(r) {
   head_out
 }
 
-#' Make right ear
+#' Make an ear shape
 #' @param r Radius of head
+#' @param side "right" or "left"
 #' @keywords internal
-make_r_ear <- function(r) {
-
+make_ear <- function(r, side = c("right", "left")) {
+  side <- match.arg(side)
   head_shape <- data.frame(x = r * cos(circ_rad_fun()),
                            y = r * sin(circ_rad_fun()))
-  right_ear <- data.frame(x = head_shape$x[[4]],
-                          xend = head_shape$x[[97]],
-                          y = head_shape$y[[4]],
-                          yend = head_shape$y[[97]])
-  right_ear
-}
-
-#' Make left ear
-#' @param r Radius of head
-#' @keywords internal
-make_l_ear <- function(r) {
-  head_shape <- data.frame(x = r * cos(circ_rad_fun()),
-                           y = r * sin(circ_rad_fun()))
-  left_ear <- data.frame(x = head_shape$x[[48]],
-                         xend = head_shape$x[[55]],
-                         y = head_shape$y[[48]],
-                         yend = head_shape$y[[55]])
-  left_ear
+  if (side == "right") {
+    data.frame(x    = head_shape$x[[4]],
+               xend = head_shape$x[[97]],
+               y    = head_shape$y[[4]],
+               yend = head_shape$y[[97]])
+  } else {
+    data.frame(x    = head_shape$x[[48]],
+               xend = head_shape$x[[55]],
+               y    = head_shape$y[[48]],
+               yend = head_shape$y[[55]])
+  }
 }
 
 StatChannels <-
