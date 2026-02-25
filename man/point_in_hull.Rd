@@ -4,14 +4,14 @@
 \alias{point_in_hull}
 \title{Test whether points lie inside the convex hull of electrode positions}
 \usage{
-point_in_hull(elec_x, elec_y, grid_x, grid_y, buffer = 0.02)
+point_in_hull(elec_x, elec_y, grid_x, grid_y, buffer = 0.1)
 }
 \arguments{
 \item{elec_x, elec_y}{Numeric vectors of electrode coordinates.}
 
 \item{grid_x, grid_y}{Numeric vectors of grid coordinates to test.}
 
-\item{buffer}{Fractional expansion of the hull (default 0.02, i.e. 2 percent).}
+\item{buffer}{Fractional expansion of the hull (default 0.10, i.e. 10 percent).}
 }
 \value{
 A logical vector the same length as \code{grid_x}.
