@@ -1,4 +1,6 @@
 utils::globalVariables(c("time",
+                         "bad_chan",
+                         "N",
                          "amplitude",
                          "electrode",
                          "epoch",
