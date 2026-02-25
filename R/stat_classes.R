@@ -31,7 +31,8 @@ new_eeg_lm <- function(coefficients,
                        chan_info,
                        epochs,
                        timings,
-                       formula) {
+                       formula,
+                       version) {
 
   stopifnot(is.data.frame(coefficients))
   stopifnot(is.data.frame(std_err))
@@ -48,6 +49,7 @@ new_eeg_lm <- function(coefficients,
     epochs = epochs,
     chan_info = chan_info,
     formula = formula,
+    version = version,
     class = "eeg_lm"
   )
 }

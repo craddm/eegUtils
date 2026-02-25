@@ -12,7 +12,7 @@ stat_scalpcontours(
   show.legend = FALSE,
   inherit.aes = TRUE,
   grid_res = 200,
-  interp_limit = c("skirt", "head"),
+  interp_limit = c("skirt", "head", "convex_hull"),
   method = "biharmonic",
   r = NULL,
   bins = 6,
@@ -62,17 +62,20 @@ a warning. If \code{TRUE}, missing values are silently removed.}
 \code{NA}, the default, includes if any aesthetics are mapped.
 \code{FALSE} never includes, and \code{TRUE} always includes.
 It can also be a named logical vector to finely select the aesthetics to
-display.}
+display. To include legend keys for all levels, even
+when no data exists, use \code{TRUE}.  If \code{NA}, all levels are shown in legend,
+but unobserved levels are omitted.}
 
 \item{inherit.aes}{If \code{FALSE}, overrides the default aesthetics,
 rather than combining with them. This is most useful for helper functions
 that define both data and aesthetics and shouldn't inherit behaviour from
-the default plot specification, e.g. \code{\link[ggplot2:borders]{borders()}}.}
+the default plot specification, e.g. \code{\link[ggplot2:annotation_borders]{annotation_borders()}}.}
 
 \item{grid_res}{Resolution of the interpolation grid. (Defaults to 200
 points).}
 
-\item{interp_limit}{Interpolate to the "skirt" or inside the "head".}
+\item{interp_limit}{Interpolate to the "skirt", inside the "head", or clipped
+to the "convex_hull" of electrode positions.}
 
 \item{method}{"biharmonic" or "gam" smooth to create interpolated surface}
 

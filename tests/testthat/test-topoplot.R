@@ -40,4 +40,10 @@ test_that("Topoplots", {
   vdiffr::expect_doppelganger(
     "add custom fill title",
     topoplot(demo_epochs, fill_title = "testing"))
+  vdiffr::expect_doppelganger(
+    "convex hull limit",
+    topoplot(demo_epochs,
+             time_lim = c(.15, .20),
+             interp_limit = "convex_hull",
+             limits = c(-3, 3)))
 })

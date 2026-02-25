@@ -13,9 +13,11 @@ filter_coefs(method, filt_pars, filter_order, window)
 
 \item{filter_order}{order of the filter in samples}
 
-\item{window}{Ignored for IIR}
+\item{window}{Window function name (FIR only)}
 }
 \description{
-Generate filter coefficients for an IIR or FIR filter.
+Generate filter coefficients for an IIR or FIR filter. FIR coefficients are
+generated using \code{\link[signal:fir1]{signal::fir1()}}, which places the -6 dB cutoff precisely at
+the specified frequency.
 }
 \keyword{internal}

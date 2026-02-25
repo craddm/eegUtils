@@ -59,7 +59,8 @@ fortify.eeg_evoked <- function(model,
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #' @param grid_res Resolution of the interpolation grid. (Defaults to 200
 #'   points).
-#' @param interp_limit Topoplot with a "skirt" or inside the "head".
+#' @param interp_limit Topoplot with a "skirt", inside the "head", or clipped to
+#'   the "convex_hull" of electrode positions.
 #' @param method "biharmonic" or "gam"
 #' @param r Size of head
 #' @family topoplot functions
@@ -72,7 +73,7 @@ stat_scalpmap <- function(mapping = NULL,
                           inherit.aes = TRUE,
                           grid_res = 200,
                           interpolate = FALSE,
-                          interp_limit = c("skirt", "head"),
+                          interp_limit = c("skirt", "head", "convex_hull"),
                           method = "biharmonic",
                           r = NULL,
                           ...) {
@@ -115,7 +116,7 @@ StatScalpmap <-
                                             r = NULL) {
 
                      interp_limit <- match.arg(interp_limit,
-                                               c("skirt", "head"))
+                                               c("skirt", "head", "convex_hull"))
                      data <- aggregate(fill ~ x + y,
                                        data = data,
                                        FUN = mean)
@@ -152,7 +153,8 @@ StatScalpmap <-
 #' library(ggplot2)
 #' ggplot(demo_epochs, aes(x = x, y = y, fill = amplitude, z = amplitude)) + geom_topo()
 #' @inheritParams ggplot2::geom_raster
-#' @param interp_limit Topoplot with a "skirt" or inside the "head".
+#' @param interp_limit Topoplot with a "skirt", inside the "head", or clipped to
+#'   the "convex_hull" of electrode positions.
 #' @param chan_markers Defaults to "point". Mark electrode positions with points
 #'   or text.
 #' @param chan_size Size for channel markers, if any.
@@ -406,18 +408,36 @@ StatMask <-
                                             interp_limit,
                                             r) {
 
-                     max_elec <- calc_max_elec(data)
+                     if (identical(interp_limit, "convex_hull")) {
 
-                     scale_fac <- max_elec
+                       elec_xy <- unique(data[, c("x", "y")])
+                       hull_idx <- grDevices::chull(elec_xy$x, elec_xy$y)
+                       hx <- elec_xy$x[hull_idx]
+                       hy <- elec_xy$y[hull_idx]
+                       # expand so the inner edge of the thick mask line
+                       # clears the electrode positions
+                       cx <- mean(hx)
+                       cy <- mean(hy)
+                       hx <- cx + 1.05 * (hx - cx)
+                       hy <- cy + 1.05 * (hy - cy)
+                       # close the polygon
+                       data <- data.frame(x = c(hx, hx[1]),
+                                          y = c(hy, hy[1]))
 
-                      if (scale_fac < r) scale_fac <- r
+                     } else {
 
-                      if (identical(interp_limit, "head")) {
-                        scale_fac <- max_elec + 1.02
-                      }
+                       max_elec <- calc_max_elec(data)
+                       scale_fac <- max_elec
 
-                     data <- data.frame(x = scale_fac * cos(circ_rad_fun()),
-                                        y = scale_fac * sin(circ_rad_fun()))
+                       if (scale_fac < r) scale_fac <- r
+
+                       if (identical(interp_limit, "head")) {
+                         scale_fac <- max_elec + 1.02
+                       }
+
+                       data <- data.frame(x = scale_fac * cos(circ_rad_fun()),
+                                          y = scale_fac * sin(circ_rad_fun()))
+                     }
                      data
 
                    }

@@ -71,7 +71,7 @@ Currently, a data frame with the PSD for each channel separately.
 \description{
 \code{compute_psd} returns the PSD calculated using Welch's method for every
 channel in the data. The output is in microvolts-squared divided by Hertz -
-\eqn{\muV^2 / Hz}. If the object has multiple epochs, it will perform Welch's
+\eqn{\frac{{\mu}{V^2}}{Hz}}. If the object has multiple epochs, it will perform Welch's
 FFT separately for each epoch and then average them afterwards.
 }
 \details{

@@ -276,7 +276,8 @@ fit_glm.eeg_epochs <- function(formula,
     "epochs" = epochs,
     "r_sq" = r_sq,
     "timings" = timings,
-    "formula" = formula
+    "formula" = formula,
+    "version" = utils::packageVersion("eegUtils")
   )
 }
 

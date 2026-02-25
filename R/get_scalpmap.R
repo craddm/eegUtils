@@ -24,7 +24,8 @@ get_scalpmap.default <- function(data,
 #' @param data An object of class 'data.frame`
 #' @param method "biharmonic" or "gam" smooth
 #' @param grid_res Grid resolution
-#' @param interp_limit Interpolate up to the "head" or add a "skirt"
+#' @param interp_limit Interpolate up to the "head", add a "skirt", or clip to
+#'   the "convex_hull" of electrode positions
 #' @param quantity Quantity to be plotted. Defaults to "amplitude".
 #' @param facets Any facets you plan to use
 #' @param r Size of headshape
@@ -327,24 +328,32 @@ biharmonic <- function(data,
                         values_to = "fill",
                         names_transform = list(y = as.numeric))
 
-  if (identical(interp_limit,
-                "head")) {
-     if (is.null(r)) {
-       circ_scale <- max_elec * 1.01
+  if (identical(interp_limit, "convex_hull")) {
+
+    in_hull <- point_in_hull(xy_coords$x, xy_coords$y, data$x, data$y)
+    data[in_hull, ]
+
+  } else {
+
+    if (identical(interp_limit,
+                  "head")) {
+       if (is.null(r)) {
+         circ_scale <- max_elec * 1.01
+       } else {
+         circ_scale <- r * 1.01
+       }
+
      } else {
-       circ_scale <- r * 1.01
+
+       # add 20% or 20 mm buffer past furthest electrode, whichever is smaller
+      if (r < max_elec) {
+        circ_scale <- min(max_elec * 1.20, max_elec + 20)
+      } else {
+        circ_scale <- min(r * 1.20, r + 20)
+      }
      }
-
-   } else {
-
-     # add 20% or 20 mm buffer past furthest electrode, whichever is smaller
-    if (r < max_elec) {
-      circ_scale <- min(max_elec * 1.20, max_elec + 20)
-    } else {
-      circ_scale <- min(r * 1.20, r + 20)
-    }
-   }
-  data[sqrt(data$x ^ 2 + data$y ^ 2) <= circ_scale, ]
+    data[sqrt(data$x ^ 2 + data$y ^ 2) <= circ_scale, ]
+  }
 
 }
 
@@ -357,6 +366,7 @@ fit_gam_topo <- function(data,
                          k = -1) {
 
   max_elec <- calc_max_elec(data)
+  elec_xy <- unique(data[, c("x", "y")])
 
   spline_smooth <- mgcv::gam(fill ~ s(x,
                                       y,
@@ -374,21 +384,29 @@ fit_gam_topo <- function(data,
                                data,
                                type = "response")
 
-  if (identical(interp_limit,
-                "head")) {
-    if (is.null(r)) {
-      circ_scale <- max_elec * 1.02
-    } else {
-      circ_scale <- r * 1.02
-    }
+  if (identical(interp_limit, "convex_hull")) {
+
+    in_hull <- point_in_hull(elec_xy$x, elec_xy$y, data$x, data$y)
+    data[in_hull, ]
+
   } else {
 
-    if (r < max_elec) {
-      circ_scale <- min(max_elec * 1.20, max_elec + 20)
+    if (identical(interp_limit,
+                  "head")) {
+      if (is.null(r)) {
+        circ_scale <- max_elec * 1.02
+      } else {
+        circ_scale <- r * 1.02
+      }
     } else {
-      circ_scale <- min(r * 1.20, r + 20)
+
+      if (r < max_elec) {
+        circ_scale <- min(max_elec * 1.20, max_elec + 20)
+      } else {
+        circ_scale <- min(r * 1.20, r + 20)
+      }
     }
+    data$incircle <- sqrt(data$x ^ 2 + data$y ^ 2) < circ_scale
+    data[data$incircle, ]
   }
-  data$incircle <- sqrt(data$x ^ 2 + data$y ^ 2) < circ_scale
-  data[data$incircle, ]
 }

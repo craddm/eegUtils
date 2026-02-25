@@ -2,7 +2,7 @@
 #'
 #' `compute_psd` returns the PSD calculated using Welch's method for every
 #' channel in the data. The output is in microvolts-squared divided by Hertz -
-#' \eqn{\muV^2 / Hz}. If the object has multiple epochs, it will perform Welch's
+#' \eqn{\frac{{\mu}{V^2}}{Hz}}. If the object has multiple epochs, it will perform Welch's
 #' FFT separately for each epoch and then average them afterwards.
 #'
 #' Welch's FFT splits the data into multiple segments, calculates the FFT

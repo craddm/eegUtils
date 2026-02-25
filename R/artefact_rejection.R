@@ -87,7 +87,12 @@ ar_thresh.eeg_epochs <- function(data,
                             epoch_no = rej_epochs,
                             keep = FALSE)
     } else {
-      data$reject$epochs <- rej_epochs
+      data$reject$epochs <- do.call(rbind,
+                                    list(
+                                      data$reject$epochs,
+                                      rej_epochs
+                                      )
+      )
       data$reject$timings <- data$timings[crossed_thresh, ]
     }
   }

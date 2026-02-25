@@ -13,6 +13,7 @@ Useful links:
 \itemize{
   \item \url{https://github.com/craddm/eegUtils}
   \item \url{https://craddm.github.io/eegUtils}
+  \item \url{https://craddm.github.io/eegUtils/}
   \item Report bugs at \url{https://github.com/craddm/eegUtils/issues}
 }
 

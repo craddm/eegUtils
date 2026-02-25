@@ -2,7 +2,7 @@ test_that("glm fitting works", {
   test_glm <- readRDS("reference_files/test_glm.rds")
   expect_equal(fit_glm(~epoch_labels,
                        data = demo_spatial),
-               readRDS("reference_files/test_glm.rds"),
+               test_glm,
                ignore_attr = TRUE)
   expect_equal(fit_glm(~epoch_labels + baseline,
                        data = demo_spatial,

@@ -2,10 +2,13 @@
 % Please edit documentation in R/utils.R
 \name{conv_to_mat}
 \alias{conv_to_mat}
+\alias{conv_to_mat.default}
 \alias{conv_to_mat.eeg_epochs}
 \title{Convert to 3d matrix}
 \usage{
 conv_to_mat(data, ...)
+
+\method{conv_to_mat}{default}(data, ...)
 
 \method{conv_to_mat}{eeg_epochs}(data, ...)
 }
@@ -19,6 +22,8 @@ Convert to 3d matrix
 }
 \section{Methods (by class)}{
 \itemize{
+\item \code{conv_to_mat(default)}: Default method
+
 \item \code{conv_to_mat(eeg_epochs)}: Convert \code{eeg_epochs} to 3D matrix
 
 }}

@@ -1,107 +1,103 @@
-url: http://craddm.github.io/eegUtils
-
+url: https://craddm.github.io/eegUtils/
 development:
   mode: auto
-
 template:
   bootstrap: 5
   params:
     bootswatch: flatly
-
 navbar:
   components:
     twitter:
-      icon: "fab fa-twitter fa-lg"
+      icon: fab fa-twitter fa-lg
       href: https://www.twitter.com/matt_craddock
-
 reference:
-  - title: IO
-    desc: >
-      Functions for importing data or electrode information into R.
-    contents:
-      - starts_with("import")
-      - export_bva
-  - title: Processing
-    desc: >
-      Functions for pre-processing and processing data
-    contents:
-      - apply_ica
-      - compute_csd
-      - eeg_average
-      - eeg_combine
-      - eeg_decompose
-      - eeg_downsample
-      - eeg_filter
-      - eeg_reference
-      - electrode_locations
-      - epoch_data
-      - interp_elecs
-      - rm_baseline
-      - run_ICA
-      - tag_events
-  - title: Artefact rejection
-    desc: >
-      Functions for artefact rejection.
-    contents:
-      - starts_with("ar")
-      - epoch_stats
-      - channel_stats
-      - view_artefacts
-  - title: Selection
-    desc: Functions for selecting subsets of data
-    contents:
-      - starts_with("select")
-      - filter
-  - title: Plotting
-    desc: >
-      Functions for plotting data
-    contents:
-      - browse_data
-      - erp_image
-      - erp_raster
-      - erp_scalp
-      - geom_topo
-      - get_scalpmap
-      - interactive_scalp
-      - starts_with("plot_")
-      - stat_scalpmap
-      - stat_scalpcontours
-      - topoplot
-      - view_ica
-  - title: Frequency analysis
-    desc: Functions related to (time-)frequency analysis
-    contents:
-      - compute_itc
-      - compute_psd
-      - compute_tfr
-  - title: Converters
-    desc: Functions for converting objects to data.frames
-    contents:
-      - starts_with("as.")
-  - title: Accessors
-    desc: Functions for accessing and modifying specific elements of an object
-    contents:
-      - channels
-      - epochs
-      - events
-      - channel_names
-      - get_participant_id
-      - get_recording
-  - title: internal
-    contents:
-    - starts_with("print")
-    - starts_with("is")
-    - epoch_data.default
-    - tag_epochs
-    - demo_epochs
-    - demo_spatial
-    - eeg_epochs
-    - eeg_ICA
-    - cycle_calc
-    - tag_epochs
-    - rotate_angle
-    - list_epochs
-    - list_events
-    - fit_glm
-    - eegUtils-package
-    - eeg_summarise
+- title: IO
+  desc: |
+    Functions for importing data or electrode information into R.
+  contents:
+  - starts_with("import")
+  - export_bva
+- title: Processing
+  desc: |
+    Functions for pre-processing and processing data
+  contents:
+  - apply_ica
+  - compute_csd
+  - eeg_average
+  - eeg_combine
+  - eeg_decompose
+  - eeg_downsample
+  - eeg_filter
+  - eeg_reference
+  - electrode_locations
+  - epoch_data
+  - interp_elecs
+  - rm_baseline
+  - run_ICA
+  - tag_events
+- title: Artefact rejection
+  desc: |
+    Functions for artefact rejection.
+  contents:
+  - starts_with("ar")
+  - epoch_stats
+  - channel_stats
+  - view_artefacts
+- title: Selection
+  desc: Functions for selecting subsets of data
+  contents:
+  - starts_with("select")
+  - filter
+- title: Plotting
+  desc: |
+    Functions for plotting data
+  contents:
+  - browse_data
+  - erp_image
+  - erp_raster
+  - erp_scalp
+  - geom_topo
+  - get_scalpmap
+  - interactive_scalp
+  - starts_with("plot_")
+  - stat_scalpmap
+  - stat_scalpcontours
+  - topoplot
+  - view_ica
+- title: Frequency analysis
+  desc: Functions related to (time-)frequency analysis
+  contents:
+  - compute_itc
+  - compute_psd
+  - compute_tfr
+- title: Converters
+  desc: Functions for converting objects to data.frames
+  contents: starts_with("as.")
+- title: Accessors
+  desc: Functions for accessing and modifying specific elements of an object
+  contents:
+  - channels
+  - epochs
+  - events
+  - channel_names
+  - get_participant_id
+  - get_recording
+- title: internal
+  contents:
+  - starts_with("print")
+  - starts_with("is")
+  - epoch_data.default
+  - tag_epochs
+  - demo_epochs
+  - demo_spatial
+  - eeg_epochs
+  - eeg_ICA
+  - cycle_calc
+  - tag_epochs
+  - rotate_angle
+  - list_epochs
+  - list_events
+  - fit_glm
+  - eegUtils-package
+  - eeg_summarise
+
