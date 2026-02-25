@@ -234,10 +234,6 @@ erp_scalp.default <- function(data,
       panel.background = element_blank()
     )
 
-  plot_area <- max_x * max_y
-
-  panel_size <- floor(sqrt(plot_area / nrow(data)))
-
   if (show_guide) {
     p <- p +
       annotation_custom(
