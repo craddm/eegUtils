@@ -92,7 +92,7 @@ topoplot.data.frame <- function(data,
                                 time_lim = NULL,
                                 limits = NULL,
                                 chanLocs = NULL,
-                                method = "Biharmonic",
+                                method = "biharmonic",
                                 r = NULL,
                                 grid_res = 200,
                                 palette = "RdBu",
@@ -188,8 +188,6 @@ topoplot.data.frame <- function(data,
                        fill = mean({{ quantity }},
                                    na.rm = TRUE))
     data <- dplyr::ungroup(data)
-    data <- tidyr::nest(data,
-                        data = -{{ groups }})
 
   } else {
 
@@ -198,23 +196,14 @@ topoplot.data.frame <- function(data,
                                        x,
                                        y,
                                        electrode),
-                       z = mean({{quantity}},
-                                na.rm = TRUE))
+                       fill = mean({{quantity}},
+                                   na.rm = TRUE))
 
-    # Cut the data frame down to only the necessary columns, and make sure it
-    # has the right names
     data <- data.frame(x = data$x,
                        y = data$y,
-                       fill = data$z,
+                       fill = data$fill,
                        electrode = data$electrode)
-
-    data <- dplyr::ungroup(data)
-    data <- tidyr::nest(tibble::as_tibble(data),
-                        data = dplyr::everything())
   }
-
-  data <- tidyr::unnest(data,
-                        cols = c(data))
 
   # Find furthest electrode from origin
   max_elec <- sqrt(max(abs(data$x)^2 + abs(data$y)^2))
@@ -343,7 +332,7 @@ topoplot.data.frame <- function(data,
 topoplot.eeg_data <- function(data, time_lim = NULL,
                               limits = NULL,
                               chanLocs = NULL,
-                              method = "Biharmonic",
+                              method = "biharmonic",
                               r = NULL,
                               grid_res = 200,
                               palette = "RdBu",
@@ -411,7 +400,7 @@ topoplot.eeg_epochs <- function(data,
                                 time_lim = NULL,
                                 limits = NULL,
                                 chanLocs = NULL,
-                                method = "Biharmonic",
+                                method = "biharmonic",
                                 r = NULL,
                                 grid_res = 200,
                                 palette = "RdBu",
@@ -475,7 +464,7 @@ topoplot.eeg_ICA <- function(data,
                              time_lim = NULL,
                              limits = NULL,
                              chanLocs = NULL,
-                             method = "Biharmonic",
+                             method = "biharmonic",
                              r = NULL,
                              grid_res = 200,
                              palette = "RdBu",
@@ -540,7 +529,7 @@ topoplot.eeg_tfr <- function(data,
                              time_lim = NULL,
                              limits = NULL,
                              chanLocs = NULL,
-                             method = "Biharmonic",
+                             method = "biharmonic",
                              r = NULL,
                              grid_res = 200,
                              palette = "RdBu",
