@@ -43,14 +43,7 @@ get_scalpmap.data.frame <- function(data,
                                     k = -1,
                                     ...) {
 
-  method <- match.arg(method,
-                      c("biharmonic",
-                        "gam",
-                        "Biharmonic"))
-
-  method <- switch(method,
-                   "Biharmonic" = "biharmonic",
-                   method)
+  method <- match.arg(tolower(method), c("biharmonic", "gam"))
 
   if (!is.null(facets)) {
   #if (!is.null(rlang::enquo(facets))) {
@@ -251,6 +244,26 @@ no_loc_chans <- function(chaninfo) {
 }
 
 
+#' Clip interpolated grid data to the desired boundary
+#' @noRd
+clip_to_limit <- function(data, interp_limit, r, max_elec, elec_x, elec_y) {
+
+  if (identical(interp_limit, "convex_hull")) {
+    in_hull <- point_in_hull(elec_x, elec_y, data$x, data$y)
+    return(data[in_hull, ])
+  }
+
+  circ_scale <- if (identical(interp_limit, "head")) {
+    if (is.null(r)) max_elec * 1.01 else r * 1.01
+  } else {
+    # skirt: 20% or 20 mm buffer past furthest electrode, whichever is smaller
+    ref <- max(r, max_elec)
+    min(ref * 1.20, ref + 20)
+  }
+
+  data[sqrt(data$x^2 + data$y^2) <= circ_scale, ]
+}
+
 #' @noRd
 biharmonic <- function(data,
                        grid_res,
@@ -289,34 +302,19 @@ biharmonic <- function(data,
   g <- (d^2) * (log(d) - 1) #Green's function
   diag(g) <- 0
   weights <- qr.solve(g, data$fill)
-  xy <- t(xy)
 
-  # Remind me to make this code readable at some point.
-  outmat <- numeric(grid_res^2)
+  # Vectorised Green's function evaluation over the full grid
+  tmp <- matrix(complex(real = xo,
+                        imaginary = yo),
+                nrow = grid_res,
+                ncol = grid_res)
+  d_grid <- abs(outer(as.vector(tmp), as.vector(xy), `-`))
+  g_grid <- d_grid^2 * (log(d_grid) - 1)
+  g_grid[is.nan(g_grid)] <- 0
+  outmat <- matrix(drop(g_grid %*% weights),
+                   nrow = grid_res,
+                   ncol = grid_res)
 
-  one_fun <- function(xo, yo) {
-
-    tmp <-
-      matrix(complex(real = xo,
-                     imaginary = yo),
-             nrow = grid_res,
-             ncol = grid_res)
-    tmp_x <- numeric(length(xy))
-
-    for (i in seq(length(tmp))) {
-      tmp_x <- (abs(tmp[i] - xy)^2) * (log(abs(tmp[i] - xy)) - 1)
-      tmp_x <- ifelse(is.nan(tmp_x),
-                      0,
-                      tmp_x)
-      outmat[i] <- tmp_x %*% weights
-    }
-    outmat
-  }
-
-  outmat <- one_fun(xo, yo)
-
-  dim(outmat) <- c(grid_res,
-                   grid_res)
   data <- data.frame(x = xo[, 1],
                      outmat)
   names(data)[1:length(yo[1, ]) + 1] <- yo[1, ]
@@ -328,32 +326,7 @@ biharmonic <- function(data,
                         values_to = "fill",
                         names_transform = list(y = as.numeric))
 
-  if (identical(interp_limit, "convex_hull")) {
-
-    in_hull <- point_in_hull(xy_coords$x, xy_coords$y, data$x, data$y)
-    data[in_hull, ]
-
-  } else {
-
-    if (identical(interp_limit,
-                  "head")) {
-       if (is.null(r)) {
-         circ_scale <- max_elec * 1.01
-       } else {
-         circ_scale <- r * 1.01
-       }
-
-     } else {
-
-       # add 20% or 20 mm buffer past furthest electrode, whichever is smaller
-      if (r < max_elec) {
-        circ_scale <- min(max_elec * 1.20, max_elec + 20)
-      } else {
-        circ_scale <- min(r * 1.20, r + 20)
-      }
-     }
-    data[sqrt(data$x ^ 2 + data$y ^ 2) <= circ_scale, ]
-  }
+  clip_to_limit(data, interp_limit, r, max_elec, xy_coords$x, xy_coords$y)
 
 }
 
@@ -380,33 +353,9 @@ fit_gam_topo <- function(data,
                       y = seq(max_elec * -1.5,
                               max_elec * 1.5,
                               length = grid_res))
-  data$fill <-  stats::predict(spline_smooth,
-                               data,
-                               type = "response")
+  data$fill <- stats::predict(spline_smooth,
+                              data,
+                              type = "response")
 
-  if (identical(interp_limit, "convex_hull")) {
-
-    in_hull <- point_in_hull(elec_xy$x, elec_xy$y, data$x, data$y)
-    data[in_hull, ]
-
-  } else {
-
-    if (identical(interp_limit,
-                  "head")) {
-      if (is.null(r)) {
-        circ_scale <- max_elec * 1.02
-      } else {
-        circ_scale <- r * 1.02
-      }
-    } else {
-
-      if (r < max_elec) {
-        circ_scale <- min(max_elec * 1.20, max_elec + 20)
-      } else {
-        circ_scale <- min(r * 1.20, r + 20)
-      }
-    }
-    data$incircle <- sqrt(data$x ^ 2 + data$y ^ 2) < circ_scale
-    data[data$incircle, ]
-  }
+  clip_to_limit(data, interp_limit, r, max_elec, elec_xy$x, elec_xy$y)
 }
