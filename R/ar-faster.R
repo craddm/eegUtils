@@ -127,18 +127,10 @@ faster_cine <- function(data,
 
   # Get xyz coords only
   xyz_coords <- data$chan_info[, c("electrode", "cart_x", "cart_y", "cart_z")]
-
-  # Check for rows with missing values (vectorized operation)
   missing_values <- rowSums(is.na(xyz_coords)) > 0
-
-  # Remove any rows with missing values
   xyz_coords <- xyz_coords[!missing_values, ]
-
-  # Normalise coords once here rather than once per epoch inside interp_weights()
   xyz_coords[, c("cart_x", "cart_y", "cart_z")] <-
     norm_sphere(xyz_coords[, c("cart_x", "cart_y", "cart_z")])
-
-  # Use %in% for faster matching
   keep_chans <- names(data$signals) %in% xyz_coords$electrode
 
   # Precompute chan_means
@@ -156,13 +148,8 @@ faster_cine <- function(data,
 
   # Work out which chans are bad in each epoch according to FASTER
   bad_chans <- epochs[, .(bad_chan = faster_epo_stat(.SD, exclude, chan_means = chan_means)), by = epoch]
-
-  # Filter bad channels
   bad_chans <- bad_chans[bad_chan %in% xyz_coords$electrode]
-
-  # Count bad channels per epoch
   n_bads <- bad_chans[, .N, by = epoch]
-
   broken_epochs <- n_bads[N > max_bad, epoch]
   repairable_epochs <- n_bads[N <= max_bad & N > 0, epoch]
 
@@ -170,7 +157,6 @@ faster_cine <- function(data,
     bad_chans <- bad_chans[epoch %in% repairable_epochs]
   }
 
-  # Convert bad_chans data.table to a named list split by epoch (Bug 1 fix)
   bad_chans_list <- split(bad_chans$bad_chan, bad_chans$epoch)
 
   # Get a transfer matrix for each epoch
@@ -179,15 +165,11 @@ faster_cine <- function(data,
 
   bad_coords <- bad_coords[lengths(bad_coords) > 0]
 
-  # If there's nothing bad in any epoch, return the data (Bug 2 fix)
   if (length(bad_coords) == 0) {
     return(data)
   }
 
-  # Get bad epoch names (Bug 3 fix)
   bad_epochs <- names(bad_coords)
-
-  # Split epochs into a list for interpolation (Bug 4 fix)
   epochs_list <- split(data$signals, data$timings$epoch)
 
   # Apply interpolation to bad epochs
@@ -198,7 +180,6 @@ faster_cine <- function(data,
                                                 bad_coords[[x]]))
   epochs_list <- replace(epochs_list, bad_epochs, new_epochs)
 
-  # Remove broken epochs and sync timings (Bug 5 fix)
   if (length(broken_epochs) > 0) {
     epochs_list <- epochs_list[!names(epochs_list) %in% as.character(broken_epochs)]
     data$timings <- data$timings[!data$timings$epoch %in% broken_epochs, ]
@@ -512,7 +493,10 @@ handle_bad_epochs <- function(data) {
   message(paste("Globally bad epochs:",
                 paste(bad_epochs,
                       collapse = " ")))
-  data$reject$bad_epochs <- bad_epochs
+  data$reject$epochs <- do.call(rbind,
+                                list(data$reject$epochs,
+                                     data.frame(epoch = bad_epochs,
+                                                reason = "bad_epoch")))
   data <- select_epochs(data,
                         epoch_no = bad_epochs,
                         keep = FALSE)
