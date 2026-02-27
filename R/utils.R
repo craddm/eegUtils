@@ -7,7 +7,7 @@ conv_to_mat <- function(data, ...) {
   UseMethod("conv_to_mat", data)
 }
 
-#' @keywords internal
+#' @describeIn conv_to_mat Default method
 conv_to_mat.default <- function(data, ...) {
   stop("Not implemented for objects of class", class(data))
 }
@@ -26,14 +26,26 @@ is.true <- function(x) {
   !is.na(x) & x
 }
 
-#' Generate a zero centred vector
+#' Reflect-pad a vector
 #'
-#' @param vec_length how many points you want the vector to have
-#' @importFrom stats median
+#' Pads a vector by reflecting the signal at both boundaries. The reflection is
+#' odd (anti-symmetric): `2*x[1] - rev(x[2:(n+1)])` at the start and
+#' `2*x[end] - rev(x[(end-n):(end-1)])` at the end. This matches the padding
+#' used by SciPy's `filtfilt` and avoids the edge discontinuities caused by
+#' zero-padding.
+#'
+#' @param x Numeric vector to pad.
+#' @param n Number of samples to add at each end.
+#' @return A numeric vector of length `length(x) + 2*n`.
 #' @keywords internal
-zero_vec <- function(vec_length) {
-  out_seq <- seq(1, vec_length, by = 1)
-  out_seq - stats::median(out_seq)
+reflect_pad <- function(x, n) {
+  len <- length(x)
+  if (n >= len) {
+    stop("Pad length must be less than signal length.")
+  }
+  start_pad <- 2 * x[1] - rev(x[2:(n + 1)])
+  end_pad <- 2 * x[len] - rev(x[(len - n):(len - 1)])
+  c(start_pad, x, end_pad)
 }
 
 #' Pad a vector with zeros
@@ -67,18 +79,6 @@ unpad <- function(x, n) {
   x
 }
 
-#' Fix group delay
-#'
-#' Corrects a signal for the group delay of an FIR filter.
-#'
-#' @keywords internal
-fix_grpdelay <- function(x, n, grp_delay) {
-  start <- n + 1 + grp_delay
-  end <- length(x) - n + grp_delay
-  x <- x[start:end]
-  x
-}
-
 #' Get number of samples
 #' @param .data Object to get total number of sampling points from
 #' @keywords internal
@@ -104,11 +104,48 @@ update_r <-
     max_elec <- calc_max_elec(data)
     r <- switch(interp_limit,
                 "head" = min(max_elec * 1.10, max_elec + 10),
-                "skirt" = r) # mm are expected for coords, 95 is good approx for Fpz - Oz radius
+                "skirt" = r,
+                "convex_hull" = min(max_elec * 1.10, max_elec + 10)) # mm are expected for coords, 95 is good approx for Fpz - Oz radius
     r
   }
 
 #' Calculate maximum electrode distance from origin.
 #' @keywords internal
 calc_max_elec <- function(data) max(sqrt(data$x^2 + data$y^2), na.rm = TRUE)
+
+#' Test whether points lie inside the convex hull of electrode positions
+#'
+#' Uses the cross-product winding method for convex polygons. Optionally
+#' expands the hull outward by a small buffer so that electrode positions
+#' themselves are not clipped.
+#'
+#' @param elec_x,elec_y Numeric vectors of electrode coordinates.
+#' @param grid_x,grid_y Numeric vectors of grid coordinates to test.
+#' @param buffer Fractional expansion of the hull (default 0.10, i.e. 10 percent).
+#' @return A logical vector the same length as `grid_x`.
+#' @keywords internal
+point_in_hull <- function(elec_x, elec_y, grid_x, grid_y, buffer = 0.10) {
+
+  hull_idx <- grDevices::chull(elec_x, elec_y)
+  hx <- elec_x[hull_idx]
+  hy <- elec_y[hull_idx]
+
+  # expand hull outward from centroid
+  cx <- mean(hx)
+  cy <- mean(hy)
+  hx <- cx + (1 + buffer) * (hx - cx)
+  hy <- cy + (1 + buffer) * (hy - cy)
+
+  n <- length(hx)
+  inside <- rep(TRUE, length(grid_x))
+
+  for (i in seq_len(n)) {
+    j <- if (i == n) 1L else i + 1L
+    # cross product of edge vector with point-to-vertex vector
+    cross <- (hx[j] - hx[i]) * (grid_y - hy[i]) -
+             (hy[j] - hy[i]) * (grid_x - hx[i])
+    inside <- inside & (cross <= 0)
+  }
+  inside
+}
 

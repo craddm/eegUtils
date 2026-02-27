@@ -31,6 +31,7 @@ reference:
   - eeg_reference
   - electrode_locations
   - epoch_data
+  - filter_response
   - interp_elecs
   - rm_baseline
   - run_ICA

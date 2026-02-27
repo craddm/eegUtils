@@ -64,5 +64,23 @@ test_that("geom_topo testing", {
                                               aes(label = electrode)) +
                                 coord_equal()
   )
+  vdiffr::expect_doppelganger("geom_topo_convex_hull",
+                              ggplot(demo_epochs,
+                                     aes(x = x,
+                                         y = y,
+                                         fill = amplitude,
+                                         z = amplitude)) +
+                                geom_topo(interp_limit = "convex_hull")
+  )
+  vdiffr::expect_doppelganger("geom_statscalp_convex_hull",
+                              ggplot(demo_epochs,
+                                     aes(x = x,
+                                         y = y,
+                                         fill = amplitude)) +
+                                stat_scalpmap(interp_limit = "convex_hull") +
+                                geom_mask(interp_limit = "convex_hull") +
+                                geom_head() +
+                                geom_channels()
+  )
 }
 )

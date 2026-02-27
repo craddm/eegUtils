@@ -89,7 +89,8 @@ StatSummarybyZ <- ggplot2::ggproto("StatSummaryByZ", Stat,
 #' @author Matt Craddock \email{matt@@mattcraddock.com}
 #' @param grid_res Resolution of the interpolation grid. (Defaults to 200
 #'   points).
-#' @param interp_limit Interpolate to the "skirt" or inside the "head".
+#' @param interp_limit Interpolate to the "skirt", inside the "head", or clipped
+#'   to the "convex_hull" of electrode positions.
 #' @param method "biharmonic" or "gam" smooth to create interpolated surface
 #' @param r Radius of interpolated surface
 #' @param bins Number of contour bins. Overridden by binwidth.
@@ -105,7 +106,7 @@ stat_scalpcontours <- function(mapping = NULL,
                                show.legend = FALSE,
                                inherit.aes = TRUE,
                                grid_res = 200,
-                               interp_limit = c("skirt", "head"),
+                               interp_limit = c("skirt", "head", "convex_hull"),
                                method = "biharmonic",
                                r = NULL,
                                bins = 6,
@@ -170,7 +171,7 @@ StatScalpContours <-
                                             binwidth = NULL) {
 
                      interp_limit <- match.arg(interp_limit,
-                                               c("skirt", "head"))
+                                               c("skirt", "head", "convex_hull"))
 
                      data <- aggregate(fill ~ x + y,
                                        data = data,
@@ -400,7 +401,7 @@ iso_to_polygon <- function(iso, group = 1) {
 #' @param isoband_levels `names()` of an [isoband::isobands()] object.
 #'
 #' @return A vector of labels like those used in
-#'   [cut()] and [cut_inverval()].
+#'   [cut()] and [cut_interval()].
 #' @noRd
 #'
 pretty_isoband_levels <- function(isoband_levels, dig.lab = 3) {

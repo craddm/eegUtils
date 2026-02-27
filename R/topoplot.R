@@ -56,10 +56,12 @@ topoplot.default <- function(data,
 #' @param palette Defaults to RdBu if none supplied. Can be any palette from
 #'   RColorBrewer or viridis. If an unsupported palette is specified, switches
 #'   to Greens.
-#' @param interp_limit "skirt" or "head". Defaults to "skirt". "skirt"
-#'   interpolates just past the farthest electrode and does not respect the
-#'   boundary of the head_shape. "head" interpolates up to the radius of the
-#'   plotted head, and moves all electrodes inside the head.
+#' @param interp_limit "skirt", "head", or "convex_hull". Defaults to "skirt".
+#'   "skirt" interpolates just past the farthest electrode and does not respect
+#'   the boundary of the head_shape. "head" interpolates up to the radius of the
+#'   plotted head. "convex_hull" clips the interpolated surface to the convex
+#'   hull of the electrode positions, preventing extrapolation beyond the
+#'   electrode coverage area.
 #' @param contour Plot contour lines on topography (defaults to TRUE)
 #' @param chan_marker Set marker for electrode locations. "point" = point,
 #'   "name" = electrode name, "none" = no marker. Defaults to "point".

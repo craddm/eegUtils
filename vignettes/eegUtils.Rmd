@@ -1,10 +1,10 @@
 ---
-title: "EEG Utils"
+title: "eegUtils"
 author: "Matt Craddock"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{EEG Utils}
+  %\VignetteIndexEntry{eegUtils}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

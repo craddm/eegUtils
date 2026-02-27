@@ -40,7 +40,8 @@ get_scalpmap(data, ...)
 
 \item{grid_res}{Grid resolution}
 
-\item{interp_limit}{Interpolate up to the "head" or add a "skirt"}
+\item{interp_limit}{Interpolate up to the "head", add a "skirt", or clip to
+the "convex_hull" of electrode positions}
 
 \item{quantity}{Quantity to be plotted. Defaults to "amplitude".}
 

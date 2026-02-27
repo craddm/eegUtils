@@ -77,8 +77,8 @@ the user's specifications
 }
 \description{
 Perform IIR or FIR filtering on input EEG data of class \code{eeg_data} or
-\code{eeg_epochs}. WARNING: with epoched data, epoch boundaries are currently
-ignored, which can result in minor edge artifacts.
+\code{eeg_epochs}. For epoched data, each epoch is filtered independently to
+prevent filter state from bleeding across trial boundaries.
 }
 \details{
 low_freq and high_freq are the low and high cutoff frequencies. Pass low freq

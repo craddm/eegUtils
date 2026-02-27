@@ -1,3 +1,23 @@
+# eegUtils 0.9.0.9000
+
+### Function changes
+- `topoplot()` now has a new interpolation option - `convex_hull`
+- `eeg_filter()` on epoched data now filters each epoch independently.
+- A warning is now issued if the FIR filter order equals or exceeds the epoch
+length (in samples), since this would produce unreliable results.
+- Improved edge handling for both FIR and IIR filters. Now uses **odd (anti-symmetric) reflected padding**
+at signal boundaries instead of zero-padding. This matches the convention used
+by SciPy's `filtfilt` and substantially reduces edge transients, particularly
+for high-pass filters applied to signals with non-zero means.
+- FIR coefficients now generated via `signal::fir1()`
+
+### Internal changes
+- New `prepare_filter()` helper consolidates shared validation/coefficient logic.
+- New `fir_filter_signals()` and `iir_filter_signals()` replace the old run_fir() / run_iir_n().
+- New `reflect_pad()` utility replaces zero-padding.
+- Old helpers (`filt_kernel`, `spec_inv`, `select_window`, `fix_grpdelay`, `zero_vec`) removed.
+- `future.packages = "eegUtils"` added to parallel worker calls.
+
 # eegUtils 0.8.0
 
 ### Function changes

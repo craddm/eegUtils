@@ -1,8 +1,8 @@
 #' Filter EEG data
 #'
 #' Perform IIR or FIR filtering on input EEG data of class `eeg_data` or
-#' `eeg_epochs`. WARNING: with epoched data, epoch boundaries are currently
-#' ignored, which can result in minor edge artifacts.
+#' `eeg_epochs`. For epoched data, each epoch is filtered independently to
+#' prevent filter state from bleeding across trial boundaries.
 #'
 #' low_freq and high_freq are the low and high cutoff frequencies. Pass low freq
 #' or high freq alone to perform high-pass or low-pass filtering respectively.
@@ -69,60 +69,26 @@ eeg_filter.eeg_data <- function(data,
                                 demean = TRUE,
                                 ...) {
 
-  filt_pars <- parse_filt_freqs(low_freq,
-                                high_freq,
-                                data$srate,
-                                method)
-
-  if (identical(method, "iir")) {
-
-    if (identical(filter_order, "auto")) {
-      filter_order <- 2
-    }
-
-    message(paste("Effective filter order:",
-                  filter_order * 2,
-                  "(two-pass)"))
-
-  } else if (identical(method, "fir")) {
-
-    if (identical(trans_bw, "auto")) {
-      trans_bw <- est_tbw(filt_pars,
-                          data$srate)
-    }
-
-    message(paste("Transition bandwidth:", min(trans_bw), "Hz"))
-
-    if (identical(filter_order, "auto")) {
-      filter_order <- est_filt_order(window,
-                                     trans_bw,
-                                     srate = data$srate)
-    }
-
-    message(paste("Filter order:", filter_order))
-
-  } else {
-    stop("Unknown method; valid methods are 'fir' and 'iir'.")
-  }
-
-  filt_coef <- filter_coefs(method,
-                            filt_pars,
-                            filter_order,
-                            window)
+  prep <- prepare_filter(data$srate,
+                         low_freq,
+                         high_freq,
+                         filter_order,
+                         trans_bw,
+                         method,
+                         window)
 
   if (demean) {
-    data <- rm_baseline(data) # remove DC component
+    data <- rm_baseline(data)
   }
 
   if (identical(method, "iir")) {
-    data <- run_iir_n(data,
-                      filt_coef)
+    data$signals <- iir_filter_signals(data$signals,
+                                       prep$filt_coef)
   } else {
-    data <- run_fir(data,
-                    filt_coef,
-                    filter_order)
+    data$signals <- fir_filter_signals(data$signals,
+                                       prep$filt_coef,
+                                       prep$filter_order)
   }
-  data$signals <- tibble::as_tibble(data$signals)
   data
 }
 
@@ -139,59 +105,47 @@ eeg_filter.eeg_epochs <- function(data,
                                   demean = TRUE,
                                   ...) {
 
-  filt_pars <- parse_filt_freqs(low_freq,
-                                high_freq,
-                                data$srate,
-                                method)
-
-  if (identical(method, "iir")) {
-
-    if (identical(filter_order, "auto")) {
-      filter_order <- 2
-    }
-
-    message(paste("Effective filter order:",
-                  filter_order * 2,
-                  "(two-pass)"))
-
-  } else if (identical(method, "fir")) {
-
-    if (identical(trans_bw, "auto")) {
-      trans_bw <- est_tbw(filt_pars,
-                          data$srate)
-    }
-
-    message(paste("Transition bandwidth:", min(trans_bw), "Hz"))
-
-    if (identical(filter_order, "auto")) {
-      filter_order <- est_filt_order(window,
-                                     trans_bw,
-                                     srate = data$srate)
-    }
-
-    message(paste("Filter order:", filter_order))
-
-  } else {
-    stop("Unknown method; valid methods are 'fir' and 'iir'.")
-  }
-
-  filt_coef <- filter_coefs(method,
-                            filt_pars,
-                            filter_order,
-                            window)
+  prep <- prepare_filter(data$srate,
+                         low_freq,
+                         high_freq,
+                         filter_order,
+                         trans_bw,
+                         method,
+                         window)
 
   if (demean) {
-    data <- rm_baseline(data) # remove DC component
+    data <- rm_baseline(data)
   }
-  if (identical(method, "iir")) {
-    data <- run_iir_n(data,
-                      filt_coef)
-  } else {
-    data <- run_fir(data,
-                    filt_coef,
-                    filter_order)
+
+  epoch_factor <- data$timings$epoch
+  epoch_ids <- unique(epoch_factor)
+  n_per_epoch <- sum(epoch_factor == epoch_ids[1])
+
+  if (identical(method, "fir") && prep$filter_order >= n_per_epoch) {
+    warning("Filter order (",
+            prep$filter_order,
+            ") exceeds epoch length (",
+            n_per_epoch,
+            " samples). Consider filtering before epoching, ",
+            "or use method = \"iir\".")
   }
-  data$signals <- tibble::as_tibble(data$signals)
+
+  split_sigs <- split(data$signals, epoch_factor)
+
+  filtered <- lapply(split_sigs,
+                     function(epoch_df) {
+                       if (identical(method, "iir")) {
+                         iir_filter_signals(epoch_df,
+                                            prep$filt_coef)
+                       } else {
+                         fir_filter_signals(epoch_df,
+                                            prep$filt_coef,
+                                            prep$filter_order)
+                       }
+                     })
+
+  data$signals <- tibble::as_tibble(do.call(rbind, filtered))
+  row.names(data$signals) <- NULL
   data
 }
 
@@ -211,52 +165,147 @@ eeg_filter.eeg_group <- function(data,
 }
 
 
-#' Run FIR filter using overlap-add FFT
+#' Prepare filter parameters and coefficients
 #'
-#' @param data Data to be filtered.
-#' @param filt_coef Filter coefficients
-#' @param filter_order Order of filter
-#' @importFrom future.apply future_lapply
-#' @importFrom purrr map_df
-#' @importFrom tibble as_tibble
+#' Shared validation and coefficient-generation logic used by both
+#' `eeg_filter.eeg_data` and `eeg_filter.eeg_epochs`.
+#'
+#' @param srate Sampling rate (Hz)
+#' @param low_freq Low cutoff frequency
+#' @param high_freq High cutoff frequency
+#' @param filter_order Filter order or "auto"
+#' @param trans_bw Transition bandwidth or "auto"
+#' @param method "fir" or "iir"
+#' @param window Windowing function name
+#' @return A list with `filt_pars`, `filter_order`, and `filt_coef`.
 #' @keywords internal
-run_fir <- function(data,
-                    filt_coef,
-                    filter_order) {
+prepare_filter <- function(srate,
+                           low_freq,
+                           high_freq,
+                           filter_order,
+                           trans_bw,
+                           method,
+                           window) {
 
-  fft_length <- length(filt_coef) * 2 - 1
-  fft_length <- stats::nextn(fft_length)
-  sig_length <- nrow(data$signals)
-  # pad the signals with zeros to help with edge effects
-  pad_zeros <- stats::nextn(sig_length + fft_length - 1) - sig_length
-  pad_zeros <- 2 * round(pad_zeros / 2)
-  data$signals <- purrr::map_df(data$signals,
-                                ~pad(.,
-                                     pad_zeros))
-  data$signals <- future.apply::future_lapply(data$signals,
-                                              signal::fftfilt,
-                                              b = filt_coef,
-                                              n = fft_length)
-  # fftfilt filters once and thus shifts everything in time by the group delay
-  # of the filter (half the filter order). Here we correct for both the
-  # padding and the group delay
-  data$signals <- purrr::map_df(data$signals,
-                                ~fix_grpdelay(.,
-                                              pad_zeros,
-                                              filter_order / 2))
-  data$signals <- tibble::as_tibble(data$signals)
-  data
+  filt_pars <- parse_filt_freqs(low_freq,
+                                high_freq,
+                                srate,
+                                method)
+
+  if (identical(method, "iir")) {
+
+    if (identical(filter_order, "auto")) {
+      filter_order <- 2
+    }
+
+    message(paste("Effective filter order:",
+                  filter_order * 2,
+                  "(two-pass)"))
+
+  } else if (identical(method, "fir")) {
+
+    if (identical(trans_bw, "auto")) {
+      trans_bw <- est_tbw(filt_pars,
+                          srate)
+    }
+
+    message(paste("Transition bandwidth:", min(trans_bw), "Hz"))
+
+    if (identical(filter_order, "auto")) {
+      filter_order <- est_filt_order(window,
+                                     trans_bw,
+                                     srate = srate)
+    }
+
+    message(paste("Filter order:", filter_order))
+
+  } else {
+    stop("Unknown method; valid methods are 'fir' and 'iir'.")
+  }
+
+  filt_coef <- filter_coefs(method,
+                            filt_pars,
+                            filter_order,
+                            window)
+
+  list(filt_pars = filt_pars,
+       filter_order = filter_order,
+       filt_coef = filt_coef)
 }
 
-run_iir_n <- function(data,
-                      filt_coef) {
 
-  data$signals <- future.apply::future_lapply(data$signals,
-                                              signal::filtfilt,
-                                              filt = filt_coef,
-                                              a = 1)
-  data$signals <- tibble::as_tibble(data$signals)
-  data
+#' FIR filter a data.frame of signals
+#'
+#' Applies an FIR filter to each column using reflected-edge padding and
+#' overlap-add FFT convolution. Corrects for the linear phase (group delay) of
+#' the single-pass FIR filter.
+#'
+#' @param signals A data.frame where each column is a channel.
+#' @param filt_coef Numeric vector of FIR filter coefficients.
+#' @param filter_order Filter order in samples.
+#' @return A tibble with filtered signals.
+#' @importFrom future.apply future_lapply
+#' @keywords internal
+fir_filter_signals <- function(signals,
+                               filt_coef,
+                               filter_order) {
+
+  n_sig <- nrow(signals)
+  pad_n <- min(filter_order, n_sig - 1)
+  grp_delay <- as.integer(filter_order / 2)
+  # Ensure group delay correction fits within the padding
+  grp_delay <- min(grp_delay, pad_n)
+  fft_length <- stats::nextn(length(filt_coef) * 2 - 1)
+
+  filtered <- future.apply::future_lapply(signals,
+                                          function(x) {
+                                            x_padded <- reflect_pad(x, pad_n)
+                                            x_filt <- signal::fftfilt(filt_coef,
+                                                                      x_padded,
+                                                                      n = fft_length)
+                                            start <- pad_n + 1 + grp_delay
+                                            end <- pad_n + n_sig + grp_delay
+                                            x_filt[start:end]
+                                          },
+                                          future.packages = "eegUtils")
+  tibble::as_tibble(filtered)
+}
+
+
+#' IIR filter a data.frame of signals
+#'
+#' Applies a two-pass (forward-reverse) IIR filter to each column with
+#' reflected-edge padding to reduce edge transients. The padding length follows
+#' SciPy's convention of `3 * max(length(b), length(a))`.
+#'
+#' @param signals A data.frame where each column is a channel.
+#' @param filt_coef An Arma object (from [signal::butter()]).
+#' @return A tibble with filtered signals.
+#' @importFrom future.apply future_lapply
+#' @keywords internal
+iir_filter_signals <- function(signals,
+                               filt_coef) {
+
+  pad_n <- 3 * max(length(filt_coef$b), length(filt_coef$a))
+
+  filtered <- future.apply::future_lapply(signals,
+                                          function(x) {
+                                            n <- length(x)
+                                            pn <- min(pad_n, n - 1)
+                                            x_padded <- reflect_pad(x, pn)
+                                            # Forward pass
+                                            fwd <- as.numeric(signal::filter(filt_coef,
+                                                                             x_padded))
+                                            # Reverse pass
+                                            rev_filt <- as.numeric(
+                                              rev(signal::filter(filt_coef,
+                                                                 rev(fwd)))
+                                            )
+                                            # Trim padding
+                                            rev_filt[(pn + 1):(pn + n)]
+                                          },
+                                          future.packages = "eegUtils")
+  tibble::as_tibble(filtered)
 }
 
 
@@ -369,11 +418,11 @@ est_filt_order <- function(window,
                            tbw,
                            srate) {
 
-  if (identical(window, "hamming")) {
-    filt_ord <- 3.3 * srate
-  } else {
-    stop("Only hamming windows currently implemented.")
-  }
+  filt_ord <- switch(window,
+                     "hamming"  = 3.3 * srate,
+                     "hann"     = 3.1 * srate,
+                     "blackman" = 5.5 * srate,
+                     stop("Unsupported window type: ", window))
 
   filt_ord <- filt_ord / min(tbw)
   filt_ord <- max(round(filt_ord, 1))
@@ -384,12 +433,14 @@ est_filt_order <- function(window,
 
 #' Generate filter coefficients
 #'
-#' Generate filter coefficients for an IIR or FIR filter.
+#' Generate filter coefficients for an IIR or FIR filter. FIR coefficients are
+#' generated using [signal::fir1()], which places the -6 dB cutoff
+#' approximately at the specified frequency (within ~0.1 Hz).
 #'
 #' @param method IIR or FIR
 #' @param filt_pars output of parse_filt_freqs
 #' @param filter_order order of the filter in samples
-#' @param window Ignored for IIR
+#' @param window Window function name (FIR only)
 #' @keywords internal
 filter_coefs <- function(method,
                          filt_pars,
@@ -401,100 +452,65 @@ filter_coefs <- function(method,
                             filt_pars$W * 2,
                             filt_pars$filt_type)
     return(coefs)
+  }
+
+  win <- switch(window,
+                "hamming" = signal::hamming(filter_order + 1),
+                "hann" = signal::hanning(filter_order + 1),
+                "blackman" = signal::blackman(filter_order + 1),
+                stop("Unsupported window type: ", window))
+
+  coefs <- signal::fir1(filter_order,
+                        filt_pars$W * 2,
+                        type = filt_pars$filt_type,
+                        window = win)
+  as.numeric(coefs)
+}
+
+
+#' Compute the frequency response of a filter
+#'
+#' Returns the magnitude frequency response for a filter specification, without
+#' needing to apply the filter to any data. Useful for inspecting filter
+#' characteristics before filtering.
+#'
+#' @param low_freq Low cutoff frequency (Hz).
+#' @param high_freq High cutoff frequency (Hz).
+#' @param srate Sampling rate (Hz).
+#' @param method "fir" or "iir". Defaults to "fir".
+#' @param filter_order "auto" or integer filter order.
+#' @param trans_bw "auto" or numeric transition bandwidth (FIR only).
+#' @param window Window function (FIR only). Defaults to "hamming".
+#' @param n Number of frequency points. Defaults to 4096.
+#' @return A data frame with columns \code{frequency} (Hz), \code{magnitude}
+#'   (linear), and \code{magnitude_db} (dB).
+#' @export
+filter_response <- function(low_freq = NULL,
+                            high_freq = NULL,
+                            srate,
+                            method = "fir",
+                            filter_order = "auto",
+                            trans_bw = "auto",
+                            window = "hamming",
+                            n = 4096) {
+
+  prep <- prepare_filter(srate, low_freq, high_freq,
+                         filter_order, trans_bw, method, window)
+  coefs <- prep$filt_coef
+
+  if (inherits(coefs, "Arma")) {
+    fz <- signal::freqz(coefs$b, coefs$a, n = n, Fs = srate)
   } else {
-    win <- select_window(window,
-                         filter_order)
-
-    coefs <- list()
-    for (i in seq_along(filt_pars$W)) {
-      coefs[[i]] <- filt_kernel(filter_order,
-                                filt_pars$W[[i]],
-                                win)
-      if (identical(filt_pars$filt_type, "high")) {
-        coefs[[i]] <- spec_inv(coefs[[i]])
-      }
-      if (i == 2) {
-        coefs[[i]] <- spec_inv(coefs[[i]])
-      }
-    }
-
-    if (length(coefs) == 2) {
-      coefs <- Reduce("+", coefs)
-      if (identical(filt_pars$filt_type, "pass")) {
-        coefs <- spec_inv(coefs)
-      }
-    }
-  }
-  unlist(coefs)
-}
-
-#' Create windowing function
-#'
-#' Create a windowing function for use in creating a windowed-sinc kernel
-#'
-#' @param type Window function to apply
-#' @param m Filter order
-#' @param a alpha/beta to be used for some window functions
-#' @keywords internal
-
-select_window <- function(type,
-                          m,
-                          a = NULL) {
-
-  m <- m + 1
-  w <- switch(type,
-              "bartlett" = signal::bartlett(m),
-              "hann" = signal::hanning(m),
-              "hamming" = signal::hamming(m),
-              "blackman" = signal::blackman(m),
-              "kaiser" = signal::kaiser(m, 5.653))
-  w
-}
-
-
-#' Create windowed-sinc filter kernel
-#'
-#' Supplied with the length of the filter in samples, the cutoff frequency, and
-#' the windowing function, returns a windowed-sinc filter kernel for use in FIR
-#' filtering.
-#'
-#' @param filt_order Length of the filter in samples
-#' @param cut_off Cutoff frequency (normalized as a fraction of sampling rate)
-#' @param w Window
-#' @keywords internal
-
-filt_kernel <- function(filt_order,
-                        cut_off,
-                        w) {
-
-  m <- zero_vec(filt_order + 1)
-
-  sinc_fun <- function(m, fc) {
-    ifelse(m == 0,
-           2 * pi * fc,
-           sin(2 * pi * fc * m) / m)
+    fz <- signal::freqz(coefs, n = n, Fs = srate)
   }
 
-  # multiply the sinc function by the window to create a windowed sinc kernel
-  filt_kern <- w * sinc_fun(m, cut_off)
-  # Normalize to unity gain
-  filt_kern <- filt_kern / sum(filt_kern)
-  filt_kern
+  mag <- abs(fz$h)
+  data.frame(
+    frequency    = fz$f,
+    magnitude    = mag,
+    magnitude_db = 20 * log10(mag)
+  )
 }
-
-#' Spectral inversion
-#'
-#' Convert high-pass to low-pass, band-pass to band-stop, and vice versa.
-#'
-#' @param filt_kern Filter kernel to be inverted
-#' @keywords internal
-spec_inv <- function(filt_kern) {
-  filt_kern <- -filt_kern
-  midpoint <- (length(filt_kern) + 1) / 2
-  filt_kern[midpoint] <- filt_kern[midpoint] + 1
-  filt_kern
-}
-
 
 
 #' Gaussian filter
